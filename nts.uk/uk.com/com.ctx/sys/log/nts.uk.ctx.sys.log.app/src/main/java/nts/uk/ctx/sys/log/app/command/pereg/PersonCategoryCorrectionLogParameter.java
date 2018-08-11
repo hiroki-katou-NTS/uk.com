@@ -101,14 +101,19 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 
 			if (value == null) return null;
 
-			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
-
-			switch (dataType) {
-			case STRING:
+			switch (valueType) {
+			case 1:
+			case 6: 
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 12:
 				return value;
-			case NUMERIC:
+			case 2:
 				return new BigDecimal(value);
-			case DATE:
+			case 3:
 				return GeneralDate.fromString(value, "yyyy/MM/dd");
 			default:
 				return null;

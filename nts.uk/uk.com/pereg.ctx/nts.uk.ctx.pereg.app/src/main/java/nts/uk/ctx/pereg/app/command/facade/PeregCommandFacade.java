@@ -22,8 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
@@ -36,9 +41,11 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.DatePeriodSet;
 import nts.uk.shr.pereg.app.ItemLog;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
@@ -83,11 +90,12 @@ public class PeregCommandFacade {
 
 	@Inject
 	private ItemDefFinder itemDefFinder;
+	
+	@Inject
+	private EmpCtgFinder empCtgFinder;
 
 	@Inject
 	private GetUserByEmpFinder userFinder;
-
-	private final static String nameEndate = "終了日";
 	
 	/* employeeCode, stardCardNo */
 	private final static List<String> specialItemCode = Arrays.asList("IS00001", "IS00779");
@@ -279,7 +287,7 @@ public class PeregCommandFacade {
 			if (addInputs.size() > 0) {
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				updateInputForAdd(addInputs);
-				setParamsForCPS001(employeeId, true, addInputs, target);
+				setParamsForCPS001(employeeId, personId, true, addInputs, target);
 				DataCorrectionContext.transactionFinishing();
 			}
 		}
@@ -303,7 +311,7 @@ public class PeregCommandFacade {
 			// Keep record id to focus in UI
 			recordIds.add(recordId);
 		});
-
+		
 		if (recordIds.size() == 1) {
 			return recordIds.get(0);
 		}
@@ -325,7 +333,7 @@ public class PeregCommandFacade {
 		if (updateInputs != null && !updateInputs.isEmpty()) {
 			updateInputCategories(container, updateInputs);
 			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			setParamsForCPS001(container.getEmployeeId(), false, updateInputs, target);
+			setParamsForCPS001(container.getEmployeeId(), container.getPersonId(), false, updateInputs, target);
 			DataCorrectionContext.transactionFinishing();
 		}
 
@@ -341,7 +349,11 @@ public class PeregCommandFacade {
 					itemsByCategory);
 
 			this.userDefUpdate.handle(commandForUserDef);
+			
+			
 		});
+		
+		
 	}
 
 	private void updateInputForAdd(List<ItemsByCategory> inputs) {
@@ -355,7 +367,7 @@ public class PeregCommandFacade {
 		}
 	}
 
-	private void setParamsForCPS001(String employeeId, boolean isAdd, List<ItemsByCategory> inputs, PersonCorrectionLogParameter target) {
+	private void setParamsForCPS001(String sid, String pid, boolean isAdd, List<ItemsByCategory> inputs, PersonCorrectionLogParameter target) {
 		if (target != null) {
 			DataCorrectionContext.setParameter(target.getHashID(), target);
 			String stringKey = null;
@@ -379,13 +391,37 @@ public class PeregCommandFacade {
 
 						stringKey = item.getValueAfter();
 						// nếu startDate newValue != afterValue;
+						
+						PersonInfoItemDefinition itemDef = new PersonInfoItemDefinition();
+						if(itemCode.getEndCode() != null && input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value) {
+							PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(),
+									input.getCategoryCd(), sid,  pid);
+							query.setCategoryId(input.getCategoryId());
+							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
+							historyLst.stream().forEach(c ->{
+								if (c.getOptionValue() != null) {
+									String[] startDate = c.getOptionText().split("~");
+									if(!startDate[1].equals(" ")) {
+										GeneralDate oldEnd = GeneralDate.fromString(startDate[1].substring(1), "yyyy/MM/dd");
+										GeneralDate oldStart = GeneralDate.fromString(item.getValueBefore(), "yyyy/MM/dd");
+										if (oldStart.addDays(-1).equals(oldEnd)) {
+											System.out.println(oldStart);
+											System.out.println(oldEnd);
+
+										}
+									}
+
+								}
+							});
+						
+						}
 						if (isAdd == true) {
-							reviseInfo = new ReviseInfo(item.getItemId(), nameEndate,
+							reviseInfo = new ReviseInfo(itemDef.getPerInfoItemDefId(), itemDef.getItemName().toString(),
 									Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 									Optional.empty(), Optional.empty());
 						} else {
 							if (!item.getValueAfter().equals(item.getValueBefore())) {
-								reviseInfo = new ReviseInfo(item.getItemId(), nameEndate,
+								reviseInfo = new ReviseInfo(itemDef.getPerInfoItemDefId(), itemDef.getItemName()== null? null: itemDef.getItemName().toString(),
 										Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 										Optional.empty(), Optional.empty());
 							}
@@ -533,6 +569,16 @@ public class PeregCommandFacade {
 			this.userDefUpdate.handle(commandForUserDef);
 		});
 	}
+	
+	/**
+	 * 
+	 * @param keyExtractor
+	 * @return
+	 */
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	}
 
 	/**
 	 * @param inputContainer
@@ -575,9 +621,5 @@ public class PeregCommandFacade {
 		DataCorrectionContext.transactionFinishing();
 	}
 	
-	 public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
-	    {
-	        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-	        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-	    }
+
 }
