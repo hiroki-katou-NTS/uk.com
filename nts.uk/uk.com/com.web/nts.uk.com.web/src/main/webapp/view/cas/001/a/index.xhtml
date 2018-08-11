@@ -53,26 +53,24 @@
 
 						<span id="A2_001Caret" class="caret-bottom outline"></span>
 						<div id="left-bottom">
-							<div style="width: 270px" id="A2_007"
-								data-bind="ntsSearchBox: {
-							searchMode: 'highlight',
-							targetKey: 'categoryId',
-						 	comId: 'A2_008',
-						 	items: roleCategoryList,
-						 	selected: currentCategoryId,
-						 	selectedKey: 'categoryId',
-						 	fields: ['categoryName'],
-						 	mode: 'igGrid',
-						 	placeHolder: '#{i18n.getText('CAS001_76')}'}" />
-							<table  tabindex="6" id="A2_008"
-								data-bind="ntsGridList: {	
-						dataSource: roleCategoryList ,
-						primaryKey: 'categoryId' ,
-						columns: ctgColumns ,
-						multiple: false,
-						columnResize: true,
-						value: currentCategoryId ,
-						rows:10 }">
+							<div style="width: 270px" id="A2_007" data-bind="ntsSearchBox: {
+								searchMode: 'highlight',
+								targetKey: 'categoryId',
+							 	comId: 'A2_008',
+							 	items: roleCategoryList,
+							 	selected: currentCategoryId,
+							 	selectedKey: 'categoryId',
+							 	fields: ['categoryName'],
+							 	mode: 'igGrid',
+							 	placeHolder: '#{i18n.getText('CAS001_76')}'}" />
+							<table  tabindex="6" id="A2_008" data-bind="ntsGridList: {	
+								dataSource: roleCategoryList ,
+								primaryKey: 'categoryId' ,
+								columns: ctgColumns ,
+								multiple: false,
+								columnResize: true,
+								value: currentCategoryId ,
+								rows:10 }">
 							</table>
 						</div>
 					</div>
