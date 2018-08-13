@@ -40,6 +40,7 @@
 				<button type="button" class="danger"
 					data-bind="click: deleteEmployee ,
 							   style: { visibility: enaBtnDelEmp() ? 'visible' : 'hidden' }" tabindex="3">#{i18n.getText('CPS001_6')}</button>
+				<span class="licenseCheck" data-bind="text:licenseCheck, css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden' }"></span>
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }"
 					tabindex="4">#{i18n.getText('CPS001_7')}</a> <a class="goout"

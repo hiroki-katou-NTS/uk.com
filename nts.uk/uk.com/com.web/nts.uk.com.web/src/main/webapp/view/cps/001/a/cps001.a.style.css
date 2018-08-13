@@ -10,6 +10,12 @@
 	min-width: 1260px;
 }
 
+.licenseCheck{
+	margin: 0 140px;
+    min-width: 160px;
+    display: inline-block;
+}
+
 @media ( min-width : 1280px) {
 	#functions-area, #contents-area {
 		overflow-x: hidden;
