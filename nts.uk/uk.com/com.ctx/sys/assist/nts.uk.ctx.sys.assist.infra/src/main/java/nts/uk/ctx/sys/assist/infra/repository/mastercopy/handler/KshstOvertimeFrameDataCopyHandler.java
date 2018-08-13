@@ -19,8 +19,22 @@ public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
 	/** The copy method. */
 	private CopyMethod copyMethod;
 	
-	/** The company cd. */
-	private String companyCd;
+	/** The company Id. */
+	private String companyId;
+	
+	/** The insert query. */
+	private String INSERT_QUERY = "";
+	
+	/**
+	 * Instantiates a new kshst overtime frame data copy handler.
+	 *
+	 * @param copyMethod the copy method
+	 * @param companyCd the company cd
+	 */
+	public KshstOvertimeFrameDataCopyHandler(CopyMethod copyMethod, String companyId) {
+		this.copyMethod = copyMethod;
+		this.companyId = companyId;
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler#doCopy()
