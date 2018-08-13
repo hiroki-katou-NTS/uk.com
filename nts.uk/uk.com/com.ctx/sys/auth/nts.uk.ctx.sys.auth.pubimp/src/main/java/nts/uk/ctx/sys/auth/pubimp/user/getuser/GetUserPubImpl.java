@@ -37,7 +37,7 @@ public class GetUserPubImpl implements GetUserPublish {
 			GetUserDto dto = createDto(user);
 
 			// change user-name
-			PersonImport personImport = personImportList.get(user.getAssociatedPersonID());
+			PersonImport personImport = personImportList.get(user.getAssociatedPersonID().get());
 			if (personImport != null) {
 				dto.setUserName(Optional.of(personImport.getPersonName()));
 		
@@ -61,7 +61,7 @@ public class GetUserPubImpl implements GetUserPublish {
 		return new GetUserDto(user.getUserID(),
 				user.getLoginID().v(),
 				user.getUserName().isPresent() ? user.getUserName().get().v() : "",
-				user.getAssociatedPersonID().isPresent() ? user.getUserName().get().toString() : "",
+				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "",
 				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : "",
 				user.getPassword().v());
 	}

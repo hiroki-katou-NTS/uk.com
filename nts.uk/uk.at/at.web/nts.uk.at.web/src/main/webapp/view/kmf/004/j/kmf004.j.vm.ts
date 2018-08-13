@@ -37,18 +37,6 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             
             $.when(self.getAbsenceFrame(), self.getSpecialHolidayFrame(), self.getNursingLeaveSetting()).done(function() {
                   
-                if(self.listAbsenceFrame().length > 0) {
-                    _.forEach(self.nursingAbsence(), function(nursingItem) {
-                        var evens = _.remove(self.listAbsenceFrame(), function(item) {
-                          return item.code == nursingItem.code;
-                        });
-                    });
-                    
-                    _.forEach(self.listAbsenceFrame(), function(item) {
-                        self.items.push(item);
-                    });
-                }
-                
                 if(self.listSpecialHlFrame().length > 0) {
                     _.forEach(self.nursingSpecial(), function(nursingItem) {
                         var evens = _.remove(self.listSpecialHlFrame(), function(item) {
@@ -57,6 +45,18 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                     });
                     
                     _.forEach(self.listSpecialHlFrame(), function(item) {
+                        self.items.push(item);
+                    });
+                }
+                
+                if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.nursingAbsence(), function(nursingItem) {
+                        var evens = _.remove(self.listAbsenceFrame(), function(item) {
+                          return item.code == nursingItem.code;
+                        });
+                    });
+                    
+                    _.forEach(self.listAbsenceFrame(), function(item) {
                         self.items.push(item);
                     });
                 }
@@ -93,7 +93,7 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                     self.listAbsenceFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemModel("a" + item.absenceFrameNo, item.absenceFrameName, 1)
+                            var absenceFrame = new ItemModel("b" + item.absenceFrameNo, item.absenceFrameName, 2)
                             self.listAbsenceFrame.push(ko.toJS(absenceFrame));
                         }
                     });
@@ -114,7 +114,7 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                     self.listSpecialHlFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemModel("b" + item.specialHdFrameNo, item.specialHdFrameName, 2)
+                            var specialHlFrame = new ItemModel("a" + item.specialHdFrameNo, item.specialHdFrameName, 1)
                             self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
                         }
                     });
@@ -136,14 +136,14 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                 self.nursingSpecial.removeAll();
                 
                 _.forEach(data, function(item) {
-                    if (item.absenceWorkDay != null) {
-                        var absence = new ItemModel("a" + item.absenceWorkDay, "", 1)
-                        self.nursingAbsence.push(ko.toJS(absence));
+                    if(item.specialHolidayFrame != null) {
+                        var sphdFrame = new ItemModel("a" + item.specialHolidayFrame, "", 1)
+                        self.nursingSpecial.push(ko.toJS(sphdFrame));
                     }
                     
-                    if(item.specialHolidayFrame != null) {
-                        var sphdFrame = new ItemModel("b" + item.specialHolidayFrame, "", 2)
-                        self.nursingSpecial.push(ko.toJS(sphdFrame));
+                    if (item.absenceWorkDay != null) {
+                        var absence = new ItemModel("b" + item.absenceWorkDay, "", 2)
+                        self.nursingAbsence.push(ko.toJS(absence));
                     }
                 });
                 

@@ -483,7 +483,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	@Override
 	public List<WorkplaceInfo> findByHistory(List<String> historyList) {
 		if (CollectionUtil.isEmpty(historyList)) {
-			return null;
+			return Collections.emptyList();
 		}
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -510,7 +510,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		});
 
 		if (CollectionUtil.isEmpty(resultList)) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))

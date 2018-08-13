@@ -71,21 +71,21 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		if(timeDto.getFrameNumber() == 1) {
 			if(timeDto.isUpdateStart()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 3, timeDto.getDateInfo(), timeDto.getEmployeeId());
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 			if(timeDto.isUpdateEnd()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 4, timeDto.getDateInfo(), timeDto.getEmployeeId());	
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 				
 		} else {
 			if(timeDto.isUpdateStart()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 5, timeDto.getDateInfo(), timeDto.getEmployeeId());
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 			if(timeDto.isUpdateEnd()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 6, timeDto.getDateInfo(), timeDto.getEmployeeId());	
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}	
 		}
 		

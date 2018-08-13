@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -293,8 +292,9 @@ public class JpaWorkplaceConfigRepository extends JpaRepository
 			return Collections.emptyList();
 		}
 		
-		return lstWkpConfigHist.stream()
-				.map(entity -> new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWkpConfigHist)))
-				.collect(Collectors.toList());
+		List<WorkplaceConfig> workplaceConfigs = new ArrayList<WorkplaceConfig>();
+		workplaceConfigs.add(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWkpConfigHist)));
+		
+		return workplaceConfigs;
 	}
 }

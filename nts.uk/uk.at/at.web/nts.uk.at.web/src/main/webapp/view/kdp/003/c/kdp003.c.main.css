@@ -1,0 +1,39 @@
+.link-button.goback {
+    padding-left: 25px;
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+}
+#grid_pager_label{
+	display: none !important;
+}
+
+#contents-area{
+	margin-left: 8px;
+}
+.ui-iggrid-pageimg{
+	display: inline-block !important;
+}
+
+table{
+	border:1px solid #999999;
+}
+#kdp003-grid_headers thead tr th{
+	border:1px solid #999999;
+	border-top: none;
+}
+.col-align-right{
+	text-align:right;
+}
+.link-button.goback:before {
+	height: 32px;
+    width: 32px;
+}
+.link-button.goback {
+	
+	height: 32px;
+}
+#kdp003-grid_hscroller{
+	overflow: hidden;
+}
+

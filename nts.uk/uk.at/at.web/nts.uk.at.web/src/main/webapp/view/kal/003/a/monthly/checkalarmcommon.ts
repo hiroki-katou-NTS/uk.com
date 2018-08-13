@@ -148,8 +148,8 @@ module nts.uk.at.view.kal003.a.tab {
                     block.clear();
                     return;
                 });
-            }
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 || s) {
+            } 
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length || _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 ) {
                 block.clear();
                 return;
             }

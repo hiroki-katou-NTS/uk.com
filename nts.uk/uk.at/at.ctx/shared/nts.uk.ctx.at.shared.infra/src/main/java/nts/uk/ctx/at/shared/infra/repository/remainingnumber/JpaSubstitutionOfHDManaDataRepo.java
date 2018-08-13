@@ -20,6 +20,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private static final String QUERY_BY_SID_CID_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :holidayDate";
 	
 	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid";
+	private String QUERY_BYSID_DATE = QUERY_BYSID + " AND s.dayOff < :dayOff";
 
 	private static final String QUERY_BYSID_REM_COD = String.join(" ", QUERY_BYSID, "AND s.remainDays > 0");
 
@@ -163,6 +164,16 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BY_SID_REMAINDAYS, KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("remainDays", remainDays)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_DATE, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid)
+				.setParameter("dayOff", ymd)
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}

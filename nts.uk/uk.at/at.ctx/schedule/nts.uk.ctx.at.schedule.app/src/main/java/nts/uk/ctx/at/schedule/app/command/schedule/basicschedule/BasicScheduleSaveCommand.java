@@ -20,10 +20,16 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 
 /**
  * The Class BasicScheduleSaveCommand.
@@ -72,6 +78,59 @@ public class BasicScheduleSaveCommand {
 	}
 	
 	/**
+	 * Update work schedule time zones.
+	 *
+	 * @param workTimeSet the work time set
+	 */
+	public void updateWorkScheduleTimeZonesKeepBounceAtr(PrescribedTimezoneSetting workTimeSet, WorkType workType) {
+		this.workScheduleTimeZones = workTimeSet.getLstTimezone().stream().filter(timezone -> timezone.isUsed())
+				.map(timezone -> this.convertTimeZoneToScheduleTimeZoneKeepBounceAtr(timezone, workType)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Add schedule bounce atr.
+	 * 
+	 * @param workType
+	 * @return
+	 */
+	private BounceAtr addScheduleBounce(WorkType workType) {
+		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
+		if (AttendanceHolidayAttr.FULL_TIME == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet = workTypeSetList.get(0);
+			return getBounceAtr(workTypeSet);
+		} else if (AttendanceHolidayAttr.AFTERNOON == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet1 = workTypeSetList.stream()
+					.filter(x -> WorkAtr.Afternoon.value == x.getWorkAtr().value).findFirst().get();
+			return getBounceAtr(workTypeSet1);
+		} else if (AttendanceHolidayAttr.MORNING == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet2 = workTypeSetList.stream()
+					.filter(x -> WorkAtr.Monring.value == x.getWorkAtr().value).findFirst().get();
+			return getBounceAtr(workTypeSet2);
+		}
+
+		return BounceAtr.NO_DIRECT_BOUNCE;
+	}
+	
+	/**
+	 * @param workTypeSet
+	 * @return
+	 */
+	private BounceAtr getBounceAtr(WorkTypeSet workTypeSet) {
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.NO_DIRECT_BOUNCE;
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.DIRECTLY_ONLY;
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+			return BounceAtr.BOUNCE_ONLY;
+		}
+
+		return BounceAtr.DIRECT_BOUNCE;
+	}
+	
+	/**
 	 * Convert time zone to schedule time zone.
 	 *
 	 * @param timezone the timezone
@@ -92,6 +151,31 @@ public class BasicScheduleSaveCommand {
 
 		return command;
 	}
+	
+	/**
+	 * Convert time zone to schedule time zone.
+	 *
+	 * @param timezone the timezone
+	 * @return the work schedule time zone save command
+	 */
+	// 勤務予定時間帯
+	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZoneKeepBounceAtr(TimezoneUse timezone, WorkType workType) {
+		WorkScheduleTimeZoneSaveCommand command = new WorkScheduleTimeZoneSaveCommand();
+
+		command.setBounceAtr(this.addScheduleBounce(workType).value);
+		
+		// 予定勤務回数 = 取得した勤務予定時間帯. 勤務NO
+		command.setScheduleCnt(timezone.getWorkNo());
+
+		// 予定開始時刻 = 取得した勤務予定時間帯. 開始
+		command.setScheduleStartClock(timezone.getStart() != null ? timezone.getStart().valueAsMinutes() : null);
+
+		// 予定終了時刻 = 取得した勤務予定時間帯. 終了
+		command.setScheduleEndClock(timezone.getEnd() != null ? timezone.getEnd().valueAsMinutes() : null);
+
+		return command;
+	}
+	
 	/**
 	 * To domain.
 	 *

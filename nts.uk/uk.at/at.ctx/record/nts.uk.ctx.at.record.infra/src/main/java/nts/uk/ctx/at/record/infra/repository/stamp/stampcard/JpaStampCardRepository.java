@@ -24,7 +24,6 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
-
 	private static final String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
 	
 	private static final String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";

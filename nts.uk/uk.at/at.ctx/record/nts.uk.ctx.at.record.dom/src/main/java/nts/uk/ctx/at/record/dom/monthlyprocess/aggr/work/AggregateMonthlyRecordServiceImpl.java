@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
@@ -40,6 +41,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 出勤率計算用日数を取得する */
 	@Inject
 	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 月別実績の編集状態 */
+	@Inject
+	private EditStateOfMonthlyPerRepository editStateRepo;
 	
 	/** 集計処理　（アルゴリズム） */
 	@Override
@@ -55,7 +59,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.getAnnAndRsvRemNumWithinPeriod,
 				this.absenceRecruitMng,
 				this.breakDayoffMng,
-				this.getDaysForCalcAttdRate);
+				this.getDaysForCalcAttdRate,
+				this.editStateRepo);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);
