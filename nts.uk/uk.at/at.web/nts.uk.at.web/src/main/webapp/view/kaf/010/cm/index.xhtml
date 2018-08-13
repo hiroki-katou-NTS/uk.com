@@ -491,7 +491,7 @@
 		</div>
 		<!-- 申請理由（ラベル) -->
 		<div class="cf valign-top control-group"
-			data-bind="if: displayAppReasonContentFlg">
+			data-bind="if: isShowReason()">
 			<!--A9_3 申請理由ラベル--> 			
 			<div class="lblTitle cm-column"
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_88')}</div>
@@ -505,6 +505,7 @@
 			                    	width: '500',
 			                    	required: requiredReason()
 			                   	},
+			                   	enable:displayAppReasonContentFlg
 							}" />
 			</div>
 		</div>
