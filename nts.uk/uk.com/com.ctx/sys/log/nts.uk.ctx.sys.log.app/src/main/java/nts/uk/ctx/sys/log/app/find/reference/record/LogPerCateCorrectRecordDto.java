@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogPerCateCorrectRecordDto {
+	private String childrentkey;
 	private String operationId;
 	private String categoryName; //23
 	private GeneralDate targetDate; //25/26/27/28

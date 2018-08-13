@@ -14,6 +14,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         alreadySettingData: Array<any>;
         codeStart: string = '';
         listWTShareKDL002: KnockoutObservableArray<any> = ko.observableArray([]);
+        allowRegister: KnockoutObservableArray<boolean> = ko.observable(true);
         //previewData: any = null;
         //previewCode: string = "";
         //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
@@ -35,16 +36,23 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             //Employment code change listener
             self.selectedCode.subscribe(value =>{
                 nts.uk.ui.errors.clearAll();
-                //Get employment name  
-                let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
-                let selectedEmp = _.find(employmentList, { 'code': value });
-                if(!nts.uk.util.isNullOrUndefined(selectedEmp)){
-                    self.employmentName(selectedEmp.name);
+                if(value){
+                    self.allowRegister(true);
+                    //Get employment name  
+                    let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
+                    let selectedEmp = _.find(employmentList, { 'code': value });
+                    if(!nts.uk.util.isNullOrUndefined(selectedEmp)){
+                        self.employmentName(selectedEmp.name);
+                    }else{
+                        self.employmentName('');
+                    }
+                    //Get data setting            
+                    self.changeEmploymentCode(value); 
                 }else{
+                    self.allowRegister(false);
                     self.employmentName('');
+                    self.changeEmploymentCode(value);
                 }
-                //Get data setting            
-                self.changeEmploymentCode(value);   
             });
         }
         start(): JQueryPromise<any> {
@@ -137,7 +145,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
 //                });   
 //             } 
             //return if no selected employment code
-            if(nts.uk.util.isNullOrEmpty(empCode)) return;
+            if(nts.uk.util.isNullOrEmpty(empCode)){
+                self.appSetData(new PreBeforeAppSetData(empCode));
+                return;
+            } 
             nts.uk.ui.block.invisible();
             self.screenMode(ScreenMode.INSERT);
             self.appSetData(new PreBeforeAppSetData(empCode));
@@ -215,11 +226,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          * 登録処理
          */
         registerEmploymentSet(parent:any){
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
-            let self = parent;
+            let self = parent;      
             var dfd = $.Deferred(); 
             let code = self.selectedCode();
             let commands = [];
+            if(!self.allowRegister()){
+                clear();
+                return;    
+            }
             var overTimeSet = ko.mapping.toJS(self.appSetData().overTimeSet());
             // nếu chọn L6 mà không chọn L37 về thì báo error, nếu ko chọn L6 thì reset L37 về []
             if(overTimeSet.displayFlag === true && overTimeSet.displayWorkTypes === ""){

@@ -779,7 +779,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         width: "100%",
                         childrenDataProperty: "lstLogDataCorrectRecordRefeDto",
                         autoGenerateColumns: false,
-                        primaryKey: "targetDate",
+                        primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
@@ -1841,6 +1841,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class LogBasicInfoModel {
+        parentKey: string;
         operationId: string;
         userNameLogin: string;
         employeeCodeLogin: string;
@@ -1951,6 +1952,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
+        childrentKey:string;
         operationId: string;
         targetDate: any;
         targetDataType: number;

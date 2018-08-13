@@ -23,7 +23,7 @@ public class AnnualHolidayWebServices extends WebService {
 	@POST
 	@Path("startPage")
 	public AnnualHolidayDto startPage(StartPageParam param) {
-		return this.finder.starPage(param.getSelectMode(), param.getBaseDate(), param.getEmployeeIds());
+		return this.finder.starPage(param.getBaseDate(), param.getEmployeeIds());
 	}
 
 	@POST
@@ -36,7 +36,6 @@ public class AnnualHolidayWebServices extends WebService {
 
 @Data
 class StartPageParam {
-	private int selectMode;
 	private GeneralDate baseDate;
 	private List<String> employeeIds;
 }

@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
@@ -201,10 +202,11 @@ public class LogBasicInformationFinder {
 							if(!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)){
 								for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
 									List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
+									String childrentKey = IdentifierUtil.randomUniqueId();
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
-
+											perObject.setChildrentkey(childrentKey);
 											// Fist record
 											perObject.setOperationId(logBasicInfoDto.getOperationId());
 											// item 23
@@ -225,6 +227,7 @@ public class LogBasicInformationFinder {
 										
 									}else{
 										LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
+										perObject.setChildrentkey(childrentKey);
 										perObject.setOperationId(personInfoCorrectionLog.getOperationId());
 										// item 23
 										perObject.setCategoryName(categoryCorrectionLog.getCategoryName());
@@ -272,7 +275,6 @@ public class LogBasicInformationFinder {
 			case DATA_CORRECT:
 				
 				Map<String,LogBasicInfoDto> mapCheck = new HashMap<>();
-				Map<String,String> mapDateCheck = new HashMap<>();
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 					UserInfo userDto = logBasicInformation.getUserInfo();
 					// get data correct log
@@ -303,7 +305,6 @@ public class LogBasicInformationFinder {
 							LogDataCorrectRecordRefeDto logDataCorrectRecordRefeDto = LogDataCorrectRecordRefeDto
 									.fromDomain(dataCorrectionLog);
 							String keyEmploy = logBasicInfoDto.getOperationId() + logDataCorrectRecordRefeDto.getEmployeeIdtaget();
-							String keyDate= keyEmploy + logDataCorrectRecordRefeDto.getTargetDate().toString("yyyyMMdd");
 							// group employId
 							if(mapCheck.containsKey(keyEmploy)){
 								LogBasicInfoDto logBasicCheck= mapCheck.get(keyEmploy) ;
@@ -329,7 +330,6 @@ public class LogBasicInformationFinder {
 								List<LogOutputItemDto> listSubHeader = getSubHeaderDataCorrectList(logDataCorrectRecordRefeDto.getTargetDataType(),logParams.getRecordType());
 								logTemp.setLstLogOutputItemDto(listSubHeader);
 								mapCheck.put(keyEmploy, logTemp);
-								mapDateCheck.put(keyDate, "");
 							}
 						}
 						
