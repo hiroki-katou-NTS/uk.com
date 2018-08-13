@@ -17,9 +17,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
@@ -38,8 +37,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder
-				.createQuery(SspmtMastercopyData.class);
+		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder.createQuery(SspmtMastercopyData.class);
 		Root<SspmtMastercopyData> root = cq.from(SspmtMastercopyData.class);
 
 		// Build query
@@ -47,17 +45,15 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id)
-						.get(SspmtMastercopyDataPK_.categoryNo), categoryNo));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo), categoryNo));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// query data
 		List<SspmtMastercopyData> sspmtMastercopyDatas = em.createQuery(cq).getResultList();
 
-		return sspmtMastercopyDatas.stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+		return sspmtMastercopyDatas.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -68,9 +64,10 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @return the master copy data
 	 */
 	private MasterCopyData toDomain(SspmtMastercopyData entity) {
-//		MasterCopyDataGetMemento memento = new JpaMasterCopyDataGetMemento(entity);
-//		return new MasterCopyData(memento);
-		return null;//viet lai ham toDomain vi gio domain da thay doi
+		// MasterCopyDataGetMemento memento = new JpaMasterCopyDataGetMemento(entity);
+		// return new MasterCopyData(memento);
+		
+		return null;// viet lai ham toDomain vi gio domain da thay doi
 	}
 
 	/**
@@ -80,15 +77,26 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 *            the domain
 	 * @return the sspmt mastercopy data
 	 */
-	private SspmtMastercopyData toEntity(MasterCopyData domain) {
-		SspmtMastercopyData entity = this.queryProxy()
-				.find(domain.getCategoryNo(), SspmtMastercopyData.class)
-				.orElse(new SspmtMastercopyData());
-
-		MasterCopyDataSetMemento memento = new JpaMasterCopyDataSetMemento(entity);
+	private List<SspmtMastercopyData> toDataEntites(MasterCopyData domain) {
+		// query data entites
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder.createQuery(SspmtMastercopyData.class);
+		Root<SspmtMastercopyData> root = cq.from(SspmtMastercopyData.class);
+		cq.select(root);
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo),
+				domain.getCategoryNo()));
+		cq.where(predicates.toArray(new Predicate[] {}));
+		List<SspmtMastercopyData> listDataEntites = em.createQuery(cq).getResultList();
+		// category entity
+		SspmtMastercopyCategory categoryEntity = this.queryProxy()
+				.find(domain.getCategoryNo(), SspmtMastercopyCategory.class).orElse(new SspmtMastercopyCategory());
+		// set memento
+		if(categoryEntity.getCategoryNo()==null) categoryEntity.setCategoryNo(domain.getCategoryNo().v());
+		JpaMasterCopyDataSetMemento memento = new JpaMasterCopyDataSetMemento(categoryEntity, listDataEntites);
 		domain.saveToMemento(memento);
-
-		return entity;
+		return listDataEntites;
 	}
 
 	/*
@@ -102,8 +110,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder
-				.createQuery(SspmtMastercopyData.class);
+		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder.createQuery(SspmtMastercopyData.class);
 		Root<SspmtMastercopyData> root = cq.from(SspmtMastercopyData.class);
 
 		// Build query
@@ -111,16 +118,15 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(SspmtMastercopyData_.id)
-				.get(SspmtMastercopyDataPK_.categoryNo).in(masterCopyIds));
+		lstpredicateWhere
+				.add(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo).in(masterCopyIds));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// query data
 		List<SspmtMastercopyData> sspmtMastercopyDatas = em.createQuery(cq).getResultList();
 
-		return sspmtMastercopyDatas.stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+		return sspmtMastercopyDatas.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 }
