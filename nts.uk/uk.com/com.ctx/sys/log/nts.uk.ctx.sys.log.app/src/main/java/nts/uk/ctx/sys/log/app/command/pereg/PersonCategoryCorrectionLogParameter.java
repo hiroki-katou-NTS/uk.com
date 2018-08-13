@@ -93,6 +93,7 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 			ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
 			
 			if (value == null) return null;
+			if (value == "" && valueType != ItemValueType.STRING.value) return null;
 			
 			switch (itemValueType) {
 			case STRING:

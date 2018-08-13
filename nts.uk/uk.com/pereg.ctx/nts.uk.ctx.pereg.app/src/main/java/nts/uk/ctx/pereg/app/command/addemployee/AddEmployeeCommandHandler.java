@@ -205,12 +205,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			}
 
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-			for (ItemValue item : input.getItems()) {
+			
+			List<ItemValue> items = input.getItems().stream()
+					.map(c -> {return c.setContentForCPS002(c);})
+					.filter(c -> c != null ).collect(Collectors.toList());
+			for (ItemValue item : items) {
 				if (item.itemCode().equals(itemCode)) {
 					startDateItemCode = item.value();
 				}
-				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, null,
-						item.valueAfter(), item.contentAfter(), item.logType()));
+				lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 			}
 
 			// Add category correction data
@@ -218,15 +221,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			switch (input.getCategoryCd()) {
 			case "CS00001":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), null);
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), Optional.empty());
 				break;
 			case "CS00002":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());
 				break;
 			case "CS00003":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+						lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
 				break;
 			case "CS00004":
 			case "CS00014":
@@ -239,7 +242,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00070":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD_HISTORY, lstItemInfo,
-						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
 				break;
 
 			case "CS00022":
@@ -248,7 +251,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00035":
 			case "CS00036":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());
 				break;
 
 			case "CS00025":
@@ -273,7 +276,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00058":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo,
-						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), null);
+						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
 				break;
 			case "CS00015":
 			case "CS00037":
@@ -281,7 +284,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				break;
 			case "CS00069":
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), Optional.empty());
 				break;
 			default:
 				break;
@@ -291,7 +294,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
 			// log phần avatar
-			if(command.getAvatarOrgId() != null) {
+			if(command.getAvatarOrgId() != "") {
 				List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
 				lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
 						command.getAvatarOrgId(), command.getFileName(), 1));
@@ -302,7 +305,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 						InfoOperateAttr.ADD,
 						lstItemInfo, 
 						new TargetDataKey(CalendarKeyType.NONE,
-						null, command.getCardNo()), null);
+						null, command.getCardNo()), Optional.empty());
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
 		}

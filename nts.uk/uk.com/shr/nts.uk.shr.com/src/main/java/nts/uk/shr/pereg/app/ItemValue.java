@@ -27,13 +27,14 @@ public class ItemValue {
 	private int logType;
 
 	
-	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
+	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, String text ,int dataType,
 			Integer selectionRefType, String selectionRefCode) {
 		ItemValue itemValue = new ItemValue();
 		itemValue.definitionId = definitionId;
 		itemValue.itemCode = itemCode;
 		itemValue.itemName = itemName;
 		itemValue.value = value;
+		itemValue.text = text;
 		itemValue.logType = dataType;
 		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
 		switch (itemValueType) {
@@ -190,7 +191,15 @@ public class ItemValue {
 		item.setContentBefore(formatContent(item.logType(),  contentOld, item.valueBefore()));
 		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
 		return item;
-		
+	}
+	
+	public static ItemValue setContentForCPS002(ItemValue item) {
+		String contentNew = (item.contentAfter() == null || item.contentAfter() == "") ? item.valueAfter(): item.contentAfter();
+		item.setContentBefore(null);
+		item.setValueBefore(null);
+		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
+		if(item.text == null && item.value == "") return null;
+		return item;
 	}
 	
 	public static List<ItemValue> convertItemLog(List<ItemValue> items, List<ItemValue> itemInvisible, String itemCode, DatePeriodSet datePeriod){
@@ -264,6 +273,7 @@ public class ItemValue {
 		ItemValueType itemValueType = EnumAdaptor.valueOf(logType, ItemValueType.class);
 		
 		if (viewContent == null || value == null) return null;
+		if ((viewContent == "" && logType != ItemValueType.STRING.value) || (value == "" && logType != ItemValueType.STRING.value)) return null;
 		
 		switch(itemValueType) {
 		case STRING:
