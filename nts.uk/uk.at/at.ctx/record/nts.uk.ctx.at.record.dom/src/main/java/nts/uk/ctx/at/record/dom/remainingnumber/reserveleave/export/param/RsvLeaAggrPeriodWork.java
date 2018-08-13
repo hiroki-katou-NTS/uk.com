@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -25,6 +26,8 @@ public class RsvLeaAggrPeriodWork {
 	private boolean afterGrant;
 	/** 消滅フラグ */
 	private boolean lapsedAtr;
+	/** 上限日数 */
+	private MaxDaysRetention maxDays;
 	/** 積立年休付与 */
 	private Optional<NextReserveLeaveGrant> reserveLeaveGrant;
 	
@@ -38,6 +41,7 @@ public class RsvLeaAggrPeriodWork {
 		this.grantAtr = false;
 		this.afterGrant = false;
 		this.lapsedAtr = false;
+		this.maxDays = new MaxDaysRetention(0);
 		this.reserveLeaveGrant = Optional.empty();
 	}
 	
@@ -48,6 +52,7 @@ public class RsvLeaAggrPeriodWork {
 	 * @param grantAtr 付与フラグ
 	 * @param afterGrant 付与後
 	 * @param lapsedAtr 消滅フラグ
+	 * @param maxDays 上限日数
 	 * @param reserveLeaveGrant 積立年休付与
 	 * @return 積立年休集計期間WORK
 	 */
@@ -57,6 +62,7 @@ public class RsvLeaAggrPeriodWork {
 			boolean grantAtr,
 			boolean afterGrant,
 			boolean lapsedAtr,
+			MaxDaysRetention maxDays,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){
 		
 		RsvLeaAggrPeriodWork domain = new RsvLeaAggrPeriodWork();
@@ -65,6 +71,7 @@ public class RsvLeaAggrPeriodWork {
 		domain.grantAtr = grantAtr;
 		domain.afterGrant = afterGrant;
 		domain.lapsedAtr = lapsedAtr;
+		domain.maxDays = maxDays;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		return domain;
 	}

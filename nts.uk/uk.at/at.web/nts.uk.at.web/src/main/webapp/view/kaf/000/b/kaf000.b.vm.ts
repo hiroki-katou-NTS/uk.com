@@ -129,6 +129,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
+                if(self.displayReturnReasonPanel()){
+                    self.reasonApp(data.applicationDto.reversionReason);    
+                }
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);
