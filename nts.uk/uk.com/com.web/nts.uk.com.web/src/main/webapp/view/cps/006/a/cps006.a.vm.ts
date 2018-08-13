@@ -55,8 +55,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     categoryType: x.categoryType,
                                     isAbolition: x.isAbolition
                                 })));
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
                     } else {
@@ -102,6 +102,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     }
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
 
