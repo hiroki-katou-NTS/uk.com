@@ -73,4 +73,7 @@ public interface PayoutManagementDataRepository {
 	 * @return
 	 */
 	List<PayoutManagementData> getEachPeriod(String sid, DatePeriod dateTmp, DatePeriod dateData, Double unUseDays, DigestionAtr stateAtr);
+	List<PayoutManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
+
+	void deleteById(List<String> payoutId);
 }
