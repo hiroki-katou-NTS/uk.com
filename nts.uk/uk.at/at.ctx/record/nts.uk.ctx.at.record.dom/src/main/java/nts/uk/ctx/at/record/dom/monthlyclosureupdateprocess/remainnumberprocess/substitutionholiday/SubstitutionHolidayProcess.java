@@ -26,11 +26,11 @@ public class SubstitutionHolidayProcess {
 	
 	@Inject
 	private SubstitutionTempDataDeleting tempDataDelete;
-	
+	 
 	//振休処理
 	public void substitutionHolidayProcess(AggrPeriodEachActualClosure period, String empId) {
 		AbsRecRemainMngOfInPeriod output = remainHolidayCalculation.calculateRemainHoliday(period, empId);
-		remainHolidayUpdate.updateRemainSubstitutionHoliday(output.getLstAbsRecMng());
+		remainHolidayUpdate.updateRemainSubstitutionHoliday(output.getLstAbsRecMng(),period, empId);
 		tempDataDelete.deleteTempSubstitutionData(period, empId);
 	}
 	

@@ -29,7 +29,7 @@ public class CompensatoryHolidayProcess {
 	
 	public void compensatoryHolidayProcess(AggrPeriodEachActualClosure period, String empId) {
 		BreakDayOffRemainMngOfInPeriod output = this.remainCalculation.calculateRemainCompensatory(period, empId);
-		remainUpdate.updateRemainCompensatoryHoliday(output.getLstDetailData());
+		remainUpdate.updateRemainCompensatoryHoliday(output.getLstDetailData(), period, empId);
 		tempDelete.deleteTempDataProcess(period, empId);
 	}
 	
