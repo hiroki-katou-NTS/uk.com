@@ -873,12 +873,6 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 	}
 }
 
-project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub') {
-dependencies {
-		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
-	}
-}
-
 project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
