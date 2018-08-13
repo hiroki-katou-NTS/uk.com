@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk008.k {
             yearErrorTimeLabel: string;
             yearAlarmTimeLabel: string;
             inputFormatYearOrYearMonth: string;
+            dateFormat : string;
             listItemDataGrid: KnockoutObservableArray<ShowListModel>;
             deleteEnable: KnockoutObservable<boolean>;
 
@@ -47,12 +48,14 @@ module nts.uk.at.view.kmk008.k {
                 self.yearAlarmTimeLabel = nts.uk.resource.getText("KMK008_20");
                 if (self.isYearMonth) {
                     self.yearLabel = nts.uk.resource.getText("KMK008_30");
-                    self.inputFormatYearOrYearMonth = "YYYY/MM";
+                    self.inputFormatYearOrYearMonth = 'YYYYMM';
+                    self.dateFormat = 'yearmonth';
                     self.constraintErrorTime = "ErrorOneMonth";
                     self.constraintAlarmTime = "AlarmOneMonth";
                 } else {
                     self.yearLabel = nts.uk.resource.getText("KMK008_29");
-                    self.inputFormatYearOrYearMonth = "YYYY";
+                    self.inputFormatYearOrYearMonth = 'YYYY';
+                    self.dateFormat = 'YYYY';
                     self.constraintErrorTime = "ErrorOneYear";
                     self.constraintAlarmTime = "AlarmOneYear";
                 }

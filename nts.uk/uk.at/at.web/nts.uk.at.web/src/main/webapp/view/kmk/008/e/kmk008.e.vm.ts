@@ -67,9 +67,9 @@ module nts.uk.at.view.kmk008.e {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
                 self.selectedWorkplaceId('');
-                self.getalreadySettingList();
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
-                    self.workplaceGridList($('#tree-grid-screen-e').getDataList());
+                    self.getalreadySettingList();
+                    // self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
