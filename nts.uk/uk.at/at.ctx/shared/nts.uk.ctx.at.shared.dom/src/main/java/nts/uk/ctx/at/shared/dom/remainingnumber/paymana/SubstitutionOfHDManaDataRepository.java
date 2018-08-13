@@ -24,14 +24,6 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
-	/**
-	 * 
-	 * @param cid
-	 * @param sid
-	 * @param ymd 振休日<INPUT．集計開始日
-	 * @return
-	 */
-	List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
 	
 	void deletePayoutSubOfHDMana(String subOfHDID);
 	
