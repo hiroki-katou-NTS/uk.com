@@ -13,55 +13,55 @@ public enum SixtyHourExtra {
 
 	/** The allways. */
 	// 常に繰越
-	ALLWAYS(1, "常に繰越", "常に繰越"),
+	ALLWAYS(0, "常に繰越", "常に繰越"),
 
 	/** The one month. */
 	// 1ヶ月
-	ONE_MONTH(2, "1ヶ月", "1ヶ月"),
+	ONE_MONTH(1, "1ヶ月", "1ヶ月"),
 
 	/** The two month. */
 	// 2ヶ月
-	TWO_MONTH(3, "2ヶ月", "2ヶ月"),
+	TWO_MONTH(2, "2ヶ月", "2ヶ月"),
 
 	/** The three month. */
 	// 3ヶ月
-	THREE_MONTH(4, "3ヶ月", "3ヶ月"),
+	THREE_MONTH(3, "3ヶ月", "3ヶ月"),
 
 	/** The four month. */
 	// 4ヶ月
-	FOUR_MONTH(5, "4ヶ月", "4ヶ月"),
+	FOUR_MONTH(4, "4ヶ月", "4ヶ月"),
 
 	/** The five month. */
 	// 5ヶ月
-	FIVE_MONTH(6, "5ヶ月", "5ヶ月"),
+	FIVE_MONTH(5, "5ヶ月", "5ヶ月"),
 
 	/** The six month. */
 	// 6ヶ月
-	SIX_MONTH(7, "6ヶ月", "6ヶ月"),
+	SIX_MONTH(6, "6ヶ月", "6ヶ月"),
 
 	/** The seven month. */
 	// 7ヶ月
-	SEVEN_MONTH(8, "7ヶ月", "7ヶ月"),
+	SEVEN_MONTH(7, "7ヶ月", "7ヶ月"),
 
 	/** The eight month. */
 	// 8ヶ月
-	EIGHT_MONTH(9, "8ヶ月", "8ヶ月"),
+	EIGHT_MONTH(8, "8ヶ月", "8ヶ月"),
 
 	/** The nine month. */
 	// 9ヶ月
-	NINE_MONTH(10, "9ヶ月", "9ヶ月"),
+	NINE_MONTH(9, "9ヶ月", "9ヶ月"),
 
 	/** The ten month. */
 	// 10ヶ月
-	TEN_MONTH(11, "10ヶ月", "10ヶ月"),
+	TEN_MONTH(10, "10ヶ月", "10ヶ月"),
 
 	/** The eleven month. */
 	// 11ヶ月
-	ELEVEN_MONTH(12, "11ヶ月", "11ヶ月"),
+	ELEVEN_MONTH(11, "11ヶ月", "11ヶ月"),
 	
 	/** The twelve month. */
 	// 12ヶ月
-	TWELVE_MONTH(13, "12ヶ月", "12ヶ月");
+	TWELVE_MONTH(12, "12ヶ月", "12ヶ月");
 
 	/** The value. */
 	public int value;
