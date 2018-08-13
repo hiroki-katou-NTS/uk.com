@@ -55,12 +55,11 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     categoryType: x.categoryType,
                                     isAbolition: x.isAbolition
                                 })));
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
                     } else {
-
                         service.getAllCategory().done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.categoryList(data);
@@ -75,7 +74,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 } else {
                     if (self.isFiltered) {
                         $("#category_grid").igGrid("option", "dataSource", _.filter(self.ctgLstFilter, x => { return x.isAbolition == 0 }));
-
+                            
                     } else {
                         let oldlst: Array<any> = _.map(ko.toJS(self.categoryList), x => x);
 
@@ -102,6 +101,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     }
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
 
@@ -325,7 +325,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         order: i + 1
                     }));
                     service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>) {
-                        self.start(self.id()).done(() => {
+                        self.start(self.id()).done(() => {  
                             block.clear();
                         });
                     });
