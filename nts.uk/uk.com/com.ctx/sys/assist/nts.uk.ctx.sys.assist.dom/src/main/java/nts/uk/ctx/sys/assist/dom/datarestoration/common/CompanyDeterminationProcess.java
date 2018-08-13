@@ -38,7 +38,6 @@ public class CompanyDeterminationProcess {
 			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 			for (TableList tableListRecord: tableList) {
-				tableListRecord.setAnotherComCls(RecoverFormCompanyOther.IS_RE_OTHER_COMPANY);
 				tableListRepository.update(tableListRecord);
 			}
 			return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);

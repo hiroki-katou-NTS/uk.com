@@ -676,7 +676,7 @@ module nts.uk.time {
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
-        var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
+        var inputFormats = (inputFormat) ? findSame(inputFormat) : findFormat(outputFormat);
         var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
@@ -694,6 +694,55 @@ module nts.uk.time {
                 result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
             }
         }
+        return result;
+    }
+    
+    function findSame(format: string): Array<string> {
+        let result = [], splited = format.split(" "),
+            isHasYear = _.indexOf(splited[0], "Y") >= 0, 
+            isHasMonth = _.indexOf(splited[0], "M") >= 0, 
+            isHasDay = _.indexOf(splited[0], "D") >= 0, 
+            separator = splited[0].replace(/Y/g, "").replace(/M/g, "").replace(/D/g, "").charAt(0),
+            years = isHasYear ? ["YYYY", ""] : [""],
+            months = isHasMonth ? ["M", "MM"] : [""],
+            days = isHasDay ? ["D", "DD"] : [""],
+            separators = ["", separator],
+            isTime = _.size(splited) > 1;
+        
+        result.push(format);
+        _.forEach(years, function(y) {
+            _.forEach(months, function(m) {
+                _.forEach(days, function(d) {
+                    let r = [];
+                    if(!_.isEmpty(y)){
+                        r.push(y);
+                    }
+                    
+                    if(!_.isEmpty(m)){
+                        r.push(m);
+                    }
+                    
+                    if(!_.isEmpty(d)){
+                        r.push(d);
+                    }
+                    if(!_.isEmpty(r)){
+                        _.forEach(separators, function(s) {
+                            if(isTime){
+                                result.push(_.join([_.join(r, s), splited[1]], ' '));
+                            } else {
+                                result.push(_.join(r, s));  
+                            } 
+                        });
+                    }
+                });
+            });
+        });
+//        result.push(format.replace(/\//g, ""));
+//        result.push(format.replace("MM", "M"));
+//        result.push(format.replace("DD", "D"));
+//        result.push(format.replace("MM", "M").replace("DD", "D"));
+//        result.push(format.replace(/:/g, ""));
+//        result.push(format.replace(/\//g, "").replace(/:/g, ""));
         return result;
     }
 

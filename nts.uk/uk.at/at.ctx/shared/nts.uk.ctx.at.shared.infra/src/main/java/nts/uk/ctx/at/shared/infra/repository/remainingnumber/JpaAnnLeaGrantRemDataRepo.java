@@ -25,6 +25,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	private static final String DELETE_QUERY = "DELETE FROM KRcmtAnnLeaRemain a"
 			+ " WHERE a.sid = :employeeId and a.grantDate = :grantDate";
 	
+	private static final String DELETE_AFTER_QUERY = "DELETE FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate > :startDate";
+	
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate DESC";
 
 	@Override
@@ -151,17 +153,18 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public Optional<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate,
-			GeneralDate deadline) {
-		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.deadline = :deadline";
-		Optional<KRcmtAnnLeaRemain> opt = this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+	public List<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).setParameter("grantDate", grantDate)
-				.setParameter("deadline", deadline).getSingle();
-		if (opt.isPresent()) {
-			return Optional.of(toDomain(opt.get()));
-		} else {
-			return Optional.empty();
-		}
+				.getList(e -> toDomain(e));
+	}
+
+
+	@Override
+	public void deleteAfterDate(String employeeId, GeneralDate date) {
+		this.getEntityManager().createQuery(DELETE_AFTER_QUERY).setParameter("employeeId", employeeId)
+				.setParameter("startDate", date);
 	}
 
 }

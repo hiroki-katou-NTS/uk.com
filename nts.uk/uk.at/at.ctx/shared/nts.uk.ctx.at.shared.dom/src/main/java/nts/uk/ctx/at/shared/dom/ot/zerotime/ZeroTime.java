@@ -21,6 +21,7 @@ public class ZeroTime extends AggregateRoot {
 	/** 0時跨ぎ計算を行なう */
 	private int calcFromZeroTime;
 
+	/*平日0時跨ぎ*/
 	/** 法定内休日 */
 	private int legalHd;
 
@@ -29,7 +30,9 @@ public class ZeroTime extends AggregateRoot {
 
 	/** 法定外祝日 */
 	private int nonLegalPublicHd;
-
+	
+	
+	/*法定内休日　0時跨ぎ*/
 	/** 平日 */
 	private int weekday1;
 
@@ -39,23 +42,29 @@ public class ZeroTime extends AggregateRoot {
 	/** 法定外祝日 */
 	private int nonLegalPublicHd1;
 
+	
+	/*法定外祝日*/
 	/** 平日 */
 	private int weekday2;
 
-	/** 法定外休日 */
+	/** 法定内休日 */
 	private int legalHd2;
 
 	/** 法定外祝日 */
 	private int nonLegalHd2;
 
+	
+	/*法定外休日*/
 	/** 平日 */
 	private int weekday3;
 
-	/** 法定外休日 */
+	/** 法定内休日 */
 	private int legalHd3;
 
-	/** 法定外休日 */
+	/** 法定外祝日 */
 	private int nonLegalPublicHd3;
+	
+	
 	
 	private List<WeekdayHoliday> weekdayHoliday;
 	

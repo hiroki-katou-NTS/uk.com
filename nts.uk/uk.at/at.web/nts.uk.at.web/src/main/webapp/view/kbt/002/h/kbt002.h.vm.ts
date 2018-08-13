@@ -116,7 +116,7 @@ module nts.uk.at.view.kbt002.h {
                             multipleCellSelectOnClick: false
                         }, {
                             name: 'Paging',
-                            pageSize: 15,
+                            pageSize: 20,
                             currentPageIndex: 0
                         }
                     ],
