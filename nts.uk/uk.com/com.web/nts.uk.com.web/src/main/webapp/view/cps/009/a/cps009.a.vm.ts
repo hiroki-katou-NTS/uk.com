@@ -931,7 +931,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "0");
+                self.selectedCode = ko.observable(params.stringValue || "1");
             }
 
 
@@ -948,7 +948,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                 self.numbereditor = {
-                    value: ko.observable(params.intValue || 0),
+                    value: ko.observable(params.intValue || null),
                     constraint: params.itemCode,
                     option: new nts.uk.ui.option.NumberEditorOption({
                         grouplength: 3,
@@ -963,7 +963,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             } else {
 
                 self.numbereditor = {
-                    value: ko.observable(params.intValue || 0),
+                    value: ko.observable(params.intValue || null),
                     constraint: params.itemCode,
                     option: new nts.uk.ui.option.NumberEditorOption({
                         grouplength: 3,
