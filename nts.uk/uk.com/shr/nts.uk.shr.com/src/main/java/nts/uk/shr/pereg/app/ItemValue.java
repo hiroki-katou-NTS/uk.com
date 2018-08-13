@@ -201,22 +201,22 @@ public class ItemValue {
 			Object newValue = formatValue(c, c.valueAfter(), false);
 			
 			if(oldValue == null && newValue != null) {
-				itemValues.add(setContent(c));
+				itemValues.add(c);
 			}
 			
 			if(c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
+				itemValues.add(c);
 			}
 			
 			if(datePeriod != null) {
 				if (c.itemCode().equals(datePeriod.getStartCode())) {
-					itemValues.add(setContent(c));
+					itemValues.add(c);
 				}
 			}
 			
 			if(oldValue != null) {
 				if (!oldValue.equals(newValue)) {
-					itemValues.add(setContent(c));
+					itemValues.add(c);
 				}
 			}
 			
@@ -224,7 +224,7 @@ public class ItemValue {
 		
 		itemInvisible.stream().forEach(c -> {
 			if (c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
+				itemValues.add(c);
 			}
 
 		});

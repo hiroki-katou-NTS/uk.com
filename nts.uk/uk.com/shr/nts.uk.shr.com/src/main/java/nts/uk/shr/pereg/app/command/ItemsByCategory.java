@@ -42,9 +42,6 @@ public class ItemsByCategory {
 	/** input items */
 	private List<ItemValue> items;
 	
-	/** input item log */
-	private List<ItemValue> itemLogs;
-	
 	public ItemsByCategory(String categoryCd,String categoryName, String recordId, List<ItemValue> items) {
 		super();
 		this.categoryCd = categoryCd;
