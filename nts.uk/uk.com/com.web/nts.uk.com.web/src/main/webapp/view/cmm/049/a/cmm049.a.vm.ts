@@ -178,6 +178,7 @@ module nts.uk.com.view.cmm049.a {
              */
             public save() {
                 let self = this;
+                nts.uk.ui.block.grayout();
                 let data1: ListUserInfoUseMethodDto = {
                     settingItem: UserInfoItem.COMPANY_PC_MAIL,
                     settingUseMail: self.selectedPcComSendMailSet(),
@@ -220,6 +221,7 @@ module nts.uk.com.view.cmm049.a {
                         //bind data to screen
                         self.bindToScreen(dataUserinfoUseMethod);
                     });
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
