@@ -238,12 +238,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 });
             } else { // 日数
                 service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
+                    dfd.resolve(lstAtdItem);
                 });
             }
             return dfd.promise();
