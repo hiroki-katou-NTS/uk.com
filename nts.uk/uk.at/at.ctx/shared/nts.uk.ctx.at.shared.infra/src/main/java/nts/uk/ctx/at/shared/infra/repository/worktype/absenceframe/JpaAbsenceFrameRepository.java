@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype.absenceframe;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,8 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
     
 	private static final String SEL_1 = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
 	private static final String GET_ALL = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId ";
-	
+	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL 
+			+"AND a.kshmtAbsenceFramePK.absenceFrameNo IN :frameNos ";
 	private static AbsenceFrame toDomain(KshmtAbsenceFrame entity) {
 		AbsenceFrame domain = AbsenceFrame.createSimpleFromJavaType(entity.kshmtAbsenceFramePK.companyId,
 				entity.kshmtAbsenceFramePK.absenceFrameNo,
@@ -75,5 +77,15 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 				new KshmtAbsenceFramePK(absenceFrame.getCompanyId(), absenceFrame.getAbsenceFrameNo()),
 				absenceFrame.getAbsenceFrameName().v(),
 				absenceFrame.getDeprecateAbsence().value);
+	}
+
+	@Override
+	public List<AbsenceFrame> findAbsenceFrameByListFrame(String companyId, List<Integer> frameNos) {
+		if(frameNos.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtAbsenceFrame.class)
+				.setParameter("companyId", companyId)
+				.setParameter("frameNos", frameNos)
+				.getList(a -> toDomain(a));
 	}
 }

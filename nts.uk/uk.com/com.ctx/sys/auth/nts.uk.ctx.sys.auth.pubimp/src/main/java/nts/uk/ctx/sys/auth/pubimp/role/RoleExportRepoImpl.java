@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
+import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
@@ -141,13 +145,21 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
+		GetWhetherLoginerCharge getDataObject = new GetWhetherLoginerCharge();
+		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
+		RoleWhetherLoginDto dto = getDataObject.getWhetherLoginerCharge();
+		outputRole.setEmployeeCharge(dto.isEmployeeCharge());
+		outputRole.setSalaryProfessional(dto.isSalaryProfessional());
+		outputRole.setHumanResOfficer(dto.isHumanResOfficer());
+		outputRole.setOfficeHelperPersonne(dto.isOfficeHelperPersonne());
+		outputRole.setPersonalInformation(dto.isPersonalInformation());
+		
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
 		String salaryRoleID = AppContexts.user().roles().forPayroll();
 		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
 		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
 		String personalInforRoleID = AppContexts.user().roles().forPersonalInfo();
 
-		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
 		Optional<Role> roleEmployment = roleRepo.findByRoleId(employmentRoleID);
 		if (roleEmployment.isPresent()) {
 			if (roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {

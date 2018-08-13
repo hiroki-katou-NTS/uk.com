@@ -39,11 +39,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
-
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
                 self.currentCategory().ctgList.removeAll();
                 if (value) {
+                    block.grayout();
                     service.getAllCtg(value).done((data: any) => {
                         self.currentCategory().setData({
                             settingCode: data.settingCode,
@@ -61,9 +61,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         else {
                             self.ctgIdUpdate(false);
                         }
-
                         self.getItemList(value, self.currentItemId());
-                    })
+                    }).always(() => {
+                        block.clear();    
+                    });
 
 
                 } else {
@@ -175,7 +176,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            block.invisible();
+            block.grayout();
             service.getAll().done((data: Array<IPerInfoInitValueSettingDto>) => {
                 self.ctgIdUpdate(false);
                 if (data.length > 0) {
@@ -191,14 +192,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
                         self.initSettingId(id);
                     }
-                    block.clear();
-
                 } else {
                     self.isUpdate = false;
                     self.openDDialog();
                     self.refresh(undefined);
-                    block.clear();
-
                 }
             });
             return dfd.promise();

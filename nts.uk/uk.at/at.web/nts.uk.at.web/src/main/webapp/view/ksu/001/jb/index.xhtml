@@ -10,6 +10,7 @@
 			<script>var dialogSize = { width: 1000, height: 670 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
+				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.jb.main.css" />
@@ -23,7 +24,7 @@
 					<div id="pairPatternName" class="mw-90"
 						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'WorkPairPatternName'}" />
+						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'WorkPairPatternName', name: '#[KSU001_908]'}" />
 				</div>
 
 				<div id="set-work-type">
@@ -36,6 +37,7 @@
 								value: selectedWorkTypeCode,
 								editable:  false,
 								enable: true,
+								width: 300,
 								columns: [
 									{ prop: 'workTypeCode', length: 3 },
 									{ prop: 'symbolicName', length: 2 },
@@ -46,20 +48,31 @@
 
 				<div id="set-work-time">
 					<div>
-						<div class="mw-90" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_911')}</div>
-						<input id="time-edit1"
-							data-bind="ntsTimeEditor: {
+						<div class="mw-90" data-bind="ntsFormLabel: {enable: isEnableButton }">#{i18n.getText('KSU001_911')}</div>
+			 			<input id="time-edit1"
+							data-bind="ntsTimeWithDayEditor: {
 							name: '#{i18n.getText('KSU001_73')}',
 							value: time1,
-			 				inputFormat: 'time',
-			 				enable: isEnableButton}" />
-						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> <input
-							id="time-edit2"
-							data-bind="ntsTimeEditor: {
+							constraint: 'TimeWithDayAttr',
+							enable: isEnableButton,
+							inputFormat: 'time',
+							mode: 'time',
+							option: {timeWithDay: false}
+							}" />
+			 			
+						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> 
+			 			
+			 			<input id="time-edit2"
+							data-bind="ntsTimeWithDayEditor: {
 							name: '#{i18n.getText('KSU001_74')}',
 							value: time2,
-			 				inputFormat: 'time',
-			 				enable: isEnableButton}" />
+							constraint: 'TimeWithDayAttr',
+							enable: isEnableButton,
+							inputFormat: 'time',
+							mode: 'time',
+							option: {timeWithDay: false}
+							}" />
+			 			
 						<button class="search"
 							data-bind="click:search, enable: isEnableButton">#{i18n.getText('KSU001_67')}</button>
 						<button class="clear-search"
@@ -75,6 +88,7 @@
 										optionsText: 'labelDisplay', 
 										editable:  false,
 										enable: isEnableButton,
+										dropDownAttachedToBody: true,
 										columns: [
 											{ prop: 'workTimeCode', length: 3 },
 											{ prop: 'symbolName', length: 2 },
@@ -177,7 +191,7 @@
 				<div id="color-red">#{i18n.getText('KSU001_919')}</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed"
+				<button class="proceed x-large"
 					data-bind="enable: $root.errors.isEmpty, click: decision, text: textDecision"></button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_920')}</button>
 			</div>

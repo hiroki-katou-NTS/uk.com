@@ -107,4 +107,18 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 		this.commandProxy().update(entity);
 	}
 
+	private static final String FIND_ALL_BY_LIST_FRAME_NO = "SELECT a FROM KshstTotalTimes a "
+			+ " WHERE a.kshstTotalTimesPK.cid = :companyId"
+			+ " AND a.kshstTotalTimesPK.totalTimesNo IN :totalCountNos ";
+	
+	@Override
+	public List<TotalTimes> getTotalTimesDetailByListNo(String companyId, List<Integer> totalCountNos) {
+		if(totalCountNos.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND_ALL_BY_LIST_FRAME_NO, KshstTotalTimes.class)
+				.setParameter("companyId", companyId)
+				.setParameter("totalCountNos", totalCountNos)
+				.getList(x -> new TotalTimes(new JpaTotalTimesGetMemento(x)));
+	}
+
 }

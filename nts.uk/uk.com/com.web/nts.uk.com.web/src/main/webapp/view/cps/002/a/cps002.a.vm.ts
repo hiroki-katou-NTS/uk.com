@@ -13,6 +13,7 @@ module cps002.a.vm {
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
     import alertError = nts.uk.ui.dialog.alertError;
+    import alertWarning = nts.uk.ui.dialog.caution;
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -67,6 +68,10 @@ module cps002.a.vm {
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
         enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
+        
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
+        
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -110,6 +115,9 @@ module cps002.a.vm {
                 self.copyEmployee(data.listEmployee[0]);
             }
         };
+         licenseCheck: KnockoutObservable<string> = ko.observable("");
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
+        classWarning: KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             let self = this;
@@ -288,7 +296,7 @@ module cps002.a.vm {
                     }
                 }
             });
-
+            self.checkLicense();
             self.start();
         }
 
@@ -362,7 +370,6 @@ module cps002.a.vm {
                 self.getLayout();
                 dfd.resolve(data);
             });
-
             return dfd.promise();
         }
 
@@ -871,17 +878,31 @@ module cps002.a.vm {
 
             }
         }
-
-
+        
         openInitModal() {
-
-
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
             });
         }
 
-
+        checkLicense() {
+            var self = this;
+            service.licenseCheck().done((data: ILicensenCheck) => {
+                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
+                self.licenseCheckDipslay(data.display);
+                if (data.message === 'Msg_1370') {
+                    self.classWarning('color-schedule-error');
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] }).then(() => {
+                        jump('/view/ccg/008/a/index.xhtml');
+                    });
+                } else if(data.message === 'Msg_1371') {
+                    self.classWarning('color-schedule-error');
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] });
+                } else{
+                    self.classWarning('');    
+                }
+            });
+        }
     }
 
     class BoxModel {
@@ -1217,6 +1238,15 @@ module cps002.a.vm {
         No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+    }
+     interface ILicensenCheck {
+        display: boolean;
+        registered: number;
+        canBeRegistered: number;
+        maxRegistered: number;
+        message: string;
+        licenseKey: string;
+        status: string;
     }
 
 }

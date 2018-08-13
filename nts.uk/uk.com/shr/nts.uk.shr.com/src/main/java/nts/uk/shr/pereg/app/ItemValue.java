@@ -184,6 +184,7 @@ public class ItemValue {
 	public int logType() {
 		return this.logType;
 	}
+
 	
 	public static ItemValue setContent(ItemValue item) {
 		String contentOld = item.contentBefore() == null ? item.valueBefore(): item.contentBefore();

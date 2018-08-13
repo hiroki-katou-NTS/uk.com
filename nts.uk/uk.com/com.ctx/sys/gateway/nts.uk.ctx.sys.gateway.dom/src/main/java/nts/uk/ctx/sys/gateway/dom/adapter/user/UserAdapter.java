@@ -126,4 +126,12 @@ public interface UserAdapter {
 	 * @return the by user I dand date
 	 */
 	Optional<UserImportNew> getByUserIDandDate(String userId , GeneralDate systemDate);
+	
+	/**
+	 * Gets the user.
+	 *
+	 * @param userIds the user ids
+	 * @return the user
+	 */
+	List<UserDto> getUser(List<String> userIds);
 }

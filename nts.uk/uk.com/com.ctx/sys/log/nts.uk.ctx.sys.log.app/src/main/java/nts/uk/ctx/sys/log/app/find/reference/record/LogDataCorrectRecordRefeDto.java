@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
@@ -21,7 +22,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 @NoArgsConstructor
 public class LogDataCorrectRecordRefeDto {
 
-
+	private String childrentKey;
 	private String operationId;
 	private GeneralDate targetDate;
 	private int targetDataType;
@@ -34,8 +35,9 @@ public class LogDataCorrectRecordRefeDto {
 	private String employeeIdtaget;
 
 	public static LogDataCorrectRecordRefeDto fromDomain(DataCorrectionLog domain) {
-
+		String childrentKey = IdentifierUtil.randomUniqueId();
 		return new LogDataCorrectRecordRefeDto(
+				childrentKey,
 				domain.getOperationId(),
 				domain.getTargetDataKey().getDateKey().get(),
 				domain.getTargetDataType().value,

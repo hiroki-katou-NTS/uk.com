@@ -399,17 +399,10 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateWorkingText() {
                 let self = this,
-                    wkTimeCDText = self.wkTimeCD() ? self.wkTimeCD() : "",
-                    wkTimeNameText = self.wkTimeName() ? self.wkTimeName() : "",
-                    text = wkTimeCDText + ' ' + wkTimeNameText;
-                if (self.wkTime1().startTimeDisplay()) {
-                    let startTimeText = self.parseTime(self.wkTime1().startTimeDisplay()),
-                        endTimeText = self.parseTime(self.wkTime1().endTimeDisplay());
-
-                    text += ' ' + startTimeText + '~' + endTimeText;
-                }
-                self.wkText(text);
-
+                    wkTimeCDText = self.wkTimeCD() || "",
+                    wkTimeNameText = self.wkTimeName() || text('KAF011_68'),
+                    wkText = self.wkTimeName() ? text('KAF011_70', [wkTimeCDText, wkTimeNameText, '', '', '']) : text('KAF011_68', [wkTimeCDText]);
+                self.wkText(wkText);
             }
 
             changeAbsDateToHoliday() {

@@ -43,6 +43,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         dateCtoE: KnockoutObservable<string>;
+        targetEmployeeIdList: KnockoutObservableArray<any>;
 
         //D
         roundingRulesOperator: KnockoutObservableArray<any>;
@@ -82,6 +83,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         listLogBasicInforAllModel: LogBasicInforAllModel[];
         columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;
         listLogSetItemDetailDto: KnockoutObservableArray<LogSetItemDetailDto>;
+        listLogDataExport: KnockoutObservableArray<any>;
+        listHeaderSort: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             $("#ccgcomponent").hide();
@@ -165,8 +168,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
 
             self.roundingRules = ko.observableArray([
-                { code: '1', name: getText('CLI003_17') },
-                { code: '2', name: getText('CLI003_18') }
+                { code: EMPLOYEE_SPECIFIC.SPECIFY, name: getText('CLI003_17') },
+                { code: EMPLOYEE_SPECIFIC.ALL, name: getText('CLI003_18') }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.selectedTitleAtr = ko.observable(0);
@@ -266,7 +269,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 8
             };
         }
         //start page data 
@@ -293,13 +296,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             self.targetEmployeeIdList.push(employee.id);
                         }
                     }
-                }
-            }
-            if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
-                let empListLength = self.employeeList().length;
-                for (var j = 0; j < empListLength; j++) {
-                    let employee = self.employeeList()[j];
-                    self.targetEmployeeIdList.push(employee.id);
                 }
             }
 
@@ -381,7 +377,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 8
             };
         }
 
@@ -401,14 +397,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
             }
-            if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
-                let empListLength = self.employeeList().length;
-                for (var j = 0; j < empListLength; j++) {
-                    let employee = self.employeeList()[j];
-                    self.listEmployeeIdOperator.push(employee.id);
-                }
-            }
-
         }
 
         //E 
@@ -640,7 +628,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '500',
+                height: '373',
                 features: [
                     {
                         name: "Paging",
@@ -674,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '500',
+                height: '368',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -791,7 +779,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         width: "100%",
                         childrenDataProperty: "lstLogDataCorrectRecordRefeDto",
                         autoGenerateColumns: false,
-                        primaryKey: "targetDate",
+                        primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
@@ -864,13 +852,25 @@ module nts.uk.com.view.cli003.b.viewmodel {
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
-            let lstSubHeader = [23, 24, 29, 30, 31, 33, 25, 26, 27, 28];
+            let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
-
-            let lstSubHeaderPersion = [25, 26, 27, 28];
+            let lstSubHeaderPersion = [25,26,27,28];
+            let lstSubHeaderDataCorrect = [22,23,24];
             _.forEach(listOutputItem, function(item) {
                 if (lstSubHeader.indexOf(item.itemNo) > -1) {
-                    if (lstSubHeaderPersion.indexOf(item.itemNo) > -1) {
+                    if((recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.UPDATE_PERSION_INFO)
+                        && ITEM_NO.ITEM_NO22 == item.itemNo){
+                        self.columnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                    }
+                    if (lstSubHeaderPersion.indexOf(item.itemNo) > -1 && recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        if (flg) {
+                            self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                            flg = false;
+                        }
+                    } else {
+                        self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                    }
+                    if (lstSubHeaderDataCorrect.indexOf(item.itemNo) > -1 && recordType == RECORD_TYPE.DATA_CORRECT) {
                         if (flg) {
                             self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
                             flg = false;
@@ -921,7 +921,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
 
-                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ logBaseInfo: logBaseInfo, lstDataCorrect, lstPerCorrect });
+                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ loginBasicInfor: logBaseInfo, lstLogDataCorrectRecordRefeDto : lstDataCorrect , lstLogPerCateCorrectRecordDto : lstPerCorrect });
                 self.logBasicInforCsv.push(logBaseInfoTemp);
             });
 
@@ -956,7 +956,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         */
         backScreenCtoB() {
             var self = this;
-
+            
             if (self.validateForm()) {
                 self.previous();
                 $("#ccgcomponent").hide();
@@ -1030,7 +1030,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 case RECORD_TYPE.DATA_CORRECT:
                 case RECORD_TYPE.MY_NUMBER: {
                     $("#ex_accept_wizard").ntsWizard("goto", 1);
-                    $("#ccgcomponent").show();
+                     if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
+                        $("#ccgcomponent").show();
+                        $("#employeeSearch").show();
+                    } else {
+                        $("#ccgcomponent").hide();
+                        $("#employeeSearch").hide();
+                    }
                     $("#C1_4 .ntsStartDatePicker").focus();
 
                     self.scrollToLeftTop();
@@ -1074,14 +1080,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             var paramtranfer = ko.observable(self.logTypeSelectedCode());
             nts.uk.ui.windows.setShared("recordType", paramtranfer);
-            $('#contents-area').focus();
-            //I igGrid
-            self.columnsIgAllGrid = ko.observableArray([]);
-            self.supColumnsIgGrid = ko.observableArray([]);
+            $('#contents-area').focus();           
+            self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
-
-            // varriable for export file CSV
-            // set param log
+            // set param log for export file CSV
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
@@ -1099,10 +1101,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
+                let selectCancel=nts.uk.ui.windows.getShared("selectCancel");
                 // function get logdisplaysetting by code
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
                 self.listLogSetItemDetailDto=ko.observableArray([]);
+                self.listHeaderSort=ko.observableArray([]);
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
@@ -1122,19 +1126,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.listItemNo.push(dataItemNo.itemNo);
                             });
                             paramOutputItem.itemNos = self.listItemNo();
-                            //                       console.log('giatriItem:'self.listItemNo());
+                          
                         }
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
                                 // Get Log basic infor
                                 service.getLogBasicInfoDataByModifyDate(paramLog).done(function(data: Array<LogBasicInforAllModel>) {
-                                    // generate columns header 
-                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                    // sort by displayOrder
+                                    _.forEach(dataOutPutItem, function(dataItemNoOrder: any) {
+                                        _.forEach(dataOutputItems,function(listdataName:any) {
+                                            if(dataItemNoOrder.itemNo==listdataName.itemNo){
+                                            self.listHeaderSort.push(listdataName);
+                                            }
+                                            });
+                                        
+                                        });
+                                    // generate columns header                              
+                                        self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
                                     if (data && data.length > 0) {
-                                        self.listLogBasicInforAllModel = data;
-                                        // export file csv
-                                        self.exportCsvI();
+                                        self.listLogBasicInforAllModel = data;                                       
+                                        self.filterDataExport();
                                     } else {
                                         alertError({ messageId: "Msg_1220" });
                                     }
@@ -1150,7 +1162,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             alertError(error);
                         });
                     } else {
-                        alertError({ messageId: "Msg_1215" });
+                        if(selectCancel==false){
+                             alertError({ messageId: "Msg_1215" });
+                            }                                             
                     }
                 }).fail(function(error) {
                     alertError(error);
@@ -1650,10 +1664,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
-        // export 
-        exportCsvI() {
-            let self = this;
-            self.logBasicInforCsv = [];
+        
+        // filter
+        filterDataExport(){
+             let self = this;
+            self.listLogDataExport =  ko.observableArray([]);;
             let recordType = Number(self.logTypeSelectedCode());
 
             let params = {
@@ -1662,12 +1677,32 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 lstHeaderDto: self.columnsIgAllGrid(),
                 listLogSetItemDetailDto:self.listLogSetItemDetailDto()
             };
-            console.log('listHeader:' + self.columnsIgAllGrid());
-            service.logSettingExportCsvScreenI(params).done(() => {
-                console.log("Export success screeni");
+                      
+            service.filterLogDataExport(params).done(function( dataLogExport: Array<any>) {
+                if(dataLogExport && dataLogExport.length>0){
+                    self.listLogDataExport=dataLogExport;
+                    self.exportCsvI();
+                    }else{
+                     alertError({ messageId: "Msg_1220" });
+                    }
+                });
+            
+            }
+        // export 
+        exportCsvI() {
+            let self = this;
+       
+            let recordType = Number(self.logTypeSelectedCode());
+
+            let params = {           
+                lstHeaderDto: self.columnsIgAllGrid(),
+                listDataExport: self.listLogDataExport            
+            };
+        
+            service.logSettingExportCsvScreenI(params).done(() => {               
             });
         }
-        //D
+        
         backScreenDtoBC() {
             var self = this;
             //back to Screen B
@@ -1806,6 +1841,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class LogBasicInfoModel {
+        parentKey: string;
         operationId: string;
         userNameLogin: string;
         employeeCodeLogin: string;
@@ -1916,6 +1952,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
+        childrentKey:string;
         operationId: string;
         targetDate: any;
         targetDataType: number;
@@ -1925,14 +1962,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
         remarks: string;
         correctionAttr: string;
         constructor(param: DataCorrectParam) {
-            this.operationId = operationId;
-            this.targetDate = targetDate;
-            this.targetDataType = targetDataType;
-            this.itemName = itemName;
-            this.valueBefore = valueBefore;
-            this.valueAfter = valueAfter;
-            this.remarks = remarks;
-            this.correctionAttr = correctionAttr;
+            this.operationId = param.operationId;
+            this.targetDate = param.targetDate;
+            this.targetDataType = param.targetDataType;
+            this.itemName = param.itemName;
+            this.valueBefore = param.valueBefore;
+            this.valueAfter = param.valueAfter;
+            this.remarks = param.remarks;
+            this.correctionAttr = param.correctionAttr;
         }
     }
     class PerCateCorrectRecordModel {
@@ -1995,6 +2032,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             this.headerText = headerText;
             this.hidden = false;
             this.dataType = ITEM_PROPERTY.ITEM_SRT;
+            this.itemName =headerText;
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
@@ -2079,7 +2117,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     break;
                 }
                 case ITEM_NO.ITEM_NO27: {
-                    this.key = ITEM_PROPERTY.ITEM_NAME;
+                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                        this.key = ITEM_PROPERTY.ITEM_NAME;
+                    }
                     break;
                 }
                 case ITEM_NO.ITEM_NO29: {
