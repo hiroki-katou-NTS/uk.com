@@ -127,7 +127,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         cancelTask(): void {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
-            nts.uk.ui.windows.close();
+            self.enableCancelTask(false);
+            self.elapseTime.end();
         }
 
         closeDialog(): void {
@@ -149,6 +150,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         private repeatCheckAsyncResult(): void {
             var self = this;
+            
+                        self.enableCancelTask(true);
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
@@ -191,7 +194,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // Get Log data
                             self.getLogData();
                         }
-                        self.enableCancelTask(false);
                     });
                 })
                 .while(info => info.pending || info.running)

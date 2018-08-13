@@ -37,7 +37,7 @@ public class StampServiceImpl implements StampDomainService {
 
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
 			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {
-		if (s == null) {
+		if (s.getLstStampReflectTimezone().isEmpty()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("009"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
 					new ErrMessageContent(TextResource.localize("Msg_466")));
