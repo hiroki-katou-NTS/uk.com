@@ -2276,6 +2276,8 @@ module nts.uk.at.view.kmf022 {
                 $('#a16_14').trigger("validate");
                 $('#a16_15').trigger("validate");
                 $('#a7_23').trigger("validate");
+                $('#a7_23_2').trigger("validate");
+                $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this,
@@ -2722,6 +2724,8 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             // 1: is domain DisplayReason            
             flg: KnockoutObservable<number>;
+            // disable or enable 
+            disableA8: KnockoutObservable<boolean> = ko.observable(true);
             constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
                 sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
                 canClassificationChange: number, appTypeName: string, flg: number) {
@@ -2735,6 +2739,18 @@ module nts.uk.at.view.kmf022 {
                 this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
                 this.appTypeName = ko.observable(appTypeName);
                 this.flg = ko.observable(flg);
+                if(this.displayInitialSegment() == 2){
+                    this.disableA8(false);
+                    this.canClassificationChange(true); 
+                }
+                this.displayInitialSegment.subscribe((value) => {
+                    if(value == 2){
+                        this.disableA8(false); 
+                        this.canClassificationChange(true); 
+                    }else{
+                        this.disableA8(true);    
+                    }
+                })
             }
         }
         class ItemA15 {

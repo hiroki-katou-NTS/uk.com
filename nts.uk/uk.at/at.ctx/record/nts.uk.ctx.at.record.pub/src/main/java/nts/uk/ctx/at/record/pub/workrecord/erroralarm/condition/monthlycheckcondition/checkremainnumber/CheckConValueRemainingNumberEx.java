@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.checkremainnumber;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -10,11 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CheckConValueRemainingNumberEx {
 	
-	private int daysValue;
+	private BigDecimal daysValue;
 	
 	private Integer timeValue;
 
-	public CheckConValueRemainingNumberEx(int daysValue, Integer timeValue) {
+	public CheckConValueRemainingNumberEx(BigDecimal daysValue, Integer timeValue) {
 		super();
 		this.daysValue = daysValue;
 		this.timeValue = timeValue;

@@ -78,18 +78,6 @@ public class RegistrationUserWS extends WebService {
 	}
 
 	/**
-	 * Find user by user id.
-	 *
-	 * @param userId the user id
-	 * @return the user dto
-	 */
-	@POST
-	@Path("findUser")
-	public UserDto findUserByUserId(String userId) {
-		return this.registrationUserFinder.getUserByUserId(userId);
-	}
-
-	/**
 	 * Register user.
 	 *
 	 * @param command the command

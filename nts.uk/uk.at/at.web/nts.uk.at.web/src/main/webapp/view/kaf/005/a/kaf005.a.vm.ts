@@ -150,7 +150,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.employeeIDs(transferData.employeeIDs);
                 self.employeeID(transferData.employeeID); 
                 self.uiType(transferData.uiType); 
-                self.targetDate = transferData.appDate;
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = transferData.appDate;        
+                }
             }
                     
             //KAF000_A
@@ -311,6 +313,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             });
             return dfd.promise();
 
+        }
+        isShowReason(){
+            let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.displayAppReasonContentFlg() || self.typicalReasonDisplayFlg();
+            }
         }
 
         initData(data: any) {
