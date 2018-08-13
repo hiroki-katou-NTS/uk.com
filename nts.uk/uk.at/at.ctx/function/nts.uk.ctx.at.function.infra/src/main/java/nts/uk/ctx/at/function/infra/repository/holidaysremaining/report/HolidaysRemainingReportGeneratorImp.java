@@ -168,8 +168,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		YearMonth endMonth = dataSource.getEndMonth().yearMonth();
 
 		// B1_1, B1_2
-		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") + startMonth.year() + "/" + startMonth.month()
-				+ "　～　" + endMonth.year() + "/" + endMonth.month());
+		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") +  dataSource.getStartMonth().toString("yyyy/MM")
+				+ "　～　" + dataSource.getEndMonth().toString("yyyy/MM"));
 		// B1_3
 		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
 		// C1_1
