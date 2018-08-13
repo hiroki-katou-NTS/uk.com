@@ -104,6 +104,16 @@ module nts.uk.at.view.kwr006.c {
                 self.currentCodeListSwap(lstSwapRight);
             }
 
+            public sortItems(): void {
+                let self = this;
+                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
+            }
+
+            public sortCurrentCodeListSwap(): void {
+                let self = this;
+                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
+            }
+
             /*
             Open D screen
             */
@@ -251,6 +261,8 @@ module nts.uk.at.view.kwr006.c {
 
                 $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function() {
                     self.currentCodeList(nts.uk.ui.windows.getShared('selectedCode'));
+                    if (_.isNil(self.currentCodeList()))
+                        self.newMode();
                     dfd.resolve();
                 })
                 return dfd.promise();

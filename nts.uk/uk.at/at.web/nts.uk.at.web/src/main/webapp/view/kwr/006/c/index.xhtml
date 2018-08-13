@@ -127,14 +127,8 @@
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
 											outerDrag: { left: true, right: true },
-											afterMoveRight: () => {
-												const sorted = _.sortBy(currentCodeListSwap(), item => parseInt(item.code));
-												currentCodeListSwap(sorted);
-											},
-											afterMoveLeft: () => {
-												const sorted = _.sortBy(items(), item => parseInt(item.code));
-												items(sorted);
-											} 
+											afterMoveRight: sortCurrentCodeListSwap,
+											afterMoveLeft: sortItems
 										}"></div>
 										<!--Updown Button-->
 										<div id="up-down"
