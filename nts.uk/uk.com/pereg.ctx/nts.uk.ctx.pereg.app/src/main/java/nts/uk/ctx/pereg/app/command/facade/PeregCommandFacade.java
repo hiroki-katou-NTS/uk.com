@@ -40,7 +40,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoPro
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.DatePeriodSet;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -148,31 +147,6 @@ public class PeregCommandFacade {
 		}
 	};
 
-	private static final Map<String, DatePeriodSet> datePeriodCode = new HashMap<String, DatePeriodSet>() {
-		private static final long serialVersionUID = 1L;
-		{
-			put("CS00003", new DatePeriodSet("IS00020", "IS00021"));
-			// 分類１
-			put("CS00004", new DatePeriodSet("IS00026", "IS00027"));
-			// 雇用
-			put("CS00014", new DatePeriodSet("IS00066", "IS00067"));
-			// 職位本務
-			put("CS00016", new DatePeriodSet("IS00077", "IS00078"));
-			// 職場
-			put("CS00017", new DatePeriodSet("IS00082", "IS00083"));
-			// 休職休業
-			put("CS00018", new DatePeriodSet("IS00087", "IS00088"));
-			// 短時間勤務
-			put("CS00019", new DatePeriodSet("IS00102", "IS00103"));
-			// 労働条件
-			put("CS00020", new DatePeriodSet("IS00119", "IS00120"));
-			// 勤務種別
-			put("CS00021", new DatePeriodSet("IS00255", "IS00256"));
-			
-			put("CS00070", new DatePeriodSet("IS00781", "IS00782"));
-		}
-	};
-
 	/**
 	 * return List Category Code
 	 */
@@ -261,7 +235,6 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	public String add(PeregInputContainer container, PersonCorrectionLogParameter target, UserAuthDto user) {
-//		target = new PersonCorrectionLogParameter("", "", "", null, "");
 		return addNonTransaction(container, false, target, user);	
 	}
 
@@ -555,10 +528,6 @@ public class PeregCommandFacade {
 	private void updateInputCategories(PeregInputContainer container, List<ItemsByCategory> updateInputs) {
 		// Add item invisible to list
 		for (ItemsByCategory itemByCategory : updateInputs) {
-
-			String itemCode = specialItemCodes.get(itemByCategory.getCategoryCd());
-			
-			DatePeriodSet datePeriod = datePeriodCode.get(itemByCategory.getCategoryCd());
 			
 			PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(),
 					itemByCategory.getCategoryCd(), container.getEmployeeId(), container.getPersonId());
@@ -572,8 +541,6 @@ public class PeregCommandFacade {
 			List<ItemValue> itemInvisible = fullItems.stream().filter(i -> {
 				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
 			}).collect(Collectors.toList());
-			
-			itemByCategory.setItems(ItemValue.convertItemLog(itemByCategory.getItems(), itemInvisible, itemCode, datePeriod));
 			
 			itemByCategory.getItems().addAll(itemInvisible);
 			

@@ -1,8 +1,6 @@
 package nts.uk.shr.pereg.app;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -183,115 +180,7 @@ public class ItemValue {
 	public int logType() {
 		return this.logType;
 	}
-	
-	public static ItemValue setContent(ItemValue item) {
-		String contentOld = item.contentBefore() == null ? item.valueBefore(): item.contentBefore();
-		String contentNew = (item.contentAfter() == null || item.contentAfter() == "") ? item.valueAfter(): item.contentAfter();
-		item.setContentBefore(formatContent(item.logType(),  contentOld, item.valueBefore()));
-		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
-		return item;
-		
-	}
-	
-	public static List<ItemValue> convertItemLog(List<ItemValue> items, List<ItemValue> itemInvisible, String itemCode, DatePeriodSet datePeriod){
-		List<ItemValue> itemValues= new ArrayList<>();
-		
-		items.stream().forEach( c ->{
-			Object oldValue = formatValue(c, c.valueBefore(), true);
-			Object newValue = formatValue(c, c.valueAfter(), false);
-			
-			if(oldValue == null && newValue != null) {
-				itemValues.add(c);
-			}
-			
-			if(c.itemCode().equals(itemCode)) {
-				itemValues.add(c);
-			}
-			
-			if(datePeriod != null) {
-				if (c.itemCode().equals(datePeriod.getStartCode())) {
-					itemValues.add(c);
-				}
-			}
-			
-			if(oldValue != null) {
-				if (!oldValue.equals(newValue)) {
-					itemValues.add(c);
-				}
-			}
-			
-		});		
-		
-		itemInvisible.stream().forEach(c -> {
-			if (c.itemCode().equals(itemCode)) {
-				itemValues.add(c);
-			}
 
-		});
-		
-		return itemValues;
-	}
-	
-	
-	private static Object formatValue(ItemValue item, Object value,  boolean isOld) {
-		
-		if (value == null || value == "") return null;
-		
-		ItemValueType itemValueType = EnumAdaptor.valueOf(item.logType(), ItemValueType.class);
-		
-		switch(itemValueType) {
-		case STRING:
-		case DATE:
-		case TIME:
-		case TIMEPOINT:
-		case SELECTION: 
-		case SELECTION_BUTTON:
-		case SELECTION_RADIO:
-		case READONLY:
-		case READONLY_BUTTON:
-		case RELATE_CATEGORY:
-			return value.toString();
-		case NUMBERIC_BUTTON:
-		case NUMERIC:
-			return new BigDecimal(value.toString());
-		default:
-			return value.toString();
-		}
-		
-	}
-	
-	private static String formatContent(int logType, String viewContent, String value) {
-		ItemValueType itemValueType = EnumAdaptor.valueOf(logType, ItemValueType.class);
-		
-		if (viewContent == null || value == null) return null;
-		
-		switch(itemValueType) {
-		case STRING:
-		case NUMERIC: 
-		case DATE:
-		case SELECTION: 
-		case SELECTION_BUTTON:
-		case SELECTION_RADIO:
-			return viewContent;
-		case TIME:
-			return formatMinutesToTime(Integer.valueOf(value));
-		case TIMEPOINT:
-			return new TimeWithDayAttr(Integer.valueOf(value)).getFullText();
-		default:
-			throw new RuntimeException("invalid attribute: " + value);
-		}
-		
-	}
-	
-	private static String formatMinutesToTime(int valueAsMinutes) {
-		
-		boolean isMinus = valueAsMinutes < 0;
-		int value = Math.abs(valueAsMinutes);
-		int minute = value % 60;
-		int hour = value / 60;
-		
-		return String.format("%s%d:%02d", (isMinus ? "-" : ""), hour, minute);
-	}
 
 	public void setValueAfter(String value) {
 		this.value = value;
