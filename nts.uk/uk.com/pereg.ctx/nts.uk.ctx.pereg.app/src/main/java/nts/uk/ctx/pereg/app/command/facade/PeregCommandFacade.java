@@ -25,6 +25,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
@@ -58,6 +60,9 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @ApplicationScoped
 public class PeregCommandFacade {
+	
+	@Inject 
+	private PerInfoCategoryRepositoty ctgRepo;
 
 	@Inject
 	private PeregCommandHandlerCollector handlerCollector;
@@ -192,8 +197,10 @@ public class PeregCommandFacade {
 	
 	public Object registerHandler(PeregInputContainer inputContainer) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -99);
+		
 		String recordId = null;
 		PersonCorrectionLogParameter target  = null;
+		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
 		String employeeId = inputContainer.getEmployeeId();
 		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
@@ -219,7 +226,7 @@ public class PeregCommandFacade {
 		this.update(inputContainer, target, user);
 
 		// DELETE COMMAND
-		this.delete(inputContainer);
+		this.delete(inputContainer, ctgCode);
 
 		DataCorrectionContext.transactionFinishing(-99);
 		
@@ -229,6 +236,7 @@ public class PeregCommandFacade {
 	public void deleteHandler(PeregDeleteCommand command) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -88);
 
+		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
 		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId(), "", "");
 
@@ -241,7 +249,7 @@ public class PeregCommandFacade {
 		
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 
-		this.delete(command);
+		this.delete(command, ctgCode);
 		DataCorrectionContext.transactionFinishing(-88);
 	}
 
@@ -625,13 +633,13 @@ public class PeregCommandFacade {
 	 * @param inputContainer
 	 *            delete data when click register cps001
 	 */
-	private void delete(PeregInputContainer inputContainer) {
+	private void delete(PeregInputContainer inputContainer, List<DateRangeDto> ctgCode) {
 		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete())
 				.map(x -> new PeregDeleteCommand(inputContainer.getPersonId(), inputContainer.getEmployeeId(),
-						x.getCategoryId(), x.getCategoryType(), x.getCategoryCd(), x.getCategoryName(), x.getRecordId()))
+						x.getCategoryId(), x.getCategoryType(), x.getCategoryCd(), x.getCategoryName(), x.getRecordId(), x.getItems()))
 				.collect(Collectors.toList());
 
-		deleteInputs.forEach(deleteCommand -> delete(deleteCommand));
+		deleteInputs.forEach(deleteCommand -> delete(deleteCommand, ctgCode));
 	}
 
 	/**
@@ -641,7 +649,7 @@ public class PeregCommandFacade {
 	 *            command
 	 */
 	@Transactional
-	private void delete(PeregDeleteCommand command) {
+	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 
 		val handler = this.deleteHandlers.get(command.getCategoryCode());
@@ -651,11 +659,30 @@ public class PeregCommandFacade {
 
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
-
+		
+		/*
+		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
+		 * DUPLICATEHISTORY(5), CONTINUOUS_HISTORY_FOR_ENDDATE(6);
+		 */
+		TargetDataKey dKey = TargetDataKey.of("");
+		switch (command.getCategoryType()) {
+		case 2:
+			break;
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+			Optional<DateRangeDto> ddto =	ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode())).findFirst();
+			
+			if(ddto.isPresent()) {
+				dKey = TargetDataKey.of(GeneralDate.today());				
+			}
+			break;
+		}
 		// Add category correction data
 		PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(command.getCategoryId(), command.getCategoryName(),
 				InfoOperateAttr.deleteOf(command.getCategoryType()), new ArrayList<PersonCorrectionItemInfo>(),
-				TargetDataKey.of(GeneralDate.today()), Optional.ofNullable(null));
+				dKey, Optional.ofNullable(null));
 		
 		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 
