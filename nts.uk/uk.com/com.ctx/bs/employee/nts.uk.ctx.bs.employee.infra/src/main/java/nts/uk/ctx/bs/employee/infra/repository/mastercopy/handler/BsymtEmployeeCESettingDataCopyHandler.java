@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import entity.employeeinfo.setting.code.BsymtEmployeeCESetting;
+import entity.employeeinfo.setting.code.BsymtEmployeeCESettingPk;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,16 +16,13 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.bs.employee.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsenceFrame;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsenceFramePK_;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsenceFrame_;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class BsymtEmployeeCESettingDataCopyHandler extends JpaRepository implements DataCopyHandler {
 
 	/** The copy method. */
 	private CopyMethod copyMethod;
@@ -39,13 +33,16 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 	/** The insert query. */
 	private String INSERT_QUERY = "";
 	
+	/** The Constant SELECT_BY_CID. */
+	private static final String SELECT_BY_CID = "SELECT e FROM BsymtEmployeeCESetting WHERE e.companyId = :cid";
+	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
 	 *
 	 * @param copyMethod the copy method
 	 * @param companyCd the company cd
 	 */
-	public BsystTempAbsenceFrameDataCopyHandler(CopyMethod copyMethod, String companyId) {
+	public BsymtEmployeeCESettingDataCopyHandler(CopyMethod copyMethod, String companyId) {
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
 	}
@@ -57,8 +54,8 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 	public void doCopy() {
 		//Get all company zero data
 		String zeroCid = AppContexts.user().zeroCompanyIdInContract();
-		List<BsystTempAbsenceFrame> zeroCidEntities = this.findAllByCid(zeroCid);
-		List<BsystTempAbsenceFrame> oldDatas = this.findAllByCid(companyId);
+		List<BsymtEmployeeCESetting> zeroCidEntities = this.findAllByCid(zeroCid);
+		List<BsymtEmployeeCESetting> oldDatas = this.findAllByCid(companyId);
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				// Delete all old data
@@ -66,13 +63,14 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 				this.getEntityManager().flush();
 			case ADD_NEW:
 				// Insert Data
-				List<BsystTempAbsenceFrame> dataCopy = new ArrayList<>();
+				List<BsymtEmployeeCESetting> dataCopy = new ArrayList<>();
 				zeroCidEntities.stream().forEach(e-> {
-					BsystTempAbsenceFrame cloneEntity = SerializationUtils.clone(e);
-					cloneEntity.getBsystTempAbsenceFramePK().setCid(companyId);
+					BsymtEmployeeCESetting cloneEntity = SerializationUtils.clone(e);
+					BsymtEmployeeCESettingPk pk = new BsymtEmployeeCESettingPk(companyId);
+					cloneEntity.setBsymtEmployeeCESettingPk(pk);
 					dataCopy.add(cloneEntity);
 				});
-				List<BsystTempAbsenceFrame> addEntites = dataCopy;
+				List<BsymtEmployeeCESetting> addEntites = dataCopy;
 				addEntites = dataCopy.stream()
 		                .filter(item -> !oldDatas.contains(item))
 		                .collect(Collectors.toList());
@@ -90,16 +88,8 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 	 * @param cid the cid
 	 * @return the list
 	 */
-	public List<BsystTempAbsenceFrame> findAllByCid(String cid){
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder.createQuery(BsystTempAbsenceFrame.class);
-		Root<BsystTempAbsenceFrame> root = cq.from(BsystTempAbsenceFrame.class);
-		cq.select(root);
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK).get(BsystTempAbsenceFramePK_.cid), cid));
-		cq.where(predicates.toArray(new Predicate[] {}));
-		return em.createQuery(cq).getResultList();
+	public List<BsymtEmployeeCESetting> findAllByCid(String cid){
+		return this.queryProxy().query(SELECT_BY_CID, BsymtEmployeeCESetting.class).setParameter("cid", cid).getList();
 	}
 
 }

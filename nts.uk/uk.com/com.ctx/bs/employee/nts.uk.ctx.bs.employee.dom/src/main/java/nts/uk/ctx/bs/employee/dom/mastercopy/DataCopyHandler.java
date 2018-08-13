@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.mastercopy.handler;
+package nts.uk.ctx.bs.employee.dom.mastercopy;
 
 /**
  * The Interface CopyHandler.

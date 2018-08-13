@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.mastercopy.handler;
+package nts.uk.ctx.bs.employee.dom.mastercopy;
 
 /**
  * The Enum CopyMethod.

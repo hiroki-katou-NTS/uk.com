@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.entity.mypage.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,7 +24,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "CCGMT_MY_PAGE_SET")
-public class CcgmtMyPageSet extends UkJpaEntity {
+public class CcgmtMyPageSet extends UkJpaEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "CID")
