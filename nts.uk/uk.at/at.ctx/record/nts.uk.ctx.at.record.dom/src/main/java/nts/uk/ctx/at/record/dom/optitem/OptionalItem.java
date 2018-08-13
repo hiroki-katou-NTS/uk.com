@@ -62,6 +62,10 @@ public class OptionalItem extends AggregateRoot {
 	// 計算結果の範囲
 	private CalcResultRange calcResultRange;
 
+	/** The unit. */
+	// 単位
+	private UnitOfOptionalItem unit;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
