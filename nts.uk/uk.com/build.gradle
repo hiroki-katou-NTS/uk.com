@@ -577,7 +577,6 @@ project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ac') {
 project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub'){
 	dependencies{
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 	}
 }
 
