@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
 import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsetting.KrqstContentOfRemandMail;
 import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsetting.KrqstContentOfRemandMailPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class KrqstContentOfRemandMailDataCopyHandler.
@@ -31,9 +32,8 @@ public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository imple
 	/** The insert query. */
 	private String INSERT_QUERY = "";
 	
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstContentOfRemandMail f";
-    
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.remandMailPk.cid =:cid ";
+    /** The Constant SELECT_BY_KEY_STRING. */
+    private static final String SELECT_BY_KEY_STRING = "SELECT f FROM KrqstContentOfRemandMail f WHERE  f.remandMailPk.cid =:cid ";
 
 	/**
 	 * Instantiates a new krqst content of remand mail data copy handler.
@@ -54,8 +54,8 @@ public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository imple
 	public void doCopy() {
 		
 		// Get all company zero data
-		Optional<ContentOfRemandMail> entityZeroData = this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstContentOfRemandMail.class)
-        .setParameter("cid", this.companyId).getSingle(c->c.toDomain());
+		Optional<KrqstContentOfRemandMail> entityZeroData = this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstContentOfRemandMail.class)
+        .setParameter("cid", AppContexts.user().zeroCompanyIdInContract()).getSingle();
 
 		switch (copyMethod) {
 		case REPLACE_ALL:
@@ -63,7 +63,7 @@ public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository imple
 			this.commandProxy().remove(KrqstContentOfRemandMail.class, new KrqstContentOfRemandMailPk(this.companyId)); 
 		case ADD_NEW:
 			// Insert Data
-			ContentOfRemandMail domain = new ContentOfRemandMail(this.companyId, entityZeroData.get().getMailTitle().toString(), entityZeroData.get().getMailBody().toString());
+			ContentOfRemandMail domain = new ContentOfRemandMail(this.companyId, entityZeroData.get().mailTitle, entityZeroData.get().mailBody);
 		    this.commandProxy().insert(KrqstContentOfRemandMail.toEntity(domain));
 		case DO_NOTHING:
 			// Do nothing
