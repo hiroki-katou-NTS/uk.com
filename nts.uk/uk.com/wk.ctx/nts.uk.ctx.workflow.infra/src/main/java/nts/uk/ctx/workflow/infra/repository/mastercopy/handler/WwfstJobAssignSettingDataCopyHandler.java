@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.infra.repository.mastercopy.handler;
+package nts.uk.ctx.workflow.infra.repository.mastercopy.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.portal.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.sys.portal.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
+import nts.uk.ctx.workflow.dom.mastercompy.CopyMethod;
+import nts.uk.ctx.workflow.dom.mastercompy.DataCopyHandler;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfstJobAssignSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class WwfstJobAssignSettingDataCopyHandler extends JpaRepository implements DataCopyHandler {
 
 	/** The copy method. */
 	private CopyMethod copyMethod;
@@ -33,7 +33,7 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 	private String INSERT_QUERY = "";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT e FROM CcgstStandardMenu WHERE e.ccgmtStandardMenuPK.companyId = :cid";
+	private static final String SELECT_BY_CID = "SELECT e FROM WwfstJobAssignSetting WHERE e.companyId = :cid";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
@@ -41,7 +41,7 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 	 * @param copyMethod the copy method
 	 * @param companyCd the company cd
 	 */
-	public CcgstStandardMenuDataCopyHandler(CopyMethod copyMethod, String companyId) {
+	public WwfstJobAssignSettingDataCopyHandler(CopyMethod copyMethod, String companyId) {
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
 	}
@@ -53,8 +53,8 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 	public void doCopy() {
 		//Get all company zero data
 		String zeroCid = AppContexts.user().zeroCompanyIdInContract();
-		List<CcgstStandardMenu> zeroCidEntities = this.findAllByCid(zeroCid);
-		List<CcgstStandardMenu> oldDatas = this.findAllByCid(companyId);
+		List<WwfstJobAssignSetting> zeroCidEntities = this.findAllByCid(zeroCid);
+		List<WwfstJobAssignSetting> oldDatas = this.findAllByCid(companyId);
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				// Delete all old data
@@ -62,13 +62,13 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 				this.getEntityManager().flush();
 			case ADD_NEW:
 				// Insert Data
-				List<CcgstStandardMenu> dataCopy = new ArrayList<>();
+				List<WwfstJobAssignSetting> dataCopy = new ArrayList<>();
 				zeroCidEntities.stream().forEach(e-> {
-					CcgstStandardMenu cloneEntity = SerializationUtils.clone(e);
-					cloneEntity.getCcgmtStandardMenuPK().setCompanyId(companyId);
+					WwfstJobAssignSetting cloneEntity = SerializationUtils.clone(e);
+					cloneEntity.setCompanyId(companyId);
 					dataCopy.add(cloneEntity);
 				});
-				List<CcgstStandardMenu> addEntites = dataCopy;
+				List<WwfstJobAssignSetting> addEntites = dataCopy;
 				addEntites = dataCopy.stream()
 		                .filter(item -> !oldDatas.contains(item))
 		                .collect(Collectors.toList());
@@ -86,8 +86,8 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 	 * @param cid the cid
 	 * @return the list
 	 */
-	public List<CcgstStandardMenu> findAllByCid(String cid){
-		return this.queryProxy().query(SELECT_BY_CID, CcgstStandardMenu.class).setParameter("cid", cid).getList();
+	public List<WwfstJobAssignSetting> findAllByCid(String cid){
+		return this.queryProxy().query(SELECT_BY_CID, WwfstJobAssignSetting.class).setParameter("cid", cid).getList();
 	}
 
 }

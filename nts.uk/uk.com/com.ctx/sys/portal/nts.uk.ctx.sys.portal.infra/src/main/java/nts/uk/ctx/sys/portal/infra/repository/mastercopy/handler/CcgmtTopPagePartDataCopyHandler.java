@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.employee.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.bs.employee.dom.mastercopy.DataCopyHandler;
+import nts.uk.ctx.sys.portal.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.portal.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 import nts.uk.shr.com.context.AppContexts;
 
