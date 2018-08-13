@@ -29,33 +29,38 @@ public class ObtainDeadlineDatePubImpl implements ObtainDeadlineDatePub {
 	@Override
 	public GeneralDate obtainDeadlineDate(GeneralDate targetDate, Integer specDayNo, String workplaceID,
 			String companyID) {
-		GeneralDate loopDate = targetDate.addDays(1);
+		int workingDayNo = 0;
+		// 年月日でループ
+		GeneralDate loopDate = targetDate;
 		do {
+			// 次の日へ
+			loopDate = loopDate.addDays(1);
+			// ドメインモデル「職場営業日カレンダー日次」を取得する
 			Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository
 					.findCalendarWorkplaceByDate(workplaceID, loopDate);
+			// 取得したドメインモデル「職場営業日カレンダー日次」の件数をチェック
 			if(opCalendarWorkplace.isPresent()){
+				// ドメインモデル「職場営業日カレンダー日次」.稼働日区分をチェック
 				if(!opCalendarWorkplace.get().getWorkingDayAtr().equals(UseSet.workingDay)){
-					loopDate = loopDate.addDays(1);
 					continue;
 				}
 			} else {
+				// ドメインモデル「会社営業日カレンダー日次」を取得する
 				Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository
 						.findCalendarCompanyByDate(companyID, loopDate);
+				// 取得したドメインモデル「会社営業日カレンダー日次」の件数をチェック
 				if(!opCalendarCompany.isPresent()){
-					loopDate = loopDate.addDays(1);
 					continue;
 				}
+				// ドメインモデル「会社営業日カレンダー日次」.稼働日区分をチェック
 				if(!opCalendarCompany.get().getWorkingDayAtr().equals(UseSet.workingDay)){
-					loopDate = loopDate.addDays(1);
 					continue;
 				}
 			}
-			loopDate = loopDate.addDays(1);
-			if(loopDate.before(targetDate.addDays(specDayNo))){
-				loopDate = loopDate.addDays(1);
-				continue;
-			}
-		} while (loopDate.equals(targetDate.addDays(specDayNo)));
+			// 稼働日数　=　稼働日数　＋１
+			workingDayNo += 1;
+		// 指定日数に達したかチェック
+		} while (workingDayNo < specDayNo);
 		return loopDate;
 	}
 

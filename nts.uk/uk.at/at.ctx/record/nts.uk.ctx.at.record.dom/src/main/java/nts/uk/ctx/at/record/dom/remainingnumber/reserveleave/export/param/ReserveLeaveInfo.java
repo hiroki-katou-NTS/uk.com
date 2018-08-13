@@ -186,6 +186,55 @@ public class ReserveLeaveInfo implements Cloneable {
 		aggrResult = this.grantProcess(companyId, employeeId, aggrPeriodWork, aggrResult,
 				getUpperLimitSetting, calcDeadlineForGrantDate, retentionYearlySet, emptYearlyRetentionSetMap);
 		
+		// 上限を超過した積立年休を消滅させる
+		{
+			// 上限日数と積立年休残日数を比較
+			Integer maxDays = aggrPeriodWork.getMaxDays().v();
+			val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
+			double totalRemain = noMinus.getRemainingNumber().getTotalRemainingDays().v();
+			if (maxDays.doubleValue() < totalRemain){
+				
+				// 上限を超過した日数を計算　→　上限超過日数
+				double excessDays = totalRemain - maxDays.doubleValue();
+				
+				// 付与残数データを取得　（付与日　昇順、期限日　昇順）
+				List<ReserveLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+				for (val grantRemainingData : this.grantRemainingList){
+					if (grantRemainingData.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+					remainingDatas.add(grantRemainingData);
+				}
+				Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemaining>() {
+					@Override
+					public int compare(ReserveLeaveGrantRemaining o1, ReserveLeaveGrantRemaining o2) {
+						int compGrant = o1.getGrantDate().compareTo(o2.getGrantDate());
+						if (compGrant != 0) return compGrant;
+						return o1.getDeadline().compareTo(o2.getDeadline());
+					}
+				});
+				for (val remainingData : remainingDatas){
+
+					// 積立年休残日数と上限超過日数を比較
+					val details = remainingData.getDetails();
+					if (excessDays <= details.getRemainingNumber().v()){
+						details.addDaysToRemainingNumber(-excessDays);
+						details.addDaysToOverLimitDays(excessDays);
+						excessDays = 0.0;
+					}
+					else {
+						excessDays -= details.getRemainingNumber().v();
+						details.addDaysToOverLimitDays(details.getRemainingNumber().v());
+						details.addDaysToRemainingNumber(-details.getRemainingNumber().v());
+					}
+					
+					// 上限超過日数が残っているかチェック
+					if (excessDays <= 0.0) break;
+				}
+				
+				// 積立年休情報残数を更新
+				this.updateRemainingNumber();
+			}
+		}
+		
 		// 期間終了日翌日時点の期間かチェック
 		if (!aggrPeriodWork.isNextDayAfterPeriodEnd()){
 			
@@ -345,60 +394,6 @@ public class ReserveLeaveInfo implements Cloneable {
 		
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber();
-		
-		// 上限を超過した積立年休を消滅させる
-		{
-			// 社員の保持年数を取得　→　上限日数の確認
-			Integer maxDays = 0;
-			if (upperLimitSet.getMaxDaysCumulation() != null){
-				maxDays = upperLimitSet.getMaxDaysCumulation().v();
-			}
-			
-			// 上限日数と積立年休残日数を比較
-			val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
-			double totalRemain = noMinus.getRemainingNumber().getTotalRemainingDays().v();
-			if (maxDays.doubleValue() < totalRemain){
-				
-				// 上限を超過した日数を計算　→　上限超過日数
-				double excessDays = totalRemain - maxDays.doubleValue();
-				
-				// 付与残数データを取得　（付与日　昇順、期限日　昇順）
-				List<ReserveLeaveGrantRemaining> remainingDatas = new ArrayList<>();
-				for (val grantRemainingData : this.grantRemainingList){
-					if (grantRemainingData.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
-					remainingDatas.add(grantRemainingData);
-				}
-				Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemaining>() {
-					@Override
-					public int compare(ReserveLeaveGrantRemaining o1, ReserveLeaveGrantRemaining o2) {
-						int compGrant = o1.getGrantDate().compareTo(o2.getGrantDate());
-						if (compGrant != 0) return compGrant;
-						return o1.getDeadline().compareTo(o2.getDeadline());
-					}
-				});
-				for (val remainingData : remainingDatas){
-
-					// 積立年休残日数と上限超過日数を比較
-					val details = remainingData.getDetails();
-					if (excessDays <= details.getRemainingNumber().v()){
-						details.addDaysToRemainingNumber(-excessDays);
-						details.addDaysToOverLimitDays(excessDays);
-						excessDays = 0.0;
-					}
-					else {
-						excessDays -= details.getRemainingNumber().v();
-						details.addDaysToOverLimitDays(details.getRemainingNumber().v());
-						details.addDaysToRemainingNumber(-details.getRemainingNumber().v());
-					}
-					
-					// 上限超過日数が残っているかチェック
-					if (excessDays <= 0.0) break;
-				}
-				
-				// 積立年休情報残数を更新
-				this.updateRemainingNumber();
-			}
-		}
 		
 		// 「積立年休情報（付与時点）」に「積立年休情報」を追加
 		if (!aggrResult.getAsOfGrant().isPresent()) aggrResult.setAsOfGrant(Optional.of(new ArrayList<>()));

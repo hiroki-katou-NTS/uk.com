@@ -1080,14 +1080,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             var paramtranfer = ko.observable(self.logTypeSelectedCode());
             nts.uk.ui.windows.setShared("recordType", paramtranfer);
-            $('#contents-area').focus();
-            //I igGrid
-            self.columnsIgAllGrid = ko.observableArray([]);
-            self.supColumnsIgGrid = ko.observableArray([]);
+            $('#contents-area').focus();           
+            self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
-
-            // varriable for export file CSV
-            // set param log
+            // set param log for export file CSV
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
@@ -1130,7 +1126,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.listItemNo.push(dataItemNo.itemNo);
                             });
                             paramOutputItem.itemNos = self.listItemNo();
-                            //                       console.log('giatriItem:'self.listItemNo());
+                          
                         }
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
@@ -1148,11 +1144,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                         });
                                     // generate columns header                              
                                         self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
-
                                     if (data && data.length > 0) {
-                                        self.listLogBasicInforAllModel = data;
-                                        // export file csv
-                                     //   self.exportCsvI();
+                                        self.listLogBasicInforAllModel = data;                                       
                                         self.filterDataExport();
                                     } else {
                                         alertError({ messageId: "Msg_1220" });
@@ -1684,7 +1677,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 lstHeaderDto: self.columnsIgAllGrid(),
                 listLogSetItemDetailDto:self.listLogSetItemDetailDto()
             };
-            console.log('listHeader:' + self.columnsIgAllGrid());
+                      
             service.filterLogDataExport(params).done(function( dataLogExport: Array<any>) {
                 if(dataLogExport && dataLogExport.length>0){
                     self.listLogDataExport=dataLogExport;

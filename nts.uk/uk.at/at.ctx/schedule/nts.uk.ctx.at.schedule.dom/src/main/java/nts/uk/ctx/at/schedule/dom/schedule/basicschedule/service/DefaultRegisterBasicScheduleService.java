@@ -735,7 +735,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 	private void checkScheMaster(List<Integer> listId, ScheMasterInfo workScheduleMaster) {
 		listId.add(63);
-		listId.add(64);
+//		listId.add(64);
 		listId.add(65);
 		listId.add(66);
 	}
