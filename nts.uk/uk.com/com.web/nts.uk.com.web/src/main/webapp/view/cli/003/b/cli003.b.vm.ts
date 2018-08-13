@@ -662,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '368',
+                height: '432',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -701,9 +701,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         width: "100%",
                         childrenDataProperty: "lstLogPerCateCorrectRecordDto",
                         autoGenerateColumns: false,
-                        primaryKey: "targetDate",
+                        hidePrimaryKey: true,
+                        primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
+                            { key: "childrentKey", headerText: "", dataType: "string" },
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
@@ -741,6 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
+                height: '432',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -778,10 +781,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     {
                         width: "100%",
                         childrenDataProperty: "lstLogDataCorrectRecordRefeDto",
+                        hidePrimaryKey: true,
                         autoGenerateColumns: false,
                         primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
+                            { key: "childrentKey", headerText: "", dataType: "string" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "20%" },
                             { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },

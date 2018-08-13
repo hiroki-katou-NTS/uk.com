@@ -32,8 +32,6 @@
 
 .contentF {
 	margin-left: 20px;
-	height: 600px;
-	overflow: auto;
 	display: inline-block;
 	width :900px;
 }
@@ -74,7 +72,7 @@
 
 #F2 {
 	width: 100%;
-	
+	height :428px;
 }
 #F2_2 {
 	font-size :14px;
