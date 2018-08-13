@@ -494,7 +494,7 @@ module nts.uk.com.view.cmm007.g {
                 blockUI.invisible();
                 
                 var params = new WorkdayoffFrameSaveCommand(_self.prepareDataToSave());
-                
+                nts.uk.ui.block.grayout();
                 service.saveWorkdayoffFrame(params).done(() => {
                     _self.start_page().done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
@@ -503,8 +503,10 @@ module nts.uk.com.view.cmm007.g {
                             $('#work_day_off_name1').focus();
                         });
                     });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-                  
+                
                 return dfd.promise();
             }
             

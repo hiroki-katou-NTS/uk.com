@@ -50,7 +50,7 @@ module nts.uk.com.view.cmm007.e {
                     arrDto.push(value); 
                 });
                 
-                
+                nts.uk.ui.block.grayout();
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
                     _self.findAll().done(() => {
                     });
@@ -61,6 +61,8 @@ module nts.uk.com.view.cmm007.e {
                     
                 }).fail(function() {
 //                    console.log("fail");
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                   
                 return dfd.promise();

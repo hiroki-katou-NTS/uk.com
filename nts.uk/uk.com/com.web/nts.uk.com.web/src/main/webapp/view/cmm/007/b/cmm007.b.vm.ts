@@ -168,13 +168,15 @@ module nts.uk.com.view.cmm007.b {
                 var dfd = $.Deferred<void>();
                   
                 var params = new SystemResourceCommand(_self.prepareDataToSave());
-                
+                nts.uk.ui.block.grayout();
                 service.saveSysResourceSetting(params).done(function(){
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         dfd.resolve();
                         blockUI.clear();
                         $('#com_company').focus();
                     });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 
                 return dfd.promise();
