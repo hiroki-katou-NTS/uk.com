@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         employeeList = ko.observableArray([]);
         selectedEmployee = ko.observable(null);
         totalEmployeeText = ko.observable("");
-        multiDate: KnockoutObservable<boolean> = ko.observable(true);
+        multiDate: KnockoutObservable<boolean> = ko.observable(false);
         dateSingle: KnockoutObservable<any> = ko.observable(null);
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         constructor() {
