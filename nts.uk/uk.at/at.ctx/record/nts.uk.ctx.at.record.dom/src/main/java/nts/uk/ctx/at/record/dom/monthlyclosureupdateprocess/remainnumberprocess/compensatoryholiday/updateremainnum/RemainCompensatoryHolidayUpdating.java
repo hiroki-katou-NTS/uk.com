@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffMana
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -37,11 +39,32 @@ public class RemainCompensatoryHolidayUpdating {
 	@Inject
 	private ComDayOffManaDataRepository compensatoryDataRepo;
 
+
 	// 代休残数更新
-	public void updateRemainCompensatoryHoliday(List<BreakDayOffDetail> lstDetailData) {
+	public void updateRemainCompensatoryHoliday(List<BreakDayOffDetail> lstDetailData,AggrPeriodEachActualClosure period, String empId) {
 		String companyId = AppContexts.user().companyId();
+		this.deleteLeaveManaData(period.getPeriod(), empId);
 		this.updateLeaveMngData(companyId, lstDetailData);
+		this.deleteDayOffManaData(period.getPeriod(), empId);
 		this.updateCompensatoryDayData(companyId, lstDetailData);
+	}
+	
+	// ドメインモデル 「休出管理データ」 を削除する
+	public void deleteLeaveManaData(DatePeriod period, String empId){
+		List<LeaveManagementData> managementDatas = leaveMngRepo.getByHoliday(empId, false, period);
+		if (CollectionUtil.isEmpty(managementDatas))
+			return;
+		List<String> leaveManaId = managementDatas.stream().map(r -> r.getID()).collect(Collectors.toList());
+		leaveMngRepo.deleteById(leaveManaId);
+	}
+	
+	// ドメインモデル 「代休管理データ」 を削除する
+	public void deleteDayOffManaData(DatePeriod period, String empId){
+		List<CompensatoryDayOffManaData> dayOffDatas = compensatoryDataRepo.getByHoliday(empId, false, period);
+		if (CollectionUtil.isEmpty(dayOffDatas))
+			return;
+		List<String> dayOffId = dayOffDatas.stream().map(r -> r.getComDayOffID()).collect(Collectors.toList());
+		compensatoryDataRepo.deleteById(dayOffId);
 	}
 
 	// 休出管理データの更新
