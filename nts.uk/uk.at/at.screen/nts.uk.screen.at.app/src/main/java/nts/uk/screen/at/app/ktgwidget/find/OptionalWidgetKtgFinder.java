@@ -402,7 +402,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setCareLeaveNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208 
+					//requestList 208(期間内の特別休暇残を集計する) 
 					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 					for (SpecialHoliday specialHoliday : specialHolidays) {

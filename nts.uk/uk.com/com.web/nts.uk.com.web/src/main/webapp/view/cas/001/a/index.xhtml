@@ -7,25 +7,23 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cas001.a.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.roles.RoleName
 			</com:ValidatorScript>
-
 			<com:stylefile path="/view/ccg/025/component/component.css" />
 			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
 			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
 			<com:stylefile path="cas001.a.style.css" />
-			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
 				of="/nts.uk.com.js.web" />
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
 				of="/nts.uk.com.js.web" />
-			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
-
 		</ui:define>
 
 		<ui:define name="content">
@@ -34,7 +32,7 @@
 					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
 					<button tabindex="1" id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
 					<button tabindex="2" id="A1_003"
-						data-bind="click:openCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
+						data-bind="click:openCModal,enable:(personRoleList().length > 1)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div tabindex="3" class="float-right">
 						<a  id="A1_005" class="goout "
@@ -48,34 +46,31 @@
 						class="bg-green caret-right caret-background">
 						<div   tabindex="4" data-bind='with:component'>
 							<div id="pannel-top"
-								data-bind="ntsPanel:{width: '220px', direction: '', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '220px', direction: '', showIcon: false, visible: true}">
 								<ui:include src="/view/ccg/025/component/index.xhtml" />
 							</div>
 						</div>
 
 						<span id="A2_001Caret" class="caret-bottom outline"></span>
 						<div id="left-bottom">
-							<div style="width: 270px" id="A2_007"
-								data-bind="ntsSearchBox: {
-							searchMode: 'filter',
-							targetKey: 'categoryId',
-						 	comId: 'A2_008',
-						 	items: roleCategoryList,
-						 	selected: currentCategoryId,
-						 	selectedKey: 'categoryId',
-						 	fields: ['categoryName'],
-						 	mode: 'igGrid',
-						 	placeHolder: '#{i18n.getText('CAS001_76')}',
-							searchText: '絞り込み'}" />
-							<table  tabindex="6" id="A2_008"
-								data-bind="ntsGridList: {	
-						dataSource: roleCategoryList ,
-						primaryKey: 'categoryId' ,
-						columns: ctgColumns ,
-						multiple: false,
-						columnResize: true,
-						value: currentCategoryId ,
-						rows:10 }">
+							<div style="width: 270px" id="A2_007" data-bind="ntsSearchBox: {
+								searchMode: 'highlight',
+								targetKey: 'categoryId',
+							 	comId: 'A2_008',
+							 	items: roleCategoryList,
+							 	selected: currentCategoryId,
+							 	selectedKey: 'categoryId',
+							 	fields: ['categoryName'],
+							 	mode: 'igGrid',
+							 	placeHolder: '#{i18n.getText('CAS001_76')}'}" />
+							<table  tabindex="6" id="A2_008" data-bind="ntsGridList: {	
+								dataSource: roleCategoryList ,
+								primaryKey: 'categoryId' ,
+								columns: ctgColumns ,
+								multiple: false,
+								columnResize: true,
+								value: currentCategoryId ,
+								rows:10 }">
 							</table>
 						</div>
 					</div>
@@ -84,7 +79,7 @@
 
 							<div class="div_line" style="margin-top: 0px;">
 								<div class="line_col_1 ">
-									<div class="float_left display_block"
+									<div class="float_left display_block fix-width-lable"
 										data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
 									<div>
 										<p class="ellipsis" id="A3_002"
@@ -98,8 +93,8 @@
 							<!-- 	category area -->
 							<div id="category_config_arena" data-bind="with:currentCategory">
 								<div class="div_line" style = "border-top: 1px solid #CCC ; padding-top : 10px">
-									<div style="width: 330px  " class="line_col_1">
-										<div id="A4_001" class="float_left display_block"
+									<div class="line_col_1">
+										<div id="A4_001" class="float_left display_block fix-width-lable"
 											data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_21')}</div>
 										<div>
 											<p id="A4_002" class="padding_left_20 ellipsis "
@@ -107,8 +102,8 @@
 										</div>
 									</div>
 									<div class="line_col_2">
-										<div id="A4_003" class="float_left display_block"
-											data-bind="ntsFormLabel: {}">#{i18n.getText('CAS001_22')}</div>
+										<div id="A4_003" class="float_left display_block fix-width-lable"
+											data-bind="ntsFormLabel: {required:true}">#{i18n.getText('CAS001_22')}</div>
 										<div>
 											<p id="A4_004" class="padding_left_20 ellipsis"
 												data-bind="text:$parents[1].genCategoryTypeText()"></p>

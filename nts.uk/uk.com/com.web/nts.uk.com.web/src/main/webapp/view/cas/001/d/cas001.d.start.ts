@@ -17,6 +17,7 @@ module nts.uk.com.view.cas001.d {
                     $("#grid").igGrid("option", "dataSource", []);
                 }
             });
+            _.defer(() => { $("#input.ntsSearchBox.nts-editor.ntsSearchBox_Component").focus(); });
         });
     });
 }
@@ -27,16 +28,16 @@ function InitIggrid() {
         columns: [
             { headerText: "Id", key: "categoryId", dataType: "string", width: "100px", height: "40px", hidden: true },
             {
-                headerText: text('CAS001_30')+"</br><input class='otherAuth' type='checkbox'  tabindex='2' ></input>",
-                key: 'otherAuth',width: "35px", height: "40px",
+                headerText: text('CAS001_30') + "</br><input class='otherAuth' type='checkbox'  tabindex='2' ></input>",
+                key: 'otherAuth', width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px' class='checkRow otherAuth' type='checkbox'"
-                +" data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
+                + " data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             {
-                headerText: text('CAS001_31')+"</br><input class='selfAuth' type='checkbox'  tabindex='3'></input>",
-                key: 'selfAuth',width: "35px", height: "40px",
+                headerText: text('CAS001_31') + "</br><input class='selfAuth' type='checkbox'  tabindex='3'></input>",
+                key: 'selfAuth', width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px'  class='checkRow selfAuth' type='checkbox'"
-                +" data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
+                + " data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "100px", height: "40px" }
 
@@ -60,12 +61,12 @@ function InitIggrid() {
         }
     });
     $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-    
+
     $(document).on("click", ".selfAuth:not(.checkRow)", function(evt, ui) {
         let _this = $(this);
         $("#grid").find(".checkRow.selfAuth").prop("checked", _this.prop("checked")).trigger("change");
     });
-    
+
     // khi giá trị checkbox của cột selfAuth thay đổi, giá trị selfAuth của row đó cũng thay đổi theo checkbox
     $(document).on("change", ".selfAuth.checkRow", function(evt, ui) {
         let _this = $(this),
@@ -84,7 +85,7 @@ function InitIggrid() {
 
         $("#grid").find(".checkRow.otherAuth").prop("checked", _this.prop("checked")).trigger("change");
     });
-    
+
     // khi giá trị checkbox của cột otherAuth thay đổi, giá trị otherAuth của row đó cũng thay đổi theo checkbox đó
     $(document).on("change", ".otherAuth.checkRow", function(evt, ui) {
         let _this = $(this),
