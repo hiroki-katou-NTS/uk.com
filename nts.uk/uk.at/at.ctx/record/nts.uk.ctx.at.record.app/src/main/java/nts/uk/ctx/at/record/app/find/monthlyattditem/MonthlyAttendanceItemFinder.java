@@ -121,7 +121,7 @@ public class MonthlyAttendanceItemFinder {
 	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {
 		List<Integer> filteredOptionItemByAtr = this.optItemRepo
 				.findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
-				.filter(ii -> ii.isUsed() && ii.getPerformanceAtr() == PerformanceAtr.MONTHLY_PERFORMANCE)
+				.filter(ii -> ii.isUsed())
 				.map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v).collect(Collectors.toList());
 		if (filteredOptionItemByAtr.isEmpty())
 			return Collections.emptyList();
