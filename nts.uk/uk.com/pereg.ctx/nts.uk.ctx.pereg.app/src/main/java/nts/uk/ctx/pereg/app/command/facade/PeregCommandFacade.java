@@ -659,12 +659,14 @@ public class PeregCommandFacade {
 
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
-		
+
 		/*
 		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
 		 * DUPLICATEHISTORY(5), CONTINUOUS_HISTORY_FOR_ENDDATE(6);
 		 */
 		TargetDataKey dKey = TargetDataKey.of("");
+		List<PersonCorrectionItemInfo> itemInfo = new ArrayList<PersonCorrectionItemInfo>();
+		Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
 		switch (command.getCategoryType()) {
 		case 2:
 			break;
@@ -672,18 +674,38 @@ public class PeregCommandFacade {
 		case 4:
 		case 5:
 		case 6:
-			Optional<DateRangeDto> ddto =	ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode())).findFirst();
-			
-			if(ddto.isPresent()) {
-				dKey = TargetDataKey.of(GeneralDate.today());				
+			Optional<DateRangeDto> ddto = ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode()))
+					.findFirst();
+
+			if (ddto.isPresent()) {
+				Optional<ItemValue> startDate = command.getInputs().stream()
+						.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
+
+				if (startDate.isPresent()) {
+					ItemValue _startDate = startDate.get();
+					String valueAfter = Optional.ofNullable(_startDate.valueAfter()).orElse(""),
+							viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
+					
+					if(!valueAfter.trim().isEmpty()) {
+						_startDate.setValueAfter("");
+					}
+
+					if(!viewAfter.trim().isEmpty()) {
+						_startDate.setContentAfter("");
+					}
+					
+					dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
+					itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_startDate));
+				}
 			}
 			break;
 		}
+
 		// Add category correction data
-		PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(command.getCategoryId(), command.getCategoryName(),
-				InfoOperateAttr.deleteOf(command.getCategoryType()), new ArrayList<PersonCorrectionItemInfo>(),
-				dKey, Optional.ofNullable(null));
-		
+		PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(
+				command.getCategoryId(), command.getCategoryName(), InfoOperateAttr.deleteOf(command.getCategoryType()),
+				itemInfo, dKey, rInfo);
+
 		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 
 		DataCorrectionContext.transactionFinishing();
