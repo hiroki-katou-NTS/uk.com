@@ -81,6 +81,7 @@ module nts.uk.at.view.kmk002.a {
             applyFormula: KnockoutObservable<string>;
             selectedFormulaAbove: number;
             selectedFormulaBelow: number;
+            unit: KnockoutObservable<string>;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -98,6 +99,7 @@ module nts.uk.at.view.kmk002.a {
             isTimeSelected: KnockoutObservable<boolean>;
             isNumberSelected: KnockoutObservable<boolean>;
             isAmountSelected: KnockoutObservable<boolean>;
+            enableUnit: KnockoutComputed<boolean>;
             isCheckedFromChild = false;
 
             // stash
@@ -117,6 +119,7 @@ module nts.uk.at.view.kmk002.a {
                 this.applyFormula = ko.observable('');
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
+                this.unit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -125,6 +128,9 @@ module nts.uk.at.view.kmk002.a {
                 this.isTimeSelected = ko.observable(false);
                 this.isAmountSelected = ko.observable(false);
                 this.isNumberSelected = ko.observable(false);
+                this.enableUnit = ko.computed(() => {
+                    return this.isNumberSelected() || this.isAmountSelected();
+                });
 
                 // init datasource
                 this.initDatasource();
@@ -297,6 +303,7 @@ module nts.uk.at.view.kmk002.a {
                             self.optionalItemAtr(self.optionalItemAtrStash);
                         });
                     } else {
+                        self.checkSelectedAtr();
                         // save new value to stash
                         self.optionalItemAtrStash = value;
                     }
@@ -778,6 +785,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
                 dto.calcResultRange = self.calcResultRange.toDto();
+                dto.unit = self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -799,6 +807,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
+                self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
 
                 // reset apply formula

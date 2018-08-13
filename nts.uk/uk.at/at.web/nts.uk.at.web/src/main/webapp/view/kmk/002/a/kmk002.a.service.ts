@@ -61,6 +61,7 @@ module nts.uk.at.view.kmk002.a {
                 empConditionAtr: number;
                 performanceAtr: number;
                 calcResultRange: CalcResultRangeDto;
+                unit: string;
                 formulas: Array<FormulaDto>;
             }
             /**
