@@ -124,16 +124,20 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     }
                     else {
                         self.listExOutCateItemData([]);
-                        $('#C8_3').ntsError('set', { messageId: "Msg_656" });
                     }
                 });
             });
 
             self.categoryItems.subscribe(function(values: Array<model.CategoryItem>) {
                 let newFormulaResult = "";
-                _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
-                });
+                if (values && values.length) {
+                    _.forEach(values, item => {
+                        newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
+                    });
+                }
+                else {
+                    $('#C10_1').ntsError('set', { messageId: "Msg_656" });
+                }
                 self.formulaResult(newFormulaResult);
             });
         }
@@ -456,8 +460,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // 外部出力項目登録確認
         isValid() {
             let self = this;
-            if (self.listExOutCateItemData().length === 0) {
-                $('#C8_3').ntsError('set', { messageId: "Msg_656" });
+            if (self.categoryItems().length === 0) {
+                $('#C10_1').ntsError('set', { messageId: "Msg_656" });
                 return false;
             }
             if (!self.isNewMode()) {
