@@ -16,12 +16,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
+import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.KshstOvertimeFrameDataCopyHandler;
 
 @Stateless
 public class JpaMasterCopyDataRepository extends JpaRepository implements MasterCopyDataRepository {
@@ -54,6 +57,11 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		List<SspmtMastercopyData> sspmtMastercopyDatas = em.createQuery(cq).getResultList();
 
 		return sspmtMastercopyDatas.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
+		new KshstOvertimeFrameDataCopyHandler(copyMethod, companyId).doCopy();
 	}
 
 	/**

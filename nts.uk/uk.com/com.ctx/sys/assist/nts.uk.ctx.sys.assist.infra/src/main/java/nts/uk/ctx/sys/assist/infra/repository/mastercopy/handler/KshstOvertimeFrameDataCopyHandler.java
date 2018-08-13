@@ -1,11 +1,15 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import javax.persistence.Query;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class KshstOvertimeFrameDataCopyHandler.
@@ -14,7 +18,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
+public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements DataCopyHandler {
 	
 	/** The copy method. */
 	private CopyMethod copyMethod;
@@ -42,8 +46,13 @@ public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
 	@Override
 	public void doCopy() {
 		
-		// TODO: Get all company zero data
+		// Get all company zero data
+		Query selectQuery = this.getEntityManager().createNativeQuery("SELECT * FROM KSHST_OVERTIME_FRAME WHERE CID = ?").setParameter(1, AppContexts.user().zeroCompanyIdInContract());
 		
+		Object[] data = selectQuery.getResultList().toArray();
+		
+		int a = data.length;
+		System.out.println(a);
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				// Delete all old data

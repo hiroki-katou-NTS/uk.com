@@ -22,4 +22,13 @@ public interface MasterCopyDataRepository {
 	 * @return the list
 	 */
 	List<MasterCopyData> findByMasterCopyIds(List<Integer> masterCopyIds);
+	
+	/**
+	 * Do copy.
+	 *
+	 * @param tableName the table name
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
+	 */
+	void doCopy(String tableName, CopyMethod copyMethod, String companyId);
 }
