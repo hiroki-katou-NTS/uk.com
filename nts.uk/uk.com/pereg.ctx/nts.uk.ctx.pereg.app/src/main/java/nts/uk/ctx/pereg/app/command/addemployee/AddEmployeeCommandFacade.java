@@ -13,6 +13,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -28,6 +31,9 @@ public class AddEmployeeCommandFacade {
 
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
+	
+	@Inject
+	private PerInfoCategoryRepositoty cateRepo;
 
 	public void addNewFromInputs(String personId, String employeeId, String comHistId, List<ItemsByCategory> inputs) {
 
@@ -72,8 +78,9 @@ public class AddEmployeeCommandFacade {
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
 		if (!cardNo.equals("")) {
-			ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
-			return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
+			ItemValue itemValue = new ItemValue(null, "IS00779","カードNo", cardNo, "","","",SaveDataType.STRING.value, SaveDataType.STRING.value);
+			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD("CS00069" , AppContexts.user().companyId());
+			return new ItemsByCategory("CS00069",ctgFromServer.isPresent() ? ctgFromServer.get().getCategoryName().v() : "" , null, Arrays.asList(itemValue));
 		}
 		return null;
 	}
@@ -126,7 +133,7 @@ public class AddEmployeeCommandFacade {
 
 			if (!CollectionUtil.isEmpty(fixedItems)) {
 
-				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(),
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), category.getRecordId(),
 						fixedItems);
 				updateInputs.add(newItemCtg);
 			}
@@ -135,7 +142,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
-		this.commandFacade.update(updateContainer);
+		this.commandFacade.updateForCPS002(updateContainer);
 
 	}
 
@@ -148,7 +155,7 @@ public class AddEmployeeCommandFacade {
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 	}
 	
 	
@@ -162,10 +169,10 @@ public class AddEmployeeCommandFacade {
 					.collect(Collectors.toList());
 
 			if (!CollectionUtil.isEmpty(optionalItems)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), null, optionalItems);
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), null, optionalItems);
 				addInputs.add(newItemCtg);
 				// add item for get recordId in commandFacade.add
-				ItemsByCategory itemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(), null);
+				ItemsByCategory itemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), category.getRecordId(), null);
 				addInputs.add(itemCtg);
 
 			}
@@ -174,7 +181,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 
 	}
 
@@ -202,7 +209,8 @@ public class AddEmployeeCommandFacade {
 			List<ItemValue> items = filterDataServer.stream()
 					.map(settingItem -> convertSettingItemToItemValue(settingItem))
 					.collect(Collectors.toList());
-			return new ItemsByCategory(categoryCode, null, items);
+			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD(categoryCode , AppContexts.user().companyId());
+			return new ItemsByCategory(categoryCode,ctgFromServer.isPresent() ? ctgFromServer.get().getCategoryName().v() : "" , null, items);
 		}
 
 	}
@@ -214,11 +222,11 @@ public class AddEmployeeCommandFacade {
 		case SELECTION:
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,
 					settingItem.getDataType().value, settingItem.getSelectionItemRefType().value,
 					settingItem.getSelectionItemRefCd());
 		default:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,
 					settingItem.getDataType().value, null, null);
 		}
 

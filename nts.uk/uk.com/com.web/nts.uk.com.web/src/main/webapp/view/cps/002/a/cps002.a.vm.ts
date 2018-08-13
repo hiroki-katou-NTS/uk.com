@@ -231,7 +231,7 @@ module cps002.a.vm {
                 }
             });
 
-            self.currentEmployee().avatarId.subscribe((avartarId) => {
+            self.currentEmployee().avatarCropedId.subscribe((avartarId) => {
                 let self = this,
                     avartarContent = $("#employeeAvatar");
 
@@ -718,6 +718,8 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
+            command.categoryName = nts.uk.resource.getText("CPS001_152");
+            command.itemName = nts.uk.resource.getText("CPS001_150");
             
             // list category nghỉ đặc biệt còn lại
             var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
@@ -863,13 +865,14 @@ module cps002.a.vm {
                 setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
-
+                setShared("openIDialog",self.currentEmployee().avatarOrgId());
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                    let imageResult = getShared("imageId");
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult.cropImgId)
-                        self.defaultImgId(imageResult.defaultImgId);
+                    let dataShare = getShared("imageId");
+                    if (dataShare) {
+                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId),
+                        self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
+                        self.currentEmployee().fileName(dataShare.fileName)
                     }
                 });
 
@@ -918,16 +921,24 @@ module cps002.a.vm {
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        avatarOrgId: KnockoutObservable<string> = ko.observable("");
+        avatarCropedId: KnockoutObservable<string> = ko.observable("");
+        categoryName: KnockoutObservable<string> = ko.observable("");
+        itemName: KnockoutObservable<string> = ko.observable("");
+        fileName:  KnockoutObservable<string> = ko.observable("");
         clearData() {
             let self = this;
             self.employeeName("");
             self.employeeCode("");
-            self.avatarId("");
             self.loginId("");
             self.password("");
+            self.avatarOrgId("");
+            self.avatarCropedId("");
+            self.categoryName("");
+            self.itemName("");
+            self.fileName("");
         }
     }
 

@@ -60,6 +60,5 @@ public class PersonInfoCorrectionLog {
 		
 		this(operationId, processAttr, targetUser, categoryCorrections, null);
 	}
-	
-	
+
 }

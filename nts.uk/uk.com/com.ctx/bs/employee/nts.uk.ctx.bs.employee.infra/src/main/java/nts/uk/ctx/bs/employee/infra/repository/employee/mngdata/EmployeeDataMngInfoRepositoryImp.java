@@ -483,7 +483,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate) {
-		// TODO Auto-generated method stub
 		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Long.class)
 				.setParameter("baseDate", baseDate)
 				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)

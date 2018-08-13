@@ -18,5 +18,4 @@ public class EmployeeDeleteToRestoreCommand {
 	private String code;
 	
 	private String name;
-	
 }

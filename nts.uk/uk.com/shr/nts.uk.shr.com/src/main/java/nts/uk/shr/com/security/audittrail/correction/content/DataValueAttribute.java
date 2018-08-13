@@ -25,7 +25,7 @@ public enum DataValueAttribute {
 	
 	public String format(Object value) {
 		if (value == null) {
-			return "";
+			return null;
 		}
 		
 		switch (this) {

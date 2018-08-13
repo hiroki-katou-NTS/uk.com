@@ -647,6 +647,7 @@ public class LayoutFinder {
 				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
 			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
+			classItem.setCtgType(perInfoCategory.getCategoryType().value);
 			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}

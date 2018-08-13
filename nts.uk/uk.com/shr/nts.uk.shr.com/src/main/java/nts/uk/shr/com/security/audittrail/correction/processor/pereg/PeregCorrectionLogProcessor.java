@@ -16,10 +16,10 @@ import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformati
 public abstract class PeregCorrectionLogProcessor extends CorrectionLogProcessor<PeregCorrectionLogProcessorContext> {
 
 	@Inject
-	private LogBasicInformationWriter basicInfoRepository;
+	protected LogBasicInformationWriter basicInfoRepository;
 	
 	@Inject
-	private PeregCorrectionLogWriter correctionLogRepository;
+	protected PeregCorrectionLogWriter correctionLogRepository;
 	
 	@Override
 	public void processLoggingForBus(LogBasicInformation basicInfo, Object parameter) {

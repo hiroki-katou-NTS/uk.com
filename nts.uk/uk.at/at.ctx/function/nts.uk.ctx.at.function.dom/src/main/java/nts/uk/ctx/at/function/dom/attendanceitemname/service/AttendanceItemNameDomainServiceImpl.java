@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.attendanceitemname.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,8 +38,16 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
+import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
@@ -85,7 +94,18 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 	
 	@Inject
 	private OutsideOTSettingRepository outsideOTSettingRepository;
+	
+	@Inject 
+	private AbsenceFrameRepository absenceFrameRepository;
+	
+	@Inject
+	private SpecialHolidayFrameRepository specialHolidayFrameRepo;
 
+	@Inject
+	private TotalTimesRepository totalTimesRepository;
+	
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
 	@Override
 	public List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> dailyAttendanceItemIds,
 			int typeOfAttendanceItem) {
@@ -182,15 +202,36 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 				.filter(item -> item.getFrameCategory().value == 10)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		//get list frame No 11
-		
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeSettingMap = attendanceItemAndFrameNos.stream()
 				.filter(item -> item.getFrameCategory().value == 11)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		
+		//get list frame No 12
+		Map<Integer, AttendanceItemLinking> frameAbsence = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 12)
+				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		
+		//get list frame No 13
+		Map<Integer, AttendanceItemLinking> frameSpecialHoliday = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 13)
+				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+
+		//get list frame No 14
+		Map<Integer, AttendanceItemLinking> frameTotalTimes = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 14)
+				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		
+		//get list frame No 15
+				Map<Integer, AttendanceItemLinking> specialHoliday15 = attendanceItemAndFrameNos.stream()
+						.filter(item -> item.getFrameCategory().value == 15)
+						.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));	
+		
+		
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
 			return f.getFrameNo().v();
 		}).collect(Collectors.toList());
 
-		if (frameNos.isEmpty()) {
+		if (frameNos.isEmpty()) {	
 			return dailyAttendanceItems.stream().map(item -> {
 				AttendanceItemName attendanceItem = new AttendanceItemName();
 				attendanceItem.setAttendanceItemDisplayNumber(item.getDisplayNumber());
@@ -242,6 +283,8 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 		Map<Integer, SpecificDateImport> specificDates = this.specificDateAdapter.getSpecificDate(companyId, frameNos)
 				.stream().collect(Collectors.toMap(SpecificDateImport::getSpecificDateItemNo, x -> x));
 		
+		
+		
 		// 超過時間 : 時間外超過設定 11
 		List<OvertimeDto> overtimesSetting ;
 		List<OutsideOTBRDItemDto> outsideOTBRDItem;
@@ -253,6 +296,24 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 			overtimesSetting = new ArrayList<>();
 			outsideOTBRDItem = new ArrayList<>();
 		}
+		
+		//　欠勤 12	
+		Map<Integer, AbsenceFrame> absenceFrame = this.absenceFrameRepository.findAbsenceFrameByListFrame(companyId, frameNos)
+				.stream().collect(Collectors.toMap(AbsenceFrame::getAbsenceFrameNo, x -> x));
+		
+		//　特別休暇枠  13
+		Map<Integer, SpecialHolidayFrame> specialHolidayFrame = this.specialHolidayFrameRepo.findHolidayFrameByListFrame(companyId, frameNos)
+				.stream().collect(Collectors.toMap(SpecialHolidayFrame::getSpecialHdFrameNo, x -> x));
+		
+		// 回数集計 14 
+		Map<Integer, TotalTimes> totalTimes = this.totalTimesRepository.getTotalTimesDetailByListNo(companyId, frameNos)
+				.stream().collect(Collectors.toMap(TotalTimes::getTotalCountNo, x -> x));
+		// 特別休暇 15
+		Map<Integer, SpecialHoliday> specialHoliday = new HashMap<>();
+		this.specialHolidayRepository.findByListCode(companyId, frameNos).forEach(x->{
+			  specialHoliday.put(x.getSpecialHolidayCode().v(), x);
+		});
+		
 		
 		List<AttendanceItemName> attendanceItemDomainServiceDtos = new ArrayList<>();
 		
@@ -352,6 +413,7 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 						frameNoSpecificDateMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameNoSpecificDateMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//11
 			} else if (frameNoOverTimeSettingMap.containsKey(item.getAttendanceItemId())) {
 				String overTimeName = "";
 				String outsideOTBRDItemName = "";
@@ -378,7 +440,46 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 						frameNoOverTimeSettingMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameNoOverTimeSettingMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-				
+			//12	
+			} else if (frameAbsence.containsKey(item.getAttendanceItemId()) && absenceFrame
+					.containsKey(frameAbsence.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						absenceFrame.get(frameAbsence.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getAbsenceFrameName().v()));
+				attendanceDto.setFrameCategory(
+						frameAbsence.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						frameAbsence.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//13
+			}else if (frameSpecialHoliday.containsKey(item.getAttendanceItemId()) && specialHolidayFrame
+					.containsKey(frameSpecialHoliday.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						specialHolidayFrame.get(frameSpecialHoliday.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getSpecialHdFrameName().v()));
+				attendanceDto.setFrameCategory(
+						frameSpecialHoliday.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						frameSpecialHoliday.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//14
+			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && totalTimes
+					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						totalTimes.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getTotalTimesName().v()));
+				attendanceDto.setFrameCategory(
+						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//15
+			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && specialHoliday
+					.containsKey(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						specialHoliday.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getSpecialHolidayName().v()));
+				attendanceDto.setFrameCategory(
+						frameTotalTimes.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						frameTotalTimes.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			}else{
 				attendanceDto.setFrameCategory(0);
 				attendanceDto.setTypeOfAttendanceItem(0);

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype.specialholidayframe;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,8 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	
 	private static final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
 	private static final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
-	
+	private static final String GET_ALL_BY_LIST_FRAME_NO  =GET_ALL
+			+ " AND a.kshmtSpecialHolidayFramePK.specialHdFrameNo IN :frameNos ";
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
 				entity.kshmtSpecialHolidayFramePK.specialHdFrameNo,
@@ -75,5 +77,15 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 				new KshmtSpecialHolidayFramePK(specialHolidayFrame.getCompanyId(), specialHolidayFrame.getSpecialHdFrameNo()),
 				specialHolidayFrame.getSpecialHdFrameName().v(),
 				specialHolidayFrame.getDeprecateSpecialHd().value);
+	}
+
+	@Override
+	public List<SpecialHolidayFrame> findHolidayFrameByListFrame(String companyId, List<Integer> frameNos) {
+		if(frameNos.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtSpecialHolidayFrame.class)
+				.setParameter("companyId", companyId)
+				.setParameter("frameNos", frameNos)
+				.getList(x -> convertToDoma(x));
 	}
 }

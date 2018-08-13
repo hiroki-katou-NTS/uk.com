@@ -368,7 +368,7 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
                 gridList.ntsGridList("setSelectedValue", []);
                 _.defer(() => {

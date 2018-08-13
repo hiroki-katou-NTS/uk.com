@@ -190,8 +190,10 @@ module nts.custom.component {
                     value: ko.observable(''),
                     options: ko.observableArray([]),
                     object: {
+                        'categoryId': ko.observable(''),
                         'categoryCode': ko.observable(''),
-                        'categoryType': ko.observable(undefined)
+                        'categoryType': ko.observable(undefined),
+                        'categoryName': ko.observable(undefined)
                     }
                 },
                 gridlist: {
@@ -285,7 +287,10 @@ module nts.custom.component {
                                             recordId: ko.toJS(params.gridlist.value),
                                             personId: ko.toJS(params.personId),
                                             employeeId: ko.toJS(params.employeeId),
-                                            categoryId: ko.toJS(params.combobox.object.categoryCode)
+                                            categoryId: ko.toJS(params.combobox.object.categoryId),
+                                            categoryType: ko.toJS(params.combobox.object.categoryType),
+                                            categoryName: ko.toJS(params.combobox.object.categoryName),
+                                            categoryCode: ko.toJS(params.combobox.object.categoryCode)
                                         };
 
                                         __viewContext.viewModel.block();
@@ -311,7 +316,10 @@ module nts.custom.component {
                                             recordId: ko.toJS(params.gridlist.value),
                                             personId: ko.toJS(params.personId),
                                             employeeId: ko.toJS(params.employeeId),
-                                            categoryId: ko.toJS(params.combobox.object.categoryCode)
+                                            categoryId: ko.toJS(params.combobox.object.categoryId),
+                                            categoryType: ko.toJS(params.combobox.object.categoryType),
+                                            categoryName: ko.toJS(params.combobox.object.categoryName),
+                                            categoryCode: ko.toJS(params.combobox.object.categoryCode)
                                         };
 
                                         __viewContext.viewModel.block();
@@ -425,6 +433,7 @@ module nts.custom.component {
                         let obj = params.combobox.object;
                         obj.categoryCode(cat.categoryCode);
                         obj.categoryType(cat.categoryType);
+                        obj.categoryName(cat.categoryName);
 
                         let personId = ko.toJS(params.personId),
                             employeeId = ko.toJS(params.employeeId),
