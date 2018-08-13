@@ -224,8 +224,9 @@ module nts.uk.com.view.cmm050.a {
                         new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
                         new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
                     );
-                
+                blockUI.grayout();
                 _self.saveMailServerSetting(params).done(function(){
+                    
                     dfd.resolve();
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
@@ -233,8 +234,8 @@ module nts.uk.com.view.cmm050.a {
                     });
                 }).fail(function(){
                     alert('error');    
-                });
-                blockUI.clear();
+                }).always(()=>blockUI.clear());
+              
                 return dfd.promise();
             }
             
