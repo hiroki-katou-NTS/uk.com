@@ -47,6 +47,18 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ " AND c.remainDays > :remainDays";
 	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :employeeId" + " AND c.unknownDate = :unknownDate" + " AND c.dayOff >= :startDate";
+	private String QUERY_BYSID_DATE = QUERY_BYSID + " AND s.dayOff < :dayOff";
+	
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_DATE, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid)
+				.setParameter("dayOff", ymd)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {

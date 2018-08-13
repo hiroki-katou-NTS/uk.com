@@ -48,6 +48,18 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private static final String QUERY_BY_EX = QUERY_BY_DAYOFF_PERIOD
 			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
 			+ " OR (c.subHDAtr = :subHDAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate)";
+	private String QUERY_BY_SID_DATE = QUERY_BYSID + " AND l.dayOff < :dayOff";
+
+
+	@Override
+	public List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BY_SID_DATE, KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOff", ymd)
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 
 	@Override
 	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
