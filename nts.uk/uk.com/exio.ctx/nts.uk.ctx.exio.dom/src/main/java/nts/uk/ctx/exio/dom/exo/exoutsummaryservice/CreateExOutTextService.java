@@ -181,6 +181,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String END_DATE = "endDate";
 	private final static String END_DATE_PARAM = "?endDate";
 	private final static String SQL = "sql";
+	private final static String CSV = ".csv";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -414,12 +415,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String condSetName = null;
 		boolean drawHeader = true;
 		Delimiter delimiter = Delimiter.COMMA;
+		StringFormat stringFormat = StringFormat.NONE;
 
 		// サーバ外部出力ファイル項目ヘッダ
 		if (stdOutputCondSet != null) {
 			condSetName = (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE) ? stdOutputCondSet.getConditionSetName().v() : null;
 			drawHeader = stdOutputCondSet.getItemOutputName() == NotUseAtr.USE;
 			delimiter = stdOutputCondSet.getDelimiter();
+			stringFormat = stdOutputCondSet.getStringFormat();
+		}
+		
+		if(delimiter == Delimiter.COMMA) {
+			fileName = fileName + CSV;
 		}
 		
 		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
@@ -428,7 +435,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		Map<String, String> sqlAndParam;
 		List<List<String>> data;
-		StringFormat stringFormat = stdOutputCondSet.getStringFormat();
 
 		// サーバ外部出力タイプデータ系
 		if (type == CategorySetting.DATA_TYPE) {
@@ -736,9 +742,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String useNullValue;
 		String resultState;
 		String errorMess;
+		int index = 0;
 
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
-			int index = 0;
 			dataFormatSetting = outputItemCustom.getDataFormatSetting();
 
 			isfixedValue = dataFormatSetting.getFixedValue();
@@ -781,8 +787,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			
 			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
 				targetValue = stringFormat.character + targetValue + stringFormat.character;
+				
+				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+					targetValue = stringFormat.character + targetValue;
+				}
 			}
-
+			
 			lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 			index += outputItemCustom.getCtgItemDataList().size();
 		}
@@ -1430,6 +1440,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String state = RESULT_OK;
 		String errorMess = "";
 		String targetValue = "";
+		itemValue = itemValue.substring(0, 10);
 		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		DateOutputFormat formatDate = setting.getFormatSelection();
 

@@ -69,7 +69,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
                 $("#M9_2_2").trigger("validate");
             }
-            if (hasError){
+            if (hasError()){
                 return;
             } else {
                 let data = ko.toJS(self.inTimeDataFormatSetting);

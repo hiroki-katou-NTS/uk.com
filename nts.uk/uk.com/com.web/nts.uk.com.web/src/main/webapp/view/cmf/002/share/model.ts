@@ -335,6 +335,7 @@ module nts.uk.com.view.cmf002.share.model {
         condSetCd: string;
         outItemName: string;
         itemType: number;
+        dispOrder: number;
         categoryItems: Array<ICategoryItem>;
     }
 
@@ -353,6 +354,7 @@ module nts.uk.com.view.cmf002.share.model {
         outItemName: KnockoutObservable<string>;
         dispOutputItemName: string;
         condSetCd: KnockoutObservable<string>;
+        dispOrder: KnockoutObservable<number>;
         itemType: KnockoutObservable<number>;
         categoryItems: KnockoutObservableArray<CategoryItem>;
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(null);

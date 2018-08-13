@@ -124,16 +124,17 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     }
                     else {
                         self.listExOutCateItemData([]);
-                        $('#C8_3').ntsError('set', { messageId: "Msg_656" });
                     }
                 });
             });
 
             self.categoryItems.subscribe(function(values: Array<model.CategoryItem>) {
                 let newFormulaResult = "";
-                _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
-                });
+                if (values && values.length) {
+                    _.forEach(values, item => {
+                        newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
+                    });
+                }
                 self.formulaResult(newFormulaResult);
             });
         }
@@ -354,6 +355,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // 出力項目を登録する
         registerOutputItem() {
             let self = this;
+            errors.clearAll();
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
 
             $('.nts-input').trigger("validate");
@@ -394,6 +396,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
                 currentStandardOutputItem.isNewMode = self.isNewMode();
+                currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register
                 service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {
@@ -456,8 +459,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // 外部出力項目登録確認
         isValid() {
             let self = this;
-            if (self.listExOutCateItemData().length === 0) {
-                $('#C8_3').ntsError('set', { messageId: "Msg_656" });
+            if (self.categoryItems().length === 0) {
+                $('#C10_1').ntsError('set', { messageId: "Msg_656" });
                 return false;
             }
             if (!self.isNewMode()) {
