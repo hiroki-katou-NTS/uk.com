@@ -210,7 +210,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					startDateItemCode = item.value();
 				}
 				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, null,
-						item.stringValue(), item.viewValue(), item.logType()));
+						item.valueAfter(), item.contentAfter(), item.logType()));
 			}
 
 			// Add category correction data

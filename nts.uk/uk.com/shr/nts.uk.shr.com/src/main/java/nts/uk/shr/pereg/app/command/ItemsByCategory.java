@@ -12,7 +12,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.shr.pereg.app.ItemLog;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -44,7 +43,7 @@ public class ItemsByCategory {
 	private List<ItemValue> items;
 	
 	/** input item log */
-	private List<ItemLog> itemLogs;
+	private List<ItemValue> itemLogs;
 	
 	public ItemsByCategory(String categoryCd,String categoryName, String recordId, List<ItemValue> items) {
 		super();
