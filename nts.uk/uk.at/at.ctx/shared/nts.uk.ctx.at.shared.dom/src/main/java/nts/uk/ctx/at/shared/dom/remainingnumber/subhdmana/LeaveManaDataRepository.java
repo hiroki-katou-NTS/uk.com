@@ -24,7 +24,7 @@ public interface LeaveManaDataRepository {
 	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
 	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
-
+	
 	void create(LeaveManagementData domain);
 	
 	void update(LeaveManagementData domain);
@@ -77,4 +77,8 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData, DatePeriod dateData, double unUseDays, DigestionAtr subHDAtr);
+
+	List<LeaveManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
+	
+	void deleteById(List<String> leaveId);
 }

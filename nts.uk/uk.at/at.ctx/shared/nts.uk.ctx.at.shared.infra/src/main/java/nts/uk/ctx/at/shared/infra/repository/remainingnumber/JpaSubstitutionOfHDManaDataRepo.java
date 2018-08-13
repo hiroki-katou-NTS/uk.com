@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -44,6 +45,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private static final String QUERY_BY_SID_REMAINDAYS = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :sid"
 			+ " AND c.remainDays > :remainDays";
+	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtSubOfHDManaData c"
+			+ " WHERE c.sID = :employeeId" + " AND c.unknownDate = :unknownDate" + " AND c.dayOff >= :startDate";
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
@@ -111,7 +114,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	public Optional<SubstitutionOfHDManagementData> findByID(String Id) {
-		Optional<KrcmtSubOfHDManaData> entity = this.queryProxy().find(Id, KrcmtSubOfHDManaData.class);
+		String QUERY_BY_ID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.subOfHDID = :subOfHDID";
+		Optional<KrcmtSubOfHDManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtSubOfHDManaData.class).setParameter("subOfHDID", Id).getSingle();
 		if (entity.isPresent()) {
 			return Optional.ofNullable(toDomain(entity.get()));
 		}
@@ -165,6 +169,21 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 				.setParameter("remainDays", remainDays)
 				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayoffDate) {
+		List<KrcmtSubOfHDManaData> listLeaveData = this.queryProxy()
+				.query(QUERY_BY_SID_HOLIDAY, KrcmtSubOfHDManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("unknownDate", unknownDate)
+				.setParameter("startDate", dayoffDate.start()).getList();
+		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteById(List<String> subOfHDID) {
+		this.commandProxy().removeAll(KrcmtSubOfHDManaData.class, subOfHDID);
 	}
 
 
