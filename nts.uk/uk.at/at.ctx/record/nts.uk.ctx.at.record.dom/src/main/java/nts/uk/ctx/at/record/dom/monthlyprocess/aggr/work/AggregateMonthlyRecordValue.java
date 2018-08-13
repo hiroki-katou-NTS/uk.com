@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
-/*
+/**
  * 戻り値：ドメインサービス：月別実績を集計する．集計処理
  */
 @Getter
@@ -42,6 +42,7 @@ public class AggregateMonthlyRecordValue {
 	@Setter
 	private Optional<AffiliationInfoOfMonthly> affiliationInfo;
 	/** 月別実績の任意項目 */
+	@Setter
 	private List<AnyItemOfMonthly> anyItemList;
 	/** 管理時間の36協定時間 */
 	@Setter
