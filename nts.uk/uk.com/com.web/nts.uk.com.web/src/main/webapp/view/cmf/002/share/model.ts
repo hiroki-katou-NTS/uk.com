@@ -382,7 +382,7 @@ module nts.uk.com.view.cmf002.share.model {
         dispCategoryItemName: string;
         operationSymbol: KnockoutObservable<number>;
         dispOperationSymbol: string;
-        displayOrder: number;
+        displayOrder: any;
 
         constructor(categoryId: number, categoryItemNo: number, categoryItemName: string,
             operationSymbol: number, displayOrder: number) {
@@ -392,7 +392,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            this.displayOrder = displayOrder;
+            this.displayOrder = displayOrder.toString();
             this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             let self = this;
             self.operationSymbol.subscribe((value) => {
@@ -442,15 +442,15 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class ExternalOutputCategoryItemData {
-        itemNo: KnockoutObservable<number>;
-        dispItemNo: number;
+        itemNo: KnockoutObservable<any>;
+        dispItemNo: any;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
         isCheck: KnockoutObservable<boolean>;
 
-        constructor(itemNo: number, itemName: string) {
+        constructor(itemNo: any, itemName: string) {
             this.itemNo = ko.observable(itemNo);
-            this.dispItemNo = itemNo;
+            this.dispItemNo = itemNo.toString();
             this.itemName = ko.observable(itemName);
             this.dispitemName = itemName;
             this.isCheck = ko.observable(false);

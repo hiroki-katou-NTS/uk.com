@@ -59,8 +59,6 @@ module nts.uk.com.view.cmf002.s {
 
                 //date
                 self.opCond = 0;
-//                self.dayStartValue = params.startDate;
-//                self.dayEndValue = params.endDate;
                 if (_.isNil(params.startDate)) {
                     self.dayStartValue = ""
                 } else {
@@ -77,7 +75,7 @@ module nts.uk.com.view.cmf002.s {
             //開始
             start(): JQueryPromise<any> {
                 let self = this,
-                    dfd = $.Deferred();
+                dfd = $.Deferred();
 
                 //データ保存監視処理: 
                 self.interval = setInterval(self.confirmProcess, 1000, self);
@@ -110,8 +108,7 @@ module nts.uk.com.view.cmf002.s {
                             self.isToNext(false);
                         }
                         self.opCond = res.opCond;
-                        // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
-                        // 完了, 中断終了, 異常終了
+                        // update mode 
                         if ((res.opCond == getEnums.EXPORT_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                             // stop auto request to server
                             clearInterval(self.interval);
@@ -144,7 +141,6 @@ module nts.uk.com.view.cmf002.s {
                                                     return;
                                                 });
                                         }
-
                                     }
                                 }).fail(function(res: any) {
                                     console.log("Get fileId fail");
@@ -157,12 +153,12 @@ module nts.uk.com.view.cmf002.s {
                                 $('#S10_2').focus();
                             }
                             //delete dataStorageMng of process when end
-                            //                        let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
-                            //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-                            //                            console.log("delete success");
-                            //                        }).fail(function(res: any) {
-                            //                            console.log("delete fails");
-                            //                        });
+                            let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
+                            service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
+                                console.log("delete success");
+                            }).fail(function(res: any) {
+                                console.log("delete fails");
+                            });
                         }
                     }
                 }).fail(function(res: any) {
@@ -177,21 +173,22 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        //self.status(getEnums.EXPORT_FINISH);
-                        //self.status(3);
+                        let itemModel = _.find(getStatusEnumS(), function(x) { return x.code == getEnums.INTER_FINISH; });
+                        self.status(itemModel.name);
                         // stop auto request to server
                         clearInterval(self.interval);
                         $('#S10_2').focus();
 
-                        //                        delete dataStorageMng of process when interrupt
-                        //                        let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
-                        //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-                        //                            console.log("delete success");
-                        //                        }).fail(function(res: any) {
-                        //                            console.log("delete fails");
-                        //                        });
+                        //delete dataStorageMng of process when interrupt
+                        let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
+                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
+                            console.log("delete success");
+                        }).fail(function(res: any) {
+                            console.log("delete fails");
+                        });
                     })
                     .ifNo(() => {
+                        $('#S10_2').focus();
                         return;
                     });
             }
