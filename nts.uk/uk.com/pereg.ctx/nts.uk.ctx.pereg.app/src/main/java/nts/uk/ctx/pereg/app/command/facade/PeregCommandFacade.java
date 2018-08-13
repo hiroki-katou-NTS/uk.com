@@ -636,6 +636,24 @@ public class PeregCommandFacade {
 		Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
 		switch (command.getCategoryType()) {
 		case 2:
+			Optional<ItemValue> itemValue = command.getInputs().stream().findFirst();
+
+			if (itemValue.isPresent()) {
+				ItemValue _itemValue = itemValue.get();
+				String valueAfter = Optional.ofNullable(_itemValue.valueAfter()).orElse(""),
+						viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
+
+				if (!valueAfter.trim().isEmpty()) {
+					_itemValue.setValueAfter("");
+				}
+
+				if (!viewAfter.trim().isEmpty()) {
+					_itemValue.setContentAfter("");
+				}
+
+				dKey = TargetDataKey.of(_itemValue.valueBefore());
+				itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_itemValue));
+			}			
 			break;
 		case 3:
 		case 4:
