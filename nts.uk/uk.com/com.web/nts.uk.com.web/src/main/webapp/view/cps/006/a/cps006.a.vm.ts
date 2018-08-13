@@ -55,8 +55,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     categoryType: x.categoryType,
                                     isAbolition: x.isAbolition
                                 })));
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
                     } else {
@@ -102,6 +102,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     }
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
 
@@ -123,9 +124,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.canAbolition, data.isExistedItemLst);
-                    if (data.itemLst.length > 0) {
-                        self.currentCategory().currentItemId(data.itemLst[0].id);
-                    }
+//                    if (data.itemLst.length > 0) {
+//                        self.currentCategory().currentItemId(data.itemLst[0].id);
+//                    }
                 }
             });
         }
