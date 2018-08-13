@@ -54,6 +54,7 @@
 						columns: ctgColums ,
 						multiple: false,
 						value: id ,
+						columnResize: true,
 						rows:20 }">
 					</table>
 				</div>
@@ -79,7 +80,7 @@
 								required: true,
 								immediate: false}"></input>
 							<com:ko-if bind="displayIsAbolished() === 1">
-								<div tabindex="8" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
+								<div tabindex="8" data-bind="ntsCheckBox: { checked: isAbolition, style: 'warnpanel' }">#{i18n.getText('CPS006_11')}</div>
 							</com:ko-if>
 						</div>
 
@@ -152,6 +153,7 @@
 							columns: currentCategory().itemColums ,
 							multiple: false,
 							value: currentCategory().currentItemId ,
+							columnResize: true,
 							rows:10 }">
 						</table>
 					</div>
