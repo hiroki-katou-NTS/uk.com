@@ -193,16 +193,18 @@ module nts.uk.at.view.kdp003.b {
                         self.items().push(objItem);
                         self.currentId(self.stampCode());
                         self.items(_.sortBy(self.items(), item => item.stampOutputSetCode));
-                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(err => nts.uk.ui.dialog.alertError(err));
+                    }).fail(err => nts.uk.ui.dialog.alertError(err)).always(()=> {
+                        nts.uk.ui.block.clear();
+                    });
                 } else {
                     service.updateStampingOutputItemSet(data).done(() => {
                         var oldItem = _.find(self.items(), item => item.stampOutputSetCode == self.stampCode());
                         var newItem = new ItemModel(self.stampCode(), self.stampName());
                         self.items.replace(oldItem, newItem)
-                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).always(()=> {
+                        nts.uk.ui.block.clear();
                     });
 
                 }
