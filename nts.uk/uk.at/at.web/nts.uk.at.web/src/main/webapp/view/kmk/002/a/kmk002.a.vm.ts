@@ -784,8 +784,8 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calcResultRange.toDto();
-                dto.unit = self.unit();
+                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
+                dto.unit = self.enableUnit() ? self.unit() : self.optionalItemDtoStash.unit;
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -1071,17 +1071,33 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert view model to dto
              */
-            public toDto(): CalcResultRangeDto {
+            public toDto(calcResultRangeStash: CalcResultRangeDto): CalcResultRangeDto {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
-                dto.numberUpper = self.numberUpper();
-                dto.numberLower = self.numberLower();
-                dto.amountUpper = self.amountUpper();
-                dto.amountLower = self.amountLower();
-                dto.timeUpper = self.timeUpper();
-                dto.timeLower = self.timeLower();
+
+                if (self.upperCheck()) {
+                    dto.numberUpper = self.numberUpper();
+                    dto.amountUpper = self.amountUpper();
+                    dto.timeUpper = self.timeUpper();
+                } else {
+                    // get stored data from stash
+                    dto.numberUpper = calcResultRangeStash.numberUpper;
+                    dto.amountUpper = calcResultRangeStash.amountUpper;
+                    dto.timeUpper = calcResultRangeStash.timeUpper;
+                }
+
+                if (self.lowerCheck()) {
+                    dto.numberLower = self.numberLower();
+                    dto.amountLower = self.amountLower();
+                    dto.timeLower = self.timeLower();
+                } else {
+                    // get stored data from stash
+                    dto.numberLower = calcResultRangeStash.numberLower;
+                    dto.amountLower = calcResultRangeStash.amountLower;
+                    dto.timeLower = calcResultRangeStash.timeLower;
+                }
                 return dto;
             }
         }

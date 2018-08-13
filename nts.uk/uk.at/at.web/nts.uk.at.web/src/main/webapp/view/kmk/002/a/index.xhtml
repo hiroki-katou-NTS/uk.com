@@ -222,7 +222,7 @@
                                     data-bind="ntsTextEditor: {
                                     name: '#[KMK002_75]',
                                     value: unit,
-                                    enable: enableUnit,
+                                    enable: enableUnit() &amp;&amp; isUsed(),
                                     constraint: 'UnitOfOptionalItem',
                                     required: false}"/>
                               </td>
