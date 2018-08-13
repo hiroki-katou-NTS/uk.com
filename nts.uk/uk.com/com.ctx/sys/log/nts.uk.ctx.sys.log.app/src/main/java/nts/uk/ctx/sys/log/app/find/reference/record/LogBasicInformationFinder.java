@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
@@ -31,6 +32,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
@@ -203,6 +205,20 @@ public class LogBasicInformationFinder {
 								for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
 									List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
 									String childrentKey = IdentifierUtil.randomUniqueId();
+									// Setting tagetDate
+									String tagetDateStr = "";
+									GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
+									CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
+									if(calendarKeyType.value == CalendarKeyType.DATE.value){
+										tagetDateStr = tagetDate.toString("yyyy/MM/dd");
+									}
+									if (calendarKeyType.value == CalendarKeyType.YEARMONTH.value) {
+										tagetDateStr = tagetDate.toString("yyyy/MM");
+									}
+									if (calendarKeyType.value == CalendarKeyType.YEAR.value) {
+										tagetDateStr = tagetDate.toString("yyyy");
+
+									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
@@ -215,8 +231,7 @@ public class LogBasicInformationFinder {
 											perObject.setInfoOperateAttr(this.getinfoOperateAttr(
 													categoryCorrectionLog.getInfoOperateAttr().value));
 											// item 25,26,27,28
-											perObject.setTargetDate(
-													categoryCorrectionLog.getTargetKey().getDateKey().get());
+											perObject.setTargetDate(tagetDateStr);
 
 											// item 29,31,33
 											perObject.setItemName(itemInfo.getName());
@@ -235,7 +250,7 @@ public class LogBasicInformationFinder {
 										perObject.setInfoOperateAttr(
 												this.getinfoOperateAttr(categoryCorrectionLog.getInfoOperateAttr().value));
 										// item 25,26,27,28
-										perObject.setTargetDate(categoryCorrectionLog.getTargetKey().getDateKey().get());
+										perObject.setTargetDate(tagetDateStr);
 										lstLogPerCateCorrectRecordDto.add(perObject);
 									}
 								}
