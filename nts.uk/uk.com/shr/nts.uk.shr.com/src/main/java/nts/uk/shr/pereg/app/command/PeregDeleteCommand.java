@@ -1,6 +1,9 @@
 package nts.uk.shr.pereg.app.command;
 
+import java.util.List;
+
 import lombok.Value;
+import nts.uk.shr.pereg.app.ItemValue;
 
 @Value
 public class PeregDeleteCommand {
@@ -11,4 +14,6 @@ public class PeregDeleteCommand {
 	private final String categoryCode;
 	private final String categoryName;
 	private final String recordId;
+	// add for log delete
+	private final List<ItemValue> inputs;
 }
