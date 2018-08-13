@@ -59,6 +59,19 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " WHERE c.sID = :employeeId"
 			+ " AND c.unknownDate = :unknownDate"
 			+ " AND c.dayOff >= :startDate";
+	private static final String QUERY_BYSID_COND_DATE = QUERY_BYSID_WITH_COND + " AND p.dayOff < :dayOff";
+
+
+	@Override
+	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("state", state)
+				.setParameter("dayOff", ymd)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
