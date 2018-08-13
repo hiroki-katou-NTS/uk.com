@@ -94,6 +94,12 @@ public class KmfmtRetentionYearlyDataCopyHandler extends JpaRepository implement
 		}
 	}
 	
+	/**
+	 * Find all by cid.
+	 *
+	 * @param cid the cid
+	 * @return the list
+	 */
 	public List<KmfmtRetentionYearly> findAllByCid(String cid){
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
