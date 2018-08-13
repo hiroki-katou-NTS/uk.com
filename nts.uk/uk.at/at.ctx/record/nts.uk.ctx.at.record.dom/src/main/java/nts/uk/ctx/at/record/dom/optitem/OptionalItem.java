@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.dom.optitem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
@@ -120,6 +119,7 @@ public class OptionalItem extends AggregateRoot {
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
+		this.unit = memento.getUnit();
 	}
 
 	/**
@@ -136,6 +136,7 @@ public class OptionalItem extends AggregateRoot {
 		memento.setEmpConditionAtr(this.empConditionAtr);
 		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calcResultRange);
+		memento.setUnit(this.unit);
 	}
 
 	/* (non-Javadoc)
