@@ -202,7 +202,7 @@ module nts.uk.at.view.kdp003.c {
                     virtualizationMode: 'fixed',
                     autoGenerateColumns: true,
                     width: self.widthGrid(),
-                    height: "470px",
+                    height: "570px",
                    // primaryKey: "wkpCode",
                     dataSource: self.dataSource,
                     dataRendered: function(evt, ui) {
