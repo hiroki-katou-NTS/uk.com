@@ -135,9 +135,6 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
                     });
                 }
-                else {
-                    $('#C10_1').ntsError('set', { messageId: "Msg_656" });
-                }
                 self.formulaResult(newFormulaResult);
             });
         }
@@ -358,6 +355,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // 出力項目を登録する
         registerOutputItem() {
             let self = this;
+            errors.clearAll();
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
 
             $('.nts-input').trigger("validate");
@@ -398,6 +396,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
                 currentStandardOutputItem.isNewMode = self.isNewMode();
+                currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register
                 service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {

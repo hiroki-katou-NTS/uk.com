@@ -25,6 +25,8 @@ import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -33,6 +35,9 @@ public class RegisterStdOutItemCommandHandler extends CommandHandler<StdOutItemC
 
 	@Inject
 	private StandardOutputItemRepository repository;
+	
+	@Inject
+	private StandardOutputItemOrderRepository standardOutputItemOrderRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<StdOutItemCommand> context) {
@@ -44,9 +49,11 @@ public class RegisterStdOutItemCommandHandler extends CommandHandler<StdOutItemC
 					return new CategoryItem(item.getCategoryItemNo(), item.getCategoryId(), item.getOperationSymbol(),
 							item.getDisplayOrder());
 				}).collect(Collectors.toList()));
-		
+		int order = addCommand.getDispOrder();
+		StandardOutputItemOrder orderDomain= new StandardOutputItemOrder(cid, addCommand.getOutItemCd(), addCommand.getCondSetCd(), order);
 		if (addCommand.isNewMode()) {
 			repository.add(domain);
+			standardOutputItemOrderRepository.add(orderDomain);
 		} else {
 			repository.update(domain);
 		}

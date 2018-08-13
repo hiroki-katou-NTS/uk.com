@@ -51,4 +51,6 @@ public class StdOutItemCommand {
 	private InstantTimeDfsCommand inTimeDataFormatSetting;
 	private NumberDfsCommand numberDataFormatSetting;
 	private TimeDfsCommand timeDataFormatSetting;
+	
+	private int dispOrder;
 }
