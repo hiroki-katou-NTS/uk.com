@@ -15,6 +15,7 @@ import com.aspose.cells.Font;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.TxtSaveOptions;
+import com.aspose.cells.TxtValueQuoteType;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -79,7 +80,7 @@ public class FileGenerator extends AsposeCellsReportGenerator {
 
 		TxtSaveOptions opts = new TxtSaveOptions();
 		opts.setSeparatorString(delimiter.delimiter);
-		//opts.setQuoteType(TxtValueQuoteType.ALWAYS);
+		opts.setQuoteType(TxtValueQuoteType.NEVER);
 		opts.setEncoding(Encoding.getUTF8());
 		
 		reportContext.saveWithOtherOption(this.createNewFile(generatorContext, dataSource.getFileName()), opts);

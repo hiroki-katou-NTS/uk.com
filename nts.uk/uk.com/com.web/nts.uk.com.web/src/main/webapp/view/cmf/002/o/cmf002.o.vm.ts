@@ -135,7 +135,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
-                    console.log(res);
+                    
                     self.loadListCondition(dataCndSetCd);
                     block.clear();
                     $('#ex_output_wizard').ntsWizard("next");
@@ -219,10 +219,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 alertError('Msg_657');
             }
             else {
-                self.initScreenR();
                 self.next();
+                self.initScreenR();
             }
         }
+        
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
@@ -230,11 +231,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 
                 self.listOutputCondition(ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
+                
+                $(".createExOutText").focus();
             }).fail(res => {
                 console.log("getExOutSummarySetting fail");
             });
-
-            $(".createExOutText").focus();
 
         }
 
@@ -274,7 +275,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             _.forEach(dataCndSetCd, function(item) {
                 listItemModel.push(new DisplayTableName(item.categoryId, item.conditionSetCd, item.conditionSetName));
             });
-            console.log(listItemModel.length);
+            
             self.listCondition(listItemModel);
             self.selectedConditionCd(self.listCondition()[0].code);
             self.selectedConditionName(self.listCondition()[0].name);
