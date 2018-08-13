@@ -96,8 +96,7 @@ public class AddEmployeeCommandFacade {
 						0, 
 						null,
 						false,
-						Arrays.asList(itemValue),
-						null);
+						Arrays.asList(itemValue));
 			} else {
 				return new ItemsByCategory(ctgFromServer.get().getPersonInfoCategoryId(),
 						"CS00069",
@@ -105,8 +104,7 @@ public class AddEmployeeCommandFacade {
 						0, 
 						null,
 						false,
-						Arrays.asList(itemValue),
-						null);
+						Arrays.asList(itemValue));
 			}
 		}
 		return null;
@@ -239,9 +237,9 @@ public class AddEmployeeCommandFacade {
 			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD(categoryCode , AppContexts.user().companyId());
 			if(ctgFromServer.isPresent()) {
 				PersonInfoCategory ctg = ctgFromServer.get();
-				 return new ItemsByCategory(ctg.getPersonInfoCategoryId(), ctg.getCategoryCode().v(), ctg.getCategoryName().v(), 0, null, false, items, null);
+				 return new ItemsByCategory(ctg.getPersonInfoCategoryId(), ctg.getCategoryCode().v(), ctg.getCategoryName().v(), 0, null, false, items);
 			}else {
-				return new ItemsByCategory("", categoryCode, "", 0, null, false, items, null);
+				return new ItemsByCategory("", categoryCode, "", 0, null, false, items);
 			}
 		}
 	}
