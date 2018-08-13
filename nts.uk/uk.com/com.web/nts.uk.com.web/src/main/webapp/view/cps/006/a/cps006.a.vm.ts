@@ -124,9 +124,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.canAbolition, data.isExistedItemLst);
-                    if (data.itemLst.length > 0) {
-                        self.currentCategory().currentItemId(data.itemLst[0].id);
-                    }
+//                    if (data.itemLst.length > 0) {
+//                        self.currentCategory().currentItemId(data.itemLst[0].id);
+//                    }
                 }
             });
         }
