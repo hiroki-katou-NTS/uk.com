@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class ErrorAlarmMessage.
  */
 // エラーアラームメッセージ
-@StringMaxLength(100)
+@StringMaxLength(200)
 public class ErrorAlarmMessage extends StringPrimitiveValue<ErrorAlarmMessage> {
 
 	/** The Constant serialVersionUID. */
