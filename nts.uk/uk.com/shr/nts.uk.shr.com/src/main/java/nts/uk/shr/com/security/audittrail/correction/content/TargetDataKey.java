@@ -56,6 +56,16 @@ public class TargetDataKey {
 		return new TargetDataKey(CalendarKeyType.NONE, dateKey, stringKey);
 	}
 	
+	public static TargetDataKey of(YearMonth yearMonthKey, String stringKey) {
+		return new TargetDataKey(CalendarKeyType.NONE, 
+				GeneralDate.ymd(yearMonthKey.year(), yearMonthKey.month(), 1), stringKey);
+	}
+	
+	public static TargetDataKey of(int yearKey, String stringKey) {
+		return new TargetDataKey(CalendarKeyType.NONE, 
+				GeneralDate.ymd(yearKey, 1, 1), stringKey);
+	}
+	
 	
 	@RequiredArgsConstructor
 	public enum CalendarKeyType {
