@@ -18,6 +18,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -36,9 +37,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
 			"INNER JOIN PpemtPerInfoItem ii ON ii.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
-			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPKperInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPK.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.endDateItemId",
-			"ORDER BY ctg.categoryCd");
+			"AND ctg.cid = :cid ORDER BY ctg.categoryCd");
 
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -613,8 +614,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<DateRangeDto> dateRangeCode() {
+		String cid = AppContexts.user().companyId();
 		// Get startDate and endDate of category history
-		List<String[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, String[].class).getList();
+		List<String[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, String[].class).setParameter("cid", cid).getList();
 
 		return query.stream().map(m -> m[0]).distinct().map(m -> {
 			List<String[]> record = query.stream().filter(f -> f[0].equals(m)).collect(Collectors.toList());
