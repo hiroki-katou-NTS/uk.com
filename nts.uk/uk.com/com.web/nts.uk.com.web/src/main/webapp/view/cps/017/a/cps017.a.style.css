@@ -96,19 +96,22 @@ body {
 	clear: both;
 	margin-left: 20px;
 	margin-bottom: 10px;
-}
+} 
 
 #code {
 	margin-top: 5px;
+	width: 70px !important;
 }
 
 #name {
 	max-width: 300px !important;
 	margin-top: 5px;
+	width: 203px !important;
 }
 
 #exCode {
 	margin-top: 5px;
+	width: 70px !important;
 }
 
 #memoSelection {
