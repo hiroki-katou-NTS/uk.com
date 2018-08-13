@@ -1,13 +1,9 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.mastercopy.handler;
+package nts.uk.ctx.pereg.dom.person.layout.mastercopy;
 
 /**
  * The Enum CopyMethod.
  */
-// 処理方法
+//処理方法
 public enum CopyMethod {
 
 	/** The do nothing. */

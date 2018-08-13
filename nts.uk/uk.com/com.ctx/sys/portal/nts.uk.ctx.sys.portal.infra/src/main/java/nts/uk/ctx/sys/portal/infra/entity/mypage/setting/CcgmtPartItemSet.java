@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.entity.mypage.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -24,7 +26,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "CCGMT_PART_ITEM_SET")
-public class CcgmtPartItemSet extends UkJpaEntity {
+public class CcgmtPartItemSet extends UkJpaEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public CcgmtPartItemSetPK ccgmtPartItemSetPK;

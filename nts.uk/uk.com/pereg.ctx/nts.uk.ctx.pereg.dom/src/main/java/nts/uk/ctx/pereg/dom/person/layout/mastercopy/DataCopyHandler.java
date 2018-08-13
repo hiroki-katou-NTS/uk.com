@@ -1,10 +1,9 @@
-package nts.uk.ctx.bs.employee.dom.mastercopy.handler;
+package nts.uk.ctx.pereg.dom.person.layout.mastercopy;
 
 /**
- * The Interface CopyHandler.
+ * The Interface DataCopyHandler.
  */
 public interface DataCopyHandler {
-	
 	/**
 	 * Do copy.
 	 */

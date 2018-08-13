@@ -574,6 +574,11 @@ project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
+project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub'){
+	dependencies{
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
 
 project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pub') {
 	dependencies {
