@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,7 +28,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Stateless
 public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implements DataCopyHandler {
 
 	/** The copy method. */
@@ -60,10 +58,10 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 		//Get all company zero data
 		String zeroCid = AppContexts.user().zeroCompanyIdInContract();
 		List<BsystTempAbsenceFrame> zeroCidEntities = this.findAllByCid(zeroCid);
+		List<BsystTempAbsenceFrame> oldDatas = this.findAllByCid(companyId);
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				// Delete all old data
-				List<BsystTempAbsenceFrame> oldDatas = this.findAllByCid(companyId);
 				if(oldDatas!=null) this.commandProxy().removeAll(oldDatas);
 				this.getEntityManager().flush();
 			case ADD_NEW:
@@ -76,7 +74,7 @@ public class BsystTempAbsenceFrameDataCopyHandler extends JpaRepository implemen
 				});
 				List<BsystTempAbsenceFrame> addEntites = dataCopy;
 				addEntites = dataCopy.stream()
-		                .filter(item -> !zeroCidEntities.contains(item))
+		                .filter(item -> !oldDatas.contains(item))
 		                .collect(Collectors.toList());
 				this.commandProxy().insertAll(addEntites);
 			case DO_NOTHING:
