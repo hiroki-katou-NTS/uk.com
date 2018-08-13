@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 public interface DataCopyHandler {
 	
 	/**
-	 * Handler.
+	 * Do copy.
 	 */
-	public void handler();
+	public void doCopy();
 }

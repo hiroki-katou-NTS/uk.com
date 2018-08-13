@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
@@ -10,6 +12,8 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
 	
 	/** The copy method. */
@@ -19,10 +23,10 @@ public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
 	private String companyCd;
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler#handler()
+	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler#doCopy()
 	 */
 	@Override
-	public void handler() {
+	public void doCopy() {
 		
 		// TODO: Get all company zero data
 		
