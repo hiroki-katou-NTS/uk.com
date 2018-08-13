@@ -186,7 +186,14 @@ module nts.uk.at.view.kbt002.b {
                 let self = this;
                 block.grayout();
                 let canSelected = self.currentExecItem().workplaceList() ? self.currentExecItem().workplaceList() : [];
-                setShared('inputCDL008', { baseDate: moment(new Date()).toDate(), isMultiple: true, selectedCodes: canSelected });
+                setShared('inputCDL008', { 
+                baseDate: moment(new Date()).toDate(), 
+                isMultiple: true, 
+                selectedCodes: canSelected,
+                selectedSystemType: 2,
+                isrestrictionOfReferenceRange: true,
+                showNoSelection:  false,
+                isShowBaseDate:  false });
                 modal("com", "/view/cdl/008/a/index.xhtml").onClosed(function() {
                     block.clear();
                     let data = getShared('outputCDL008');
