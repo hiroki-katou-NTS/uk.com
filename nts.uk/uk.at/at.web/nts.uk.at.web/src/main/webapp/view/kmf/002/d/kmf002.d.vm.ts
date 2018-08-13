@@ -151,6 +151,10 @@ module nts.uk.at.view.kmf002.d {
 
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.setDefaultMonthDay();
+                    return;
+                }
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {
