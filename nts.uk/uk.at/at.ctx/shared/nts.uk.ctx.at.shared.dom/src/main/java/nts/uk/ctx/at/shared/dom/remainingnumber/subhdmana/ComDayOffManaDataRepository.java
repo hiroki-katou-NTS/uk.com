@@ -24,6 +24,7 @@ public interface ComDayOffManaDataRepository {
 	List<CompensatoryDayOffManaData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
 
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
+
 	/**
 	 * 
 	 * @param cid
