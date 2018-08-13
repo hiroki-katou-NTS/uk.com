@@ -1,15 +1,20 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
+import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
+import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
@@ -621,6 +626,462 @@ public class LogBasicInformationAllFinder {
 		default:
 			return "";
 		}
+	}
+	
+	public List<Map<String, Object>> getDataLog(LogParams params){
+		List<Map<String, Object>> dataSource = new ArrayList<>();
+		dataSource = getDataSource(params, params.getLstHeaderDto());
+		return dataSource;
+		
+	}
+	private List<Map<String, Object>> getDataSource(LogParams params, List<LogOutputItemDto> headers) {
+		List<Map<String, Object>> dataSource = new ArrayList<>();
+		List<LogBasicInfoAllDto> data = params.getListLogBasicInfoAllDto();
+
+		for (LogBasicInfoAllDto d : data) {
+			Map<String, Object> row = checkHeader(d, headers, params.getRecordType());
+			// filter log
+			List<LogSetItemDetailDto> listLogSetItemDetailDto = params.getListLogSetItemDetailDto();
+
+			if (!CollectionUtil.isEmpty(listLogSetItemDetailDto)) {
+				boolean check = false;
+				if (!row.isEmpty()) {
+					for (Map.Entry<String, Object> entry : row.entrySet()) {
+
+						for (LogOutputItemDto logOutputItemDto : headers) {
+							for (LogSetItemDetailDto logSetItemDetailDto : listLogSetItemDetailDto) {
+								if (logSetItemDetailDto.getItemNo() == logOutputItemDto.getItemNo()
+										&& logOutputItemDto.getItemName().equals(entry.getKey())) {
+									// 0 like,1 bang,2 khac
+									if (logSetItemDetailDto.getSybol().intValue() == 0) {
+										if (entry.getValue().toString().contains(logSetItemDetailDto.getCondition())) {
+											check = true;
+										} else {
+											check = false;
+										}
+
+									}
+									if (logSetItemDetailDto.getSybol().intValue() == 1) {
+										if (logSetItemDetailDto.getCondition().equals(entry.getValue())) {
+											check = true;
+										} else {
+											check = false;
+										}
+
+									}
+									if (logSetItemDetailDto.getSybol().intValue() == 2) {
+										if (!logSetItemDetailDto.getCondition().equals(entry.getValue())) {
+											check = true;
+										} else {
+											check = false;
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+					if (check) {
+						dataSource.add(row);
+					}
+				}
+
+			} else {
+				dataSource.add(row);
+			}
+
+		}
+
+	
+		return dataSource;
+	}
+
+	private Map<String, Object> checkHeader(LogBasicInfoAllDto logBaseDto, List<LogOutputItemDto> headers,
+			int recordType) {
+		Map<String, Object> dataReturn = new HashMap<>();
+		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(recordType);
+		// sort by itemNo
+		Collections.sort(headers, new Comparator<LogOutputItemDto>() {
+			@Override
+			public int compare(LogOutputItemDto o1, LogOutputItemDto o2) {
+				return o1.getItemNo() - o2.getItemNo();
+			}
+
+		});
+		for (LogOutputItemDto a : headers) {
+			// int itno=a.getItemNo();
+			ItemNoEnum itemNoEnum = ItemNoEnum.valueOf(a.getItemNo());
+			switch (recordTypeEnum) {
+			case LOGIN:
+				switch (itemNoEnum) {
+				case ITEM_NO_1:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdLogin());
+					break;
+				case ITEM_NO_2:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameLogin());
+					break;
+				case ITEM_NO_3:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeLogin());
+					break;
+				case ITEM_NO_4:
+					dataReturn.put(a.getItemName(), logBaseDto.getIpAddress());
+					break;
+				case ITEM_NO_5:
+					dataReturn.put(a.getItemName(), logBaseDto.getPcName());
+					break;
+				case ITEM_NO_6:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccount());
+					break;
+				case ITEM_NO_7:
+					dataReturn.put(a.getItemName(), logBaseDto.getModifyDateTime());
+					break;
+				case ITEM_NO_8:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmploymentAuthorityName());
+					break;
+				case ITEM_NO_9:
+					dataReturn.put(a.getItemName(), logBaseDto.getSalarytAuthorityName());
+					break;
+				case ITEM_NO_10:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonelAuthorityName());
+					break;
+				case ITEM_NO_11:
+					dataReturn.put(a.getItemName(), logBaseDto.getOfficeHelperAuthorityName());
+					break;
+				case ITEM_NO_12:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccountAuthorityName());
+					break;
+				case ITEM_NO_13:
+					dataReturn.put(a.getItemName(), logBaseDto.getMyNumberAuthorityName());
+					break;
+				case ITEM_NO_14:
+					dataReturn.put(a.getItemName(), logBaseDto.getGroupCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_15:
+					dataReturn.put(a.getItemName(), logBaseDto.getCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_16:
+					dataReturn.put(a.getItemName(), logBaseDto.getSystemAdminAuthorityName());
+					break;
+				case ITEM_NO_17:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonalInfoAuthorityName());
+					break;
+				case ITEM_NO_18:
+					dataReturn.put(a.getItemName(), logBaseDto.getMenuName());
+					break;
+				case ITEM_NO_19:
+					dataReturn.put(a.getItemName(), logBaseDto.getLoginStatus());
+					break;
+				case ITEM_NO_20:
+					dataReturn.put(a.getItemName(), logBaseDto.getLoginMethod());
+					break;
+				case ITEM_NO_21:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccessResourceUrl());
+					break;
+				case ITEM_NO_22:
+					dataReturn.put(a.getItemName(), logBaseDto.getNote());
+					break;
+				default:
+					break;
+				}
+
+				break;
+			case START_UP:
+				switch (itemNoEnum) {
+				case ITEM_NO_1:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdLogin());
+					break;
+				case ITEM_NO_2:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameLogin());
+					break;
+				case ITEM_NO_3:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeLogin());
+					break;
+				case ITEM_NO_4:
+					dataReturn.put(a.getItemName(), logBaseDto.getIpAddress());
+					break;
+				case ITEM_NO_5:
+					dataReturn.put(a.getItemName(), logBaseDto.getPcName());
+					break;
+				case ITEM_NO_6:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccount());
+					break;
+				case ITEM_NO_7:
+					dataReturn.put(a.getItemName(), logBaseDto.getModifyDateTime());
+					break;
+				case ITEM_NO_8:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmploymentAuthorityName());
+					break;
+				case ITEM_NO_9:
+					dataReturn.put(a.getItemName(), logBaseDto.getSalarytAuthorityName());
+					break;
+				case ITEM_NO_10:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonelAuthorityName());
+					break;
+				case ITEM_NO_11:
+					dataReturn.put(a.getItemName(), logBaseDto.getOfficeHelperAuthorityName());
+					break;
+				case ITEM_NO_12:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccountAuthorityName());
+					break;
+				case ITEM_NO_13:
+					dataReturn.put(a.getItemName(), logBaseDto.getMyNumberAuthorityName());
+					break;
+				case ITEM_NO_14:
+					dataReturn.put(a.getItemName(), logBaseDto.getGroupCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_15:
+					dataReturn.put(a.getItemName(), logBaseDto.getCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_16:
+					dataReturn.put(a.getItemName(), logBaseDto.getSystemAdminAuthorityName());
+					break;
+				case ITEM_NO_17:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonalInfoAuthorityName());
+					break;
+				case ITEM_NO_18:
+					dataReturn.put(a.getItemName(), logBaseDto.getNote());
+					break;
+				case ITEM_NO_19:
+					dataReturn.put(a.getItemName(), logBaseDto.getMenuName());
+					break;
+				case ITEM_NO_20:
+					dataReturn.put(a.getItemName(), logBaseDto.getMenuNameReSource());
+					break;
+				default:
+					break;
+
+				}
+				break;
+			case UPDATE_PERSION_INFO:
+				switch (itemNoEnum) {
+				case ITEM_NO_1:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdLogin());
+					break;
+				case ITEM_NO_2:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameLogin());
+					break;
+				case ITEM_NO_3:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeLogin());
+					break;
+				case ITEM_NO_4:
+					dataReturn.put(a.getItemName(), logBaseDto.getIpAddress());
+					break;
+				case ITEM_NO_5:
+					dataReturn.put(a.getItemName(), logBaseDto.getPcName());
+					break;
+				case ITEM_NO_6:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccount());
+					break;
+				case ITEM_NO_7:
+					dataReturn.put(a.getItemName(), logBaseDto.getModifyDateTime());
+					break;
+				case ITEM_NO_8:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmploymentAuthorityName());
+					break;
+				case ITEM_NO_9:
+					dataReturn.put(a.getItemName(), logBaseDto.getSalarytAuthorityName());
+					break;
+				case ITEM_NO_10:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonelAuthorityName());
+					break;
+				case ITEM_NO_11:
+					dataReturn.put(a.getItemName(), logBaseDto.getOfficeHelperAuthorityName());
+					break;
+				case ITEM_NO_12:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccountAuthorityName());
+					break;
+				case ITEM_NO_13:
+					dataReturn.put(a.getItemName(), logBaseDto.getMyNumberAuthorityName());
+					break;
+				case ITEM_NO_14:
+					dataReturn.put(a.getItemName(), logBaseDto.getGroupCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_15:
+					dataReturn.put(a.getItemName(), logBaseDto.getCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_16:
+					dataReturn.put(a.getItemName(), logBaseDto.getSystemAdminAuthorityName());
+					break;
+				case ITEM_NO_17:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonalInfoAuthorityName());
+					break;
+				case ITEM_NO_18:
+					dataReturn.put(a.getItemName(), logBaseDto.getMenuName());
+					break;
+				case ITEM_NO_19:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdTaget());
+					break;
+				case ITEM_NO_20:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameTaget());
+					break;
+				case ITEM_NO_21:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeTaget());
+					break;
+				case ITEM_NO_22:
+					dataReturn.put(a.getItemName(), logBaseDto.getCategoryProcess());
+					break;
+				case ITEM_NO_23:
+					dataReturn.put(a.getItemName(), logBaseDto.getCategoryName());
+					break;
+				case ITEM_NO_24:
+					dataReturn.put(a.getItemName(), logBaseDto.getMethodCorrection());
+					break;
+				case ITEM_NO_25:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetYmd());
+					break;
+				case ITEM_NO_26:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetYm());
+					break;
+				case ITEM_NO_27:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetY());
+					break;
+				case ITEM_NO_28:
+					dataReturn.put(a.getItemName(), logBaseDto.getKeyString());
+					break;
+				case ITEM_NO_29:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemName());
+					break;
+				case ITEM_NO_30:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemvalueBefor());
+					break;
+				case ITEM_NO_31:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemContentValueBefor());
+					break;
+				case ITEM_NO_32:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemvalueAppter());
+					break;
+				case ITEM_NO_33:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemContentValueAppter());
+					break;
+				case ITEM_NO_34:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemEditAddition());
+					break;
+				case ITEM_NO_35:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetYmdEditAddition());
+					break;
+				case ITEM_NO_36:
+					dataReturn.put(a.getItemName(), logBaseDto.getNote());
+					break;
+				default:
+					break;
+
+				}
+				break;
+			case DATA_CORRECT:
+				switch (itemNoEnum) {
+				case ITEM_NO_1:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdLogin());
+					break;
+				case ITEM_NO_2:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameLogin());
+					break;
+				case ITEM_NO_3:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeLogin());
+					break;
+				case ITEM_NO_4:
+					dataReturn.put(a.getItemName(), logBaseDto.getIpAddress());
+					break;
+				case ITEM_NO_5:
+					dataReturn.put(a.getItemName(), logBaseDto.getPcName());
+					break;
+				case ITEM_NO_6:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccount());
+					break;
+				case ITEM_NO_7:
+					dataReturn.put(a.getItemName(), logBaseDto.getModifyDateTime());
+					break;
+				case ITEM_NO_8:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmploymentAuthorityName());
+					break;
+				case ITEM_NO_9:
+					dataReturn.put(a.getItemName(), logBaseDto.getSalarytAuthorityName());
+					break;
+				case ITEM_NO_10:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonelAuthorityName());
+					break;
+				case ITEM_NO_11:
+					dataReturn.put(a.getItemName(), logBaseDto.getOfficeHelperAuthorityName());
+					break;
+				case ITEM_NO_12:
+					dataReturn.put(a.getItemName(), logBaseDto.getAccountAuthorityName());
+					break;
+				case ITEM_NO_13:
+					dataReturn.put(a.getItemName(), logBaseDto.getMyNumberAuthorityName());
+					break;
+				case ITEM_NO_14:
+					dataReturn.put(a.getItemName(), logBaseDto.getGroupCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_15:
+					dataReturn.put(a.getItemName(), logBaseDto.getCompanyAddminAuthorityName());
+					break;
+				case ITEM_NO_16:
+					dataReturn.put(a.getItemName(), logBaseDto.getSystemAdminAuthorityName());
+					break;
+				case ITEM_NO_17:
+					dataReturn.put(a.getItemName(), logBaseDto.getPersonalInfoAuthorityName());
+					break;
+				case ITEM_NO_18:
+					dataReturn.put(a.getItemName(), logBaseDto.getMenuName());
+					break;
+				case ITEM_NO_19:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserIdTaget());
+					break;
+				case ITEM_NO_20:
+					dataReturn.put(a.getItemName(), logBaseDto.getUserNameTaget());
+					break;
+				case ITEM_NO_21:
+					dataReturn.put(a.getItemName(), logBaseDto.getEmployeeCodeTaget());
+					break;
+				case ITEM_NO_22:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetYmd());
+					break;
+				case ITEM_NO_23:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetYm());
+					break;
+				case ITEM_NO_24:
+					dataReturn.put(a.getItemName(), logBaseDto.getTarGetY());
+					break;
+				case ITEM_NO_25:
+					dataReturn.put(a.getItemName(), logBaseDto.getCatagoryCorection());
+					break;
+				case ITEM_NO_26:
+					dataReturn.put(a.getItemName(), logBaseDto.getKeyString());
+					break;
+				case ITEM_NO_27:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemName());
+					break;
+				case ITEM_NO_28:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemvalueBefor());
+					break;
+				case ITEM_NO_29:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemvalueAppter());
+					break;
+				case ITEM_NO_30:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemContentValueBefor());
+					break;
+				case ITEM_NO_31:
+					dataReturn.put(a.getItemName(), logBaseDto.getItemContentValueAppter());
+					break;
+				case ITEM_NO_32:
+					dataReturn.put(a.getItemName(), logBaseDto.getNote());
+					break;
+				default:
+					break;
+
+				}
+				break;
+
+			default:
+				break;
+			}
+
+		}
+		return dataReturn;
 	}
 
 }

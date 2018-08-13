@@ -9,10 +9,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
 
 /**
  * @author laitv
@@ -26,6 +28,7 @@ public class NewLayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
+	
 
 	public Boolean checkLayoutExist() {
 		Optional<NewLayout> layout = repo.getLayout();
@@ -40,4 +43,5 @@ public class NewLayoutFinder {
 			return NewLayoutDto.fromDomain(m, listItemCls);
 		});
 	}
+
 }
