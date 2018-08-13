@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
@@ -90,9 +91,9 @@ public class AppAbsenceFinder {
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	final static String SPACE = " ";
 	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+	private BeforePrelaunchAppCommonSet bfPrelaunchAppCmSet;
 	@Inject
-	private CollectApprovalRootPatternService collectApprovalRootPatternService;
+	private CollectApprovalRootPatternService colApprRootPatternSv;
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	@Inject
@@ -102,7 +103,7 @@ public class AppAbsenceFinder {
 	@Inject
 	private HdAppSetRepository hdAppSetRepository;
 	@Inject
-	private ApplicationReasonRepository applicationReasonRepository;
+	private ApplicationReasonRepository repoAppReason;
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
@@ -116,9 +117,9 @@ public class AppAbsenceFinder {
 	@Inject
 	private PredetemineTimeSettingRepository predTimeRepository;
 	@Inject
-	private AppAbsenceRepository appAbsenceRepository;
+	private AppAbsenceRepository repoAppAbsence;
 	@Inject
-	private HolidayShipmentScreenAFinder holidayShipmentScreenAFinder;
+	private HolidayShipmentScreenAFinder hdShipmentScreenAFinder;
 	@Inject
 	private BeforePreBootMode beforePreBootMode;
 	@Inject
@@ -162,7 +163,7 @@ public class AppAbsenceFinder {
 		}
 		String companyID = AppContexts.user().companyId();
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
@@ -171,7 +172,7 @@ public class AppAbsenceFinder {
 		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
 		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
+		ApprovalRootPattern approvalRootPattern = colApprRootPatternSv.getApprovalRootPatternService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				appCommonSettingOutput.generalDate, "", true);
@@ -233,7 +234,7 @@ public class AppAbsenceFinder {
 		String employeeIDLogin = AppContexts.user().employeeId();
 		//アルゴリズム「詳細画面起動前申請共通設定を取得する」を実行する - 「Lấy app common setting trước khi khởi động màn hình detail」
 		//14-1.詳細画面起動前申請共通設定を取得する
-		Optional<AppAbsence> opAppAbsence = this.appAbsenceRepository.getAbsenceByAppId(companyID, appID);
+		Optional<AppAbsence> opAppAbsence = repoAppAbsence.getAbsenceByAppId(companyID, appID);
 		if (!opAppAbsence.isPresent()) {
 			throw new BusinessException("Msg_198");
 		}
@@ -250,7 +251,7 @@ public class AppAbsenceFinder {
 		result.setInitMode(detail.getOutputMode().value);
 		//--
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, appAbsence.getApplication().getEmployeeID(), EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				appAbsence.getApplication().getAppDate());
@@ -277,7 +278,7 @@ public class AppAbsenceFinder {
 					result.setWorkTypeCode(appAbsence.getWorkTypeCode().toString());
 				} else {
 					// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する - [Kiểm tra sự tồn tại  và lấy WorkType đã xin ]
-					holidayShipmentScreenAFinder.appliedWorkType(companyID, workTypes,
+					hdShipmentScreenAFinder.appliedWorkType(companyID, workTypes,
 							appAbsence.getWorkTypeCode().toString());
 				}
 			}
@@ -337,6 +338,8 @@ public class AppAbsenceFinder {
 				return result;
 			}
 			AppForSpecLeave specLeave = appSpec.get();
+			result.setSpecHdDto(new AppForSpecLeaveDto(specLeave.getAppID(), specLeave.isMournerFlag(), 
+					specLeave.getRelationshipCD().v(), specLeave.getRelationshipReason().v()));
 			//指定する勤務種類が事象に応じた特別休暇かチェックする
 			CheckWkTypeSpecHdEventOutput checkSpecHd = specHdEventAlg.checkWkTypeSpecHdForEvent(companyID, appAbsence.getWorkTypeCode().v());
 			if(!checkSpecHd.isSpecHdForEventFlag()){//その以外
@@ -344,16 +347,23 @@ public class AppAbsenceFinder {
 			}
 			////事象に応じた特休フラグがtrue(SpecialHolidayEventFlag = true)
 			SpecialHolidayEvent specHd = checkSpecHd.getSpecHdEvent().get();
+			MaxDaySpecHdOutput maxDay = null;
+			List<DateSpecHdRelationOutput> lstRela = new ArrayList<>();
 			//取得したメインモデル「事象に対する特別休暇」．上限日数．種類をチェックする-(Check domain [SpecialHolidayEvent]. GrantDay.Type)
 			if(specHd.getMaxNumberDay().equals(MaxNumberDayType.LIMIT_FIXED_DAY)){//種類が固定日数を上限とする(type = FixedDayGrant)
 				//指定する特休枠の上限日数を取得する
-				specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(specLeave.getRelationshipCD().v()));
+				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(specLeave.getRelationshipCD().v()));
 			}else{//その以外
 				//指定する特休枠の続柄に対する上限日数を取得する-(get MaxDay SpecHd ByRela FrameNo)
-				List<DateSpecHdRelationOutput> maxDay = specHdEventAlg.getMaxDaySpecHdByRelaFrameNo(companyID, checkSpecHd.getFrameNo().get());
+				lstRela = specHdEventAlg.getMaxDaySpecHdByRelaFrameNo(companyID, checkSpecHd.getFrameNo().get());
 				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
-				specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(maxDay.get(0).getRelationCD()));
+				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(lstRela.get(0).getRelationCD()));
 			}
+			result.setSpecHdForEventFlag(checkSpecHd.isSpecHdForEventFlag());
+			result.setMaxNumberDayType(specHd.getMaxNumberDay().value);
+			result.setMaxDayObj(maxDay);
+			result.setLstRela(lstRela);
+			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
 		return result;
 	}
@@ -382,7 +392,7 @@ public class AppAbsenceFinder {
 		AppAbsenceDto result = new AppAbsenceDto();
 
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
@@ -426,8 +436,9 @@ public class AppAbsenceFinder {
 				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
 				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(lstRela.get(0).getRelationCD()));
 			}
-			result.setMaxDay(maxDay);
+			result.setMaxDayObj(maxDay);
 			result.setLstRela(lstRela);
+			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
 		return result;
 	}
@@ -454,7 +465,7 @@ public class AppAbsenceFinder {
 		String companyID = AppContexts.user().companyId();
 
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
@@ -534,7 +545,7 @@ public class AppAbsenceFinder {
 			return result;
 		}
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
@@ -585,7 +596,7 @@ public class AppAbsenceFinder {
 			return result;
 		}
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
@@ -636,7 +647,7 @@ public class AppAbsenceFinder {
 		}
 		String companyID = AppContexts.user().companyId();
 		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		AppCommonSettingOutput appCommonSettingOutput = bfPrelaunchAppCmSet.prelaunchAppCommonSetService(
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
@@ -735,10 +746,11 @@ public class AppAbsenceFinder {
 				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
 				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(lstRela.get(0).getRelationCD()));
 			}
-			result.setMaxDay(maxDay);
+			result.setMaxDayObj(maxDay);
 			result.setSpecHdForEventFlag(checkSpecHd.isSpecHdForEventFlag());
 			result.setLstRela(lstRela);
 			result.setMaxNumberDayType(specHd.getMaxNumberDay().value);
+			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
 		return result;
 	}
@@ -817,7 +829,7 @@ public class AppAbsenceFinder {
 	 * @param companyID
 	 */
 	private void getAppReason(AppAbsenceDto result, String companyID) {
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID,
+		List<ApplicationReason> applicationReasons = repoAppReason.getReasonByAppType(companyID,
 				ApplicationType.ABSENCE_APPLICATION.value);
 		List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 		for (ApplicationReason applicationReason : applicationReasons) {
@@ -927,7 +939,7 @@ public class AppAbsenceFinder {
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				return holidayShipmentScreenAFinder.getTimeZones(companyID, workTimeCode, EnumAdaptor.valueOf(workStyle.value, AttendanceHolidayAttr.class));
+				return hdShipmentScreenAFinder.getTimeZones(companyID, workTimeCode, EnumAdaptor.valueOf(workStyle.value, AttendanceHolidayAttr.class));
 			}
 		}
 		return Collections.emptyList();

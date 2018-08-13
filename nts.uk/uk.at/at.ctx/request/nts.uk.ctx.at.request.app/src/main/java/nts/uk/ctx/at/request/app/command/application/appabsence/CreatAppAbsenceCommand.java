@@ -110,9 +110,7 @@ public class CreatAppAbsenceCommand {
 	 * displayEndDateFlg
 	 */
 	private boolean displayEndDateFlg;
-	//続柄コード
-	private String relationCD;
-	//喪主チェック
-	private Boolean mournerCheck;
+	//specHoliday
+	private SpecHolidayCommand specHd;
 	
 }

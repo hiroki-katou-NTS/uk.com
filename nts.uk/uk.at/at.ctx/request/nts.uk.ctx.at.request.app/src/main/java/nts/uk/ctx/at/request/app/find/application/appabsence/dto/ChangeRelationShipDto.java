@@ -9,5 +9,5 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDa
 public class ChangeRelationShipDto {
 	
 	private CheckWkTypeSpecHdEventOutput checkSpecHd;
-	private MaxDaySpecHdOutput maxDay;
+	private MaxDaySpecHdOutput maxDayObj;
 }

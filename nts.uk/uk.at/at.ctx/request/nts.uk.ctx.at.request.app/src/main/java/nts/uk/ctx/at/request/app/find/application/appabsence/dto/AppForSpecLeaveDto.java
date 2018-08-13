@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class AppForSpecLeaveDto {
 	/**
 	 * 申請ID

@@ -111,7 +111,8 @@ public class KrqdtAppForLeave extends UkJpaEntity implements Serializable{
 				this.getStartTime1(),
 				this.getEndTime1(), 
 				this.getStartTime2(), 
-				this.getEndTime2());
+				this.getEndTime2(),
+				null);
 		appAbsene.setVersion(this.getVersion());
 		return appAbsene;
 	}

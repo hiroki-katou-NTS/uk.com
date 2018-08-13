@@ -110,7 +110,8 @@ public class AppAbsence extends AggregateRoot{
 			Integer startTime1,
 			Integer endTime1,
 			Integer startTime2,
-			Integer endTime2){
+			Integer endTime2,
+			AppForSpecLeave appForSpecLeave){
 		this.companyID = companyID;
 		this.appID = appID;
 		this.holidayAppType = holidayAppType == null ? null : EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class);
@@ -123,6 +124,6 @@ public class AppAbsence extends AggregateRoot{
 		this.endTime1 = endTime1 == null ? null : new TimeWithDayAttr(endTime1);
 		this.startTime2 = startTime2 == null ? null : new TimeWithDayAttr(startTime2);
 		this.endTime2 = endTime2 == null ? null : new TimeWithDayAttr(endTime2);
-		
+		this.appForSpecLeave = appForSpecLeave;
 	}
 }

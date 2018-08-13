@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -61,6 +62,11 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),
 				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, command.getEmployeeID());
+		AppForSpecLeave specHd = null;
+		SpecHolidayCommand specHdCm = command.getSpecHd();
+		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && specHdCm != null){
+			specHd = AppForSpecLeave.createFromJavaType(appID, specHdCm.getMournerCheck(), specHdCm.getRelationCD(), specHdCm.getRelaReason());
+		}
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
 				command.getHolidayAppType(),
@@ -72,7 +78,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getStartTime1(),
 				command.getEndTime1(),
 				command.getStartTime2(),
-				command.getEndTime2());
+				command.getEndTime2(),
+				specHd);
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot,0);
 		// 7.登録時のエラーチェック
@@ -82,7 +89,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
 				startDate, endDate, EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
 		// insert
-		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
+		absenceServiceProcess.createAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
 		// 2-3.新規画面登録後の処理を実行
@@ -113,6 +120,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				// 11.時間消化登録時のエラーチェック :TODO
 			}
 		}
+		SpecHolidayCommand specHd = command.getSpecHd();
 		//選択する休暇種類をチェックする-(check holidayType đang chọn)
 		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value){//選択する休暇種類が特別休暇の場合
 			//hoatt - 2018.08.08 - doi ung specHd
@@ -123,12 +131,12 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				//取得した事象に応じた特休フラグをチェックする-(Check specialHolidayEventFlag đã lấy)
 				if(checkSpecHd.isSpecHdForEventFlag()){//取得した事象に応じた特休フラグがtrue(specialHolidayEventFlag = true)
 					SpecialHolidayEvent spHdEv = checkSpecHd.getSpecHdEvent().get();
-					if(command.getRelationCD() == null){
+					if(specHd == null || specHd.getRelationCD() == null){
 						return;
 					}
 					//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
 					MaxDaySpecHdOutput maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), spHdEv,
-							Optional.of(command.getRelationCD()));
+							Optional.of(specHd.getRelationCD()));
 					//申請する日数(ノート1)：
 					int appDay = 0;//申請する日数
 					if(spHdEv.getIncludeHolidays().equals(UseAtr.USE)){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
@@ -141,7 +149,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 					}
 					//上限日数(ノート2)：
 					int maxDaySpec = 0;//上限日数
-					if(command.getMournerCheck() == true){//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
+					if(specHd.getMournerCheck() == true){//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
 						//上限日数=取得した上限日数 + 取得した喪主加算日数
 						maxDaySpec = maxDay.getMaxDay() + maxDay.getDayOfRela();
 					}else{//その以外：

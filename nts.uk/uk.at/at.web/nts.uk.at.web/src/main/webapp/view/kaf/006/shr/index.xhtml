@@ -243,14 +243,20 @@
 						<div class="lblTitle-kaf006 cm-column-kaf006"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_43')}</div>
 						<!--A10_5 続柄入力欄-->
-						<input tabindex="6" class="nts-input" style = "margin-left: 15px;"
+						<input tabindex="6" style = "margin: 0px 0px 0px 15px !important; width: 380px"
 							data-bind="ntsTextEditor: {
 										  name: '#{i18n.getText('KAF006_26')}',
 	                                         value: relaReason,
 	                                         constraint: 'RelationshipReasonPrimitive', 
 	                                         required: true,
 	                                         option: {textalign: 'left',
-	                                         	placeholder:'#{i18n.getText('KAF006_45')}'}}"/>
+	                                         	placeholder:'#{i18n.getText('KAF006_45')}'}
+                                     	}"/>
+                         <!-- A10_6 -->
+                         <div class = 'maxDay' data-bind = "if: maxDayDis">
+                         	<div data-bind = "text: maxDayline1"></div>
+                         	<div data-bind = "text: maxDayline2"></div>
+                         </div>           	
 					</div>
 				</div>
 			</div>
