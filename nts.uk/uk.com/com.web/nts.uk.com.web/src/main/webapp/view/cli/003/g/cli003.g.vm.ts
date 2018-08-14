@@ -96,27 +96,27 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.recordTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_RecordType_Login')),
                 new ItemTypeModel(1, getText('Enum_RecordType_StartUp')),
-                new ItemTypeModel(2, getText('Enum_RecordType_UpdateMaster')),
+//                new ItemTypeModel(2, getText('Enum_RecordType_UpdateMaster')),
                 new ItemTypeModel(3, getText('Enum_RecordType_UpdatePersionInfo')),
-                new ItemTypeModel(4, getText('Enum_RecordType_DataReference')),
-                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
+//                new ItemTypeModel(4, getText('Enum_RecordType_DataReference')),
+//                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
                 new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
-                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
-                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
+//                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
+//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
             ]);
 
             self.dataTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_DataType_Schedule')),
                 new ItemTypeModel(1, getText('Enum_DataType_DailyResults')),
                 new ItemTypeModel(2, getText('Enum_DataType_MonthlyResults')),
-                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
-                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
-                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
-                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
-                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
-                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
-                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
-                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
+//                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
+//                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
+//                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
+//                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
+//                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
+//                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
+//                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
+//                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
             ]);
         }
 
@@ -301,6 +301,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.selectedCodeList.removeAll();
             block.grayout();
             service.getLogOutputItemByRecordType(recordType).done(function(logOutputItems: any) {
+//                console.log();
                 if (logOutputItems && logOutputItems.length > 0) {
                     for (let i = 0; i < logOutputItems.length; i++) {
                         var logOutputItem = logOutputItems[i];
@@ -311,6 +312,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                         self.itemsSwap.push(
                             new ItemLogSetRecordTypeModel(logOutputItem.itemNo, logOutputItem.itemName, 0,
                                 self.createNewItemDetail(id, logOutputItem.itemNo)));
+                        
 
                     }
 
