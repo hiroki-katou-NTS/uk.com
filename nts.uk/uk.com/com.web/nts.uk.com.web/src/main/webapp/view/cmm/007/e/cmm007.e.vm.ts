@@ -94,9 +94,9 @@ module nts.uk.com.view.cmm007.e {
                 return dfd.promise();
             }
         
-            public checkStatusEnable(value): boolean {
+            public checkStatusEnable(value): KnockoutObservable<boolean> {
                 let _self = this;
-                return _self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? true : false;
+                return ko.observable(_self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? true : false);
             }
         
             public myFunction(value): void {
