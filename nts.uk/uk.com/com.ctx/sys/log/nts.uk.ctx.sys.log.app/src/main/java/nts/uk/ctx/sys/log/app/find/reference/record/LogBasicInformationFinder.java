@@ -226,7 +226,7 @@ public class LogBasicInformationFinder {
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
 											String childrentKey = IdentifierUtil.randomUniqueId();
-											perObject.setChildrentkey(childrentKey);
+											perObject.setChildrentKey(childrentKey);
 											// Fist record
 											perObject.setOperationId(logBasicInfoDto.getOperationId());
 											// item 23
@@ -247,7 +247,7 @@ public class LogBasicInformationFinder {
 									}else{
 										LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
 										String childrentKey = IdentifierUtil.randomUniqueId();
-										perObject.setChildrentkey(childrentKey);
+										perObject.setChildrentKey(childrentKey);
 										perObject.setOperationId(personInfoCorrectionLog.getOperationId());
 										// item 23
 										perObject.setCategoryName(categoryCorrectionLog.getCategoryName());
