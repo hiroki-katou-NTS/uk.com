@@ -69,7 +69,7 @@ public class RemoveDocumentFileEmpCommandHandler extends CommandHandler<RemoveDo
 		List<PersonCategoryCorrectionLogParameter> ctgTargets = new ArrayList<>();
 		List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 		lstItemInfo.add(new PersonCorrectionItemInfo(
-				"",
+				command.getFileid(),
 				command.getItemName().toString(),
 				command.getFileid(),
 				command.getFileName(),
@@ -77,7 +77,7 @@ public class RemoveDocumentFileEmpCommandHandler extends CommandHandler<RemoveDo
 				null,
 				1));// 1 : String
 		PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
-				"CategoryId",
+				null,
 				command.getCategoryName().toString(), 
 				InfoOperateAttr.DELETE, 
 				lstItemInfo.isEmpty() ? null : lstItemInfo,
