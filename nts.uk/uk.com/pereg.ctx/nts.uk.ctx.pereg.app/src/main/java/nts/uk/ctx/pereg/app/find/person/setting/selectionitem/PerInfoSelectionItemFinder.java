@@ -34,7 +34,7 @@ public class PerInfoSelectionItemFinder {
 			return dtoList;
 		}
 		
-		return dtoList.stream().filter(dto -> dto.isEmployeeClassification()).collect(Collectors.toList());
+		return dtoList;
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {

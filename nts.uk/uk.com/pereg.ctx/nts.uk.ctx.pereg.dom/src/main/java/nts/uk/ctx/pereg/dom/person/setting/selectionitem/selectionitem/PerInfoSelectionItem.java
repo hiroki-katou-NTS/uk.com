@@ -4,12 +4,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.FormatSelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.IntegrationCode;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.Memo;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemName;
 
 /**
@@ -32,11 +30,6 @@ public class PerInfoSelectionItem extends AggregateRoot {
 	 * ID
 	 */
 	private String selectionItemId;
-
-	/**
-	 * 区分
-	 */
-	private SelectionItemClassification classification;
 
 	/**
 	 * 名称
@@ -63,12 +56,11 @@ public class PerInfoSelectionItem extends AggregateRoot {
 	}
 
 	public static PerInfoSelectionItem createFromJavaType(String contractCode, String selectionItemId,
-			int selectionItemClsAtr, String selectionItemName, int characterTypeAtr, int codeLength, int nameLength,
+			String selectionItemName, int characterTypeAtr, int codeLength, int nameLength,
 			int extraCodeLenth, String integrationCd, String memo) {
 		PerInfoSelectionItem selectionItem = new PerInfoSelectionItem();
 		selectionItem.contractCode = contractCode;
 		selectionItem.selectionItemId = selectionItemId;
-		selectionItem.classification = EnumAdaptor.valueOf(selectionItemClsAtr, SelectionItemClassification.class);
 		selectionItem.selectionItemName = new SelectionItemName(selectionItemName);
 		selectionItem.formatSelection = FormatSelection.createFromJavaType(characterTypeAtr, codeLength, nameLength,
 				extraCodeLenth);
@@ -80,11 +72,10 @@ public class PerInfoSelectionItem extends AggregateRoot {
 	}
 
 	public static PerInfoSelectionItem createFromJavaType(String contractCode, String selectionItemId,
-			boolean shareChecked, String selectionItemName, boolean characterType, int codeLength, int nameLength,
+			String selectionItemName, boolean characterType, int codeLength, int nameLength,
 			int extraCodeLenth, String integrationCd, String memo) {
-		int selectionItemClsAtr = shareChecked ? 0 : 1;
 		int characterTypeAtr = characterType ? 1 : 0;
-		return createFromJavaType(contractCode, selectionItemId, selectionItemClsAtr, selectionItemName,
+		return createFromJavaType(contractCode, selectionItemId, selectionItemName,
 				characterTypeAtr, codeLength, nameLength, extraCodeLenth, integrationCd, memo);
 	}
 

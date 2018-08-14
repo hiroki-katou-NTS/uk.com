@@ -82,7 +82,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	private PerInfoSelectionItem toDomain(PpemtSelectionItem entity) {
 		return PerInfoSelectionItem.createFromJavaType(entity.contractCd, entity.selectionItemPk.selectionItemId,
-				entity.selectionItemClsAtr, entity.selectionItemName, entity.characterTypeAtr, entity.codeLength,
+				entity.selectionItemName, entity.characterTypeAtr, entity.codeLength,
 				entity.nameLength, entity.extCodeLength, entity.integrationCd, entity.memo);
 	}
 
@@ -114,7 +114,6 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 		entity.selectionItemPk = key;
 		entity.contractCd = domain.getContractCode();
-		entity.selectionItemClsAtr = domain.getClassification().value;
 		entity.selectionItemName = domain.getSelectionItemName().v();
 
 		entity.characterTypeAtr = domain.getFormatSelection().getCharacterType().value;
