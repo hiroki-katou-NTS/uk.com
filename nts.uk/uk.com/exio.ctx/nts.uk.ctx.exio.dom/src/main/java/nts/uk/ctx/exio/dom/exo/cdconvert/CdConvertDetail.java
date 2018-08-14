@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.exio.dom.exo.outputitem.OutputItemCode;
 
 
 /**
@@ -12,8 +13,7 @@ import nts.arc.layer.dom.DomainObject;
 */
 @AllArgsConstructor
 @Getter
-public class CdConvertDetail extends DomainObject
-{
+public class CdConvertDetail extends DomainObject {
 	/**
 	 * 会社ID
 	 */
@@ -27,7 +27,7 @@ public class CdConvertDetail extends DomainObject
     /**
     * 出力項目
     */
-    private Optional<String> outputItem;
+    private Optional<OutputItemCode> outputItem;
     
     /**
     * 本システムのコード
@@ -43,7 +43,7 @@ public class CdConvertDetail extends DomainObject
 		super();
 		this.cid = cid;
 		this.convertCd = new ConvertCode(convertCd);
-		this.outputItem = Optional.of(new String(outputItem));
+		this.outputItem = Optional.of(new OutputItemCode(outputItem));
 		this.systemCd = systemCd;
 		this.lineNumber = lineNumber;
 		
