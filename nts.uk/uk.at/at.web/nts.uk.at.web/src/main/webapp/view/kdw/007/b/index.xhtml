@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1050,
-					height : 315
+					width : 1030,
+					height : 240
 				};
 			</script>
 			<com:ValidatorScript>
@@ -28,7 +28,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group">
+				<div class="valign-center control-group mb-20">
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_93')}</div>
 					<div id="conditionAtr-cbb" data-bind="ntsComboBox: {
 						options: enumConditionAtr,
@@ -138,7 +138,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex = "-1" class="proceed" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
+				<button tabindex = "-1" class="proceed x-large" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
 				<button tabindex = "-1" data-bind="click: closeDialog">#{i18n.getText('KDW007_98')}</button>
 			</div>
 			
