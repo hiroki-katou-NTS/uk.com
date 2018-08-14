@@ -296,7 +296,7 @@ module nts.custom.component {
                                                 categoryType: ko.toJS(params.combobox.object.categoryType),
                                                 categoryName: ko.toJS(params.combobox.object.categoryName),
                                                 categoryCode: ko.toJS(params.combobox.object.categoryCode),
-                                                items: !!_.size(outData) ? outData[0].items : []
+                                                inputs: !!_.size(outData) ? outData[0].items : []
                                             };
 
                                         __viewContext.viewModel.block();
@@ -327,7 +327,7 @@ module nts.custom.component {
                                                 categoryType: ko.toJS(params.combobox.object.categoryType),
                                                 categoryName: ko.toJS(params.combobox.object.categoryName),
                                                 categoryCode: ko.toJS(params.combobox.object.categoryCode),
-                                                items: !!_.size(outData) ? outData[0].items : []
+                                                inputs: !!_.size(outData) ? outData[0].items : []
                                             };
 
                                         __viewContext.viewModel.block();

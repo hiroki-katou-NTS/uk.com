@@ -96,8 +96,6 @@ public class PeregCommandFacade {
 	@Inject
 	private GetUserByEmpFinder userFinder;
 	
-	private final static String nameStartDate = "開始日";
-	
 	private final static String nameEndate = "終了日";
 	
 	private final static String valueEndate = "9999/12/31";
@@ -186,6 +184,7 @@ public class PeregCommandFacade {
 		List<ItemsByCategory> updateInput = inputContainer.getInputs().stream()
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		
+		List<ItemsByCategory> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete()).collect(Collectors.toList());
 		if (updateInput.size() > 0) {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.UPDATE, null);
@@ -193,11 +192,14 @@ public class PeregCommandFacade {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.ADD, null);
 		}
-		// ADD COMMAND
-		recordId = this.add(inputContainer, target, user);
+		
+		if(deleteInputs.size() == 0) {
+			// ADD COMMAND
+			recordId = this.add(inputContainer, target, user);
 
-		// UPDATE COMMAND
-		this.update(inputContainer, target, user);
+			// UPDATE COMMAND
+			this.update(inputContainer, target, user);
+		}
 
 		// DELETE COMMAND
 		this.delete(inputContainer, ctgCode);
@@ -352,20 +354,23 @@ public class PeregCommandFacade {
 			List<DateRangeDto> ctgCode = this.ctgRepo.dateRangeCode();
 
 			for (ItemsByCategory input : inputs) {
+				DateRangeDto dateRange = null;
+				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-
 				List<ItemValue> itemLogs = input.getItems() == null ?
 						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
 				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
-						
-				boolean isHistory = input.getCategoryType() == CategoryType.DUPLICATEHISTORY.value  || input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value || input.getCategoryType() == CategoryType.NODUPLICATEHISTORY.value;
 
-				DateRangeDto dateRange = null;
+				boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
+						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY;
+
 				if(input.getCategoryCd().equals("CS00003")) {
 					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
 				} else {
 					dateRange = isHistory == true? dateRangeOp.get(): null;
 				}
+				
+				InfoOperateAttr info = InfoOperateAttr.ADD;
 				for (ItemValue item : itemLogs) {
 					// kiểm tra các item của  category nghỉ đặc biệt, employee, lịch sử 
 					if (specialItemCode.contains(item.itemCode())
@@ -378,66 +383,92 @@ public class PeregCommandFacade {
 						}
 						
 						// nếu startDate newValue != afterValue;
-						if(input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value) {
+						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.MULTIINFO) {
+							PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(),
+									input.getCategoryCd(), sid,  pid);
+							query.setCategoryId(input.getCategoryId());
+							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 							/**
 							 * trường hợp update :lấy ra danh sách các lịch sử của category liên tục, tìm ra
 							 * itemEndDate bị ảnh hưởng để thêm vào domain ReviseInfo trường hợp tạo mới set
 							 * EndDate = "9999/12/31"
 							 **/
-							PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(),
-									input.getCategoryCd(), sid,  pid);
-							query.setCategoryId(input.getCategoryId());
-							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
-							if(historyLst.size() == 1) {
-								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(valueEndate);
-									item.setContentAfter(valueEndate);
-								}
-								
-							}else {
-								// trường hợp tạo mới hoàn toàn category
-								for (ComboBoxObject c : historyLst) {
-									if (c.getOptionValue() != null) {
-										// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
-										String[] history = c.getOptionText().split("~");
-										switch (isAdd) {
-										case ADD:
-											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
-											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter(valueEndate);
-												item.setContentAfter(valueEndate);
-												break;
-											}else {
-												reviseInfo = new ReviseInfo(nameEndate,
-													Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-													Optional.empty(), Optional.empty());
-												break;
-											}
-											
-											
-										case UPDATE:
-											if (!history[1].equals(" ")) {
-												GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-												GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
-												if (oldStart.addDays(-1).equals(oldEnd)) {
+							switch(ctgType) {
+							case CONTINUOUSHISTORY:
+								// trường hợp category lịch sử không có history nào
+								if(historyLst.size() == 1) {
+									if (item.itemCode().equals(dateRange.getEndDateCode())) {
+										item.setValueAfter(valueEndate);
+										item.setContentAfter(valueEndate);
+									}
+									
+								}else {
+									PersonCorrectionLogParameter correctedLog =  new PersonCorrectionLogParameter(target.userId, target.employeeId, target.userName,
+											PersonInfoProcessAttr.UPDATE, null);
+									target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
+											PersonInfoProcessAttr.UPDATE, null);
+									info = InfoOperateAttr.ADD_HISTORY;
+									
+									// trường hợp tạo mới hoàn toàn category
+									for (ComboBoxObject c : historyLst) {
+										if (c.getOptionValue() != null) {
+											// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
+											String[] history = c.getOptionText().split("~");
+											switch (isAdd) {
+											case ADD:
+												//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
+												if (item.itemCode().equals(dateRange.getEndDateCode())) {
+													item.setValueAfter(valueEndate);
+													item.setContentAfter(valueEndate);
+													break;
+												}else {
 													reviseInfo = new ReviseInfo(nameEndate,
-															Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-															Optional.empty(), Optional.empty());
+														Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+														Optional.empty(), Optional.empty());
 													break;
 												}
-											} else {
+												
+												
+											case UPDATE:
+												if (!history[1].equals(" ")) {
+													GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
+													GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
+													if (oldStart.addDays(-1).equals(oldEnd)) {
+														reviseInfo = new ReviseInfo(nameEndate,
+																Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
+																Optional.empty(), Optional.empty());
+														break;
+													}
+												} else {
+													break;
+												}
+
+											default:
 												break;
+											
 											}
 
-										default:
-											break;
-										
 										}
-
 									}
+									
 								}
-								
+								break;
+							case MULTIINFO:
+								if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
+									PersonCorrectionLogParameter correctedLog =  new PersonCorrectionLogParameter(target.userId, target.employeeId, target.userName,
+											PersonInfoProcessAttr.UPDATE, null);
+									target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
+											PersonInfoProcessAttr.UPDATE, null);
+									info = InfoOperateAttr.ADD_HISTORY;
+									
+								}
+								break;
+							default:
+								break;
+							
 							}
+
+
 				
 						}
 						
@@ -455,24 +486,25 @@ public class PeregCommandFacade {
 						if(!item.valueAfter().equals(item.valueBefore())) {
 							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 						}
+						
 						if (item.valueAfter() != null && item.valueBefore() == null) {
 							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 						}
 					}
 				}
 
-				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
+				
 
 				// Add category correction data
 				PersonCategoryCorrectionLogParameter ctgTarget = null;
 
 				if (isAdd == PersonInfoProcessAttr.ADD) {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, InfoOperateAttr.ADD);
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info);
 				} else {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, InfoOperateAttr.UPDATE);
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info != InfoOperateAttr.ADD ? info: InfoOperateAttr.UPDATE);
 				}
 				
-				if (ctgTarget != null) {
+				if (ctgTarget != null && lstItemInfo.size() > 0) {
 					DataCorrectionContext.setParameter(target.getHashID(), target);
 					DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 				}
@@ -653,11 +685,11 @@ public class PeregCommandFacade {
 						viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
 
 				if (!valueAfter.trim().isEmpty()) {
-					_itemValue.setValueAfter("");
+					_itemValue.setValueAfter(null);
 				}
 
 				if (!viewAfter.trim().isEmpty()) {
-					_itemValue.setContentAfter("");
+					_itemValue.setContentAfter(null);
 				}
 
 				dKey = TargetDataKey.of(_itemValue.valueBefore());
@@ -681,11 +713,11 @@ public class PeregCommandFacade {
 							viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
 					
 					if(!valueAfter.trim().isEmpty()) {
-						_startDate.setValueAfter("");
+						_startDate.setValueAfter(null);
 					}
 
 					if(!viewAfter.trim().isEmpty()) {
-						_startDate.setContentAfter("");
+						_startDate.setContentAfter(null);
 					}
 					
 					dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
