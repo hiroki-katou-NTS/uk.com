@@ -72,7 +72,7 @@ module nts.uk.com.view.cmm013.a {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: false,
                     listType: 3,
-                    selectType: 1,
+                    selectType: 3,
                     selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
