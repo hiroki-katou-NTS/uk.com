@@ -72,6 +72,6 @@ public class MasterCopyDataWs extends WebService{
 	@GET
 	@Path("copy")
 	public void docopy() {
-		this.repo.doCopy("", CopyMethod.ADD_NEW, "");
+		this.repo.doCopy("", CopyMethod.REPLACE_ALL, "000000000000-0005");
 	}
 }

@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements DataCopyHandler {
 	
+	private EntityManager entityManager;
+	
 	/** The copy method. */
 	private CopyMethod copyMethod;
 	
@@ -27,7 +32,13 @@ public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements 
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_OVERTIME_FRAME(CID ,OT_FR_NO ,USE_ATR ,OT_FR_NAME ,TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?);";
+	
+	/** The select by cid query. */
+	private String SELECT_BY_CID_QUERY = "SELECT CID, OT_FR_NO, USE_ATR, OT_FR_NAME, TRANS_FR_NAME FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
+	
+	/** The delete by cid query. */
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
@@ -35,7 +46,8 @@ public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements 
 	 * @param copyMethod the copy method
 	 * @param companyCd the company cd
 	 */
-	public KshstOvertimeFrameDataCopyHandler(CopyMethod copyMethod, String companyId) {
+	public KshstOvertimeFrameDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
 	}
@@ -47,17 +59,29 @@ public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements 
 	public void doCopy() {
 		
 		// Get all company zero data
-		Query selectQuery = this.getEntityManager().createNativeQuery("SELECT * FROM KSHST_OVERTIME_FRAME WHERE CID = ?").setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
+				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
 		
-		Object[] data = selectQuery.getResultList().toArray();
-		
-		int a = data.length;
-		System.out.println(a);
 		switch (copyMethod) {
 			case REPLACE_ALL:
-				// Delete all old data
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
+					.setParameter(1, this.companyId);
+				deleteQuery.executeUpdate();
 			case ADD_NEW:
-				// Insert Data
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * 5 + 1, this.companyId);
+					insertQuery.setParameter(i * 5 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 5 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 5 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				}
+				
+				// Run insert query
+				insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default: 

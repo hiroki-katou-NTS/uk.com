@@ -61,7 +61,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	
 	@Override
 	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
-		new KshstOvertimeFrameDataCopyHandler(copyMethod, companyId).doCopy();
+		new KshstOvertimeFrameDataCopyHandler(this.getEntityManager(), copyMethod, companyId).doCopy();
 	}
 
 	/**
