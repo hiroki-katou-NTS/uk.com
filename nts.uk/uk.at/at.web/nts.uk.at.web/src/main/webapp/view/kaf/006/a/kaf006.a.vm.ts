@@ -271,11 +271,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let fix = false;
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
+            }else{
+                fix = false;
             }
             self.fix(fix);
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
+            }else{
+               self.mournerDis(false);
             }
             if(self.holidayTypeCode() == 3){
                 //上限日数表示エリア(vùng hiển thị số ngày tối đa)
