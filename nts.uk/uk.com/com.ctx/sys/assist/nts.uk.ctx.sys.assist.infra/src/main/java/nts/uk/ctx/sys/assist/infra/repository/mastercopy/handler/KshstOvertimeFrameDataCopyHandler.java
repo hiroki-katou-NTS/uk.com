@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,8 +20,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
 	
+	/** The entity manager. */
 	private EntityManager entityManager;
 	
 	/** The copy method. */
@@ -69,8 +69,11 @@ public class KshstOvertimeFrameDataCopyHandler extends JpaRepository implements 
 					.setParameter(1, this.companyId);
 				deleteQuery.executeUpdate();
 			case ADD_NEW:
+				// Create quuery string base on zero company data
 				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				
+				// Loop to set parameter to query
 				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
 					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
 					insertQuery.setParameter(i * 5 + 1, this.companyId);
