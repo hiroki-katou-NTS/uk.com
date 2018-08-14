@@ -662,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -709,12 +709,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
-                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "10%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" }
+                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "20%" },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%" },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%" }
 
                         ],
                         features: [
+                          
+                            {
+                                name: 'Selection',
+                                mode: "row",
+                                multipleSelection: false
+                            },
                             {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
@@ -743,7 +749,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -794,6 +800,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "20%" }
                         ],
                         features: [
+                            {
+                                name: 'Selection',
+                                multipleSelection: false
+                            },
                             {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
@@ -1116,7 +1126,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
                         let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
-                     
+                          paramLog.targetDataType= dataLogDisplaySetting.dataType;
                        
                         if (dataOutPutItem.length > 0) {
                             _.forEach(dataOutPutItem, function(dataItemNo: any) {
@@ -1549,6 +1559,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "pcName", "string", ITEM_NO.ITEM_NO5));
                                 break;
                             }
+                            case ITEM_NO.ITEM_NO6: {
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "account", "string", ITEM_NO.ITEM_NO6));
+                                break;
+                            }
                             case ITEM_NO.ITEM_NO7: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "modifyDateTime", "string", ITEM_NO.ITEM_NO7));
                                 break;
@@ -1978,6 +1992,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
+        childrentKey:string;
         operationId: string;
         targetDate: string;
         categoryName: string;
