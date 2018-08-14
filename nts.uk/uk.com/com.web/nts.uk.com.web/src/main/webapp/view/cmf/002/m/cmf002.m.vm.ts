@@ -140,11 +140,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         enableFixedLengthOutput() {
             let self = this;
-            let enable: any = (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (!enable) {
-                $('#M9_2_2').ntsError('clear');
-            }
-            return enable;
+            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M4
         enableNullValueReplaceCls() {
@@ -163,11 +159,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //※M6
         decimalSelectionCls() {
             let self = this;
-            let enable: any = (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (!enable) {
-                $('#M3_1').ntsError('clear');
-            }
-            return enable;
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 

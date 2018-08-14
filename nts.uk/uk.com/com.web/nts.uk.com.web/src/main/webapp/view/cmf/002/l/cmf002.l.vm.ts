@@ -157,11 +157,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedValueOperation() {
             let self = this;
-            let enable: any = (self.timeDataFormatSetting().fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (!enable) {
-                $('#L7_3').ntsError('clear');
-            }
-            return enable;
+            return (self.timeDataFormatSetting().fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L3
         enableFixedLengthOutputCls() {
@@ -170,11 +166,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedLengthOutput() {
             let self = this;
-            let enable: any = (self.timeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (!enable) {
-                $('#L8_2_2').ntsError('clear');
-            }
-            return enable;
+            return (self.timeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L4
         enableNullValueReplaceCls() {
@@ -183,11 +175,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableNullValueReplace() {
             let self = this;
-            let enable :any = (self.timeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (!enable) {
-                error.clearAll();
-            }
-            return enable;
+            return (self.timeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L5
         enableSelectTimeCls() {
@@ -197,11 +185,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         //※L6
         decimalSelectionCls() {
             let self = this;
-            let enable: any = (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (enable) {
-                $('#L3_1').ntsError('clear');
-            }
-            return enable;
+            return (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
         enableFixedValueCls() {
