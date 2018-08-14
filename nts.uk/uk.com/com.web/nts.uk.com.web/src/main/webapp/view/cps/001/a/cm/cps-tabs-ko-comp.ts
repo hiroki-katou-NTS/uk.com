@@ -439,6 +439,8 @@ module nts.custom.component {
                     let cat: any = _.find(ko.toJS(params.combobox.options), (t: any) => t.id == v);
                     if (cat) {
                         let obj = params.combobox.object;
+                        
+                        obj.categoryId(cat.id );
                         obj.categoryCode(cat.categoryCode);
                         obj.categoryType(cat.categoryType);
                         obj.categoryName(cat.categoryName);
