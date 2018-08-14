@@ -115,7 +115,8 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 					.add(criteriaBuilder.equal(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK)
 							.get(KshmtComMonthDaySetPK_.month), month.intValue()));
 		}
-
+		
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

@@ -18,15 +18,14 @@
 }
 
 #content-left {
-	width: 270px;
-	height: 690px;
+	width: 310px;
+	height: 520px;
 }
 
 #content-right {
 	margin-left: 30px;
 	float: left;
 	width: 850px;
-	height: 875px;
 }
 
 #A2_001_container {
@@ -55,7 +54,9 @@
 	border-left: 2.2em solid transparent;
 	color: #C8EECF;
 }
-
+#left-bottom{
+	margin-left: 20px;
+}
 .auth_table {
 	border-collapse: separate;
 	border-radius: 2px;
@@ -199,7 +200,3 @@
 	width: 200px;
 	float: left;
 }
-
-/* #item_role_table_body_isChecked > span > div > label > span.box {
-	margin-left: 6px !important;
-} */

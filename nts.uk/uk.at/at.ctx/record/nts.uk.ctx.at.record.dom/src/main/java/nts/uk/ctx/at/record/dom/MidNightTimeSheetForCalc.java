@@ -8,13 +8,19 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -73,45 +79,15 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	/**
-//	 * 深夜時間帯Listを結合し、深夜時間帯を返す　　　　　2017/11/29　高須　LateLeaveEarlyTimeSheetクラスのメソッドjoinedLateLeaveEarlyTimeSheetを参考に修正が必要
-//	 * @author ken_takasu
-//	 * @param source
-//	 * @return
-//	 */
-//	public static Optional<MidNightTimeSheet> joinedMidNightTimeSheet(Collection<MidNightTimeSheet> source) {
-//		//時間帯（丸め付）Listを1つに結合
-//		List<TimeSpanWithRounding> timeSheets = source.stream().map(s -> s.getTimeSheet()).collect(Collectors.toList());
-//		val joinedTimeSheet = TimeSpanWithRounding.joinedTimeSpanWithRounding(timeSheets);
-//		//計算用時間帯Listを1つに結合
-//		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
-//		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
-//		//控除時間帯Listを1つに結合
-//		val deductionTimeList = this.collectDeductionTimeSheet();
-//		//加給時間帯Listを1つに結合
-//		val bonusPayTimesheetList = this.joinedBonusPayTimeSheet();
-//		//深夜時間帯Listを1つに結合
-//		val joinedMidNightTimeSheet = joinedMidNightTimeSheet(source);
-//		//特定日加給時間帯Listを1つに結合
-//		val specifiedbonusPayTimeSheetList = this.collectSpecifiedbonusPayTimeSheet();
-//		
-//		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(joinedTimeSheet,
-//																	joinedCalcRange,
-//																	deductionTimeList,
-//																	bonusPayTimesheetList,
-//																	specifiedbonusPayTimeSheetList,
-//																	joinedMidNightTimeSheet);
-//		return midNightTimeSheet;
-//	}
-	
 	
 	/**
 	 * 深夜時間帯から計算用時間帯への変更
 	 * @param midNightTimeSheet 深夜時間帯
 	 * @return 計算用深夜時間帯
 	 */
-	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet) {
-		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), null),
+	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet,Optional<WorkTimezoneCommonSet> commonSetting) {
+		TimeRoundingSetting timeRoundingSetting = commonSetting.isPresent()?commonSetting.get().getLateNightTimeSet().getRoundingSetting():new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN);
+		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), timeRoundingSetting),
 											new TimeSpanForCalc(midNightTimeSheet.getStart(),midNightTimeSheet.getEnd()), 
 											Collections.emptyList(), 
 											Collections.emptyList(), 
@@ -149,4 +125,10 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 				.orElse(this);
 	}
 	
+	public AttendanceTime testSAIKI(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
+		//自分が持つ集計対象の時間帯の合計
+		val includeForcsValue = super.forcs(conditionAtr, dedAtr);
+		//自分自身が集計対象外の場合、自分自身が持つ集計対象の時間帯の合計時間のみを返す
+		return includeForcsValue;
+	}
 }

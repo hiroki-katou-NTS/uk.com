@@ -7,7 +7,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 
 
@@ -27,10 +29,17 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 	}
 
 	@Override
-	public List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee) {
-		//List<String> listWorkPlaceID = workplaceListPub.getWorkplaceListId(referenceDate, employeeID, referEmployee);
-		//return listWorkPlaceID;
-		return null;
+	public WorkplaceInfoImport getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee) {
+		
+		WorkplaceInfoExport workplaceInfoExport = workplaceListPub.getWorkplaceListId(referenceDate, employeeID, referEmployee);
+		WorkplaceInfoImport workplaceInfoImport = new WorkplaceInfoImport (workplaceInfoExport.lstWorkPlaceID, workplaceInfoExport.getEmployeeRange());
+		return workplaceInfoImport;
 	}
+
+
+	
+
+
+	
 
 }

@@ -35,7 +35,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
+	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName, wi.bsymtWorkplaceInfoPK.wkpid"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
 			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid"
@@ -128,7 +128,9 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					String workplaceCode = (String) workplace.get()[1];
 					String workplaceGenericName = (String) workplace.get()[2];
 					String workplaceName = (String) workplace.get()[3];
+					String workplaceId = (String) workplace.get()[4];
 					employeeInfoList.get(empId).setWorkplace(Optional.of(WorkplaceModel.builder()
+							.workplaceId(workplaceId)
 							.workplaceCode(workplaceCode)
 							.workplaceGenericName(workplaceGenericName)
 							.workplaceName(workplaceName)

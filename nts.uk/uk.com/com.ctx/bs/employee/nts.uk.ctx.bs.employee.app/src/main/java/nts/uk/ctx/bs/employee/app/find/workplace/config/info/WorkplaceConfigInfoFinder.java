@@ -91,6 +91,10 @@ public class WorkplaceConfigInfoFinder {
 				.collect(Collectors.toList());
 		List<WorkplaceConfigInfo> workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId,
 				configHisIds, workplaceIdsCanReference);
+
+		if (CollectionUtil.isEmpty(workplaceConfigInfos)) {
+			return Collections.emptyList();
+		}
 		
 		List<WorkplaceHierarchy> workplaceHierarchies = workplaceConfigInfos.stream()
 				.map(info -> info.getLstWkpHierarchy()).flatMap(list -> list.stream())

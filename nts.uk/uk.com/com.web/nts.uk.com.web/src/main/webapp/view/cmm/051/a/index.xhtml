@@ -43,8 +43,8 @@
 						class="caret-right caret-background bg-green">
 						<table id="treegrid2" tabindex="0"
 							data-bind="ntsTreeGridView:{
-									width: 385,
-									height: 504,
+									width: 325,
+									height: 395,
 									dataSource: wkpManagerTree,
 									value: selectedCode,
 									primaryKey: 'wkpManagerId',
@@ -90,12 +90,13 @@
 									readonly: true}" />
 							<label
 								data-bind="text : selectedWkpManager().employeeInfo().namePerson"
-								style="padding-left: 15px"></label>
+								style="padding-left: 15px; line-height: 29px;"></label>
 						</div>
 					</div>
-					<div class="control-group">
-						<div class="label-group"
+					<div class="label-group-1"
 							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM051_22')}</div>
+					<div class="control-group">
+						
 						<div data-bind="with: component">
 							<ui:include src="/view/ccg/026/component/index.xhtml" />
 						</div>

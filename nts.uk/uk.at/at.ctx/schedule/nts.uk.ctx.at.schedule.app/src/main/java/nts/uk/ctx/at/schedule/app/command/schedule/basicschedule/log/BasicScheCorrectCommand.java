@@ -15,5 +15,7 @@ public class BasicScheCorrectCommand {
 	private List<BasicSchedule> domainOld;
 	
 	private List<BasicSchedule> domainNew;
+	
+	private boolean isInsertMode;
 
 }

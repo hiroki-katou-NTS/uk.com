@@ -68,8 +68,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentCode = ko.observable('');
             self.inputCode = ko.observable('');
             self.currentName = ko.observable('');
-            self.recordType = ko.observable(0);
-            self.dataType = ko.observable(0);
+            self.recordType = ko.observable(-1);
+            self.dataType = ko.observable(-1);
             self.logSetOutputItems = ko.observableArray([]);
 
             self.moveItems = ko.observableArray([]);
@@ -203,7 +203,10 @@ module nts.uk.com.view.cli003.g.viewmodel {
                    
                 }
                 else {
+                    //Mode INSERT
                     self.mode(MODE.INSERT);
+                    self.resetAllForm();
+                    self.initForm();
                 }
                 self.setFocus();
 
@@ -225,12 +228,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.inputCode(self.currentCode());
             self.currentName(logSet.name);
             self.dataType(logSet.dataType);
-            if (self.recordType() == logSet.recordType) {
-                self.getLogItemByRecordType('0');
-            }
-            else {
-                self.recordType(logSet.recordType);
-            }
+            self.recordType(logSet.recordType);
         }
 
         resetAllForm() {
@@ -239,13 +237,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentCode('');
             self.inputCode('');
             self.currentName('');
-            if (self.recordType() == 0) {
-                self.recordType(-1);
-            }
-            else {
-                self.recordType(0);
-            }
-            self.dataType(0);
+            self.recordType(-1);
+            self.dataType(-1);
             self.selectedCodeList.removeAll();
         }
 
@@ -253,47 +246,53 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.currentLogDisplaySet('');
             self.currentName('');
-            if (self.recordType() == 0) {
-                self.recordType(-1);
-            }
-            else {
-                self.recordType(0);
-            }
-            self.dataType(0);
+            self.recordType(-1);
+            self.dataType(-1);
             self.selectedCodeList.removeAll();
+        }
+        
+        initForm() {
+            var self = this;
+            self.recordType(0);
+            self.dataType(0);
         }
 
         obsSelectedLogSet() {
             var self = this;
             self.currentCode.subscribe(function(newValue) {
-//                if (self.mode() != MODE.INSERT) {
-                    errors.clearAll();
-                    for (let i = 0; i < self.logSets().length; i++) {
-                        var logSet = self.logSets()[i];
-                        if (logSet.code == newValue) {
-                            self.resetForm();
-                            self.setLogSetInfo(logSet);
-                            self.mode(MODE.UPDATE);
-                            self.setFocus();
-                            break;
-                        }
+                errors.clearAll();
+                for (let i = 0; i < self.logSets().length; i++) {
+                    var logSet = self.logSets()[i];
+                    if (logSet.code == newValue) {
+                        self.resetForm();
+                        self.setLogSetInfo(logSet);
+                        self.mode(MODE.UPDATE);
+                        self.setFocus();
+                        break;
                     }
-//                }
+                }
             });
         }
 
         obsSelectedLogRecordType() {
             var self = this;
             self.recordType.subscribe(function(newValue) {
-                if (newValue != -1) {
-                    self.getLogItemByRecordType(newValue.toString());
-                }
-                if ((newValue == 4 || newValue == 5 || newValue == 6) && (self.mode() == MODE.INSERT)) {
-                    self.enableDataType(true);
-                } else {
-                    self.enableDataType(false);
+                if (typeof newValue !== "undefined") {
+                    if (newValue != -1) {
+                        self.getLogItemByRecordType(newValue.toString());
+                    }
+                    self.enableDataTypeComb(newValue);
                 }
             });
+        }
+        
+        enableDataTypeComb(recoredType: number) {
+            var self = this;
+            if ((recoredType == 4 || recoredType == 5 || recoredType == 6) && (self.mode() == MODE.INSERT)) {
+                self.enableDataType(true);
+            } else {
+                self.enableDataType(false);
+            }
         }
 
         getLogItemByRecordType(recordType: string) {
@@ -302,7 +301,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.selectedCodeList.removeAll();
             block.grayout();
             service.getLogOutputItemByRecordType(recordType).done(function(logOutputItems: any) {
-                if (logOutputItems) {
+                if (logOutputItems && logOutputItems.length > 0) {
                     for (let i = 0; i < logOutputItems.length; i++) {
                         var logOutputItem = logOutputItems[i];
                         var id;
@@ -320,11 +319,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
                         self.currentLogDisplaySet().recordType == recordType) {
                         var logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
                         if (logSetOutputs) {
+                            var lengthItemSwap = self.itemsSwap().length;
                             for (let j = 0; j < logSetOutputs.length; j++) {
                                 var logSetOutput = logSetOutputs[j];
+                                var itemNo = logSetOutput.itemNo;
                                 var itemName;
-                                for (var k = 0; k < self.itemsSwap().length; k++) {
-                                    if (self.itemsSwap()[k].code == logSetOutput.itemNo) {
+                                for (var k = 0; k < lengthItemSwap; k++) {
+                                    if (self.itemsSwap()[k].code == itemNo) {
                                         itemName = self.itemsSwap()[k].name;
                                         self.selectedCodeList.push(
                                             new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
@@ -335,10 +336,11 @@ module nts.uk.com.view.cli003.g.viewmodel {
                             }
                         }
                     }
-                }
+                } else {
+                     alertError({ messageId: "Msg_1221" });
+                }    
             }).fail(function(error) {
                 alertError({ messageId: "Msg_1221" });
-                errors.clearAll();
             }).always(() => {
                 block.clear();
             });
@@ -451,6 +453,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             let self = this;
             self.mode(MODE.INSERT);
             self.resetAllForm();
+            self.initForm();
             self.setFocus();
         }
 
@@ -466,15 +469,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.grayout();
                 service.deleteLogDisplaySet(self.logSetId()).done(function(data: any) {
-                    infor({ messageId: "Msg_16" });
+                    infor({ messageId: "Msg_16" }).then(function() {
+                     self.setFocus();
+                    });;
                     var newSelectedCode = self.updateSelectCodeAfterDel(self.logSetId());
                     self.selectCode(newSelectedCode);
                     self.getAllLogDisplaySet();
-                    if (self.logSets() || self.logSets().length == 0) {
-                        self.resetAllForm();
-                    }
                 }).fail(function(error) {
-                    alertError(error);
+                    alertError(error).then(function() {
+                     self.setFocus();
+                    });;
                     errors.clearAll();
                 }).always(() => {
                     block.clear();
@@ -509,12 +513,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());            block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
-                infor({ messageId: "Msg_15" });
+                infor({ messageId: "Msg_15" }).then(function() {
+                     self.setFocus();
+                });;
                 self.logSetId(id);
                 self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
-                alertError({ messageId: "Msg_1222" });
+                alertError({ messageId: "Msg_1222" }).then(function() {
+                     self.setFocus();
+                });;
                 errors.clearAll();
             }).always(() => {
                 block.clear();
@@ -529,11 +537,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());
             block.grayout();
             service.updateLogDisplaySet(logDisplaySet).done(function(data: any) {
-                infor({ messageId: "Msg_15" });
+                infor({ messageId: "Msg_15" }).then(function() {
+                     self.setFocus();
+                });
                 self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
-                alertError({ messageId: "Msg_1222" });
+                alertError({ messageId: "Msg_1222" }).then(function() {
+                     self.setFocus();
+                });
                 errors.clearAll();
             }).always(() => {
                 block.clear();
@@ -556,15 +568,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.logSetOutputItems(self.getListSetOutputItems());
 
-            for (var i = 0; i < self.logSetOutputItems().length; i++) {
-                var logSetOutputItem = self.logSetOutputItems()[i];
-                if (logSetOutputItem.isUseFlag == 1) {
-                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
-                        alertError({ messageId: "Msg_1203", messageParams: getText('CLI003_49') });
-                        return false;
-                    }
-                }
-            }
+//            for (var i = 0; i < self.logSetOutputItems().length; i++) {
+//                var logSetOutputItem = self.logSetOutputItems()[i];
+//                if (logSetOutputItem.isUseFlag == 1) {
+//                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
+//                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
+//                        return false;
+//                    }
+//                }
+//            }
             return true;
         }
 

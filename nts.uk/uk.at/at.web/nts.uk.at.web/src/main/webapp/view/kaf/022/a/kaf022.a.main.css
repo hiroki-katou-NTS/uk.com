@@ -286,3 +286,35 @@ div.fixed-table-container table[id^="fixed-table"] tbody tr:last-child td {
 .nts-fixed-table table.fixed-table>tbody>tr>td, .nts-fixed-table table.fixed-table>tbody>tr>th{
 	white-space: normal !important;
 }
+
+#tab-1 > div > div:nth-child(5){
+	margin-bottom: 0px !important;
+}
+
+#tab-1 > div > div:nth-child(6){
+	margin-bottom: 0px !important;
+}
+
+.hdtype{
+	margin-left: 30px;
+}
+
+#fixed-table-a9 > tbody > tr:nth-child(22){
+	border-bottom: 0px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(4){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(5){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(6){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(7){
+	border-top: 3px solid #ccc !important;
+}

@@ -256,10 +256,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.yearReq(false);
                     self.dayReq(false);
                     
-                    if(self.specialHolidayCode() !== "") {
-                        self.dialogDEnable(true);
-                    } else {
+                    if(!self.newModeEnable()) {
                         self.dialogDEnable(false);
+                    } else {
+                        self.dialogDEnable(true);
                     }
                 }
             });
@@ -425,16 +425,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData(), self.getAbsenceFrame(), self.getSpecialHolidayFrame()).done(function() {
-                           
-                if(self.listAbsenceFrame().length > 0) {
-                    _.forEach(self.listAbsenceFrame(), function(item) {
+            $.when(self.getSphdData(), self.getSpecialHolidayFrame(), self.getAbsenceFrame()).done(function() {
+                       
+                if(self.listSpecialHlFrame().length > 0) {
+                    _.forEach(self.listSpecialHlFrame(), function(item) {
                         self.targetItems.push(item);
                     });
                 }
                 
-                if(self.listSpecialHlFrame().length > 0) {
-                    _.forEach(self.listSpecialHlFrame(), function(item) {
+                if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.listAbsenceFrame(), function(item) {
                         self.targetItems.push(item);
                     });
                 }
@@ -498,7 +498,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listAbsenceFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1);
+                            var absenceFrame = new ItemData("b" + item.absenceFrameNo, item.absenceFrameName, 2);
                             self.listAbsenceFrame.push(ko.toJS(absenceFrame));
                         }
                     });
@@ -519,7 +519,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listSpecialHlFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2);
+                            var specialHlFrame = new ItemData("a" + item.specialHdFrameNo, item.specialHdFrameName, 1);
                             self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
                         }
                     });

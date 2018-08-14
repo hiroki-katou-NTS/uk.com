@@ -206,6 +206,7 @@ public enum WorkTypeClassification {
 		case Absence:
 		case SubstituteHoliday:
 		case TimeDigestVacation:
+		case YearlyReserved:
 			return true;
 		case Closure:
 		case Holiday:
@@ -214,7 +215,6 @@ public enum WorkTypeClassification {
 		case HolidayWork:
 		case Attendance:
 		case Shooting:
-		case YearlyReserved:
 		case ContinuousWork:
 			return false;
 		default:
@@ -222,6 +222,33 @@ public enum WorkTypeClassification {
 		}
 	}
 	
+	/**
+	 * 休日系か判定する
+	 * 所定時間取得時に休日系として判断する為の処理
+	 * @return
+	 */
+	public boolean judgeHolidayType() {
+		switch (this) {
+		case Holiday:
+		case Pause:
+		case Closure:
+		case LeaveOfAbsence:
+		case ContinuousWork:
+			return true;			
+		case HolidayWork:
+		case Attendance:
+		case Shooting:
+		case Absence:
+		case AnnualHoliday:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+		case YearlyReserved:
+			return false;			
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
 
 	
 }

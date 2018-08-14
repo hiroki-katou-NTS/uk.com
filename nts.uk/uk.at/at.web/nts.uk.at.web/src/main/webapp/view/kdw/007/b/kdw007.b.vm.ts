@@ -73,6 +73,14 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 ]);
             }
             
+            caic.compareStartValue.subscribe(v => {
+                self.validateRange();
+            });
+            
+            caic.compareEndValue.subscribe(v => {
+                self.validateRange();
+            });
+            
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
@@ -118,10 +126,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
-            });
-
-            $(".value-input").blur(() => {
-                self.validateRange();
             });
 
             self.fillTextDisplayTarget();

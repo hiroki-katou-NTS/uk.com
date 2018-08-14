@@ -71,8 +71,8 @@ public class OptionalWidgetInfoDto {
 	/** Public Holiday Number 公休残数 */
 	private int publicHDNo = 0;
 	
-	/** 21 Holiday Remain Number 子の看護休暇残数 */
-	private RemainingNumber hDRemainNo = new RemainingNumber();
+	/** 21 Child nursing vacation remaining number 子の看護休暇残数 */
+	private RemainingNumber childRemainNo = new RemainingNumber();
 	
 	/** 22 Care Leave Number 介護休暇残数 */
 	private RemainingNumber careLeaveNo = new RemainingNumber();

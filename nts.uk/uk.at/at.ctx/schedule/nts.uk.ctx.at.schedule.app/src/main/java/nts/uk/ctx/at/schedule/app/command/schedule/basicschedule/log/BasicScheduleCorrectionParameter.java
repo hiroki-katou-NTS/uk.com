@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -49,23 +48,21 @@ public class BasicScheduleCorrectionParameter implements Serializable{
 		private final CorrectionAttr attr; 
 
 		public ItemInfo toItemInfo() {
-			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
-					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.before)),
-					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.after)));
+			return ItemInfo.create(String.valueOf(this.itemNo), this.itemName,
+					DataValueAttribute.of(valueType),
+					before == null ? null : valueTimeMoney(valueType, before),
+					after == null ? null : valueTimeMoney(valueType, after));
 		}
 		
-		private Object valueString(int valueType, String value) {
-			if (valueType == DataValueAttribute.TIME.value) {
+		private Object valueTimeMoney(int valueType, String value) {
+			if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
 				return Integer.parseInt(value);
 			} else if (valueType == DataValueAttribute.MONEY.value) {
 				return Double.parseDouble(value);
 			} else {
-				return false;
+				return value;
 			}
 		}
-		
 	}
 
 }

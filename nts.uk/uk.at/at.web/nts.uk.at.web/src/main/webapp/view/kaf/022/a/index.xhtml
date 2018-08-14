@@ -49,6 +49,7 @@
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
 				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType
 				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
 				nts.uk.ctx.at.request.dom.application.BreakReflect
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.UnitAssignmentOvertime
@@ -471,7 +472,7 @@
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -484,13 +485,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_2" style = "margin-left: 90px;">#{i18n.getText('KAF022_375')}</span>
-											<span> <input style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_2" style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: normalOtTime,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -500,13 +501,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_3" style = "margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
-											<span> <input style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_3" style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: retrictPreTimeDay,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -580,7 +581,7 @@
 									</tr>
 								</thead>
 								<tbody data-bind="foreach: listDataA8">
-									<tr>
+									<tr data-bind="if: (appType() == 0 &#124; appType() == 1) &amp; flg() != 1">
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
 										<td><div
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
@@ -620,7 +621,80 @@
 														tabindex:92 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
+								</tbody>
+							</table>
+							<table class="viewmodel-a" id="fixed-table-a9">
+								<colgroup>
+									<col width="165px" />
+									<col width="120px" />
+									<col width="120px" />
+								</colgroup>
+								<tbody data-bind="foreach: listDataA8">
+									<tr data-bind="if: flg() == 1">
+										<td class="color-header"><span class = "hdtype" id="a8_8"  data-bind="text:appTypeName"></span></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
+														tabindex:93 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
+														tabindex:94 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+									</tr>
 
+								</tbody>
+							</table>
+							<table class="viewmodel-a" id="fixed-table-a10">
+								<colgroup>
+									<col width="165px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="130px" />
+									<col width="130px" />
+									<col width="130px" />
+									<col width="120px" />
+								</colgroup>
+								<tbody data-bind="foreach: listDataA8">
+									<tr data-bind="if: (appType() == 2 &#124; appType() == 4 &#124; appType() == 6 &#124; appType() == 7 &#124; appType() == 9 &#124; appType() == 10) &amp; flg() == 0">
+										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
+														tabindex:95 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
+														tabindex:96 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },attr:{
+														tabindex:97 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },attr:{
+														tabindex:98 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td>
+											<div  class ="a4_7"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA8_33,
+													optionsValue: 'code',
+													visibleItemsCount: 2,
+													value: displayInitialSegment,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 7 }
+													]},attr:{
+														tabindex:99 + $index()*6
+													}">
+											</div>
+										</td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
+														tabindex:100 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+									</tr>
 								</tbody>
 							</table>
 							<!-- A9 update ver29 di chuyen-->
@@ -746,7 +820,7 @@
 										<td>
 											<div id="a11_13" class="a5_14" tabindex="219"
 												data-bind="ntsRadioBoxGroup: {
-													options: itemListA11_12,
+													options: itemListA11_8,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: selectedIdA11_13,
@@ -864,7 +938,7 @@
 									<tr>
 									<td class="color-header" id="a13_2">#{i18n.getText('KAF022_103')}</td>
 									<td>
-										<button tabindex="223" class="small">#{i18n.getText('KAF022_104')}</button>
+										<button tabindex="223" class="small" data-bind="click: openUDialog">#{i18n.getText('KAF022_104')}</button>
 										<span tabindex="224">
 											<input  class="nts-input"
 												id="inpName" style="width: 350px"

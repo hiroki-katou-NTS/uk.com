@@ -13,7 +13,8 @@
 }
 
 #qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li a {
-	margin-left: 15px
+	margin-left: 4px;
+	margin-top: 2px
 }
 
 #qViewModel .ui-tabs .ui-tabs-nav .ui-tabs-anchor {

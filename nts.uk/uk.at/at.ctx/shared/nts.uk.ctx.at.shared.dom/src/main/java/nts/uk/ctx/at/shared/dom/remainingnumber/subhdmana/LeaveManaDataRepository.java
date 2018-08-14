@@ -20,6 +20,14 @@ public interface LeaveManaDataRepository {
 	List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid);
 	
 	List<LeaveManagementData> getBySid(String cid, String sid);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd ・休出日 < INPUT．集計開始日
+	 * @return
+	 */
+	List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
 	
 	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	

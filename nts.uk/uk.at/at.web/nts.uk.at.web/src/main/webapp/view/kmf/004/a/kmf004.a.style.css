@@ -207,3 +207,8 @@ div.age-criteria {
 div.ageBaseDate {
     margin: -9px;
 }
+
+.ntsMonthDays .ntsMonthPicker.ntsComboBox.ntsMonthDays_Component.ui-igcombo-wrapper.ntsControl,
+.ntsMonthDays .ntsDayPicker.ntsComboBox.ntsMonthDays_Component.ui-igcombo-wrapper.ntsControl {
+    width: 65px;
+}

@@ -27,11 +27,11 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 控除用合計時間: 控除合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private TotalDeductionTimeDto totalTimeForDeduction;
+	private OutingTotalTimeDto totalTimeForDeduction;
 
 	/** 計上用合計時間: 控除合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = CALC, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	private TotalDeductionTimeDto totalTimeForCalc;
+	private OutingTotalTimeDto totalTimeForCalc;
 
 	/** 控除用コア外合計時間: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = DEDUCTION + OUT_CORE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
@@ -73,8 +73,8 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	public static GoOutTimeSheetDailyPerformDto toDto(OutingTimeOfDaily domain){
 		return domain == null ? null : new GoOutTimeSheetDailyPerformDto(
 				toValicationUse(domain.getTimeVacationUseOfDaily()), 
-				TotalDeductionTimeDto.getDeductionTime(domain.getDeductionTotalTime()), 
-				TotalDeductionTimeDto.getDeductionTime(domain.getRecordTotalTime()), 
+				OutingTotalTimeDto.from(domain.getDeductionTotalTime()), 
+				OutingTotalTimeDto.from(domain.getRecordTotalTime()), 
 				null,  null, 
 				domain.getWorkTime() == null ? null : domain.getWorkTime().v(), 
 				domain.getReason().value, 

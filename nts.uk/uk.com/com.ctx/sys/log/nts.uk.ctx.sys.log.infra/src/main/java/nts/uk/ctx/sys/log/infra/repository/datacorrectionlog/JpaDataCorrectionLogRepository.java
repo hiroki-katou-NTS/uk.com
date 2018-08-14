@@ -23,7 +23,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
  */
 
 @Stateless
-public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository{
+public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository, DataCorrectionLogWriter {
 
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, DatePeriod datePeriod) {

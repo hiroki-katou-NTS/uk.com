@@ -160,6 +160,11 @@ module kcp.share.list {
         optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
 
         subscriptions?: Array<KnockoutSubscription>;
+        
+        /**
+         * in the select-all case, disableSelection is true. Else false
+         */
+        disableSelection?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -252,6 +257,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
+        disableSelection : boolean;
         componentOption: ComponentOption;
         
         constructor() {
@@ -269,6 +275,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            disableSelection = false;
         }
 
         /**
@@ -309,6 +316,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
+            self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -360,7 +368,7 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
                 gridList.ntsGridList("setSelectedValue", []);
                 _.defer(() => {
@@ -379,16 +387,35 @@ module kcp.share.list {
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
-                const options = {
-                    width: self.gridStyle.totalColumnSize,
-                    dataSource: self.itemList(),
-                    primaryKey: self.targetKey,
-                    columns: self.listComponentColumn,
-                    multiple: self.isMultipleSelect,
-                    value: self.selectedCodes(),
-                    name: self.getItemNameForList(),
-                    rows: self.maxRows
-                };
+                
+                const options;
+                
+                if (self.disableSelection) {
+                    let selectionDisables = _.map(self.itemList(), 'code');
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: true,
+                        value: selectionDisables,
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                        selectionDisables: selectionDisables
+                    };
+                } else {
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: self.isMultipleSelect,
+                        value: self.selectedCodes(),
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                    };
+                }
+                
                 const searchBoxOptions = {
                     searchMode: 'filter',
                     targetKey: self.targetKey,

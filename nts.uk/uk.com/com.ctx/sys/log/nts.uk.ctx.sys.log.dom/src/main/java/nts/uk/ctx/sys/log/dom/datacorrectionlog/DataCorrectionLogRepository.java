@@ -24,6 +24,4 @@ public interface DataCorrectionLogRepository {
 	
 	List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId, DatePeriod period);
 	
-	void save(List<DataCorrectionLog> dataCorrectionLog);
-
 }
