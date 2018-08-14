@@ -4,7 +4,8 @@ module nts.uk.at.view.kwr008.a {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import share = nts.uk.at.view.kwr008.share.model;
-
+    import alertError = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
 
@@ -140,7 +141,7 @@ module nts.uk.at.view.kwr008.a {
             exportReport() {
                 var self = this;
                 if (self.validate()) return;
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 var data = new model.EmployeeDto();
                 if (self.printFormat() == 0) {
                     data.startYearMonth = self.dateValue().startDate;
@@ -164,18 +165,18 @@ module nts.uk.at.view.kwr008.a {
                     if (msgId == "") return;
                     let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
                     let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
-                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
+                    alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
                 }).fail(err => {
-                    nts.uk.ui.dialog.alertError(err);
+                    alertError(err);
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    block.clear();
                 })
             }
 
             private getMsgEmpError(data: Array<any>, totalErr: number) {
                 let self = this;
                 let msgEmpErr = "";
-                for (let i = 0; i < totalErr; i++){
+                for (let i = 0; i < totalErr; i++) {
                     msgEmpErr += "\n" + self.getAsyncData(data, "empErr" + i).valueAsString;
                 }
                 return msgEmpErr;
@@ -190,7 +191,7 @@ module nts.uk.at.view.kwr008.a {
 
             openKWR008B() {
                 let self = this;
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 let param = {
                     selectedCd: self.selectedOutputItem()
                 }
@@ -201,15 +202,15 @@ module nts.uk.at.view.kwr008.a {
                     self.getOutItemSettingCode().done(() => {
                         if (!resultData) {
                             self.selectedOutputItem(null);
-                            nts.uk.ui.block.clear();
+                            block.clear();
                             return;
                         } else {
                             self.selectedOutputItem(resultData.selectedCd);
-                            nts.uk.ui.block.clear();
+                            block.clear();
                         }
                     }).fail(err => {
-                        nts.uk.ui.dialog.alertError({ messageId: err.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                        nts.uk.ui.block.clear();
+                        alertError({ messageId: err.messageId }).then(function() { block.clear(); });
+                        block.clear();
                     });
                 });
             }
@@ -263,7 +264,7 @@ module nts.uk.at.view.kwr008.a {
                 }
 
                 if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
-                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
+                    alertError("Base Date or Closure or Period must be shown!");
                     return;
                 }
                 self.ccgcomponent = {
@@ -507,7 +508,7 @@ module nts.uk.at.view.kwr008.a {
                 breakPage: number;
 
                 printFormat: number;
-                
+
                 excludeEmp: number;
 
                 constructor(setItemsOutputCd: string, breakPage: number, printFormat: number, excludeEmp: number) {

@@ -8,6 +8,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
         //enum mode
@@ -63,8 +64,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             //event select change
             self.selectedCode.subscribe((code) => {
-                _.defer(() => { nts.uk.ui.errors.clearAll() });
-                nts.uk.ui.errors.clearAll();
+                _.defer(() => { errors.clearAll() });
+                errors.clearAll();
 
                 block.invisible();
                 if (code) {
@@ -120,7 +121,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         }
                     }).always(function() {
                         self.updateMode(code);
-                        nts.uk.ui.errors.clearAll();
+                        errors.clearAll();
                         block.clear();
                     });
                 } else {
@@ -167,18 +168,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             block.invisible();
             //fill data B2_2
-            
+
             let sv1 = service.getValueOutputFormat();
             let sv2 = service.getOutItemSettingCode();
-            
+
             $.when(sv1, sv2).done((data1, data2) => {
                 // get list value output format
                 let listValOutFormat = [];
-                for(let i of data1){
+                for (let i of data1) {
                     listValOutFormat.push(new model.ItemModel(i.value + '', i.localizedName));
                 }
                 self.valOutFormat(listValOutFormat);
-                
+
                 var dataSorted = _.sortBy(data2, ['cd']);
                 for (let i = 0, count = data2.length; i < count; i++) {
                     self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
@@ -214,10 +215,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //Open dialog KDW007
         openKDW007(sortBy) {
             let self = this;
-            nts.uk.ui.block.invisible();
+            block.invisible();
             let index = _.findIndex(self.outputItem(), (x) => { return x.sortBy() === sortBy(); });
             if (index == -1) {
-                nts.uk.ui.block.clear();
+                block.clear();
                 return;
             }
 
@@ -239,7 +240,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                     let resultData = nts.uk.ui.windows.getShared("KDW007CResults");
                     if (!resultData) {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                         return;
                     }
                     self.buildOutputItem(resultData, self.outputItem()[index]).done(() => {
@@ -447,7 +448,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             }
             $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
+            if (errors.hasError()) {
                 block.clear();
                 return;
             }
