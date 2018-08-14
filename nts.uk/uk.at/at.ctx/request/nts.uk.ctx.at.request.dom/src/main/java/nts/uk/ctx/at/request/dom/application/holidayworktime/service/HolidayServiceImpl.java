@@ -164,8 +164,10 @@ public class HolidayServiceImpl implements HolidayService {
 		List<String> workTypeCodes = new ArrayList<>();
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+			AppEmploymentSetting appSet =  appEmploymentSettings.get(0);
+			List<AppEmployWorkType> lstEmploymentWorkType = appSet.getLstWorkType();
+			boolean isDisplay = appSet.isDisplayFlag();
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType) && isDisplay) {
 				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
 				lstEmploymentWorkType.forEach(x -> {
 					

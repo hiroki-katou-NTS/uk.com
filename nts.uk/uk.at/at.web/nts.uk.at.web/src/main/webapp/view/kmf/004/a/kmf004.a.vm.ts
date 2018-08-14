@@ -762,6 +762,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             if(!self.editMode()) {
                 service.add(dataItem).done(function(errors) {
+                    _.forEach(errors, function(err) {
+                        if(err === "Msg_3") {
+                            $("#input-code").ntsError("set", {messageId:"Msg_3"});
+                        }
+                    });
+                        
                     if (errors && errors.length > 0) {
                         self.addListError(errors);    
                     } else {  
@@ -929,11 +935,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
-                _.forEach(errors, function(err) {
-                    if(err.messageId === "Msg_3") {
-                        $("#input-code").ntsError("set", {messageId:"Msg_3"});
-                    }
-                });
+//                _.forEach(errors, function(err) {
+//                    if(err.messageId === "Msg_3") {
+//                        $("#input-code").ntsError("set", {messageId:"Msg_3"});
+//                    }
+//                });
             });
         }
     }

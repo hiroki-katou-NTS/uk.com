@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -36,12 +38,33 @@ public class RemainSubstitutionHolidayUpdating {
 
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionMngDataRepo;
+	
 
 	// 振休残数更新
-	public void updateRemainSubstitutionHoliday(List<AbsRecDetailPara> lstAbsRecMng) {
+	public void updateRemainSubstitutionHoliday(List<AbsRecDetailPara> lstAbsRecMng,AggrPeriodEachActualClosure period, String empId) {
 		String companyId = AppContexts.user().companyId();
+		this.deletePayoutManaData(period.getPeriod(), empId);
 		this.updatePayoutMngData(companyId, lstAbsRecMng);
+		this.deleteSubManaData(period.getPeriod(), empId);
 		this.updateSubstitutionHolidayMngData(companyId, lstAbsRecMng);
+	}
+	
+	//ドメインモデル 「振出管理データ」 を削除する
+	public void deletePayoutManaData(DatePeriod period, String empId){
+		List<PayoutManagementData> managementDatas = payoutMngDataRepo.getByHoliday(empId, false, period);
+		if (CollectionUtil.isEmpty(managementDatas))
+			return;
+		List<String> payoutId = managementDatas.stream().map(r -> r.getPayoutId()).collect(Collectors.toList());
+		payoutMngDataRepo.deleteById(payoutId);
+	}
+	
+	//ドメインモデル 「振休管理データ」 を削除する
+	public void deleteSubManaData(DatePeriod period, String empId){
+		List<SubstitutionOfHDManagementData> ofHDManagementDatas = substitutionMngDataRepo.getByHoliday(empId, false, period);
+		if (CollectionUtil.isEmpty(ofHDManagementDatas))
+			return;
+		List<String> subOfHDID = ofHDManagementDatas.stream().map(r -> r.getSubOfHDID()).collect(Collectors.toList());
+		substitutionMngDataRepo.deleteById(subOfHDID);
 	}
 
 	// 振出管理データの更新

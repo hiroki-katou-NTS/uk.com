@@ -38,13 +38,13 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 				59, 59);
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
 			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId"
-					+ " AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod";
+					+ " AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
 			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
 					.setParameter("startPeriod", start)
 					.setParameter("endPeriod", end).getList(i -> i.toDomain());
 		} else {
 			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
-					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod";
+					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
 			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
 					.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
 					.setParameter("endPeriod", end).getList(i -> i.toDomain());

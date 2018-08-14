@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.byperiod;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -44,5 +45,24 @@ public class AgreementTimeByPeriod implements Cloneable {
 			throw new RuntimeException("AgreementTimeByPeriod clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 集計処理
+	 * @param excessOutside 期間別の時間外超過
+	 */
+	public void aggregate(
+			ExcessOutsideByPeriod excessOutside){
+		
+		// 時間外超過を取得
+		int totalExcessMinutes = 0;
+		for (val excessOutsideItem : excessOutside.getExcessOutsideItems().values()){
+			
+			// 超過時間を合計
+			totalExcessMinutes += excessOutsideItem.getExcessTime().v();
+		}
+		
+		// 合計した時間を36協定時間とする
+		this.agreementTime = new AttendanceTimeMonth(totalExcessMinutes);
 	}
 }

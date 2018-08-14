@@ -305,6 +305,7 @@ module nts.uk.at.view.kmf002.c {
             var dfd = $.Deferred<void>();
             let _self = this;
             if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
                 return;
             }
             $.when(service.findAllEmployeeRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any) {
@@ -321,6 +322,7 @@ module nts.uk.at.view.kmf002.c {
         private getDataFromService(): void {
             let _self = this;
             if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
                 return;
             }
             if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
