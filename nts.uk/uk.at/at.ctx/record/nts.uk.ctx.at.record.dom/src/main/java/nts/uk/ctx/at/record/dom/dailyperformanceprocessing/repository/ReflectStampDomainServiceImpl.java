@@ -169,6 +169,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode.v());
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			newReflectStampOutput.setReflectStampOutput(reflectStamp);
 			return newReflectStampOutput;
 		}
 
