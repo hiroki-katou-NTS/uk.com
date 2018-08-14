@@ -23,12 +23,14 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, ProcessResult>{
@@ -48,6 +50,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private RegisterAtApproveReflectionInfoService_New registerService;
 	@Inject
 	private SpecialHolidayEventAlgorithm specHdEventAlg;
+	@Inject
+	private GetHdDayInPeriodService getHdDayInPeriodSv;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
@@ -143,9 +147,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 						//申請する日数 = 申請する終了日 - 申請する開始日 + 1
 						appDay = startDate.daysTo(endDate) + 1;
 					}else{//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがfalse：
+						//19.指定する期間での休日日数を取得する-(Lấy số ngày nghỉ phép trong khoảng thời gian chỉ định)
+						int hdDaySys = getHdDayInPeriodSv.getHolidayDayInPeriod(command.getEmployeeID(), new DatePeriod(startDate, endDate));
 						//申請する日数 = 申請する終了日 - 申請する開始日 + 1 - 休日日数
-						//Tam thoi 休日日数 = 0
-						appDay = startDate.daysTo(endDate) + 1;
+						appDay = startDate.daysTo(endDate) + 1 - hdDaySys;
 					}
 					//上限日数(ノート2)：
 					int maxDaySpec = 0;//上限日数
