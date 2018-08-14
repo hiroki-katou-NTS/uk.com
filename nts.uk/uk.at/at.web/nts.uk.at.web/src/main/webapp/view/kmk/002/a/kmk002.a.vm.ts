@@ -1121,7 +1121,7 @@ module nts.uk.at.view.kmk002.a {
                 self.selectedCode = ko.observable('');
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
-                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
+                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100, formatter: _.escape },
                     {
                         headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
                         formatter: atr => {
