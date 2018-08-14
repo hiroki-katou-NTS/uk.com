@@ -48,6 +48,7 @@ public class AnnualWorkScheduleData {
 	private BigDecimal average;
 	private BigDecimal sum;
 	private Integer monthsExceeded;
+	private Integer monthsRemaining;
 
 	private ItemData period1st;
 	private ItemData period2nd;
@@ -427,13 +428,14 @@ public class AnnualWorkScheduleData {
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
 			List<AgreementTimeOfManagePeriodImport> listAgreementTime,
 			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth,
-			Integer monthsExceeded) {
+			Integer monthsExceeded, Integer monthLimit) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.setNumMonth(numMonth);
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
+		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
 		listAgreementTime.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().getAgreementTime().v());
 			AgreementTimeStatusOfMonthly status = m.getAgreementTime().getStatus();

@@ -76,6 +76,13 @@ module nts.uk.at.view.kwr008.a {
 
             printFormat: KnockoutObservable<number> = ko.observable(0);
 
+            listSheetExcludedEmp: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText('KWR008_60') },
+                { code: 1, name: nts.uk.resource.getText('KWR008_61') }
+            ]);
+
+            excludeEmp: KnockoutObservable<number> = ko.observable(0);
+
             fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
             constructor() {
@@ -145,12 +152,13 @@ module nts.uk.at.view.kwr008.a {
                 data.breakPage = self.selectedBreakPage().toString();
                 data.printFormat = self.printFormat();
                 data.employees = [];
+                data.excludeEmp = self.excludeEmp();
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
                     if (emp) data.employees.push(emp);
                 }
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
-                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
+                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat(), self.excludeEmp()));
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(res => {
                     let msgId = self.getAsyncData(res.taskDatas, "messageId").valueAsString;
                     if (msgId == "") return;
@@ -336,6 +344,7 @@ module nts.uk.at.view.kwr008.a {
                                     self.selectedOutputItem(data.setItemsOutputCd);
                                     self.selectedBreakPage(data.breakPage);
                                     self.printFormat(data.printFormat);
+                                    self.excludeEmp(data.excludeEmp);
                                 } else if (self.outputItem().length) {
                                     self.selectedOutputItem(self.outputItem()[0].code);
                                 }
@@ -498,11 +507,14 @@ module nts.uk.at.view.kwr008.a {
                 breakPage: number;
 
                 printFormat: number;
+                
+                excludeEmp: number;
 
-                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number) {
+                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number, excludeEmp: number) {
                     this.setItemsOutputCd = setItemsOutputCd;
                     this.breakPage = breakPage;
                     this.printFormat = printFormat;
+                    this.excludeEmp = excludeEmp;
                 }
             }
 

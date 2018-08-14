@@ -64,15 +64,16 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 					|| dataSource.getHeader().getMonthPeriodLabels().size() < MAX_GROUP_MONTHS) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("monthPeriodLabel7").getFirstColumn());
 				is7Group = false;
-				pageScale += 5;
+				pageScale += 3;
 				rowsPerPage = ROW_PER_PAGE;
 				wsc.getRangeByName("monthPeriod6Range").setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED,
 						Color.getBlack());
 			}
 			if (!dataSource.isOutNumExceedTime36Agr()) {
 				ws.getCells().deleteColumn(wsc.getRangeByName("numExceedTime").getFirstColumn());
+				ws.getCells().deleteColumn(wsc.getRangeByName("numRemainingTime").getFirstColumn());
 				isMonthsExceeded = false;
-				pageScale += 2;
+				pageScale += 6;
 			}
 			PageSetup pageSetup = ws.getPageSetup();
 			pageSetup.setZoom(pageScale);
@@ -237,6 +238,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
 			if (isMonthsExceeded) {
 				range.cell("numExceedTime", rowOffset, 0).putValue(data.getMonthsExceeded());
+				range.cell("numRemainingTime", rowOffset, 0).putValue(data.getMonthsRemaining());
 			}
 			range.cell("period1st", rowOffset, 0).putValue(data.formatMonthPeriod1st());
 			this.setCellStyle(range.cell("period1st", rowOffset, 0), data.getColorPeriodMonth1st());
