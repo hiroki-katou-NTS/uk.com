@@ -67,7 +67,7 @@ module nts.uk.at.view.kwr006.c {
                 });
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180 }
+                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape}
                 ]);
                 self.itemListConditionSet = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
