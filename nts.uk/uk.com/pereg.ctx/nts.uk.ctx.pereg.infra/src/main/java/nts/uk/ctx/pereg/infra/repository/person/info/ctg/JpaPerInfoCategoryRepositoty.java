@@ -616,13 +616,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public List<DateRangeDto> dateRangeCode() {
 		String cid = AppContexts.user().companyId();
 		// Get startDate and endDate of category history
-		List<String[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, String[].class).setParameter("cid", cid).getList();
-
-		return query.stream().map(m -> m[0]).distinct().map(m -> {
-			List<String[]> record = query.stream().filter(f -> f[0].equals(m)).collect(Collectors.toList());
+		List<Object[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, Object[].class).setParameter("cid", cid).getList();
+		return query.stream().map(m -> m[0].toString()).distinct().map(m -> {
+			List<Object[]> record = query.stream().filter(f -> f[0].toString().equals(m)).collect(Collectors.toList());
 
 			if (record.size() == 2) {
-				return new DateRangeDto(m, record.get(0)[1], record.get(1)[1]);
+				return new DateRangeDto(m, record.get(0)[1].toString(), record.get(1)[1].toString());
 			}
 
 			return null;
