@@ -358,13 +358,13 @@ public class LogBasicInformationFinder {
 				}
 				// xử lý input map to list
 				lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
-				
+				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			default:
 				break;
 			}
 		}
-		lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
+		
 		return lstLogBacsicInfo;
 	}
 	
