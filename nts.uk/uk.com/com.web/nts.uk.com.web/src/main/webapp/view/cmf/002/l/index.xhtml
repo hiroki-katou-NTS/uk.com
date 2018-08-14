@@ -59,9 +59,9 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: true,
+								required: !$vm.decimalSelectionCls(),
 								enable: !$vm.decimalSelectionCls(),
-								option : {width : '35px'}}" />
+								option : {width : '45px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
 							style="width: 50px; margin-top: 5px;">
@@ -187,7 +187,7 @@
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
  								constraint: 'DataFormatFixedValueOperation', 
-								required: true,
+								required: $vm.enableFixedValueOperation(),
 								enable: $vm.enableFixedValueOperation(),
 								option : {width : '140px',decimallength: 2}}" />
 							<span>#{i18n.getText('CMF002_195')}</span>
@@ -218,7 +218,7 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: true,
+								required: $vm.enableFixedLengthOutput(),
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<div id="L8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
