@@ -184,7 +184,7 @@ public class PeregCommandFacade {
 		}
 		
 		List<ItemsByCategory> updateInput = inputContainer.getInputs().stream()
-				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		
 		if (updateInput.size() > 0) {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
@@ -346,26 +346,34 @@ public class PeregCommandFacade {
 	 */
 	private void setParamsForCPS001(String sid, String pid, PersonInfoProcessAttr isAdd, List<ItemsByCategory> inputs, PersonCorrectionLogParameter target) {
 		if (target != null) {
-			DataCorrectionContext.setParameter(target.getHashID(), target);
+			
 			String stringKey = null;
 			ReviseInfo reviseInfo = null;
+			List<DateRangeDto> ctgCode = this.ctgRepo.dateRangeCode();
 
 			for (ItemsByCategory input : inputs) {
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 
 				List<ItemValue> itemLogs = input.getItems() == null ?
 						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
-				
-				boolean isHistory = input.getCategoryType() != CategoryType.SINGLEINFO.value || input.getCategoryType() != CategoryType.MULTIINFO.value;
+				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
+						
+				boolean isHistory = input.getCategoryType() == CategoryType.DUPLICATEHISTORY.value  || input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value || input.getCategoryType() == CategoryType.NODUPLICATEHISTORY.value;
 
+				DateRangeDto dateRange = null;
+				if(input.getCategoryCd().equals("CS00003")) {
+					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
+				} else {
+					dateRange = isHistory == true? dateRangeOp.get(): null;
+				}
 				for (ItemValue item : itemLogs) {
 					// kiểm tra các item của  category nghỉ đặc biệt, employee, lịch sử 
 					if (specialItemCode.contains(item.itemCode())
 							|| (isHistory && item.logType() == ItemValueType.DATE.value
-								&& (item.itemName().equals(nameStartDate) || item.itemName().equals(nameEndate)))) {
+								&& (item.itemCode().equals(dateRange.getStartDateCode()) || item.itemCode().equals(dateRange.getEndDateCode())))) {
 
 						// lấy target Key
-						if (specialItemCode.contains(item.itemCode()) || (item.itemName().equals(nameStartDate))) {
+						if (specialItemCode.contains(item.itemCode()) || (item.itemCode().equals(dateRange.getStartDateCode()))) {
 							stringKey = item.valueAfter();
 						}
 						
@@ -381,7 +389,7 @@ public class PeregCommandFacade {
 							query.setCategoryId(input.getCategoryId());
 							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 							if(historyLst.size() == 1) {
-								if (item.itemName().equals(nameEndate)) {
+								if (item.itemCode().equals(dateRange.getEndDateCode())) {
 									item.setValueAfter(valueEndate);
 									item.setContentAfter(valueEndate);
 								}
@@ -395,7 +403,7 @@ public class PeregCommandFacade {
 										switch (isAdd) {
 										case ADD:
 											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
-											if (item.itemName().equals(nameEndate)) {
+											if (item.itemCode().equals(dateRange.getEndDateCode())) {
 												item.setValueAfter(valueEndate);
 												item.setContentAfter(valueEndate);
 												break;
@@ -465,6 +473,7 @@ public class PeregCommandFacade {
 				}
 				
 				if (ctgTarget != null) {
+					DataCorrectionContext.setParameter(target.getHashID(), target);
 					DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 				}
 				stringKey = null;

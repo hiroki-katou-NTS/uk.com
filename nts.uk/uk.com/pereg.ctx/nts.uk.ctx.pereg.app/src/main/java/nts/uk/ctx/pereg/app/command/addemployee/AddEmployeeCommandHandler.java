@@ -157,6 +157,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
 		val command = context.getCommand();
 		String employeeId = IdentifierUtil.randomUniqueId();
 		String userId = IdentifierUtil.randomUniqueId();
@@ -180,7 +181,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		updateEmployeeRegHist(companyId, employeeId);
 
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
 		addInfoBasicToLogCorrection(command, inputs);
 		setParamsForCorrection(command, inputs, employeeId, userId);
 		DataCorrectionContext.transactionFinishing(-98);
@@ -279,6 +279,30 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
+			case "CS00039":
+			case "CS00040":
+			case "CS00041":
+			case "CS00042":
+			case "CS00043":
+			case "CS00044":
+			case "CS00045":
+			case "CS00046":
+			case "CS00047":
+			case "CS00048":
+			case "CS00059":
+			case "CS00060":
+			case "CS00061":
+			case "CS00062":
+			case "CS00063":
+			case "CS00064":
+			case "CS00065":
+			case "CS00066":
+			case "CS00067":
+			case "CS00068":
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo,
+						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
+				//end
 				break;
 			case "CS00015":
 			case "CS00037":
