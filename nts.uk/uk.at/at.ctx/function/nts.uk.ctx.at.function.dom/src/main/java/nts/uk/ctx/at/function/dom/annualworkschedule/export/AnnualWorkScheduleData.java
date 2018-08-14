@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -144,46 +142,21 @@ public class AnnualWorkScheduleData {
 				.add(this.getItemValueByNullOrZero(this.month10th)).add(this.getItemValueByNullOrZero(this.month11th))
 				.add(this.getItemValueByNullOrZero(this.month12th));
 		// 月平均を算出する
-		this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), this.getMaxDigitAfterDecimalPoint(),
-				RoundingMode.HALF_UP);
-		return this;
-	}
-
-	private int getMaxDigitAfterDecimalPoint() {
-		if (maxDigitAfterDecimalPoint == null) {
-			maxDigitAfterDecimalPoint = Collections
-					.max(Arrays.asList(this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month1st)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month2nd)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month3rd)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month4th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month5th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month6th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month7th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month8th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month9th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month10th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month11th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month12th))));
+		switch (this.valOutFormat) {
+		case DAYS:
+		case TIMES:
+		case AMOUNT:
+			this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), 1, RoundingMode.HALF_UP);
+			break;
+		case TIME:
+			this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), 0, RoundingMode.HALF_UP);
+			break;
 		}
-		return maxDigitAfterDecimalPoint;
-	}
-
-	private int getDigitAfterDecimalPoint(BigDecimal value) {
-		if (value == null)
-			return 0;
-		String valueStr = value.toString();
-		int indexPoint = valueStr.indexOf('.');
-		if (indexPoint < 0)
-			return 0;
-		return valueStr.length() - (indexPoint + 1);
+		return this;
 	}
 
 	private BigDecimal getItemValueByNullOrZero(ItemData item) {
 		return item == null ? BigDecimal.valueOf(0) : item.getValue();
-	}
-
-	private BigDecimal getItemValueByNullOrDefault(ItemData item) {
-		return item == null ? null : item.getValue();
 	}
 
 	private String formatItemData(ItemData item) {
@@ -198,9 +171,10 @@ public class AnnualWorkScheduleData {
 		if (valOutFormat.equals(ValueOuputFormat.TIME)) {
 			return String.format("%d:%02d", value.longValue() / 60, Math.abs(value.longValue() % 60));
 		}
-		if (valOutFormat.equals(ValueOuputFormat.TIMES)) {
+		// CR: No 135
+		/*if (valOutFormat.equals(ValueOuputFormat.TIMES)) {
 			return String.valueOf(value.longValue());
-		}
+		}*/
 		return String.valueOf(value.floatValue());
 	}
 
