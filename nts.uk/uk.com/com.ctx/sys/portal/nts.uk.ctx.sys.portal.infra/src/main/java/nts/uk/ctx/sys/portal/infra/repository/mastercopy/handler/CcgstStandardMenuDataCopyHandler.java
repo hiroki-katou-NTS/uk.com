@@ -33,7 +33,7 @@ public class CcgstStandardMenuDataCopyHandler extends JpaRepository implements D
 	private String INSERT_QUERY = "";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT e FROM CcgstStandardMenu WHERE e.ccgmtStandardMenuPK.companyId = :cid";
+	private static final String SELECT_BY_CID = "SELECT e FROM CcgstStandardMenu e WHERE e.ccgmtStandardMenuPK.companyId = :cid";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

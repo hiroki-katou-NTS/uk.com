@@ -33,7 +33,7 @@ public class CcgmtTopPagePartDataCopyHandler extends JpaRepository implements Da
 	private String INSERT_QUERY = "";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtTopPagePart WHERE e.ccgmtTopPagePartPK.companyID = :cid";
+	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtTopPagePart e WHERE e.ccgmtTopPagePartPK.companyID = :cid";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
