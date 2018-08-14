@@ -1,53 +1,27 @@
 package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.at.request.infra.entity.setting.company.displayname.KrqmtAppDispName;
-import nts.uk.ctx.at.request.infra.entity.setting.company.displayname.KrqmtAppDispNamePK;
 import nts.uk.shr.com.context.AppContexts;
 
-
-/**
- * The Class KrqmtAppDispNameDataCopyHandler.
- */
-
-/**
- * Gets the insert query.
- *
- * @return the insert query
- */
 @Getter
-
-/**
- * Sets the insert query.
- *
- * @param INSERT_QUERY the new insert query
- */
 @Setter
-
-/**
- * Instantiates a new krqmt app disp name data copy handler.
- */
 @NoArgsConstructor
-
-/**
- * Instantiates a new krqmt app disp name data copy handler.
- *
- * @param copyMethod the copy method
- * @param companyId the company id
- * @param INSERT_QUERY the insert query
- */
 @AllArgsConstructor
-public class KrqmtAppDispNameDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KrqmtAppDispNameDataCopyHandler implements DataCopyHandler {
 
+	/** The entity manager. */
+	private EntityManager entityManager;
+	
 	/** The copy method. */
 	private CopyMethod copyMethod;
 
@@ -55,52 +29,62 @@ public class KrqmtAppDispNameDataCopyHandler extends JpaRepository implements Da
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KRQMT_APP_DISP_NAME(CID, APP_TYPE, DISP_NAME) VALUES (?, ?, ?);";
 	
-	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT c FROM KrqmtAppDispName c WHERE c.krqmtAppDispNamePK.companyId = :companyId";
+	/** The select by cid query. */
+	private String SELECT_BY_CID_QUERY = "SELECT CID, APP_TYPE, DISP_NAME FROM KRQMT_APP_DISP_NAME WHERE CID = ?";
 	
+	/** The delete by cid query. */
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_APP_DISP_NAME WHERE CID = ?";
+	
+	@Override
+	public void doCopy() {
+		
+		// Get all company zero data
+		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
+				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		
+		if(zeroCompanyDatas.length == 0)
+			return;
+		this.entityManager.joinTransaction();
+		switch (copyMethod) {
+			case REPLACE_ALL:
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
+					.setParameter(1, this.companyId);
+				deleteQuery.executeUpdate();
+			case ADD_NEW:
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * 3 + 1, this.companyId);
+					insertQuery.setParameter(i * 3 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 3 + 3, dataArr[2]);
+				}
+				
+				// Run insert query
+				insertQuery.executeUpdate();
+			case DO_NOTHING:
+				// Do nothing
+			default: 
+				break;
+		}
+		
+	}
+
 	/**
 	 * Instantiates a new krqmt app disp name data copy handler.
 	 *
+	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqmtAppDispNameDataCopyHandler(CopyMethod copyMethod, String companyId) {
+	public KrqmtAppDispNameDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
 		super();
+		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
-	 */
-	@Override
-	public void doCopy() {
-		// Get all company zero data
-		List<KrqmtAppDispName> entityZeroData = this.queryProxy().query(SELECT_BY_CID, KrqmtAppDispName.class)
-				.setParameter("companyId", AppContexts.user().zeroCompanyIdInContract())
-				.getList();
-		
-		switch (copyMethod) {
-		case REPLACE_ALL:
-			// Delete all old data
-			List<KrqmtAppDispName> oldEntities = this.queryProxy().query(SELECT_BY_CID, KrqmtAppDispName.class)
-			.setParameter("companyId", this.companyId)
-			.getList();
-			this.commandProxy().removeAll(oldEntities);
-		case ADD_NEW:
-			// Insert Data
-			List<KrqmtAppDispName> newEntities = entityZeroData.stream()
-					.map(zeroData -> new KrqmtAppDispName(new KrqmtAppDispNamePK(this.companyId, zeroData.krqmtAppDispNamePK.appType), zeroData.dispName))
-					.collect(Collectors.toList());
-			this.commandProxy().insertAll(newEntities);
-		case DO_NOTHING:
-			// Do nothing
-		default:
-			break;
-		}
-		
 	}
 
 }

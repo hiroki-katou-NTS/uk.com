@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.infra.repository.person.info.groupitem.masstercopy.handler;
+package nts.uk.ctx.pereg.infra.repository.person.info.groupitem.mastercopy.handler;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,13 +93,14 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 				this.commandProxy().insertAll(itemList);
 
 			});
+			break;
 
 		case ADD_NEW:
 
 			// Insert Data
 			entityComZero.ifPresent(entity -> {
 
-				if (entityCurrentCom == null) {
+				if (!entityCurrentCom.isPresent()) {
 
 					// set company ID
 					entity.companyId = companyId;
@@ -124,12 +125,13 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 					this.commandProxy().insertAll(itemList);
 				} else {
 					String groupItemId = entityCurrentCom.get().ppemtPinfoItemGroupPk.groupItemId;
-					// get data layout item cls of current company
+					// get data info item cls of current company
 					List<PpemtPInfoItemGroupDf> curentComItemList = this.queryProxy()
 							.query(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class).setParameter("groupItemId", groupItemId)
 							.getList();
 
 					if (curentComItemList.isEmpty()) {
+						// copy data if data item list is empty
 						List<PpemtPInfoItemGroupDf> itemList = this.queryProxy()
 								.query(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 								.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId).getList();
@@ -144,8 +146,10 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 
 				}
 			});
+			break;
 		case DO_NOTHING:
 			// Do nothing
+			break;
 		default:
 			break;
 

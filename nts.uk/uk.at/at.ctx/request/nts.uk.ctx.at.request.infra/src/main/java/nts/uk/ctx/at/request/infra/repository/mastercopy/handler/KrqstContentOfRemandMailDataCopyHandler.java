@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
 
-import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
-import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsetting.KrqstContentOfRemandMail;
-import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsetting.KrqstContentOfRemandMailPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +20,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KrqstContentOfRemandMailDataCopyHandler implements DataCopyHandler {
+	
+	/** The entity manager. */
+	private EntityManager entityManager;
 	
 	/** The copy method. */
 	private CopyMethod copyMethod;
@@ -30,22 +32,13 @@ public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository imple
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "";
-	
-    /** The Constant SELECT_BY_KEY_STRING. */
-    private static final String SELECT_BY_KEY_STRING = "SELECT f FROM KrqstContentOfRemandMail f WHERE  f.remandMailPk.cid =:cid ";
+	private String INSERT_QUERY = "INSERT INTO KRQST_REMAND_MAIL(CID, MAIL_TITLE, MAIL_BODY) VALUES (?, ?, ?);";
 
-	/**
-	 * Instantiates a new krqst content of remand mail data copy handler.
-	 *
-	 * @param copyMethod the copy method
-	 * @param companyId the company id
-	 */
-	public KrqstContentOfRemandMailDataCopyHandler(CopyMethod copyMethod, String companyId) {
-		super();
-		this.copyMethod = copyMethod;
-		this.companyId = companyId;
-	}
+	/** The select by cid query. */
+	private String SELECT_BY_CID_QUERY = "SELECT CID, MAIL_TITLE, MAIL_BODY FROM KRQST_REMAND_MAIL WHERE CID = ?";
+
+	/** The delete by cid query. */
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_REMAND_MAIL WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
@@ -54,23 +47,51 @@ public class KrqstContentOfRemandMailDataCopyHandler extends JpaRepository imple
 	public void doCopy() {
 		
 		// Get all company zero data
-		Optional<KrqstContentOfRemandMail> entityZeroData = this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstContentOfRemandMail.class)
-        .setParameter("cid", AppContexts.user().zeroCompanyIdInContract()).getSingle();
-
+		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
+				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		
+		if(zeroCompanyDatas.length == 0)
+			return;
+		this.entityManager.joinTransaction();
 		switch (copyMethod) {
-		case REPLACE_ALL:
-			// Delete all old data
-			this.commandProxy().remove(KrqstContentOfRemandMail.class, new KrqstContentOfRemandMailPk(this.companyId)); 
-		case ADD_NEW:
-			// Insert Data
-			ContentOfRemandMail domain = new ContentOfRemandMail(this.companyId, entityZeroData.get().mailTitle, entityZeroData.get().mailBody);
-		    this.commandProxy().insert(KrqstContentOfRemandMail.toEntity(domain));
-		case DO_NOTHING:
-			// Do nothing
-		default:
-			break;
+			case REPLACE_ALL:
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
+					.setParameter(1, this.companyId);
+				deleteQuery.executeUpdate();
+			case ADD_NEW:
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * 11 + 1, this.companyId);
+					insertQuery.setParameter(i * 11 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 11 + 3, dataArr[2]);
+				}
+				
+				// Run insert query
+				insertQuery.executeUpdate();
+			case DO_NOTHING:
+				// Do nothing
+			default: 
+				break;
 		}
 
+	}
+
+	/**
+	 * Instantiates a new krqst content of remand mail data copy handler.
+	 *
+	 * @param entityManager the entity manager
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
+	 */
+	public KrqstContentOfRemandMailDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
+			String companyId) {
+		super();
+		this.entityManager = entityManager;
+		this.copyMethod = copyMethod;
+		this.companyId = companyId;
 	}
 
 }

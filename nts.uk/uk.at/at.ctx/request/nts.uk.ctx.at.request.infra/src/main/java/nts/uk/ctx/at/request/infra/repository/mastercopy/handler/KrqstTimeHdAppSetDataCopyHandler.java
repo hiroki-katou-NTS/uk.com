@@ -14,14 +14,14 @@ import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrqstStampRequestSettingDataCopyHandler.
+ * The Class KrqstTimeHdAppSetDataCopyHandler.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstStampRequestSettingDataCopyHandler implements DataCopyHandler {
-
+public class KrqstTimeHdAppSetDataCopyHandler implements DataCopyHandler {
+	
 	/** The entity manager. */
 	private EntityManager entityManager;
 	
@@ -32,18 +32,17 @@ public class KrqstStampRequestSettingDataCopyHandler implements DataCopyHandler 
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_STAMP_REQUEST_SET(CID, TOP_COMMENT_TEXT, TOP_COMMENT_FONT_COLOR, TOP_COMMENT_FONT_WEIGHT, BOTTOM_COMMENT_TEXT, BOTTOM_COMMENT_FONT_COLOR, "
-			+ "BOTTOM_COMMENT_FONT_WEIGHT, RESULT_DISP_FLG, SUP_FRAME_DISP_NO, STAMP_PLACE_DISP_FLG, STAMP_ATR_WORK_DISP_FLG, STAMP_ATR_GO_OUT_DISP_FLG, "
-			+ "STAMP_ATR_CARE_DISP_FLG, STAMP_ATR_SUP_DISP_FLG, STAMP_ATR_CHILD_CARE_DISP_FLG, STAMP_OUT_PRI_DISP_FLG, STAMP_OUT_PUB_DISP_FLG, STAMP_OUT_COMP_DISP_FLG, STAMP_OUT_UNION_DISP_FLG) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private String INSERT_QUERY = "INSERT INTO KRQST_TIME_HD_APP_SET(CID, CHECK_DAY_OFF, USE_60H_HD, USE_ATTEND_BEFORE2, NAMES2_BEFORE_WORK, USE_BEFORE_GOTO_WORK, NAME_BEFORE_WORK, ACTUAL_DISPLAY_ATR, CHECK_OVER_DILIVER, USE_TIME_HD, "
+			+ "USE_TIME_YEAR_HD, USE_PRIVATE_OUT, PRIVATE_OUT_NAME, USE_UNION_LEAVE, UNION_NAME_GOOUT, USE2_AFTER_LEAVE_HOME, NAMES2_AFTER_LEAVE_HOME, USE_AFTER_LEAVE_WORK, NAME_AFTER_LEAVE_HOME) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, TOP_COMMENT_TEXT, TOP_COMMENT_FONT_COLOR, TOP_COMMENT_FONT_WEIGHT, BOTTOM_COMMENT_TEXT, BOTTOM_COMMENT_FONT_COLOR, "
-			+ "BOTTOM_COMMENT_FONT_WEIGHT, RESULT_DISP_FLG, SUP_FRAME_DISP_NO, STAMP_PLACE_DISP_FLG, STAMP_ATR_WORK_DISP_FLG, STAMP_ATR_GO_OUT_DISP_FLG, "
-			+ "STAMP_ATR_CARE_DISP_FLG, STAMP_ATR_SUP_DISP_FLG, STAMP_ATR_CHILD_CARE_DISP_FLG, STAMP_OUT_PRI_DISP_FLG, STAMP_OUT_PUB_DISP_FLG, STAMP_OUT_COMP_DISP_FLG, STAMP_OUT_UNION_DISP_FLG "
-			+ "FROM KRQST_STAMP_REQUEST_SET WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, CHECK_DAY_OFF, USE_60H_HD, USE_ATTEND_BEFORE2, NAMES2_BEFORE_WORK, USE_BEFORE_GOTO_WORK, NAME_BEFORE_WORK, ACTUAL_DISPLAY_ATR, CHECK_OVER_DILIVER, USE_TIME_HD, "
+			+ "USE_TIME_YEAR_HD, USE_PRIVATE_OUT, PRIVATE_OUT_NAME, USE_UNION_LEAVE, UNION_NAME_GOOUT, USE2_AFTER_LEAVE_HOME, NAMES2_AFTER_LEAVE_HOME, USE_AFTER_LEAVE_WORK, NAME_AFTER_LEAVE_HOME "
+			+ "FROM KRQST_TIME_HD_APP_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_STAMP_REQUEST_SET WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_TIME_HD_APP_SET WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
@@ -97,20 +96,21 @@ public class KrqstStampRequestSettingDataCopyHandler implements DataCopyHandler 
 			default: 
 				break;
 		}
+		
 	}
 
 	/**
-	 * Instantiates a new krqst stamp request setting data copy handler.
+	 * Instantiates a new krqst time hd app set data copy handler.
 	 *
 	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqstStampRequestSettingDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
-			String companyId) {
+	public KrqstTimeHdAppSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
 		super();
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
 	}
+	
 }

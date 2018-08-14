@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
+package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -9,51 +9,59 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrqmtHdAppDispNameDataCopyHandler.
+ * The Class KshstOvertimeFrameDataCopyHandler.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqmtHdAppDispNameDataCopyHandler implements DataCopyHandler {
-
-	/** The entity manager. */
+public class BsystTempAbsenceFrameDataCopyHandler implements DataCopyHandler {
+	
 	private EntityManager entityManager;
 	
 	/** The copy method. */
 	private CopyMethod copyMethod;
-
+	
 	/** The company Id. */
 	private String companyId;
-
+	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQMT_HD_APP_DISP_NAME(CID ,HD_APP_TYPE ,DISP_NAME) VALUES (?, ?, ?);";
+	private String INSERT_QUERY = "INSERT INTO BSYST_TEMP_ABSENCE_FRAME(CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME) VALUES (?, ?, ?, ?, ?);";
 	
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, HD_APP_TYPE, DISP_NAME FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
 	
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
+	
+	/**
+	 * Instantiates a new kshst overtime frame data copy handler.
+	 *
+	 * @param copyMethod the copy method
+	 * @param companyCd the company cd
+	 */
+	public BsystTempAbsenceFrameDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+		this.entityManager = entityManager;
+		this.copyMethod = copyMethod;
+		this.companyId = companyId;
+	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
+	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler#doCopy()
 	 */
 	@Override
 	public void doCopy() {
-
+		
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
 				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
 		
-		if(zeroCompanyDatas.length == 0)
-			return;
-		this.entityManager.joinTransaction();
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
@@ -64,11 +72,12 @@ public class KrqmtHdAppDispNameDataCopyHandler implements DataCopyHandler {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
 					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * 3 + 1, this.companyId);
-					insertQuery.setParameter(i * 3 + 2, dataArr[1]);
-					insertQuery.setParameter(i * 3 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 5 + 1, this.companyId);
+					insertQuery.setParameter(i * 5 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 5 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 5 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 				}
-				
 				// Run insert query
 				insertQuery.executeUpdate();
 			case DO_NOTHING:
@@ -76,21 +85,6 @@ public class KrqmtHdAppDispNameDataCopyHandler implements DataCopyHandler {
 			default: 
 				break;
 		}
-
-	}
-
-	/**
-	 * Instantiates a new krqmt hd app disp name data copy handler.
-	 *
-	 * @param entityManager the entity manager
-	 * @param copyMethod the copy method
-	 * @param companyId the company id
-	 */
-	public KrqmtHdAppDispNameDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
-		super();
-		this.entityManager = entityManager;
-		this.copyMethod = copyMethod;
-		this.companyId = companyId;
 	}
 
 }

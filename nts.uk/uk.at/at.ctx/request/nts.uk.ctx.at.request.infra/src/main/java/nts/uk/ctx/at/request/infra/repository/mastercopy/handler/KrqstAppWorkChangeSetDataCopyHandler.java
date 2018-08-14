@@ -1,16 +1,16 @@
 package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
 
-import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -21,8 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstAppWorkChangeSetDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
 
+	/** The entity manager. */
+	private EntityManager entityManager;
+	
 	/** The copy method. */
 	private CopyMethod copyMethod;
 	
@@ -30,10 +33,13 @@ public class KrqstAppWorkChangeSetDataCopyHandler extends JpaRepository implemen
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "";
-	
+	private String INSERT_QUERY = "INSERT INTO KRQST_APP_WORK_CHANGE_SET(CID, EXCLUDE_HOLIDAY, WORK_CHANGE_TIME_ATR, DISPLAY_RESULT_ATR, INIT_DISPLAY_WORKTIME, COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	private static final String SELECT_BY_KEY_STRING = "SELECT f FROM KrqstAppWorkChangeSet f WHERE f.appWorkChangeSetPk.cid =:companyID";
+	/** The select by cid query. */
+	private String SELECT_BY_CID_QUERY = "SELECT CID, EXCLUDE_HOLIDAY, WORK_CHANGE_TIME_ATR, DISPLAY_RESULT_ATR, INIT_DISPLAY_WORKTIME, COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2 FROM KRQST_APP_WORK_CHANGE_SET WHERE CID = ?";
+
+	/** The delete by cid query. */
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APP_WORK_CHANGE_SET WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
@@ -42,30 +48,56 @@ public class KrqstAppWorkChangeSetDataCopyHandler extends JpaRepository implemen
 	public void doCopy() {
 		
 		// Get all company zero data
-		Optional<KrqstAppWorkChangeSet> entityZeroData = this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet.class)
-        .setParameter("companyID", AppContexts.user().zeroCompanyIdInContract()).getSingle();
-
+		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
+				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		if(zeroCompanyDatas.length == 0)
+			return;
+		this.entityManager.joinTransaction();
 		switch (copyMethod) {
-		case REPLACE_ALL:
-			// Delete all old data
-			this.commandProxy().remove(KrqstAppWorkChangeSet.class, new KrqstAppWorkChangeSetPk(this.companyId)); 
-		case ADD_NEW:
-			// Insert Data
-			if (entityZeroData.isPresent()) {
-				KrqstAppWorkChangeSet entityZero = entityZeroData.get();
-				this.commandProxy().insert(new KrqstAppWorkChangeSet(new KrqstAppWorkChangeSetPk(this.companyId),
-								entityZero.excludeHoliday, entityZero.workChangeTimeAtr, entityZero.displayResultAtr,
-								entityZero.initDisplayWorktime,
-								entityZero.commentContent1 == null ? null : entityZero.commentContent1,
-								entityZero.commentFontWeight1, entityZero.commentFontColor1,
-								entityZero.commentContent2 == null ? null : entityZero.commentContent2,
-								entityZero.commentFontWeight2, entityZero.commentFontColor2));
-			}
-		case DO_NOTHING:
-			// Do nothing
-		default:
-			break;
+			case REPLACE_ALL:
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
+					.setParameter(1, this.companyId);
+				deleteQuery.executeUpdate();
+			case ADD_NEW:
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * 11 + 1, this.companyId);
+					insertQuery.setParameter(i * 11 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 11 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 11 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 11 + 5, dataArr[4]);
+					insertQuery.setParameter(i * 11 + 6, dataArr[5]);
+					insertQuery.setParameter(i * 11 + 7, dataArr[6]);
+					insertQuery.setParameter(i * 11 + 8, dataArr[7]);
+					insertQuery.setParameter(i * 11 + 9, dataArr[8]);
+					insertQuery.setParameter(i * 11 + 10, dataArr[9]);
+					insertQuery.setParameter(i * 11 + 11, dataArr[10]);
+				}
+				
+				// Run insert query
+				insertQuery.executeUpdate();
+			case DO_NOTHING:
+				// Do nothing
+			default: 
+				break;
 		}
+	}
+
+	/**
+	 * Instantiates a new krqst app work change set data copy handler.
+	 *
+	 * @param entityManager the entity manager
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
+	 */
+	public KrqstAppWorkChangeSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+		super();
+		this.entityManager = entityManager;
+		this.copyMethod = copyMethod;
+		this.companyId = companyId;
 	}
 
 }
