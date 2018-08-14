@@ -4,16 +4,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.at.record.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK_;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord_;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.SerializationUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +30,8 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
      * The insert query.
      */
     private String INSERT_QUERY = "";
+    public static final String FIND_ALL_ERAL_WORK_RECORD = "SELECT w FROM KwrmtErAlWorkRecord w " +
+            "WHERE w.kwrmtErAlWorkRecordPK.companyId =:cid;";
 
     /**
      * Instantiates a new kshst overtime frame data copy handler.
@@ -76,16 +71,8 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
     }
 
     private List<KwrmtErAlWorkRecord> findAllByCid(String cid){
-        EntityManager em = this.getEntityManager();
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KwrmtErAlWorkRecord> query = builder.createQuery(KwrmtErAlWorkRecord.class);
-        Root<KwrmtErAlWorkRecord> root = query.from(KwrmtErAlWorkRecord.class);
-
-        List<Predicate> predicateList = new ArrayList<>();
-        predicateList.add(builder.equal(root.get(KwrmtErAlWorkRecord_.kwrmtErAlWorkRecordPK)
-                .get(KwrmtErAlWorkRecordPK_.companyId),cid));
-        query.where(predicateList.toArray(new Predicate[]{}));
-        return em.createQuery(query).getResultList();
+        return this.queryProxy().query(FIND_ALL_ERAL_WORK_RECORD, KwrmtErAlWorkRecord.class)
+                .setParameter("cid", cid).getList();
     }
 
     public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
