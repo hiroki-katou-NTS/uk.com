@@ -36,6 +36,9 @@ module nts.uk.com.view.cmm013.f {
                 _self.currentCode = ko.observable(null);
                 _self.currentCode.subscribe((newValue) => {
                     _self.changeInput(newValue);
+                    if (!_.isEmpty(newValue)) {
+                        nts.uk.ui.errors.clearAll();    
+                    }
                 });
                 
                 _self.columns = ko.observableArray([
