@@ -120,7 +120,7 @@ public class LogBasicInformationFinder {
 					// add to list
 					
 				}
-				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
+//				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
 				break;
 			case START_UP:
 				// Get list ProgramName	
@@ -157,7 +157,7 @@ public class LogBasicInformationFinder {
 						lstLogBacsicInfo.add(logBasicInfoDto);
 					}
 				}
-				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
+//				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
 				break;
 			case UPDATE_PERSION_INFO:
 				String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
