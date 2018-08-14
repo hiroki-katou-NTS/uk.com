@@ -35,7 +35,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			 "OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
 			 "ORDER BY po.disporder");
 	
-	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
+	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT DISTINCT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
 			"INNER JOIN PpemtPerInfoItem ii ON ii.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
 			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPK.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.endDateItemId",
