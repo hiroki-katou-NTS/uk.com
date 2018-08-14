@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.mastercopy.handler;
 /**
  * The Interface CopyHandler.
  */
-public interface DataCopyHandler {
+public interface CopyDataHandler {
 	
 	/**
 	 * Do copy.

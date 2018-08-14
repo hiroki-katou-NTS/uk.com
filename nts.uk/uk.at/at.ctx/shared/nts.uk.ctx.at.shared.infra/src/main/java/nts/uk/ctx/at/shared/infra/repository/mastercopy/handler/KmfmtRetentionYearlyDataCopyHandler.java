@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.shared.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.ctx.at.shared.dom.mastercopy.handler.CopyDataHandler;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly_;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KmfmtRetentionYearlyDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KmfmtRetentionYearlyDataCopyHandler extends JpaRepository implements CopyDataHandler {
 	/** The copy method. */
 	private CopyMethod copyMethod;
 

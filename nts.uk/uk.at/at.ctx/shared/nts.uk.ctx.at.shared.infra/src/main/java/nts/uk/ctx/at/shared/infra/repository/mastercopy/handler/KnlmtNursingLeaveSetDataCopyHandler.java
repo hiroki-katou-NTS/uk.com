@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.shared.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.ctx.at.shared.dom.mastercopy.handler.CopyDataHandler;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet_;
@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KnlmtNursingLeaveSetDataCopyHandler extends JpaRepository implements DataCopyHandler{
+public class KnlmtNursingLeaveSetDataCopyHandler extends JpaRepository implements CopyDataHandler{
 
 	/** The copy method. */
 	private CopyMethod copyMethod;
