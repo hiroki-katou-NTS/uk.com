@@ -666,11 +666,11 @@ public class PeregCommandFacade {
 						viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
 
 				if (!valueAfter.trim().isEmpty()) {
-					_itemValue.setValueAfter("");
+					_itemValue.setValueAfter(null);
 				}
 
 				if (!viewAfter.trim().isEmpty()) {
-					_itemValue.setContentAfter("");
+					_itemValue.setContentAfter(null);
 				}
 
 				dKey = TargetDataKey.of(_itemValue.valueBefore());
@@ -694,11 +694,11 @@ public class PeregCommandFacade {
 							viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
 					
 					if(!valueAfter.trim().isEmpty()) {
-						_startDate.setValueAfter("");
+						_startDate.setValueAfter(null);
 					}
 
 					if(!viewAfter.trim().isEmpty()) {
-						_startDate.setContentAfter("");
+						_startDate.setContentAfter(null);
 					}
 					
 					dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
