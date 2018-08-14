@@ -304,6 +304,10 @@ module nts.uk.at.view.kmf002.c {
         private findAllEmployeeRegister(): JQueryPromise<any> {
             var dfd = $.Deferred<void>();
             let _self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
+                return;
+            }
             $.when(service.findAllEmployeeRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any) {
                 _self.alreadySettingList.removeAll();
                 _.forEach(data, function(id) {
@@ -317,6 +321,10 @@ module nts.uk.at.view.kmf002.c {
             
         private getDataFromService(): void {
             let _self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
+                return;
+            }
             if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
                 $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.mapEmployeeCode.get(_self.selectedCode())), 
                         service.findFirstMonth()

@@ -81,8 +81,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 									x.sendMailWhenApprovalFlg, 
 									x.sendMailWhenRegisterFlg, 
 									x.displayReasonFlg, 
-									x.krqstAppTypeDiscretePK.appType, 
-									null))
+									x.krqstAppTypeDiscretePK.appType))
 							.collect(Collectors.toList()), 
 						AppLimitSetting.toDomain(
 								entity.appActLockFlg, 

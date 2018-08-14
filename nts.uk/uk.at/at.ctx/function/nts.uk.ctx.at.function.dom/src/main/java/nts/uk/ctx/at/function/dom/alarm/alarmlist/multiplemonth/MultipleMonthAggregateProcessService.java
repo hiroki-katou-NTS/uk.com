@@ -105,60 +105,72 @@ public class MultipleMonthAggregateProcessService {
 			Map<String, List<MonthlyRecordValueImport>> resultActuals) {
 
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
-		// xu ly ngay
+		// convert date to String
 		GeneralDate tempStart = period.start();
 		GeneralDate tempEnd = period.end();
 		String periodYearMonth = tempStart.toString("yyyy/MM") + "~" + tempEnd.toString("yyyy/MM");
-
-		// lưu các tháng phù hợp của trường hợp number
+		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		int numberMonths = lstYearMonth.size();
+		// save moths of NumberMonth
 		ArrayList<Integer> listMonthNumber = new ArrayList<>();
 		for (MulMonCheckCondDomainEventDto extra : listExtra) {
+			ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
+			if(erAlAtdItemConAdapterDto == null) continue;
+			int typeCheckItem = extra.getTypeCheckItem();
+			TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(typeCheckItem,
+					TypeCheckWorkRecordMultipleMonthImport.class);
+			List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
+			List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
+			int compare = erAlAtdItemConAdapterDto.getCompareOperator();
+			CompareOperatorText compareOperatorText = convertCompareType(compare);
+			BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
+			BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
+			String nameErrorAlarm = "";
+			if (!CollectionUtil.isEmpty(tmp)) {
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
+				if(!CollectionUtil.isEmpty(listAttdName))
+				nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+			} else {
+				if (!CollectionUtil.isEmpty(tmp2)) {
+					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
+					if(!CollectionUtil.isEmpty(listAttdName))
+					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+				}
+			}
+			String alarmDescription = "";
 			for (EmployeeSearchDto employee : employees) {
 				boolean checkAddAlarm = false;
 				listMonthNumber.clear();
 				int countContinus = 0;
 				int countNumber = 0;
 				float sumActual = 0;
-				// trung binh
+				// the average value
 				float avg = 0.0f;
-				TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(extra.getTypeCheckItem(),
-						TypeCheckWorkRecordMultipleMonthImport.class);
+				
 				List<MonthlyRecordValueImport> result = resultActuals.get(employee.getId());
 				if (CollectionUtil.isEmpty(result)) continue;
-				ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
-				int compare = erAlAtdItemConAdapterDto.getCompareOperator();
-				CompareOperatorText compareOperatorText = convertCompareType(compare);
-				BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
-				BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
-				String nameErrorAlarm = "";
-				List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
-				List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
-				if (!CollectionUtil.isEmpty(tmp)) {
-					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
-					if(!CollectionUtil.isEmpty(listAttdName))
-					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				} else {
-					if (!CollectionUtil.isEmpty(tmp2)) {
-						List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
-						if(!CollectionUtil.isEmpty(listAttdName))
-						nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+				// total actual value and  0->5
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_AMOUNT.value) {
+					for (MonthlyRecordValueImport eachResult : result) {
+						List<ItemValue> itemValues = eachResult.getItemValues();
+						for (ItemValue itemValue : itemValues) {
+							sumActual += Float.parseFloat(itemValue.getValue());
+						}
 					}
+				//  save the average value
+					avg = sumActual / numberMonths;
 				}
-				String alarmDescription = "";
-				// Tinh tong thực tích va gia tri trung binh 0->5
-				for (MonthlyRecordValueImport eachResult : result) {
-					List<ItemValue> itemValues = eachResult.getItemValues();
-					for (ItemValue itemValue : itemValues) {
-						sumActual += Float.parseFloat(itemValue.getValue());
-						avg = sumActual / (result.size() * eachResult.getItemValues().size());
-					}
-
-				}
-
-				// Xử lí trường hợp continusMonth 6-7-8
-				if (extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIME.value
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIMES.value
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_AMOUNT.value) {
+				
+				
+				// continusMonth 6-7-8
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_AMOUNT.value) {
 					for (MonthlyRecordValueImport eachResult : result) {
 						List<ItemValue> itemValues = eachResult.getItemValues();
 						float sumActualPermonth = 0;
@@ -176,10 +188,10 @@ public class MultipleMonthAggregateProcessService {
 					}
 				}
 
-				// Xử lí trường hợp numberMonth 9-10-11
-				if (extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIME.value
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIMES.value
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_AMOUNT.value) {
+				// numberMonth 9-10-11
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_AMOUNT.value) {
 					for (MonthlyRecordValueImport eachResult : result) {
 						float sumActualPermonth = 0;
 						List<ItemValue> itemValues = eachResult.getItemValues();

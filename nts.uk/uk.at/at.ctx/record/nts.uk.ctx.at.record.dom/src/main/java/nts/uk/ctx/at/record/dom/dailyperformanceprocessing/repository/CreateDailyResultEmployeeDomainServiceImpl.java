@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.context.ContextSupport;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -93,7 +94,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem) {
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
+			PeriodInMasterList periodInMasterList) {
 
 		// 正常終了 : 0
 		// 中断 : 1
@@ -122,7 +124,11 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext,
 					employeeId, listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType,
 					employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-					mapDateHistoryItem, employmentHisOptional , employmentCode);
+					mapDateHistoryItem, employmentHisOptional , employmentCode, periodInMasterList);
+			if (processState == ProcessState.INTERRUPTION) {
+				stateList.add(processState);
+				return ProcessState.INTERRUPTION;
+			}
 			stateList.add(processState);
 		}
 		
@@ -157,7 +163,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode) {
+			String employmentCode,
+			PeriodInMasterList periodInMasterList) {
 
 		for (GeneralDate day : executedDate) {
 			// 締めIDを取得する
@@ -192,16 +199,16 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
 							// 再設定
 							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr);
+									empCalAndSumExecLogID, reCreateAttr, periodInMasterList, employeeGeneralInfoImport);
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-									stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem);
+									stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
 						}
 					} else {
 						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 								empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem);
+								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
 					}
 				}
 				if (asyncContext.hasBeenRequestedToCancel()) {
@@ -315,7 +322,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
 							// 再設定
 							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr);
+									empCalAndSumExecLogID, reCreateAttr, null , null);
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
 									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,

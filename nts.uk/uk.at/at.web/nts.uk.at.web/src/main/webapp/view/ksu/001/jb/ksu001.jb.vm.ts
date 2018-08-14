@@ -3,6 +3,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
     import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
@@ -22,6 +23,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
         listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        nashi: string = getText("KSU001_98");
         
         constructor() {
             let self = this;
@@ -33,6 +35,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
                     self.isEnableButton(false);
                     self.isEnableClearSearchButton(false);
+                    self.selectedWorkTimeCode(self.nashi);
                 } else {
                     self.isEnableButton(true);
                 }

@@ -21,6 +21,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         listTimeZoneForSearch : any[] = getShare("listTimeZoneForSearch");
         isEnableButton: KnockoutObservable<boolean> = ko.observable(getShare("isEnableButton"));
         listCheckNeededOfWorkTime : any[] = getShare("listCheckNeededOfWorkTime");
+        nashi: string = getText("KSU001_98");
         
         constructor() {
             let self = this;
@@ -47,6 +48,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
                     self.isEnableButton(false);
                     self.isEnableClearSearchButton(false);
+                    self.selectedWorkTimeCode(self.nashi);
                 } else {
                     self.isEnableButton(true);
                 }

@@ -153,10 +153,16 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		entityLog.stringKey = dataLog.getTargetDataKey().getStringKey().orElse(null);
 		entityLog.correctionAttr = dataLog.getCorrectionAttr().value;
 		entityLog.itemName = correctedItem.getName();
-		entityLog.rawValueBefore = correctedItem.getValueBefore().getRawValue() != null ? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
-		entityLog.viewValueBefore = correctedItem.getValueBefore().getRawValue() != null ? correctedItem.getValueBefore().getViewValue() : null;
-		entityLog.rawValueAfter =  correctedItem.getValueAfter().getRawValue() != null ? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
-		entityLog.viewValueAfter = correctedItem.getValueAfter().getRawValue() != null ? correctedItem.getValueAfter().getViewValue() : null;
+		entityLog.rawValueBefore = (correctedItem.getValueBefore().getRawValue() != null
+				&& correctedItem.getValueBefore().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
+		entityLog.viewValueBefore = correctedItem.getValueBefore().getViewValue() != null
+				? correctedItem.getValueBefore().getViewValue() : null;
+		entityLog.rawValueAfter = (correctedItem.getValueAfter().getRawValue() != null
+				&& correctedItem.getValueAfter().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
+		entityLog.viewValueAfter = correctedItem.getValueAfter().getViewValue() != null
+				? correctedItem.getValueAfter().getViewValue() : null;
 		
 	    //entityLog.valueType = dataLog.getTargetDataType().value;
 		entityLog.showOrder = dataLog.getShowOrder();

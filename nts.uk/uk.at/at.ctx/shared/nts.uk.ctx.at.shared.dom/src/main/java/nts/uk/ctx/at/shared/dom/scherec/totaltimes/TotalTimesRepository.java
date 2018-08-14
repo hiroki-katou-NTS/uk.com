@@ -27,6 +27,11 @@ public interface TotalTimesRepository {
 	 * @return the total times detail
 	 */
 	Optional<TotalTimes> getTotalTimesDetail(String companyId, Integer totalCountNo);
+	
+	/**
+	 * Gets the total times detail by list frameNo
+	 */
+	List<TotalTimes> getTotalTimesDetailByListNo(String companyId, List<Integer> totalCountNos);
 
 	/**
 	 * Gets the all total times.

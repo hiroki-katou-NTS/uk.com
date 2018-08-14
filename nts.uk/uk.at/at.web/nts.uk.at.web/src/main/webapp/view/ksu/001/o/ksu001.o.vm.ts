@@ -3,6 +3,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
     import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
     import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType> = ko.observableArray([]);
@@ -28,12 +29,13 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         employeeIdLogin: string = null;
         isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
         listCheckNeededOfWorkTime : any[] = [];
+        nashi: string = getText("KSU001_98");
 
         constructor() {
             let self = this;
             self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText("KSU001_71") },
-                { code: '2', name: nts.uk.resource.getText("KSU001_72") }
+                { code: '1', name: getText("KSU001_71") },
+                { code: '2', name: getText("KSU001_72") }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.itemName = ko.observable('');
@@ -51,6 +53,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                  if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
                      self.isEnableButton(false);
                      self.isEnableClearSearchButton(false);
+                     self.selectedWorkTimeCode(self.nashi);
                  } else {
                      self.isEnableButton(true);
                  }
@@ -221,7 +224,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 //set data for listWorkTime
                 //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                 //                    workTimeCode: '',
-                //                    name: nts.uk.resource.getText("KSU001_97"),
+                //                    name: getText("KSU001_97"),
                 //                    abName: '',
                 //                    symbolName: '',
                 //                    dailyWorkAtr: undefined,
@@ -237,7 +240,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 // insert item 「なし」 with code = ''
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '',
-                    name: nts.uk.resource.getText("KSU001_98"),
+                    name: self.nashi,
                     abName: '',
                     symbolName: '',
                     dailyWorkAtr: undefined,
@@ -253,7 +256,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 // insert item 「個人情報設定」 with code = ''
                 //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                 //                    workTimeCode: '',
-                //                    name: nts.uk.resource.getText("KSU001_99"),
+                //                    name: getText("KSU001_99"),
                 //                    abName: '',
                 //                    symbolName: '',
                 //                    dailyWorkAtr: undefined,
@@ -269,11 +272,11 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 _.each(data.listWorkTime, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {
-                        workTimeObj.timeZone1 = formatById("Clock_Short_HM", wT.startTime) + nts.uk.resource.getText("KSU001_66")
+                        workTimeObj.timeZone1 = formatById("Clock_Short_HM", wT.startTime) + getText("KSU001_66")
                             + formatById("Clock_Short_HM", wT.endTime);
                     } else if (workTimeObj && wT.workNo == 2) {
                         workTimeObj.timeZone2 = wT.useAtr == 1 ? (formatById("Clock_Short_HM", wT.startTime)
-                            + nts.uk.resource.getText("KSU001_66") + formatById("Clock_Short_HM", wT.endTime)) : '';
+                            + getText("KSU001_66") + formatById("Clock_Short_HM", wT.endTime)) : '';
                     } else {
                         self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                             workTimeCode: wT.workTimeCode,

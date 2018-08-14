@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.pub.user;
+package nts.uk.ctx.sys.auth.app.find.user;
 
 import lombok.Getter;
 
