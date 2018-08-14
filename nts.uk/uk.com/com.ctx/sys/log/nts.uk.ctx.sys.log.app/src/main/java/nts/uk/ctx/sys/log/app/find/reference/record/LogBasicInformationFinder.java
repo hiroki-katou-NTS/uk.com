@@ -2,14 +2,17 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
@@ -30,6 +33,7 @@ import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
@@ -116,6 +120,7 @@ public class LogBasicInformationFinder {
 					// add to list
 					
 				}
+				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			case START_UP:
 				// Get list ProgramName	
@@ -151,8 +156,8 @@ public class LogBasicInformationFinder {
 						// add to list
 						lstLogBacsicInfo.add(logBasicInfoDto);
 					}
-					
 				}
+				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			case UPDATE_PERSION_INFO:
 				String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
@@ -202,10 +207,25 @@ public class LogBasicInformationFinder {
 							if(!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)){
 								for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
 									List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
-									String childrentKey = IdentifierUtil.randomUniqueId();
+									
+									// Setting tagetDate
+									String tagetDateStr = "";
+									GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
+									CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
+									if(calendarKeyType.value == CalendarKeyType.DATE.value){
+										tagetDateStr = tagetDate.toString("yyyy/MM/dd");
+									}
+									if (calendarKeyType.value == CalendarKeyType.YEARMONTH.value) {
+										tagetDateStr = tagetDate.toString("yyyy/MM");
+									}
+									if (calendarKeyType.value == CalendarKeyType.YEAR.value) {
+										tagetDateStr = tagetDate.toString("yyyy");
+
+									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
+											String childrentKey = IdentifierUtil.randomUniqueId();
 											perObject.setChildrentkey(childrentKey);
 											// Fist record
 											perObject.setOperationId(logBasicInfoDto.getOperationId());
@@ -215,8 +235,7 @@ public class LogBasicInformationFinder {
 											perObject.setInfoOperateAttr(this.getinfoOperateAttr(
 													categoryCorrectionLog.getInfoOperateAttr().value));
 											// item 25,26,27,28
-											perObject.setTargetDate(
-													categoryCorrectionLog.getTargetKey().getDateKey().get());
+											perObject.setTargetDate(tagetDateStr);
 
 											// item 29,31,33
 											perObject.setItemName(itemInfo.getName());
@@ -227,6 +246,7 @@ public class LogBasicInformationFinder {
 										
 									}else{
 										LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
+										String childrentKey = IdentifierUtil.randomUniqueId();
 										perObject.setChildrentkey(childrentKey);
 										perObject.setOperationId(personInfoCorrectionLog.getOperationId());
 										// item 23
@@ -235,7 +255,7 @@ public class LogBasicInformationFinder {
 										perObject.setInfoOperateAttr(
 												this.getinfoOperateAttr(categoryCorrectionLog.getInfoOperateAttr().value));
 										// item 25,26,27,28
-										perObject.setTargetDate(categoryCorrectionLog.getTargetKey().getDateKey().get());
+										perObject.setTargetDate(tagetDateStr);
 										lstLogPerCateCorrectRecordDto.add(perObject);
 									}
 								}
@@ -271,6 +291,7 @@ public class LogBasicInformationFinder {
 					}
 					
 				}
+				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			case DATA_CORRECT:
 				
@@ -337,11 +358,13 @@ public class LogBasicInformationFinder {
 				}
 				// xử lý input map to list
 				lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
+				
 				break;
 			default:
 				break;
 			}
 		}
+		lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 		return lstLogBacsicInfo;
 	}
 	

@@ -662,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '368',
+                height: '432',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -701,9 +701,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         width: "100%",
                         childrenDataProperty: "lstLogPerCateCorrectRecordDto",
                         autoGenerateColumns: false,
-                        primaryKey: "targetDate",
+                        hidePrimaryKey: true,
+                        primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
+                            { key: "childrentKey", headerText: "", dataType: "string" },
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
@@ -741,6 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
+                height: '432',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -778,10 +781,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     {
                         width: "100%",
                         childrenDataProperty: "lstLogDataCorrectRecordRefeDto",
+                        hidePrimaryKey: true,
                         autoGenerateColumns: false,
                         primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
+                            { key: "childrentKey", headerText: "", dataType: "string" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "20%" },
                             { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
@@ -898,7 +903,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         //setting list persion correct
                         _.forEach(logBaseInfo.lstLogPerCateCorrectRecordDto, function(persionCorrect) {
                             lstPerCorrect.push(new PerCateCorrectRecordModel({
-                                operationId: persionCorrect.operationId, targetDate: moment.utc(persionCorrect.targetDate, 'YYYY/MM/DD'),
+                                operationId: persionCorrect.operationId, targetDate: persionCorrect.targetDate,
                                 categoryName: persionCorrect.categoryName, itemName: persionCorrect.itemName, valueBefore: persionCorrect.valueBefore, valueAfter: persionCorrect.valueAfter,
                                 infoOperateAttr: persionCorrect.infoOperateAttr
                             }))
@@ -909,7 +914,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         //setting list data correct
                         _.forEach(logBaseInfo.lstLogDataCorrectRecordRefeDto, function(dataCorrect) {
                             lstDataCorrect.push(new DataCorrectLogModel({
-                                operationId: dataCorrect.operationId, targetDate: moment.utc(dataCorrect.targetDate, 'YYYY/MM/DD'),
+                                operationId: dataCorrect.operationId, targetDate: dataCorrect.targetDate,
                                 targetDataType: dataCorrect.targetDataType, itemName: dataCorrect.itemName, valueBefore: dataCorrect.valueBefore, valueAfter: dataCorrect.valueAfter,
                                 remarks: dataCorrect.remarks, correctionAttr: dataCorrect.correctionAttr
                             }))
@@ -1954,7 +1959,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     class DataCorrectLogModel {
         childrentKey:string;
         operationId: string;
-        targetDate: any;
+        targetDate: string;
         targetDataType: number;
         itemName: string;
         valueBefore: string;
@@ -1974,7 +1979,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
     class PerCateCorrectRecordModel {
         operationId: string;
-        targetDate: any;
+        targetDate: string;
         categoryName: string;
         itemName: string;
         valueBefore: string;
@@ -2285,7 +2290,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
     export interface DataCorrectParam {
         operationId: string;
-        targetDate: any;
+        targetDate: string;
         targetDataType: number;
         itemName: string;
         valueBefore: string;
@@ -2295,7 +2300,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
     export interface PersionCorrectParam {
         operationId: string;
-        targetDate: any;
+        targetDate: string;
         categoryName: string;
         itemName: string;
         valueBefore: string;
