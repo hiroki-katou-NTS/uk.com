@@ -20,11 +20,13 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.SaveDataType;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -41,6 +43,8 @@ public class AddEmployeeCommandFacade {
 	private PerInfoCategoryRepositoty cateRepo;
 	@Inject
 	private ComboBoxRetrieveFactory comboboxFactory;
+	@Inject
+	private PerInfoItemDefRepositoty perInfoItemRepo;
 	
 	
 
@@ -87,7 +91,14 @@ public class AddEmployeeCommandFacade {
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
 		if (!cardNo.equals("")) {
-			ItemValue itemValue = new ItemValue(null, "IS00779","カードNo", cardNo, "","","",SaveDataType.STRING.value, SaveDataType.STRING.value);
+			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00069", "IS00779", AppContexts.user().companyId(), AppContexts.user().contractCode());
+			ItemValue itemCardNo = null;
+			if(itemdfOpt.isPresent()) {
+				PersonInfoItemDefinition itemDf = itemdfOpt.get();
+				itemCardNo = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), cardNo, cardNo, null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}else {
+				itemCardNo = new ItemValue(null, "IS00779","カードNo", cardNo, cardNo ,"","",ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}
 			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD("CS00069" , AppContexts.user().companyId());
 			if(ctgFromServer.isPresent()) {
 				return new ItemsByCategory(ctgFromServer.get().getPersonInfoCategoryId(),
@@ -96,7 +107,7 @@ public class AddEmployeeCommandFacade {
 						0, 
 						null,
 						false,
-						Arrays.asList(itemValue));
+						Arrays.asList(itemCardNo));
 			} else {
 				return new ItemsByCategory(ctgFromServer.get().getPersonInfoCategoryId(),
 						"CS00069",
@@ -104,13 +115,12 @@ public class AddEmployeeCommandFacade {
 						0, 
 						null,
 						false,
-						Arrays.asList(itemValue));
+						Arrays.asList(itemCardNo));
 			}
 		}
 		return null;
 	}
 		
-
 	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
 
 		List<ItemsByCategory> basicCategories = inputs.stream()
