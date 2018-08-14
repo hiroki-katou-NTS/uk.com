@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
@@ -44,11 +45,13 @@ public class WindowsAccount extends AggregateRoot{
 		final Integer MAX_FREQUENCY = 1;
 
 		// check duplicate account host name & user name
-		this.accountInfos.forEach(acc -> {
+		final List<WindowsAccountInfo> usedAccounts = this.accountInfos.stream().filter(WindowsAccountInfo::isSetting)
+				.collect(Collectors.toList());
+		usedAccounts.forEach(acc -> {
 			boolean isNameNotNull = !StringUtil.isNullOrEmpty(acc.getHostName().v(), true)
 					&& !StringUtil.isNullOrEmpty(acc.getUserName().v(), true);
 
-			boolean isDuplicated = Collections.frequency(this.accountInfos, acc) > MAX_FREQUENCY;
+			boolean isDuplicated = Collections.frequency(usedAccounts, acc) > MAX_FREQUENCY;
 
 			if (isNameNotNull && isDuplicated) {
 				BundledBusinessException exceptions = BundledBusinessException.newInstance();
