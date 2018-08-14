@@ -138,8 +138,9 @@ div.form-label.broken {
 .maxDay{
 	margin-left: 10px;
 	padding: 5px;
-	border: 1px solid #CCC;
+	border: 1px solid #999999;;
 	width: 100px;
 	display: inline-block;
 	margin-top: -20px;
+	border-radius: 3px;
 }
