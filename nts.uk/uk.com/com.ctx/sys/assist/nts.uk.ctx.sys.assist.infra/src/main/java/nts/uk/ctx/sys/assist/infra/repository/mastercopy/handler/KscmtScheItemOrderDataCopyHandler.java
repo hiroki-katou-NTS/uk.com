@@ -31,13 +31,13 @@ public class KscmtScheItemOrderDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_ITEM_ORDER(CID, SCHEDULE_ITEM_ID, DISPORDER) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, SCHEDULE_ITEM_ID, DISPORDER FROM KSCMT_SCHE_ITEM_ORDER WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_ITEM_ORDER WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kscmt sche item order data copy handler.
@@ -72,8 +72,6 @@ public class KscmtScheItemOrderDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 1, this.companyId);
 				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 			}
 
 			// Run insert query

@@ -31,13 +31,15 @@ public class KtvmtTimeAnnualSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KTVMT_TIME_ANNUAL_SET(CID, TIME_MANAGE_ATR, TIME_UNIT, TIME_MAX_DAY_MANAGE_ATR, TIME_MAX_DAY_REFERENCE, TIME_MAX_DAY_UNIF_COMP, "
+			+ "IS_ENOUGH_TIME_ONE_DAY, ROUND_PRO_CLA) VALUES (?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, TIME_MANAGE_ATR, TIME_UNIT, TIME_MAX_DAY_MANAGE_ATR, TIME_MAX_DAY_REFERENCE, TIME_MAX_DAY_UNIF_COMP, "
+			+ "IS_ENOUGH_TIME_ONE_DAY, ROUND_PRO_CLA FROM KTVMT_TIME_ANNUAL_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KTVMT_TIME_ANNUAL_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new ktvmt time annual set data copy handler.
@@ -79,6 +81,9 @@ public class KtvmtTimeAnnualSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
 			}
 
 			// Run insert query

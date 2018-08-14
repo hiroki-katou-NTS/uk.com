@@ -31,13 +31,13 @@ public class KnlmtNursingLeaveSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KNLMT_NURSING_LEAVE_SET(CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS) VALUES (?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new knlmt nursing leave set data copy handler.
@@ -80,6 +80,9 @@ public class KnlmtNursingLeaveSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
 			}
 
 			// Run insert query

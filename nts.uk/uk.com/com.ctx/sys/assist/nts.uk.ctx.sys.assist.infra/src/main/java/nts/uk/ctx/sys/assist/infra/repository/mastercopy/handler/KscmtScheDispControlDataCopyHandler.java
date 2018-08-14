@@ -31,13 +31,13 @@ public class KscmtScheDispControlDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_DISP_CONTROL(CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kscmt sche disp control data copy handler.
@@ -77,6 +77,8 @@ public class KscmtScheDispControlDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
 			}
 
 			// Run insert query

@@ -31,13 +31,15 @@ public class KmamtMngAnnualSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KMAMT_MNG_ANNUAL_SET(CID, HALF_MAX_GRANT_DAY, HALF_MAX_DAY_YEAR, HALF_MANAGE_ATR, HALF_MAX_REFERENCE, HALF_MAX_UNIFORM_COMP, "
+			+ "IS_WORK_DAY_CAL, RETENTION_YEAR, REMAINING_MAX_DAY, NEXT_GRANT_DAY_DISP_ATR, REMAINING_NUM_DISP_ATR, YEARLY_OF_DAYS, ROUND_PRO_CLA) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, HALF_MAX_GRANT_DAY, HALF_MAX_DAY_YEAR, HALF_MANAGE_ATR, HALF_MAX_REFERENCE, HALF_MAX_UNIFORM_COMP, "
+			+ "IS_WORK_DAY_CAL, RETENTION_YEAR, REMAINING_MAX_DAY, NEXT_GRANT_DAY_DISP_ATR, REMAINING_NUM_DISP_ATR, YEARLY_OF_DAYS, ROUND_PRO_CLA FROM KMAMT_MNG_ANNUAL_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KMAMT_MNG_ANNUAL_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kmamt mng annual set data copy handler.
@@ -80,6 +82,14 @@ public class KmamtMngAnnualSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
+				insertQuery.setParameter(i * 5 + 9, dataArr[8]);
+				insertQuery.setParameter(i * 5 + 10, dataArr[9]);
+				insertQuery.setParameter(i * 5 + 11, dataArr[10]);
+				insertQuery.setParameter(i * 5 + 12, dataArr[11]);
+				insertQuery.setParameter(i * 5 + 13, dataArr[12]);
 			}
 
 			// Run insert query

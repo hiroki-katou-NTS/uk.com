@@ -31,13 +31,13 @@ public class KalmtAnnualPaidLeaveDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KALMT_ANNUAL_PAID_LEAVE(CID, PRIORITY_TYPE, MANAGE_ATR) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, PRIORITY_TYPE, MANAGE_ATR FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kalmt annual paid leave data copy handler.
@@ -78,8 +78,6 @@ public class KalmtAnnualPaidLeaveDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 1, this.companyId);
 				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 			}
 
 			// Run insert query

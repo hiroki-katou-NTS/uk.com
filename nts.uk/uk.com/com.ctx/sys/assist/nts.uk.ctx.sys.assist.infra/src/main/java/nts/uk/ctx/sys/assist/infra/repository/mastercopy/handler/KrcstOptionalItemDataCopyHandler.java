@@ -30,13 +30,13 @@ public class KrcstOptionalItemDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KRCST_OPTIONAL_ITEM(CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR) VALUES (?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR KRCST_OPTIONAL_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_OPTIONAL_ITEM WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst optional item data copy handler.
@@ -76,6 +76,8 @@ public class KrcstOptionalItemDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
 			}
 
 			// Run insert query

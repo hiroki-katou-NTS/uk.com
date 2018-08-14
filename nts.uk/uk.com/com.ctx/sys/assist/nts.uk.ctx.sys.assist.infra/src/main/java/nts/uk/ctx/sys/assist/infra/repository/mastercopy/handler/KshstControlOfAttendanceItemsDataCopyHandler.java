@@ -31,13 +31,13 @@ public class KshstControlOfAttendanceItemsDataCopyHandler implements DataCopyHan
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_ATD_ITEM_CONTROL(CID, ITEM_DAILY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT) VALUES (?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, ITEM_DAILY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT FROM KSHST_ATD_ITEM_CONTROL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_ATD_ITEM_CONTROL WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst control of attendance items data copy handler.
@@ -77,7 +77,6 @@ public class KshstControlOfAttendanceItemsDataCopyHandler implements DataCopyHan
 				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 			}
 
 			// Run insert query

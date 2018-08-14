@@ -14,13 +14,13 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrcmtControlOfMonthlyItemsDataCopyHandler.
+ * The Class KshstMonItemControlDataCopyHandler.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcmtControlOfMonthlyItemsDataCopyHandler implements DataCopyHandler {
+public class KshstMonItemControlDataCopyHandler implements DataCopyHandler {
 
 	private EntityManager entityManager;
 
@@ -31,25 +31,23 @@ public class KrcmtControlOfMonthlyItemsDataCopyHandler implements DataCopyHandle
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_MON_ITEM_CONTROL(CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT) VALUES (?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
 
+	
 	/**
-	 * Instantiates a new krcmt control of monthly items data copy handler.
+	 * Instantiates a new kshst mon item control data copy handler.
 	 *
-	 * @param entityManager
-	 *            the entity manager
-	 * @param copyMethod
-	 *            the copy method
-	 * @param companyId
-	 *            the company id
+	 * @param entityManager the entity manager
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
 	 */
-	public KrcmtControlOfMonthlyItemsDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
+	public KshstMonItemControlDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
 			String companyId) {
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;
@@ -77,7 +75,6 @@ public class KrcmtControlOfMonthlyItemsDataCopyHandler implements DataCopyHandle
 				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 			}
 
 			// Run insert query

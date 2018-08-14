@@ -31,13 +31,13 @@ public class KmfmtRetentionYearlyDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KMFMT_RETENTION_YEARLY(CID, NUMBER_OF_YEAR, MAX_NUMBER_OF_DAYS, LEAVE_AS_WORK_DAYS, MANAGEMENT_YEARLY_ATR) VALUES (?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, NUMBER_OF_YEAR, MAX_NUMBER_OF_DAYS, LEAVE_AS_WORK_DAYS, MANAGEMENT_YEARLY_ATR FROM KMFMT_RETENTION_YEARLY WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KMFMT_RETENTION_YEARLY WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kmfmt retention yearly data copy handler.
@@ -64,30 +64,35 @@ public class KmfmtRetentionYearlyDataCopyHandler implements DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		if (zeroCompanyDatas == null) {
+			System.out.println("No data in table");
+			return;
+		} else {
+			switch (copyMethod) {
+			case REPLACE_ALL:
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
+						this.companyId);
+				deleteQuery.executeUpdate();
+			case ADD_NEW:
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * 5 + 1, this.companyId);
+					insertQuery.setParameter(i * 5 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 5 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 5 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				}
 
-		switch (copyMethod) {
-		case REPLACE_ALL:
-			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
-					this.companyId);
-			deleteQuery.executeUpdate();
-		case ADD_NEW:
-			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-				insertQuery.setParameter(i * 5 + 1, this.companyId);
-				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
-				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				// Run insert query
+				insertQuery.executeUpdate();
+			case DO_NOTHING:
+				// Do nothing
+			default:
+				break;
 			}
-
-			// Run insert query
-			insertQuery.executeUpdate();
-		case DO_NOTHING:
-			// Do nothing
-		default:
-			break;
 		}
+
 	}
 }
