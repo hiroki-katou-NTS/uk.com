@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area" data-bind="">
 				<!--A1_1 登録ボタン--> 
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick" tabindex="1">#{i18n.getText('KAF006_1')}</button>
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick">#{i18n.getText('KAF006_1')}</button>
 <!-- 				A1_2 実績参照ボタン 				 -->
 <!-- 				<button tabindex="2" id="btnSpecSetting" data-bind="">#{i18n.getText('KAF005_11')}</button> -->
 <!-- 				A1_3 承認者変更ボタン 				 -->
@@ -38,7 +38,7 @@
 				<!-- A1_3: 代休参照ボタン  -->
 				<button data-bind = "click: openKDL005">#{i18n.getText('KAF006_3')}</button>
 				<!--A1_4 登録時にメールを送信する--> 
-				<div class="btnSendMail" tabindex="6"
+				<div class="btnSendMail"
 					data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF006_6')}' },visible: enableSendMail"></div>
 			</div>
 			<div id="contents-area" class="">
