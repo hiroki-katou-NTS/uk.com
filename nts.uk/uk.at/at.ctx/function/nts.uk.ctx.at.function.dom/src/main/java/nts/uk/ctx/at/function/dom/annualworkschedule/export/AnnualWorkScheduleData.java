@@ -60,6 +60,8 @@ public class AnnualWorkScheduleData {
 
 	private Integer maxDigitAfterDecimalPoint = null;
 
+	private boolean agreementTime;
+
 	public void setMonthlyData(ItemData item, YearMonth ym) {
 		int monthIndex = (int) this.startYm.until(ym, ChronoUnit.MONTHS);
 		switch (monthIndex) {
@@ -258,6 +260,21 @@ public class AnnualWorkScheduleData {
 		return this.formatBigDecimal(this.average);
 	}
 
+	public String formatMonthsExceeded() {
+		return this.formatMonths(this.monthsExceeded);
+	}
+
+	public String formatMonthsRemaining() {
+		return this.formatMonths(this.monthsRemaining);
+	}
+
+	private String formatMonths(Integer value) {
+		if (value == null) {
+			return "";
+		}
+		return "'" + value + "回";
+	}
+
 	public String formatMonthPeriod1st() {
 		return this.formatItemData(this.period1st);
 	}
@@ -394,6 +411,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
 		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
 					AnnualWorkScheduleData.sumAttendanceData(operationMap, m.getAttendanceItems()),
@@ -427,8 +445,8 @@ public class AnnualWorkScheduleData {
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
 			List<AgreementTimeOfManagePeriodImport> listAgreementTime,
-			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth,
-			Integer monthsExceeded, Integer monthLimit) {
+			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth, Integer monthsExceeded,
+			Integer monthLimit) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
@@ -436,6 +454,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setNumMonth(numMonth);
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		annualWorkScheduleData.setAgreementTime(true);
 		listAgreementTime.forEach(m -> {
 			BigDecimal value = new BigDecimal(m.getAgreementTime().getAgreementTime().v());
 			AgreementTimeStatusOfMonthly status = m.getAgreementTime().getStatus();
@@ -457,7 +476,7 @@ public class AnnualWorkScheduleData {
 		}
 		return annualWorkScheduleData;
 	}
-	
+
 	public boolean hasItemData() {
 		if (this.month1st != null || this.month2nd != null || this.month3rd != null || this.month4th != null
 				|| this.month5th != null || this.month6th != null || this.month7th != null || this.month8th != null
