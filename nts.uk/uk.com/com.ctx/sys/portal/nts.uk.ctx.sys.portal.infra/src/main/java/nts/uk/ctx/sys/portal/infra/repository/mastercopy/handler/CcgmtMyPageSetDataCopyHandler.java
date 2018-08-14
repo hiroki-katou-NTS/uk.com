@@ -33,7 +33,7 @@ public class CcgmtMyPageSetDataCopyHandler extends JpaRepository implements Data
 	private String INSERT_QUERY = "";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtMyPageSet WHERE e.cid = :cid";
+	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtMyPageSet e WHERE e.cid = :cid";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

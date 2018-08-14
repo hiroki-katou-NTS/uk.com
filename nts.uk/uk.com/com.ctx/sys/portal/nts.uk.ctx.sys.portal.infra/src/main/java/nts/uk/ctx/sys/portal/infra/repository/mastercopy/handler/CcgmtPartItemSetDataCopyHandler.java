@@ -33,7 +33,7 @@ public class CcgmtPartItemSetDataCopyHandler extends JpaRepository implements Da
 	private String INSERT_QUERY = "";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtPartItemSet WHERE e.ccgmtPartItemSetPK.cid = :cid";
+	private static final String SELECT_BY_CID = "SELECT e FROM CcgmtPartItemSet e WHERE e.ccgmtPartItemSetPK.cid = :cid";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
