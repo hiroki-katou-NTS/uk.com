@@ -199,7 +199,10 @@ public class ItemValue {
 		item.setContentBefore(null);
 		item.setValueBefore(null);
 		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
-		if(item.text == null && item.value == "") return null;
+		if((item.text == null && item.value == null) 
+		|| (item.text == "" && item.value == "") 
+		|| (item.text == null && item.value == "")
+		|| (item.text == "" && item.value == null)) return null;
 		return item;
 	}
 	

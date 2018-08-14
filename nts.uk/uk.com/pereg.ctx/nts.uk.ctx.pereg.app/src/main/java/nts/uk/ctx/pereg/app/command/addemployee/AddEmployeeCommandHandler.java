@@ -24,9 +24,13 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
@@ -70,6 +74,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
 	@Inject
+	private PerInfoCategoryRepositoty cateRepo;
 
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
@@ -221,42 +226,42 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			// Add category correction data
 			PersonCategoryCorrectionLogParameter ctgTarget = null;
 			switch (input.getCategoryCd()) {
-			case "CS00001":
+			case "CS00001": // EmployeeDataMngInfo
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), Optional.empty());
 				break;
-			case "CS00002":
+			case "CS00002": // Person
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());
 				break;
-			case "CS00003":
+			case "CS00003": // AffCompanyHist - AffCompanyHistItem
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
 				break;
-			case "CS00004":
-			case "CS00014":
-			case "CS00016":
-			case "CS00017":
-			case "CS00018":
-			case "CS00019":
-			case "CS00020":
-			case "CS00021":
-			case "CS00070":
+			case "CS00004": // AffClassHistory
+			case "CS00014": // EmploymentHistory
+			case "CS00016": // AffJobTitleHistory
+			case "CS00017": // AffWorkplaceHistory
+			case "CS00018": // TempAbsenceHistory
+			case "CS00019": // ShortWorkTimeHistory
+			case "CS00020": // WorkingCondition
+			case "CS00021": // BusinessTypeOfEmployeeHistory
+			case "CS00070": // WorkingCondition
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD_HISTORY, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
 				break;
 
-			case "CS00022":
-			case "CS00023":
-			case "CS00024":
-			case "CS00035":
-			case "CS00036":
+			case "CS00022": // PersonContact
+			case "CS00023": // EmployeeInfoContact
+			case "CS00024": // AnnualLeaveEmpBasicInfo
+			case "CS00035": // PublicHolidayRemain
+			case "CS00036": // ChildCareLeaveRemainingData-LeaveForCareData-ChildCareLeaveRemainingInfo-LeaveForCareInfo
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());
 				break;
-
-			case "CS00025":
+				
+			case "CS00025": // SpecialLeaveBasicInfo
 			case "CS00026":
 			case "CS00027":
 			case "CS00028":
@@ -279,7 +284,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
-			case "CS00039":
+			case "CS00039": // SpecialLeaveGrantRemainingData
 			case "CS00040":
 			case "CS00041":
 			case "CS00042":
@@ -304,11 +309,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
 				//end
 				break;
-			case "CS00015":
-			case "CS00037":
-			case "CS00038":
+			case "CS00015": //
+			case "CS00037": // AnnualLeaveGrantRemainingData
+			case "CS00038": // ReserveLeaveGrantRemainingData
 				break;
-			case "CS00069":
+			case "CS00069": // StampCard
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), Optional.empty());
 				break;
@@ -338,48 +343,133 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	}
 	
 	private void addInfoBasicToLogCorrection(AddEmployeeCommand command ,List<ItemsByCategory> inputs) {
+		
+		addInfoBasicCS00001(command, inputs);
+
+		addInfoBasicCS00002(command, inputs);
+
+		addInfoBasicCS00003(command, inputs);
+	}
+	
+	private void addInfoBasicCS00001(AddEmployeeCommand command, List<ItemsByCategory> inputs) {
 		Optional<ItemsByCategory> employeeInfoCtgOpt = inputs.stream()
 				.filter(category -> category.getCategoryCd().equals("CS00001")).findFirst();
-		if (employeeInfoCtgOpt.isPresent()) {
-			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00001", "IS00001", AppContexts.user().companyId(), AppContexts.user().contractCode());
-			ItemValue employeeCode = null;
-			if(itemdfOpt.isPresent()) {
-				PersonInfoItemDefinition itemDf = itemdfOpt.get();
-				employeeCode = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
-			}else {
-				employeeCode = new ItemValue("", "IS00001", "社員CD", command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
-			}
-			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00001")).findFirst().get().getItems().add(employeeCode);
+		
+		Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00001", "IS00001", AppContexts.user().companyId(), AppContexts.user().contractCode());
+		ItemValue itemEmployeeCode = null;
+		if(itemdfOpt.isPresent()) {
+			PersonInfoItemDefinition itemDf = itemdfOpt.get();
+			itemEmployeeCode = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+		}else {
+			itemEmployeeCode = new ItemValue("", "IS00001", "社員CD", command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
 		}
+		
+		if (employeeInfoCtgOpt.isPresent()) {
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00001")).findFirst().get().getItems().add(itemEmployeeCode);
+		}else {
+			// thêm category CS0001 vào list inputs
+			Optional<PersonInfoCategory> ctgCS00001Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00001" , AppContexts.user().companyId());
+			if(ctgCS00001Opt.isPresent()) {
+				ItemsByCategory ctgCS00001 = new ItemsByCategory(ctgCS00001Opt.get().getPersonInfoCategoryId(),
+						 ctgCS00001Opt.get().getCategoryCode().v(),
+						 ctgCS00001Opt.get().getCategoryName().v(),
+						 0, 
+						 null,
+						 false,
+						 Arrays.asList(itemEmployeeCode));
+				inputs.add(ctgCS00001);
+			} else {
+				ItemsByCategory ctgCS00001 = new ItemsByCategory("",
+						"CS00001",
+						"社員データ管理",
+						0, 
+						null,
+						false,
+						Arrays.asList(itemEmployeeCode));
+				inputs.add(ctgCS00001);
+			}
+		}
+	}
 
-		// set recordId(personId) for category CS00002
+	private void addInfoBasicCS00002(AddEmployeeCommand command, List<ItemsByCategory> inputs) {
 		Optional<ItemsByCategory> personCategory = inputs.stream()
 				.filter(category -> category.getCategoryCd().equals("CS00002")).findFirst();
-		if (personCategory.isPresent()) {
-			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00002", "IS00003", AppContexts.user().companyId(), AppContexts.user().contractCode());
-			ItemValue personName = null;
-			if(itemdfOpt.isPresent()) {
-				PersonInfoItemDefinition itemDf = itemdfOpt.get();
-				personName = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getEmployeeName(), command.getEmployeeName(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
-			}else {
-				personName = new ItemValue("", "IS00003", "個人名", command.getEmployeeName(), command.getEmployeeName(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
-			}
-			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00002")).findFirst().get().getItems().add(personName);
+		
+		Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00002",
+				"IS00003", AppContexts.user().companyId(), AppContexts.user().contractCode());
+		ItemValue itemPersonName = null;
+		if (itemdfOpt.isPresent()) {
+			PersonInfoItemDefinition itemDf = itemdfOpt.get();
+			itemPersonName = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(),
+					itemDf.getItemName().toString(), command.getEmployeeName(), command.getEmployeeName(), null,
+					null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+		} else {
+			itemPersonName = new ItemValue("", "IS00003", "個人名", command.getEmployeeName(), command.getEmployeeName(),
+					null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
 		}
+		
+		if (personCategory.isPresent()) {
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00002")).findFirst().get().getItems().add(itemPersonName);
+		}else {
+			// thêm category CS0002 vào list inputs
+			Optional<PersonInfoCategory> ctgCS00002Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00001" , AppContexts.user().companyId());
+			if(ctgCS00002Opt.isPresent()) {
+				ItemsByCategory ctgCS00002 = new ItemsByCategory(ctgCS00002Opt.get().getPersonInfoCategoryId(),
+						 ctgCS00002Opt.get().getCategoryCode().v(),
+						 ctgCS00002Opt.get().getCategoryName().v(),
+						 0, 
+						 null,
+						 false,
+						 Arrays.asList(itemPersonName));
+				inputs.add(ctgCS00002);
+			} else {
+				ItemsByCategory ctgCS00002 = new ItemsByCategory("",
+						"CS00002",
+						"個人基本情報",
+						0, 
+						null,
+						false,
+						Arrays.asList(itemPersonName));
+				inputs.add(ctgCS00002);
+			}
+		}
+	}
 
-		// set recordId(historyId) for category CS00003
+	private void addInfoBasicCS00003(AddEmployeeCommand command, List<ItemsByCategory> inputs) {
 		Optional<ItemsByCategory> affComHistCategory = inputs.stream()
 				.filter(category -> category.getCategoryCd().equals("CS00003")).findFirst();
+		Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00003", "IS00020", AppContexts.user().companyId(), AppContexts.user().contractCode());
+		ItemValue itemHireDate = null;
+		if(itemdfOpt.isPresent()) {
+			PersonInfoItemDefinition itemDf = itemdfOpt.get();
+			itemHireDate = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getHireDate().toString(), command.getHireDate().toString(), null, null, ItemValueType.DATE.value, ItemValueType.DATE.value);
+		}else {
+			itemHireDate = new ItemValue("", "IS00003", "個人名", command.getHireDate().toString(), command.getHireDate().toString(), null, null, 3, 3);
+		}
 		if (affComHistCategory.isPresent()) {
-			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00003", "IS00020", AppContexts.user().companyId(), AppContexts.user().contractCode());
-			ItemValue hireDate = null;
-			if(itemdfOpt.isPresent()) {
-				PersonInfoItemDefinition itemDf = itemdfOpt.get();
-				hireDate = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getHireDate().toString(), command.getHireDate().toString(), null, null, ItemValueType.DATE.value, ItemValueType.DATE.value);
-			}else {
-				hireDate = new ItemValue("", "IS00003", "個人名", command.getHireDate().toString(), command.getHireDate().toString(), null, null, 3, 3);
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(itemHireDate);
+		}else {
+			// thêm category CS0003 vào list inputs
+			Optional<PersonInfoCategory> ctgCS00003Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00001" , AppContexts.user().companyId());
+			if(ctgCS00003Opt.isPresent()) {
+				ItemsByCategory ctgCS00002 = new ItemsByCategory(ctgCS00003Opt.get().getPersonInfoCategoryId(),
+						ctgCS00003Opt.get().getCategoryCode().v(),
+						ctgCS00003Opt.get().getCategoryName().v(),
+						 0, 
+						 null,
+						 false,
+						 Arrays.asList(itemHireDate));
+				inputs.add(ctgCS00002);
+			} else {
+				ItemsByCategory ctgCS00003 = new ItemsByCategory("",
+						"CS00003",
+						"所属会社履歴",
+						0, 
+						null,
+						false,
+						Arrays.asList(itemHireDate));
+				inputs.add(ctgCS00003);
 			}
-			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(hireDate);
 		}
 	}
 
