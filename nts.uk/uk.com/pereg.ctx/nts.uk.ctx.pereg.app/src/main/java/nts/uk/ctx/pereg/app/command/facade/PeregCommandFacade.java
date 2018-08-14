@@ -96,8 +96,6 @@ public class PeregCommandFacade {
 	@Inject
 	private GetUserByEmpFinder userFinder;
 	
-	private final static String nameStartDate = "開始日";
-	
 	private final static String nameEndate = "終了日";
 	
 	private final static String valueEndate = "9999/12/31";
@@ -472,7 +470,7 @@ public class PeregCommandFacade {
 					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, InfoOperateAttr.UPDATE);
 				}
 				
-				if (ctgTarget != null) {
+				if (ctgTarget != null && lstItemInfo.size() > 0) {
 					DataCorrectionContext.setParameter(target.getHashID(), target);
 					DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 				}
