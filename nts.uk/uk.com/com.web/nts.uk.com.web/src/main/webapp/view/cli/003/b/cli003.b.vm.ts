@@ -662,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -743,7 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
