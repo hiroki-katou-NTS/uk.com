@@ -60,7 +60,7 @@ module nts.uk.at.view.kwr001.c {
                 self.outputItemList = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR001_52"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180 }
+                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
                 self.currentCodeList = ko.observable();
                 self.C3_2_value = ko.observable("");
