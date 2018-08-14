@@ -28,6 +28,7 @@ import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
@@ -44,6 +45,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
@@ -155,7 +157,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
 		val command = context.getCommand();
 		String employeeId = IdentifierUtil.randomUniqueId();
 		String userId = IdentifierUtil.randomUniqueId();
@@ -179,12 +180,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		updateEmployeeRegHist(companyId, employeeId);
 
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
+		addInfoBasicToLogCorrection(command, inputs);
 		setParamsForCorrection(command, inputs, employeeId, userId);
 		DataCorrectionContext.transactionFinishing(-98);
 		return employeeId;
-
 	}
-
+	
 	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,
 			String userId) {
 		// set PeregCorrectionLogParameter
@@ -308,6 +310,52 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 						null, command.getCardNo()), Optional.empty());
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
+		}
+	}
+	
+	private void addInfoBasicToLogCorrection(AddEmployeeCommand command ,List<ItemsByCategory> inputs) {
+		Optional<ItemsByCategory> employeeInfoCtgOpt = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00001")).findFirst();
+		if (employeeInfoCtgOpt.isPresent()) {
+			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00001", "IS00001", AppContexts.user().companyId(), AppContexts.user().contractCode());
+			ItemValue employeeCode = null;
+			if(itemdfOpt.isPresent()) {
+				PersonInfoItemDefinition itemDf = itemdfOpt.get();
+				employeeCode = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}else {
+				employeeCode = new ItemValue("", "IS00001", "社員CD", command.getEmployeeCode(), command.getEmployeeCode(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00001")).findFirst().get().getItems().add(employeeCode);
+		}
+
+		// set recordId(personId) for category CS00002
+		Optional<ItemsByCategory> personCategory = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00002")).findFirst();
+		if (personCategory.isPresent()) {
+			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00002", "IS00003", AppContexts.user().companyId(), AppContexts.user().contractCode());
+			ItemValue personName = null;
+			if(itemdfOpt.isPresent()) {
+				PersonInfoItemDefinition itemDf = itemdfOpt.get();
+				personName = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getEmployeeName(), command.getEmployeeName(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}else {
+				personName = new ItemValue("", "IS00003", "個人名", command.getEmployeeName(), command.getEmployeeName(), null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00002")).findFirst().get().getItems().add(personName);
+		}
+
+		// set recordId(historyId) for category CS00003
+		Optional<ItemsByCategory> affComHistCategory = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00003")).findFirst();
+		if (affComHistCategory.isPresent()) {
+			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00003", "IS00020", AppContexts.user().companyId(), AppContexts.user().contractCode());
+			ItemValue hireDate = null;
+			if(itemdfOpt.isPresent()) {
+				PersonInfoItemDefinition itemDf = itemdfOpt.get();
+				hireDate = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getHireDate().toString(), command.getHireDate().toString(), null, null, ItemValueType.DATE.value, ItemValueType.DATE.value);
+			}else {
+				hireDate = new ItemValue("", "IS00003", "個人名", command.getHireDate().toString(), command.getHireDate().toString(), null, null, 3, 3);
+			}
+			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(hireDate);
 		}
 	}
 
