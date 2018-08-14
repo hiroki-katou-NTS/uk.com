@@ -359,15 +359,18 @@ public class PeregCommandFacade {
 				List<ItemValue> itemLogs = input.getItems() == null ?
 						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
 				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
-						
-				boolean isHistory = input.getCategoryType() == CategoryType.DUPLICATEHISTORY.value  || input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value || input.getCategoryType() == CategoryType.NODUPLICATEHISTORY.value;
-
 				DateRangeDto dateRange = null;
+				boolean isHistory = input.getCategoryType() == CategoryType.DUPLICATEHISTORY.value
+						|| input.getCategoryType() == CategoryType.CONTINUOUSHISTORY.value
+						|| input.getCategoryType() == CategoryType.NODUPLICATEHISTORY.value;
+
 				if(input.getCategoryCd().equals("CS00003")) {
 					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
 				} else {
 					dateRange = isHistory == true? dateRangeOp.get(): null;
 				}
+				
+				InfoOperateAttr info = InfoOperateAttr.ADD;
 				for (ItemValue item : itemLogs) {
 					// kiểm tra các item của  category nghỉ đặc biệt, employee, lịch sử 
 					if (specialItemCode.contains(item.itemCode())
@@ -398,6 +401,12 @@ public class PeregCommandFacade {
 								}
 								
 							}else {
+								PersonCorrectionLogParameter correctedLog =  new PersonCorrectionLogParameter(target.userId, target.employeeId, target.userName,
+										PersonInfoProcessAttr.UPDATE, null);
+								target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
+										PersonInfoProcessAttr.UPDATE, null);
+								info = InfoOperateAttr.ADD_HISTORY;
+								
 								// trường hợp tạo mới hoàn toàn category
 								for (ComboBoxObject c : historyLst) {
 									if (c.getOptionValue() != null) {
@@ -458,6 +467,7 @@ public class PeregCommandFacade {
 						if(!item.valueAfter().equals(item.valueBefore())) {
 							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 						}
+						
 						if (item.valueAfter() != null && item.valueBefore() == null) {
 							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 						}
@@ -470,9 +480,9 @@ public class PeregCommandFacade {
 				PersonCategoryCorrectionLogParameter ctgTarget = null;
 
 				if (isAdd == PersonInfoProcessAttr.ADD) {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, InfoOperateAttr.ADD);
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info);
 				} else {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, InfoOperateAttr.UPDATE);
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info != InfoOperateAttr.ADD ? info: InfoOperateAttr.UPDATE);
 				}
 				
 				if (ctgTarget != null && lstItemInfo.size() > 0) {
