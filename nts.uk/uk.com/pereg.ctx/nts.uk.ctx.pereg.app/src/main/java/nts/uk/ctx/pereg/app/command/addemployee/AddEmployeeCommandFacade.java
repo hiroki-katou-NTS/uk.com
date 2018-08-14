@@ -266,16 +266,16 @@ public class AddEmployeeCommandFacade {
 			SelectionItemDto selectionItemDto = null;
 			ReferenceTypes refenceType = EnumAdaptor.valueOf(settingItem.getSelectionItemRefType().value, ReferenceTypes.class);
 			switch (refenceType) {
-			case DESIGNATED_MASTER:
-				selectionItemDto = SelectionItemDto.createMasterRefDto(settingItem.getSelectionItemRefCd(),
+			case ENUM:
+				selectionItemDto = SelectionItemDto.createEnumRefDto(settingItem.getSelectionItemRefCd(),
 						settingItem.getSelectionItemRefType().value);
 				break;
 			case CODE_NAME:
 				selectionItemDto = SelectionItemDto.createCodeNameRefDto(settingItem.getSelectionItemRefCd(),
 						settingItem.getSelectionItemRefType().value);
 				break;
-			case ENUM:
-				selectionItemDto = SelectionItemDto.createEnumRefDto(settingItem.getSelectionItemRefCd(),
+			case DESIGNATED_MASTER:
+				selectionItemDto = SelectionItemDto.createMasterRefDto(settingItem.getSelectionItemRefCd(),
 						settingItem.getSelectionItemRefType().value);
 				break;
 			}
