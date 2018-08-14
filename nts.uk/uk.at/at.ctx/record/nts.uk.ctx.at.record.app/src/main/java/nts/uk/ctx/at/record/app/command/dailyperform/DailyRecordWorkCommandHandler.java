@@ -316,10 +316,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 	
 	// fix response
-		public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
-				List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,  UpdateMonthDailyParam month) {
-			return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month);
-		}
+	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month) {
+		return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month);
+	}
 		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		handler(Arrays.asList(command), isUpdate);

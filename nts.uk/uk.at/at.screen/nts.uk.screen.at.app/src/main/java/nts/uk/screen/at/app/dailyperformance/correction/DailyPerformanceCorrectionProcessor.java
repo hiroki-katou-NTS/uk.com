@@ -369,6 +369,7 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+		if(listEmployeeId.isEmpty()) return screenDto;
 		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart3));
 		//パラメータ「表示形式」をチェックする - Đã thiết lập truyền từ UI nên không cần check lấy theo định dạng nào , nhân viên đã được truyền
 		

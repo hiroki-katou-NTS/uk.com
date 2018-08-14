@@ -24,7 +24,7 @@ public class FindAllEmployee {
 		List<EmployeeInformation> employeeInfo = employeeInformationPub.find(createQuery(employeeIds, referenceDate));
 		
 		return employeeInfo.stream().map(x -> {
-			val workplace = x.getWorkplace().get();
+			val workplace = x.getWorkplace().orElse(null);
 			return DailyPerformanceEmployeeDto.builder().id(x.getEmployeeId()).code(x.getEmployeeCode())
 					.businessName(x.getBusinessName())
 					.workplaceName(workplace != null ? workplace.getWorkplaceName() : "")

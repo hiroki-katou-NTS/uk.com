@@ -10,7 +10,6 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.app.find.alarm.extraprocessstatus.InputAlExProcess;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -235,8 +234,8 @@ public class DPHeaderDto {
 	}
 	
 	private static String inputProcess(int itemId) {
-		if (itemId == 28 || itemId == 29 || itemId == 31 || itemId == 34 || itemId == 41 || itemId == 44)
-			return "inputProcess";
-		return null;
+		//if (itemId == 28 || itemId == 29 || itemId == 31 || itemId == 34 || itemId == 41 || itemId == 44)
+		return "inputProcess";
+		//return null;
 	}
 }

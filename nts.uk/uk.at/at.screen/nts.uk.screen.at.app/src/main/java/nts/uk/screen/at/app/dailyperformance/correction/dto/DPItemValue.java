@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class DPItemValue {
 	
 	private String rowId;
+	
+	private String columnKey;
 	
 	private int itemId;
 	
@@ -40,4 +41,20 @@ public class DPItemValue {
 		this.value = value;
 		this.valueType = message;
 	}
+
+	public DPItemValue(String rowId, String columnKey, int itemId, String value, String valueType, String layoutCode,
+			String employeeId, GeneralDate date, Integer typeGroup) {
+		super();
+		this.rowId = rowId;
+		this.columnKey = columnKey;
+		this.itemId = itemId;
+		this.value = value;
+		this.valueType = valueType;
+		this.layoutCode = layoutCode;
+		this.employeeId = employeeId;
+		this.date = date;
+		this.typeGroup = typeGroup;
+	}
+	
+	
 }

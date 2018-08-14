@@ -68,7 +68,7 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeId);
     }
     
-    export function calcTime(param: string) {
+    export function calcTime(param: any) {
         return nts.uk.request.ajax(paths.calcTime, param);
     }
 }

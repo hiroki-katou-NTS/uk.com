@@ -22,13 +22,12 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -36,6 +35,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
@@ -100,6 +101,9 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private FindEmployeeBase findEmployeeBase;
 	
+	@Inject
+	private DailyCorrectCalcTimeService dailyCorrectCalcTimeService;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
@@ -145,7 +149,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("addAndUpdate")
 	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
-          return dailyModifyResCommandFacade.insertItemValues(dataParent);
+          return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
 	@POST
@@ -216,12 +220,8 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("calcTime")
-	public void calcTime(List<DailyRecordDto> domainOld) {
-		List<DailyRecordDto> domainOldTemp = domainOld;
-		if(domainOldTemp.size() > 0){
-			System.out.println("domain: "+ domainOld);
-		}
-		return ;
+	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
+		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdit());
 	}
 
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.dailyperform.date;
+package nts.uk.ctx.at.record.app.find.dailyperform.customjson;
 
 import java.io.IOException;
 import java.time.LocalDate;
