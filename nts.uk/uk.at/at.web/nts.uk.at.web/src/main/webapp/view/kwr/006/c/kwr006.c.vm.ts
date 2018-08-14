@@ -105,12 +105,12 @@ module nts.uk.at.view.kwr006.c {
             }
 
             public sortItems(): void {
-                let self = this;
+                let self = nts.uk.ui._viewModel.content;
                 self.items(_.sortBy(self.items(), item => parseInt(item.code)));
             }
 
             public sortCurrentCodeListSwap(): void {
-                let self = this;
+                let self = nts.uk.ui._viewModel.content;
                 self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
             }
 
