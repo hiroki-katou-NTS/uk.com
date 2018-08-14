@@ -103,6 +103,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.initData();
+            let a = 0;
             dfd.resolve();
             return dfd.promise();
         }
@@ -160,7 +161,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                 let displayItemTypes: Array<any> = [];
                 let values = _.map(self.items_A7(), 'value');
                 _.forEach(values, (x => {
-                    let selectedList = _.map(self.currentCodeList_A7(), x => parseInt(x));
+                    let selectedList = self.currentCodeList_A7();
                     if (_.includes(selectedList, x)) {
                         displayItemTypes.push({
                             'displayItemType': x,
