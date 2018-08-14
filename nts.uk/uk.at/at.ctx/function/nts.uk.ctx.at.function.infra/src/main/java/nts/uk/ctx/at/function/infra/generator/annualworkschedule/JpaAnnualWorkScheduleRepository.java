@@ -107,8 +107,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// init map employees data
 		// <<Public>> 社員の情報を取得する
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
-		exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		HeaderData header = new HeaderData();
+		header.setPrintFormat(printFormat);
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
 		// B1_1 + B1_2
@@ -123,10 +123,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
 			// A1_2
 			header.setReportName(TextResource.localize("KWR008_58"));
+			exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		} else {
 			// A1_2
 			header.setReportName(TextResource.localize("KWR008_57"));
 			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
+			exportData.setOutNumExceedTime36Agr(false);
 		}
 		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v()))
 				.collect(Collectors.toList()));

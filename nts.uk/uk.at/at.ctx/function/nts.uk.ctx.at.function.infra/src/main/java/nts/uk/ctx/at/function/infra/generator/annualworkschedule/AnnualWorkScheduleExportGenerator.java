@@ -25,6 +25,8 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
+import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -115,7 +117,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				// break page and print
 				boolean isNewPage = sumRowCount > rowsPerPage
 						|| (nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
-				print(wsc, newRange, emp, isNewPage || nextWorkplace, is7Group, itemBooks);
+				print(wsc, newRange, emp, isNewPage || nextWorkplace, is7Group, itemBooks,
+						dataSource.isOutNumExceedTime36Agr());
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
 					sumRowCount = newRange.range.getRowCount(); // reset sum row
@@ -124,7 +127,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				offset = newRange.offset;
 			}
 
-			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, is7Group, itemBooks);
+			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, is7Group, itemBooks,
+					dataSource.isOutNumExceedTime36Agr());
 
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
@@ -157,10 +161,13 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 		// print C1_1
 		wsc.getRangeByName("empInfoLabel").setValue(headerData.getEmpInfoLabel());
 
+		if (!PrintFormat.AGREEMENT_36.equals(headerData.getPrintFormat())) {
+			return;
+		}
 		if (OutputAgreementTime.TWO_MONTH.equals(headerData.getOutputAgreementTime())) {
-			wsc.getRangeByName("outputAgreementTime").setValue("2ヶ月");
+			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_48"));
 		} else if (OutputAgreementTime.THREE_MONTH.equals(headerData.getOutputAgreementTime())) {
-			wsc.getRangeByName("outputAgreementTime").setValue("3ヶ月");
+			wsc.getRangeByName("outputAgreementTime").setValue(TextResource.localize("KWR008_49"));
 		}
 
 		List<String> monthPeriodLabels = headerData.getMonthPeriodLabels();
@@ -177,7 +184,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	 * @param isNewPage
 	 */
 	private void print(WorksheetCollection wsc, RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
-			boolean is7Group, List<ExportItem> itemBooks) {
+			boolean is7Group, List<ExportItem> itemBooks, boolean isOutNumExceedTime36Agr) {
 		if (isPrintWorkplace) {
 			String workplace = emp.getEmployeeInfo().getWorkplaceName();
 			range.cell("workplace").putValue(workplace);
@@ -230,7 +237,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("month12th", rowOffset, 0), data.getColorMonth12th());
 			range.cell("average", rowOffset, 0).putValue(data.formatAverage());
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
-			if (data.isAgreementTime()) {
+			if (isOutNumExceedTime36Agr && data.isAgreementTime()) {
 				range.cell("numExceedTime", rowOffset, 0).putValue(data.formatMonthsExceeded());
 				range.cell("numRemainingTime", rowOffset, 0).putValue(data.formatMonthsRemaining());
 			}
