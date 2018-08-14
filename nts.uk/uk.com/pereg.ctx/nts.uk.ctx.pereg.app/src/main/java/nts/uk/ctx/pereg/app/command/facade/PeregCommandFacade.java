@@ -184,6 +184,7 @@ public class PeregCommandFacade {
 		List<ItemsByCategory> updateInput = inputContainer.getInputs().stream()
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		
+		List<ItemsByCategory> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete()).collect(Collectors.toList());
 		if (updateInput.size() > 0) {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.UPDATE, null);
@@ -191,11 +192,14 @@ public class PeregCommandFacade {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.ADD, null);
 		}
-		// ADD COMMAND
-		recordId = this.add(inputContainer, target, user);
+		
+		if(deleteInputs.size() == 0) {
+			// ADD COMMAND
+			recordId = this.add(inputContainer, target, user);
 
-		// UPDATE COMMAND
-		this.update(inputContainer, target, user);
+			// UPDATE COMMAND
+			this.update(inputContainer, target, user);
+		}
 
 		// DELETE COMMAND
 		this.delete(inputContainer, ctgCode);
@@ -386,6 +390,7 @@ public class PeregCommandFacade {
 									input.getCategoryCd(), sid,  pid);
 							query.setCategoryId(input.getCategoryId());
 							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
+							// trường hợp category lịch sử không có history nào
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
 									item.setValueAfter(valueEndate);
