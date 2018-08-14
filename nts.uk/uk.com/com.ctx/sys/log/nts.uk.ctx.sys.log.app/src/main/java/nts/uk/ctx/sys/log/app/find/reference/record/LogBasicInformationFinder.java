@@ -294,13 +294,13 @@ public class LogBasicInformationFinder {
 				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			case DATA_CORRECT:
-				
+				TargetDataType targetDataType=null;
 				Map<String,LogBasicInfoDto> mapCheck = new HashMap<>();
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 					UserInfo userDto = logBasicInformation.getUserInfo();
 					// get data correct log
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
-							logBasicInformation.getOperationId(), logParams.getListTagetEmployeeId(), datePeriodTaget);
+							logBasicInformation.getOperationId(), logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
 					if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);

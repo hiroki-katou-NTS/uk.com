@@ -31,6 +31,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
@@ -83,7 +84,10 @@ public class LogBasicInformationAllFinder {
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
 		List<LogBasicInformation> lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
 				logParams.getListOperatorEmployeeId(), datePeriodOperator);
-
+		TargetDataType targetDataType=null;
+		if(!Objects.isNull(logParams.getTargetDataType()) ){
+			targetDataType=TargetDataType.of(logParams.getTargetDataType());
+		}
 		if (!CollectionUtil.isEmpty(lstLogBasicInformation)) {
 			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());		
 			switch (recordTypeEnum) {
@@ -443,8 +447,9 @@ public class LogBasicInformationAllFinder {
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 
 					// get data correct log
+					
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
-							logBasicInformation.getOperationId(), logParams.getListTagetEmployeeId(), datePeriodTaget);
+							logBasicInformation.getOperationId(), logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
 
 					if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
 
@@ -1036,10 +1041,10 @@ public class LogBasicInformationAllFinder {
 					dataReturn.put(a.getItemName(), logBaseDto.getTarGetY());
 					break;
 				case ITEM_NO_25:
-					dataReturn.put(a.getItemName(), logBaseDto.getCatagoryCorection());
+					dataReturn.put(a.getItemName(), logBaseDto.getKeyString());
 					break;
 				case ITEM_NO_26:
-					dataReturn.put(a.getItemName(), logBaseDto.getKeyString());
+					dataReturn.put(a.getItemName(), logBaseDto.getCatagoryCorection());
 					break;
 				case ITEM_NO_27:
 					dataReturn.put(a.getItemName(), logBaseDto.getItemName());

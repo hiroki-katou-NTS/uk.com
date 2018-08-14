@@ -65,35 +65,72 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 
 	@Override
 	public List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId,
-			DatePeriod period) {
-		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
-			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
-				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-						.setParameter("operationId", operationId).getList(c -> c.toDomainToView());
+			DatePeriod period,TargetDataType targetDataType) {
+		if(targetDataType==null){
+			if (listEmployeeId == null || listEmployeeId.isEmpty()) {
+				if (period.start() == null) {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId).getList(c -> c.toDomainToView());
+				} else {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("startYmd", period.start())
+							.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				}
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
-				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-						.setParameter("operationId", operationId)
-						.setParameter("startYmd", period.start())
-						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				if (period.start() == null) {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("listEmpId", listEmployeeId)
+							.getList(c -> c.toDomainToView());
+				} else {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("listEmpId", listEmployeeId)
+							.setParameter("startYmd", period.start())
+							.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				}
 			}
-		} else {
-			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
-				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-						.setParameter("operationId", operationId)
-						.setParameter("listEmpId", listEmployeeId)
-						.getList(c -> c.toDomainToView());
+		}else{
+			if (listEmployeeId == null || listEmployeeId.isEmpty()) {
+				if (period.start() == null) {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.pk.targetDataType = :targetDataType ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("targetDataType", targetDataType.value)
+							.getList(c -> c.toDomainToView());
+				} else {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.pk.targetDataType = :targetDataType AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("targetDataType", targetDataType.value)
+							.setParameter("startYmd", period.start())
+							.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				}
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
-				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-						.setParameter("operationId", operationId)
-						.setParameter("listEmpId", listEmployeeId)
-						.setParameter("startYmd", period.start())
-						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				if (period.start() == null) {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("targetDataType", targetDataType.value)
+							.setParameter("listEmpId", listEmployeeId)
+							.getList(c -> c.toDomainToView());
+				} else {
+					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
+					return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
+							.setParameter("operationId", operationId)
+							.setParameter("targetDataType", targetDataType.value)
+							.setParameter("listEmpId", listEmployeeId)
+							.setParameter("startYmd", period.start())
+							.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
+				}
 			}
 		}
+	
 	}
 
 	@Override
