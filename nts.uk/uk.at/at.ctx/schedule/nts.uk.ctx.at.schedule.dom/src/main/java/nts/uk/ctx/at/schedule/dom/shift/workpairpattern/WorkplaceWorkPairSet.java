@@ -25,6 +25,6 @@ public class WorkplaceWorkPairSet extends DomainObject {
 	public static WorkplaceWorkPairSet convertFromJavaType(String workplaceId, int groupNo, int patternNo, int pairNo,
 			String workTypeCode, String workTimeCode) {
 		return new WorkplaceWorkPairSet(workplaceId, groupNo, patternNo, pairNo, new WorkTypeCode(workTypeCode),
-				new WorkTimeCode(workTimeCode));
+				workTimeCode == null ? null : new WorkTimeCode(workTimeCode));
 	}
 }

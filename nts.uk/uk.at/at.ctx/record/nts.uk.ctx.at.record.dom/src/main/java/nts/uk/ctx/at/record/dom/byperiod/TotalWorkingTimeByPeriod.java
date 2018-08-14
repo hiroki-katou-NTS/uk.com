@@ -1,11 +1,22 @@
 package nts.uk.ctx.at.record.dom.byperiod;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.Getter;
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の総労働時間
@@ -78,5 +89,61 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 			throw new RuntimeException("TotalWorkingTimeByPeriod clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 集計処理
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param companySets 月別集計で必要な会社別設定
+	 */
+	public void aggregate(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			MonAggrCompanySettings companySets){
+		
+		// 就業時間の集計
+		{
+			// 日別実績の集計処理
+			this.workTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap);
+			
+			// 就業時間の合計処理
+			this.workTime.totalizeWorkTime(datePeriod);
+		}
+		
+		// 残業の集計
+		Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap = new HashMap<>();
+		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()){
+			int frameNo = roleOverTimeFrame.getOvertimeFrNo().v();
+			roleOverTimeFrameMap.putIfAbsent(frameNo, roleOverTimeFrame);
+		}
+		this.overTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleOverTimeFrameMap);
+		
+		// 休日出勤の集計
+		Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap = new HashMap<>();
+		for (val roleHolidayWorkFrame : companySets.getRoleHolidayWorkFrameList()){
+			int frameNo = roleHolidayWorkFrame.getBreakoutFrNo().v();
+			roleHolidayWorkFrameMap.putIfAbsent(frameNo, roleHolidayWorkFrame);
+		}
+		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
+		
+		// 休暇使用時間を集計する
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.vacationUseTime.aggregate(datePeriod);
+		
+		// 所定労働時間を集計する
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.prescribedWorkingTime.aggregate(datePeriod);
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.workTime.getTotalWorkingTargetTime().v() +
+				this.overTime.getTotalWorkingTargetTime().v() +
+				this.holidayWorkTime.getTotalWorkingTargetTime().v());
 	}
 }

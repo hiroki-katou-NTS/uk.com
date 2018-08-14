@@ -34,7 +34,7 @@
 			<div class="lblTitleKAF009"
 				data-bind="ntsFormLabel:{required : true}">#{i18n.getText('KAF009_8')}</div>
 			<div data-bind="visible: screenModeNew" class="mode-style">
-				<div class="cf"
+				<div id = "pre_post"
 					data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
@@ -143,16 +143,20 @@
 				<div class="cell valign-top lblTitleKAF009"></div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
-						<div class="row-cell-margin kaf009-lblComment">
-							(<label
-								data-bind="text: commentGo1,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
+						<div class="row-cell-margin kaf009-lblComment" data-bind="if: commentGo1().length!=0">
+							<div data-bind="if: commentGo1().trim().length!=0">
+								(<label
+									data-bind="text: commentGo1,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
+							</div>
 						</div>
 					</div>
 					<div class="row-cell-margin"
 						style="display: inline-block; width: 250px;">
-						<div class="row-cell-margin kaf009-lblComment">
-							(<label
-								data-bind="text: commentBack1,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
+						<div class="row-cell-margin kaf009-lblComment" data-bind="if: commentBack1().length!=0">
+							<div data-bind="if: commentBack1().trim().length!=0">
+								(<label
+									data-bind="text: commentBack1,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
+							</div>
 						</div>
 					</div>
 				</div>

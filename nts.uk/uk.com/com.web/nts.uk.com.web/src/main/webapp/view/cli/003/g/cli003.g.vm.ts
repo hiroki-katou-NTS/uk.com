@@ -301,7 +301,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.selectedCodeList.removeAll();
             block.grayout();
             service.getLogOutputItemByRecordType(recordType).done(function(logOutputItems: any) {
-                if (logOutputItems) {
+                if (logOutputItems && logOutputItems.length > 0) {
                     for (let i = 0; i < logOutputItems.length; i++) {
                         var logOutputItem = logOutputItems[i];
                         var id;
@@ -336,10 +336,11 @@ module nts.uk.com.view.cli003.g.viewmodel {
                             }
                         }
                     }
-                }
+                } else {
+                     alertError({ messageId: "Msg_1221" });
+                }    
             }).fail(function(error) {
                 alertError({ messageId: "Msg_1221" });
-                errors.clearAll();
             }).always(() => {
                 block.clear();
             });
@@ -544,7 +545,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }).fail(function(error) {
                 alertError({ messageId: "Msg_1222" }).then(function() {
                      self.setFocus();
-                });;
+                });
                 errors.clearAll();
             }).always(() => {
                 block.clear();
@@ -567,15 +568,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.logSetOutputItems(self.getListSetOutputItems());
 
-            for (var i = 0; i < self.logSetOutputItems().length; i++) {
-                var logSetOutputItem = self.logSetOutputItems()[i];
-                if (logSetOutputItem.isUseFlag == 1) {
-                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
-                        alertError({ messageId: "Msg_1203", messageParams: getText('CLI003_49') });
-                        return false;
-                    }
-                }
-            }
+//            for (var i = 0; i < self.logSetOutputItems().length; i++) {
+//                var logSetOutputItem = self.logSetOutputItems()[i];
+//                if (logSetOutputItem.isUseFlag == 1) {
+//                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
+//                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
+//                        return false;
+//                    }
+//                }
+//            }
             return true;
         }
 

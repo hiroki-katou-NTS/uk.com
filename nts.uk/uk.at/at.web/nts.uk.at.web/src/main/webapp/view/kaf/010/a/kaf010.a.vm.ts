@@ -142,6 +142,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         ltsEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
         leaverAppID: KnockoutObservable<string> = ko.observable(null);
         payoutType: KnockoutObservable<number> = ko.observable(null);
+        targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -151,12 +152,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.leaverAppID(transferData.appID);
                 self.appDate(transferData.appDate);
                 self.employeeID(transferData.employeeID);
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = transferData.appDate;        
+                }
             }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 6, self.targetDate).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
@@ -249,6 +253,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             });
             return dfd.promise();
 
+        }
+        
+        isShowReason(){
+             let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.typicalReasonDisplayFlg() || self.displayAppReasonContentFlg();
+            }
         }
 
         initData(data: any) {

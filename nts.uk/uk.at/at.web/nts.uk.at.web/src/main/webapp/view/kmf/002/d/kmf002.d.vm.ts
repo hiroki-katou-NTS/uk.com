@@ -124,11 +124,14 @@ module nts.uk.at.view.kmf002.d {
             private save(): void {
                 let _self = this;
                 if (!nts.uk.ui.errors.hasError()) {
+                    _self.enableSave(false);
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
                         _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    });    
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
+                    }).always(()=> blockUI.clear());    
                 }
             }
 
@@ -148,6 +151,10 @@ module nts.uk.at.view.kmf002.d {
 
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.setDefaultMonthDay();
+                    return;
+                }
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {

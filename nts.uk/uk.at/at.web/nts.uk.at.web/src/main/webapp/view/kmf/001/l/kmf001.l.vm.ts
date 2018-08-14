@@ -76,10 +76,8 @@ module nts.uk.pr.view.kmf001.l {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let command = self.toJsObject();
-                
-                nts.uk.ui.block.grayout();
-                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
@@ -228,7 +226,7 @@ module nts.uk.pr.view.kmf001.l {
                         return false;
                     }
                     if (self.childNursingSetting().nursingNumberPerson() < 10) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_136", messageParams: [10]});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [10]});
                         return false;
                     }
                 }

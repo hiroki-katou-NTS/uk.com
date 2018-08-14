@@ -147,11 +147,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 								dhLog.targetKeyYMD != null ? TargetDataKey.of(dhLog.targetKeyYMD, dhLog.stringKey)
 										: dhLog.targetKeyYM != null
 												? TargetDataKey.of(
-														GeneralDate.fromString(dhLog.targetKeyYM.toString(), "yyyyMM"),
+														YearMonth.of(dhLog.targetKeyYM),
 														dhLog.stringKey)
 												: dhLog.targetKeyY != null
-														? TargetDataKey.of(GeneralDate.fromString(
-																dhLog.targetKeyYM.toString(), "yyyy"), dhLog.stringKey)
+														? TargetDataKey.of(dhLog.targetKeyY, dhLog.stringKey)
 														: TargetDataKey.of(dhLog.stringKey),
 								itemInfos, reviseInfo);
 					}).filter(f -> f != null).collect(Collectors.toList());

@@ -89,6 +89,9 @@ public class CompareSingleValue<V> extends CheckedCondition {
 	}
 
 	private boolean check(Integer target, Integer compare) {
+		if(target == null) {
+			return false;
+		}
 		switch (this.compareOpertor) {
 		case EQUAL:
 			return target.compareTo(compare) == 0;

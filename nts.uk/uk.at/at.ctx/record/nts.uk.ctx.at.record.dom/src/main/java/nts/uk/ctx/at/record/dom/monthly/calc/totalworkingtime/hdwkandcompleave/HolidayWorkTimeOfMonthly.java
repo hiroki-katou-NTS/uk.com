@@ -475,6 +475,44 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
+	 * 休日出勤の集計
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param roleHolidayWorkFrameMap 休出枠の役割
+	 */
+	public void aggregateForByPeriod(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap){
+		
+		// 休出時間を縦計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(ymd)) continue;
+			
+			// 「休出枠時間」を取得する
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+			val holidayWorkTimeOfDailyOpt = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
+			if (!holidayWorkTimeOfDailyOpt.isPresent()) continue;
+			val holidayWorkTimeFrames = holidayWorkTimeOfDailyOpt.get().getHolidayWorkFrameTime();
+			
+			// 取得した「休出枠時間」を「集計休出時間」に入れる
+			for (val holidayWorkTimeFrame : holidayWorkTimeFrames){
+				int frameNo = holidayWorkTimeFrame.getHolidayFrameNo().v();
+				val target = this.getTargetAggregateHolidayWorkTime(new HolidayWorkFrameNo(frameNo));
+				target.addHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkTimeFrame);
+			}
+		}
+		
+		// 休出合計時間を集計する
+		this.aggregateTotal(datePeriod);
+	}
+	
+	/**
 	 * 法定内休出時間を取得する
 	 * @param datePeriod 期間
 	 * @return 法定内休出時間

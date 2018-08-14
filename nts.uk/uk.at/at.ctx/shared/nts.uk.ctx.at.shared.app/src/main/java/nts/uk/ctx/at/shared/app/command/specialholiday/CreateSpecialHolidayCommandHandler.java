@@ -44,6 +44,8 @@ public class CreateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		if (errList.isEmpty()) {
 			// add to db		
 			sphdRepo.add(domain);
+			
+			domain.publishEvent(true);
 		}
 		
 		return errList;
