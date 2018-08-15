@@ -822,7 +822,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 let recordType = self.logTypeSelectedCode();
                 for (var i = 0; i < parentSource.length; i++) {
                     if (parentSource[i].operationId === childSource[0].operationId) {
-                        headerSetting = parentSource[i].subColumnsHeaders;
+                        headerSetting = parentSource[i].lstLogOutputItemDto;
                         if (recordType == RECORD_TYPE.DATA_CORRECT) {
                             newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
                         }
