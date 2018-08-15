@@ -25,7 +25,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	@Override
 	public boolean forlearveReflectSche(CommonReflectParamSche reflectParam) {
 		try {
-			for(int i = 0; reflectParam.getStartDate().compareTo(reflectParam.getEndDate()) + i <= 0; i++){
+			for(int i = 0; reflectParam.getStartDate().daysTo(reflectParam.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = reflectParam.getStartDate().addDays(i);
 				//勤種の反映
 				//勤務種類を反映する
@@ -36,7 +36,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 						1,
 						loopDate,
 						reflectParam.getEmployeeId());
-				workScheReposi.updateScheduleEditState(scheData);
+				workScheReposi.updateOrInsert(scheData);
 				//時刻の反映
 				this.reflectTime(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode(), reflectParam.getStartTime(), reflectParam.getEndTime());
 			}

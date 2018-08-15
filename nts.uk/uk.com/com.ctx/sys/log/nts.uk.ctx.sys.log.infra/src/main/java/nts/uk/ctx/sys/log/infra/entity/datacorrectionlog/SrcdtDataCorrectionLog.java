@@ -11,14 +11,15 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -136,4 +137,37 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 				this.showOrder, this.note);
 	}
 
+	public static SrcdtDataCorrectionLog fromDomain(DataCorrectionLog dataLog){
+		SrcdtDataCorrectionLog entityLog = new SrcdtDataCorrectionLog();
+		val correctedItem = dataLog.getCorrectedItem();
+		entityLog.pk = new SrcdtDataCorrectionLogPk(dataLog.getOperationId(), dataLog.getTargetUser().getUserId(),
+				dataLog.getTargetDataType().value, correctedItem.getId());
+		entityLog.userName = dataLog.getTargetUser().getUserName();
+		entityLog.employeeId = dataLog.getTargetUser().getEmployeeId();
+		val dateKey = dataLog.getTargetDataKey().getDateKey().orElse(null);
+		if (dateKey != null) {
+			entityLog.ymdKey = dateKey;
+			entityLog.ymKey = YearMonth.of(dateKey.year(), dateKey.month()).v();
+			entityLog.yKey = dateKey.year();
+		}
+		entityLog.stringKey = dataLog.getTargetDataKey().getStringKey().orElse(null);
+		entityLog.correctionAttr = dataLog.getCorrectionAttr().value;
+		entityLog.itemName = correctedItem.getName();
+		entityLog.rawValueBefore = (correctedItem.getValueBefore().getRawValue() != null
+				&& correctedItem.getValueBefore().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
+		entityLog.viewValueBefore = correctedItem.getValueBefore().getViewValue() != null
+				? correctedItem.getValueBefore().getViewValue() : null;
+		entityLog.rawValueAfter = (correctedItem.getValueAfter().getRawValue() != null
+				&& correctedItem.getValueAfter().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
+		entityLog.viewValueAfter = correctedItem.getValueAfter().getViewValue() != null
+				? correctedItem.getValueAfter().getViewValue() : null;
+		
+	    //entityLog.valueType = dataLog.getTargetDataType().value;
+		entityLog.showOrder = dataLog.getShowOrder();
+		entityLog.note = dataLog.getRemark();
+		return entityLog;
+	}
+	
 }

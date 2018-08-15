@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -29,7 +27,7 @@ public class CalculateDateDto {
 	private int grantNum;
 
 	/* 年休付与日数 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 
 	/* 時間年休上限日数 */
 	private Integer limitTimeHd;

@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.request.pubimp.application.recognition;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,7 +14,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -22,51 +29,47 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository_New repoApplication;
 	
 	@Inject
 	private AppHolidayWorkRepository appHdWorkRepository;
 	
 	/**
 	 * Request list No.299
+	 * @return List (年月日, 休出時間)
 	 */
 	@Override
 	public List<ApplicationHdTimeExport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppHolidayWork> appHdWork = Optional.empty();
+		Map<String, AppHolidayWork> mapHd = new HashMap<>();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
-		
-		List<Application_New> appNew = applicationRepository_New.getListApp(sId, startDate, endDate);
-		
-		if(appNew.size() >= 1) {
-			// 条件を元に、ドメインモデル「休日出勤申請」を取得する
-			appHdWork = appHdWorkRepository.getAppHolidayWork(companyId, appNew.get(0).getAppID());
-		}
-		
-		// 取得した「休日出勤申請」の休出時間を、日付別に集計する
-		ApplicationHdTimeExport data = new ApplicationHdTimeExport();
-		data.setDate(appNew.size() >= 1 ? appNew.get(0).getAppDate() : null);
-		
-		List<HolidayWorkInput> hdWorkInput = new ArrayList<>();	
-		if(appHdWork.isPresent()) {
-			hdWorkInput = appHdWork.get().getHolidayWorkInputs();
-		} else {
-			hdWorkInput = Collections.emptyList();
-		}
-			
-		for (HolidayWorkInput item : hdWorkInput) {
-			if(item.getAttendanceType() == AttendanceType.RESTTIME) {
-				data.setBreakTime(item.getApplicationTime().v());
+		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<String> lstId = new ArrayList<>();
+		Map<GeneralDate, String> mapApp = new HashMap<>();
+		// 条件を元に、ドメインモデル「休日出勤申請」を取得する
+		//※同じ申請日の休日出勤申請が２件あった場合、入力日が後のもの（latest）だけ集計する
+		for (Application_New app : appHd) {
+			if(mapApp.containsKey(app.getAppDate())){
+				continue;
 			}
+			mapApp.put(app.getAppDate(), app.getAppID());
+			lstId.add(app.getAppID());
 		}
-		
-		results.add(data);
-		
-		if(results.size() > 0) {
-			return results;
+		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstId);
+		for(Map.Entry<GeneralDate, String> entry : mapApp.entrySet()) {
+			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
+			List<HolidayWorkInput> hdWorkInput = hdDetail.getHolidayWorkInputs();
+			int cal = 0;
+			// 取得した「休日出勤申請」の休出時間を、日付別に集計する
+			for (HolidayWorkInput item : hdWorkInput) {
+				if(item.getAttendanceType().equals(AttendanceType.BREAKTIME)){
+					cal = item.getApplicationTime() == null ? cal : cal + item.getApplicationTime().v();
+				}
+			}
+			results.add(new ApplicationHdTimeExport(entry.getKey(), cal));
 		}
-		
-		return Collections.emptyList();
+		return results;
 	}
 
 }

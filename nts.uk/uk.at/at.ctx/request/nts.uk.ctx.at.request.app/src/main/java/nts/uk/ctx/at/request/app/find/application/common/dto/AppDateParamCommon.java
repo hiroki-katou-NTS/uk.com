@@ -9,4 +9,5 @@ public class AppDateParamCommon {
 	private Boolean isStartup;
 	private String appID;
 	private String employeeID;
+	private String overtimeAtrParam;
 }

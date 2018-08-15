@@ -86,3 +86,7 @@ table#tbl-condition tr, table#tbl-grant-hd-set tr {
 	width: 90%;
     float: left;
 }
+
+.ntsComboBox {
+    width: 70px;
+}

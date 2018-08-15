@@ -84,7 +84,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	@Override
 	public void insertAll(List<LeaveComDayOffManagement> entitiesLeave) {
 		List<KrcmtLeaveDayOffMana> entities = entitiesLeave.stream()
-				.map(c -> newEntities(c.getLeaveID(),c.getComDayOffID(),c.getUsedDays().v(),TargetSelectionAtr.MANUAL.value,TargetSelectionAtr.MANUAL.value)).collect(Collectors.toList());
+				.map(c -> newEntities(c.getLeaveID(),c.getComDayOffID(),c.getUsedDays().v(),0,TargetSelectionAtr.MANUAL.value)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
 		this.getEntityManager().flush();
 	}

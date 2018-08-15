@@ -5,10 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -33,10 +37,24 @@ public class KscdtWorkScheduleBreak extends UkJpaEntity implements Serializable 
 
 	@Column(name = "END_CLOCK")
 	public int scheduleEndClock;
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "SID", referencedColumnName = "KSCDT_SCHE_BASIC.SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "KSCDT_SCHE_BASIC.YMD", insertable = false, updatable = false) })
+	public KscdtBasicSchedule kscdtBasicSchedule;
 
 	@Override
 	protected Object getKey() {
 		return this.kscdtWorkScheduleBreakPk;
 	}
 
+	public KscdtWorkScheduleBreak(KscdtWorkScheduleBreakPK kscdtWorkScheduleBreakPk, int scheduleStartClock,
+			int scheduleEndClock) {
+		super();
+		this.kscdtWorkScheduleBreakPk = kscdtWorkScheduleBreakPk;
+		this.scheduleStartClock = scheduleStartClock;
+		this.scheduleEndClock = scheduleEndClock;
+	}
+	
 }

@@ -19,14 +19,14 @@ public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable 
 	public KrcmtInterimSpeHolidayPK pk;
 
 	/** 予定実績区分 */
-	@Column(name ="SCHE_RECORD_ATR")	
-	public int scheRecordAtr;
+	@Column(name ="MNG_ATR")	
+	public int mngAtr;
 	/** 特休使用	 */
 	@Column(name ="USE_DAYS")
-	public Double useDays;
+	public double useDays;
 	/** 時間特休使用 */
 	@Column(name ="USE_TIMES")
-	public int useTimes;
+	public Integer useTimes;
 	/**
 	 * 
 	 */

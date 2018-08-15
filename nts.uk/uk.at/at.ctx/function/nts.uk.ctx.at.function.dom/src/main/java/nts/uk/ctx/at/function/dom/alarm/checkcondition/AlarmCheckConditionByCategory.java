@@ -73,6 +73,9 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 	public boolean isMonthly() {
 		return this.category == AlarmCategory.MONTHLY;
 	}
+	public boolean isMultipleMonth() {
+		return this.category == AlarmCategory.MULTIPLE_MONTH;
+	}
 	
 	public boolean is4Week4Day() {
 		return this.category == AlarmCategory.SCHEDULE_4WEEK;

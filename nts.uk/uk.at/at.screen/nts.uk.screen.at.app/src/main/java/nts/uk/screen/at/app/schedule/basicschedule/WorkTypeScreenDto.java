@@ -2,6 +2,16 @@ package nts.uk.screen.at.app.schedule.basicschedule;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 @Data
 @NoArgsConstructor
@@ -37,5 +47,14 @@ public class WorkTypeScreenDto {
 		this.oneDay = oneDay;
 		this.morning = morning;
 		this.afternoon = afternoon;
+	}
+
+	public WorkType convertToDomain() {
+		return new WorkType(new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
+				new DailyWork(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class),
+						EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class),
+						EnumAdaptor.valueOf(morning, WorkTypeClassification.class),
+						EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class)));
 	}
 }

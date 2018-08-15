@@ -1,0 +1,129 @@
+.panel {
+	/* display: inline-block; */
+	/* width: 91%; */
+	padding: 5px;
+	margin: 5px;
+}
+
+.A1_5, .A1_6 {
+	display: inline-block;
+	margin-left: 3px;
+}
+
+.A1_6 {
+	/* width: 70%; */
+}
+
+.A5_1 {
+	margin-bottom: 10px;
+}
+
+.td-left {
+	/* padding-top: 4px; */
+}
+
+.td-right{
+	/* width: 57%; */
+}
+
+.table1 {
+	width: 1200px;
+	margin-left: 5%;
+}
+
+.A10_19{
+	margin-left: 10px;
+}
+
+.A13_1{
+	margin-left: 27px;
+	width: 120px;
+	display:  flex;
+	flex-direction:  column;
+}
+
+.td-left .row {
+	margin: 5px;
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.td-right .row {
+	display: flex;
+	align-items: center;
+	margin-top:  5px;
+	margin-bottom:  5px;
+	margin-left: 25px;
+}
+
+#combo-box{
+	margin: 10px;
+}
+
+.A7_2 {
+	margin-left: 50px;
+}
+
+td {
+	vertical-align: top;
+}
+
+.left, .right {
+	margin-top: 10px;
+}
+
+label {
+	width: 85px;
+}
+
+.A10-left{
+	width: 30px;
+	/* display: flex; */
+	/* flex-direction: column; */
+}
+
+.table2 {
+	margin-left: 7%;
+}
+
+hr {
+	margin: 30px;
+}
+
+.td-center{
+	vertical-align: bottom;
+}
+
+.td-left .panel.panel-frame {
+	width: 442px;
+}
+
+.type-page-brake {
+	max-width: 100px;
+}
+
+.td-right .right .panel.panel-frame {
+	padding: 15px;
+}
+
+.A13_1 label {
+	width: 120px;
+	margin-top: 5px;
+}
+
+#output-setting-content {
+	height: 573px
+}
+
+#btnSetErrorAlarmCd {
+	margin-left: 20px;
+}
+
+#output-format {
+	margin-left: 43px;
+}
+
+#nts-component-list {
+	outline: none;
+}

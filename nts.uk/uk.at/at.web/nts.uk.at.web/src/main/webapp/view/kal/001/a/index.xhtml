@@ -98,13 +98,15 @@
 																			 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}, 
 																			 visible: !visible()"/>
 																			 
-															<div  class ='nts-custom' data-bind="visible: visible">
-															 	<input tabindex="-1" data-bind="ntsTimeEditor: {
-															 									inputFormat: 'YYYY',
+															<div  class ='nts-custom ntsControl nts-datepicker-wrapper' data-bind="visible: visible">
+															 	<div tabindex="-1" data-bind="ntsDatePicker: {
+															 									dateFormat: 'YYYY', 
+															 									valueFormat: 'YYYY',
 															 									value: year,
 																								name: '#[KAL004_73]',															 									
 															 									required: required,
 															 									constraint: 'YearOfAgreement',
+															 									showJumpButtons: false,
 															 									option: {textalign: 'left',
 															 											 width: '86px',
 															 											 }

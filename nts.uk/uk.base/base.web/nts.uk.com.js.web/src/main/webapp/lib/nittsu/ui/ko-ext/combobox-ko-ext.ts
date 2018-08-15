@@ -177,7 +177,7 @@ module nts.uk.ui.koExtentions {
                     rendered: function(evt, ui) {
                         $element
                             .find('.ui-igcombo')
-                            .css('background', '#f6f6f6')
+                            .css('background', '#fff')
                             .find('.ui-igcombo-fieldholder').hide();
 
                         $element
@@ -251,6 +251,7 @@ module nts.uk.ui.koExtentions {
                             .find('input')
                             .css('width', '0px')
                             .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                            .css('text-indent', !!data[EDITABLE] ? '0' : '-99999px')
                             .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
 
                         if (!$input.data('_nts_bind')) {
@@ -287,6 +288,7 @@ module nts.uk.ui.koExtentions {
                     }
                 })
                 .trigger(CHANGED, [DATA, options])
+                .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
                 .addClass('ntsControl')
                 .on('blur', () => { $element.css('box-shadow', ''); })
                 .on('focus', () => {
@@ -416,6 +418,12 @@ module nts.uk.ui.koExtentions {
                     .igCombo(OPTION, "disabled", !enable)
                     // set new value
                     .igCombo("value", value);
+
+                if (!enable) {
+                    $element.removeAttr(TAB_INDEX);
+                } else {
+                    $element.attr(TAB_INDEX, data[TAB_INDEX]);
+                }
 
                 // validate if has dataOptions
                 $element

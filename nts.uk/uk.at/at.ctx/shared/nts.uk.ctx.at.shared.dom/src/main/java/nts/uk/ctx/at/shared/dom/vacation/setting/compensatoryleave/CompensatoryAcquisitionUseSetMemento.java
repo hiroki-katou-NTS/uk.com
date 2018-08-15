@@ -25,4 +25,12 @@ public interface CompensatoryAcquisitionUseSetMemento {
       * @param preemptionPermit the new preemption permit
       */
      void setPreemptionPermit(ApplyPermission preemptionPermit); 
+     
+     
+     /**
+      * Sets the deadl check month.
+      *
+      * @param deadlCheckMonth the new deadl check month
+      */
+     void setDeadlCheckMonth(DeadlCheckMonth deadlCheckMonth);
 }

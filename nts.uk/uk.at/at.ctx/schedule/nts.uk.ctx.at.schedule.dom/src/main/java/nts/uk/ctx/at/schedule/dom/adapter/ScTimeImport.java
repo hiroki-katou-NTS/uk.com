@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.adapter;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -40,5 +42,5 @@ public class ScTimeImport {
 	AttendanceTime childCareTime;
 	
 	//人件費時間
-	AttendanceTime personalExpenceTime;
+	List<AttendanceTime> personalExpenceTime;
 }

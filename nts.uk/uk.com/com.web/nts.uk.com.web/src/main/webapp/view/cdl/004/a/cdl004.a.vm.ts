@@ -14,6 +14,7 @@ module nts.uk.com.view.cdl004.a {
             baseDate: KnockoutObservable<Date>;
             jobtitles: ComponentOption;
             isMultiple: boolean;
+            isMultipleUse: boolean;
             isShowAlreadySet: boolean;
             isShowNoSelectRow: boolean;
             constructor(){
@@ -21,16 +22,17 @@ module nts.uk.com.view.cdl004.a {
                 self.selectedMulJobtitle = ko.observableArray([]);
                 self.selectedSelJobtitle = ko.observable('');
                 self.isMultiple = false;
+                self.isMultipleUse = false;
                 self.isShowAlreadySet = false;
                 self.isShowNoSelectRow = false;
                 self.baseDate = ko.observable(new Date());
                 var inputCDL004 = nts.uk.ui.windows.getShared('inputCDL004');
                 if(inputCDL004){
                     self.isMultiple = inputCDL004.isMultiple;
-                     if (_.isNil(inputCDL004.isShowAlreadySet)) {
-                        self.isShowAlreadySet = true;
+                     if (_.isNil(inputCDL004.isShowBaseDate)) {
+                        self.isMultipleUse = true;
                     } else {
-                        self.isShowAlreadySet = inputCDL004.isShowAlreadySet ? true : false;
+                        self.isMultipleUse = inputCDL004.isShowBaseDate ? true : false;
                     }
                     self.baseDate(inputCDL004.baseDate);
                     self.isShowNoSelectRow = inputCDL004.showNoSelection;
@@ -46,6 +48,7 @@ module nts.uk.com.view.cdl004.a {
                     isShowAlreadySet: self.isShowAlreadySet,
                     baseDate: self.baseDate,
                     isMultiSelect: self.isMultiple,
+                    isMultipleUse: self.isMultipleUse,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowNoSelectRow:  self.isShowNoSelectRow,
@@ -68,12 +71,12 @@ module nts.uk.com.view.cdl004.a {
             private selectedJobtitle() :void {
                 let self = this;
                 if(self.isMultiple && self.selectedMulJobtitle().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                     return;
                 }
                 var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                 if (!self.isMultiple && !self.selectedSelJobtitle() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                     return;
                 }
                 nts.uk.ui.windows.setShared('outputCDL004', self.isMultiple ? self.selectedMulJobtitle() : self.selectedSelJobtitle());

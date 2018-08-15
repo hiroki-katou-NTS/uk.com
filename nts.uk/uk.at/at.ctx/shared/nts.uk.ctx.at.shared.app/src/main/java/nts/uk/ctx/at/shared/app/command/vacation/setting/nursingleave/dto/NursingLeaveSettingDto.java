@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,9 +39,10 @@ public class NursingLeaveSettingDto {
     /** The nursing number person. */
     private Integer nursingNumberPerson;
 
-    /** The work type codes. */
-    private List<String> workTypeCodes;
-
+    private Integer specialHolidayFrame;
+    
+    private Integer absenceWork;
+    
     /**
      * To domain.
      *
@@ -129,16 +131,17 @@ public class NursingLeaveSettingDto {
                     this.setting.nursingNumberPerson));
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getWorkTypeCodes()
-         */
-        @Override
-        public List<String> getWorkTypeCodes() {
-            return this.setting.workTypeCodes;
-        }
+		@Override
+		public Optional<Integer> getSpecialHolidayFrame() {
+			// TODO Auto-generated method stub
+			return Optional.of(this.setting.specialHolidayFrame);
+		}
+
+		@Override
+		public Optional<Integer> getWorkAbsence() {
+			// TODO Auto-generated method stub
+			return Optional.of(this.setting.absenceWork);
+		}
 
     }
 

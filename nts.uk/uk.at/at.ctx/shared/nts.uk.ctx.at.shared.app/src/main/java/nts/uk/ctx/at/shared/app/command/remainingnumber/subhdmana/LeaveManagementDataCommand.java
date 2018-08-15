@@ -28,4 +28,6 @@ public class LeaveManagementDataCommand {
 
 	// 締めID
 	private Integer closureId;
+	
+	private int unknownDate;
 }

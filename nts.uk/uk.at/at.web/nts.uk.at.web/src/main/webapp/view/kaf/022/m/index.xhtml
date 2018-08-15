@@ -1,305 +1,404 @@
-<div  class="fixed-flex-layout contents-area-kaf022">
- 	<div class="fixed-flex-layout-left"> 
-	<div id="wkp-list"></div>
+<div class="contents-area-kaf022"
+	data-bind="let: { $vmm: $vm.viewmodelM }">
+	<div>
+		<div data-bind="ntsSwitchButton: {
+				options:  enumVer27,
+				name: '#[KAF022_377]',
+				optionsValue: 'code',
+				optionsText: 'name',
+				value: selectVer27,
+				enable: true }"></div>
 	</div>
-	<div class="fixed-flex-layout-right">
-	<div id="display-detail" data-bind="with: selectedSetting">
-		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF022_276',["#Com_Workplace"])}</div>
-		<span data-bind="text: wkpName"></span><br/>
-		<div data-bind="ntsFormLabel: {}" style="margin:10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
-		<div class="cf" data-bind="ntsSwitchButton: {
-			options: $parent.enumUseAtr,
-			optionsValue: 'code',
-			optionsText: 'name',
-			value: selectionFlg,
-			enable: true }"></div>
-		<table class="viewmodel-a" id="fixed-table-wkp-setting">
-			<colgroup>
-				<col width="140px" />
-				<col width="150px" />
-				<col width="140px" />
-				<col width="350px" />
-				<col width="200px" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF022_243')}</th>
-					<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF022_19')}</th>
-					<th class="ui-widget-header full-header" rowspan="2">#{i18n.getText('KAF022_283')}</th>
-					<th class="ui-widget-header full-header" rowspan="2">#{i18n.getText('KAF022_284')}</th>
-					<th class="ui-widget-header full-header" rowspan="2">#{i18n.getText('KAF022_285')}</th>
-				</tr>
-			</thead>
-			<tbody data-bind="foreach: approvalFunctionSettingDtoLst">
-				<!-- AppType: 残業申請  -->
-				<tr data-bind="if: $data.appType() == 0">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_3')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
+	<div class="cf" data-bind="style: { width: !!$vmm.selectVer27() ? '1510px' : '1010px'}">
+		<div id="left-content" data-bind="visible: !!$vmm.selectVer27()">
+			<div id="wkp-list"></div>
+		</div>
+		<div id="right-content" data-bind="with: selectedSetting">
+			<div class="row">
+			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
+			    <span data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
+		   </div>
+			<div class="row">
+				<div data-bind="ntsFormLabel: {}" style="margin: 10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
+				<div class="cf"
+					data-bind="ntsSwitchButton: {
+							options: $parent.enumUseAtr,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectionFlg,
+							enable: true
+						}"></div>
+			</div>
+			<table id="fixed-table-wkp-setting">
+				<colgroup>
+					<col width="140px" />
+					<col width="150px" />
+					<col width="140px" />
+					<col width="360px" />
+					<col width="200px" />  
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="color-header">#{i18n.getText('KAF022_277')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_19')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_283')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_284')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_285')}</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: approvalFunctionSettingDtoLst">
+					<!-- AppType: 残業申請  -->
+					<tr data-bind="if: !$data.appType()">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_3')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.enumUseAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.useAtr,
+										enable: true
+									}"></div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: { 
+										checked: $data.requiredInstructionFlg, 
+										enable: $data.useAtr() == 1
+									}">#{i18n.getText('KAF022_288')}</div>
+						</td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.otAppSettingFlgAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.otAppSettingFlg,
+										enable: true
+									}"></div>
+						</td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.timeCalculationUseAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.timeCalUseAtr,
+										enable: true
+									}"></div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: { 
+										checked: $data.breakInputFieldDisFlg, 
+										enable: !!$data.timeCalUseAtr()
+									}">#{i18n.getText('KAF022_297')}</div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: { 
+										checked: $data.goOutTimeBeginDisFlg, 
+										enable: !!$data.timeCalUseAtr()
+									}">#{i18n.getText('KAF022_298')}</div>
+							<div>#{i18n.getText('KAF022_299')}</div>
+							<div style="margin-left: 15px;"
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.atWorkAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.atworkTimeBeginDisFlg,
+										enable: !!$data.timeCalUseAtr()
+									}"></div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.listM23,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.timeInputUseAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td><textarea class = "memo" style="height: 220px; width: 174px"
+								data-bind="ntsMultilineEditor: { 
+									value: $data.memo, 
+									constraint: 'Memo',
+									name:'#{i18n.getText('KAF022_315')}'
+								}" />
+						</td>
+					</tr>
+					<!-- AppType: 休暇申請    -->
+					<tr data-bind="if: $data.appType() == 1">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_4')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.enumUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.useAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
+						</td>
+					</tr>
+					<!-- AppType: 勤務変更申請    -->
+					<tr data-bind="if: $data.appType() == 2">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_5')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.enumUseAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.useAtr,
+										enable: true
+									}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: {
+										value: $data.memo,
+										constraint: 'Memo',
+										name:'#{i18n.getText('KAF022_315')}'
+									}" />
+						</td>
+					</tr>
+					<!-- AppType: 出張申請 -->
+					<tr data-bind="if: $data.appType() == 3">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_6')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.enumUseAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.useAtr,
+										enable: true
+									}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: {
+									value: $data.memo, 
+									constraint: 'Memo', 
+									name:'#{i18n.getText('KAF022_315')}'
+								}" />
+						</td>
+					</tr>
+					<!-- AppType: 直行直帰申請　 -->
+					<tr data-bind="if: $data.appType() == 4">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_7')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.enumUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.useAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
+						</td>
+					</tr>
+					<!-- AppType: 休出時間申請 -->
+					<tr data-bind="if: $data.appType() == 6">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_8')}</span></td>
+						<td>
+							<div data-bind="ntsRadioBoxGroup: {
+									options: $vmm.enumUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.useAtr,
+									enable: true
+								}"></div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: { 
+									checked: $data.requiredInstructionFlg, 
+									enable: !!$data.useAtr()
+								}">#{i18n.getText('KAF022_290')}</div>
+						</td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.prerequisiteUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.prerequisiteForpauseFlg,
+									enable: true
+								}"></div>
+						</td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.timeCalculationUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.timeCalUseAtr,
+									enable: true
+								}"></div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: {
+									checked: $data.breakInputFieldDisFlg, 
+									enable: !!$data.timeCalUseAtr()
+								}">#{i18n.getText('KAF022_297')}</div>
+							<div style="margin-left: -4px"
+								data-bind="ntsCheckBox: { 
+									checked: $data.goOutTimeBeginDisFlg, 
+									enable: !!$data.timeCalUseAtr()
+								}">#{i18n.getText('KAF022_298')}</div>
+							<div>#{i18n.getText('KAF022_299')}</div>
+							<div style="margin-left: 15px;"
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.atWorkAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.atworkTimeBeginDisFlg,
+									enable: !!$data.timeCalUseAtr()
+								}"></div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.timeInputUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.timeInputUseAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td><textarea class = "memo" style="height: 220px; width: 174px"
+								data-bind="ntsMultilineEditor: {
+									value: $data.memo,
+									constraint: 'Memo',
+									name:'#{i18n.getText('KAF022_315')}'
+								}" />
+						</td>
+					</tr>
+					<!-- AppType: 時間年休申請 -->
+					<tr data-bind="if: $data.appType() == 8">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_9')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.enumUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.useAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vmm.timeCalculationUseAtr,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $data.timeCalUseAtr,
+									enable: true
+								}"></div>
+						</td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
+						</td>
+					</tr>
+					<!-- AppType: 遅刻早退取消申請 -->
+					<tr data-bind="if: $data.appType() == 9">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_286')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+							options: $vmm.enumUseAtr,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: $data.useAtr,
-							enable: true}"></div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
-					</td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.otAppSettingFlgAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.otAppSettingFlg,
-							enable: true}"></div><br/>
-					</td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.timeCalculationUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.timeCalUseAtr,
-							enable: true}"></div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
-						<span>#{i18n.getText('KAF022_299')}</span><br/>
-						<div style="margin-left: 5px;" data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.atWorkAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.atworkTimeBeginDisFlg,
-							enable: $data.timeCalUseAtr() == 1}"></div><br/>
-						<div data-bind="ntsRadioBoxGroup: {
-						options: $root.content.viewmodelM.timeInputUseAtr,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: $data.timeInputUseAtr,
-						enable: true}"></div>
-					</td>
-					<td>
-						<textarea style="height: 220px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}'}" />
-					</td>
-				</tr>
-				<!-- AppType: 休暇申請    -->
-				<tr data-bind="if: $data.appType() == 1">
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_4')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 勤務変更申請    -->
-				<tr data-bind="if: $data.appType() == 2">
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_5')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 出張申請 -->
-				<tr data-bind="if: $data.appType() == 3">
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_6')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 直行直帰申請　 -->
-				<tr data-bind="if: $data.appType() == 4">
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_7')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 休出時間申請 -->
-				<tr data-bind="if: $data.appType() == 6">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_8')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
-					</td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.prerequisiteUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.prerequisiteForpauseFlg,
-							enable: true}"></div><br/>
-					</td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.timeCalculationUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.timeCalUseAtr,
-							enable: true}"></div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
-						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
-						<span>#{i18n.getText('KAF022_299')}</span><br/>
-						<div style="margin-left: 5px;" data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.atWorkAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.atworkTimeBeginDisFlg,
-							enable: $data.timeCalUseAtr() == 1}"></div><br/>
-						<div data-bind="ntsRadioBoxGroup: {
-						options: $root.content.viewmodelM.timeInputUseAtr,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: $data.timeInputUseAtr,
-						enable: true}"></div>
-					</td>
-					<td>
-						<textarea style="height: 220px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 時間年休申請 -->
-				<tr data-bind="if: $data.appType() == 8">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_9')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.timeCalculationUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.timeCalUseAtr,
 							enable: true}"></div>
-					</td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
-					</td>
-				</tr>
-				<!-- AppType: 遅刻早退取消申請 -->
-				<tr data-bind="if: $data.appType() == 9">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_286')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.lateOrLeaveAppCancelAtr,
+						</td>
+						<td></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+							options: $vmm.lateOrLeaveAppCancelAtr,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: $data.lateOrLeaveAppCancelFlg,
-							enable: true}"></div><br/>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.lateOrLeaveAppSettingAtr,
+							enable: true}"></div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+							options: $vmm.lateOrLeaveAppSettingAtr,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: $data.lateOrLeaveAppSettingFlg,
-							enable: true}"></div><br/>
-					</td>
-					<td>
-						<textarea style="height: 80px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
-					</td>
-				</tr>
-				<!-- AppType: 打刻申請 -->
-							<tr data-bind="if: $data.appType() == 7">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_11')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
+							enable: true}"></div>
+						</td>
+						<td><textarea class = "memo" style="height: 80px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
+						</td>
+					</tr>
+					<!-- AppType: 打刻申請 -->
+					<tr data-bind="if: $data.appType() == 7">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_11')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+							options: $vmm.enumUseAtr,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px; width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: 振休振出申請 -->
-				<tr data-bind="if: $data.appType() == 10">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_12')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
+							enable: true}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
+						</td>
+					</tr>
+					<!-- AppType: 振休振出申請 -->
+					<tr data-bind="if: $data.appType() == 10">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_12')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+							options: $vmm.enumUseAtr,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px; width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-				<!-- AppType: ３６協定時間申請 -->
-				<tr data-bind="if: $data.appType() == 14">		
-					<td class="color-header"><span class="label">#{i18n.getText('KAF022_13')}</span></td>
-					<td>
-						<div data-bind="ntsRadioBoxGroup: {
-							options: $root.content.viewmodelM.enumUseAtr,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: $data.useAtr,
-							enable: true}"></div><br/>
-					</td>
-					<td></td>
-					<td></td>
-					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+							enable: true}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
+						</td>
+					</tr>
+					<!-- AppType: ３６協定時間申請 -->
+					<tr data-bind="if: $data.appType() == 14">
+						<td class="color-header"><span class="label">#{i18n.getText('KAF022_13')}</span></td>
+						<td>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: $vmm.enumUseAtr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $data.useAtr,
+										enable: true
+									}"></div>
+						</td>
+						<td></td>
+						<td></td>
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
+								data-bind="ntsMultilineEditor: { 
+									value: $data.memo, 
+									constraint: 'Memo', 
+									name:'#{i18n.getText('KAF022_315')}'
+								}" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div style="clear: both;"></div>
 	</div>
 </div>

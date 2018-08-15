@@ -34,7 +34,7 @@ public class SrcdtVarcharRawValue extends UkJpaEntity {
 	@OneToOne(mappedBy = "rawVarcharValueBefore")
 	SrcdtDataCorrectionLog beforeLog;
 
-	@OneToOne(mappedBy = "rawVarcharValueBefore")
+	@OneToOne(mappedBy = "rawVarcharValueAfter")
 	SrcdtDataCorrectionLog afterLog;
 
 	@Override

@@ -220,7 +220,7 @@ public class ErAlWorkRecordCheckService {
 	}
 	
 	private boolean canCheck(BusinessTypeOfDailyPerforDto budinessType, AffiliationInforOfDailyPerforDto affiliation, 
-			GeneralDate workingDate, AlCheckTargetCondition checkCondition){
+			AlCheckTargetCondition checkCondition){
 		if(isTrue(checkCondition.getFilterByBusinessType())){
 			if(!budinessType.isHaveData() || !checkCondition.getLstBusinessTypeCode()
 					.contains(new BusinessTypeCode(budinessType.getBusinessTypeCode()))){
@@ -263,7 +263,7 @@ public class ErAlWorkRecordCheckService {
 				return null;
 			}
 			if(!canCheck(c.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), c.getAffiliationInfo(), 
-					workingDate, checkCondition.getCheckTargetCondtion())){
+					checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
 			boolean result = checkErrorAlarmCondition(c, checkCondition);
@@ -329,7 +329,7 @@ public class ErAlWorkRecordCheckService {
 			return false;
 		}
 		if(!canCheck(record.getBusinessType().orElse(new BusinessTypeOfDailyPerforDto()), record.getAffiliationInfo(), 
-				record.getDate(), condition.getCheckTargetCondtion())){
+				condition.getCheckTargetCondtion())){
 			return false;
 		}
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
@@ -345,7 +345,7 @@ public class ErAlWorkRecordCheckService {
 
 	private Integer getValue(ItemValue value) {
 		if (value.value() == null) {
-			return 0;
+			return null;
 		}
 		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
 				: (Integer) value.value();

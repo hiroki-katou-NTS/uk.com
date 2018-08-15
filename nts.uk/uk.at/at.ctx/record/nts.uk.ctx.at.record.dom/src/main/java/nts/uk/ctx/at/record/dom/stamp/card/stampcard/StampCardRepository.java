@@ -9,6 +9,10 @@ public interface StampCardRepository {
 	List<StampCard> getListStampCard(String sid);
 	
 	List<String> getListStampCardByContractCode(String contractCode);
+	
+	List<StampCard> getLstStampCardByContractCode(String contractCode);
+	
+	List<StampCard> getLstStampCardByLstSid(List<String> sids);
 
 	Optional<StampCard> getByStampCardId(String stampCardId);
 	
@@ -23,5 +27,7 @@ public interface StampCardRepository {
 	void delete(String stampCardId);
 	
 	void deleteBySid(String sid);
+	
+	List<StampCard> getLstStampCardByLstSidAndContractCd(List<String> sids, String contractCd);
 
 }

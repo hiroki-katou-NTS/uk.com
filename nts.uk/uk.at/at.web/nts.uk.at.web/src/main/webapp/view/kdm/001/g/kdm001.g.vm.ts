@@ -19,7 +19,7 @@ module nts.uk.at.view.kdm001.g.viewmodel {
         checkedExpired: KnockoutObservable<boolean> = ko.observable(false);
         lawAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getLawAtr());
         occurredDaysList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getOccurredDays());
-        
+
 
         employeeId: KnockoutObservable<string> = ko.observable('');
         payoutId: KnockoutObservable<string> = ko.observable('');
@@ -62,15 +62,16 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                 self.unUsedDays(info.rowValue.unUsedDays);
                 self.unknownDate(info.rowValue.unknownDatePayout);
                 self.stateAtr(info.rowValue.stateAtr),
-                self.checkBox(info.rowValue.stateAtr == 2);
-                
+                    self.checkBox(info.rowValue.stateAtr == 2);
+
             }
             block.clear();
-            
+
         }
 
 
         public updateData() {
+            let self = this;
             nts.uk.ui.errors.clearAll();
             $("#G6_4").trigger("validate");
             $("#G7_2").trigger("validate");
@@ -78,36 +79,39 @@ module nts.uk.at.view.kdm001.g.viewmodel {
             $("#G8_2").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
-                let self = this;
-                if (self.checkBox()){
-                    dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
-                        self.registData(); 
-                    }).ifCancel(() => {
-                        block.clear();
-                        return;
-                    });
+                if (self.checkBox()) {
+                    if (self.unknownDate() == "false") {
+                        dialog.confirm({ messageId: "Msg_1302" }).ifYes(() => {
+                            self.registData();
+                        }).ifCancel(() => {
+                            block.clear();
+                            return;
+                        });
+                    } else {
+                        self.registData();
+                    }
                 } else {
-                    self.registData(); 
+                    self.registData();
                 }
-                
+
             }
         }
-        
-        registData (){
+
+        registData() {
             let self = this;
-                let data = {
-                    closureId: self.closureId(),
-                    payoutId: self.payoutId(),
-                    employeeId: self.employeeId(),
-                    unknownDate: self.unknownDate(),
-                    dayoffDate:  moment.utc(self.dayoffDate(),'YYYY/MM/DD').toISOString(),
-                    expiredDate: self.expiredDate(), 
-                    lawAtr: parseInt(self.lawAtr()),
-                    occurredDays: parseFloat(self.occurredDays()),
-                    unUsedDays: self.unUsedDays(),
-                    checkBox: self.checkBox(),
-                    stateAtr: self.stateAtr()
-                };
+            let data = {
+                closureId: self.closureId(),
+                payoutId: self.payoutId(),
+                employeeId: self.employeeId(),
+                unknownDate: self.unknownDate(),
+                dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString(),
+                expiredDate: self.expiredDate(),
+                lawAtr: parseInt(self.lawAtr()),
+                occurredDays: parseFloat(self.occurredDays()),
+                unUsedDays: self.unUsedDays(),
+                checkBox: self.checkBox(),
+                stateAtr: self.stateAtr()
+            };
             service.updatePayout(data).done((result) => {
                 if (result && result.length > 0) {
                     for (let messageId of result) {
@@ -138,10 +142,10 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     setShared('KDM001_A_PARAMS', { isSuccess: true });
                     nts.uk.ui.windows.close();
                 });
-    
+
             }).always(() => {
                 block.clear();
-            });   
+            });
         }
         public removeData() {
             block.invisible();
@@ -152,14 +156,14 @@ module nts.uk.at.view.kdm001.g.viewmodel {
                     employeeId: self.employeeId(),
                     dayoffDate: moment.utc(self.dayoffDate(), 'YYYY/MM/DD').toISOString()
                 };
-               
+
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         setShared('KDM001_A_PARAMS', { isSuccess: true });
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     setShared('KDM001_A_PARAMS', { isSuccess: false });
                 }).always(function() {
                     block.clear();

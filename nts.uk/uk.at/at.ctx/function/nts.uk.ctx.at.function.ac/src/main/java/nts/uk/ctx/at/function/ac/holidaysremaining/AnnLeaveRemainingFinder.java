@@ -43,8 +43,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 		// RequestList363
 		List<AggrResultOfAnnualLeaveEachMonth> aggrResults = annLeaveRemainNumberPub
 				.getAnnLeaveRemainAfterThisMonth(employeeId, datePeriod);
-		if (aggrResults == null)
-			return null;
+		if (aggrResults == null) {
+			return new ArrayList<AnnLeaveUsageStatusOfThisMonthImported>();
+		}
 
 		return aggrResults.stream().map(item -> {
 
@@ -72,8 +73,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	public AnnLeaveOfThisMonthImported getAnnLeaveOfThisMonth(String employeeId) {
 		// RequestList265
 		AnnLeaveOfThisMonth annLeave = annLeaveRemainNumberPub.getAnnLeaveOfThisMonth(employeeId);
-		if (annLeave == null)
+		if (annLeave == null) {
 			return null;
+		}
 
 		return new AnnLeaveOfThisMonthImported(annLeave.getGrantDate(), annLeave.getGrantDays(),
 				annLeave.getFirstMonthRemNumDays(), annLeave.getFirstMonthRemNumMinutes(), annLeave.getUsedDays().v(),
@@ -84,8 +86,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId) {
 		// RequestList369
 		NextHolidayGrantDate nextHoloday = annLeaveRemainNumberPub.getNextHolidayGrantDate(companyId, employeeId);
-		if (nextHoloday == null)
+		if (nextHoloday == null) {
 			return null;
+		}
 
 		return new NextHolidayGrantDateImported(nextHoloday.getGrantDate());
 	}
@@ -94,6 +97,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	public List<AnnLeaGrantNumberImported> algorithm(String employeeId) {
 		List<AnnualLeaveGrantRemainDataExport> listAnnualLeave = annLeaGrantRemDataPub
 				.getAnnualLeaveGrantRemainingData(employeeId);
+		if (listAnnualLeave == null) {
+			return new ArrayList<AnnLeaGrantNumberImported>();
+		}
 		// requestList281
 		return listAnnualLeave.stream().map(item -> {
 			return new AnnLeaGrantNumberImported(item.getGrantDate(), item.getGrantNumberDays());
@@ -104,8 +110,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	public List<AnnualLeaveUsageImported> algorithm(String employeeId, YearMonthPeriod period) {
 		// requestList255
 		List<AnnualLeaveUsageExport> algorithm = getConfirmedAnnualLeave.algorithm(employeeId, period);
-		if (algorithm == null)
-			return null;
+		if (algorithm == null) {
+			return new ArrayList<AnnualLeaveUsageImported>();
+		}
 		List<AnnualLeaveUsageImported> lstHolidayRemainData = new ArrayList<>();
 		algorithm.forEach(item -> {
 			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(item.getYearMonth(),

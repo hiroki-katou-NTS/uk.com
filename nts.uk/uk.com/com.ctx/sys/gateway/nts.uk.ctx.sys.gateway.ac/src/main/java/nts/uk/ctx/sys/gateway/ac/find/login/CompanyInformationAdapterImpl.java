@@ -62,7 +62,7 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 	@Override
 	public CompanyInforImport findComById(String companyId) {
 
-		CompanyExport companyExport = iCompanyPub.getCompanyByCid(companyId);
+		CompanyExport companyExport = iCompanyPub.getCompany(companyId);
 		
 		return new CompanyInforImport(companyExport.getCompanyId(),
 				companyExport.getCompanyCode(), companyExport.getCompanyName(), companyExport.getIsAbolition());

@@ -49,4 +49,11 @@ public class WpSpecificDateSettingPubImpl implements WpSpecificDateSettingPub {
 		return result;
 	}
 
+	@Override
+	public WpSpecificDateSettingExport findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst,
+			GeneralDate date) {
+		SpecificDateItemOutput dateItemOutput = workplaceSpecificDateSettingService.findSpecDateSetByWkpLst(companyID, workPlaceIDLst, date);
+		return new WpSpecificDateSettingExport(dateItemOutput.getDate(), dateItemOutput.getNumberList());
+	}
+
 }

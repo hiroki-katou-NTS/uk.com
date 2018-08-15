@@ -94,9 +94,14 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// algorithm 個人情報の上限と使用の取得, once in params: useEndDateBeforeGrant, endDate
 		Output2 out2 = this.getPersonalChildInfor(employeeId, startDate, endDate, out1.getUseEndDateBefore(),
 				out1.getUseStartDateAfter(), nursingLeaveSetting, childNursingRemainExport);
+		if(out2 == null)
+			return childNursingRemainExport;
 		
 		PeriodOfOverlap out3 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateBefore(),
 				out1.getUseEndDateBefore());
+		
+		if(out3 == null)
+			return childNursingRemainExport;
 		
 		double useNumberNursing = this.getChildNursingUsedNumber(companyId, employeeId, out3.getStartDateOverlap(),
 				out3.getEndDateOverlap(), mode);
@@ -112,8 +117,12 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		if (out1.isPeriodGrantFlag()) {
 			PeriodOfOverlap out4 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateAfter().get(),
 					out1.getUseEndDateAfter().get());
+			if(out4 == null)
+				return childNursingRemainExport;
+			
 			double useNumberNursing2 = this.getChildNursingUsedNumber(companyId, employeeId, out4.getStartDateOverlap(),
 					out4.getEndDateOverlap(), mode);
+			
 			ChildNursingRemainInforExport afterGrantStatement = ChildNursingRemainInforExport.builder().build();
 			afterGrantStatement.setNumberOfUse(useNumberNursing2);
 
@@ -169,8 +178,14 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		Output2 out2 = this.getPersonalInfor(employeeId, startDate, endDate, out1.getUseEndDateBefore(),
 				out1.getUseStartDateAfter(), nursingLeaveSetting, childNursingRemainExport);
 
+		if(out2 == null)
+			return childNursingRemainExport;
+		
 		PeriodOfOverlap out3 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateBefore(),
 				out1.getUseEndDateBefore());
+		
+		if(out3 == null)
+			return childNursingRemainExport;
 
 		double useNumberNursing = this.getNursingUsedNumber(companyId, employeeId, out3.getStartDateOverlap(),
 				out3.getEndDateOverlap(), mode);
@@ -186,8 +201,13 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		if (out1.isPeriodGrantFlag()) {
 			PeriodOfOverlap out4 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateAfter().get(),
 					out1.getUseEndDateAfter().get());
+			
+			if(out4 == null)
+				return childNursingRemainExport;
+			
 			double useNumberNursing2 = this.getNursingUsedNumber(companyId, employeeId, out4.getStartDateOverlap(),
 					out4.getEndDateOverlap(), mode);
+			
 			ChildNursingRemainInforExport afterGrantStatement = ChildNursingRemainInforExport.builder().build();
 			afterGrantStatement.setNumberOfUse(useNumberNursing2);
 
@@ -237,6 +257,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			NursingLeaveSetting nursingLeaveSetting, ChildNursingRemainExport childNursingRemainExport) {
 		Output2 ouput = new Output2();
 		Optional<ChildCareLeaveRemainingInfo> optionalNursingChildInfo = this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId);
+		if(optionalNursingChildInfo.isPresent()) {
 		ChildCareLeaveRemainingInfo nursingChildInfo = optionalNursingChildInfo.get();
 		ouput.setUseClassification(nursingChildInfo.isUseClassification());
 		if (nursingChildInfo.getUpperlimitSetting().equals(UpperLimitSetting.FAMILY_INFO)) {
@@ -273,6 +294,9 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		ouput.setEndDateOverlapAfterGrant(endDate);
 
 		return ouput;
+		}else {
+			return null;
+		}
 	}
 
 	private Output2 getPersonalInfor(String employeeId, GeneralDate startDate, GeneralDate endDate,
@@ -280,42 +304,46 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			NursingLeaveSetting nursingLeaveSetting, ChildNursingRemainExport childNursingRemainExport) {
 		Output2 ouput = new Output2();
 		Optional<LeaveForCareInfo> optionalNursingInfo = this.leaveForCareInfoRepository.getCareByEmpId(employeeId);
-		LeaveForCareInfo nursingInfo = optionalNursingInfo.get();
-		ouput.setUseClassification(nursingInfo.isUseClassification());
-		if (nursingInfo.getUpperlimitSetting().equals(UpperLimitSetting.FAMILY_INFO)) {
-			int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra,
-												// param: useEndDateBeforeGrant)
-			int vacationDays = 0;
-			if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberPerson().v()) {
-				vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
-			}
-			ouput.setGrantedNumberThisTime(vacationDays);
-
-			if (childNursingRemainExport.getGrantPeriodFlag()) {
-				int fakeTargetNumberFamily2 = 14; // (440,441 - param: endDate)
-				if (nursingLeaveSetting != null && fakeTargetNumberFamily2 >= nursingLeaveSetting.getMaxPersonSetting()
-						.getNursingNumberPerson().v()) {
+		if(optionalNursingInfo.isPresent()) {
+			LeaveForCareInfo nursingInfo = optionalNursingInfo.get();
+			ouput.setUseClassification(nursingInfo.isUseClassification());
+			if (nursingInfo.getUpperlimitSetting().equals(UpperLimitSetting.FAMILY_INFO)) {
+				int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra,
+													// param: useEndDateBeforeGrant)
+				int vacationDays = 0;
+				if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberPerson().v()) {
 					vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 				}
-				ouput.setGrantedNumberNextTime(vacationDays);
+				ouput.setGrantedNumberThisTime(vacationDays);
+
+				if (childNursingRemainExport.getGrantPeriodFlag()) {
+					int fakeTargetNumberFamily2 = 14; // (440,441 - param: endDate)
+					if (nursingLeaveSetting != null && fakeTargetNumberFamily2 >= nursingLeaveSetting.getMaxPersonSetting()
+							.getNursingNumberPerson().v()) {
+						vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
+					}
+					ouput.setGrantedNumberNextTime(vacationDays);
+				}
+			} else {
+				ouput.setGrantedNumberThisTime(nursingInfo.getMaxDayForThisFiscalYear().get().v());
+				if (childNursingRemainExport.getGrantPeriodFlag())
+					ouput.setGrantedNumberNextTime(nursingInfo.getMaxDayForThisFiscalYear().get().v());
 			}
-		} else {
-			ouput.setGrantedNumberThisTime(nursingInfo.getMaxDayForThisFiscalYear().get().v());
-			if (childNursingRemainExport.getGrantPeriodFlag())
-				ouput.setGrantedNumberNextTime(nursingInfo.getMaxDayForThisFiscalYear().get().v());
+			// setManage
+			childNursingRemainExport.setIsManage(nursingInfo.isUseClassification());
+			// calculate overlap time
+			Optional<LeaveForCareData> optionalNursingData = this.leaveForCareDataRepo.getCareByEmpId(employeeId);
+			ouput.setUseNumberPersonInfo(optionalNursingData.get().getNumOfUsedDay().v());
+
+			ouput.setStartDateOverlapBeforeGrant(startDate);
+			ouput.setEndDateOverlapBeforeGrant(useEndDateBeforeGrant);
+			ouput.setStartDateOverlapAfterGrant(useStartDateAfterGrant.isPresent() ? useStartDateAfterGrant.get() : null);
+			ouput.setEndDateOverlapAfterGrant(endDate);
+
+			return ouput;
 		}
-		// setManage
-		childNursingRemainExport.setIsManage(nursingInfo.isUseClassification());
-		// calculate overlap time
-		Optional<LeaveForCareData> optionalNursingData = this.leaveForCareDataRepo.getCareByEmpId(employeeId);
-		ouput.setUseNumberPersonInfo(optionalNursingData.get().getNumOfUsedDay().v());
-
-		ouput.setStartDateOverlapBeforeGrant(startDate);
-		ouput.setEndDateOverlapBeforeGrant(useEndDateBeforeGrant);
-		ouput.setStartDateOverlapAfterGrant(useStartDateAfterGrant.isPresent() ? useStartDateAfterGrant.get() : null);
-		ouput.setEndDateOverlapAfterGrant(endDate);
-
-		return ouput;
+		return null;
+		
 	}
 
 	private PeriodOfOverlap getPeriodOfOverlap(GeneralDate startDate, GeneralDate endDate, GeneralDate useStartDate,

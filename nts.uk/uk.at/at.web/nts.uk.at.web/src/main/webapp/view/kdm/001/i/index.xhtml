@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 535, height: 630 };</script>
+			<script>var dialogSize = { width: 535, height: 650 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.i.vm.js" />
@@ -41,7 +41,7 @@
 					<hr />
 				</div>
 				<!-- I4 休出 -->
-				<div class="left-m" tabindex="1" id="I4"
+				<div class="left-m" id="I4"
 					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_110')}' }"></div>
 				<!-- I5 罫線 -->
 				<div class="set-row">
@@ -49,17 +49,17 @@
 				</div>
 				<div class="down-s set-date flex valign-center left-l">
 					<!-- I6 年月日 -->
-					<div class="labelTitle"
+					<div class="labelTitle" 
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
-					<div id="I6_1" tabindex="2"
+					<div id="I6_1"
 						data-bind="ntsDatePicker: {value: dateHoliday, dateFormat: 'YYYY/MM/DD', required: checkedHoliday, enable:checkedHoliday, name: '#[KDM001_62]'}"></div>
 					<!-- I6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
 					<!-- I6_3 休出日数 -->
 					<!-- Combobox -->
-					<div id="I6_3" tabindex="3" class="combo-box-holiday"
+					<div id="I6_3"  class="combo-box-holiday"
 						data-bind="ntsComboBox: {
 					name: '#{i18n.getText('KDM001_112')}',
 					options: itemListHoliday,
@@ -82,13 +82,13 @@
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
-					<div id="I8_1" tabindex="4"
+					<div id="I8_1"
 						data-bind="ntsDatePicker: {value: duedateHoliday, dateFormat: 'YYYY/MM/DD', name: '#[KDM001_73]', required: checkedHoliday, enable:checkedHoliday}"></div>
 				</div>
 
 				<div class="down-s left-m">
 					<!-- I9 代休 -->
-					<div tabindex="5"
+					<div 
 						data-bind="ntsCheckBox: { checked: checkedSubHoliday, enable: true, text: '#{i18n.getText('KDM001_113')}' }"></div>
 				</div>
 				<!-- I10 罫線 -->
@@ -107,7 +107,7 @@
 					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 					<!-- I11_3 代休日数 -->
 					<!-- Combobox -->
-					<div tabindex="6" id="I11_3" class="combo-box-sub-holiday"
+					<div id="I11_3" class="combo-box-sub-holiday"
 						data-bind="ntsComboBox: {
 					name: '#{i18n.getText('KDM001_116')}',
 					options: itemListSubHoliday,
@@ -126,7 +126,7 @@
 				</div>
 				<div class="down-s">
 					<!-- I12 分割消化 -->
-					<div tabindex="7"
+					<div
 						data-bind="ntsCheckBox: { checked: checkedSplit, enable: checkedSubHoliday, text: '#{i18n.getText('KDM001_79')}' }"></div>
 					<div class="down-s flex valign-center" style="margin-left: 35px;">
 						<!-- I12_1 年月日 -->
@@ -139,7 +139,7 @@
 						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
 						<!-- I12_4 代休日数 -->
 						<!-- Combobox -->
-						<div tabindex="8" id="I12_4" class="combo-box-option-sub-holiday"
+						<div id="I12_4" class="combo-box-option-sub-holiday"
 							data-bind="ntsComboBox: {
 							name: '#{i18n.getText('KDM001_116')}',
 							options: itemListOptionSubHoliday,
@@ -176,10 +176,10 @@
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- I31_1 登録 -->
-					<button tabindex="9" id="stopExecute" data-bind="click: submitData"
+					<button id="stopExecute" data-bind="click: submitData"
 						class="proceed large">#{i18n.getText('KDM001_89')}</button>
 					<!-- I31_2 キャンセル -->
-					<button tabindex="10" id="closeDialog"
+					<button id="closeDialog"
 						data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 				</div>
 			</div>

@@ -131,13 +131,14 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 	}
 
 	public static SrcdtLogBasicInfo fromDomain(LogBasicInformation domain) {
+		String programId = domain.getTargetProgram().getProgramId();
 		return new SrcdtLogBasicInfo(domain.getOperationId(), domain.getCompanyId(), 
 				domain.getUserInfo().getUserId(), domain.getUserInfo().getUserName(), domain.getUserInfo().getEmployeeId(),
-				domain.getLoginInformation().getIpAddress().get(), 
-				domain.getLoginInformation().getPcName().get(),
-				domain.getLoginInformation().getAccount().get(), 
+				domain.getLoginInformation().getIpAddress().isPresent() ? domain.getLoginInformation().getIpAddress().get() : null, 
+				domain.getLoginInformation().getPcName().isPresent() ? domain.getLoginInformation().getPcName().get() : null,
+				domain.getLoginInformation().getAccount().isPresent() ? domain.getLoginInformation().getAccount().get() : null,  
 				domain.getModifiedDateTime(),
-				domain.getTargetProgram().getProgramId(), 
+				programId.length() > 6 ? programId.substring(0, 6) : programId, 
 				domain.getTargetProgram().getScreenId(),
 				domain.getTargetProgram().getQueryString(), 
 				domain.getAuthorityInformation().forOfficeHelper(),
@@ -150,7 +151,7 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 				domain.getAuthorityInformation().forPersonalInfo(), 
 				domain.getAuthorityInformation().forAttendance(),
 				domain.getAuthorityInformation().forPayroll(),
-				domain.getNote().get());
+				domain.getNote().isPresent() ? domain.getNote().get() : null);
 	}
 
 }

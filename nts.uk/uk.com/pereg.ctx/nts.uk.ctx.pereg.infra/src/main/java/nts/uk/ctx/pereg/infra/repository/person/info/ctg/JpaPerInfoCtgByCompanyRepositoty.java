@@ -32,7 +32,14 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String FIND_ALL_BY_COMPANY = "SELECT c FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
+	private final static String FIND_ALL_BY_COMPANY = String.join(" ", "SELECT po FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+			"ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			"INNER JOIN PpemtPerInfoCtgOrder po",
+			"ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+			"WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			"AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
+			"OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
+			"ORDER BY po.disporder");
 
 	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
@@ -142,9 +149,16 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	}
 	
 	@Override
-	public List<PersonInfoCtgOrder> getOrderList(String companyId) {
+	public List<PersonInfoCtgOrder> getOrderList(String companyId,String contractCd, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr) {
 		List<PpemtPerInfoCtgOrder> entities = this.queryProxy().query(FIND_ALL_BY_COMPANY, PpemtPerInfoCtgOrder.class)
-				.setParameter("cid", companyId).getList();
+				.setParameter("cid", companyId)
+				.setParameter("contractCd", contractCd)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
+				.getList();
+		
 
 		return entities.stream().map(entity -> PersonInfoCtgOrder.createCategoryOrder(companyId,
 				entity.ppemtPerInfoCtgPK.perInfoCtgId, entity.disporder)).collect(Collectors.toList());

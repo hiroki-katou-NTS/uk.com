@@ -18,7 +18,7 @@ public enum DataManagementAtr {
 	 */
 	CONFIRM(1,"確定");
 	
-	public final Integer values;
+	public final Integer value;
 	public final String name;
 
 }

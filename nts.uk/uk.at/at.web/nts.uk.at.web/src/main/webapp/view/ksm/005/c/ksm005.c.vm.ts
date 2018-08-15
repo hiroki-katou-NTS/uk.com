@@ -152,11 +152,11 @@ module nts.uk.at.view.ksm005.c {
                         let sids: any = _.map(data.listEmployee, 'employeeId');
                         let tempList = [];
                         self.filterSids(sids).done((filterData:any)=>{
-                            for (item of data.listEmployee) {
+                            _.forEach(data.listEmployee,(item:any)=>{
                                 if (!(filterData.indexOf(item.employeeId) > -1)) {
                                     tempList.push(item);
                                 }
-                            }
+                            });
                             data.listEmployee = tempList;
                             self.selectedEmployee(data.listEmployee);
                             self.applyKCP005ContentSearch(data.listEmployee);

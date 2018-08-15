@@ -5,9 +5,11 @@
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,7 +56,6 @@ public class UserInfoFinder {
 	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
-
 	
 	public List<UserDto> findListUserInfo(int closure, List<String> sIds,  Boolean isScreenC) {
 
@@ -116,16 +117,17 @@ public class UserInfoFinder {
 		if (listUser.isEmpty()) {
 			return listUserMap;
 		}
-		Map<String, UserImport> mapUser = listUser.stream()
-				.collect(Collectors.toMap(UserImport::getAssociatePersonId, Function.identity()));
+		
+		Map<String, List<UserImport>> mapUser = listUser.stream().filter(item -> item.getAssociatePersonId().isPresent())
+				.collect(Collectors.groupingBy(item ->item.getAssociatePersonId().get()));
 
 		listUserAccount.forEach(item -> {
-			UserImport user = mapUser.get(item.getPersonId());
-			if (user != null) {
+			List<UserImport> users = mapUser.get(item.getPersonId());
+			if (!CollectionUtil.isEmpty(users)) {
+				UserImport user = users.get(0);
 				item.setLoginId(user.getLoginId().toString());
 				item.setUserId(user.getUserId());
 			}
-
 		});
 
 		listUserAccount.forEach(item -> {

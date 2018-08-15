@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationRe
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 
 @Data
 @AllArgsConstructor
@@ -166,6 +167,8 @@ public class AppAbsenceDto {
 	 */
 	private boolean sendMailWhenRegisterFlg;
 	
+	private CheckDispHolidayType checkDis;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -198,7 +201,7 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null,true, false, false);
+								false,null,true, false, false, null);
 	}
 }
 

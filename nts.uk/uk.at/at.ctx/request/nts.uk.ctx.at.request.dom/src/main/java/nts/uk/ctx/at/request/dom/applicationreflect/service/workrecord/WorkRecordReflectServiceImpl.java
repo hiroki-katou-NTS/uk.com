@@ -15,28 +15,12 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	@Override
 	public boolean workRecordreflect(AppReflectRecordPara appRecordInfor) {
 		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
-		/*WorkReflectedStatesInfo statesInfor = new WorkReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal(),
-				recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().get() : null);
-		AppReflectInfor reflectInfor = new AppReflectInfor(recordInfor.getDegressAtr(),
-				recordInfor.getExecutiontype(),
-				recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
-				recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal());*/
-		/*boolean checkReflect = reflectRecord.appReflectProcessRecord(reflectInfor);
+		//事前チェック処理
+		boolean checkReflect = reflectRecord.appReflectProcessRecord(appRecordInfor.getRecordInfor().getAppInfor(), true);
 		if (!checkReflect) {
-			return statesInfor;
-		}*/
-		if(recordInfor.getAppInfor().getStartDate().isPresent() && recordInfor.getAppInfor().getEndDate().isPresent()) {
-			for(int i = 0; recordInfor.getAppInfor().getStartDate().get().compareTo(recordInfor.getAppInfor().getEndDate().get()) + i <= 0; i++){
-				GeneralDate loopDate = recordInfor.getAppInfor().getStartDate().get().addDays(i);
-				if(!reflectRecord.isRecordData(recordInfor.getAppInfor().getEmployeeID(), loopDate)) {
-					return false;
-				}
-			}	
-		}else {
-			if(!reflectRecord.isRecordData(recordInfor.getAppInfor().getEmployeeID(), recordInfor.getAppInfor().getAppDate())) {
-				return false;
-			}	
+			return false;
 		}
+		
 		//事前事後区分を取得
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類

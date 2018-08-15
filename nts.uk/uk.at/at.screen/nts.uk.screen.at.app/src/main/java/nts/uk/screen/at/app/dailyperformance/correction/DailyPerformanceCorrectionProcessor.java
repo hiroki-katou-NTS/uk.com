@@ -41,7 +41,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -68,6 +67,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -103,6 +103,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
@@ -110,9 +111,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
@@ -181,6 +183,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private IFindData findData;
 	
+	@Inject
+	private FindClosureDateService findClosureDateService;
+	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
 	private static final String NO = "NO";
@@ -201,6 +206,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
 	private static final String LOCK_EDIT_APPROVAL = "A";
+	private static final String LOCK_HIST = "H";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -306,13 +312,19 @@ public class DailyPerformanceCorrectionProcessor {
 		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
 		// only get detail infomation employee when mode 2, 3 extract
+		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
+		val timeStart1 = System.currentTimeMillis();
+		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
+		//set name workplace
+		screenDto.getLstEmployee().stream().map(x -> {
+			val wph = WPHMap.get(x.getId());
+			x.setWorkplaceName(wph == null ? "" : wph.getName());
+			return x;
+		}).collect(Collectors.toList());
 		if(displayFormat == 0){
 			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
 			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
 		}
-		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
-		val timeStart1 = System.currentTimeMillis();
-		Map<String, List<WorkPlaceIdPeriodAtScreen>> WPHMap = repo.getWplByListSidAndPeriod(changeEmployeeIds);
 		//List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart1));//slow
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initScreen, sId,
@@ -370,8 +382,11 @@ public class DailyPerformanceCorrectionProcessor {
 		// check show column 本人
 		// check show column 承認
 		//DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId, mode).orElse(null);
-
-		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
+        Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, employmentWithSidMap);
+		
+		//get date closureDate all
+		Map<String, DatePeriod> lockHistMap = findClosureDateService.findClosureDate(companyId, employmentWithSidMap, GeneralDate.today());
 		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart4));
 		boolean showButton = true;
 		if (displayFormat == 0) {
@@ -392,7 +407,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// フレックス情報を表示する
 			if (!listEmployeeId.isEmpty())
 				screenDto.setMonthResult(monthFlexProcessor
-						.getDPMonthFlex(new DPMonthFlexParam(listEmployeeId.get(0), dateRange.getEndDate(),
+						.getDPMonthFlex(new DPMonthFlexParam(companyId, listEmployeeId.get(0), dateRange.getEndDate(),
 								screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 			// screenDto.setFlexShortage(null);
 		}
@@ -451,7 +466,7 @@ public class DailyPerformanceCorrectionProcessor {
 		mapDataIntoGrid(screenDto, sId, appMapDateSid, signDayMap, listEmployeeId, resultDailyMap, mode, displayFormat,
 				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, employeeAndDateRange, objectShare,
 				companyId, disItem, dPControlDisplayItem, dailyRecEditSetsMap,
-				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND);
+				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, lockHistMap);
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
@@ -465,7 +480,7 @@ public class DailyPerformanceCorrectionProcessor {
 			DateRange dateRange, Map<String, DatePeriod> employeeAndDateRange, ObjectShare objectShare, String companyId,
 			DisplayItem disItem, DPControlDisplayItem dPControlDisplayItem,
 			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily, Map<String, Boolean> disableSignMap,
-			String NAME_EMPTY, String NAME_NOT_FOUND){
+			String NAME_EMPTY, String NAME_NOT_FOUND, Map<String, DatePeriod> lockHistMap){
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
@@ -511,8 +526,8 @@ public class DailyPerformanceCorrectionProcessor {
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
-
-				if (lock || data.isApproval()) {
+                boolean lockHist = lockHist(lockHistMap, data);
+				if (lock || data.isApproval() || lockHist) {
 					if(lock) lockCell(screenDto, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
@@ -521,6 +536,16 @@ public class DailyPerformanceCorrectionProcessor {
 						else
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
 						lockCell(screenDto, data, false);
+						lock = true;
+					}
+					
+					if (lockHist) {
+						val typeLock = data.getState();
+						if (typeLock.equals(""))
+							data.setState("lock|" + LOCK_HIST);
+						else
+							data.setState(typeLock + "|" + LOCK_HIST);
+						lockCell(screenDto, data, true);
 						lock = true;
 					}
 				}
@@ -598,8 +623,8 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
 							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
 						}
-						if (value.isEmpty()) {
-							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), value,
+						if (value.isEmpty() || value.equals("null")) {
+							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), "",
 									attendanceAtrAsString, TYPE_LABEL));
 							value = NAME_EMPTY;
 						} else {
@@ -732,6 +757,7 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 	}
+	
 	public boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
 		boolean lock = false;
 		if (!employeeAndDateRange.isEmpty()) {
@@ -761,6 +787,15 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return lock;
 	}
+	
+	public boolean lockHist(Map<String, DatePeriod> empHist, DPDataDto data) {
+		   if(empHist.isEmpty()) return false;
+		   val datePeriod = empHist.get(data.getEmployeeId());
+		   if(datePeriod != null && data.getDate().after(datePeriod.end())) return false;
+           if(datePeriod != null && (data.getDate().afterOrEquals(datePeriod.start()) && data.getDate().beforeOrEquals(datePeriod.end()))) return false;
+           return true;
+	}
+	 
     public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
 		// No 20 get submitted application
 		Map<String, String> appMapDateSid = new HashMap<>();
@@ -788,6 +823,7 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		return appMapDateSid;
     }
+    
 	public boolean inRange(DPDataDto data, DatePeriod dateM) {
 		return data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end());
 	}
@@ -855,9 +891,9 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
-			List<String> listEmployeeId) {
+			Map<String, String> employmentWithSidMap) {
 		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
-		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
+		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
 				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
@@ -941,29 +977,24 @@ public class DailyPerformanceCorrectionProcessor {
 					x.getBusinessName(), "", "", "", false)).collect(Collectors.toList());
 		}
 	}
-	public List<DPDataDto> setWorkPlace(Map<String, List<WorkPlaceIdPeriodAtScreen>> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
+	public List<DPDataDto> setWorkPlace(Map<String, WorkPlaceHistTemp> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
 		//Map<String, List<AffComHistItemImport>> affCompanyMap = affCompany.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getLstAffComHistItem(), (x, y) -> x));
 		return employees.stream().map(x -> {
-			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  getWorkPlaceIdDate(wPHMap.get(x.getEmployeeId()), x.getDate()): "");
+			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  wPHMap.get(x.getEmployeeId()).getWorkplaceId(): "");
 			//x.setDatePriod(affCompanyMap.containsKey(x.getId()) ?  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()): new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 			return x;
 		}).filter(x -> affCompanyMap.containsKey(x.getEmployeeId()) &&  getDateRetire(affCompanyMap.get(x.getEmployeeId()), x.getDate())).collect(Collectors.toList());
 		//.filter(x -> affCompanyMap.containsKey(x.getId()) &&  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()));
 	}
 	
-	public String getWorkPlaceIdDate(List<WorkPlaceIdPeriodAtScreen> dateWorkPlace, GeneralDate date){
-		List<WorkPlaceIdPeriodAtScreen> data = dateWorkPlace.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
-		if(data.isEmpty()) return "";
-		else return data.get(0).getWorkplaceId();
-	}
-	 
 	public boolean getDateRetire(List<AffComHistItemAtScreen> dateHist, GeneralDate date){
 		List<AffComHistItemAtScreen> data = dateHist.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
 		if(data.isEmpty()) return false;
 		else return true;
 	}
-	public String getEmploymentCode(DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+	
+	public String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
 		return employmentCode;
 	}
@@ -1126,7 +1157,8 @@ public class DailyPerformanceCorrectionProcessor {
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
-						authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodeSelects, sheetNos);
+						authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
+								: repo.findAuthorityFormatSheet(companyId, formatCodeSelects, sheetNos);
 					}
 				} else {
 					// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
@@ -1228,9 +1260,9 @@ public class DailyPerformanceCorrectionProcessor {
 		//set item atr from optional
 		Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 		Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
-				: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
-						.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
-						.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+				: repo.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+						.filter(x -> x.getItemNo() != null && x.getOptionalItemAtr() != null)
+						.collect(Collectors.toMap(x -> x.getItemNo(), OptionalItemDto::getOptionalItemAtr));
 		setOptionalItemAtr(lstAttendanceItem, optionalItemOpt, optionalItemAtrOpt);
 		
 		result.createSheets(disItem.getLstSheet());
@@ -1304,8 +1336,10 @@ public class DailyPerformanceCorrectionProcessor {
 				OptionalItemAtr atr = optionalItemAtr.get(itemNo);
 				if(atr != null && atr.value == OptionalItemAtr.TIME.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
+					item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
+					item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
 				}
@@ -1436,9 +1470,11 @@ public class DailyPerformanceCorrectionProcessor {
 
 		// get disable
 		if (mode == ScreenMode.APPROVAL.value) {
+			long startTime = System.currentTimeMillis();
 			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(
 					dateRange.getStartDate(), dateRange.getEndDate(), employeeIdApproval,
 					AppContexts.user().companyId(), 1);
+			System.out.println("thoi gian getApp: "+ (System.currentTimeMillis() - startTime));
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvalRoot == null ? Collections.emptyMap()
 					: approvalRoot.getApprovalRootSituations().stream().collect(
 							Collectors.toMap(x -> mergeString(x.getTargetID(), "|", x.getAppDate().toString()), x -> {
@@ -1528,7 +1564,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
 		
 		if (dateRange != null){
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
 			return dateRange;
 		}
 
@@ -1538,7 +1574,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
 			return dateRange;
 		} else {
 
@@ -1547,7 +1583,7 @@ public class DailyPerformanceCorrectionProcessor {
 				dateRefer = objectShare.getEndDate();
 			}
             
-			screenDto.setEmploymentCode( getEmploymentCode(new DateRange(null, dateRefer), sId));
+			screenDto.setEmploymentCode( getEmploymentCode(companyId, new DateRange(null, dateRefer), sId));
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 

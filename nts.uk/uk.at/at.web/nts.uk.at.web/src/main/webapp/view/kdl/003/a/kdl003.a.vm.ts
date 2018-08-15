@@ -230,14 +230,14 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTypeCodes)) {
                     service.findWorkTypeByCodes(self.callerParameter.workTypeCodes)
                         .done(function(workTypeList: Array<WorkType>) {
-                            self.listWorkType(workTypeList);
+                            self.listWorkType(_.uniqBy(workTypeList, 'workTypeCode'));
                             dfd.resolve();
                         });
                 } else {
                     // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
-                            self.listWorkType(workTypeList);
+                            self.listWorkType(_.uniqBy(workTypeList, 'workTypeCode'));
                             dfd.resolve();
                         });
                 }

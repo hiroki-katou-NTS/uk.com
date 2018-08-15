@@ -9,8 +9,39 @@ module nts.uk.at.view.kmf022.l.service{
         copyEmploymentSet: "at/request/application/common/setting/copyEmploymentSetting",
         deleteEmploymentSet: "at/request/application/common/setting/deleteEmploymentSetting",
         updateEmploymentSet: "at/request/application/common/setting/updateEmploymentSetting",
-        addEmploymentSet: "at/request/application/common/setting/addEmploymentSetting"
+        addEmploymentSet: "at/request/application/common/setting/addEmploymentSetting",
+        findOtKaf022: "at/screen/worktype/find-ot-kaf022",
+        findAbsenceKaf022: "at/screen/worktype/find-absence-kaf022",
+        findWkChangeKaf022: "at/screen/worktype/find-work-change-kaf022",
+        findBounceKaf022: "at/screen/worktype/find-bounce-kaf022",
+        findHdTimeKaf022: "at/screen/worktype/find-hdtime-kaf022",
+        findHdShipKaf022: "at/screen/worktype/find-hd-ship-kaf022",
     }  
+    
+    export function findHdShipKaf022(hdShip: any): JQueryPromise<any> {
+        return ajax("at", paths.findHdShipKaf022, hdShip); 
+    }
+    
+    export function findHdTimeKaf022(): JQueryPromise<any> {
+        return ajax("at", paths.findHdTimeKaf022); 
+    }
+    
+    export function findBounceKaf022(halfDay: [Array<number>]): JQueryPromise<any> {
+        return ajax("at", paths.findBounceKaf022, halfDay);
+    }
+    
+    export function findWkChangeKaf022(): JQueryPromise<any> {
+        return ajax("at", paths.findWkChangeKaf022); 
+    } 
+    
+    export function findAbsenceKaf022(absenceKAF022: any): JQueryPromise<any> {
+        return ajax("at", paths.findAbsenceKaf022, absenceKAF022); 
+    } 
+    
+    export function findOtKaf022(): JQueryPromise<any> {
+        return ajax("at", paths.findOtKaf022); 
+    } 
+    
     export function findAllWorktype(): JQueryPromise<any> {
         return ajax("at", paths.findAllWorktype); 
     }  

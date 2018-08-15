@@ -5,12 +5,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 
@@ -29,42 +30,54 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Inject
 	private CalculateDailyRecordService calculate;
 	@Inject
+	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
+	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Override
 	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
+			WorkInfoOfDailyPerformance dailyInfor = workRepository.find(overtimePara.getEmployeeId(), overtimePara.getDateInfo()).get();
 			//予定勤種・就時の反映
-			afterOverTimeReflect.checkScheReflect(overtimePara);
+			dailyInfor = afterOverTimeReflect.checkScheReflect(overtimePara, dailyInfor);
 			//勤種・就時の反映
-			boolean isWorkReflect = preAfterOvertimeReflectProcess.changeFlg(overtimePara);
+			AppReflectRecordWork isWorkReflect = preAfterOvertimeReflectProcess.changeFlg(overtimePara, dailyInfor);
 			//予定勤種・就時反映後の予定勤種・就時を取得する
 			//勤種・就時反映後の予定勤種・就時を取得する
-			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(overtimePara.getEmployeeId(),
-					overtimePara.getDateInfo());		
-			if(!optDailyData.isPresent()) {
-				return false;
-			}
-			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
+			dailyInfor = isWorkReflect.getDailyInfo();
 			//予定開始終了時刻の反映
-			WorkTimeTypeOutput workTimeTypeScheData = new WorkTimeTypeOutput( dailyData.getScheduleInfo().getWorkTimeCode().v(), dailyData.getScheduleInfo().getWorkTypeCode().v());		
-			afterOverTimeReflect.checkScheWorkStarEndReflect(overtimePara, isWorkReflect, workTimeTypeScheData);
+			WorkTimeTypeOutput workTimeTypeScheData = new WorkTimeTypeOutput(dailyInfor.getScheduleInfo().getWorkTimeCode().v(),
+					dailyInfor.getScheduleInfo().getWorkTypeCode().v());		
+			dailyInfor = afterOverTimeReflect.checkScheWorkStarEndReflect(overtimePara, isWorkReflect.chkReflect, workTimeTypeScheData, dailyInfor);
+			//日別実績の勤務情報  変更
+			workRepository.updateByKeyFlush(dailyInfor);
+			
 			//開始終了時刻の反映
-			WorkTimeTypeOutput workTimeTypeRecordData = new WorkTimeTypeOutput(dailyData.getRecordInfo().getWorkTimeCode().v(), dailyData.getRecordInfo().getWorkTypeCode().v());
+			WorkTimeTypeOutput workTimeTypeRecordData = new WorkTimeTypeOutput(dailyInfor.getRecordInfo().getWorkTimeCode().v(), 
+					dailyInfor.getRecordInfo().getWorkTypeCode().v());
 			afterOverTimeReflect.recordStartEndReflect(overtimePara, workTimeTypeRecordData);
-			//残業時間の反映
-			afterOverTimeReflect.reflectOvertimeFrame(overtimePara);
-			//所定外深夜時間の反映
-			afterOverTimeReflect.reflectTimeShiftNight(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), overtimePara.getOvertimePara().getOverTimeShiftNight());
-			//フレックス時間の反映
-			//INPUT．フレックス時間をチェックする
-			if(overtimePara.getOvertimePara().getFlexExessTime() > 0) {
-				scheWorkUpdate.updateFlexTime(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), overtimePara.getOvertimePara().getFlexExessTime(), false);
-			}
+			Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(overtimePara.getEmployeeId(), overtimePara.getDateInfo());
+			if(optAttendanceTime.isPresent()) {
+				AttendanceTimeOfDailyPerformance attendanceTimeData = optAttendanceTime.get();
+				//残業時間の反映
+				attendanceTimeData = afterOverTimeReflect.reflectOvertimeFrame(overtimePara, attendanceTimeData);
+				//所定外深夜時間の反映
+				attendanceTimeData = afterOverTimeReflect.reflectTimeShiftNight(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), 
+						overtimePara.getOvertimePara().getOverTimeShiftNight(), attendanceTimeData);
+				//フレックス時間の反映
+				//INPUT．フレックス時間をチェックする
+				if(overtimePara.getOvertimePara().getFlexExessTime() > 0) {
+					attendanceTimeData = scheWorkUpdate.updateFlexTime(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), 
+							overtimePara.getOvertimePara().getFlexExessTime(), false, attendanceTimeData);
+				}
+				attendanceTime.updateFlush(attendanceTimeData);
+			}			
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()),null,Optional.empty(),Optional.empty());
-			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(),
+					overtimePara.getDateInfo()),null,Optional.empty(),Optional.empty());			
+			timeAndAnyItemUpService.addAndUpdate(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), 
+					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
 			return true;
 			
 		} catch (Exception e) {

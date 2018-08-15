@@ -12,8 +12,12 @@ public class CheckChangePassDto {
 	/** The show change pass. */
 	public boolean showChangePass;
 	
+	/** The msg error id. */
 	public String msgErrorId;
 
+	/** The show contract. */
+	public boolean showContract;
+	
 	public CheckChangePassDto() {
 		super();
 	}
@@ -23,9 +27,10 @@ public class CheckChangePassDto {
 	 *
 	 * @param showChangePass the show change pass
 	 */
-	public CheckChangePassDto(boolean showChangePass, String msgErrorId) {
+	public CheckChangePassDto(boolean showChangePass, String msgErrorId, boolean showContract) {
 		super();
 		this.showChangePass = showChangePass;
 		this.msgErrorId = msgErrorId;
+		this.showContract = showContract;
 	}
 }

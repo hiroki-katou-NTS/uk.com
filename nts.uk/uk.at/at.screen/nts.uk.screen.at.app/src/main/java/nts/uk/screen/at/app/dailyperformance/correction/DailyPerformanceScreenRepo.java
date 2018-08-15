@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.Column;
-
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -40,6 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -48,7 +47,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.Dail
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -69,7 +68,7 @@ public interface DailyPerformanceScreenRepo {
 	 * return: closure object
 	 */
 	
-	List<ClosureDto> getClosureId(List<String> sId, GeneralDate baseDate);
+	List<ClosureDto> getClosureId(Map<String, String> sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
 	YearHolidaySettingDto getYearHolidaySetting();
@@ -143,7 +142,7 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
-	AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange);
+	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, DateRange dateRange);
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	
@@ -216,7 +215,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates);
 	
-	Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids);
+	Map<String, WorkPlaceHistTemp> getWplByListSidAndPeriod(String companyId, List<String> sids, GeneralDate date);
 	
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
 	
@@ -227,4 +226,8 @@ public interface DailyPerformanceScreenRepo {
 	Integer getLimitFexMonth();
 	
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
- }
+	
+	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
+
+	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
+}

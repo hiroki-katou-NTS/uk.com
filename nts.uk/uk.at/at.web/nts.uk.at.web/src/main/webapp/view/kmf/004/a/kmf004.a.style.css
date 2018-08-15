@@ -2,60 +2,213 @@
 
 #contents-area {
 	display: table;
+	padding: 20px;
+	width: 1140px;
+}
+
+.container {
+    padding-left: 15px;
+}
+
+.link-button.goback {
+	width: 150px;
+}
+
+#left-content {
+    float: left;
 }
 
 .right-content {
-	width: 75%;
-	padding-left: 50px;
-	display: table-cell;
+    float: left;
+    padding-left: 40px;
 }
 
-#tab-panel {
-	margin-top: 40px;
+table.top-content-tbl {
+    margin-bottom: 40px;
 }
 
-.ui-tabs .ui-tabs-panel {
-	display: block;
-	border-width: 0;
-	padding: 1em 1.4em;
-	background: none;
-	height: 280px;
-	width: 683px;
+table.top-content-tbl tr {
+	height: 60px;
 }
 
-button.nts-switch-button {
-	min-width: 60px;
-}
-#sw1{
-	margin-left: 40px!important;
-}
-#combo-box {
-	min-width: 44px !important;
-	width: 76px;
-	margin-left: 20px;
-	vertical-align: middle;
+table.top-content-tbl td {
+	vertical-align: top;
 }
 
-#code-sphd {
-	vertical-align: middle;
+.code {
+	width: 25px;
 }
 
-#input-code-sphd {
-	width: 40px;
-	margin-left: 45px;
+.name {
+	width: 120px;
 }
 
-#radio-tab2-1, #radio-tab2-2 {
-	margin-top: 10px;
+.workTypes {
+    width: 480px;
 }
 
-div#memo .nts-editor-wrapped {
-	position: absolute;
-}
-.label1{
-	margin-left: 137px;
+.memo {
+    width: 550px;
+    height: 100px;
 }
 
-.disabled {
-   color: darkgrey;
+div.grant-date button.nts-switch-button {
+	width: 152px;
+}
+
+.grant-date-tbl {
+	margin-bottom: 40px;
+}
+
+table.method-tbl tr {
+	height: 30px;
+}
+
+div#tab-panel {
+	width: 750px;
+}
+
+.methodsCls.ntsControl.radio-wrapper.reset-element {
+    width: 265px;
+    padding: 10px 40px;
+    float: left;
+}
+
+.methodsCls label.ntsRadioBox {
+	height: 90px;
+}
+
+.check-allow {
+    margin: -10px 35px;
+    padding-bottom: 40px;
+}
+
+.allow-hint {
+    padding-left: 55px;
+}
+
+.grant-period {
+	float: left;
+	width: 300px;
+	padding: 42px 0;
+    margin-left: -143px;
+}
+
+.years {
+	padding-right: 20px !important;
+}
+
+.years, .days, .year-lbl, .year-inp, .day-lbl, .day-inp {
+	float: left;
+	padding-right: 10px;
+}
+
+.year-lbl, .day-lbl {
+	line-height: 32px;
+}
+
+.timing {
+    width: 280px;
+    float: left;
+    margin: -105px 290px;
+}
+
+.btn-d-dialog, .timing-hint {
+	float: left;
+}
+
+.top-lbl {
+	padding-bottom: 15px;
+}
+
+table.exp-date-tbl {
+	width: 200px;
+	float: left;
+	margin-left: 25px;
+}
+
+.timeMethods label.ntsRadioBox {
+    height: 50px;
+}
+
+div#tab-1, div#tab-2, div#tab-3 {
+    height: 370px;
+}
+
+table.exp-date-options {
+    margin: -14px 80px;
+    float: left;
+}
+
+.limited-days, .exp-years, .exp-months {
+	float: left;
+}
+
+table.exp-date-options tr {
+    height: 50px;
+}
+
+.exp-years {
+    padding-right: 25px;
+}
+
+.start-date, .nav-lbl, .end-date {
+	float: left;
+}
+
+.nav-lbl {
+    line-height: 30px;
+    padding-right: 18px;
+}
+
+.top-lbl-hint {
+	width: 320px;
+}
+
+table.condition-set-tbl {
+    margin: 20px;
+}
+
+table.condition-set-tbl tr {
+    height: 60px;
+}
+
+.cf.genderOptions.reset-element.ntsControl.switchButton-wrapper button.nts-switch-button {
+    width: 80px;
+}
+
+input.empLst.nts-editor.nts-input.reset-element, input.clsLst.nts-editor.nts-input.reset-element {
+    width: 360px;
+}
+
+.age-standard-setting {
+	margin-left: 120px;
+}
+
+.start-age, .nav-lbl, .end-age {
+    float: left;
+    padding-right: 10px;
+}
+
+.age-standard, div.age-criteria, .ageBaseDate {
+    float: left;
+}
+
+.age-standard {
+    line-height: 30px;
+    padding-right: 30px;
+}
+
+div.age-criteria {
+    width: 80px;
+    padding-right: 40px;
+}
+
+div.ageBaseDate {
+    margin: -9px;
+}
+
+.ntsMonthDays .ntsMonthPicker.ntsComboBox.ntsMonthDays_Component.ui-igcombo-wrapper.ntsControl,
+.ntsMonthDays .ntsDayPicker.ntsComboBox.ntsMonthDays_Component.ui-igcombo-wrapper.ntsControl {
+    width: 65px;
 }

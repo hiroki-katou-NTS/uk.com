@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCa
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -48,6 +49,8 @@ public class MonAggrEmployeeSettings {
 	private Optional<ShaDeforLaborMonthActCalSet> shaIrgSetOpt;
 	/** フレックス社員別月別実績集計設定 */
 	private Optional<ShaFlexMonthActCalSet> shaFlexSetOpt;
+	/** 年休社員基本情報 */
+	private Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt;
 	
 	/** 集計開始日を締め開始日とする */
 	@Setter
@@ -66,6 +69,7 @@ public class MonAggrEmployeeSettings {
 		this.shaRegSetOpt = Optional.empty();
 		this.shaIrgSetOpt = Optional.empty();
 		this.shaFlexSetOpt = Optional.empty();
+		this.annualLeaveEmpBasicInfoOpt = Optional.empty();
 		
 		this.noCheckStartDate = true;
 		this.errorInfos = new HashMap<>();
@@ -150,6 +154,9 @@ public class MonAggrEmployeeSettings {
 		
 		// フレックス社員別月別実績集計設定
 		domain.shaFlexSetOpt = repositories.getShaFlexSetRepo().find(companyId, employeeId);
+		
+		// 年休社員基本情報
+		domain.annualLeaveEmpBasicInfoOpt = repositories.getAnnLeaEmpBasicInfo().get(employeeId);
 		
 		return domain;
 	}

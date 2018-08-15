@@ -31,9 +31,6 @@ public class ApplicationFinder {
 	private DetailAppCommonSetService detailAppCommonSetService;
 
 	@Inject
-	private EmployeeRequestAdapter employeeRequestAdapter;
-
-	@Inject
 	private IApplicationForSendService appForSendService;
 	
 	@Inject 

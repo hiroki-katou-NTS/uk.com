@@ -100,18 +100,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 //		this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
 //		this.getEntityManager().flush();
 		String id = IdentifierUtil.randomUniqueId();
-		String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent() ? employeeDailyPerformanceError.getErrorAlarmMessage().get().v() : null;
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
+			String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent() ? "'" + employeeDailyPerformanceError.getErrorAlarmMessage().get().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_SYAIN_DP_ER_LIST ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID , ERROR_CANCELABLE , ERROR_MESSAGE ) "
 					+ "VALUES( '" + id + "' , '"
 					+ employeeDailyPerformanceError.getErrorAlarmWorkRecordCode().v() + "' , '"
 					+ employeeDailyPerformanceError.getEmployeeID() + "' , '"
 					+ employeeDailyPerformanceError.getDate() + "' , '"
 					+ employeeDailyPerformanceError.getCompanyID() + "' , "
-					+ employeeDailyPerformanceError.getErrorCancelAble() + " , '"
-					+ errorAlarmMessage + "' )";
+					+ employeeDailyPerformanceError.getErrorCancelAble() + " , "
+					+ errorAlarmMessage + " )";
 			statementI.executeUpdate(insertTableSQL);
 			
 			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()){
@@ -121,7 +121,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				statementI.executeUpdate(insertAttendanceItem);
 			}			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	

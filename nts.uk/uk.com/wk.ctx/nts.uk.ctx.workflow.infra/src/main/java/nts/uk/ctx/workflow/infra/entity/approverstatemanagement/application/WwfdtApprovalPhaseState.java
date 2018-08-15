@@ -40,7 +40,7 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	@EmbeddedId
 	public WwfdpApprovalPhaseStatePK wwfdpApprovalPhaseStatePK;
 	
-	@Column(name="APPROVAL_ATR")
+	@Column(name="APP_PHASE_ATR")
 	public Integer approvalAtr;
 	
 	@Column(name="APPROVAL_FORM")

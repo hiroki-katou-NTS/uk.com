@@ -29,9 +29,9 @@ public class SpecBPTimesheetFinder {
 	private SpecBPTimesheetDto toSpecBPTimesheetDto(String companyId, String bonusPaySettingCode,
 			SpecBonusPayTimesheet specBonusPayTimesheet) {
 		return new SpecBPTimesheetDto(companyId, specBonusPayTimesheet.getTimeSheetId(),
-				specBonusPayTimesheet.getUseAtr().value, bonusPaySettingCode,
-				specBonusPayTimesheet.getTimeItemId(), specBonusPayTimesheet.getStartTime().minute(),
-				specBonusPayTimesheet.getEndTime().minute(), specBonusPayTimesheet.getRoundingTimeAtr().value,
-				specBonusPayTimesheet.getRoundingAtr().value, specBonusPayTimesheet.getDateCode());
+				specBonusPayTimesheet.getUseAtr().value, bonusPaySettingCode, specBonusPayTimesheet.getTimeItemId(),
+				specBonusPayTimesheet.getStartTime().v(), specBonusPayTimesheet.getEndTime().v(),
+				specBonusPayTimesheet.getRoundingTimeAtr().value, specBonusPayTimesheet.getRoundingAtr().value,
+				specBonusPayTimesheet.getDateCode());
 	}
 }

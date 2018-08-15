@@ -34,7 +34,6 @@ public class TimeDivergenceWithCalculation {
 		return new TimeDivergenceWithCalculation(time,time);
 	}
 	
-	
 	/**
 	 * 指定された時間で計算乖離付き時間を作成する
 	 * @return 計算付き時間
@@ -42,6 +41,34 @@ public class TimeDivergenceWithCalculation {
 	public static TimeDivergenceWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeDivergenceWithCalculation(time,calcTime);
 		
+	}
+	
+	/**
+	 * 時間のみを入れ替える(乖離計算無し)
+	 * @param time
+	 * @return
+	 */
+	public void replaceTime(AttendanceTime time) {
+		this.time = time;
+	}
+	
+	/**
+	 * 計算時間のみを入れ替える(乖離計算無し)
+	 * @param calcTime
+	 * @return
+	 */
+	public void replaceCalcTime(AttendanceTime calcTime) {
+		this.calcTime = calcTime;
+	}
+	
+	/**
+	 * 計算時間のみを入れ替える(乖離計算有)
+	 * @param calcTime
+	 * @return
+	 */
+	public void replaceTimeAndCalcDiv(AttendanceTime calcTime) {
+		this.calcTime = calcTime;
+		this.divergenceTime = this.time.minusMinutes(calcTime.valueAsMinutes());
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {

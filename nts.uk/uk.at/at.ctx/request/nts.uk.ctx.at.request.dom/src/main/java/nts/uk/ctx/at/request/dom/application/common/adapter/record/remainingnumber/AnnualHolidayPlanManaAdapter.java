@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnum
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.vacation.history.service.PeriodVactionCalInfor;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnualHolidayPlanManaAdapter {
 	/**
@@ -13,7 +15,7 @@ public interface AnnualHolidayPlanManaAdapter {
 	 * @param dateData
 	 * @return
 	 */
-	List<AnnualHolidayPlanManaRequest> lstDataByPeriod(String sid, String workTypeCode, Period dateData);
+	List<AnnualHolidayPlanManaRequest> lstDataByPeriod(String sid, String workTypeCode, DatePeriod dateData);
 	/**
 	 * 
 	 * @param employeeId
@@ -21,5 +23,5 @@ public interface AnnualHolidayPlanManaAdapter {
 	 * @param dateData
 	 * @return
 	 */
-	List<GeneralDate> lstDetailPeriod(String employeeId, String worktypeCode, Period dateData);
+	List<GeneralDate> lstDetailPeriod(String cid, String employeeId, String worktypeCode, PeriodVactionCalInfor getCalByDate);
 }

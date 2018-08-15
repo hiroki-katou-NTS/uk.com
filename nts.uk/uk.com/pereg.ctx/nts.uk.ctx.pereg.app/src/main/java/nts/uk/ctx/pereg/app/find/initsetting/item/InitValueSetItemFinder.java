@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +86,17 @@ public class InitValueSetItemFinder {
 			if (!perInfoCategory.isPresent()) {
 				throw new RuntimeException("invalid PersonInfoCategory");
 			}
+			
+			GeneralDate comboBoxStandardDate = baseDate;
+			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+			for (SettingItemDto settingItemDto : result) {
+				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
+					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					break;
+				}
+			}
 
-			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate(),
+			this.settingItemMap.setTextForSelectionItem(result, employeeId, comboBoxStandardDate,
 					perInfoCategory.get());
 
 		} else {

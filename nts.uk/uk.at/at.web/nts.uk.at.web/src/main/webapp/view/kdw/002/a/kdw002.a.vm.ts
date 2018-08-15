@@ -38,7 +38,7 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
-                self.aICurrentCode.subscribe(attendanceItemId => {
+                self.aICurrentCode.subscribe(attendanceItemId => {  
                     if(attendanceItemId){
                         self.isSave(true);
                         var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
@@ -89,16 +89,20 @@ module nts.uk.at.view.kdw002.a {
                             });
                         }
                     }else{
-                        self.isSave(false);
-                        self.txtItemName("");
-                        self.txtItemId(attendanceItemId);
-                        self.headerColorValue(null);
-                        self.timeInputCurrentCode(0);
+                        let item = $("#gridList").igGrid("option", "dataSource")[0].attendanceItemId;
+                        self.aICurrentCode(item);
+                        self.aICurrentCode.valueHasMutated();
+//                        self.isSave(false);
+//                        self.txtItemName("");
+//                        self.txtItemId(attendanceItemId);
+//                        self.headerColorValue(null);
+//                        self.timeInputCurrentCode(0);
                     }
                 });
 
                 self.attendanceItemColumn = ko.observableArray([
-                    { headerText: 'コード', key: 'attendanceItemId', width: 50, dataType: "number" },
+                    { key: 'attendanceItemId', dataType: "number", hidden: true },
+                    { headerText: 'コード', key: 'displayNumber', width: 50, dataType: "number" },
                     { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string", formatter: _.escape },
                     { key: 'dailyAttendanceAtr', dataType: "number", hidden: true },
                     { key: 'nameLineFeedPosition', dataType: "number", hidden: true }
@@ -124,10 +128,12 @@ module nts.uk.at.view.kdw002.a {
                                         attendanceItemId: attendanceItem.attendanceItemId,
                                         attendanceItemName: attendanceItem.attendanceName,
                                         dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, 
-                                        nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                                        nameLineFeedPosition: attendanceItem.nameLineFeedPosition,
+                                        displayNumber : attendanceItem.displayNumber });
                                 });
-                                self.attendanceItems(attendanceItems);
+                                self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
                                 self.aICurrentCode(atItems[0].attendanceItemId);
+                                $("#colorID").focus();
                             });
                             
                         }
@@ -147,10 +153,11 @@ module nts.uk.at.view.kdw002.a {
                                 }
                                 
                                 atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceItemName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
-                            });
-                            self.attendanceItems(attendanceItems);
-                            self.aICurrentCode(atItems[0].attendanceItemId);
+                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition,displayNumber :attendanceItem.attendanceItemDisplayNumber });
+                                });
+                                self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
+                                self.aICurrentCode(atItems[0].attendanceItemId);
+                                $("#colorID").focus();
                             });
                         }
                     });
@@ -187,6 +194,7 @@ module nts.uk.at.view.kdw002.a {
                     }
                     service.updateDaily(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
+                         $("#colorID").focus();
                     });
                 } else {
                     AtItems.itemMonthlyID = self.aICurrentCode();
@@ -195,6 +203,7 @@ module nts.uk.at.view.kdw002.a {
                     }
                     service.updateMonthly(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
+                        $("#colorID").focus();
                     });
                 }
             }

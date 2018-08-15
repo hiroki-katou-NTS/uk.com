@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.yearholidaygrant;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 
 /**
@@ -33,7 +31,7 @@ public class GrantHolidayCommand {
 	private int conditionNo;
 	
 	/* 年休付与日数 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/* 時間年休上限日数 */
 	private Integer limitTimeHd;

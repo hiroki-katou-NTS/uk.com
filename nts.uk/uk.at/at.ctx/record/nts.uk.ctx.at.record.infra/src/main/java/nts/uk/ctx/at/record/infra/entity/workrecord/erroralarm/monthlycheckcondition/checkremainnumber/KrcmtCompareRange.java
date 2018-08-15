@@ -71,9 +71,9 @@ public class KrcmtCompareRange extends UkJpaEntity implements Serializable {
 				errorAlarmCheckID,
 				domain.getCompareOperator().value,
 				domain.getStartValue().getDaysValue(),
-				!domain.getStartValue().getTimeValue().isPresent()?null:domain.getStartValue().getTimeValue().get(),
+				domain.getStartValue().getTimeValue() ==null?null:(!domain.getStartValue().getTimeValue().isPresent()?null:domain.getStartValue().getTimeValue().get()),
 				domain.getEndValue().getDaysValue(),
-				!domain.getEndValue().getTimeValue().isPresent()?null:domain.getEndValue().getTimeValue().get()
+				domain.getEndValue().getTimeValue()==null?null:(!domain.getEndValue().getTimeValue().isPresent()?null:domain.getEndValue().getTimeValue().get())
 				);
 		
 	}

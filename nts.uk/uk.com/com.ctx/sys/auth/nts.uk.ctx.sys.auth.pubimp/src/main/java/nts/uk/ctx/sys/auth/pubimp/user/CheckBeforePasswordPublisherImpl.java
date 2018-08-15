@@ -78,14 +78,14 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 		List<PasswordMessageObject> messages = new ArrayList<>();
 		// 螟画峩蜑阪メ繧ｧ繝�繧ｯ Check newPass and reNewPass
 		if (!newPass.equals(reNewPass)) {
-			messages.add(new PasswordMessageObject("#Msg_961"));
+			messages.add(new PasswordMessageObject("Msg_961"));
 		}
 		//get domain User
 		User user = this.userRepo.getByUserID(userId).get();
 		
 		//Check loginId
 		if (user.getLoginID().v().equals(newPass)) {
-			messages.add(new PasswordMessageObject("#Msg_989"));
+			messages.add(new PasswordMessageObject("Msg_989"));
 		}
 		
 		if (!messages.isEmpty()) {

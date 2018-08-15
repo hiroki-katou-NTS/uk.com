@@ -24,6 +24,11 @@ public class TimeLeavingOfDailyPerformanceCommandUpdateHandler extends CommandFa
 			if(command.isTriggerEvent()){
 				domain.timeLeavesChanged();
 			}
+			return;
 		}
+		if(command.shouldDelete()){
+			repo.delete(command.getEmployeeId(), command.getWorkDate());
+		}
+		
 	}
 }

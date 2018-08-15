@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
+import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -86,7 +87,10 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	public String add(PeregInputContainer container) {
-		return addNonTransaction(container);
+		//DataCorrectionContext.transactionBegun(processorId, 1);
+		String result = addNonTransaction(container);
+		//DataCorrectionContext.transactionFinishing(1);
+		return result;
 	}
 
 	private String addNonTransaction(PeregInputContainer container) {

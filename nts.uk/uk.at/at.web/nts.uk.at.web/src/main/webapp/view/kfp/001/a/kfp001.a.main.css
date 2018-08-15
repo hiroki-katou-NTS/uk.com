@@ -1,0 +1,25 @@
+#contents-area{
+	padding-top: 14px;
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+#button24 {
+	margin-left: 9px;
+	background-position:center;
+	background-image: url('images/IMG_KFP001_2.png');
+	background-size: 300px 108px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}
+
+#button22 {
+	margin-left: 9px;
+	background-position:center;
+	background-image: url('images/IMG_KFP001_1.png');
+	background-size: 300px 108px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}

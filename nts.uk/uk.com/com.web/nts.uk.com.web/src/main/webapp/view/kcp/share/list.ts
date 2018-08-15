@@ -62,6 +62,11 @@ module kcp.share.list {
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
+
+        /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
         
         /**
          * Select Type.
@@ -155,6 +160,11 @@ module kcp.share.list {
         optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
 
         subscriptions?: Array<KnockoutSubscription>;
+        
+        /**
+         * in the select-all case, disableSelection is true. Else false
+         */
+        disableSelection?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -221,6 +231,7 @@ module kcp.share.list {
         isMultipleUse: boolean;
         isMultipleSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
@@ -246,6 +257,8 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
+        disableSelection : boolean;
+        componentOption: ComponentOption;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -262,6 +275,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            disableSelection = false;
         }
 
         /**
@@ -284,13 +298,15 @@ module kcp.share.list {
             if (!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.isMultipleUse)) { 
                 self.isMultipleUse = data.isMultipleUse; 
             }
+            self.componentOption = data;
             self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectType = data.selectType;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -299,11 +315,15 @@ module kcp.share.list {
             self.showOptionalColumn = data.showOptionalColumn ? data.showOptionalColumn : false;
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
+            self.selectedClosureId = ko.observable(null);
+            self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
-                self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
-                self.initClosureSubscription(data.subscriptions);
+                let selectedClosureId = _.isNil(data.selectedClosureId) ?
+                    null : _.isFunction(data.selectedClosureId) ?
+                        data.selectedClosureId() : data.selectedClosureId;
+                self.selectedClosureId(selectedClosureId);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -348,29 +368,54 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
-                gridList.ntsGridList("setDataSource", self.itemList());
-                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
-                searchBox.ntsSearchBox("setDataSource", self.itemList());
+                gridList.ntsGridList("setSelectedValue", []);
+                _.defer(() => {
+                    gridList.ntsGridList("setDataSource", self.itemList());
+                    searchBox.ntsSearchBox("setDataSource", self.itemList());
+                    gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                });
             }
         }
 
         private loadNtsGridList(): void {
             let self = this;
+            self.initNoSelectRow();
+            self.setOptionalContent();
+
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
-                const options = {
-                    width: self.gridStyle.totalColumnSize,
-                    dataSource: self.itemList(),
-                    primaryKey: self.targetKey,
-                    columns: self.listComponentColumn,
-                    multiple: self.isMultipleSelect,
-                    value: self.selectedCodes(),
-                    name: self.getItemNameForList(),
-                    rows: self.maxRows
-                };
+                
+                const options;
+                
+                if (self.disableSelection) {
+                    let selectionDisables = _.map(self.itemList(), 'code');
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: true,
+                        value: selectionDisables,
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                        selectionDisables: selectionDisables
+                    };
+                } else {
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: self.isMultipleSelect,
+                        value: self.selectedCodes(),
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                    };
+                }
+                
                 const searchBoxOptions = {
                     searchMode: 'filter',
                     targetKey: self.targetKey,
@@ -386,35 +431,32 @@ module kcp.share.list {
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
 
+                // fix searchbox width
+                if (self.isHasButtonSelectAll) {
+                    const searchBoxAreaWidth = $('#com-kcp-searchbox').width();
+                    const searchBoxInputWidth = searchBoxAreaWidth - 260;
+                    $('#' + self.searchBoxId + ' input.ntsSearchBox').width(searchBoxInputWidth)
+                }
+
                 // setup event
                 self.initEvent();
+
+                // set focus if parent screen has no focus
+                if (document.activeElement.tagName == 'BODY') {
+                    _.defer(() => $('#' + self.searchBoxId + ' .ntsSearchBox').focus());
+                }
             });
         }
 
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
-                const selecteds = _.map(ui.selectedRows, o => o.id);
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(selecteds);
-                } else {
-                    self.selectedCodes(selecteds[0]);
-                }
+            const gridList = $('#' + self.componentGridId);
+            gridList.on('selectionchanged', evt => {
+                const selectedValues = gridList.ntsGridList("getSelectedValue");
+                const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                self.selectedCodes(selectedIds);
             });
-        }
-
-        private initClosureSubscription(subscriptions: Array<KnockoutSubscription>): void {
-            let self = this;
-            if (subscriptions) {
-                subscriptions.push(self.selectedClosureId.subscribe(id => {
-                    self.reloadEmployment(id);
-                }));
-            } else {
-                self.selectedClosureId.subscribe(id => {
-                    self.reloadEmployment(id);
-                });
-            }
         }
 
         private initEmployeeSubscription(data: ComponentOption): void {
@@ -569,14 +611,18 @@ module kcp.share.list {
 
                     // ReloadNtsGridList when itemList changed
                     self.itemList.subscribe(newList => {
-                        if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
-                            self.addOptionalContentToItemList();
-                        }
-                        self.hasUpdatedOptionalContent(false);
+                        self.setOptionalContent();
                         self.initNoSelectRow();
                         self.reloadNtsGridList();
                         self.createGlobalVarDataList(newList, $input);
                     });
+
+                    if (data.listType == ListType.EMPLOYMENT) {
+                        self.selectedClosureId.subscribe(id => {
+                            self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+                            self.reloadEmployment(id);
+                        });
+                    }
                     dfd.resolve();
                 });
             });
@@ -611,6 +657,17 @@ module kcp.share.list {
                 return false;
             }
             return dfd.promise();
+        }
+
+        /**
+         * Set optional content
+         */
+        private setOptionalContent(): void {
+            let self = this;
+            if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                self.addOptionalContentToItemList();
+            }
+            self.hasUpdatedOptionalContent(false);
         }
         
         /**
@@ -864,7 +921,10 @@ module kcp.share.list {
             if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
-            self.selectedCodes(self.itemList().map(item => item.code));
+            const gridList = $('#' + self.componentGridId);
+            const allSelectedCodes = gridList.ntsGridList("getDataSource").map(item => item.code);
+            self.selectedCodes(allSelectedCodes);
+            gridList.ntsGridList("setSelectedValue", allSelectedCodes);
         }
         
         /**
@@ -936,7 +996,7 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
-            findAllClosureItems: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
+            findAllClosureItems: 'ctx/at/shared/workrule/closure/find/currentyearmonthandused',
             findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
             findEmploymentByCodes: 'bs/employee/employment/findByCodes'
         }

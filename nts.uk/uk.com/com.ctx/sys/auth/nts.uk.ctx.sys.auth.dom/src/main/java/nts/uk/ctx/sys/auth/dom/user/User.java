@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.user;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,56 +26,52 @@ public class User extends AggregateRoot {
 	// パスワード
 	/** The password. */
 	private HashPassword password;
-
 	// ログインID
 	/** The login id. */
 	private LoginID loginID;
-
 	// 契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
-
 	// 有効期限
 	/** The expiration date. */
 	private GeneralDate expirationDate;
-
 	// 特別利用者
 	/** The special user. */
 	private DisabledSegment specialUser;
-
 	// 複数会社を兼務する
 	/** The multi company concurrent. */
 	private DisabledSegment multiCompanyConcurrent;
-
 	// メールアドレス
 	/** The mail address. */
-	private MailAddress mailAddress;
+	private Optional<MailAddress> mailAddress;
 
 	// ユーザ名
 	/** The user name. */
-	private UserName userName;
+	private Optional<UserName> userName;
 
 	// 紐付け先個人ID
 	/** The associated employee id. */
-	private String associatedPersonID;
-	
+	private Optional<String> associatedPersonID;
+	@Getter
 	// パスワード状態
 	/** PasswordStatus **/
 	private PassStatus passStatus;
 
 	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
-			String mailAddress, String userName, String associatedPersonID , int passStatus) {
+			String mailAddress, String userName, String associatedPersonID, int passStatus) {
 
 		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
-				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress),
-				new UserName(userName), associatedPersonID,
+				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class),
+				Optional.ofNullable(mailAddress == null ? null : new MailAddress(mailAddress)),
+				Optional.ofNullable(userName == null ? null : new UserName(userName)),
+				Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID),
 				EnumAdaptor.valueOf(passStatus, PassStatus.class));
 	}
 
 	public boolean hasAssociatedPersonID() {
-		return !StringUtil.isNullOrEmpty(this.associatedPersonID, false);
+		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
-	
+
 }

@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +13,12 @@ public class WorkPlaceHistTemp {
 	
 	private String workplaceId;
 	
-	private GeneralDate startDate;
-	
-	private GeneralDate endDate;
+    private String name;
+
+	public WorkPlaceHistTemp(String employeeId, String workplaceId) {
+		this.employeeId = employeeId;
+		this.workplaceId = workplaceId;
+	}
+    
+    
 }

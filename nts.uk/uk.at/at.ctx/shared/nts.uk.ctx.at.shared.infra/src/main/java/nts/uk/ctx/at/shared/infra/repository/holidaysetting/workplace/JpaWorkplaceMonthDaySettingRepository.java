@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySetPK_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet_;
@@ -129,6 +131,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 							.get(KshmtWkpMonthDaySetPK_.month), month.intValue()));
 		}
 
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK).get(KshmtWkpMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

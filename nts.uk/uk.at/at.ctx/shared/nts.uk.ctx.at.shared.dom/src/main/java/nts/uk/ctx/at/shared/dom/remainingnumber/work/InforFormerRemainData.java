@@ -46,8 +46,6 @@ public class InforFormerRemainData {
 	 * @return
 	 */
 	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(WorkTypeClassification workTypeClass) {
-		OccurrenceUseDetail outputData = new OccurrenceUseDetail();
-		outputData.setWorkTypeAtr(workTypeClass);
 		//勤務種類別残数情報をチェックする
 		if(this.getWorkTypeRemain().isPresent()) {
 			WorkTypeRemainInfor x = this.getWorkTypeRemain().get();
@@ -56,13 +54,11 @@ public class InforFormerRemainData {
 					.filter(a ->a.getWorkTypeAtr() == workTypeClass && a.isUseAtr() && a.getDays() > 0)
 					.collect(Collectors.toList());
 			if(!lstTmp.isEmpty()) {
-				outputData = lstTmp.get(0);
+				return Optional.of(lstTmp.get(0));
+			} else {
+				return Optional.empty();
 			}
 		}
-		if(outputData == null) {
-			return Optional.empty();	
-		} else {
-			return Optional.of(outputData);
-		}
+		return Optional.empty();	
 	}
 }

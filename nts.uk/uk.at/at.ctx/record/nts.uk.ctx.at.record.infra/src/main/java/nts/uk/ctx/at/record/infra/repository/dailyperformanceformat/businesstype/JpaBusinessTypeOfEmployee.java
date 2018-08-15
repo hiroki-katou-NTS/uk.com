@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.Krc
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfEmployeePK;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmp;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpAdaptor;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * implement BusinessTypeOfEmployeeRepository
@@ -24,6 +25,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		implements BusinessTypeOfEmployeeRepository, BusinessTypeOfEmpAdaptor {
 	private static final String FIND_BY_LIST_CODE;
 	private static final String FIND_BY_SID_HISTID;
+	private static final String SEL_BUSINESS_TYPE;
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
@@ -37,6 +39,17 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		stringBuild.append("WHERE k.sId = :employeeId ");
 		stringBuild.append("AND k.krcmtBusinessTypeOfEmployeePK.historyId = :historyId");
 		FIND_BY_SID_HISTID = stringBuild.toString();
+		
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+		builderString
+				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" WHERE b.sId IN :lstSid");
+		builderString.append(" AND h.startDate <= :endYmd");
+		builderString.append(" AND h.endDate >= :startYmd");
+		SEL_BUSINESS_TYPE = builderString.toString();
 	}
 
 	@Override
@@ -108,6 +121,13 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 				.setParameter("employeeId", employeeId).setParameter("historyId", histId)
 				.getSingle(x -> new BusinessTypeOfEmp(x.businessTypeCode, x.krcmtBusinessTypeOfEmployeePK.historyId,
 						x.sId));
+	}
+
+	@Override
+	public List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date) {
+		return this.queryProxy().query(SEL_BUSINESS_TYPE, KrcmtBusinessTypeOfEmployee.class)
+				.setParameter("lstSid", employeeIds).setParameter("endYmd", date.end())
+				.setParameter("startYmd", date.start()).getList(entity -> toDomain(entity));
 	}
 
 }

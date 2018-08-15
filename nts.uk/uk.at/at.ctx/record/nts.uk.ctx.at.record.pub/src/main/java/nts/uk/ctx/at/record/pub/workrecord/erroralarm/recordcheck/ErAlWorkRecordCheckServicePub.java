@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationEmployeeInfoR;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ErAlWorkRecordCheckServicePub {
@@ -24,6 +25,9 @@ public interface ErAlWorkRecordCheckServicePub {
 
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, ErAlSubjectFilterConditionDto condition);
+	//
+	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod,
+			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> conditions);
 
 	public Map<ErAlSubjectFilterConditionDto, List<RegulationInfoEmployeeQueryResult>> filterEmployees(Collection<String> employeeIds,
 			List<ErAlSubjectFilterConditionDto> condition, GeneralDate workingDate);

@@ -1,23 +1,30 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 出勤休日区分
  * @author keisuke_hoshina
  */
+@AllArgsConstructor
 public enum AttendanceHolidayAttr {
 
 	/** １日出勤系 */
-	FULL_TIME,
+	FULL_TIME(3, "１日出勤系"),
 	
 	/** 午前出勤系 */
-	MORNING,
+	MORNING(1, "午前出勤系"),
 	
 	/** 午後出勤系 */
-	AFTERNOON,
+	AFTERNOON(2, "午後出勤系"),
 	
 	/** １日休日系 */
-	HOLIDAY,
-	;
+	HOLIDAY(0, "１日休日系");
+	
+	public final int value;
+	
+	public final String name;
+	
 	public boolean isHalfDayWorking() {
 		switch (this) {
 		case FULL_TIME:

@@ -39,7 +39,7 @@
 }
 
 .table-template td {
-	padding: 3px;
+	padding: 2px;
 }
 
 .display-list-label {
@@ -51,7 +51,7 @@
 }
 
 .formula-list {
-	margin: 10px 0 10px 0;
+	margin: 7px 0 7px 0;
 }
 
 .formula-list th {
@@ -66,4 +66,7 @@
 
 div[id^="tab"] {
 	width: 740px;
+}
+#combo-box{
+	width: 230px !important;
 }

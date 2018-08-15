@@ -50,11 +50,14 @@
 			<div class="div_line_col_2">
 				<div id="swb_pre_post_type" class="cf"
 					data-bind="ntsSwitchButton: {
+							name: '#{i18n.getText('KAF011_13')}',
 							options: prePostTypes ,
 							optionsValue: 'code',
 							optionsText: 'text',
 							value: prePostSelectedCode ,
-							enable: enablePrepost() }"></div>
+							enable: enablePrepost(),
+							required:displayPrePostFlg()!=0
+							 }"></div>
 
 			</div>
 

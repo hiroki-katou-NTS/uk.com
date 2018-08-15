@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAl
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErrorRecordImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationEmployeeInfoR;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFilterConditionDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub.ErrorRecordExport;
@@ -68,7 +69,7 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 
 		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.check(EACheckIDs, workingDate,
 				employeeIds);
-		if (listErrorExport == null)
+		if (listErrorExport.isEmpty())
 			return result;
 		else {
 			result = listErrorExport.stream()
@@ -77,7 +78,58 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 			return result;
 		}
 	}
+
+	@Override
+	public Map<String, List<RegulationInfoEmployeeResult>> filterEmployees(DatePeriod targetPeriod,
+			Collection<String> employeeIds, List<AlarmCheckTargetCondition> conditions) {
+		Map<String, List<RegulationEmployeeInfoR>> listTarget = erAlWorkRecordCheckServicePub.filterEmployees(
+				targetPeriod, 
+				employeeIds, 
+				conditions.stream().map(c->convertToAlarmCheckTargetCon(c)).collect(Collectors.toList())
+				);
+		
+		return convertToInfo(listTarget);
+	}
 	
+	private Map<String, List<RegulationInfoEmployeeResult>> convertToInfo(Map<String, List<RegulationEmployeeInfoR>> export) {
+		Map<String, List<RegulationInfoEmployeeResult>> results = new HashMap<>();
+		export.forEach((key, value) ->{
+			//convert list
+			List<RegulationInfoEmployeeResult> listRegulationEmployeeInfoR = value.stream()
+					.map(c->convertToRegulationEmployeeInfoR(c)).collect(Collectors.toList());
+			results.put(key, listRegulationEmployeeInfoR);
+		});
+		
+		return results;
+		
+	}
+	
+	private RegulationInfoEmployeeResult convertToRegulationEmployeeInfoR(RegulationEmployeeInfoR regulationEmployeeInfoR) {
+		return new RegulationInfoEmployeeResult(
+				regulationEmployeeInfoR.getEmployeeId(),
+				"employeeCode",
+				"employeeName",
+				"workplaceCode",
+				"workplaceId",
+				"workplaceName"
+				);
+		
+	}
+	
+	
+	
+	
+	
+	
+	private ErAlSubjectFilterConditionDto convertToAlarmCheckTargetCon(AlarmCheckTargetCondition dto) {
+		ErAlSubjectFilterConditionDto filterCondition = ErAlSubjectFilterConditionDto.builder()
+				.errorAlarmId(dto.getId()).filterByBusinessType(dto.isFilterByBusinessType())
+				.filterByClassification(dto.isFilterByClassification()).filterByEmployment(dto.isFilterByEmployment()).filterByJobTitle(dto.isFilterByJobTitle())
+				.lstBusinessTypeCode(dto.getLstBusinessTypeCode()).lstClassificationCode(dto.getLstClassificationCode()).lstEmploymentCode(dto.getLstEmploymentCode())
+				.lstJobTitleId(dto.getLstJobTitleId()).build();
+		
+		return filterCondition;
+	}
 	
 
 }

@@ -87,12 +87,12 @@ module nts.uk.com.view.cdl008.a {
                 var self = this;
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 }

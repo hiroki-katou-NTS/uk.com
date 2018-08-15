@@ -212,7 +212,17 @@ module nts.uk.ui.menu {
                 if (program) {
                     programName = program.name;
                 }
-            } else if (programName === "" && pg && pg.length > 0) {
+            } else if (programName === "" && pg && pg.length > 1) {
+                let pgParam = uk.localStorage.getItem("UKProgramParam");
+                if (pgParam.isPresent()) {
+                    let program = _.find(pg, function(p) {
+                        return p.param === pgParam.get();
+                    });
+                    
+                    if (program) programName = program.name;
+                    uk.localStorage.removeItem("UKProgramParam");
+                }
+            } else if (pg && pg.length === 1) {
                 programName = pg[0].name;
             }
             

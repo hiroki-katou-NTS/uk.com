@@ -15,7 +15,7 @@ public class ItemsPublicOutput {
 	/**
 	 * 公休繰越数を出力する
 	 */
-	private boolean outputholidayforward;
+	private boolean outputHolidayForward;
 	/**
 	 * 公休月度残を出力する
 	 */
@@ -23,12 +23,12 @@ public class ItemsPublicOutput {
 	/**
 	 * 公休の項目を出力する
 	 */
-	private boolean outputitemsholidays;
+	private boolean outputItemsHolidays;
 	public ItemsPublicOutput(boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays) {
 		super();
-		this.outputholidayforward = outputholidayforward;
+		this.outputHolidayForward = outputholidayforward;
 		this.monthlyPublic = monthlyPublic;
-		this.outputitemsholidays = outputitemsholidays;
+		this.outputItemsHolidays = outputitemsholidays;
 	}
 	
 	

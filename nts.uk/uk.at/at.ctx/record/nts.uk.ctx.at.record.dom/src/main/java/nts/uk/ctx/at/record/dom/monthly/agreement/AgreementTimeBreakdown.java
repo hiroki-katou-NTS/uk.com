@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 
 /**
  * 36協定時間内訳
@@ -95,8 +96,6 @@ public class AgreementTimeBreakdown {
 			MonthlyCalculation monthlyCalculation,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		val companyId = monthlyCalculation.getCompanyId();
-		
 		// 集計結果　初期化
 		this.overTime = new AttendanceTimeMonth(0);
 		this.transferOverTime = new AttendanceTimeMonth(0);
@@ -108,18 +107,14 @@ public class AgreementTimeBreakdown {
 		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
 		
 		// 丸め設定取得
-		RoundingSetOfMonthly roundingSet = new RoundingSetOfMonthly(companyId);
-		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
-		if (roundingSetOpt.isPresent()) roundingSet = roundingSetOpt.get();
+		RoundingSetOfMonthly roundingSet = monthlyCalculation.getCompanySets().getRoundingSet();
 		
-		// 「時間帯超過設定」を取得
-		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
-		if (!outsideOTSetOpt.isPresent()) return;
-		val outsideOTSet = outsideOTSetOpt.get();
+		// 「時間外超過設定」を取得
+		OutsideOTSetting outsideOTSet = monthlyCalculation.getCompanySets().getOutsideOverTimeSet();
 		for (val attendanceItemId : outsideOTSet.getAllAttendanceItemIds()){
 			
 			// 対象項目の時間を取得　と　丸め処理
-			val targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
+			val targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet, true);
 			
 			// 勤怠項目IDに対応する時間を加算する
 			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);

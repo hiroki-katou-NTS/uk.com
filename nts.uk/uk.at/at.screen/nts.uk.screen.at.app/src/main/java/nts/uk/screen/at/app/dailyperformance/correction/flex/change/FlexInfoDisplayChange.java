@@ -59,9 +59,8 @@ public class FlexInfoDisplayChange {
 	private CheckBeforeCalcFlexChange checkBeforeCalcFlex;
 
 	// <<Public>> フレックス情報を表示する
-	public FlexShortageDto flexInfo(String employeeId, GeneralDate baseDate, String roleId,
+	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
 			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results) {
-		String companyId = AppContexts.user().companyId();
 		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId,
 				closingPeriod.get().getClosureEndDate());
 		// 取得しているドメインモデル「日別実績の修正の機能．フレックス勤務者のフレックス不足情報を表示する」をチェックする
@@ -93,10 +92,10 @@ public class FlexInfoDisplayChange {
 //		Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
 //				.findFirst();
 		calcFlex.createWCItem(workConditions);
-		String condition = checkBeforeCalcFlex.getConditionCalcFlex(calcFlex);
+		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex);
 		dataMonth.createRedConditionMessage(condition);
 		dataMonth.createNotForward("");
-		if (condition.equals("0:00")) {
+		if (!condition.equals("0:00")) {
 			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
 		}
 

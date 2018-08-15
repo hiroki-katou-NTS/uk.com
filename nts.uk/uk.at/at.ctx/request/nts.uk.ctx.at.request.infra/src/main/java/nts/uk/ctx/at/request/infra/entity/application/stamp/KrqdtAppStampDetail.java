@@ -27,10 +27,6 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpAppStampDetail krqdpAppStampDetailsPK;
-	
-	@Version
-	@Column(name="EXCLUS_VER")
-	public Long version;
 
 	@Column(name="GO_OUT_REASON_ATR")
 	public Integer goOutReasonAtr;

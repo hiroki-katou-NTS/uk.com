@@ -25,7 +25,6 @@ import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.role.WorkplaceIDImport;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -86,12 +85,20 @@ public class WorkplaceConfigInfoFinder {
 		// Find Workplace Config.
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByBaseDate(companyId, object.getBaseDate());
+
+		if (!optionalWkpConfig.isPresent()) {
+			return Collections.emptyList();
+		}
 		
 		// Find workplace config info.
 		List<String> configHisIds = optionalWkpConfig.get().items().stream().map(item -> item.identifier())
 				.collect(Collectors.toList());
 		List<WorkplaceConfigInfo> workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId,
 				configHisIds, workplaceIdsCanReference);
+
+		if (CollectionUtil.isEmpty(workplaceConfigInfos)) {
+			return Collections.emptyList();
+		}
 		
 		List<WorkplaceHierarchy> workplaceHierarchies = workplaceConfigInfos.stream()
 				.map(info -> info.getLstWkpHierarchy()).flatMap(list -> list.stream())
@@ -139,7 +146,7 @@ public class WorkplaceConfigInfoFinder {
 
 		// filter workplace infor latest
 		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findAll(companyId, startDWkpConfigHist);
-		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
+		return this.createTree(lstHierarchy, lstWkpInfo);
 	}
 
 	/**
@@ -153,10 +160,15 @@ public class WorkplaceConfigInfoFinder {
 	 *            the lst return
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> createTree(Iterator<WorkplaceHierarchy> iteratorWkpHierarchy,
-			List<WorkplaceInfo> lstHWkpInfo, List<WorkplaceHierarchyDto> lstReturn) {
+	private List<WorkplaceHierarchyDto> createTree(List<WorkplaceHierarchy> lstHierarchy,
+			List<WorkplaceInfo> lstHWkpInfo) {
 
-		List<WorkplaceHierarchy> lstWkpHierarchyRemove = new ArrayList<>();
+		List<WorkplaceHierarchyDto> lstReturn = new ArrayList<>();
+		// Higher hierarchyCode has shorter length
+		int highestHierarchy = lstHierarchy.stream()
+				.min((a, b) -> a.getHierarchyCode().v().length() - b.getHierarchyCode().v().length()).get()
+				.getHierarchyCode().v().length();
+		Iterator<WorkplaceHierarchy> iteratorWkpHierarchy = lstHierarchy.iterator();
 
 		// while have workplace
 		while (iteratorWkpHierarchy.hasNext()) {
@@ -175,17 +187,12 @@ public class WorkplaceConfigInfoFinder {
 				dto.setCode(wkpInfo.getWorkplaceCode().v());
 				dto.setName(wkpInfo.getWorkplaceName().v());
 			} else {
-				lstWkpHierarchyRemove.add(wkpHierarchy);
-			}
-
-			// ignore workplace that don't have code and name.
-			if (lstWkpHierarchyRemove.contains(wkpHierarchy)) {
+				// ignore workplace that don't have code and name.
 				continue;
 			}
 
-			dto.setHierarchyCode(new HierarchyCode(wkpHierarchy.getHierarchyCode().v()));
 			// build List
-			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode().v(), Strings.EMPTY);
+			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode().v(), Strings.EMPTY, highestHierarchy);
 		}
 		return lstReturn;
 	}
@@ -203,10 +210,9 @@ public class WorkplaceConfigInfoFinder {
 	 *            the pre code
 	 */
 	private void pushToList(List<WorkplaceHierarchyDto> lstReturn, WorkplaceHierarchyDto dto, String hierarchyCode,
-			String preCode) {
-		String searchCode = preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
+			String preCode, int highestHierarchy) {
 		dto.setChilds(new ArrayList<>());
-		if (hierarchyCode.length() == HIERARCHY_LENGTH) {
+		if (hierarchyCode.length() == highestHierarchy) {
 			// check duplicate code
 			if (lstReturn.isEmpty()) {
 				lstReturn.add(dto);
@@ -219,6 +225,9 @@ public class WorkplaceConfigInfoFinder {
 				}
 			}
 		} else {
+			String searchCode = preCode.isEmpty() ? preCode + hierarchyCode.substring(0, highestHierarchy)
+					: preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
+
 			Optional<WorkplaceHierarchyDto> optWorkplaceFindDto = lstReturn.stream()
 					.filter(item -> item.getHierarchyCode().equals(searchCode)).findFirst();
 
@@ -229,7 +238,7 @@ public class WorkplaceConfigInfoFinder {
 			List<WorkplaceHierarchyDto> currentItemChilds = optWorkplaceFindDto.get().getChilds();
 
 			pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
-					searchCode);
+					searchCode, highestHierarchy);
 		}
 	}
 

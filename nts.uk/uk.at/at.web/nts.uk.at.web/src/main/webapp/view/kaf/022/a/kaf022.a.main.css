@@ -15,19 +15,17 @@ td div {
 
 .a4_7, .a4_8, #a7_row1 {
 	width: 80px;
+	margin: 5px;
 }
 
-#a5_16{
-	width: 135px;
+#a5_16 {
+	width: 85px;
 }
 
 .a4_checkbox .ntsCheckBox span.box {
 	vertical-align: baseline;
 }
 
-.a5_14 .ntsRadioBox span.label {
-	padding-right: 142px;
-}
 
 .a5_24 .ntsRadioBox span.label {
 	padding-right: 34px;
@@ -37,12 +35,17 @@ td div {
 	padding-right: 169px;
 }
 
+#a17_7>label:nth-child(2) {
+	margin-left: 17px;
+}
+
 .a6_text {
 	display: inline-block;
 }
 
 #a7_23 {
 	width: 42px;
+	margin-left: 37px;
 }
 
 #7_27 {
@@ -67,29 +70,18 @@ td div {
 	padding-right: 114px;
 }
 
-#b19 .ntsRadioBox {
-	display: block;
-}
-
 .blockrow.ntsControl {
 	display: block;
 }
 
-.blockrow span.label {
-	padding-right: 111px;
-}
-
-#b29 span.label {
-	padding-right: 111px;
-}
 
 #fixed-table-c span.label {
 	padding-right: 100px;
 }
 
-#e11_5 {
+/* #e11_5 {
 	padding-left: 28px;
-}
+} */
 
 #b18 .ntsRadioBox span.label {
 	padding-right: 72px;
@@ -107,13 +99,6 @@ td div {
 	padding-right: 118px;
 }
 
-.g11-radio_4 .ntsRadioBox span.label {
-	padding-right: 145px;
-}
-
-.g11-radio_5 .ntsRadioBox span.label {
-	padding-right: 96px;
-}
 
 #g24 .ntsRadioBox {
 	display: block;
@@ -127,17 +112,7 @@ td div {
 	padding-right: 73px;
 }
 
-.k12-radio_1 .ntsRadioBox span.label {
-	padding-right: 90px;
-}
 
-.k13-radio_1 .ntsRadioBox span.label {
-	padding-right: 118px;
-}
-
-.k14-radio_1 .ntsRadioBox span.label {
-	padding-right: 90px;
-}
 
 .k16-radio_1 .ntsRadioBox span.label {
 	padding-right: 69px;
@@ -158,9 +133,9 @@ td div {
 	margin-bottom: 20px;
 }
 
-#c27 .ntsRadioBox span.label {
+/* #c27 .ntsRadioBox span.label {
 	padding-right: 66px;
-}
+} */
 
 #c27>label:FIRST-CHILD {
 	width: 151px;
@@ -168,41 +143,19 @@ td div {
 
 #c27>label:NTH-CHILD(2) {
 	width: 209px;
+	/* margin-left: 38px; */
 }
 
-#c29 .ntsRadioBox span.label {
-	padding-right: 51px;
+
+th>div.form-label,
+td>div.form-label {
+	border-width: 0px;
 }
 
-#c30 .ntsRadioBox span.label {
-	padding-right: 51px;
-}
-
-#c31 .ntsRadioBox span.label {
-	padding-right: 51px;
-}
-
-#c32 .ntsRadioBox span.label {
-	padding-right: 51px;
-}
-
-#c49 .ntsRadioBox span.label {
-	padding-right: 51px;
-}
-
-div.form-label {
-	border-width: 0 0 0 0px;
-}
-
-/* #fixed-table-a4 .ntsCheckBox span.box {
-	margin-bottom: 5px;
-} */
 #a7_row1 {
-	position: absolute;
-}
-
-.special-a7 {
-	padding-left: 49px;
+	/* position: absolute; */
+	margin-left: -65px;
+	margin-right: 5px;
 }
 
 #fixed-table-a7 span.label-a27 {
@@ -230,11 +183,15 @@ textarea {
 } */
 .tab-content-1, .tab-content-3, .tab-content-4.tab-content-5,
 	.tab-content-6, .tab-content-7, .tab-content-8, .tab-content-9,
-	.tab-content-10, .tab-content-11, .tab-content-12 {
+	.tab-content-10, .tab-content-11, .tab-content-12, .tab-content-14 {
 	height: 575px;
 }
 
-.tab-content-1, .tab-content-3 {
+.tab-content-14{
+	width: 951px;
+}
+
+.tab-content-1, .tab-content-3, .tab-content-7, .tab-content-14 {
 	overflow-y: scroll;
 }
 
@@ -245,4 +202,119 @@ textarea {
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
 	#tab-10, #tab-11, #tab-12 {
 	width: 970px !important;
+}
+
+div.fixed-table-container {
+	border: 1px solid #ccc;
+}
+
+div.fixed-table-container table[id^="fixed-table"] {
+	width: 100%;
+}
+
+div.fixed-table-container table[id^="fixed-table"] td {
+	border-collapse: collapse;
+	border: 1px solid #ccc;
+}
+
+div.fixed-table-container table[id^="fixed-table"] th {
+	line-height: 32px;
+	font-weight: bold;
+	border-bottom: 1px solid #ccc;
+	font-weight: bold;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody {
+	border-top: 0;
+	display: block;
+	/* overflow-y: scroll; */
+	display: block;
+}
+
+
+div.fixed-table-container table[id^="fixed-table"] tbody tr td .ntsRadioBox {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody tr td:not(.color-header) {
+	padding-left: 10px;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody tr:first-child td {
+	border-top: 0;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody td:first-child {
+	border-left: 0;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody td:last-child {
+	border-right: 0;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody tr:last-child td {
+	border-bottom: 0;
+}
+#tabpanel-a .ntsRadioBox {
+	min-width: 204px;
+}
+
+#tabpanel-a .blockrowg6 .ntsRadioBox{
+	display: block;
+}
+
+#r2_22{
+	width: 150px;
+	margin-left: -56px;
+}
+
+
+#tabpanel-a .blockrowa .ntsRadioBox{
+	min-width: 0px !important;
+	margin-left: 10px;
+}
+
+#fixed-table-k3 > tbody > tr:nth-child(2) > td.k13-radio_1 > div > label:nth-child(2){
+	margin-left: 60px;
+}
+
+#fixed-table-k3 > tbody > tr:nth-child(4) > td.k13-radio_1 > div > label:nth-child(2){
+	margin-left: 5px;
+}
+
+.nts-fixed-table table.fixed-table>tbody>tr>td, .nts-fixed-table table.fixed-table>tbody>tr>th{
+	white-space: normal !important;
+}
+
+#tab-1 > div > div:nth-child(5){
+	margin-bottom: 0px !important;
+}
+
+#tab-1 > div > div:nth-child(6){
+	margin-bottom: 0px !important;
+}
+
+.hdtype{
+	margin-left: 30px;
+}
+
+#fixed-table-a9 > tbody > tr:nth-child(22){
+	border-bottom: 0px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(4){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(5){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(6){
+	border-top: 3px solid #ccc !important;
+}
+
+#fixed-table-a10 > tbody > tr:nth-child(3) > td:nth-child(7){
+	border-top: 3px solid #ccc !important;
 }

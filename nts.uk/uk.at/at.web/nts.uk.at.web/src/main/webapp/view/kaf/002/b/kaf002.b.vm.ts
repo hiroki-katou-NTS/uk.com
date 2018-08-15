@@ -11,11 +11,18 @@ module nts.uk.at.view.kaf002.b {
             stampRequestMode: number = 0;
             screenMode: number = 0;
             employeeID: string = '';
+            date: any = moment(new Date()).format("YYYY/MM/DD");
             enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
             checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 __viewContext.transferred.ifPresent(data => {
+                    if(!nts.uk.util.isNullOrUndefined(data.appDate)){
+                        self.date = moment(data.appDate).format("YYYY/MM/DD");
+                    }
+                    if(!nts.uk.util.isNullOrEmpty(data.employeeIDs)){
+                        self.employeeID = data.employeeIDs[0];
+                    }
                     self.stampRequestMode = data.stampRequestMode;
                     self.screenMode = data.screenMode;
                     return null;
@@ -26,10 +33,12 @@ module nts.uk.at.view.kaf002.b {
                 .done((commonSet: vmbase.AppStampNewSetDto)=>{
                     self.enableSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
                     self.checkBoxValue(commonSet.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
-                    self.employeeID = commonSet.employeeID;
+                    if(nts.uk.util.isNullOrEmpty(self.employeeID)){
+                        self.employeeID = commonSet.employeeID;    
+                    }
                     self.kaf000_a2.getAppDataDate(
                         applicationType, 
-                        moment(new Date()).format("YYYY/MM/DD"),
+                        self.date,
                         true,self.employeeID)
                     .done(()=>{
                         if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalRootState())){
@@ -37,7 +46,7 @@ module nts.uk.at.view.kaf002.b {
                                 nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                             });
                         } else {
-                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true);  
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true, self.employeeID, self.date);  
                         }  
                     }).fail((res1) => { 
                         nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){
@@ -50,6 +59,10 @@ module nts.uk.at.view.kaf002.b {
                     nts.uk.ui.block.invisible();
                     self.kaf000_a2.getAppDataDate(7, value, false,self.employeeID)
                     .done(()=>{
+                        self.cm.getAttendanceItem(
+                            value,
+                            [self.employeeID]    
+                        );
                         nts.uk.ui.block.clear();         
                     }).fail(()=>{
                         nts.uk.ui.block.clear();    
@@ -61,7 +74,7 @@ module nts.uk.at.view.kaf002.b {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                service.newScreenFind()
+                service.newScreenFind(self.employeeID, self.appDate)
                     .done(function(commonSet: vmbase.AppStampNewSetDto) {
                         dfd.resolve(commonSet); 
                     })

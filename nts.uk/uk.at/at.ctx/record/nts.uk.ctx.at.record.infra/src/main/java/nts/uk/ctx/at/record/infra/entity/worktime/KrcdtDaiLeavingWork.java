@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -36,20 +37,24 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "WORK_TIMES")
 	public Integer workTimes;
 
-	@OneToMany(mappedBy = "daiLeavingWork", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "daiLeavingWork", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;
 
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiLeavingWorkPK;
 	}
-
+	
 	public TimeLeavingOfDailyPerformance toDomain() {
-		TimeLeavingOfDailyPerformance domain = new TimeLeavingOfDailyPerformance(this.krcdtDaiLeavingWorkPK.employeeId,
-				new WorkTimes(this.workTimes),
+		return toDomain(this, timeLeavingWorks);
+	}
+
+	public static TimeLeavingOfDailyPerformance toDomain(KrcdtDaiLeavingWork entity, List<KrcdtTimeLeavingWork> timeLeavingWorks) {
+		TimeLeavingOfDailyPerformance domain = new TimeLeavingOfDailyPerformance(entity.krcdtDaiLeavingWorkPK.employeeId,
+				new WorkTimes(entity.workTimes),
 				KrcdtTimeLeavingWork.toDomain(timeLeavingWorks.stream()
 						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 0).collect(Collectors.toList())),
-				this.krcdtDaiLeavingWorkPK.ymd);
+				entity.krcdtDaiLeavingWorkPK.ymd);
 		return domain;
 	}
 

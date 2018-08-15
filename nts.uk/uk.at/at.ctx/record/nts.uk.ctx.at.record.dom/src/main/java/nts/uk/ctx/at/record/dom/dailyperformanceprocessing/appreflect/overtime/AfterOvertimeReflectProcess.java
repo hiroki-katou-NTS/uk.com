@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 public interface AfterOvertimeReflectProcess {
 	/**
@@ -12,15 +13,15 @@ public interface AfterOvertimeReflectProcess {
 	 * @param workTimeCode
 	 * @return
 	 */
-	public boolean checkScheReflect(OvertimeParameter overtimePara);
+	public WorkInfoOfDailyPerformance checkScheReflect(OvertimeParameter overtimePara, WorkInfoOfDailyPerformance dailyInfo);
 	/**
 	 * 予定開始終了時刻の反映
 	 * @param overtimePara
 	 * @param workReflect
 	 * @return
 	 */
-	public void checkScheWorkStarEndReflect(OvertimeParameter overtimePara, 
-			boolean workReflect, WorkTimeTypeOutput workTimeType);
+	public WorkInfoOfDailyPerformance checkScheWorkStarEndReflect(OvertimeParameter overtimePara, 
+			boolean workReflect, WorkTimeTypeOutput workTimeType, WorkInfoOfDailyPerformance dailyInfor);
 	/**
 	 * 設定による予定開始終了時刻を反映できるかチェックする
 	 * @param overtimePara
@@ -45,13 +46,13 @@ public interface AfterOvertimeReflectProcess {
 	 * 残業時間の反映
 	 * @param para
 	 */
-	public void reflectOvertimeFrame(OvertimeParameter para);
+	public AttendanceTimeOfDailyPerformance reflectOvertimeFrame(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
 	 * @param baseDate
 	 * @param timeNight
 	 */
-	public void reflectTimeShiftNight(String employeeId, GeneralDate baseDate, Integer timeNight);
+	public AttendanceTimeOfDailyPerformance reflectTimeShiftNight(String employeeId, GeneralDate baseDate, Integer timeNight, AttendanceTimeOfDailyPerformance attendanceTimeData);
 
 }

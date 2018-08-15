@@ -74,8 +74,8 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
-		builderString.append(
-				"WHERE a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
 		IS_EXIST_CODE = builderString.toString();
 	}
 
@@ -114,9 +114,10 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	}
 
 	@Override
-	public boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+	public boolean checkExistCode(String companyId,DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(IS_EXIST_CODE, long.class)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
+				.setParameter("companyId", companyId).getSingle().get() > 0;
 	}
 
 	private static AuthorityFomatMonthly toDomain(KfnmtAuthorityMonthlyItem kfnmtAuthorityMonthlyItem) {

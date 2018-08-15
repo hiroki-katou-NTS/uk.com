@@ -163,7 +163,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		this.mapSingleDaySchedule.put(workCategoryAtr, entity);
 
 		// Put back to the entities list
-		this.entities.addAll(this.mapSingleDaySchedule.values());
+		this.entities.add(this.mapSingleDaySchedule.get(workCategoryAtr));
 
 	}
 	

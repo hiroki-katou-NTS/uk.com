@@ -94,6 +94,11 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
+	/** /*休暇加算時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = LAYOUT_O, jpPropertyName = HOLIDAY + ADD)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private Integer vacationAddTime;
+	
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {
 		return domain == null ? null
 				: new TotalWorkingTimeDto(getAttendanceTime(domain.getTotalTime()),
@@ -123,7 +128,8 @@ public class TotalWorkingTimeDto implements ItemConst {
 						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
 //						null,
 						HolidayDailyPerformDto.from(domain.getHolidayOfDaily()), 
-						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
+						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(),
+						domain.getVacationAddTime() == null ? null : domain.getVacationAddTime().valueAsMinutes());
 	}
 
 	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
@@ -139,7 +145,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 	}
 
 	public TotalWorkingTime toDomain() {
-		return new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
+		TotalWorkingTime total = new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? null : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
 				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
@@ -167,6 +173,11 @@ public class TotalWorkingTimeDto implements ItemConst {
 													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
 													ConvertHelper.getEnum(shortWorkTime.getAttr(), ChildCareAttribute.class)),
 				dailyOfHoliday == null ? null : dailyOfHoliday.toDomain());
+		
+		if(vacationAddTime != null) {
+			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
+		}
+		return total;
 	}
 
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {

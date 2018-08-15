@@ -20,7 +20,7 @@ public class HdAppSet extends AggregateRoot {
 	private String companyId;
 	// 60H超休を利用する
 	private UseAtr use60h;
-	// 代表者名
+	// 代休名称
 	private ObstacleName obstacleName;
 	// 代休残数不足登録できる
 	private UseAtr regisShortLostHd;
@@ -69,7 +69,7 @@ public class HdAppSet extends AggregateRoot {
 	// 休暇種類
 	private HolidayAppType hdType;
 	// 未選択を表示する
-	private int displayUnselect;
+	private UseAtr displayUnselect;
 	
 	
 	public static HdAppSet createFromJavaType(String companyId,
@@ -106,6 +106,6 @@ public class HdAppSet extends AggregateRoot {
 				StringUtil.isNullOrEmpty(yearResig, true) ? null : new ObstacleName(yearResig), 
 				EnumAdaptor.valueOf(regisShortReser, UseAtr.class),
 				EnumAdaptor.valueOf(hdType, HolidayAppType.class),
-				displayUnselect);
+				EnumAdaptor.valueOf(displayUnselect, UseAtr.class));
 	}
 }

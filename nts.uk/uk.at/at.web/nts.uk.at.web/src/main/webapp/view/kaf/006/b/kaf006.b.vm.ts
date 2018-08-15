@@ -119,11 +119,7 @@ module nts.uk.at.view.kaf006.b{
                     });
                     self.changeWorkHourValue.subscribe((value) => {
                         self.changeDisplayWorkime();
-                         if(value && !nts.uk.util.isNullOrEmpty(data.workTimeCode)){
-                             self.enbbtnWorkTime(true);
-                         }else{
-                             self.enbbtnWorkTime(false);
-                         }
+                        self.enbbtnWorkTime(value);
                     });
                     dfd.resolve(); 
                 })

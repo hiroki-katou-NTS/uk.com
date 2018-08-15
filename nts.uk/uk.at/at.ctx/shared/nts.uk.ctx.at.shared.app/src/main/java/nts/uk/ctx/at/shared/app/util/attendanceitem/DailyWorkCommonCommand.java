@@ -5,9 +5,11 @@ import nts.arc.time.GeneralDate;
 
 public abstract class DailyWorkCommonCommand implements GetSetCommonCommand {
 
+	private boolean toDelete = false;
+
 	@Getter
 	private String employeeId;
-	
+
 	@Getter
 	private GeneralDate workDate;
 
@@ -19,5 +21,13 @@ public abstract class DailyWorkCommonCommand implements GetSetCommonCommand {
 	@Override
 	public void withDate(GeneralDate date) {
 		this.workDate = date;
+	}
+
+	public void shouldDeleteIfNull() {
+		this.toDelete = true;
+	}
+	
+	public boolean shouldDelete() {
+		return this.toDelete;
 	}
 }

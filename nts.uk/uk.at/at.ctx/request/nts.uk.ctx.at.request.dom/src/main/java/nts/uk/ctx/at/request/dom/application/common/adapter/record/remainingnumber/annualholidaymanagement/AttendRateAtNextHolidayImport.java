@@ -18,7 +18,7 @@ public class AttendRateAtNextHolidayImport {
 	private GeneralDate nextHolidayGrantDate;
 
 	/** 次回年休付与日数 */
-	private BigDecimal nextHolidayGrantDays;
+	private Double nextHolidayGrantDays;
 
 	/** 出勤率 */
 	private BigDecimal attendanceRate;

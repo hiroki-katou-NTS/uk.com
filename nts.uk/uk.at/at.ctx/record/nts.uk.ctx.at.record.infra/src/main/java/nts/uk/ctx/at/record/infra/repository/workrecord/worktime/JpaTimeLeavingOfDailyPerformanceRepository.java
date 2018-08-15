@@ -379,18 +379,18 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd) {
-		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
-		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
-		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery = this.queryProxy().query(query.toString(),
-				KrcdtDaiLeavingWork.class);
+		List<Object[]> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiLeavingWork a LEFT JOIN a.timeLeavingWorks c ");
+		query.append(" WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
+		query.append(" AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList().stream().map(f -> f.toDomain())
-					.collect(Collectors.toList()));
+			result.addAll(tQuery.setParameter("employeeId", empIds)
+							.setParameter("start", ymd.start())
+							.setParameter("end", ymd.end())
+							.getList());
 		});
-		return result;
+		return toDomainFromJoin(result);
 	}
 
 	@Override
@@ -401,20 +401,28 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public List<TimeLeavingOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiLeavingWork a ");
-		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiLeavingWork> tQuery = this.queryProxy().query(query.toString(),
-				KrcdtDaiLeavingWork.class);
+		List<Object[]> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiLeavingWork a LEFT JOIN a.timeLeavingWorks c ");
+		query.append(" WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
+		query.append(" AND a.krcdtDaiLeavingWorkPK.ymd IN :date");
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiLeavingWorkPK.employeeId).contains(c.krcdtDaiLeavingWorkPK.ymd))
-					.map(f -> f.toDomain()).collect(Collectors.toList()));
+							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+							.getList().stream()
+							.filter(c -> {
+								KrcdtDaiLeavingWork af = (KrcdtDaiLeavingWork) c[0];
+								return p.get(af.krcdtDaiLeavingWorkPK.employeeId).contains(af.krcdtDaiLeavingWorkPK.ymd);
+							}).collect(Collectors.toList()));
 		});
-		return result;
+		return toDomainFromJoin(result);
+	}
+
+	private List<TimeLeavingOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
+		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.collectingAndThen(Collectors.toList(), 
+					list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtTimeLeavingWork) c[1]).collect(Collectors.toList()))))
+				.entrySet().stream().map(e -> KrcdtDaiLeavingWork.toDomain((KrcdtDaiLeavingWork) e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
 
 }

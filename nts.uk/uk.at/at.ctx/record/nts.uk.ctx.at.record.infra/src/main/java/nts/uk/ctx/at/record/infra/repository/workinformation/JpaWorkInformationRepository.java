@@ -87,6 +87,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		FIND_BY_LIST_SID_AND_PERIOD = builderString.toString();
 	}
+	
+
+	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDaiPerWorkInfoPK.ymd"
+			+ " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd >= :startDate"
+			+ " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
+			+ " AND c.recordWorkWorktypeCode = :workTypeCode"
+			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -120,17 +128,17 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
-		List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiPerWorkInfo af ");
-		query.append("WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
-		query.append("AND af.krcdtDaiPerWorkInfoPK.ymd <= :end AND af.krcdtDaiPerWorkInfoPK.ymd >= :start");
-		TypedQueryWrapper<KrcdtDaiPerWorkInfo> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiPerWorkInfo.class);
+		List<Object[]> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af LEFT JOIN af.scheduleTimes c ");
+		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd <= :end AND af.krcdtDaiPerWorkInfoPK.ymd >= :start");
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds)
 								.setParameter("start", ymds.start())
-								.setParameter("end", ymds.end()).getList(af -> af.toDomain()));
+								.setParameter("end", ymds.end()).getList());
 		});
-		return result;
+		return toDomainFromJoin(result);
 	}
 
 	@Override
@@ -182,19 +190,28 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiPerWorkInfo af ");
-		query.append("WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
-		query.append("AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiPerWorkInfo> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiPerWorkInfo.class);
+		List<Object[]> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af LEFT JOIN af.scheduleTimes c ");
+		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> p.get(c.krcdtDaiPerWorkInfoPK.employeeId).contains(c.krcdtDaiPerWorkInfoPK.ymd))
-								.map(af -> af.toDomain()).collect(Collectors.toList()));
+								.filter(c -> {
+									KrcdtDaiPerWorkInfo af = (KrcdtDaiPerWorkInfo) c[0];
+									return p.get(af.krcdtDaiPerWorkInfoPK.employeeId).contains(af.krcdtDaiPerWorkInfoPK.ymd);
+								}).collect(Collectors.toList()));
 		});
-		return result;
+		return toDomainFromJoin(result);
+	}
+
+	private List<WorkInfoOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
+		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.collectingAndThen(Collectors.toList(), 
+					list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtWorkScheduleTime) c[1]).collect(Collectors.toList()))))
+				.entrySet().stream().map(e -> KrcdtDaiPerWorkInfo.toDomain((KrcdtDaiPerWorkInfo) e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -206,6 +223,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("employeeIds", employeeIds)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+	}
+
+	@Override
+	public List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period) {
+		List<GeneralDate> lstOutput = this.queryProxy()
+				.query(FIND_BY_WORKTYPE_PERIOD, GeneralDate.class)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("employeeId", employeeId)
+				.getList();
+		return lstOutput;
 	}
 
 }

@@ -167,10 +167,11 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 				return true;
 			}
 		}
-
+		
 		ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Jobtitle"),
 				exeId, baseDate, employeeId);
 		this.scheduleErrorLogRepository.add(scheduleErrorLog);
+		
 		return false;
 	}
 
@@ -197,10 +198,11 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 				return true;
 			}
 		}
-
+		
 		ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Workplace"),
 				exeId, baseDate, employeeId);
 		this.scheduleErrorLogRepository.add(scheduleErrorLog);
+		
 		return false;
 
 	}

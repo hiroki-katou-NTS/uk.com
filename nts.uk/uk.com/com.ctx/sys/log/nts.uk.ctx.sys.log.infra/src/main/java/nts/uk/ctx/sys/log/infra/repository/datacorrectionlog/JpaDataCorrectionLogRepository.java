@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.log.infra.repository.datacorrectionlog;
 import java.time.Year;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.processor.DataCorrectionLogWriter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -21,7 +23,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
  */
 
 @Stateless
-public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository {
+public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository, DataCorrectionLogWriter {
 
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, DatePeriod datePeriod) {
@@ -66,11 +68,11 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 			DatePeriod period) {
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
 			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId).getList(c -> c.toDomainToView());
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("startYmd", period.start())
@@ -78,13 +80,13 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 			}
 		} else {
 			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("listEmpId", listEmployeeId)
 						.getList(c -> c.toDomainToView());
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("listEmpId", listEmployeeId)
@@ -92,6 +94,12 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
 			}
 		}
+	}
+
+	@Override
+	public void save(List<DataCorrectionLog> dataCorrectionLog) {
+		List<SrcdtDataCorrectionLog> entities = dataCorrectionLog.stream().map(x -> SrcdtDataCorrectionLog.fromDomain(x)).collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
 	}
 
 }

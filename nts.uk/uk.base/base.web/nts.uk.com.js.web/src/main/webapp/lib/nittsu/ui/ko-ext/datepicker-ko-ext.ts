@@ -32,6 +32,9 @@ module nts.uk.ui.koExtentions {
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
             let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
             var valueType:string = typeof value();
+            
+//            value.extend({ notify: 'always' });
+            
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
             }
@@ -114,10 +117,16 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.on("change", (e) => {
+//                var onChanging = container.data("changed");
+//                if(onChanging === true){
+//                    return;
+//                }
+                
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
@@ -131,10 +140,13 @@ module nts.uk.ui.koExtentions {
                         else
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
+//                    container.data("changed", true);
                     value(result.parsedValue);
+                    value.valueWillMutate();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
+//                    container.data("changed", true);
                     value(newText);
                 }
                 //$input.focus();
@@ -144,7 +156,8 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -204,7 +217,8 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 $input.ntsError('clearKibanError');
                 if (!result.isValid) {
@@ -280,6 +294,7 @@ module nts.uk.ui.koExtentions {
                     $label.text("");
                 }        
             }
+//            container.data("changed", false);
             
             $input.data("required", required);
             

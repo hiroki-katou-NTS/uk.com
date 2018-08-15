@@ -9,9 +9,9 @@ package nts.uk.ctx.sys.assist.dom.category;
 public enum TimeStore {
 	
 	FULL_TIME(0,"Enum_TimeStore_FULL_TIME"),
-	ANNUAL(1,"Enum_TimeStore_ANNUAL"),
+	DAILY(1,"Enum_TimeStore_DAILY"),
 	MONTHLY(2,"Enum_TimeStore_MONTHLY"),
-	DAILY(3,"Enum_TimeStore_DAILY");
+	ANNUAL(3,"Enum_TimeStore_ANNUAL");
 	
 	/** The value. */
 	public final int value;

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo.RawValue.Type;
 
 /**
  * 項目情報
@@ -29,7 +30,7 @@ public class ItemInfo {
 	private final Value valueAfter;
 	
 	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
-		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueAfter, attr));
 	}
 	
 	/**
@@ -56,18 +57,9 @@ public class ItemInfo {
 		
 		/** 表示用に整形された値。画面に表示するときにはこちらを見れば良い。 */
 		private final String viewValue;
-	
+		
 		static Value create(Object value, DataValueAttribute attr) {
-			
-			switch (attr) {
-			case COUNT:
-				return new Value(
-						RawValue.asInteger((Integer) value),
-						value.toString());
-				
-			default:
-				throw new RuntimeException("invalid attribute: " + attr);
-			}
+			return new Value(new RawValue(Type.defaultOf(attr), value), attr.format(value));
 		}
 		
 		/**
@@ -116,6 +108,18 @@ public class ItemInfo {
 			DATE(5),
 			;
 			public final int value;
+			
+			public static Type defaultOf(DataValueAttribute attr) {
+				switch (attr) {
+				case COUNT:
+					return DECIMAL;
+				case MONEY:
+				case TIME:
+					return INTEGER;
+				default:
+					return STRING;
+				}
+			}
 		}
 	}
 }

@@ -59,7 +59,7 @@ module cas009.a.viewmodel {
                     role.roleCode(exist.roleCode)
 
                     role.assignAtr(exist.assignAtr);
-                    role.referFutureDate(exist.referFutureDate);
+                    role.referFutureDate(exist.referFutureDate || false);
                     role.employeeReferenceRange(exist.employeeReferenceRange || 0);
                 } else {
                     role.roleName('');
@@ -154,6 +154,8 @@ module cas009.a.viewmodel {
                             let pinfo: IRole = _.find(resp, (o: IRole) => o.roleId == r.roleId);
                             if (pinfo) {
                                 r.referFutureDate = pinfo.referFutureDate;
+                            } else {
+                                r.referFutureDate = false;
                             }
                         });
                         dfd.resolve();
@@ -195,6 +197,7 @@ module cas009.a.viewmodel {
             _.extend(command, {
                 name: command.roleName,
                 createMode: _.isEmpty(command.roleId),
+                referFutureDate: command.referFutureDate || false,
                 functionAuthList: _.map(command.permisions, m => _.pick(m, ['functionNo', 'available']))
             });
 
@@ -226,32 +229,45 @@ module cas009.a.viewmodel {
                 role: IRole = ko.toJS(self.selectedRole),
                 index: number = _.findIndex(roles, ["roleId", role.roleId]);
 
-            index = _.min([_.size(roles) - 2, index]);
-
+                index = _.min([_.size(roles) - 2, index]);
+    
             if (!_.isNil(role.roleId)) {
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    block.invisible();
-                    fetch.permision.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
-                        info({ messageId: "Msg_16" });
-
-                        self.getListRole().done(() => {
-                            let roles: Array<IRole> = ko.toJS(self.listRole),
-                                selected: IRole = roles[index];
-
-                            if (selected) {
-                                self.selectedRole.roleId(selected.roleId);
-                            } else {
-                                self.selectedRole.roleId(roles[0].roleId);
-                            }
-                        }).always(() => {
+                block.invisible();
+                fetch.permision.check(role.roleId).done(() => {
+                    block.clear();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        block.invisible();
+                        fetch.permision.remove(_.pick(role, ["roleId", "assignAtr"])).done(() => {
+                            info({ messageId: "Msg_16" });
+    
+                            self.getListRole().done(() => {
+                                let roles: Array<IRole> = ko.toJS(self.listRole),
+                                    selected: IRole = roles[index];
+    
+                                if (_.size(roles)) {
+                                    if (selected) {
+                                        self.selectedRole.roleId(selected.roleId);
+                                    } else {
+                                        self.selectedRole.roleId(roles[0].roleId);
+                                    }
+                                    self.selectedRole.roleId.valueHasMutated();
+                                } else {
+                                    self.createNew();
+                                }
+                            }).always(() => {
+                                block.clear();
+                                errors.clearAll();
+                            });
+                        }).fail((error) => {
+                            alertError(error);
                             block.clear();
-                            errors.clearAll();
+                            nts.uk.ui.errors.clearAll();
                         });
-                    }).fail((error) => {
-                        alertError(error);
-                        block.clear();
-                        nts.uk.ui.errors.clearAll();
                     });
+                }).fail((error) => {
+                    alertError(error);
+                    block.clear();
+                    nts.uk.ui.errors.clearAll();
                 });
             }
         }
@@ -309,6 +325,20 @@ module cas009.a.viewmodel {
                             self.permisions.valueHasMutated();
                         });
                     }
+                } else {
+                    fetch.permision.person_info(undefined).done(data => {
+                        if (_.isEqual(v, 0)) {
+                            _.each(data, (p: IPermision) => {
+                                if (_.isEqual(p.functionNo, 11)) {
+                                    p.available = false;
+                                } else {
+                                    p.available = true;
+                                }
+                            });
+                        }
+                        self.permisions(data);
+                        self.permisions.valueHasMutated();
+                    });
                 }
             });
         }

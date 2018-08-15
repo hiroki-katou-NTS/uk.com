@@ -22,29 +22,28 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- H1_1: Button New -->
-				<button tabindex="1" id="btn_001"
-					class="button separate-button fix-button"
+				<button id="btn_001" class="button separate-button fix-button"
 					data-bind="click: newMode, enable: !check()">#{i18n.getText('KMF004_1')}</button>
 				<!-- H1_2: Button Registration -->
-				<button tabindex="2" id="btn_002"
+				<button id="btn_002"
 					class="button proceed separate-button fix-button"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- H1_3: Button Delete -->
-				<button tabindex="3" id="btn_003"
+				<button id="btn_003"
 					class="button danger separate-button fix-button"
 					data-bind="enable: checkDelete, click: remove">#{i18n.getText('KMF004_3')}</button>
 				<!-- H1_4: Button close -->
-				<button tabindex="4" id="btn_004"
-					class="button separate-button fix-button" data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+				<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: close">#{i18n.getText('KMF004_57')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px">
 						<!-- H2_2: List -->
-						<table id="lstRelationship" tabindex="5"
-								data-bind="ntsGridList: {								
+						<table id="lstRelationship"
+							data-bind="ntsGridList: {								
 							height: 362,
-							options: lstRelationship,
+							options: lstRelationship ,
 							optionsValue: 'relationshipCode',
 							columns: gridListColumns,
 							multiple: false,
@@ -61,28 +60,34 @@
 							<td>
 								<!-- H3_1: Label -->
 								<div id="label"
-									data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_9')}</div>
+									data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td>
-								<!-- H3_2: Code --> <input tabindex="6" class="nts-input"
-								id="inpCode"
+								<!-- H3_2: Code --> <input class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: { 	value: codeObject,
 									constraint: 'RelationshipCode',
 									required: true,
-									name: '#[KMF004_136]',
+									name: '#{i18n.getText('KMF004_87')}',
 									immediate: false,
 									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'})),
 									enable: check}" />
-								<!-- H3_3: Name--> <input tabindex="7" class="nts-input"
-								id="inpPattern"
+								<!-- H3_3: Name--> <input class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: { 	value: selectedName,
 									constraint: 'RelationshipName',
-									name: '#[KMF004_8]',
+									name: '#{i18n.getText('KMF004_88')}',
 									required: true,
-									enable: true}, hasFocus: isSelected" />	
+									enable: true}" />
 							</td>
+
 						</tr>
+
 					</table>
+
+					<!-- H3_4 -->
+					<div id="ckbThree"
+						data-bind="ntsCheckBox: { checked: threeParentOrLess }">#{i18n.getText('KMF004_89')}</div>
+
+
 
 				</div>
 			</div>

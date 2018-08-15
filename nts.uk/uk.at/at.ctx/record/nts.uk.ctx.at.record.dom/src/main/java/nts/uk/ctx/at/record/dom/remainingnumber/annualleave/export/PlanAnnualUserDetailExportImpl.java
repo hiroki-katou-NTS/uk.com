@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHo
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class PlanAnnualUserDetailExportImpl implements PlanAnnualUserDetailExport{
 	@Inject
@@ -19,7 +20,7 @@ public class PlanAnnualUserDetailExportImpl implements PlanAnnualUserDetailExpor
 	@Inject
 	private TempAnnualLeaveMngRepository tempMngRepo;
 	@Override
-	public List<GeneralDate> lstPlanDetail(String sId, String workTypeCd, Period dateData) {
+	public List<GeneralDate> lstPlanDetail(String sId, String workTypeCd, DatePeriod dateData) {
 		List<GeneralDate> outData = new ArrayList<>();
 		//ドメインモデル「計画年休管理データ」を取得する
 		List<AnnualHolidayPlanMana> lstPlanMana = planManaRepo.getDataBySidWorkTypePeriod(sId, workTypeCd, dateData);

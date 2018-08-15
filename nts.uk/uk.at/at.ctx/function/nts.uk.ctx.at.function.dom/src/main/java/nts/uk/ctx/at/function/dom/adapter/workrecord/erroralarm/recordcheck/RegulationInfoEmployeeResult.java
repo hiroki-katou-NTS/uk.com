@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
+@AllArgsConstructor
 public class RegulationInfoEmployeeResult {
 
 	/** The employee id. */

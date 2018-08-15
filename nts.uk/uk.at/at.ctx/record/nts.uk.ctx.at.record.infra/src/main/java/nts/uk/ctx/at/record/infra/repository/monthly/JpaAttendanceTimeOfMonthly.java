@@ -21,8 +21,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
@@ -40,6 +38,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalT
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
@@ -389,6 +388,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			else {
 				entityAggrSpecDays.fromDomainForPersist(domainKey, specificDays);
 				entityAggrSpecDaysList.add(entityAggrSpecDays);
+			}
+		}
+		
+		// 縦計：勤務日数：集計特別休暇日数
+		val spcVactDaysMap = vtWorkDays.getSpecialVacationDays().getSpcVacationDaysList();
+		if (entity.krcdtMonAggrSpvcDays == null) entity.krcdtMonAggrSpvcDays = new ArrayList<>();
+		val entityAggrSpvcDaysList = entity.krcdtMonAggrSpvcDays;
+		entityAggrSpvcDaysList.removeIf(a -> {return !spcVactDaysMap.containsKey(a.PK.specialVacationFrameNo);} );
+		for (val spcVactDays : spcVactDaysMap.values()){
+			KrcdtMonAggrSpvcDays entityAggrSpvcDays = new KrcdtMonAggrSpvcDays();
+			val entityAggrSpvcDaysOpt = entityAggrSpvcDaysList.stream()
+					.filter(c -> c.PK.specialVacationFrameNo == spcVactDays.getSpcVacationFrameNo()).findFirst();
+			if (entityAggrSpvcDaysOpt.isPresent()){
+				entityAggrSpvcDays = entityAggrSpvcDaysOpt.get();
+				entityAggrSpvcDays.fromDomainForUpdate(spcVactDays);
+			}
+			else {
+				entityAggrSpvcDays.fromDomainForPersist(domainKey, spcVactDays);
+				entityAggrSpvcDaysList.add(entityAggrSpvcDays);
 			}
 		}
 		

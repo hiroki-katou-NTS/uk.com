@@ -40,8 +40,8 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 													item.getRetrictPreUseFlg(), 
 													item.getRetrictPreDay(),
 													item.getRetrictPreTimeDay(),
-													null,
-													null,
+													item.getPreOtTime(),
+													item.getNormalOtTime(),
 													item.getRetrictPreDay(),
 													item.getRetrictPreUseFlg()), 
 					AfterhandRestriction.toDomain(item.getRetrictPostAllowFutureFlg()));
@@ -55,8 +55,7 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 					obj.getSendMailWhenApproval(), 
 					obj.getSendMailWhenRegister(), 
 					obj.getDisplayAppReason(), 
-					obj.getAppType(), 
-					null);
+					obj.getAppType());
 			appList.add(appDomain);
 		}
 		if(requestOp.isPresent()){

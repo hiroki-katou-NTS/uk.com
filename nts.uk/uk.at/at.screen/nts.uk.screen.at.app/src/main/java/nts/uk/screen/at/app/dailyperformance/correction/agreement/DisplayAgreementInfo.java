@@ -64,15 +64,15 @@ public class DisplayAgreementInfo {
 	}
 	
 	private String convertStateCell(int value) {
-		if (value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value
-				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value
-				|| value == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL.value) {
+		if (value == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL.value
+				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value
+				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP.value) {
 			return EXCEPTION;
 		} else if (value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.value
-				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value) {
+				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value) {
 			return ERROR;
 		} else if (value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM.value
-				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP.value) {
+				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value) {
 			return ALARM;
 		} else {
 			return "";

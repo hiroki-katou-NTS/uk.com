@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2018 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class DeductionTime.
@@ -12,7 +13,17 @@ import lombok.Getter;
 @Getter
 // 控除時間帯(丸め付き)
 public class DeductionTime extends TimeZone {
-
+	
+	/**
+	 * Instantiates a new deduction time.
+	 *
+	 * @param start the start
+	 * @param end the end
+	 */
+	public DeductionTime(TimeWithDayAttr start, TimeWithDayAttr end) {
+		super(start, end);
+	}
+	
 	/**
 	 * Instantiates a new deduction time.
 	 *

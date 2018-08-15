@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
@@ -15,12 +17,14 @@ import nts.uk.ctx.at.record.pub.workrecord.alarmlist.fourweekfourdayoff.AlarmExt
 import nts.uk.ctx.at.record.pub.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class W4D4CheckAcAdapter implements W4D4CheckAdapter {
 
 	@Inject
 	private W4D4CheckPub w4D4CheckPub;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public Optional<ValueExtractAlarm> checkHoliday(String workplaceID, String employeeID, DatePeriod period,List<String> listHolidayWorkTypeCode,List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID) {
 

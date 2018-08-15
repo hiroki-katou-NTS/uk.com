@@ -35,7 +35,7 @@ public class CheckAgreementDefault implements CheckAgreementService {
 		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
 		AgreementTimeStatusOfMonthly status = agreementTimeOfMonthly.getStatus();
 		
-		GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth)+"01", "yyyy/MM/DD");
+		GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0,4) + '-' + String.valueOf(yearMonth).substring(4,6) + '-' +"01", "yyyy-MM-dd");
 		
 		if(status == AgreementTimeStatusOfMonthly.NORMAL ||status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL ) {
 			return Optional.empty();

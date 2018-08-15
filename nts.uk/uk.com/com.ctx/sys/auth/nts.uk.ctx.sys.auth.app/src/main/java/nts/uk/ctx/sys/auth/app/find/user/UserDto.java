@@ -19,15 +19,15 @@ public class UserDto {
  public static UserDto fromDomain(User domain){
 	 return new  UserDto (
 			 domain.getUserID(),
-			 domain.getLoginID().toString(),
-			 domain.getUserName().toString());
+			 domain.getLoginID().v(),
+			 domain.getUserName().isPresent() ? domain.getUserName().get().v() : "");
  }
 
  public static UserDto objDomain(SearchUser domain){
 	 return new  UserDto (
 			 domain.getUserID(),
-			 domain.getLoginID().toString(),
-			 domain.getUserName().toString());
+			 domain.getLoginID(),
+			 domain.getUserName());
  }
 
 }

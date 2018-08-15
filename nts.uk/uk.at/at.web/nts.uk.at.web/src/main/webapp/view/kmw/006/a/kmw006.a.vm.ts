@@ -2,6 +2,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+    import confirmProceed = nts.uk.ui.dialog.confirmProceed;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -210,24 +211,26 @@ module nts.uk.at.view.kmw006.a.viewmodel {
 
         private executeClick() {
             let self = this;
-            block.invisible();
-            service.checkStatus(self.selectedClosureId()).done((result) => {
-                if (result) {
-                    let periodStart: string = result.periodStart;
-                    let periodEnd: string = result.periodEnd;
-                    result.periodStart = moment.utc(periodStart, "YYYY/MM/DD").toISOString();
-                    result.periodEnd = moment.utc(periodEnd, "YYYY/MM/DD").toISOString();
-                    localStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
-                    localStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
-                    localStorage.setItem("MonthlyClosureId", result.closureId);
-                    localStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
-                }
-                self.openKmw006fDialog(result);
-            }).fail((error) => {
-                alertError(error);
-            }).always(() => {
-                block.clear();
-            });
+            confirmProceed({ messageId: "Msg_1355" }).ifYes(() => {
+                block.invisible();
+                service.checkStatus(self.selectedClosureId()).done((result) => {
+                    if (result) {
+                        let periodStart: string = result.periodStart;
+                        let periodEnd: string = result.periodEnd;
+                        result.periodStart = moment.utc(periodStart, "YYYY/MM/DD").toISOString();
+                        result.periodEnd = moment.utc(periodEnd, "YYYY/MM/DD").toISOString();
+                        localStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
+                        localStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
+                        localStorage.setItem("MonthlyClosureId", result.closureId);
+                        localStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
+                    }
+                    self.openKmw006fDialog(result);
+                }).fail((error) => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            })
         }
 
         private openKmw006fDialog(params: any) {

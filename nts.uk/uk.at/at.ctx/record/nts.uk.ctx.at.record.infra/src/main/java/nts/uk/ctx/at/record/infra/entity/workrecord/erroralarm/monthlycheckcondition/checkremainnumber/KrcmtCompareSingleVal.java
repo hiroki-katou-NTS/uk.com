@@ -58,7 +58,7 @@ public class KrcmtCompareSingleVal extends UkJpaEntity implements Serializable {
 				errorAlarmCheckID,
 				domain.getCompareOpertor().value,
 				domain.getValue().getDaysValue(),
-				!domain.getValue().getTimeValue().isPresent()?null:domain.getValue().getTimeValue().get()
+				domain.getValue().getTimeValue() ==null?null:(!domain.getValue().getTimeValue().isPresent()?null:domain.getValue().getTimeValue().get())
 				);
 		
 	}

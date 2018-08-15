@@ -10,18 +10,19 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
+/** 勤怠打刻 */
 @AllArgsConstructor
 @NoArgsConstructor
 public class TimeStampDto implements ItemConst {
 
 	/** 時刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CLOCK)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ROUNDING)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */

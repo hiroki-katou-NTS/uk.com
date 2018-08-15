@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
  */
 public interface WPBonusPaySettingRepository {
 
-	List<WorkplaceBonusPaySetting> getListSetting(List<WorkplaceId> lstWorkplace);
+	List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> lstWorkplace);
 
 	void addWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting);
 
@@ -25,6 +25,6 @@ public interface WPBonusPaySettingRepository {
 
 	void removeWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting);
 	
-	Optional<WorkplaceBonusPaySetting> getWPBPSetting(WorkplaceId WorkplaceId);
+	Optional<WorkplaceBonusPaySetting> getWPBPSetting(String companyId, WorkplaceId WorkplaceId);
 
 }

@@ -22,18 +22,18 @@ public class UpdateHdAppSetCommandHandler extends CommandHandler<HdAppSetCommand
 	protected void handle(CommandHandlerContext<HdAppSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		HdAppSetCommand data = context.getCommand();
-		Optional<HdAppSet> hdApp = hdRep.getAll();
+//		Optional<HdAppSet> hdApp = hdRep.getAll();
 		HdAppSet hdAppSet = HdAppSet.createFromJavaType(companyId, 
 				data.use60h, data.obstacleName, data.regisShortLostHd, data.hdName, data.regisLackPubHd, 
 				data.changeWrkHour, data.ckuperLimit, data.actualDisp, data.wrkHours, data.pridigCheck, 
 				data.yearHdName, data.regisNumYear, data.furikyuName, data.regisInsuff, data.useGener, 
 				data.useYear, data.timeDigest, data.absenteeism, data.concheckOutLegal, data.specialVaca,
-				data.concheckDateRelease, data.appDateContra, data.yearResig, data.regisShortReser, 0, 0);
-		if(hdApp.isPresent()){
+				data.concheckDateRelease, data.appDateContra, data.yearResig, data.regisShortReser, 0, data.displayUnselect);
+//		if(hdApp.isPresent()){
 			hdRep.update(hdAppSet);
-			return;
-		}
-		hdRep.insert(hdAppSet);
+//			return;
+//		}
+//		hdRep.insert(hdAppSet);
 	}
 	
 }

@@ -78,8 +78,8 @@
 							style="width: 280px;"></div>
 
 						<div tabindex="8">
-							<table id="single-tree-grid" class="cf"
-								data-bind="ntsTreeGridView:{
+							<div id="single-tree-grid" class="cf"
+								data-bind="ntsTreeDragAndDrop:{
 								width: treeStyle.width,
 								height: treeStyle.height,
 								name: '#[CMM011_8]',
@@ -92,8 +92,9 @@
 								enable: true,
 								extColumns: treeColumns,
 								initialExpandDepth: 0,
-								showCheckBox: false}">
-							</table>
+								showCheckBox: false}"
+								data-scroll="true" style="height: 504px;">
+							</div>
 						</div>
 					</div>
 					<!-- END A3_1 ~ A4_4 -->

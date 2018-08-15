@@ -47,7 +47,9 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
@@ -60,6 +62,8 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTim
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -71,6 +75,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWork
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * 実装：月別集計が必要とするリポジトリ
@@ -130,6 +136,18 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 年休付与残数データ */
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaGrantRemData;
+	/** 積立年休付与残数データ */
+	@Inject
+	private RervLeaGrantRemDataRepository rsvLeaGrantRemData;
+	/** 年休社員基本情報 */
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfo;
+	/** 年休付与テーブル設定 */
+	@Inject
+	private YearHolidayRepository yearHoliday;
+	/** 勤続年数テーブル */
+	@Inject
+	private LengthServiceRepository lengthService;
 
 	/** 勤怠項目値変換 */
 	@Inject
@@ -263,6 +281,12 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 年休設定 */
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
+	/** 積立年休設定 */
+	@Inject
+	private RetentionYearlySettingRepository retentionYearlySet;
+	/** 雇用積立年休設定 */
+	@Inject
+	private EmploymentSettingRepository employmentSet;
 	
 	/** 週開始の取得 */
 	@Inject

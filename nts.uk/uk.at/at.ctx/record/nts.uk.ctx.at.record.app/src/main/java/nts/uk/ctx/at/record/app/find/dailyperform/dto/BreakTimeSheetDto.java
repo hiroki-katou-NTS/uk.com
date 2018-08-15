@@ -16,12 +16,12 @@ public class BreakTimeSheetDto implements ItemConst {
 
 	/** 開始: 勤怠打刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = START)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer start;
 
 	/** 終了: 勤怠打刻 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = END)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer end;
 
 	/** 休憩時間: 勤怠打刻 */

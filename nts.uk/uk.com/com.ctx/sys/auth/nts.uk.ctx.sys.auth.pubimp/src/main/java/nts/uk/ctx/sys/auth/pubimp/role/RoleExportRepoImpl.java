@@ -50,7 +50,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		List<Role> lstRole = roleRepo.findByListRoleId(companyId, lstRoleId);
 		if (!lstRole.isEmpty()) {
 			return lstRole.stream().map(role -> {
-				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value);
 			}).collect(Collectors.toList());
 		}
 		return null;
@@ -87,7 +88,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		List<Role> lstRole = roleRepo.findById(roleId);
 		if (!lstRole.isEmpty()) {
 			return lstRole.stream().map(role -> {
-				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v(), role.getCompanyId());
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value);
 			}).collect(Collectors.toList());
 		}
 		return null;
@@ -249,7 +251,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		Role role = optRole.get();
 
 		return Optional
-				.of(new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v()));
+				.of(new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value));
 	}
 
 }

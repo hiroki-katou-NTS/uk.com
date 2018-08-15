@@ -20,17 +20,16 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class Workplace.
  */
 // 職場
+@Getter
 public class Workplace extends AggregateRoot
 		implements PersistentResidentHistory<WorkplaceHistory, DatePeriod, GeneralDate> {
 
 	/** The company id. */
 	// 会社ID
-	@Getter
 	private String companyId;
 
 	/** The workplace id. */
 	// 職場ID
-	@Getter
 	private String workplaceId;
 
 	/** The workplace history. */

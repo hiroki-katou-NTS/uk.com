@@ -23,12 +23,12 @@ module nts.uk.ui {
             this.systemName = ko.observable("");
             this.programName = ko.observable("");
             this.title = ko.computed(() => {
-                let pgName = this.programName();
-                if (pgName === "" || pgName === undefined || pgName === null) {
-                    return this.systemName();
-                }
+//                let pgName = this.programName();
+//                if (pgName === "" || pgName === undefined || pgName === null) {
+                return this.systemName();
+//                }
                 
-                return this.programName() + " - " + this.systemName();
+//                return this.programName() + " - " + this.systemName();
             });
             this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
         }
@@ -66,7 +66,7 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
-            
+            nts.uk.cookie.remove("startfrommenu", {path: "/"});
             //avoid page content overlap header and function area
             var content_height=20;
             if ($("#header").length != 0) {
@@ -120,7 +120,8 @@ module nts.uk.ui {
             "/view/common/error/",
             "/view/spr/index.xhtml",
             "/view/ccg/007/",
-            "/view/kdw/003/a/index.xhtml"
+            "/view/kdw/003/a/index.xhtml",
+            "/view/ccg/033/index.xhtml"
         ];
         
         let cantCall = function() {

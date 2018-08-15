@@ -18,14 +18,14 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds";
 
 	@Override
-	public List<WorkplaceBonusPaySetting> getListSetting(List<WorkplaceId> ids) {
+	public List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> ids) {
 		return queryProxy().query(SELECT_BY_LIST_ID, KbpstWPBonusPaySetting.class).setParameter("workplaceIds", ids)
 				.getList(m -> toDomain(m));
 	}
 
 	@Override
 	public void addWPBPSetting(WorkplaceBonusPaySetting domain) {
-		Optional<WorkplaceBonusPaySetting> update = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId()));
+		Optional<WorkplaceBonusPaySetting> update = getWPBPSetting(domain.getCompanyId(), new WorkplaceId(domain.getWorkplaceId()));
 
 		if (!update.isPresent()) {
 			this.commandProxy().insert(toEntity(domain));
@@ -41,17 +41,17 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 
 	@Override
 	public void removeWPBPSetting(WorkplaceBonusPaySetting domain) {
-		Optional<WorkplaceBonusPaySetting> deleteable = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId()));
+		Optional<WorkplaceBonusPaySetting> deleteable = getWPBPSetting(domain.getCompanyId(), new WorkplaceId(domain.getWorkplaceId()));
 
 		if (deleteable.isPresent()) {
 			this.commandProxy().remove(KbpstWPBonusPaySetting.class,
-					new KbpstWPBonusPaySettingPK(domain.getWorkplaceId()));
+					new KbpstWPBonusPaySettingPK(domain.getWorkplaceId(), domain.getCompanyId()));
 		}
 	}
 
 	@Override
-	public Optional<WorkplaceBonusPaySetting> getWPBPSetting(WorkplaceId id) {
-		Optional<KbpstWPBonusPaySetting> entity = queryProxy().find(new KbpstWPBonusPaySettingPK(id.v()),
+	public Optional<WorkplaceBonusPaySetting> getWPBPSetting(String companyId, WorkplaceId id) {
+		Optional<KbpstWPBonusPaySetting> entity = queryProxy().find(new KbpstWPBonusPaySettingPK(id.v(), companyId),
 				KbpstWPBonusPaySetting.class);
 
 		if (entity.isPresent()) {
@@ -62,12 +62,12 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 	}
 
 	private KbpstWPBonusPaySetting toEntity(WorkplaceBonusPaySetting domain) {
-		return new KbpstWPBonusPaySetting(new KbpstWPBonusPaySettingPK(domain.getWorkplaceId().toString()),
+		return new KbpstWPBonusPaySetting(new KbpstWPBonusPaySettingPK(domain.getWorkplaceId().toString(), domain.getCompanyId()),
 				domain.getBonusPaySettingCode().toString());
 	}
 
 	private WorkplaceBonusPaySetting toDomain(KbpstWPBonusPaySetting entity) {
-		return WorkplaceBonusPaySetting.createFromJavaType(entity.kbpstWPBonusPaySettingPK.workplaceId,
+		return WorkplaceBonusPaySetting.createFromJavaType(entity.kbpstWPBonusPaySettingPK.companyId, entity.kbpstWPBonusPaySettingPK.workplaceId,
 				entity.bonusPaySettingCode);
 
 	}

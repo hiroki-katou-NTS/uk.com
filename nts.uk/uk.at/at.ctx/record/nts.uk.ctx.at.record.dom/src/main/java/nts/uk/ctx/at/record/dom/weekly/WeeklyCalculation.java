@@ -169,7 +169,8 @@ public class WeeklyCalculation implements Cloneable {
 				weekPeriod, workingSystem, this.regAndIrgTime, this.flexTime);
 		
 		// 36協定時間
-		this.agreementTime.aggregate(yearMonth, weekPeriod, aggregateAtr, this, companySets, repositories);
+		// ※　一旦、不要とする。2018.7.22 del shuichi_ishida
+		//this.agreementTime.aggregate(yearMonth, weekPeriod, aggregateAtr, this, companySets, repositories);
 	}
 	
 	/**

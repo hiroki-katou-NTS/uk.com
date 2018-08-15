@@ -155,34 +155,39 @@ module nts.uk.pr.view.ccg007.d {
                 submitData.contractPassword = _.escape(self.contractPassword());
                 blockUI.invisible();
                 service.submitLogin(submitData).done(function(messError: CheckChangePassDto) {
-                    //check MsgError
-                    if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
-                        if (messError.showChangePass){
-                            self.OpenDialogE();
-                        } else {
-                            nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
-                            self.password("");
-                        }
-                    } else {
-                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
-                        //Remove LoginInfo
-                        nts.uk.characteristics.remove("form3LoginInfo").done(function() {
-                            //check SaveLoginInfo
-                            if (self.isSaveLoginInfo()) {
-                                //Save LoginInfo
-                                nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) })
-                                    .done(function() {
-                                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                                    });
+                    if (messError.showContract) {
+                        self.openContractAuthDialog();
+                    }
+                    else {
+                        //check MsgError
+                        if (!nts.uk.util.isNullOrEmpty(messError.msgErrorId) || messError.showChangePass) {
+                            if (messError.showChangePass) {
+                                self.OpenDialogE();
                             } else {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                nts.uk.ui.dialog.alertError({ messageId: messError.msgErrorId });
+                                self.password("");
                             }
-                        });
+                        } else {
+                            nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
+                            //Remove LoginInfo
+                            nts.uk.characteristics.remove("form3LoginInfo").done(function() {
+                                //check SaveLoginInfo
+                                if (self.isSaveLoginInfo()) {
+                                    //Save LoginInfo
+                                    nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) })
+                                        .done(function() {
+                                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                        });
+                                } else {
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                }
+                            });
+                        }
                     }
                     blockUI.clear();
                 }).fail(function(res:any) {
                     //Return Dialog Error
-                    if (!nts.uk.util.isNullOrEmpty(res.parameterIds)){
+                    if (!_.isEqual(res.message, "can not found message id")){
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                     } else {
                        nts.uk.ui.dialog.alertError(res.messageId);

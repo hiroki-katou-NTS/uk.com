@@ -30,4 +30,12 @@ public interface WorkInformationRepository {
 	void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
 	void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
+	/**
+	 * 
+	 * @param employeeId 社員ID
+	 * @param workTypeCode 勤務実績の勤務情報．勤務種類コード
+	 * @param period 開始日<=年月日<=終了日
+	 * @return
+	 */
+	List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period);
 }

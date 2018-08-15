@@ -4,13 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.ac.executionlog;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScShortWorkTimeAdapterImpl.
@@ -28,42 +28,36 @@ public class ScShortWorkTimeAdapterImpl implements ScShortWorkTimeAdapter {
 	/** The short work time pub. */
 	@Inject
 	private ShShortWorkTimePub shortWorkTimePub;
+
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter#
-	 * findShortWorkTime(java.lang.String, nts.arc.time.GeneralDate)
-	 */
 	@Override
-	public Optional<ShortWorkTimeDto> findShortWorkTime(String employeeId, GeneralDate baseDate) {
-		return this.shortWorkTimePub.findShortWorkTime(employeeId, baseDate)
-				.map(export -> this.convertExport(export));
+	public List<ShortWorkTimeDto> findShortWorkTimes(List<String> empIds, DatePeriod period) {
+		return this.shortWorkTimePub.findShortWorkTimes(empIds, period).stream()
+				.map(export -> this.convertExport(export)).collect(Collectors.toList());
 	}
-	
-	
+
 	/**
 	 * Convert export.
 	 *
-	 * @param export the export
+	 * @param export
+	 *            the export
 	 * @return the short work time dto
 	 */
-	private ShortWorkTimeDto convertExport(ShShortWorkTimeExport export){
+	private ShortWorkTimeDto convertExport(ShShortWorkTimeExport export) {
 		ShortWorkTimeDto dto = new ShortWorkTimeDto();
 		dto.setChildCareAtr(ChildCareAtr.valueOf(export.getChildCareAtr().value));
 		dto.setEmployeeId(export.getEmployeeId());
 		dto.setPeriod(export.getPeriod());
 		dto.setLstTimeSlot(export.getLstTimeSlot().stream()
-				.map(exportChildCare -> this.convertChildCareExport(exportChildCare))
-				.collect(Collectors.toList()));
+				.map(exportChildCare -> this.convertChildCareExport(exportChildCare)).collect(Collectors.toList()));
 		return dto;
 	}
-	
+
 	/**
 	 * Convert child care export.
 	 *
-	 * @param export the export
+	 * @param export
+	 *            the export
 	 * @return the short child care frame dto
 	 */
 	private ShortChildCareFrameDto convertChildCareExport(ShShortChildCareFrameExport export) {
@@ -73,5 +67,4 @@ public class ScShortWorkTimeAdapterImpl implements ScShortWorkTimeAdapter {
 		dto.setTimeSlot(export.getTimeSlot());
 		return dto;
 	}
-
 }

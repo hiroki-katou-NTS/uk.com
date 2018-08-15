@@ -33,4 +33,5 @@ public interface CategoryRepository
 	List<Category> findByPaymentAvailabilityAndCodeName(String keySearch,List<String> categoriesIgnore);
 	List<Category> findByPossibilitySystemAndCodeName(String keySearch,List<String> categoriesIgnore);
 	List<Category> findBySchelperSystemAndCodeName(String keySearch,List<String> categoriesIgnore);
+	List<Category> findById(String storeProcessingId, int selectionTargetForRes);
 }

@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
 import java.util.List;
-import java.util.Set;
 
 import lombok.Data;
 
@@ -19,5 +18,9 @@ public class PSheet {
 		this.sheetNo = sheetNo;
 		this.sheetName = sheetName;
 		this.displayItems = displayItems;
+	}
+	
+	public PSheet() {
+		super();
 	}
 }

@@ -79,6 +79,11 @@ module kcp.share.tree {
         isDialog: boolean;
 
         /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
+
+        /**
          * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
@@ -160,6 +165,7 @@ module kcp.share.tree {
         isMultipleUse: boolean;
         isMultiSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
@@ -230,13 +236,10 @@ module kcp.share.tree {
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
-            if (data.systemType) {
-                self.systemType =  data.systemType;
-            } else {
-                self.systemType = SystemType.ADMINISTRATOR;
-            }
+            self.systemType =  data.systemType;
 
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
@@ -268,6 +271,11 @@ module kcp.share.tree {
                 }
                 self.createGlobalVarDataList();
             });
+
+            // validate baseDate
+            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+                return;
+            }
 
             // Find data.
             const param = <service.WorkplaceParam>{};
@@ -458,16 +466,24 @@ module kcp.share.tree {
         private initSelectedValue() {
             let self = this;
             if (_.isEmpty(self.itemList())) {
+                self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if(_.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
+                        break;
+                    }
+
                     if (self.isMultiSelect) {
-                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                        self.selectedWorkplaceIds(self.data.selectedWorkplaceId());
+                    } else {
+                        const selectedCode = _.isArray(self.data.selectedWorkplaceId()) ?
+                            self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
+                        self.selectedWorkplaceIds(selectedCode);
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
-                        self.selectedWorkplaceIds('');
-                    }
+
                     break;
                 case SelectionType.SELECT_ALL:
                     if (self.isMultiSelect) {
@@ -592,6 +608,19 @@ module kcp.share.tree {
             self.$input.load(webserviceLocator, function() {
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
+
+                
+                let found;
+                const flat = function(wk) {
+                    return [wk.workplaceId, _.flatMap(wk.childs, flat)];
+                }
+                const selectableList = _.flatMapDeep(self.itemList(), flat);
+                if (self.isMultiSelect) {
+                    found = _.filter(self.selectedWorkplaceIds(), id => _.includes(selectableList, id));
+                } else {
+                    found = _.find(selectableList, id => id == self.selectedWorkplaceIds());
+                }
+                self.selectedWorkplaceIds(found);
                 
                 let options = {
                     width: self.treeStyle.width,
@@ -618,14 +647,29 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
                 // set selected workplaced
-                $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', self.selectedWorkplaceIds());
+                if (!_.isNil(self.selectedWorkplaceIds())) {
+                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
+                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
+                }
 
                 // init event selected changed
                 self.initEvent();
+
+                // fix bug scroll on tree
+                _.defer(() => {
+                    $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind');
+                });
 
                 // defined function get data list.
                 self.createGlobalVarDataList();
@@ -723,7 +767,9 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
+            let self = this;
             this.selectedWorkplaceIds(this.listWorkplaceId);
+            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
         }
 
         /**
@@ -737,6 +783,7 @@ module kcp.share.tree {
             self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
             if (listSubWorkplaceId.length > 0) {
                 self.selectedWorkplaceIds(listSubWorkplaceId);
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
             }
         }
         /**
@@ -873,6 +920,11 @@ module kcp.share.tree {
          * Find workplace list.
          */
         export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+            if (_.isNil(param.systemType)) {
+                let dfd = $.Deferred<any>();
+                dfd.resolve([]);
+                return dfd.promise();
+            }
             return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
         }
 

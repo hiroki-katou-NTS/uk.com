@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
+//import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -122,8 +122,8 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
 	
-	@Inject
-	private YearServicePerRepository yearServiceRepo;
+//	@Inject
+//	private YearServicePerRepository yearServiceRepo;
 	
 	private static final Map<String, Class<?>> enumMap;
 	static {
@@ -345,13 +345,13 @@ public class ComboBoxRetrieveFactory {
 					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
 							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
-		case "M00017":
-			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
-			if (specialHolidayCode == null ) return new ArrayList<>();
-			return yearServiceRepo.findAllPer(companyId, specialHolidayCode).stream()
-					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
-							yearServicePer.getYearServiceName().v()))
-					.collect(Collectors.toList());
+//		case "M00017":
+//			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
+//			if (specialHolidayCode == null ) return new ArrayList<>();
+//			return yearServiceRepo.findAllPer(companyId, specialHolidayCode).stream()
+//					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
+//							yearServicePer.getYearServiceName().v()))
+//					.collect(Collectors.toList());
 		default:
 			break;
 		}

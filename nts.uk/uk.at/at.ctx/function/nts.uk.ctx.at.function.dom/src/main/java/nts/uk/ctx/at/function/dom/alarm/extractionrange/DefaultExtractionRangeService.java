@@ -70,7 +70,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
 				
-			} else if(c.isMonthly()) {
+			} else if(c.isMonthly() || c.isMultipleMonth()) {
 				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
 				result.add(other);
 				

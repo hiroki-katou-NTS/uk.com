@@ -57,7 +57,7 @@
 								<div data-bind="with:maxContinuousDay">
 									<input tabindex="3" class="nts-input"
 										data-bind="ntsNumberEditor:{
-										name: '#[KMK011_4]',
+										name: '#[KDW010_4]',
 										constraint:'ContinuousVacationDays',
                                          value: value,
                                          required: true,
@@ -78,6 +78,7 @@
 
 							<td><input class="nts-input"
 								data-bind="ntsTextEditor:{
+										 name: '#[KDW010_5]',
                                          value: joinNameTargetWorkType,
                                          required: true,
                                          enable: enableState,
@@ -111,6 +112,7 @@
 							<td><textarea tabindex="6" rows="6" cols="31"
 									id="input-text"
 									data-bind="ntsMultilineEditor:{
+									name:'#[KDW010_8]',
 									value:displayMessege,
 									constraint:'DisplayMessage',
 									required:true,

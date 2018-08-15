@@ -18,6 +18,10 @@ import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLea
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLeaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.NursingLeaveFinder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktype.absenceframe.AbsenceFrameDto;
+import nts.uk.ctx.at.shared.app.find.worktype.absenceframe.AbsenceFrameFinder;
+import nts.uk.ctx.at.shared.app.find.worktype.specialholidayframe.SpecialHolidayFrameDto;
+import nts.uk.ctx.at.shared.app.find.worktype.specialholidayframe.SpecialHolidayFrameFinder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -34,6 +38,14 @@ public class NursingLeaveWs extends WebService {
     /** The nursing finder. */
     @Inject
     private NursingLeaveFinder nursingFinder;
+    
+    /** The special holiday frame finder. */
+    @Inject
+    private SpecialHolidayFrameFinder specialHolidayFrameFinder;
+    
+    /** The absence frame finder. */
+    @Inject
+    private AbsenceFrameFinder absenceFrameFinder;
     
     /**
      * Find manage distinct.
@@ -77,5 +89,27 @@ public class NursingLeaveWs extends WebService {
     @Path("find/listworktypecode")
     public List<String> findListWorkTypeCodeByCompanyId() {
         return this.nursingFinder.findListWorkTypeCodeByCompanyId();
+    }
+    
+    /**
+     * Find all special holiday.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("find/allspecialholiday")
+    public List<SpecialHolidayFrameDto> findAllSpecialHoliday() {
+    	return this.specialHolidayFrameFinder.findByCompanyIdWithoutEventAndSpecialHoliday();
+    }
+    
+    /**
+     * Find all absence frame.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("find/allabsenceframce")
+    public List<AbsenceFrameDto> findAllAbsenceFrame() {
+    	return this.absenceFrameFinder.findByCompanyIdWithoutEventAndSpecialHoliday();
     }
 }

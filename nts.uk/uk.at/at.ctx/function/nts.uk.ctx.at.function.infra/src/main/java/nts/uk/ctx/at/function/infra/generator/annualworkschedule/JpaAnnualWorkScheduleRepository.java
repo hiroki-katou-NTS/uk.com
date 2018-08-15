@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.adapter.SortingConditionOrderImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
@@ -185,7 +186,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	}
 
 	/**
-	 * 社員を並び替える
+	 * 社員を並び替える(任意)
 	 * 
 	 * @param employeeIds
 	 *            List＜社員ID＞
@@ -194,36 +195,19 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @return
 	 */
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
-		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
+		List<SortingConditionOrderImport> ordersImport = new ArrayList<>();
+		ordersImport.add(new SortingConditionOrderImport(1, RegularSortingTypeImport.WORKPLACE));
+		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, ordersImport,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
 		return listEmp;
 	}
 
 	private void sortEmployees(ExportData exportData, LocalDate endYmd) {
 		List<String> listEmpSorted = new ArrayList<>();
-		if (exportData.getPageBreak().equals(PageBreakIndicator.WORK_PLACE)) {
-			// Get all workplace
-			List<String> listWorkPlace = new ArrayList<>();
-			for (Map.Entry<String, EmployeeData> empData : exportData.getEmployees().entrySet()) {
-				listWorkPlace.add(empData.getValue().getEmployeeInfo().getWorkplaceCode());
-			}
-			// Distinct, sort work place
-			listWorkPlace = listWorkPlace.stream().distinct().sorted().collect(Collectors.toList());
-			// Sort employee foreach workplace
-			for (String wkp : listWorkPlace) {
-				List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream()
-						.filter(x -> x.getValue().getEmployeeInfo().getWorkplaceCode().equals(wkp)).map(x -> x.getKey())
-						.collect(Collectors.toList());
-				List<String> listEmp = this.sortEmployees(listEmpIdOrgin, endYmd);
-				listEmpSorted.addAll(listEmp);
-			}
-		} else {
-			List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream().map(x -> x.getKey())
-					.collect(Collectors.toList());
-			List<String> listEmp = this.sortEmployees(listEmpIdOrgin, endYmd);
-			listEmpSorted.addAll(listEmp);
-		}
-		// remove empId no data
+		List<String> listEmpIdOrgin = exportData.getEmployees().entrySet().stream().map(x -> x.getKey())
+				.collect(Collectors.toList());
+		List<String> listEmp = this.sortEmployees(listEmpIdOrgin, endYmd);
+		listEmpSorted.addAll(listEmp);
 		listEmpSorted.removeAll(exportData.getEmployeeIdsError());
 		exportData.setEmployeeIds(listEmpSorted);
 	}

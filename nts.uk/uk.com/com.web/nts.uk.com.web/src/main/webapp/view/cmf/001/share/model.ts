@@ -158,7 +158,7 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingName: string;
         deleteExistData: KnockoutObservable<number>;
         deleteExistDataMethod: KnockoutObservable<number> = ko.observable(null);
-        acceptMode: KnockoutObservable<number> = ko.observable(0);
+        acceptMode: KnockoutObservable<number> = ko.observable(null);
         csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
         csvDataStartLine: KnockoutObservable<number> = ko.observable(null);
         characterCode: KnockoutObservable<number> = ko.observable(null);
@@ -178,8 +178,6 @@ module nts.uk.com.view.cmf001.share.model {
                 this.deleteExistDataMethod(deleteExistDataMethod);
             if (!nts.uk.util.isNullOrUndefined(acceptMode))
                 this.acceptMode(acceptMode);
-            else
-                this.acceptMode(0);
             if (csvDataItemLineNumber)
                 this.csvDataItemLineNumber(csvDataItemLineNumber);
             if (csvDataStartLine)
@@ -226,11 +224,14 @@ module nts.uk.com.view.cmf001.share.model {
         categoryItemNo: KnockoutObservable<number>;
         systemType: KnockoutObservable<number>;
         sampleData: KnockoutObservable<string> = ko.observable(null);
+        bakScreenConditionSetting: AcceptScreenConditionSetting;
+        bakItemType: number;
 
         constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, sampleData?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
+            this.bakItemType = itemType;
             this.acceptItemNumber = ko.observable(acceptItemNumber);
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
@@ -255,10 +256,18 @@ module nts.uk.com.view.cmf001.share.model {
                         break;
                 }
             }
-            if (screenSet)
+            if (screenSet) {
                 this.screenConditionSetting(screenSet);
+                this.bakScreenConditionSetting = screenSet;
+            }
             if (sampleData)
                 this.sampleData(sampleData);
+            this.itemType.subscribe((value) => {
+                if (value == this.bakItemType && this.screenConditionSetting() == null)
+                    this.screenConditionSetting(this.bakScreenConditionSetting);
+                else 
+                    this.screenConditionSetting(null);
+            });
         }
     }
 

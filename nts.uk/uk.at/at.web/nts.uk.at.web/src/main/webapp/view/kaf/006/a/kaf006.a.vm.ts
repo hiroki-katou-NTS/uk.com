@@ -86,6 +86,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
         constructor(transferData :any) {
 
             let self = this;
@@ -93,12 +94,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
                 self.employeeID(transferData.employeeID); 
+                self.targetDate = transferData.appDate;
             }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 1, moment(new Date()).format("YYYY/MM/DD")).done(function() {
+                self.kaf000_a.start(self.employeeID(), 1, 1, self.targetDate).done(function() {
                     self.approvalSource = self.kaf000_a.approvalList;
 
                 })
@@ -260,6 +262,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
                     self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                 }
+                //ver13 hoatt - 2018.07.31
+                self.convertListHolidayType(result.holidayAppTypeName, result.checkDis);
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);
@@ -386,7 +390,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypeName);
+            self.convertListHolidayType(data.holidayAppTypeName, data.checkDis);
             self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
@@ -419,6 +423,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             } else {
                 $("#inputdate").trigger("validate");
             }
+            $("#switch_prePost").trigger("validate");
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
@@ -519,8 +524,21 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                                 workTimeCode: self.workTimeCode()
                             }
                         ).done(data => {
-                            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
-                            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                            if(nts.uk.util.isNullOrEmpty(data)){
+                                self.timeStart1(childData.first.start);    
+                                self.timeEnd1(childData.first.end);
+                            } else {
+                                if(nts.uk.util.isNullOrUndefined(data[0])){
+                                    self.timeStart1(childData.first.start);    
+                                    self.timeEnd1(childData.first.end);    
+                                } else {
+                                    self.timeStart1(data[0].startTime == null ? childData.first.start : data[0].startTime);
+                                    self.timeEnd1(data[0].endTime == null ? childData.first.end : data[0].endTime);        
+                                }
+                            }
+                        }).fail(() => {
+                            self.timeStart1(childData.first.start);    
+                            self.timeEnd1(childData.first.end);
                         });
                     }
                 });
@@ -545,11 +563,35 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             })
             return dfd.promise();
         }
-        convertListHolidayType(data: any) {
+        convertListHolidayType(data: any, checkDis: any) {
             let self = this;
+            let lstHdName = [];
+            self.holidayTypes([]);
             for (let i = 0; i < data.length; i++) {
-                self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                //ver new
+                if(self.checkDisplay(checkDis, data[i].holidayAppTypeCode)){
+                    lstHdName.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                }
             }
+            self.holidayTypes(lstHdName);
+        }
+        checkDisplay(checkDis: any, hdType: any): boolean{
+            if(checkDis == null){
+                return true;
+            }
+            if(hdType == 0){
+                return checkDis.yearManage;
+            }
+            if(hdType == 1){
+                return checkDis.subHdManage;
+            }
+            if(hdType == 7){
+                return checkDis.subVacaManage;
+            }
+            if(hdType == 4){
+                return checkDis.retentionManage;
+            }
+            return true;
         }
         checkStartDate(): boolean {
             let self = this;

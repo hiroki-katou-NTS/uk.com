@@ -24,6 +24,14 @@ public interface ComDayOffManaDataRepository {
 
 
 	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd ・代休日 < INPUT．集計開始日
+	 * @return
+	 */
+	List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd);
 
 	List<CompensatoryDayOffManaData> getByDateCondition(String cid, String sid, GeneralDate startDate,
 			GeneralDate endDate);

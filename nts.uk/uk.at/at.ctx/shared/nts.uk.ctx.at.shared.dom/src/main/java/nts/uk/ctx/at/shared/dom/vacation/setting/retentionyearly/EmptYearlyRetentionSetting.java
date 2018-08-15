@@ -9,21 +9,26 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
+ * 雇用積立年休設定
  * The Class EmptYearlyRetentionSetting.
  */
 @Getter
 public class EmptYearlyRetentionSetting extends AggregateRoot {
 	
 	/** The company id. */
+	//会社ID
 	private String companyId;
 	
 	/** The employment code. */
+	//雇用区分コード
 	private String employmentCode; 
 	
 	/** The upper limit setting. */
+	//上限設定
 	private UpperLimitSetting upperLimitSetting;
 	
 	/** The management category. */
+	//管理区分
 	private ManageDistinct managementCategory;
 	
 	/**

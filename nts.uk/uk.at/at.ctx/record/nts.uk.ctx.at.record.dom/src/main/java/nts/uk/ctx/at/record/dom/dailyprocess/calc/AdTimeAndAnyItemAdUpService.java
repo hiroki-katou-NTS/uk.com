@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 
@@ -11,5 +12,6 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
  *
  */
 public interface AdTimeAndAnyItemAdUpService {
-	public void addAndUpdate(AttendanceTimeOfDailyPerformance attendanceTime ,Optional<AnyItemValueOfDaily> anyItem);
+
+	void addAndUpdate(String empId, GeneralDate ymd, Optional<AttendanceTimeOfDailyPerformance> attendanceTime,Optional<AnyItemValueOfDaily> anyItem);
 }

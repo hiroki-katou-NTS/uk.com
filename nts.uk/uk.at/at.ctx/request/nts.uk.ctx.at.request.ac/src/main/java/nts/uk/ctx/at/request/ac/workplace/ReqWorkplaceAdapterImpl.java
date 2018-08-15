@@ -39,6 +39,9 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Inject
 	private SyEmployeePub syEmpPub;
+	
+	@Inject
+	private SyWorkplacePub wpkPub;
 
 	/**
 	 * アルゴリズム「社員から職場を取得する」を実行する
@@ -81,6 +84,20 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 				.map(c-> new WkpInfo(c.getDatePeriod(), c.getWpkID(), c.getWpkCD(), c.getWpkName()))
 				.collect(Collectors.toList());
 		return new WorkPlaceHistBySIDImport(wkp.getEmployeeID(), lstWkpInfo);
+	}
+
+	/**
+	 * 上位階層の職場の設定を取得する
+	 * RequestList #83
+	 */
+	@Override
+	public List<String> findListWpkIDParent(String companyId, String workplaceId, GeneralDate date) {
+		return wpkPub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
+	}
+
+	@Override
+	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
+		return wpkPub.findParentWpkIdsByWkpIdDesc(companyId, workplaceId, date);
 	}
 
 }

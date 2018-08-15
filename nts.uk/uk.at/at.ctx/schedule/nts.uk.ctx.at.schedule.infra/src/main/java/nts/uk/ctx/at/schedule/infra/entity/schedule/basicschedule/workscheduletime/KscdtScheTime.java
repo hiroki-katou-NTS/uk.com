@@ -5,16 +5,25 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeeTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -68,6 +77,15 @@ public class KscdtScheTime extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "CHILD_CARE_TIME")
     private int childCareTime;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscdtScheTime", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KscdtScheFeeTime> kscdtScheFeeTime;
+    
+    @OneToOne
+	@JoinColumns({
+			@JoinColumn(name = "SID", referencedColumnName = "KSCDT_SCHE_BASIC.SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "KSCDT_SCHE_BASIC.YMD", insertable = false, updatable = false) })
+	public KscdtBasicSchedule kscdtBasicSchedule;
 
     /**
      * Instantiates a new kscmt work sch time.
@@ -127,6 +145,17 @@ public class KscdtScheTime extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscdtScheTimePK;
 	}
-    
-    
+
+	public KscdtScheTime(KscdtScheTimePK kscdtScheTimePK, int breakTime, int workingTime, int weekdayTime,
+			int prescribedTime, int totalLaborTime, int childCareTime) {
+		super();
+		this.kscdtScheTimePK = kscdtScheTimePK;
+		this.breakTime = breakTime;
+		this.workingTime = workingTime;
+		this.weekdayTime = weekdayTime;
+		this.prescribedTime = prescribedTime;
+		this.totalLaborTime = totalLaborTime;
+		this.childCareTime = childCareTime;
+	}
+	
 }

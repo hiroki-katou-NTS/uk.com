@@ -27,7 +27,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOf
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -137,6 +136,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(a)));
 			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(t)));
+			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(pc)));
 //			this.setRemarks(domain.get)
 			dto.exsistData();
 		}
@@ -380,6 +380,12 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
 				);
+	}
+
+	@Override
+	public DailyRecordDto clone(){
+		IntegrationOfDaily integrationOfDaily = this.toDomain(employeeId, date);
+		return DailyRecordDto.from(integrationOfDaily).employeeId(employeeId).workingDate(date);
 	}
 }
 

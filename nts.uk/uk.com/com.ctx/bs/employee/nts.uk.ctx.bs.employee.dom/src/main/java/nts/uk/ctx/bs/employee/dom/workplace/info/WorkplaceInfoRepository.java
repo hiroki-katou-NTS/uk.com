@@ -121,6 +121,14 @@ public interface WorkplaceInfoRepository {
 	List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId);
 	
 	/**
+	 * Find by history.
+	 *
+	 * @param historyList the history list
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByHistory(List<String> historyList);
+	
+	/**
 	 * Find by wkp ids and hist ids.
 	 *
 	 * @param companyId the company id

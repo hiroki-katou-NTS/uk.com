@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,8 +70,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
@@ -89,6 +92,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
@@ -103,6 +108,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -117,6 +123,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -218,6 +225,12 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 	private DivergenceTimeRepository divergenceTimeRepo;
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
+
+	@Inject
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
+
+	@Inject
+	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
 	
 	/**
 	 * 更新処理を開始する
@@ -731,6 +744,15 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			isException= false;
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+			ScheduleErrorLogGeterCommand scheduleErrorLogGeterCommand = new ScheduleErrorLogGeterCommand();
+			scheduleErrorLogGeterCommand.setCompanyId(companyId);
+			scheduleErrorLogGeterCommand.setExecutionId(execId);
+			scheduleErrorLogGeterCommand.setToDate(GeneralDate.today());
+			boolean checkExistError = this.scheCreExeErrorLogHandler.checkExistError(new ScheduleErrorLogGeterCommand(), AppContexts.user().employeeId());
+			if(!checkExistError){
+				this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, AppContexts.user().employeeId(),
+						"Msg_1339");
+			}
 		}
 		int timeOut=1;
 		boolean isInterruption =false;
@@ -1428,8 +1450,22 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		}
 		if(isHasCreateDailyException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.DAILY_CREATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.DAILY_CALCULATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}
 		
 		
@@ -2132,6 +2168,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
+			
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.REFLRCT_APPROVAL_RESULT,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2375,6 +2419,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
+			
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.MONTHLY_AGGREGATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2683,12 +2735,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			}
 		} else {
 			try {
-				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-				MasterShareContainer shareContainer = MasterShareBus.open();
-				companyCommonSetting.setShareContainer(shareContainer);
-				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
-						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
-				shareContainer.clearAll();
+				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(asyContext, employeeId, period,Optional.empty());
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2924,13 +2971,8 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		ProcessState ProcessState2;
 		
 		try {
-			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-			MasterShareContainer shareContainer = MasterShareBus.open();
-			companyCommonSetting.setShareContainer(shareContainer);
 			// 社員の日別実績を計算
-			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
-					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
-			 shareContainer.clearAll();
+			 ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(asyncContext, empId, period,Optional.empty());
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

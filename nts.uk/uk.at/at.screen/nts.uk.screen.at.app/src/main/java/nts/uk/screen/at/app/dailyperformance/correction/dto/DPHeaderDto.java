@@ -99,7 +99,7 @@ public class DPHeaderDto {
 					false, "Link2", false, false));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
-		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
+		} else if (item.getTypeGroup() != null && attendanceAtr == DailyAttendanceAtr.Classification.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			groups.add(new DPHeaderDto("NO", "NO" + getCode(key), "number", String.valueOf(withChild) + "px", "", false,
@@ -127,7 +127,12 @@ public class DPHeaderDto {
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
 			dto.setConstraint(new Constraint("Currency", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Time.value) {
-			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			if(item.getPrimitive() != null && item.getPrimitive() == 1){
+				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("00:00", "48:00"));
+			}else{
+				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-48:00", "48:00"));
+			}
+			//dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumberOfTime.value) {
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {

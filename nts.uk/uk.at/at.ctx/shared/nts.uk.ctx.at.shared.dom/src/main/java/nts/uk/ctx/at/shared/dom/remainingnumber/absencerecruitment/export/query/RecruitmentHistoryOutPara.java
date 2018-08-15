@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
  * 振出履歴
@@ -22,7 +23,7 @@ public class RecruitmentHistoryOutPara {
 	/**消滅済	 */
 	private boolean chkDisappeared;
 	/**	状態 */
-	private MngDataAtr dataAtr;
+	private MngHistDataAtr dataAtr;
 	/**	振出データID */
 	private String recId;
 	/**	振出日 */

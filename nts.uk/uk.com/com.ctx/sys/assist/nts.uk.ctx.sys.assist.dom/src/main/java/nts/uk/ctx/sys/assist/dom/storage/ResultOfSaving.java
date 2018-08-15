@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import java.security.cert.PKIXRevocationChecker.Option;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,17 +38,17 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * ファイル容量
     */
-    private long fileSize;
+    private Optional<Long> fileSize;
     
     /**
     * 保存セットコード
     */
-    private SaveSetCode saveSetCode;
+    private Optional<SaveSetCode> saveSetCode;
     
     /**
     * 保存ファイル名
     */
-    private SaveFileName saveFileName;
+    private Optional<SaveFileName> saveFileName;
     
     /**
     * 保存名称
@@ -60,12 +63,12 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * 保存終了日時
     */
-    private GeneralDateTime saveEndDatetime;
+    private Optional<GeneralDateTime> saveEndDatetime;
     
     /**
     * 保存開始日時
     */
-    private GeneralDateTime saveStartDatetime;
+    private Optional<GeneralDateTime> saveStartDatetime;
     
     /**
     * 削除済みファイル
@@ -75,7 +78,7 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * 圧縮パスワード
     */
-    private FileCompressionPassword compressedPassword;
+    private Optional<FileCompressionPassword> compressedPassword;
     
     /**
     * 実行者
@@ -85,12 +88,12 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * 対象人数
     */
-    private int targetNumberPeople;
+    private Optional<Integer> targetNumberPeople;
     
     /**
     * 結果状態
     */
-    private SaveStatus saveStatus;
+    private Optional<SaveStatus> saveStatus;
     
     /**
     * 調査用保存
@@ -100,34 +103,34 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * ファイルID
     */
-    private String fileId;
+    private Optional<String> fileId;
 
-	public ResultOfSaving(String storeProcessingId, String cid, int systemType, long fileSize,
+	public ResultOfSaving(String storeProcessingId, String cid, int systemType, Long fileSize,
 			String saveSetCode, String saveFileName, String saveName, int saveForm,
 			GeneralDateTime saveEndDatetime, GeneralDateTime saveStartDatetime, int deletedFiles,
-			String compressedPassword, String practitioner, int targetNumberPeople,
-			int saveStatus, int saveForInvest, String fileId) {
+			String compressedPassword, String practitioner, Integer targetNumberPeople,
+			Integer saveStatus, int saveForInvest, String fileId) {
 		super();
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
-		this.fileSize = fileSize;
-		this.saveSetCode = new SaveSetCode(saveSetCode);
-		this.saveFileName = new SaveFileName(saveFileName);
+		this.fileSize = Optional.ofNullable(fileSize);
+		this.saveSetCode = saveSetCode == null ? Optional.empty() : Optional.of(new SaveSetCode(saveSetCode));
+		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveName));
 		this.saveName = new SaveName(saveName);
 		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
-		this.saveEndDatetime = saveEndDatetime;
-		this.saveStartDatetime = saveStartDatetime;
+		this.saveEndDatetime = Optional.ofNullable(saveEndDatetime);
+		this.saveStartDatetime = Optional.ofNullable(saveStartDatetime);
 		this.deletedFiles = EnumAdaptor.valueOf(deletedFiles, NotUseAtr.class);;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword == null ? Optional.empty() : Optional.of(new FileCompressionPassword(compressedPassword));
 		this.practitioner = practitioner;
-		this.targetNumberPeople = targetNumberPeople;
-		this.saveStatus = EnumAdaptor.valueOf(saveStatus, SaveStatus.class);;
+		this.targetNumberPeople = Optional.ofNullable(targetNumberPeople); 
+		this.saveStatus = saveStatus == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(saveStatus, SaveStatus.class));
 		this.saveForInvest = EnumAdaptor.valueOf(saveForInvest, NotUseAtr.class);;
-		this.fileId = fileId;
+		this.fileId = Optional.ofNullable(fileId);
 	}
 	
 	public void setSaveFileName(String saveFileName){
-		this.saveFileName = new SaveFileName(saveFileName);
+		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveFileName));
 	}
 }

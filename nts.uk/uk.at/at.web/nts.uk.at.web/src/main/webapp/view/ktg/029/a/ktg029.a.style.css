@@ -3,11 +3,13 @@
 .widget-table .textPeriod{text-decoration: underline; text-align: center;}
 .widget-table>tbody>tr{border-bottom: 1px dotted #000;}
 .widget-table.first>tbody>tr:nth-child(1){border-bottom: 0;}
-.widget-table>tbody>tr>td{padding:3px 0; height: 30px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.widget-table>tbody>tr>td{padding:3px 0; height: 30px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: table-cell;}
 .widget-table>tbody>tr>td:nth-child(1).tab{padding-left: 20px;}
 
-.widget-table>tbody>tr>td:nth-child(2){width:97px;}
+.widget-table>tbody>tr>td:nth-child(2){width:80px;}
 .widget-table.fix>tbody>tr>td:nth-child(2){width:140px;}
+.widget-table.fix2>tbody>tr>td:nth-child(2){width:95px;}
+.widget-table.fix3>tbody>tr>td:nth-child(2){width:100px;}
 .widget-table>tbody>tr>td:nth-child(2) table{width:100%;}
 .widget-table .detail .go-button{width: 40px; text-align: right; height:33px;}
 .widget-table .detail .go-button button{width: 30px; border: 0; box-shadow: none; padding:0;}

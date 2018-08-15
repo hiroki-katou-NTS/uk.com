@@ -25,3 +25,7 @@
 .inputDate .periodTime{
 	align: "center";
 }
+
+.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
+    width: 86px !important;
+}

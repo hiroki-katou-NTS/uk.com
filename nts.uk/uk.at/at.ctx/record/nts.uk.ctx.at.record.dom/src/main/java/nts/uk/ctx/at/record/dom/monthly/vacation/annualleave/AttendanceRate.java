@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * 出勤率
- * @author shuichu_ishida
+ * @author sonnlb
  */
 @DecimalRange(min = "0", max = "100")
 public class AttendanceRate extends DecimalPrimitiveValue<AttendanceRate> {
@@ -20,14 +20,5 @@ public class AttendanceRate extends DecimalPrimitiveValue<AttendanceRate> {
 	 */
 	public AttendanceRate(Double attendanceRate){
 		super(BigDecimal.valueOf(attendanceRate));
-	}
-	
-	/**
-	 * 日数を加算する
-	 * @param days 日数
-	 * @return 加算後の4週日数
-	 */
-	public AttendanceRate addDays(Double attendanceRate){
-		return new AttendanceRate(this.v().doubleValue() + attendanceRate);
 	}
 }

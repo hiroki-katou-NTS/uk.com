@@ -1,0 +1,42 @@
+.D1_1, .name{
+	width: 200px;
+}
+
+.row {
+	margin: 10px 20px;
+	display: flex;
+    align-items: center;
+}
+
+.proceed {
+	width: 100px;
+	height: 40px;
+	font-weight: 550px;
+}
+
+button {
+	margin: 10px;
+}
+
+.D1_6 {
+	width: 30px;
+}
+
+#combo-box-scrD {
+	width: 300px;
+}
+
+.D1_7 {
+	margin-left: 10px;
+	width: 228px !important;
+}
+
+/* popup error of kiban team show fail position --> override css */
+#func-notifier-errors {
+    top: 10px !important;
+    left: 50px !important;
+}
+
+hr {
+	margin-top: 150px;
+}

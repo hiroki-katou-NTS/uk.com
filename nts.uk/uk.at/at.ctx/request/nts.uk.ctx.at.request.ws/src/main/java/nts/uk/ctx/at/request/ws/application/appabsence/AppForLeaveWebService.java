@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/appforleave")
@@ -70,7 +71,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getWorkingHours")
-	public AppAbsenceDto getWorkingHours(ParamGetAllAppAbsence param) {
+	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType());
 	}
 	@POST

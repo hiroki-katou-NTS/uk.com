@@ -1,11 +1,22 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
@@ -167,5 +178,112 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 		else {
 			return false;
 		}
+	}
+	
+	/**
+	 * 大塚モード(PCログオン時間で計算した値の埋め込み)
+	 */
+	@Override
+	public IntegrationOfDaily integrationConverter(IntegrationOfDaily fromStamp, IntegrationOfDaily fromPcLogInfo) {
+		if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().isPresent()
+		 &&fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+		 &&fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+
+			AttendanceTime withinMidValue = new AttendanceTime(0);//所定内深夜
+			//所定内深夜時間え
+			if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily() != null) {
+				withinMidValue = fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime().getTime().getCalcTime();
+			}
+			//所定内深夜時間置き換え
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime().getTime().replaceTimeAndCalcDiv(withinMidValue);
+			//残業、残業振替
+			Map<OverTimeFrameNo,OverTimeFrameTime> overmap = new HashMap<>();
+			//所定外深夜
+			AttendanceTime excessMidNight = new AttendanceTime(0);
+			//所定外残業深夜
+			AttendanceTime excessOverMidNight = new AttendanceTime(0);
+			//フレックス時間
+			AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
+			//休出、休出振替
+			Map<HolidayWorkFrameNo,HolidayWorkFrameTime> holWorkMap = new HashMap<>();
+			Map<String,HolidayWorkMidNightTime> holWorkMid = new HashMap<>();
+			
+			
+			if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+				excessMidNight = fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getCalcTime();
+				//残業時間、振替時間、所定外残業深夜時間、フレックスの置き換え
+				if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+					//残業、振替
+					overmap = convertOverMap(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime());
+
+					//所定外残業深夜
+					if(fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().isPresent()) {
+						excessOverMidNight = fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime().getCalcTime();
+
+					}
+					//フレックス時間
+					flexTime = fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime();
+				}
+				if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+					//休出、振替
+					holWorkMap = convertHolMap(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime());
+					//休出深夜時間
+					if(fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
+						holWorkMid = convertHolMidMap(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayMidNightWork().get().getHolidayWorkMidNightTime());
+					
+					}
+				}
+			}
+			//残業、残業振替
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()
+	         .setPCLogOnValue(overmap);
+			//所定外深夜
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime()
+			 .replaceTimeAndCalcDiv(excessMidNight);
+			//所定外残業深夜
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().get().getTime()
+	         .replaceTimeAndCalcDiv(excessOverMidNight);
+			//フレックス時間の置き換え
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime()
+			 .replaceTimeAndCalcDiv(flexTime);
+			//休出、休出振替
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()
+			 .setPCLogOnValue(holWorkMap);
+			//休出深夜
+			fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayMidNightWork().get()
+			 .replaceValueBypcLogInfo(holWorkMid);
+			
+			//ここのみ、現在乖離時間が存在しない 2018.07.05
+			if(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor() != null) {
+				//加給、所定内加給、所定外加給、特定日加給、所定内特定日加給、所定外特定日加給の置き換え
+				fromStamp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor()
+						 .replaceValueByPCLogInfo(fromPcLogInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor());
+			}
+		}
+		return fromStamp;
+	}
+
+	private Map<String, HolidayWorkMidNightTime> convertHolMidMap(List<HolidayWorkMidNightTime> holidayWorkMidNightTime) {
+		Map<String, HolidayWorkMidNightTime> map = new HashMap<>();
+		for(HolidayWorkMidNightTime hol : holidayWorkMidNightTime) {
+			map.put(hol.getStatutoryAtr().toString(), hol);
+		}
+		return map;
+	}
+
+	private Map<HolidayWorkFrameNo,HolidayWorkFrameTime> convertHolMap(List<HolidayWorkFrameTime> holidayWorkFrameTime) {
+		Map<HolidayWorkFrameNo,HolidayWorkFrameTime> map= new HashMap<>();
+		for(HolidayWorkFrameTime hol : holidayWorkFrameTime) {
+			map.put(hol.getHolidayFrameNo(), hol);
+		}
+		return map;
+	}
+
+	private Map<OverTimeFrameNo,OverTimeFrameTime> convertOverMap(List<OverTimeFrameTime> overTimeWorkFrameTime) {
+		Map<OverTimeFrameNo,OverTimeFrameTime> map = new HashMap<>();
+		for(OverTimeFrameTime ot : overTimeWorkFrameTime) {
+			map.put(ot.getOverWorkFrameNo(), ot);
+		}
+		return map;
 	}
 }
