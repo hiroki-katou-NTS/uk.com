@@ -39,6 +39,9 @@ public class KshstControlOfAttendanceItemsDataCopyHandler implements DataCopyHan
 	/** The delete by cid query. */
 	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_ATD_ITEM_CONTROL WHERE CID = ?";
 
+	/** The paramater quantity. */
+	private final int PARAMATER_QUANTITY = 4;
+
 	/**
 	 * Instantiates a new kshst control of attendance items data copy handler.
 	 *
@@ -62,29 +65,32 @@ public class KshstControlOfAttendanceItemsDataCopyHandler implements DataCopyHan
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		if (zeroCompanyDatas.length == 0) {
+			return;
+		} else {
+			switch (copyMethod) {
+			case REPLACE_ALL:
+				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
+						this.companyId);
+				deleteQuery.executeUpdate();
+			case ADD_NEW:
+				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * PARAMATER_QUANTITY + 1, this.companyId);
+					insertQuery.setParameter(i * PARAMATER_QUANTITY + 2, dataArr[1]);
+					insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
+					insertQuery.setParameter(i * PARAMATER_QUANTITY + 4, dataArr[3]);
+				}
 
-		switch (copyMethod) {
-		case REPLACE_ALL:
-			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
-					this.companyId);
-			deleteQuery.executeUpdate();
-		case ADD_NEW:
-			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-				insertQuery.setParameter(i * 5 + 1, this.companyId);
-				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
-				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
+				// Run insert query
+				insertQuery.executeUpdate();
+			case DO_NOTHING:
+				// Do nothing
+			default:
+				break;
 			}
-
-			// Run insert query
-			insertQuery.executeUpdate();
-		case DO_NOTHING:
-			// Do nothing
-		default:
-			break;
 		}
 	}
 }
