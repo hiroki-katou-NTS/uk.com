@@ -71,11 +71,6 @@
 	/*margin-left: 30px;*/
 	padding: 0px 10px 0px 10px;
 }
-/*Set Width*/
-input.nts-editor.nts-input.reset-element {
-	text-align: center;
-	width: 85px;
-}
 
 button.nts-switch-button {
 	width: 92px;
@@ -138,3 +133,14 @@ div.form-label.broken {
 }
 #tbl td{ padding: 5px 0px;}
 #tbl td.thut{padding-left: 5px !important;}
+
+
+.maxDay{
+	margin-left: 10px;
+	padding: 5px;
+	border: 1px solid #999999;;
+	width: 100px;
+	display: inline-block;
+	margin-top: -20px;
+	border-radius: 3px;
+}
