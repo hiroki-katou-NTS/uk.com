@@ -92,7 +92,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
-                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150 }
+                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
             ]);
             
             self.currentCode = ko.observable();
