@@ -9,6 +9,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 
 /**
  * 
@@ -24,7 +25,7 @@ public class LogDataCorrectRecordRefeDto {
 
 	private String childrentKey;
 	private String operationId;
-	private GeneralDate targetDate;
+	private String targetDate;
 	private int targetDataType;
 	private String itemName;
 	private String valueBefore;
@@ -36,10 +37,34 @@ public class LogDataCorrectRecordRefeDto {
 
 	public static LogDataCorrectRecordRefeDto fromDomain(DataCorrectionLog domain) {
 		String childrentKey = IdentifierUtil.randomUniqueId();
+		String targetDateStr = "";
+		GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+		TargetDataType tagetData = TargetDataType.of(domain.getTargetDataType().value);
+		switch (tagetData) {
+		case SCHEDULE:
+		case DAILY_RECORD:	
+			targetDateStr = targetDate.toString("yyyy/MM/dd");
+			break;
+		case MONTHLY_RECORD:
+		case ANY_PERIOD_SUMMARY:
+		case SALARY_DETAIL:
+		case BONUS_DETAIL:
+			targetDateStr = targetDate.toString("yyyy/MM");
+			break;
+		case YEAR_END_ADJUSTMENT:
+		case MONTHLY_CALCULATION:
+		case RISING_SALARY_BACK:
+			targetDateStr = targetDate.toString("yyyy");
+			break;
+		default:
+			targetDateStr = targetDate.toString("yyyy/MM/dd");
+			break;
+		}
+		
 		return new LogDataCorrectRecordRefeDto(
 				childrentKey,
 				domain.getOperationId(),
-				domain.getTargetDataKey().getDateKey().get(),
+				targetDateStr,
 				domain.getTargetDataType().value,
 				domain.getCorrectedItem().getName(),
 				domain.getCorrectedItem().getValueBefore().getViewValue(),

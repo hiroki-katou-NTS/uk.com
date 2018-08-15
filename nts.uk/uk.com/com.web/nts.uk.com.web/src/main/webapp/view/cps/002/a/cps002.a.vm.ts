@@ -763,7 +763,7 @@ module cps002.a.vm {
             
 
             if (!self.isError()) {
-
+                console.log(command);
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 

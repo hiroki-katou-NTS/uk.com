@@ -87,7 +87,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 		List<PersonCategoryCorrectionLogParameter> ctgTargets = new ArrayList<>();
 		List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 		lstItemInfo.add(new PersonCorrectionItemInfo(
-				"",
+				command.getFileid(),
 				command.getItemName().toString(),
 				null,
 				null,
@@ -95,7 +95,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 				command.getFileName(),
 				1));// 1 : String
 		PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
-				"CategoryId",
+				null,
 				command.getCategoryName().toString(), 
 				InfoOperateAttr.ADD, 
 				lstItemInfo.isEmpty() ? null : lstItemInfo,

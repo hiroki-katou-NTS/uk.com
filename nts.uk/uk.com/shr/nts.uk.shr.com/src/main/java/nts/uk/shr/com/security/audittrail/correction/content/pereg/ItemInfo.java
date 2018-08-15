@@ -141,9 +141,9 @@ public class ItemInfo {
 		}
 		
 		public String toString() {
-			if(this.value == null) {
+			if (this.value == null || this.value.equals("")) {
 				return null;
-			}else {
+			} else {
 				return this.value.toString();
 			}
 		}

@@ -195,17 +195,21 @@ module nts.uk.at.view.kdp003.c {
                         {
                             name: 'Paging',
                             pageSize: 20,
-                            currentPageIndex: 0
+                            currentPageIndex: 0,
+                            pageSizeChanged: function (evt, ui) { 
+                            let source = ko.toJS(self.dataSource);
+                            $("#kdp003-grid").igGrid("option", "dataSource", source);
+                            $("#kdp003-grid").igGrid("dataBind");
+                            }
                         }
                     ],
                     virtualization: true,
                     virtualizationMode: 'fixed',
-                    autoGenerateColumns: true,
+                    autoGenerateColumns: false,
                     width: self.widthGrid(),
-                    height: "470px",
-                   // primaryKey: "wkpCode",
+                    height: "570px",
                     dataSource: self.dataSource,
-                    dataRendered: function(evt, ui) {
+                    dataBinding: function(evt, ui) {
                         $("#kdp003-grid_container *").attr('tabindex', -1);
                         $("#kdp003-grid_container").attr('tabindex', -1);
                         $("#kdp003-grid_virtualContainer").attr('tabindex', 3);
@@ -214,7 +218,6 @@ module nts.uk.at.view.kdp003.c {
                 });
                  $("#kdp003-grid").closest('.ui-iggrid').addClass('nts-gridlist');
                  $("#kdp003-grid").setupSearchScroll("igGrid", true);
-                 $("#kdp003-grid").igGrid("dataBind");
             }
 
 

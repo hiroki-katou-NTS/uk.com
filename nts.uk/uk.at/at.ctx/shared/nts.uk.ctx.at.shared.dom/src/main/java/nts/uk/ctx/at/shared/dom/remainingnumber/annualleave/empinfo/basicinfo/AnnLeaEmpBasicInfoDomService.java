@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AnnLeaEmpBasicInfoDomService{
@@ -23,6 +24,9 @@ public class AnnLeaEmpBasicInfoDomService{
 
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaDataRepo;
+	
+	@Inject 
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 		
 	private static final String not_grant = "未付与";
 	
@@ -56,6 +60,14 @@ public class AnnLeaEmpBasicInfoDomService{
 
 		AnnLeaRemNumValueObject annLeaveRemainNumber = getAnnualLeaveNumber(companyId, listData);
 
+		// Total time
+		// No268特別休暇の利用制御
+		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());	
+		
+		if (annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO){
+			return annLeaveRemainNumber.getDays() + "日";
+		}
+		
 		int remainingMinutes = annLeaveRemainNumber.getMinutes();
 
 		int remainingHours = remainingMinutes / 60;

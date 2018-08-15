@@ -4,7 +4,11 @@ module nts.custom.component {
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
 
-    let __viewContext: any = window['__viewContext'] || {};
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'],
+        __viewContext: any = window['__viewContext'] || {};
 
     const fetch = {
         get_layout: (sid) => ajax(`ctx/pereg/person/maintenance/findSimple/${sid}`),
@@ -283,15 +287,17 @@ module nts.custom.component {
                             if (categoryType == IT_CAT_TYPE.MULTI) {
                                 if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
-                                        let query = {
-                                            recordId: ko.toJS(params.gridlist.value),
-                                            personId: ko.toJS(params.personId),
-                                            employeeId: ko.toJS(params.employeeId),
-                                            categoryId: ko.toJS(params.combobox.object.categoryId),
-                                            categoryType: ko.toJS(params.combobox.object.categoryType),
-                                            categoryName: ko.toJS(params.combobox.object.categoryName),
-                                            categoryCode: ko.toJS(params.combobox.object.categoryCode)
-                                        };
+                                        let outData = __viewContext.viewModel.layout.outData(),
+                                            query = {
+                                                recordId: ko.toJS(params.gridlist.value),
+                                                personId: ko.toJS(params.personId),
+                                                employeeId: ko.toJS(params.employeeId),
+                                                categoryId: ko.toJS(params.combobox.object.categoryId),
+                                                categoryType: ko.toJS(params.combobox.object.categoryType),
+                                                categoryName: ko.toJS(params.combobox.object.categoryName),
+                                                categoryCode: ko.toJS(params.combobox.object.categoryCode),
+                                                inputs: !!_.size(outData) ? outData[0].items : []
+                                            };
 
                                         __viewContext.viewModel.block();
 
@@ -312,15 +318,17 @@ module nts.custom.component {
                             } else {
                                 if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
-                                        let query = {
-                                            recordId: ko.toJS(params.gridlist.value),
-                                            personId: ko.toJS(params.personId),
-                                            employeeId: ko.toJS(params.employeeId),
-                                            categoryId: ko.toJS(params.combobox.object.categoryId),
-                                            categoryType: ko.toJS(params.combobox.object.categoryType),
-                                            categoryName: ko.toJS(params.combobox.object.categoryName),
-                                            categoryCode: ko.toJS(params.combobox.object.categoryCode)
-                                        };
+                                        let outData = __viewContext.viewModel.layout.outData(),
+                                            query = {
+                                                recordId: ko.toJS(params.gridlist.value),
+                                                personId: ko.toJS(params.personId),
+                                                employeeId: ko.toJS(params.employeeId),
+                                                categoryId: ko.toJS(params.combobox.object.categoryId),
+                                                categoryType: ko.toJS(params.combobox.object.categoryType),
+                                                categoryName: ko.toJS(params.combobox.object.categoryName),
+                                                categoryCode: ko.toJS(params.combobox.object.categoryCode),
+                                                inputs: !!_.size(outData) ? outData[0].items : []
+                                            };
 
                                         __viewContext.viewModel.block();
 
@@ -431,6 +439,8 @@ module nts.custom.component {
                     let cat: any = _.find(ko.toJS(params.combobox.options), (t: any) => t.id == v);
                     if (cat) {
                         let obj = params.combobox.object;
+                        
+                        obj.categoryId(cat.id );
                         obj.categoryCode(cat.categoryCode);
                         obj.categoryType(cat.categoryType);
                         obj.categoryName(cat.categoryName);
