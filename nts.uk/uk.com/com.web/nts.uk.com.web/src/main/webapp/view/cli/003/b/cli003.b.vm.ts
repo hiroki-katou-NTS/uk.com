@@ -662,7 +662,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -743,7 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -1116,7 +1116,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
                         let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
-                     
+                          paramLog.targetDataType= dataLogDisplaySetting.dataType;
                        
                         if (dataOutPutItem.length > 0) {
                             _.forEach(dataOutPutItem, function(dataItemNo: any) {
@@ -1547,6 +1547,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             }
                             case ITEM_NO.ITEM_NO5: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "pcName", "string", ITEM_NO.ITEM_NO5));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO6: {
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "account", "string", ITEM_NO.ITEM_NO6));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO7: {
