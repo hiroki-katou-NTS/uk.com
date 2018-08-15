@@ -97,6 +97,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
         maxDayline1: KnockoutObservable<string> = ko.observable('');
         maxDayline2: KnockoutObservable<string> = ko.observable('');
+        requiredRela: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
 
             let self = this;
@@ -284,7 +285,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(!fix && self.relaReason() != ''){
                 $('#relaReason').ntsError('clear');
             }
+            $("#relaCD-combo").ntsError('clear');
             self.fix(fix);
+            if(!fix){
+                self.requiredRela(false);
+            }else{
+                self.requiredRela(true);
+            }
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
@@ -505,6 +512,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }
             $("#switch_prePost").trigger("validate");
             $("#relaReason").trigger("validate");
+            if(self.holidayTypeCode() == 3 && self.fix()){
+                $("#relaCD-combo").trigger("validate");
+            }
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();

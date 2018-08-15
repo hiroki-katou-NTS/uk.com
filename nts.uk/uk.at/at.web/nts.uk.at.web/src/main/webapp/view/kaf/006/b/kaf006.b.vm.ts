@@ -96,6 +96,7 @@ module nts.uk.at.view.kaf006.b{
         maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
         maxDayline1: KnockoutObservable<string> = ko.observable('');
         maxDayline2: KnockoutObservable<string> = ko.observable('');
+        requiredRela: KnockoutObservable<boolean> = ko.observable(true);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -103,7 +104,7 @@ module nts.uk.at.view.kaf006.b{
 
                 });   
             self.selectedRelation.subscribe(function(codeChange){
-                if(codeChange === undefined || codeChange == null){
+                if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
                 service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
@@ -187,21 +188,35 @@ module nts.uk.at.view.kaf006.b{
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
             }
-            if(!fix && self.relaReason() != ''){
-                $('#relaReason').ntsError('clear');
-            }
             self.fix(fix);
+            if(!fix){
+                self.requiredRela(false);
+            }else{
+                self.requiredRela(true);
+            }
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
             }else{
                 self.mournerDis(false);
             }
+            nts.uk.ui.errors.clearAll();
             if(self.holidayTypeCode() == 3){
                 if(data.specHdDto != null){
                     self.relaReason(data.specHdDto.relationshipReason);
                     self.isCheck(data.specHdDto.mournerFlag);
                     self.selectedRelation(data.specHdDto.relationshipCD);
+                    if(!fix && self.relaReason() != ''){
+                        $("#relaReason").ntsError('clear');
+                    }
+                }else{//data db k co
+                    if(!fix){//th an clear rela reason
+                        self.relaReason('');
+                    }
+                    $("#relaReason").ntsError('clear');
+                    if(self.relaReason() != ''){
+                        $("#relaReason").trigger("validate");
+                    }
                 }
                 //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                 let line1 = getText('KAF006_44');
@@ -216,6 +231,7 @@ module nts.uk.at.view.kaf006.b{
                 self.maxDayline1(line1);
                 self.maxDayline2(line2);
             }
+            
         }
         // change by switch button AllDayHalfDay(A3_12)
         getChangeAllDayHalfDayForDetail(value: any){
@@ -402,6 +418,9 @@ module nts.uk.at.view.kaf006.b{
              let self = this;
              $("#workTypes").trigger('validate');
              $("#relaReason").trigger("validate");
+             if(self.holidayTypeCode() == 3 && self.fix()){
+                $("#relaCD-combo").trigger("validate");
+            }
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
