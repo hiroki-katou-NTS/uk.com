@@ -2,12 +2,10 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -116,11 +114,8 @@ public class LogBasicInformationFinder {
 						logBasicInfoDto
 								.setNote(loginRecord.getRemarks().isPresent() ? loginRecord.getRemarks().get() : "");
 					lstLogBacsicInfo.add(logBasicInfoDto);
-					}
-					// add to list
-					
+					}	
 				}
-//				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
 				break;
 			case START_UP:
 				// Get list ProgramName	
@@ -146,7 +141,6 @@ public class LogBasicInformationFinder {
 								.getPersonEmpBasicInfoByEmpId(userDto.getEmployeeId());
 						if (persionInfor != null) {
 							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-
 						}
 						// get user login name
 						logBasicInfoDto.setUserNameLogin(userDto.getUserName());
@@ -157,7 +151,6 @@ public class LogBasicInformationFinder {
 						lstLogBacsicInfo.add(logBasicInfoDto);
 					}
 				}
-//				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeLogin)).collect(Collectors.toList());
 				break;
 			case UPDATE_PERSION_INFO:
 				String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
@@ -291,7 +284,6 @@ public class LogBasicInformationFinder {
 					}
 					
 				}
-				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			case DATA_CORRECT:
 				TargetDataType targetDataType=null;
@@ -358,13 +350,11 @@ public class LogBasicInformationFinder {
 				}
 				// xử lý input map to list
 				lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
-				lstLogBacsicInfo = lstLogBacsicInfo.stream().sorted(Comparator.comparing(LogBasicInfoDto::getEmployeeCodeTaget)).collect(Collectors.toList());
 				break;
 			default:
 				break;
 			}
 		}
-		
 		return lstLogBacsicInfo;
 	}
 	

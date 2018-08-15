@@ -85,6 +85,10 @@ public class WorkplaceConfigInfoFinder {
 		// Find Workplace Config.
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByBaseDate(companyId, object.getBaseDate());
+
+		if (!optionalWkpConfig.isPresent()) {
+			return Collections.emptyList();
+		}
 		
 		// Find workplace config info.
 		List<String> configHisIds = optionalWkpConfig.get().items().stream().map(item -> item.identifier())
