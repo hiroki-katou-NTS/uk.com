@@ -235,6 +235,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.endAppDate('');
                         $("#inputdate").focus();
                     }
+                    $("#relaReason").trigger("validate");
                 });
                 self.changeWorkHourValue.subscribe((value) =>{
                     self.changeDisplayWorkime();
@@ -688,6 +689,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     if (nts.uk.ui.errors.hasError()) { return true; }
                 }
             }
+            $("#relaReason").trigger("validate");
             return false;
         }
         private checkDisplayEndDate(data) {
