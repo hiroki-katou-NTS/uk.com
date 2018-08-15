@@ -112,7 +112,7 @@ public class SpecialHoliday extends AggregateRoot {
 	}
 	
 	public void publishEvent(boolean flag, int code, String name) {
-		SpecialHolidayEvent event = new SpecialHolidayEvent(flag,
+		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
 				new SpecialHolidayCode(code),
 				new SpecialHolidayName(name));
 		
