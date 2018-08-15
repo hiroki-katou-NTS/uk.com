@@ -177,7 +177,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 					}
 					rowSub = new HashMap<>();
 					rowSub.put(headers.get(0), persionCorrectLog.getCategoryName());
-					rowSub.put(headers.get(1), persionCorrectLog.getTargetDate() !=null ? persionCorrectLog.getTargetDate().toString("yyyy/MM/dd") : "");
+					rowSub.put(headers.get(1), persionCorrectLog.getTargetDate());
 					rowSub.put(headers.get(2), persionCorrectLog.getItemName());
 					rowSub.put(headers.get(3), persionCorrectLog.getInfoOperateAttr());
 					rowSub.put(headers.get(4), persionCorrectLog.getValueBefore());

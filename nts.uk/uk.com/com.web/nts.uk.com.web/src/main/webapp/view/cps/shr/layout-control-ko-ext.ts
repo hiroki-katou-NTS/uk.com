@@ -2706,18 +2706,18 @@ module nts.custombinding {
                                         // order by dispOrder asc
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
-                                            .filter(f => {
+                                            .filter((f: IItemDefinition) => {
                                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
-                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    if (item.categoryCode === "CS00001") {
+                                                        return f.itemCode !== "IS00001";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
-                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    if (item.categoryCode === "CS00002") {
+                                                        return f.itemCode !== "IS00003";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
-                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    if (item.categoryCode === "CS00003") {
+                                                        return f.itemCode !== "IS00020";
                                                     }
                                                 }
 

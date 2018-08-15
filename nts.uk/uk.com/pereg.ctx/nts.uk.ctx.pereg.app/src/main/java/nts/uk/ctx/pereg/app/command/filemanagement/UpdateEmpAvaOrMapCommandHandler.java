@@ -98,7 +98,7 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 				command.getFileName(),
 				1));// 1 : String
 		PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
-				"CategoryId",
+				null,
 				command.getCategoryName().toString(), 
 				InfoOperateAttr.UPDATE, 
 				lstItemInfo.isEmpty() ? null : lstItemInfo,
