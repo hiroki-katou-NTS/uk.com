@@ -381,6 +381,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         $('#cond05').ntsError('set', {messageId:"Msg_263"});
                     }
                 }
+                $("#a8_2").trigger("validate");
             }            
             
             if (nts.uk.ui.errors.hasError()) {
