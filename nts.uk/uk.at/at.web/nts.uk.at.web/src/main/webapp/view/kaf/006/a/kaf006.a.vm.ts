@@ -86,6 +86,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
         constructor(transferData :any) {
 
             let self = this;
@@ -93,12 +94,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
                 self.employeeID(transferData.employeeID); 
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = transferData.appDate;        
+                }
             }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 1, moment(new Date()).format("YYYY/MM/DD")).done(function() {
+                self.kaf000_a.start(self.employeeID(), 1, 1, self.targetDate).done(function() {
                     self.approvalSource = self.kaf000_a.approvalList;
 
                 })

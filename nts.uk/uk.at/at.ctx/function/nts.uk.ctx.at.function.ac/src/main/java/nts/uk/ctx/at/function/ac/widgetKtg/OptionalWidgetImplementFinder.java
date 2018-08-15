@@ -238,10 +238,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
 				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
-																c.getEarly1()==1?true:false, 
 																c.getLate1()==1?true:false, 
-																c.getEarly2()==1?true:false, 
-																c.getLate2()==1?true:false)).collect(Collectors.toList());
+																c.getEarly1()==1?true:false, 
+																c.getLate2()==1?true:false, 
+																c.getEarly2()==1?true:false)).collect(Collectors.toList());
 	}
 
 	@Override

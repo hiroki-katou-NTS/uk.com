@@ -2105,6 +2105,15 @@ public class ProgramsManager {
 	public static final Program CAS004B = new Program(WebAppId.COM, ProgramIdConsts.CAS004B, "CAS004_2",
 			"/view/cas/004/b/index.xhtml");
 	/**
+	 * KDP003
+	 */
+	public static final Program KDP003A = new Program(WebAppId.AT, ProgramIdConsts.KDP003A, "KDP003_1",
+			"/view/kdp/003/a/index.xhtml");
+	public static final Program KDP003B = new Program(WebAppId.AT, ProgramIdConsts.KDP003B, "KDP003_2",
+			"/view/kdp/003/b/index.xhtml");
+	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
+			"/view/kdp/003/c/index.xhtml");
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;

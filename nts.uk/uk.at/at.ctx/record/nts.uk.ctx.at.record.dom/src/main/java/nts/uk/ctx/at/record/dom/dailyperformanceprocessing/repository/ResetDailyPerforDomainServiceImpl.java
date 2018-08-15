@@ -408,27 +408,27 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 								converter2.merge(valueList);
 								// set data stampOutPut
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter.toDomain().getAttendanceLeave().get());
+										converter.toDomain().getAttendanceLeave().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter.toDomain().getOutingTime().get());
+										.setOutingTimeOfDailyPerformance(converter.toDomain().getOutingTime().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter.toDomain().getTempTime().get());
+										.setTemporaryTimeOfDailyPerformance(converter.toDomain().getTempTime().orElse(null));
 								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter.toDomain().getAttendanceLeavingGate().get());
+										converter.toDomain().getAttendanceLeavingGate().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter.toDomain().getPcLogOnInfo().get());
+										.setPcLogOnInfoOfDaily(converter.toDomain().getPcLogOnInfo().orElse(null));
 							} else {
 								// set data stampOutPut
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter2.toDomain().getAttendanceLeave().get());
+										converter2.toDomain().getAttendanceLeave().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter2.toDomain().getOutingTime().get());
+										.setOutingTimeOfDailyPerformance(converter2.toDomain().getOutingTime().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter2.toDomain().getTempTime().get());
+										.setTemporaryTimeOfDailyPerformance(converter2.toDomain().getTempTime().orElse(null));
 								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter2.toDomain().getAttendanceLeavingGate().get());
+										converter2.toDomain().getAttendanceLeavingGate().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().get());
+										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().orElse(null));
 							}
 
 						}

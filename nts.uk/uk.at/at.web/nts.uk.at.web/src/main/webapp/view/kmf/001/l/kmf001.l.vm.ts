@@ -226,7 +226,7 @@ module nts.uk.pr.view.kmf001.l {
                         return false;
                     }
                     if (self.childNursingSetting().nursingNumberPerson() < 10) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_136", messageParams: [10]});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [10]});
                         return false;
                     }
                 }
