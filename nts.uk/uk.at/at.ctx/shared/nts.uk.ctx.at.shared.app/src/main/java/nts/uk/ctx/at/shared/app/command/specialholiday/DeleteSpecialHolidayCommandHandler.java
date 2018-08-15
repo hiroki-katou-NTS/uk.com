@@ -34,13 +34,12 @@ public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 			sHC.toBePublished();
 		}
 		// Delete Special Holiday
-<<<<<<< HEAD
+
 		sphdRepo.delete(companyId, sHECD);
-=======
-		sphdRepo.delete(companyId, command.getSpecialHolidayCode());
-		
-		SpecialHoliday sphd = new SpecialHoliday();
-		sphd.publishEvent(false, command.getSpecialHolidayCode(), "");
->>>>>>> pj/at/dev/Team_D/KMF003
+
+//		sphdRepo.delete(companyId, command.getSpecialHolidayCode());
+//		
+//		SpecialHoliday sphd = new SpecialHoliday();
+//		sphd.publishEvent(false, command.getSpecialHolidayCode(), "");
 	}
 }
