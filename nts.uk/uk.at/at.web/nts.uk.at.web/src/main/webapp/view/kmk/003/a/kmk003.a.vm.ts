@@ -226,6 +226,9 @@ module nts.uk.at.view.kmk003.a {
                         // focus worktime atr
                         $('#search-daily-atr').focus();
                     }
+                    else {
+                        self.enterNewMode();
+                    }
                 });
 
             }
