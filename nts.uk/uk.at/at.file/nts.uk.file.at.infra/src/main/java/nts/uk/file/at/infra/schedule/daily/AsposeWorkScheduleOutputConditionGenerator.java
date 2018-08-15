@@ -2133,7 +2133,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
-				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) {
+				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) { /* Trick to not page break between detailed data and total data */
 			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         	rowPageTracker.resetRemainingRow();
@@ -2147,7 +2147,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
-					&& it.hasNext() && entry.getValue().getParent().level != 0) {
+					&& it.hasNext()/* && entry.getValue().getParent().level != 0*/) {
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
