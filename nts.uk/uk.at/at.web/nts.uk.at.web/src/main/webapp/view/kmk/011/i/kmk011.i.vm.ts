@@ -220,6 +220,7 @@ module nts.uk.at.view.kmk011.i {
                 var errorMessage = self.multilineeditorErr.errorMessage();
 
                 if (nts.uk.text.isNullOrEmpty(alarmMessage) && nts.uk.text.isNullOrEmpty(errorMessage)) {
+                    blockUI.clear();
                     $('#errorMessage').ntsError('set', {messageId:"Msg_1056"});
                     dfd.resolve();
                 } else {
