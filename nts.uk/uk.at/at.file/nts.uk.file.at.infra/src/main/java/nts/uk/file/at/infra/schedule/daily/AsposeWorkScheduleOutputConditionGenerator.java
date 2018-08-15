@@ -218,6 +218,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
 	
+	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
+	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
+	
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 16;
 	
@@ -427,6 +430,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
+		List<String> lstEmployeeNoWorkplace = new ArrayList<>();
 		
 		// Get all workplace of selected employees within given period
 		for (String employeeId: query.getEmployeeId()) {
@@ -435,8 +439,43 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //			workplaceImport.getLstWkpInfo().forEach(x -> {
 //				lstWorkplaceId.add(x.getWpkID());
 //			});
+			if (workplaceHist == null) {
+				lstEmployeeNoWorkplace.add(employeeId);
+				continue;
+			}
 			lstWorkplaceId.add(workplaceHist.getWorkplaceId());
 			queryData.getLstWorkplaceImport().add(workplaceHist);
+		}
+		
+		if (!lstEmployeeNoWorkplace.isEmpty()) {
+			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int start, length;
+			List<EmployeeDto> lstSplitEmployeeDto;
+			for(int i = 0; i < numOfChunks; i++) {
+				start = i * CHUNK_SIZE;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+
+	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+	            
+	            // Convert to json array
+	            JsonArrayBuilder arr = Json.createArrayBuilder();
+	    		
+	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+	    			arr.add(employee.buildJsonObject());
+	    		}
+	            
+	            setter.setData(DATA_PREFIX_NO_WORKPLACE + i, arr.build().toString());
+			}
+			
+			// Remove all of these employees from original list
+			lstEmployeeNoWorkplace.stream().forEach(employee -> {
+				query.getEmployeeId().remove(employee);
+			});
+			
+			// Stop sequence if no employee left
+			if (query.getEmployeeId().isEmpty())
+				throw new BusinessException(new RawErrorMessage("Msg_1396"));
 		}
 		
 		String companyId = AppContexts.user().companyId();
