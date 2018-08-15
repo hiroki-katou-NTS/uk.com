@@ -1337,7 +1337,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getConvertCode().get().v());
 			for (CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
 				if (targetValue.equals(convertDetail.getSystemCd())) {
-					targetValue = convertDetail.getOutputItem().orElse("");
+					targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get().v() : "";
 					inConvertCode = true;
 					break;
 				}
