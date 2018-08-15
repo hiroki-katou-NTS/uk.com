@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,5 +26,8 @@ public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 		
 		// Delete Special Holiday
 		sphdRepo.delete(companyId, command.getSpecialHolidayCode());
+		
+		SpecialHoliday sphd = new SpecialHoliday();
+		sphd.publishEvent(false, command.getSpecialHolidayCode(), "");
 	}
 }
