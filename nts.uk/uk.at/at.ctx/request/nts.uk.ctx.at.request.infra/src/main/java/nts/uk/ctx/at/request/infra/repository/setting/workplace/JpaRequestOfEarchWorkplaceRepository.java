@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.infra.repository.setting.workplace;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
@@ -50,6 +52,9 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 
 	@Override
 	public List<RequestOfEachWorkplace> getAll(List<String> lstWkpId) {
+		if (CollectionUtil.isEmpty(lstWkpId)) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(FIND_ALL, KrqstWpAppConfig.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstWkpId", lstWkpId)
 				.getList(c -> c.toDomain());

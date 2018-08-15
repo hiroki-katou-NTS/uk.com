@@ -485,10 +485,12 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		dividedDayList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		
 		// 「積立年休集計期間WORK」を作成
-		RsvLeaAggrPeriodWork startWork = new RsvLeaAggrPeriodWork();
-		val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
-		startWork.setPeriod(new DatePeriod(period.start(), startWorkEnd));
-		results.add(startWork);
+		if (dividedDayList.get(0).getYmd().after(period.start())){
+			RsvLeaAggrPeriodWork startWork = new RsvLeaAggrPeriodWork();
+			val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
+			startWork.setPeriod(new DatePeriod(period.start(), startWorkEnd));
+			results.add(startWork);
+		}
 		
 		// 付与後フラグ
 		boolean isAfterGrant = false;
@@ -509,7 +511,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			// 上限日数をチェック
 			MaxDaysRetention maxDays = new MaxDaysRetention(0);
 			for (val maxSetPeriod : maxSetPeriods){
-				if (workPeriod.contains(maxSetPeriod.getPeriod().start())){
+				if (maxSetPeriod.getPeriod().contains(workPeriod.start())){
 					maxDays = maxSetPeriod.getMaxSetting().getMaxDaysCumulation();
 					break;
 				}

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName;
  */
 @Value
 @EqualsAndHashCode(callSuper=false)
-public class SpecialHolidayEvent extends DomainEvent {
+public class SpecialHolidayDomainEvent extends DomainEvent {
 	/** 有効とする */
 	private boolean isEffective;
 
