@@ -42,4 +42,6 @@ public class WorkChangeDetail {
 	 * 選択可能な就業時間帯コード
 	 */
 	List<String> workTimeCodes;
+	
+	boolean isTimeRequired;
 }
