@@ -21,7 +21,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
         categoryItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectionItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<number> = ko.observable(-1);
-        selectedCategoryItemCodeList: KnockoutObservableArray<number> = ko.observableArray([]);
+        selectedCategoryItemCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedSelectionItemList: KnockoutObservableArray<number> = ko.observableArray([]);
         itemTypeItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getItemType());
         selectedItemType: KnockoutObservable<number> = ko.observable(-1);
@@ -49,7 +49,11 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             })
             service.getCtgData(self.categoryId()).done(function(data: Array<any>) {
                 if (data && data.length) {
-                    self.categoryItemList(data);
+                    let listcategoryItemData = _.map(data, x => {
+                            x.itemNo = x.itemNo.toString();
+                            return x;
+                    });
+                    self.categoryItemList(listcategoryItemData);
                     self.selectedItemType.subscribe(code => {
                         self.categoryItemList(_.filter(data, ['itemType', code]));
                     });
@@ -78,7 +82,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                 for (let item of self.selectedCategoryItemCodeList()) {
                     let _selectedItem = _.find(self.categoryItemList(), function(x) { return x.itemNo == item });
                     let _outputSelection: IExternalOutputSelection = {
-                        id: count,
+                        id: count.toString(),
                         itemNo: _selectedItem.itemNo,
                         itemName: _selectedItem.itemName,
                         categoryId: _selectedItem.categoryId,
@@ -165,14 +169,14 @@ module nts.uk.com.view.cmf002.f.viewmodel {
 
     //外部出力カテゴリ項目データ
     export interface IExternalOutputCategoryItemData {
-        itemNo: number;
+        itemNo: any;
         itemName: string;
         categoryId: number;
         itemType: number;
     }
 
     export class ExternalOutputCategoryItemData {
-        itemNo: KnockoutObservable<number> = ko.observable('');
+        itemNo: KnockoutObservable<any> = ko.observable('');
         itemName: KnockoutObservable<string> = ko.observable('');
         categoryId: KnockoutObservable<number> = ko.observable('');
         itemType: KnockoutObservable<number> = ko.observable('');
