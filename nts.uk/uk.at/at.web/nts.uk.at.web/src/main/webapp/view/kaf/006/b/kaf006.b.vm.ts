@@ -401,6 +401,7 @@ module nts.uk.at.view.kaf006.b{
          update(): JQueryPromise<any> {
              let self = this;
              $("#workTypes").trigger('validate');
+             $("#relaReason").trigger("validate");
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
