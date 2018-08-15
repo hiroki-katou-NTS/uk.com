@@ -275,6 +275,8 @@ module cps002.a.vm {
                                 break;
                             }
                         }
+                    }else{
+                        emp.cardNo("");
                     }
                 }
             });
