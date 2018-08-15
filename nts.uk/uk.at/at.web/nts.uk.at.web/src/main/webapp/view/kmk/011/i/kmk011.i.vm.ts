@@ -211,6 +211,7 @@ module nts.uk.at.view.kmk011.i {
 
             //Save button
             private registrationErrMsg(): JQueryPromise<any> {
+                blockUI.grayout();
                 let self = this;
                 var dfd = $.Deferred<any>();
 
@@ -227,6 +228,7 @@ module nts.uk.at.view.kmk011.i {
                     if (mode == SettingMode.WORKTYPE) {
                         var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, self.wkTypeCode(), "", alarmMessage, errorMessage);
                         service.saveWorkTypeDivTimeErrAlarmMsg(data).done(() => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
                             });
@@ -235,6 +237,7 @@ module nts.uk.at.view.kmk011.i {
                     } else {
                         var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, "", "", alarmMessage, errorMessage);
                         service.saveDivTimeErrAlarmMsg(data).done(() => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
                             });
