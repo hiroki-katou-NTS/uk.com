@@ -744,7 +744,7 @@ public class AppAbsenceFinder {
 			List<DateSpecHdRelationOutput> lstRela = specHdEventAlg.getMaxDaySpecHdByRelaFrameNo(companyID, checkSpecHd.getFrameNo().get());
 			if(specHd.getMaxNumberDay().equals(MaxNumberDayType.REFER_RELATIONSHIP)){
 				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
-				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, Optional.of(lstRela.get(0).getRelationCD()));
+				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, lstRela.size() == 0 ? Optional.empty() : Optional.of(lstRela.get(0).getRelationCD()));
 			}
 			result.setMaxDayObj(maxDay);
 			result.setSpecHdForEventFlag(checkSpecHd.isSpecHdForEventFlag());
