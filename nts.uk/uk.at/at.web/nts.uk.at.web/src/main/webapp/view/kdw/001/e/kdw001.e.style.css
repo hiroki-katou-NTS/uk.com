@@ -5,8 +5,8 @@ table.info-table td {border: 1px solid #CCC; padding:2px 7px;}
 table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 
 .process-name {display:inline-block; width: 150px;}
-.process-count {display:inline-block; width: 80px;}
-.process-status {display:inline-block; width: 55px;}
+.process-count {display:inline-block; width: 75px;}
+.process-status {display:inline-block; width: 70px;}
 .process-error {display:inline-block; width: 60px;}
 
 .setting-info {display:inline-block; margin-bottom: 3px;}
