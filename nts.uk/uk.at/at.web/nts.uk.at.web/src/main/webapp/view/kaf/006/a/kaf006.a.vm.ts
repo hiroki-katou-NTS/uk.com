@@ -115,7 +115,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 })
             })
             self.selectedRelation.subscribe(function(codeChange){
-                if(codeChange === undefined || codeChange == null){
+                if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
                 service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
@@ -275,8 +275,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let fix = false;
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
-            }else{
-                fix = false;
+            }
+            if(!fix){
+                $('#relaReason').ntsError('clear');
             }
             self.fix(fix);
             self.maxDayDis(data.specHdForEventFlag);

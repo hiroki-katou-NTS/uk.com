@@ -187,7 +187,10 @@ module nts.uk.at.view.kaf006.b{
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
             }
-            self.fix(fix);
+            if(!fix){
+                $('#relaReason').ntsError('clear');
+            }
+            self.fix(fix);;
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
