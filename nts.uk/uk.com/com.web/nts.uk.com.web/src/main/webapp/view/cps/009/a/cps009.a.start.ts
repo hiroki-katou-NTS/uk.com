@@ -8,10 +8,6 @@ module nts.uk.com.view.cps009.a {
         __viewContext["viewModel"] = screenModel;
         __viewContext.bind(__viewContext["viewModel"]);
 
-        $(document).ready(function() {
-           // __viewContext["viewModel"].checkBrowse();
-        });
-
         if (window.top != window.self) {
             $("#header").css("display", "none");
             $(".goout").css("display", "none");
