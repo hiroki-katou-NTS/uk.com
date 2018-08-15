@@ -84,7 +84,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 
         new ArrayList<>(categoryCopyMethod.keySet());
 
-        List<MasterCopyData> masterCopyDataList = repository.findByMasterCopyIds(new ArrayList<>(categoryCopyMethod.keySet()));
+        List<MasterCopyData> masterCopyDataList = repository.findByListCategoryNo(new ArrayList<>(categoryCopyMethod.keySet()));
 
 
         if (masterCopyDataList.isEmpty()) {

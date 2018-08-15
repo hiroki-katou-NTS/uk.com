@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.assist.dom.mastercopy;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -12,6 +14,8 @@ import nts.arc.layer.dom.AggregateRoot;
 // マスタコピーデータ
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MasterCopyData extends AggregateRoot {
 
 	/** The master copy id. */
