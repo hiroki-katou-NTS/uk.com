@@ -217,6 +217,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 });
                 // find changeDate
                 self.appDate.subscribe(function(value) {
+                    if(value == null || value == '' || value ==  undefined){
+                        return;
+                    }
                     self.findChangeAppDate(value);
                 });
                 self.displayEndDateFlg.subscribe((value) => {
