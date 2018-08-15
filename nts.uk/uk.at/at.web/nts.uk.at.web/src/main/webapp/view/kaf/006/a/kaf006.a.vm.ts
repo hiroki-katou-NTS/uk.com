@@ -443,6 +443,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTimeCode: self.workTimeCode()
             }).done((result) => {
                 //hoatt 2018.08.09
+                self.isCheck(false);
                 self.changeForSpecHd(result);
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (result.startTime1 != null) {
@@ -690,7 +691,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     if (nts.uk.ui.errors.hasError()) { return true; }
                 }
             }
-            $("#relaReason").trigger("validate");
+            if(self.relaReason() != ''){
+                $("#relaReason").trigger("validate");
+            }
             return false;
         }
         private checkDisplayEndDate(data) {
