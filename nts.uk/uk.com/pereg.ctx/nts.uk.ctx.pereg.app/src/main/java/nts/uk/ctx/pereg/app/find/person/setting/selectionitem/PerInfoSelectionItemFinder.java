@@ -24,16 +24,6 @@ public class PerInfoSelectionItemFinder {
 				.getAllSelectionItemByContractCd(contractCode).stream()
 				.map(selectionItem -> PerInfoSelectionItemDto.fromDomain(selectionItem)).collect(Collectors.toList());
 		
-		if (!isCps017) {
-			return dtoList;
-		}
-		
-		String groupComMngRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		
-		if ( groupComMngRoleId != null ) {
-			return dtoList;
-		}
-		
 		return dtoList;
 	}
 
