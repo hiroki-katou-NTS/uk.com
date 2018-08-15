@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.i18n.I18NResources;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
-import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryName;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -22,7 +22,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHolidayEvent> {
+public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHolidayDomainEvent> {
 
 	@Inject
 	private PerInfoCategoryRepositoty ctgRepo;
@@ -34,8 +34,8 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 	private I18NResources resources;
 
 	@Override
-	public Class<SpecialHolidayEvent> subscribedToEventType() {
-		return SpecialHolidayEvent.class;
+	public Class<SpecialHolidayDomainEvent> subscribedToEventType() {
+		return SpecialHolidayDomainEvent.class;
 	}
 
 	private static final List<String> lstCtgCd1 = Arrays.asList(new String[] { "CS00025", "CS00026", "CS00027",
@@ -46,7 +46,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			"CS00061", "CS00062", "CS00063", "CS00064", "CS00065", "CS00066", "CS00067", "CS00068" });
 
 	@Override
-	public void handle(SpecialHolidayEvent domainEvent) {
+	public void handle(SpecialHolidayDomainEvent domainEvent) {
 		int spcHdCode = domainEvent.getSpecialHolidayCode().v();
 		List<String> ctgCds = getCtgCds(spcHdCode);
 		String loginCompanyId = AppContexts.user().companyId();
@@ -61,7 +61,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		}
 	}
 
-	private void updateCtg(SpecialHolidayEvent domainEvent, List<PersonInfoCategory> ctgLst, String loginCompanyId,
+	private void updateCtg(SpecialHolidayDomainEvent domainEvent, List<PersonInfoCategory> ctgLst, String loginCompanyId,
 			List<String> ctgCds) {
 		List<PersonInfoCategory> ctgUpdateList = new ArrayList<>();
 		List<PersonInfoItemDefinition> updateItems = new ArrayList<>();
