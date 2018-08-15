@@ -698,11 +698,51 @@ module nts.uk.time {
     }
     
     function findSame(format: string): Array<string> {
-        let result = [];
+        let result = [], splited = format.split(" "),
+            isHasYear = _.indexOf(splited[0], "Y") >= 0, 
+            isHasMonth = _.indexOf(splited[0], "M") >= 0, 
+            isHasDay = _.indexOf(splited[0], "D") >= 0, 
+            separator = splited[0].replace(/Y/g, "").replace(/M/g, "").replace(/D/g, "").charAt(0),
+            years = isHasYear ? ["YYYY", ""] : [""],
+            months = isHasMonth ? ["M", "MM"] : [""],
+            days = isHasDay ? ["D", "DD"] : [""],
+            separators = ["", separator],
+            isTime = _.size(splited) > 1;
+        
         result.push(format);
-        result.push(format.replace(/\//g, ""));
-        result.push(format.replace(/:/g, ""));
-        result.push(format.replace(/\//g, "").replace(/:/g, ""));
+        _.forEach(years, function(y) {
+            _.forEach(months, function(m) {
+                _.forEach(days, function(d) {
+                    let r = [];
+                    if(!_.isEmpty(y)){
+                        r.push(y);
+                    }
+                    
+                    if(!_.isEmpty(m)){
+                        r.push(m);
+                    }
+                    
+                    if(!_.isEmpty(d)){
+                        r.push(d);
+                    }
+                    if(!_.isEmpty(r)){
+                        _.forEach(separators, function(s) {
+                            if(isTime){
+                                result.push(_.join([_.join(r, s), splited[1]], ' '));
+                            } else {
+                                result.push(_.join(r, s));  
+                            } 
+                        });
+                    }
+                });
+            });
+        });
+//        result.push(format.replace(/\//g, ""));
+//        result.push(format.replace("MM", "M"));
+//        result.push(format.replace("DD", "D"));
+//        result.push(format.replace("MM", "M").replace("DD", "D"));
+//        result.push(format.replace(/:/g, ""));
+//        result.push(format.replace(/\//g, "").replace(/:/g, ""));
         return result;
     }
 

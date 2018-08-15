@@ -5,6 +5,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
@@ -21,8 +22,8 @@ module nts.uk.com.view.cas001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 role: IPersonRole = ko.toJS(self.currentRole);
-
             self.categoryList.removeAll();
+            block.invisible();
             service.getAllCategory(role.roleId).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.categoryList(_.map(data, x => new CategoryAuth({
@@ -33,6 +34,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
                         otherAuth: !!x.allowOtherRef
                     })));
                     dfd.resolve();
+                    block.clear();  
                 }
             });
             return dfd.promise();
@@ -42,7 +44,6 @@ module nts.uk.com.view.cas001.d.viewmodel {
             let self = this,
                 role: IPersonRole = ko.toJS(self.currentRole);
             self.update(self.categoryList(), role.roleId);
-
         }
 
         closeDialog() {

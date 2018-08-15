@@ -128,6 +128,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 							.get(KshmtEmpMonthDaySetPK_.month), month.intValue()));
 		}
 
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

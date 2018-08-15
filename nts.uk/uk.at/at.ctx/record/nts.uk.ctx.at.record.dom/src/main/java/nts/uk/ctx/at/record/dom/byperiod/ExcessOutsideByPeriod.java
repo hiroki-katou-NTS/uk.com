@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 
 /**
@@ -63,12 +62,10 @@ public class ExcessOutsideByPeriod implements Cloneable {
 	
 	/**
 	 * 集計処理
-	 * @param outsideOTSetOpt 時間外超過設定
 	 * @param weeklyCalculation 週別の計算
 	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregate(
-			OutsideOTSetting outsideOTSet,
 			WeeklyCalculation weeklyCalculation,
 			MonAggrCompanySettings companySets){
 		
@@ -86,7 +83,39 @@ public class ExcessOutsideByPeriod implements Cloneable {
 				
 				// 時間を合計する
 				breakdownItemTime = breakdownItemTime.addMinutes(
-						weeklyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet).v());
+						weeklyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet, true).v());
+			}
+			
+			// 時間外超過に追加する
+			this.excessOutsideItems.put(breakdownNo,
+					ExcessOutsideItemByPeriod.of(breakdownNo, breakdownItemTime));
+		}
+	}
+	
+	/**
+	 * 集計処理
+	 * @param monthlyCalculation 期間別の月の計算
+	 * @param companySets 月別集計で必要な会社別設定
+	 */
+	public void aggregate(
+			MonthlyCalculationByPeriod monthlyCalculation,
+			MonAggrCompanySettings companySets){
+		
+		// 丸め設定取得
+		RoundingSetOfMonthly roundingSet = companySets.getRoundingSet();
+		
+		// 「時間外超過の内訳項目」を取得する
+		List<OutsideOTBRDItem> outsideOTBDItems = companySets.getOutsideOTBDItems();
+		for (val outsideOTBDItem : outsideOTBDItems){
+			int breakdownNo = outsideOTBDItem.getBreakdownItemNo().value;
+			
+			// 勤怠項目IDの一覧を取得
+			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				
+				// 時間を合計する
+				breakdownItemTime = breakdownItemTime.addMinutes(
+						monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet, true).v());
 			}
 			
 			// 時間外超過に追加する

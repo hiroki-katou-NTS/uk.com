@@ -242,13 +242,14 @@ module nts.uk.at.view.kal003.a.tab {
                         self.listMulMonCheckSet()[rowId - 1] = condSet;
                         self.listMulMonCheckSet.valueHasMutated();
                     }
-                }else{
-                    if (rowId > 0 && rowId <= self.listMulMonCheckSet().length) {
-                        let mulMonCheckCondSet = shareutils.getDefaultMulMonCheckCondSet(0);
-                        self.listMulMonCheckSet()[rowId - 1] = mulMonCheckCondSet;
-                        self.listMulMonCheckSet.valueHasMutated();
-                    }
                 }
+//                else{
+//                    if (rowId > 0 && rowId <= self.listMulMonCheckSet().length) {
+//                        let mulMonCheckCondSet = shareutils.getDefaultMulMonCheckCondSet(0);
+//                        self.listMulMonCheckSet()[rowId - 1] = mulMonCheckCondSet;
+//                        self.listMulMonCheckSet.valueHasMutated();
+//                    }
+//                }
                 block.clear();
             });
         }

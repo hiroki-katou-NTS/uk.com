@@ -126,25 +126,25 @@ module nts.uk.at.view.kdw008.a {
                 this.selectedCode = ko.observable();
 
                 self.columns3 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
                 self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
 
                 self.columns5 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 , formatter: _.escape}
                 ]);
 
                 //swap list 2
@@ -211,7 +211,7 @@ module nts.uk.at.view.kdw008.a {
                                     var obj = {
                                         attendanceItemId: item.itemDaily,
                                         attendanceItemName: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemName,
-                                        attendanceItemDisplayNumber: item.displayOrder,
+                                        attendanceItemDisplayNumber: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemDisplayNumber,
                                         columnWidth: item.columnWidthTable
                                     };
                                     return new AttendanceItemModel(obj);
@@ -311,8 +311,8 @@ module nts.uk.at.view.kdw008.a {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
-                    self.listMonthlyAttdItem(data);
-                    self.listMonthlyAttdItemFullData(_.cloneDeep(data));
+                    self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
+                    self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
                     dfd.resolve();
                 });
                 return dfd.promise();

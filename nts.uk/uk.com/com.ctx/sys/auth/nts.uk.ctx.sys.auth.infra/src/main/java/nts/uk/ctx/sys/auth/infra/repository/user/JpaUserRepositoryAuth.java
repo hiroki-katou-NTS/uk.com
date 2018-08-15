@@ -74,7 +74,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return datas;
 	}
 
-	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName FROM SacmtUser c"
+	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.businessName FROM SacmtUser c"
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
 			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
@@ -217,6 +217,19 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		});
 		return datas;
 	}
+	
+	private static final String SELECT_USER_BY_CONTRACT_CD = "SELECT s FROM SacmtUser s INNER JOIN BsymtEmployeeDataMngInfo e " + 
+			"	ON s.associatedPersonID = e.bsymtEmployeeDataMngInfoPk.pId INNER JOIN BsymtAffCompanyHist h " + 
+			"		ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId " + 
+			"WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ORDER BY s.loginID";
+	
+	@Override
+	public List<User> getListUserByCompanyId(String cid, GeneralDate baseDate) {
+		List<User> datas = new ArrayList<>();
+		datas.addAll(this.queryProxy().query(SELECT_USER_BY_CONTRACT_CD, SacmtUser.class)
+				.setParameter("companyId", cid).setParameter("baseDate", baseDate).getList(c -> c.toDomain()));
+		return datas;
+	}
 
 	private final String SELECT_USERS_BY_CONTRACT_CODE = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd ORDER BY c.loginID";
 	@Override
@@ -238,6 +251,13 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		Optional<SacmtUser> entity = this.queryProxy().query(SELECT_BY_USER_ID,SacmtUser.class).setParameter("userId", userId).getSingle();
 		entity.ifPresent(e -> this.commandProxy().remove(e));
 		this.getEntityManager().flush();
+	}
+	
+	private final String SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd AND c.associatedPersonID IS NULL ORDER BY c.loginID";
+	@Override
+	public List<User> getByContractCdAndAsIDNull(String contractCode) {
+		return this.queryProxy().query(SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL, SacmtUser.class)
+				.setParameter("contractCd", contractCode).getList(c -> c.toDomain());
 	}
 
 }

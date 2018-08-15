@@ -11,4 +11,16 @@ public interface AppForSpecLeaveRepository {
 	 * @return
 	 */
 	public Optional<AppForSpecLeave> getAppForSpecLeaveById(String companyId, String appId);
+	/**
+	 * add special holiday
+	 * @author hoatt
+	 * @param specHd
+	 */
+	public void addSpecHd(AppForSpecLeave specHd);
+	/**
+	 * update specical holiday
+	 * @author hoatt
+	 * @param specHd
+	 */
+	public void updateSpecHd(AppForSpecLeave specHd);
 }

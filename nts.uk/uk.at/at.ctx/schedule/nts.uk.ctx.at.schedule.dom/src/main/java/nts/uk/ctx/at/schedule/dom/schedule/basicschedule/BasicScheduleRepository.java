@@ -77,6 +77,8 @@ public interface BasicScheduleRepository {
 	void updateScheBreak(BasicSchedule listBSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
+	
+	void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
 
 
 	/**

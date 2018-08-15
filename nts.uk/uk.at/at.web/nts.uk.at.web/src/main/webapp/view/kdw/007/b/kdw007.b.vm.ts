@@ -73,6 +73,14 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 ]);
             }
             
+            caic.compareStartValue.subscribe(v => {
+                self.validateRange();
+            });
+            
+            caic.compareEndValue.subscribe(v => {
+                self.validateRange();
+            });
+            
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
@@ -118,10 +126,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
-            });
-
-            $(".value-input").blur(() => {
-                self.validateRange();
             });
 
             self.fillTextDisplayTarget();
@@ -234,12 +238,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 });
             } else { // 日数
                 service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
+                    dfd.resolve(lstAtdItem);
                 });
             }
             return dfd.promise();
@@ -309,19 +308,19 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-//                setTimeout(() => {
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-//                }, 25);
+                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-//                setTimeout(() => {
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-//                }, 25);
+                }, 25);
             }
         }
 
