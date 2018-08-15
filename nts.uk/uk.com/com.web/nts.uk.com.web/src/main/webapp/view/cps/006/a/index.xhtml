@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="register" class="proceed" tabindex="1"
-					data-bind="click: registerCategoryInfo, enable: $root.errors.isEmpty">#{i18n.getText('CPS006_1')}</button>
+					data-bind="click: registerCategoryInfo, enable: $root.errors.isEmpty() &amp; categoryList().length > 0">#{i18n.getText('CPS006_1')}</button>
 				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal">#{i18n.getText('CPS006_2')}</button>
 				<div class='float-right'>
 					<a class='goout'
