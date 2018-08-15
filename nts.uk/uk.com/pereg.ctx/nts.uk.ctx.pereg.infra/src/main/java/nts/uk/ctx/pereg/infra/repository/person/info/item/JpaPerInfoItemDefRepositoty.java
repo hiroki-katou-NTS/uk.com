@@ -43,6 +43,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -289,6 +290,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.categoryCd = :categoryCd AND c.cid = :cid AND i.itemCd = :itemCd");
 
 
+	private final static String CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd "
+			+ "AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 "
+			+ "AND i.requiredAtr = 1  ORDER BY io.disporder";
+
+	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
+			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
+	
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -1054,6 +1062,29 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd) {
+		List<Object[]> lstObj = this.queryProxy().query(SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		
+		// groupBy categoryId 
+		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[27])));
+		
+		// Map to List
+		Map<String, List<PersonInfoItemDefinition>> result = perInfoItemDefByList.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
+					List<Object[]> listItem = e.getValue();
+					return listItem.stream().map(item-> {
+						return createDomainFromEntity(item, getChildIds(AppContexts.user().contractCode(),
+								String.valueOf(item[27]), String.valueOf(item[1])));
+					}).collect(Collectors.toList());
+					
+				}));
+		
+		return result;
 	}
 }
 

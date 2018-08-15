@@ -1,6 +1,9 @@
 package nts.uk.ctx.pereg.app.command.layout;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,12 +14,17 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.I18NErrorMessage;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NText;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.LayoutCode;
 import nts.uk.ctx.pereg.dom.person.layout.LayoutName;
@@ -29,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
+public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutCommand, List<String>> {
 
 	@Inject
 	INewLayoutReposotory layoutRepo;
@@ -45,9 +53,13 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 	@Inject
 	PerInfoCtgFinder itemCtgFinder;
+	
+	@Inject
+	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 
 	@Override
-	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
+	protected List<String> handle(CommandHandlerContext<NewLayoutCommand> context) {
+		List<String> result = new ArrayList<>();
 		// get new layout domain and command
 		NewLayoutCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
@@ -57,6 +69,9 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		// validate all item classification before save
 		validateArg(command);
 
+		// Validate
+		result = validateRequiredItem(command);
+		
 		// update layout
 		layoutRepo.save(update);
 
@@ -83,6 +98,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 				}
 			}
 		}
+		return result;
 	}
 
 	private LayoutPersonInfoClassification toClassificationDomain(ClassificationCommand command, String layoutId) {
@@ -125,4 +141,39 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 			}
 		}
 	}
+	
+	private List<String> validateRequiredItem(NewLayoutCommand command) {
+
+		List<String> result = new ArrayList<>();
+
+		Map<String, List<PersonInfoItemDefinition>> itemByCtgId = perInfoItemDefRepositoty
+				.getByListCategoryIdWithoutAbolition(command.getItemsClassification().stream()
+						.map(ClassificationCommand::getPersonInfoCategoryID).distinct().collect(Collectors.toList()),
+						AppContexts.user().contractCode());
+
+		if (itemByCtgId.size() == 0) {
+			return null;
+		}
+		List<String> listItemId = command.getItemsClassification().stream().map(ClassificationCommand::getListItemClsDf)
+				.flatMap(Collection::stream).collect(Collectors.toList()).stream()
+				.map(ClassificationItemDfCommand::getPersonInfoItemDefinitionID).collect(Collectors.toList());
+
+		itemByCtgId.forEach((k, value) -> {
+			value.stream().forEach(item -> {
+				if (item.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM) {
+					return;
+				}
+				SingleItem type = (SingleItem) item.getItemTypeState();
+
+				if (listItemId.contains(item.getPerInfoItemDefId()) || (!item.getItemParentCode().v().isEmpty()
+						&& type.getDataTypeState().getDataTypeValue() == DataTypeValue.DATE)) {
+					return;
+				}
+				result.add(item.getItemName().v());
+			});
+		});
+
+		return result;
+	}
+	
 }
