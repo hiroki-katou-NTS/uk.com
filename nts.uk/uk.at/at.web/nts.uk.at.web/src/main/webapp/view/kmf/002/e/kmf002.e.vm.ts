@@ -27,7 +27,7 @@ module nts.uk.at.view.kmf002.e {
             
             public save(): void {
                 let _self = this;
-                
+                blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
                     _self.enableSave(false);
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()).done((data) => {
@@ -35,7 +35,7 @@ module nts.uk.at.view.kmf002.e {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             _self.enableSave(true);
                         });
-                    });
+                    }).always(()=> blockUI.clear());
                 }
             }
             
