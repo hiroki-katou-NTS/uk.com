@@ -31,13 +31,15 @@ public class KrcmtMonAttendanceItemDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KRCMT_MON_ATTENDANCE_ITEM(CID, M_ATD_ITEM_ID, M_ATD_ITEM_NAME, M_ATD_ITEM_ATR, DISP_NO, IS_ALLOW_CHANGE, LINE_BREAK_POS_NAME, "
+			+ "PRIMITIVE_VALUE) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, M_ATD_ITEM_ID, M_ATD_ITEM_NAME, M_ATD_ITEM_ATR, DISP_NO, IS_ALLOW_CHANGE, LINE_BREAK_POS_NAME, "
+			+ "PRIMITIVE_VALUE FROM KRCMT_MON_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_MON_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcmt mon attendance item data copy handler.
@@ -77,6 +79,9 @@ public class KrcmtMonAttendanceItemDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
 			}
 
 			// Run insert query

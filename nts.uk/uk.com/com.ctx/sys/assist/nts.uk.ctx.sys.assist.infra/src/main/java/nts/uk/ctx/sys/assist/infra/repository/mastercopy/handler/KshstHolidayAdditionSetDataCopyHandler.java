@@ -31,13 +31,15 @@ public class KshstHolidayAdditionSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_HOLIDAY_ADDTION_SET(CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
+			+ "ANNUAL_HOLIDAY, SPECIAL_HOLIDAY, YEARLY_RESERVED) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
+			+ "ANNUAL_HOLIDAY, SPECIAL_HOLIDAY, YEARLY_RESERVED FROM KSHST_HOLIDAY_ADDTION_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_HOLIDAY_ADDTION_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst holiday addition set data copy handler.
@@ -78,6 +80,11 @@ public class KshstHolidayAdditionSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
+				insertQuery.setParameter(i * 5 + 9, dataArr[8]);
+				insertQuery.setParameter(i * 5 + 10, dataArr[9]);
 			}
 
 			// Run insert query

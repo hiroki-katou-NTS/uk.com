@@ -31,13 +31,15 @@ public class KrcmtDailyAttendanceItemDataCopyHandler implements DataCopyHandler 
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KRCMT_DAI_ATTENDANCE_ITEM(CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
+			+ "DAILY_ATTENDANCE_ATR, TYPE_OF_MASTER, PRIMITIVE_VALUE VALUES (?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
+			+ "DAILY_ATTENDANCE_ATR, TYPE_OF_MASTER, PRIMITIVE_VALUE FROM KRCMT_DAI_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_DAI_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcmt daily attendance item data copy handler.
@@ -78,6 +80,10 @@ public class KrcmtDailyAttendanceItemDataCopyHandler implements DataCopyHandler 
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
+				insertQuery.setParameter(i * 5 + 9, dataArr[8]);
 			}
 
 			// Run insert query

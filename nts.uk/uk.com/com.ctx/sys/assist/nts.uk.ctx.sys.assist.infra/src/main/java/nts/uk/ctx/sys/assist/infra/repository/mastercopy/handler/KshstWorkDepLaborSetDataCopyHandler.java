@@ -31,15 +31,17 @@ public class KshstWorkDepLaborSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KALMT_ANNUAL_PAID_LEAVE(CID, PRE_CALC_ACTUAL_OPERATION, PRE_EXEMPT_TAX_TIME, PRE_INC_CHILD_NURSE_CARE, PRE_ADDITION_TIME, "
+	private String INSERT_QUERY = "INSERT INTO KSHST_WORK_DEF_LABOR_SET(CID, PRE_CALC_ACTUAL_OPERATION, PRE_EXEMPT_TAX_TIME, PRE_INC_CHILD_NURSE_CARE, PRE_ADDITION_TIME, "
 			+ "PRE_NOT_DEDUCT_LATELEAVE, PRE_DEFORMAT_EXC_VALUE, WKT_EXEMPT_TAX_TIME, WKT_MINUS_ABSENCE_TIME, WKT_CALC_ACTUAL_OPERATION, WKT_INC_CHILD_NURSE_CARE, "
-			+ "WKT_NOT_DEDUCT_LATELEAVE, WKT_ADDITION_TIME, ENABLE_SET_PER_WORK_HOUR1, ENABLE_SET_PER_WORK_HOUR2) VALUES (?,?,?)";
+			+ "WKT_NOT_DEDUCT_LATELEAVE, WKT_ADDITION_TIME, ENABLE_SET_PER_WORK_HOUR1, ENABLE_SET_PER_WORK_HOUR2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PRIORITY_TYPE, MANAGE_ATR FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, PRE_CALC_ACTUAL_OPERATION, PRE_EXEMPT_TAX_TIME, PRE_INC_CHILD_NURSE_CARE, PRE_ADDITION_TIME, "
+			+ "PRE_NOT_DEDUCT_LATELEAVE, PRE_DEFORMAT_EXC_VALUE, WKT_EXEMPT_TAX_TIME, WKT_MINUS_ABSENCE_TIME, WKT_CALC_ACTUAL_OPERATION, WKT_INC_CHILD_NURSE_CARE, "
+			+ "WKT_NOT_DEDUCT_LATELEAVE, WKT_ADDITION_TIME, ENABLE_SET_PER_WORK_HOUR1, ENABLE_SET_PER_WORK_HOUR2 FROM KSHST_WORK_DEF_LABOR_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_WORK_DEF_LABOR_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst work dep labor set data copy handler.
@@ -79,6 +81,16 @@ public class KshstWorkDepLaborSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
+				insertQuery.setParameter(i * 5 + 7, dataArr[6]);
+				insertQuery.setParameter(i * 5 + 8, dataArr[7]);
+				insertQuery.setParameter(i * 5 + 9, dataArr[8]);
+				insertQuery.setParameter(i * 5 + 10, dataArr[9]);
+				insertQuery.setParameter(i * 5 + 11, dataArr[10]);
+				insertQuery.setParameter(i * 5 + 12, dataArr[11]);
+				insertQuery.setParameter(i * 5 + 13, dataArr[12]);
+				insertQuery.setParameter(i * 5 + 14, dataArr[13]);
+				insertQuery.setParameter(i * 5 + 15, dataArr[14]);
 			}
 
 			// Run insert query

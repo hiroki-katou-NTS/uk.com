@@ -31,13 +31,13 @@ public class KshstDailyServiceTypeControlDataCopyHandler implements DataCopyHand
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_DAI_SER_TYPE_CTR(CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU) VALUES (?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst daily service type control data copy handler.
@@ -78,6 +78,7 @@ public class KshstDailyServiceTypeControlDataCopyHandler implements DataCopyHand
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
 			}
 
 			// Run insert query

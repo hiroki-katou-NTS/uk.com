@@ -19,12 +19,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
-import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.KshstOvertimeFrameDataCopyHandler;
+import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.KmfmtRetentionYearlyDataCopyHandler;
 
 @Stateless
 public class JpaMasterCopyDataRepository extends JpaRepository implements MasterCopyDataRepository {
@@ -61,7 +60,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	
 	@Override
 	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
-		new KshstOvertimeFrameDataCopyHandler(this.getEntityManager(), copyMethod, companyId).doCopy();
+		new KmfmtRetentionYearlyDataCopyHandler(this.getEntityManager(), copyMethod, companyId).doCopy();
 	}
 
 	/**

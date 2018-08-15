@@ -29,13 +29,13 @@ public class KshstAddSetManWKHourDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_ADD_SET_MAN_WKHOUR(CID, ADD_SET_OT) VALUES (?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, ADD_SET_OT FROM KSHST_ADD_SET_MAN_WKHOUR WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_ADD_SET_MAN_WKHOUR WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst add set man WK hour data copy handler.
@@ -72,9 +72,6 @@ public class KshstAddSetManWKHourDataCopyHandler implements DataCopyHandler {
 				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
 				insertQuery.setParameter(i * 5 + 1, this.companyId);
 				insertQuery.setParameter(i * 5 + 2, dataArr[1]);
-				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
 			}
 
 			// Run insert query

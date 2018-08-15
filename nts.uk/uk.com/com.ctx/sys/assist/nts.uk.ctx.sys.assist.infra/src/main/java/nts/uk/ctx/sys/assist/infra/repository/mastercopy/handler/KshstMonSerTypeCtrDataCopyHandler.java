@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcstDisplayAndInputMonthlyDataCopyHandler implements DataCopyHandler {
+public class KshstMonSerTypeCtrDataCopyHandler implements DataCopyHandler {
 	private EntityManager entityManager;
 
 	/** The copy method. */
@@ -30,13 +30,13 @@ public class KrcstDisplayAndInputMonthlyDataCopyHandler implements DataCopyHandl
 	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "";
+	private String INSERT_QUERY = "INSERT INTO KSHST_MON_SER_TYPE_CTR(CID, AUTHORITY_MON_ID, ITEM_MONTHLY_ID, USE_ATR, CHANGED_BY_YOU, CHANGED_BY_OTHERS) VALUES (?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, AUTHORITY_MON_ID, ITEM_MONTHLY_ID, USE_ATR, CHANGED_BY_YOU, CHANGED_BY_OTHERS FROM KSHST_MON_SER_TYPE_CTR WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MON_SER_TYPE_CTR WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst display and input monthly data copy handler.
@@ -48,7 +48,7 @@ public class KrcstDisplayAndInputMonthlyDataCopyHandler implements DataCopyHandl
 	 * @param companyId
 	 *            the company id
 	 */
-	public KrcstDisplayAndInputMonthlyDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
+	public KshstMonSerTypeCtrDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
 			String companyId) {
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;
@@ -77,6 +77,7 @@ public class KrcstDisplayAndInputMonthlyDataCopyHandler implements DataCopyHandl
 				insertQuery.setParameter(i * 5 + 3, dataArr[2]);
 				insertQuery.setParameter(i * 5 + 4, dataArr[3]);
 				insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+				insertQuery.setParameter(i * 5 + 6, dataArr[5]);
 			}
 
 			// Run insert query
