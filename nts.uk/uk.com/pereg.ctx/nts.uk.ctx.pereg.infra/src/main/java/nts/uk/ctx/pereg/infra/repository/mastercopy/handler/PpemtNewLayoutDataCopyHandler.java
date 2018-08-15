@@ -1,20 +1,13 @@
-package nts.uk.ctx.pereg.infra.repository.newlayout.mastercopy.handler;
+package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pereg.dom.person.layout.mastercopy.CopyMethod;
-import nts.uk.ctx.pereg.dom.person.layout.mastercopy.DataCopyHandler;
+import nts.uk.ctx.pereg.dom.mastercopy.*;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayoutPk;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
@@ -35,14 +28,13 @@ public class PpemtNewLayoutDataCopyHandler extends JpaRepository implements Data
 	/** The company id. */
 	private String companyId;
 
+	/** The em. */
 	EntityManager em;
 
 	private static final String QUERY_DATA_BY_COMPANYID = "SELECT l FROM PpemtNewLayout l WHERE l.companyId = :companyId";
 	private static final String GET_LAYOUT_ITEM = "SELECT l FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
-	private static final String DELETE_DATA = "DELETE PpemtNewLayout l WHERE l.companyId = :companyId";
-	private static final String DELETE_LAYOUT_ITEM = "DELETE PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
-	private static final String INSERT_DATA = "INSERT INTO PpemtNewLayout p VALUES p.ppemtNewLayoutPk = :ppemtNewLayoutPk, p.companyId = :companyId, p.layoutCode= :layoutCode, p.layoutName= :layoutName";
-	private static final String INSERT_LAYOUT_ITEM = "INSERT INTO PpemtLayoutItemCls p VALUES p.ppemtLayoutItemClsPk = :ppemtLayoutItemClsPk, p.categoryId = :categoryId, p.itemType = :itemType";
+	private static final String DELETE_DATA = "DELETE FROM PpemtNewLayout l WHERE l.companyId = :companyId";
+	private static final String DELETE_LAYOUT_ITEM = "DELETE FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
 
 	public PpemtNewLayoutDataCopyHandler(CopyMethod copyMethod, String companyId, EntityManager em) {
 		super();
@@ -143,7 +135,6 @@ public class PpemtNewLayoutDataCopyHandler extends JpaRepository implements Data
 			break;
 		case DO_NOTHING:
 			// Do nothing
-			break;
 		default:
 			break;
 
