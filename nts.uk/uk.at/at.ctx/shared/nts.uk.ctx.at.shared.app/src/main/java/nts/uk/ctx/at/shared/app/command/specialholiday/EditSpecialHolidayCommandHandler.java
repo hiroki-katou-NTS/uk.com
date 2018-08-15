@@ -36,6 +36,8 @@ public class EditSpecialHolidayCommandHandler extends CommandHandlerWithResult<S
 		
 		if (errList.isEmpty()) {
 			sphdRepo.update(domain);
+			
+			domain.publishEvent(true);
 		}
 		
 		return errList;
