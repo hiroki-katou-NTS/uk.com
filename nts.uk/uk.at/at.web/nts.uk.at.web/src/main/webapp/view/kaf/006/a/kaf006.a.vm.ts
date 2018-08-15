@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
@@ -37,7 +38,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
         holidayTypeCode: KnockoutObservable<number> = ko.observable(0);
         typeOfDutys: KnockoutObservableArray<common.TypeOfDuty> = ko.observableArray([]);
-        selectedTypeOfDuty: KnockoutObservable<number> = ko.observable(null);
+        selectedTypeOfDuty: KnockoutObservable<any> = ko.observable(null);
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValueFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -86,7 +87,20 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+<<<<<<< HEAD
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
+=======
+        //ver15
+        selectedRelation: KnockoutObservable<any> = ko.observable('');
+        relationCombo: KnockoutObservableArray<any> = ko.observableArray([]);
+        relaReason: KnockoutObservable<any> = ko.observable('');
+        mournerDis: KnockoutObservable<boolean> = ko.observable(false);
+        isCheck: KnockoutObservable<boolean> = ko.observable(false);
+        fix: KnockoutObservable<boolean> = ko.observable(false);
+        maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
+        maxDayline1: KnockoutObservable<string> = ko.observable('');
+        maxDayline2: KnockoutObservable<string> = ko.observable('');
+>>>>>>> pj/at/dev/Team_D/CMM045_HoaTT
         constructor(transferData :any) {
 
             let self = this;
@@ -107,7 +121,25 @@ module nts.uk.at.view.kaf006.a.viewmodel {
 
                 })
             })
-
+            self.selectedRelation.subscribe(function(codeChange){
+                if(codeChange === undefined || codeChange == null || codeChange.length == 0){
+                    return;
+                }
+                service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
+                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                    let line1 = getText('KAF006_44');
+                    let maxDay = 0;
+                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                        maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                    }else{//・その以外 ⇒ 上限日数
+                        maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                    }
+                    let line2 = getText('KAF006_46',[maxDay]);
+                    
+                    self.maxDayline1(line1);
+                    self.maxDayline2(line2);
+                });
+            });
         }
         /**
          * 
@@ -136,9 +168,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                             displayHalfDayValue: self.displayHalfDayValue(),
                             holidayType: value,
-                            alldayHalfDay: self.selectedAllDayHalfDayValue()
+                            alldayHalfDay: self.selectedAllDayHalfDayValue(),
+                            relationCD: self.selectedRelation()
                         }).done((data) => {
-
+                            //hoatt 2018.08.09
+//                            self.changeForSpecHd(data);
                             self.displayStartFlg(true);
                             self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
@@ -190,6 +224,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 });
                 // find changeDate
                 self.appDate.subscribe(function(value) {
+                    if(value == null || value == '' || value ==  undefined){
+                        return;
+                    }
                     self.findChangeAppDate(value);
                 });
                 self.displayEndDateFlg.subscribe((value) => {
@@ -198,12 +235,18 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         $('.ntsStartDatePicker').focus();
                         self.dateValue({ startDate: self.appDate(), endDate: "" });
                         self.dateValue.subscribe(function() {
-                            self.findChangeAppDate(self.dateValue().startDate);
+                            if(self.dateValue().startDate != '' && self.dateValue().endDate != ''){
+                                self.findChangeAppDate(self.dateValue().startDate);
+                            }
+                            
                         })
                     } else {
                         self.appDate(self.dateValue().startDate);
                         self.endAppDate('');
                         $("#inputdate").focus();
+                    }
+                    if(self.relaReason() != ''){
+                        $("#relaReason").trigger("validate");
                     }
                 });
                 self.changeWorkHourValue.subscribe((value) =>{
@@ -230,6 +273,45 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             });
             return dfd.promise();
 
+        }
+        changeForSpecHd(data: any){
+            let self = this;
+             //hoatt 2018.08.09
+            //relationship list
+            self.relationCombo([]);
+            let lstRela = [];
+            _.each(data.lstRela, function(rela){
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+            });
+            self.relationCombo(lstRela);
+            let fix = false;
+            if(data.specHdForEventFlag){
+                fix = data.maxNumberDayType == 2 ? true : false;
+            }
+            if(!fix && self.relaReason() != ''){
+                $('#relaReason').ntsError('clear');
+            }
+            self.fix(fix);
+            self.maxDayDis(data.specHdForEventFlag);
+            if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
+                self.mournerDis(true);
+            }else{
+               self.mournerDis(false);
+            }
+            if(self.holidayTypeCode() == 3){
+                //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                let line1 = getText('KAF006_44');
+                let maxDay = 0;
+                if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                    maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                }else{//・その以外 ⇒ 上限日数
+                    maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                }
+                let line2 = getText('KAF006_46',[maxDay]);
+                
+                self.maxDayline1(line1);
+                self.maxDayline2(line2);
+            }
         }
         // change by appDate
         findChangeAppDate(data: any) {
@@ -372,6 +454,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 workTimeCode: self.workTimeCode()
             }).done((result) => {
+                //hoatt 2018.08.09
+                self.isCheck(false);
+                self.changeForSpecHd(result);
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (result.startTime1 != null) {
                     self.timeStart1(result.startTime1);
@@ -426,6 +511,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 $("#inputdate").trigger("validate");
             }
             $("#switch_prePost").trigger("validate");
+            $("#relaReason").trigger("validate");
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
@@ -451,6 +537,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.timeEnd2(null);
                 self.workTimeCode(null);
             }
+            let specHd = null;
+            if(self.holidayTypeCode() == 3 && self.fix()){
+                specHd = {  relationCD: self.selectedRelation(),
+                            mournerCheck: self.isCheck(),
+                            relaReason: self.relaReason()
+                        }
+            }
             let paramInsert = {
                 prePostAtr: self.prePostSelected(),
                 startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -467,7 +560,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 endTime1: self.timeEnd1(),
                 startTime2: self.timeStart2(),
                 endTime2: self.timeEnd2(),
-                displayEndDateFlg: self.displayEndDateFlg()
+                displayEndDateFlg: self.displayEndDateFlg(),
+                specHd: specHd
+                
             };
             service.createAbsence(paramInsert).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -607,6 +702,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     $('.ntsStartDatePicker').trigger("validate");
                     if (nts.uk.ui.errors.hasError()) { return true; }
                 }
+            }
+            if(self.relaReason() != ''){
+                $("#relaReason").trigger("validate");
             }
             return false;
         }
