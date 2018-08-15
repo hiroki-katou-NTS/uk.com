@@ -228,14 +228,19 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         $('.ntsStartDatePicker').focus();
                         self.dateValue({ startDate: self.appDate(), endDate: "" });
                         self.dateValue.subscribe(function() {
-                            self.findChangeAppDate(self.dateValue().startDate);
+                            if(self.dateValue().startDate != '' && self.dateValue().endDate != ''){
+                                self.findChangeAppDate(self.dateValue().startDate);
+                            }
+                            
                         })
                     } else {
                         self.appDate(self.dateValue().startDate);
                         self.endAppDate('');
                         $("#inputdate").focus();
                     }
-                    $("#relaReason").trigger("validate");
+                    if(self.relaReason() != ''){
+                        $("#relaReason").trigger("validate");
+                    }
                 });
                 self.changeWorkHourValue.subscribe((value) =>{
                     self.changeDisplayWorkime();

@@ -194,6 +194,8 @@ module nts.uk.at.view.kaf006.b{
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
+            }else{
+                self.mournerDis(false);
             }
             if(self.holidayTypeCode() == 3){
                 if(data.specHdDto != null){
