@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.mastercopy.handler;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.at.record.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.shr.com.context.AppContexts;
