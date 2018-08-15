@@ -56,7 +56,6 @@ module nts.uk.at.view.kmk011.i {
                     enable: ko.observable(true)
                 };
 
-
                 self.multilineeditorAlarm = {
                     alarmMessage: ko.observable(''),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
@@ -72,6 +71,7 @@ module nts.uk.at.view.kmk011.i {
 
                 //subscribe currentCode
                 self.currentCode.subscribe((codeChanged) => {
+                    nts.uk.ui.errors.clearAll();
                     if (codeChanged != 0) {
                         self.selectMode = true;
                         self.wkTypeCode = ko.observable(nts.uk.ui.windows.getShared('wkTypeCode'));
@@ -116,7 +116,19 @@ module nts.uk.at.view.kmk011.i {
                         self.wkTypeCode = ko.observable("");
                         self.wkTypeName = ko.observable("");
                     }
-                });
+                });       
+                
+                self.multilineeditorErr.errorMessage.subscribe((newValue) => {
+                    if (!_.isEmpty(newValue)) {
+                        nts.uk.ui.errors.clearAll();                        
+                    }
+                })
+                
+                self.multilineeditorAlarm.alarmMessage.subscribe((newValue) => {
+                    if (!_.isEmpty(newValue)) {
+                        nts.uk.ui.errors.clearAll();
+                    }
+                })
             }
 
             public start_page(): JQueryPromise<any> {
@@ -207,9 +219,8 @@ module nts.uk.at.view.kmk011.i {
                 var errorMessage = self.multilineeditorErr.errorMessage();
 
                 if (nts.uk.text.isNullOrEmpty(alarmMessage) && nts.uk.text.isNullOrEmpty(errorMessage)) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_1056" }).then(function() {
-                        dfd.resolve();
-                    });
+                    $('#errorMessage').ntsError('set', {messageId:"Msg_1056"});
+                    dfd.resolve();
                 } else {
                     let mode: number = nts.uk.ui.windows.getShared('settingMode');
 
