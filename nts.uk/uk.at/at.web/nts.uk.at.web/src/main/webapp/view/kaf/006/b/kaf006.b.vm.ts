@@ -187,10 +187,10 @@ module nts.uk.at.view.kaf006.b{
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
             }
-            if(!fix){
+            if(!fix && self.relaReason() != ''){
                 $('#relaReason').ntsError('clear');
             }
-            self.fix(fix);;
+            self.fix(fix);
             self.maxDayDis(data.specHdForEventFlag);
             if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
                 self.mournerDis(true);
@@ -298,6 +298,9 @@ module nts.uk.at.view.kaf006.b{
         findChangeWorkType(value: any){
             let self = this;
             let dfd = $.Deferred();
+            if(self.selectedTypeOfDuty() == null || self.selectedTypeOfDuty() == undefined || self.selectedTypeOfDuty().length == 0){
+                return;
+            }
             service.getChangeWorkType({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),

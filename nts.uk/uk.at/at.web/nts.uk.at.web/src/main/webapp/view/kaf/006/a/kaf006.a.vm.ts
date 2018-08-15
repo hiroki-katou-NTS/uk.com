@@ -281,7 +281,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(data.specHdForEventFlag){
                 fix = data.maxNumberDayType == 2 ? true : false;
             }
-            if(!fix){
+            if(!fix && self.relaReason() != ''){
                 $('#relaReason').ntsError('clear');
             }
             self.fix(fix);
