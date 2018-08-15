@@ -224,12 +224,13 @@
 						<div class="lblTitle-kaf006 cm-column-kaf006"
 							data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF006_33')}</div>
 						<!--A10_2 続柄・喪主一覧-->
-						<div class="combo-box-kaf006"
+						<div class="combo-box-kaf006" id = "relaCD-combo"
 							data-bind="ntsComboBox: {name: '#{i18n.getText('KAF006_33')}', 
 										options: relationCombo,
 										optionsValue: 'relationCd',
 										optionsText: 'relationName',
 										value: selectedRelation,
+										required: requiredRela,
 										columns: [{ prop: 'relationName',length: 10 }]}">
 						</div>
 						<!-- A10_3 喪主 -->
