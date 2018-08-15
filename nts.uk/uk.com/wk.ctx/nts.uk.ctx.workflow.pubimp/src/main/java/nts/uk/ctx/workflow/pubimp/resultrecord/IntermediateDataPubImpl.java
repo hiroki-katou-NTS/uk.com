@@ -25,7 +25,9 @@ import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverToApprove;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
+import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -45,6 +47,40 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private AppRootConfirmService appRootConfirmService;
+
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(String employeeID, DatePeriod period,
+			Integer rootType) {
+		List<String> employeeIDLst = Arrays.asList(employeeID);
+		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst,
+			List<GeneralDate> dateLst, Integer rootType) {
+		List<AppRootStateStatusSprExport> result = new ArrayList<>();
+		dateLst.forEach(date -> {
+			DatePeriod period = new DatePeriod(date, date);
+			result.addAll(appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList()));
+		});
+		return result;
+	}
+
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period,
+			Integer rootType) {
+		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+	}
+	
+	private AppRootStateStatusSprExport convertStatusFromDomain(ApprovalRootStateStatus approvalRootStateStatus){
+		return new AppRootStateStatusSprExport(
+				approvalRootStateStatus.getDate(), 
+				approvalRootStateStatus.getEmployeeID(), 
+				approvalRootStateStatus.getDailyConfirmAtr().value);
+	}
 
 	@Override
 	public List<ApproveDoneExport> checkDateApprovedStatus(String employeeID, DatePeriod period, Integer rootType) {
@@ -78,6 +114,55 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			}
 		});
 		return approveDoneExportLst;
+	}
+
+	@Override
+	public void approve(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType) {
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		employeePerformLst.forEach(employee -> {
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			// (中間データ版)承認する
+			appRootConfirmService.approve(approverID, employeeID, date, appRootInstance, appRootConfirm);
+		});
+	}
+
+	@Override
+	public boolean cancel(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType) {
+		boolean result = false;
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		for(EmployeePerformParam employee : employeePerformLst){
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			// (中間データ版)解除する
+			result = appRootConfirmService.cleanStatus(approverID, employeeID, date, appRootInstance, appRootConfirm);
+			if(!result){
+				break;
+			}
+		};
+		return result;
 	}
 
 	@Override

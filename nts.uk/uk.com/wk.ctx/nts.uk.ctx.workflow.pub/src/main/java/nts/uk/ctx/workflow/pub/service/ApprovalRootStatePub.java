@@ -5,7 +5,6 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
-import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.service.export.AppRootStateConfirmExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateParam;
@@ -15,7 +14,6 @@ import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -31,7 +29,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public boolean releaseApproval(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType);
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
 	/**
 	 * RequestList347
 	 * 実績の承認を登録する
@@ -41,7 +39,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public void registerApproval(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType);
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
 	/**
 	 * RequestList155
 	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
@@ -52,7 +50,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> dateLst, List<String> employeeIDLst, Integer rootType);
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 	/**
 	 * RequestList229
 	 * 承認対象者（複数）と期間から承認状況を取得する
@@ -63,7 +61,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(GeneralDate startDate, GeneralDate endDate, List<String> employeeID,String companyID,Integer rootType);
 	/**
 	 * 承認すべきデータ有無を取得する
 	 * RequestList190 - 191
@@ -74,7 +72,7 @@ public interface ApprovalRootStatePub {
 	 * @param companyID
 	 * @return
 	 */
-	public boolean checkDataApproveed(String approverID, DatePeriod period, Integer rootType);
+	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID,Integer rootType,String companyID);
 	
 	/**
 	 * 承認対象者と期間から承認状況を取得する
@@ -86,7 +84,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpExport> getApprovalByEmplAndDate(String employeeID, DatePeriod period, Integer rootType); 
+	public List<ApproveRootStatusForEmpExport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType); 
 	
 	/**
 	 * RequestList133
@@ -97,7 +95,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public ApprovalRootOfEmployeeExport getApprovalRootOfEmloyee(String employeeID, DatePeriod period, Integer rootType);
+	public ApprovalRootOfEmployeeExport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
 	/**
 	 * @param appID
 	 * @param companyID
