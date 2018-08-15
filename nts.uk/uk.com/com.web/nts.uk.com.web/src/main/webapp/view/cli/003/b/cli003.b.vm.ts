@@ -513,8 +513,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             self.listLogBasicInforModel.push(logtemp);
                                         }
                                         if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logtemp);
+                                            self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                         countLog++;
                                     } else {
@@ -552,40 +551,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     alertError(error);
                 });
             }
-        }
-
-        getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
-            let tempList = logBasicInfoModel.lstLogOutputItemDto;
-            var subColumHeaderTemp: IgGridColumnModel[] = [];
-            _.forEach(logBasicInfoModel.lstLogOutputItemDto, function(logOutputItemDto) {
-                // generate columns header chidrent
-                switch (logOutputItemDto.itemNo) {
-                    case ITEM_NO.ITEM_NO22:
-                    case ITEM_NO.ITEM_NO23:
-                    case ITEM_NO.ITEM_NO24: {
-                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_TAGET_DATE, ITEM_PROPERTY.STR, false));
-                        break;
-                    }
-                    case ITEM_NO.ITEM_NO26: {
-                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_CORRECT_ATTR, ITEM_PROPERTY.STR, false));
-                        break;
-                    }
-                    case ITEM_NO.ITEM_NO27: {
-                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_NAME, ITEM_PROPERTY.STR, false));
-                        break;
-                    }
-                    case ITEM_NO.ITEM_NO30: {
-                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_BEFOR, ITEM_PROPERTY.STR, false));
-                        break;
-                    }
-                    case ITEM_NO.ITEM_NO31: {
-                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_AFTER, ITEM_PROPERTY.STR, false));
-                        break;
-                    }
-                }
-            });
-            logBasicInfoModel.subColumnsHeaders = subColumHeaderTemp;
-            return logBasicInfoModel;
         }
 
         getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) {
@@ -628,7 +593,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '373',
+                height: '405px',
                 features: [
                     {
                         name: "Paging",
@@ -662,7 +627,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405px',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -709,12 +674,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
-                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "10%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" }
+                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "20%" },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%" },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%" }
 
                         ],
                         features: [
+                          
+                            {
+                                name: 'Selection',
+                                mode: "row",
+                                multipleSelection: false
+                            },
                             {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
@@ -743,7 +714,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '432',
+                height: '405',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -794,6 +765,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "20%" }
                         ],
                         features: [
+                            {
+                                name: 'Selection',
+                                multipleSelection: false
+                            },
                             {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
@@ -1116,7 +1091,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
                         let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
-                     
+                          paramLog.targetDataType= dataLogDisplaySetting.dataType;
                        
                         if (dataOutPutItem.length > 0) {
                             _.forEach(dataOutPutItem, function(dataItemNo: any) {
@@ -1549,6 +1524,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "pcName", "string", ITEM_NO.ITEM_NO5));
                                 break;
                             }
+                            case ITEM_NO.ITEM_NO6: {
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "account", "string", ITEM_NO.ITEM_NO6));
+                                break;
+                            }
                             case ITEM_NO.ITEM_NO7: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "modifyDateTime", "string", ITEM_NO.ITEM_NO7));
                                 break;
@@ -1978,6 +1957,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
+        childrentKey:string;
         operationId: string;
         targetDate: string;
         categoryName: string;

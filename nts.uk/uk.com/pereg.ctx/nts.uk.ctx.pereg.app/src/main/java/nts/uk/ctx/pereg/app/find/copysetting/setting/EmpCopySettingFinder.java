@@ -41,14 +41,13 @@ public class EmpCopySettingFinder {
 
 		String companyId = AppContexts.user().companyId();
 		Optional<EmployeeCopySetting> employeeCopySettingOpt = this.empCopyRepo.findSetting(companyId);
-
 		if (!employeeCopySettingOpt.isPresent()) {
 			// check permission
-			boolean isPerRep = true;
-			if (isPerRep) {
-				throw new BusinessException(new RawErrorMessage("Msg_347"));
-			} else {
+			String role = AppContexts.user().roles().forPersonalInfo();
+			if (role == "" || role == null) {
 				throw new BusinessException(new RawErrorMessage("Msg_348"));
+			} else {
+				throw new BusinessException(new RawErrorMessage("Msg_347"));
 			}
 		}
 
