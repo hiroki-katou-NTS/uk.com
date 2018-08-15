@@ -9,5 +9,5 @@ public interface MasterCopyPub {
     /**
      * Do copy.
      */
-    void doCopy(CopyMethod copyMethod, String companyId);
+    void doCopy(int copyMethod, String companyId);
 }

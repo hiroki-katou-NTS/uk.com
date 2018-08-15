@@ -13,8 +13,8 @@ import javax.ejb.Stateless;
 @Stateless
 public class MasterCopyPubImp implements MasterCopyPub {
     @Override
-    public void doCopy(CopyMethod copyMethod, String companyId) {
-        DataCopyHandler copyHandler = new KwrmtErAlWorkRecordCopyHandler(copyMethod,companyId);
+    public void doCopy(int copyMethod, String companyId) {
+        DataCopyHandler copyHandler = new KwrmtErAlWorkRecordCopyHandler(copyMethod, companyId);
         copyHandler.doCopy();
     }
 }
