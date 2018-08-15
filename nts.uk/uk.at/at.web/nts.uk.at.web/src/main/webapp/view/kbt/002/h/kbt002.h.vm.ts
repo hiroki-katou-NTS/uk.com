@@ -118,7 +118,12 @@ module nts.uk.at.view.kbt002.h {
                             name: 'Paging',
                             pageSize: 20,
                             currentPageIndex: 0
-                        }
+                        },{
+                           
+                            name: "Sorting",
+                            persist: true
+                        }, 
+                        
                     ],
                     ntsControls: [{ name: 'execItemCd', text: 'execItemCd', click: function() { alert("Button!!"); }, controlType: 'button' }]
                 });
