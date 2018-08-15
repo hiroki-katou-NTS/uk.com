@@ -193,9 +193,11 @@ module nts.uk.at.view.kaf006.b{
                 self.mournerDis(true);
             }
             if(self.holidayTypeCode() == 3){
-                self.relaReason(data.specHdDto.relationshipReason);
-                self.isCheck(data.specHdDto.mournerFlag);
-                self.selectedRelation(data.specHdDto.relationshipCD);
+                if(data.specHdDto != null){
+                    self.relaReason(data.specHdDto.relationshipReason);
+                    self.isCheck(data.specHdDto.mournerFlag);
+                    self.selectedRelation(data.specHdDto.relationshipCD);
+                }
                 //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                 let line1 = getText('KAF006_44');
                 let maxDay = 0;

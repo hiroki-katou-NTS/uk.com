@@ -242,13 +242,14 @@
 						<div class="lblTitle-kaf006 cm-column-kaf006"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_43')}</div>
 						<!--A10_5 続柄入力欄-->
-						<input style = "margin: 0px 0px 0px 15px !important; width: 380px"
+						<input id = "relaReason" style = "margin: 0px 0px 0px 15px !important;"
 							data-bind="ntsTextEditor: {
-										  name: '#{i18n.getText('KAF006_26')}',
+										  name: '#{i18n.getText('KAF006_43')}',
 	                                         value: relaReason,
 	                                         constraint: 'RelationshipReasonPrimitive', 
 	                                         required: true,
 	                                         option: {textalign: 'left',
+	                                         	width: '380px',
 	                                         	placeholder:'#{i18n.getText('KAF006_45')}'}
                                      	}"/>
                          <!-- A10_6 -->
