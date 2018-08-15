@@ -214,7 +214,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                             }
 
                             block.clear();
-
+                            $('#itemName').focus();
                         });
                     });
                 }).fail(function(res) {
