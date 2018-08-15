@@ -79,9 +79,21 @@ public class JudgeHdSystemOneDayService {
 		//勤務区分チェック-(check WorkClassification)
 		//1日の勤務
 		DailyWork dailyWork = wkTypeOpt.get().getDailyWork();
+		List<WorkTypeClassification> lstHdCheck = new ArrayList<>();
+		lstHdCheck.add(WorkTypeClassification.Holiday);
+		lstHdCheck.add(WorkTypeClassification.Pause);
+		lstHdCheck.add(WorkTypeClassification.AnnualHoliday);
+		lstHdCheck.add(WorkTypeClassification.YearlyReserved);
+		lstHdCheck.add(WorkTypeClassification.SpecialHoliday);
+		lstHdCheck.add(WorkTypeClassification.TimeDigestVacation);
+		lstHdCheck.add(WorkTypeClassification.SubstituteHoliday);
+		lstHdCheck.add(WorkTypeClassification.Absence);
+		lstHdCheck.add(WorkTypeClassification.ContinuousWork);
+		lstHdCheck.add(WorkTypeClassification.LeaveOfAbsence);
+		lstHdCheck.add(WorkTypeClassification.Closure);
 		if(dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){//1日(1Day)
 			//1日の勤務種類の分類チェック-(Check [ClassificationOfDutyType] của 1 ngày)
-			if(dailyWork.getOneDay().equals(WorkTypeClassification.Holiday)){//【休日として扱う勤務種類の分類】に含まれている (chứa "Holiday - 休日")
+			if(lstHdCheck.contains(dailyWork.getOneDay())){//【休日として扱う勤務種類の分類】に含まれている (chứa "Holiday - 休日")
 				//1日休日系を出勤休日区分に格納する-(Lưu trữ HOLIDAY vào "AttendanceHolidayAttr")
 				return AttendanceHolidayAttr.HOLIDAY;
 			}
@@ -90,13 +102,13 @@ public class JudgeHdSystemOneDayService {
 			return AttendanceHolidayAttr.FULL_TIME;
 		}else{//午前と午後 (Sáng và chiều)
 			//午前の勤務種類の分類チェック (Check "ClassificationOfDutyType"  sáng)
-			if(dailyWork.getMorning().equals(WorkTypeClassification.Holiday)){//【休日として扱う勤務種類の分類】に含まれている (bao gồm trong Holiday-休日)
+			if(lstHdCheck.contains(dailyWork.getMorning())){//【休日として扱う勤務種類の分類】に含まれている (bao gồm trong Holiday-休日)
 				//午後の勤務種類の分類チェック-Check "ClassificationOfDutyType"   của buổi chiều
-				return dailyWork.getAfternoon().equals(WorkTypeClassification.Holiday) ? //【休日として扱う勤務種類の分類】に含まれている -> 1日休日系を出勤休日区分に格納する
+				return lstHdCheck.contains(dailyWork.getAfternoon()) ? //【休日として扱う勤務種類の分類】に含まれている -> 1日休日系を出勤休日区分に格納する
 						AttendanceHolidayAttr.HOLIDAY : AttendanceHolidayAttr.AFTERNOON;//【休日として扱う勤務種類の分類】に含まれていない -> 午後出勤系を出勤休日区分に格納する
 			}else{//【休日として扱う勤務種類の分類】に含まれていない( không bao gồm Holiday - 休日)
 				//午後の勤務種類の分類チェック-Check "ClassificationOfDutyType"  của buổi chiều
-				return dailyWork.getAfternoon().equals(WorkTypeClassification.Holiday) ? //【休日として扱う勤務種類の分類】に含まれている -> 午前出勤系を出勤休日区分に格納する
+				return lstHdCheck.contains(dailyWork.getAfternoon()) ? //【休日として扱う勤務種類の分類】に含まれている -> 午前出勤系を出勤休日区分に格納する
 						AttendanceHolidayAttr.MORNING : AttendanceHolidayAttr.FULL_TIME;//【休日として扱う勤務種類の分類】に含まれていない -> 1日出勤系を出勤休日区分に格納する
 			}
 		}
