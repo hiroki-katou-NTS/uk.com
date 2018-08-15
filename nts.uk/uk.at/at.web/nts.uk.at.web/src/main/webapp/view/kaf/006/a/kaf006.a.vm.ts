@@ -87,9 +87,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
-<<<<<<< HEAD
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
-=======
         //ver15
         selectedRelation: KnockoutObservable<any> = ko.observable('');
         relationCombo: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -100,7 +98,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
         maxDayline1: KnockoutObservable<string> = ko.observable('');
         maxDayline2: KnockoutObservable<string> = ko.observable('');
->>>>>>> pj/at/dev/Team_D/CMM045_HoaTT
         constructor(transferData :any) {
 
             let self = this;
