@@ -725,7 +725,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
@@ -1043,7 +1042,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                     // Fix component width if screen width is smaller than component
-                    const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
+                    const componentWidth = window.innerWidth - $('#ccg001-btn-search-drawer').offset().left;
                     if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
                         const margin = 20;
                         // fix width and show scrollbar
@@ -2377,9 +2376,9 @@ var CCG001_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
         </div>
         </div>
     </div>
-    <div id="hor-scroll-button-hide" class="height-maximum">
+    <div id="hor-scroll-button-hide">
         <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
-        <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical height-maximum" data-bind="click: showComponent">
+        <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
             <div class="ccg001-cell mid">
             <i class="icon icon-01-searchmode"></i>
             <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
