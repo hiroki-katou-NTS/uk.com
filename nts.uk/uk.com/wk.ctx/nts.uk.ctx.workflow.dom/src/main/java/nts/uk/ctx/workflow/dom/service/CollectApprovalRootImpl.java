@@ -23,6 +23,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
@@ -188,6 +189,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
+					StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(employeeID, baseDate).getStatusOfEmployment();
+					if((statusOfEmployment==StatusOfEmployment.INCUMBENT)||
+							(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
+							(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
+						return;
+					}
 					if(employeeAdapter.isEmployeeDelete(approver.getEmployeeId())){
 						return;
 					}
@@ -329,6 +336,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		
 		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
+			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
+			if((statusOfEmployment==StatusOfEmployment.INCUMBENT)||
+					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
+					(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
+				continue;
+			}
 			WorkplaceImport wkpIdOfEmp = wkApproverAdapter.findBySid(emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp.getWkpId())) {
 				// truyền tạm approvalAtr = 1
