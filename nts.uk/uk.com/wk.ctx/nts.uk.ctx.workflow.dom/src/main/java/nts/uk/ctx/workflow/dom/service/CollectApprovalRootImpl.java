@@ -189,8 +189,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
-					StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(employeeID, baseDate).getStatusOfEmployment();
-					if((statusOfEmployment==StatusOfEmployment.INCUMBENT)||
+					StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approver.getEmployeeId(), baseDate).getStatusOfEmployment();
+					if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 							(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 							(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 						return;
@@ -337,7 +337,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
-			if((statusOfEmployment==StatusOfEmployment.INCUMBENT)||
+			if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 					(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 				continue;
