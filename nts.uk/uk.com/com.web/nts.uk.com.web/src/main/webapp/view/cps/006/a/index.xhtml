@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="register" class="proceed" tabindex="1"
-					data-bind="click: registerCategoryInfo, enable: $root.errors.isEmpty">#{i18n.getText('CPS006_1')}</button>
+					data-bind="click: registerCategoryInfo, enable: $root.errors.isEmpty() &amp; categoryList().length > 0">#{i18n.getText('CPS006_1')}</button>
 				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal">#{i18n.getText('CPS006_2')}</button>
 				<div class='float-right'>
 					<a class='goout'
@@ -50,10 +50,12 @@
 					<table id="category_grid"
 						data-bind="ntsGridList: {	
 						dataSource: categoryList ,
+						columnResize: true,  
 						primaryKey: 'id' ,
 						columns: ctgColums ,
 						multiple: false,
 						value: id ,
+						columnResize: true,
 						rows:20 }">
 					</table>
 				</div>
@@ -70,7 +72,7 @@
 							<div id='col1' data-bind="ntsFormLabel: {required: true, constraint: 'CategoryName'}">
 								<label>#{i18n.getText('CPS006_9')}</label>
 							</div>
-							<input id="ctgName"
+							<input id="ctgName" tabindex="7"
 								data-bind="ntsTextEditor: {
 								name: '#[CPS006_49]',
 								value: categoryName ,
@@ -79,7 +81,7 @@
 								required: true,
 								immediate: false}"></input>
 							<com:ko-if bind="displayIsAbolished() === 1">
-								<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
+								<div tabindex="8" data-bind="ntsCheckBox: { checked: isAbolition, style: 'warnpanel' }">#{i18n.getText('CPS006_11')}</div>
 							</com:ko-if>
 						</div>
 
@@ -101,7 +103,7 @@
 								<com:ko-if bind="categoryType() === 2 ">
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
-								<button
+								<button tabindex="9"
 									data-bind="ntsHelpButton: {image: '/view/cps/005/image/singe_multi.png', 
 									position: 'right+100 top',
 									enable: true }">?</button>
@@ -133,7 +135,7 @@
 									<label id="continue">#{i18n.getText('Enum_HistoryTypes_DUPLICATE')}</label>
 								</com:ko-if>
 
-								<button
+								<button tabindex="10"
 									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history_type.png', position: 'right+100 top', enable: true }">?</button>
 							</com:ko-if>
 						</div>
@@ -141,8 +143,8 @@
 					<div style="margin-top: 10px;">
 						<com:ko-if
 								bind="currentCategory().isExistedItemLst() === 1">
-						<div id='col1' >
-							<button data-bind="click: openBModal">#{i18n.getText('CPS006_14')}</button>
+						<div id='col1'>
+							<button tabindex="11" data-bind="click: openBModal">#{i18n.getText('CPS006_14')}</button>
 						</div>
 						</com:ko-if>
 						<table id="item_grid"
@@ -152,6 +154,7 @@
 							columns: currentCategory().itemColums ,
 							multiple: false,
 							value: currentCategory().currentItemId ,
+							columnResize: true,
 							rows:10 }">
 						</table>
 					</div>

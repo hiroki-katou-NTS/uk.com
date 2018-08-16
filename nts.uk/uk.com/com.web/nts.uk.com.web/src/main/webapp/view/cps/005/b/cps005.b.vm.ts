@@ -75,6 +75,11 @@ module nts.uk.com.view.cps005.b {
             }
 
             addUpdateData() {
+                $("#item-name-control").trigger("validate");
+                if(this.currentItemData().currentItemSelected().dataType() === 2){
+                    $("#integerPart").trigger("validate");
+                }
+                if (nts.uk.ui.errors.hasError()) { return; }
                 let self = this,
                     newItemDef;
                 block.invisible();
@@ -236,9 +241,15 @@ module nts.uk.com.view.cps005.b {
                         newItemDef.singleItem.hintTimeMin("");
                         block.clear();
                         return true;
-                    } else if (newItemDef.singleItem.timeItemMax === null) {
+                    }
+                    else if (newItemDef.singleItem.timeItemMax === null) {
                         $("#timeItemMax").focus();
                         newItemDef.singleItem.hintTimeMax("");
+                        block.clear();
+                        return true;
+                    }
+                    else if(newItemDef.singleItem.timeItemMin > newItemDef.singleItem.timeItemMax){
+                        $('#timeItemMin').ntsError('set', {messageId:"Msg_1399"});
                         block.clear();
                         return true;
                     }
@@ -251,6 +262,11 @@ module nts.uk.com.view.cps005.b {
                         return true;
                     } else if (newItemDef.singleItem.timePointItemMax === undefined) {
                         $("#timePointItemMax").focus();
+                        block.clear();
+                        return true;
+                    }
+                    else if(newItemDef.singleItem.timePointItemMin > newItemDef.singleItem.timePointItemMax){
+                        $('#timePointItemMin').ntsError('set', {messageId:"Msg_1399"});
                         block.clear();
                         return true;
                     }
@@ -308,10 +324,13 @@ module nts.uk.com.view.cps005.b {
         constructor(params: IItemData) {
             let self = this;
             if (params) {
+                let personEmployeeType = __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType,
+                    dataTypeEnumArray = (personEmployeeType == 2) ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5];
+                
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
-                    return [1, 2, 3, 4, 5, 6].indexOf(c.value) > -1;
+                    return dataTypeEnumArray.indexOf(c.value) > -1;
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
                 self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {

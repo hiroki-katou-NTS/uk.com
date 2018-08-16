@@ -24,16 +24,6 @@ public class PerInfoSelectionItemFinder {
 				.getAllSelectionItemByContractCd(contractCode).stream()
 				.map(selectionItem -> PerInfoSelectionItemDto.fromDomain(selectionItem)).collect(Collectors.toList());
 		
-		if (!isCps017) {
-			return dtoList;
-		}
-		
-		String groupComMngRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		
-		if ( groupComMngRoleId != null ) {
-			return dtoList;
-		}
-		
 		return dtoList;
 	}
 
@@ -48,8 +38,8 @@ public class PerInfoSelectionItemFinder {
 	}
 	// getAllSelection
 
-	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
-		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr, AppContexts.user().contractCode())
+	public List<PerInfoSelectionItemDto> getAllSelectionItem() {
+		return this.perInfoSelectionItemRepo.getAllSelection(AppContexts.user().contractCode())
 				.stream().map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
 }

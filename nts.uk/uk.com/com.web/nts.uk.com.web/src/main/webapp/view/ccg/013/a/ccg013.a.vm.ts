@@ -5,6 +5,7 @@ module ccg013.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import menu = nts.uk.ui.contextmenu.ContextMenuItem;
     import contextMenu = nts.uk.ui.contextmenu.ContextMenu;
+    import errors = nts.uk.ui.errors;
 
     const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
     const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>';
@@ -52,12 +53,13 @@ module ccg013.a.viewmodel {
                 self.index(index);
                 service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
                     nts.uk.ui.errors.clearAll();
-                    $('#webMenuName').focus();
                     let webmenu = self.currentWebMenu();
                     if (!newValue) {
                         self.isCreated(true);
                         self.checkDisabled(true);
-                        $('#webMenuCode').focus();
+                     nts.uk.ui.errors.clearAll();
+                      
+                        
                     } else {
                         self.isCreated(false);
                         self.checkDisabled(false);
@@ -104,6 +106,7 @@ module ccg013.a.viewmodel {
                 }
                 else {
                     self.cleanForm();
+                     nts.uk.ui.errors.clearAll();
                 }
                 dfd.resolve();
             });
@@ -232,6 +235,7 @@ module ccg013.a.viewmodel {
             var self = this;
             self.checkDisabled(true);
             self.isCreated(true);
+            errors.clearAll();
             self.currentWebMenu(new WebMenu({
                 webMenuCode: "",
                 webMenuName: "",
@@ -242,6 +246,7 @@ module ccg013.a.viewmodel {
             if (self.listWebMenu().length > 0) {
                 nts.uk.ui.errors.clearAll();
             }
+              $('#webMenuCode').focus();
         }
 
         /** Get Webmenu */

@@ -33,7 +33,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " AND si.selectionItemPk.selectionItemId <> :selectionItemId";
 	
 	private static final String SELECT_ALL_BY_PERSON_TYPE = "SELECT si FROM PpemtSelectionItem si"
-			+ " WHERE si.selectionItemClsAtr =:selectionItemClsAtr AND si.contractCd = :contractCode"
+			+ " WHERE si.contractCd = :contractCode"
 			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_BY_HIST_ID = SELECT_ALL
 			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
@@ -135,9 +135,9 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	// Lanlt
 	@Override
-	public List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr, String contractCode) {
+	public List<PerInfoSelectionItem> getAllSelection(String contractCode) {
 		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
-				.setParameter("selectionItemClsAtr", selectionItemClsAtr).setParameter("contractCode", contractCode)
+				.setParameter("contractCode", contractCode)
 				.getList(c -> toDomain(c));
 	}
 	// Lanlt

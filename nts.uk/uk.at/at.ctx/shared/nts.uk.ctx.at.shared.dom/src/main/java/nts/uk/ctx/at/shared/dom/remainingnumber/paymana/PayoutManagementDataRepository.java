@@ -24,6 +24,7 @@ public interface PayoutManagementDataRepository {
 	// ドメインモデル「振出管理データ」を作成する
 	void create(PayoutManagementData domain);
 	
+	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
 	void deletePayoutSubOfHDMana(String payoutId);
@@ -73,4 +74,7 @@ public interface PayoutManagementDataRepository {
 	 * @return
 	 */
 	List<PayoutManagementData> getEachPeriod(String sid, DatePeriod dateTmp, DatePeriod dateData, Double unUseDays, DigestionAtr stateAtr);
+	List<PayoutManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
+
+	void deleteById(List<String> payoutId);
 }

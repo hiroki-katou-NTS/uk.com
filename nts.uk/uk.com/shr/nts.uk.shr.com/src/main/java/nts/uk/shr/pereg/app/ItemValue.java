@@ -27,13 +27,14 @@ public class ItemValue {
 	private int logType;
 
 	
-	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
+	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, String text ,int dataType,
 			Integer selectionRefType, String selectionRefCode) {
 		ItemValue itemValue = new ItemValue();
 		itemValue.definitionId = definitionId;
 		itemValue.itemCode = itemCode;
 		itemValue.itemName = itemName;
 		itemValue.value = value;
+		itemValue.text = text;
 		itemValue.logType = dataType;
 		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
 		switch (itemValueType) {
@@ -183,6 +184,7 @@ public class ItemValue {
 	public int logType() {
 		return this.logType;
 	}
+
 	
 	public static ItemValue setContent(ItemValue item) {
 		String contentOld = item.contentBefore() == null ? item.valueBefore(): item.contentBefore();
@@ -190,50 +192,43 @@ public class ItemValue {
 		item.setContentBefore(formatContent(item.logType(),  contentOld, item.valueBefore()));
 		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
 		return item;
-		
 	}
 	
-	public static List<ItemValue> convertItemLog(List<ItemValue> items, List<ItemValue> itemInvisible, String itemCode, DatePeriodSet datePeriod){
-		List<ItemValue> itemValues= new ArrayList<>();
-		
-		items.stream().forEach( c ->{
-			Object oldValue = formatValue(c, c.valueBefore(), true);
-			Object newValue = formatValue(c, c.valueAfter(), false);
+	public static ItemValue setContentForCPS002(ItemValue item) {
+		String contentNew = (item.contentAfter() == null || item.contentAfter() == "") ? item.valueAfter(): item.contentAfter();
+		item.setContentBefore(null);
+		item.setValueBefore(null);
+		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
+		if((item.text == null && item.value == null) 
+		|| (item.text == "" && item.value == "") 
+		|| (item.text == null && item.value == "")
+		|| (item.text == "" && item.value == null)) return null;
+		return item;
+	}
+	
+	public static  ItemValue filterItem(ItemValue item){
+			Object oldValue = formatValue(item, item.valueBefore());
+			Object newValue = formatValue(item, item.valueAfter());
+			
+			if(oldValue == null && newValue == null) {
+				return null;
+			}
 			
 			if(oldValue == null && newValue != null) {
-				itemValues.add(setContent(c));
-			}
-			
-			if(c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
-			}
-			
-			if(datePeriod != null) {
-				if (c.itemCode().equals(datePeriod.getStartCode())) {
-					itemValues.add(setContent(c));
-				}
+				return item;
 			}
 			
 			if(oldValue != null) {
 				if (!oldValue.equals(newValue)) {
-					itemValues.add(setContent(c));
+					return item;
 				}
 			}
 			
-		});		
-		
-		itemInvisible.stream().forEach(c -> {
-			if (c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
-			}
-
-		});
-		
-		return itemValues;
+		return null;
 	}
 	
 	
-	private static Object formatValue(ItemValue item, Object value,  boolean isOld) {
+	public static Object formatValue(ItemValue item, Object value) {
 		
 		if (value == null || value == "") return null;
 		
@@ -264,6 +259,8 @@ public class ItemValue {
 		ItemValueType itemValueType = EnumAdaptor.valueOf(logType, ItemValueType.class);
 		
 		if (viewContent == null || value == null) return null;
+		if (viewContent.equals("") && logType != ItemValueType.STRING.value) return null;
+		if (value.equals("") && logType != ItemValueType.STRING.value) return null;
 		
 		switch(itemValueType) {
 		case STRING:

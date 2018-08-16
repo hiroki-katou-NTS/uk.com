@@ -5,37 +5,13 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
-					nts.uk.shr.com.time.TimeWithDayAttr
 					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingCode
 					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingName
-					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName
-					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
-					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana
-					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
-					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName
-					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName 
-					nts.uk.ctx.bs.person.dom.person.info.PersonMobile
-					nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress
-					nts.uk.ctx.bs.person.dom.person.info.Hobby
-					nts.uk.ctx.bs.person.dom.person.info.Taste
-					nts.uk.ctx.bs.person.dom.person.info.Nationality
-					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
-					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail
-					nts.uk.ctx.bs.employee.dom.employeeinfo.CompanyMobile
-					nts.uk.ctx.bs.employee.dom.employeeinfo.HiringType
-					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
-					nts.uk.ctx.bs.employee.dom.employee.mgndata.ExternalCode
 			</com:ValidatorScript>
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
-				of="/nts.uk.com.js.web" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
-				of="/nts.uk.com.js.web" />
 			<com:stylefile path="cps009.a.style.css" />
 			<com:scriptfile path="cps009.a.service.js" />
 			<com:scriptfile path="layout-control-ko-ext.js" />
@@ -77,6 +53,7 @@
 							primaryKey: 'settingId' ,
 							columns: settingColums ,
 							multiple: false,
+							columnResize: true,
 							value: initSettingId,
 							rows:15 }"
 							tabindex="6">
@@ -149,12 +126,13 @@
 
 							<div id='sub-left'>
 								<!-- A3_005: list カテゴリ一覧 -->
-								<table id="single-list"
+								<table id="item_grid"
 									data-bind="ntsGridList: {	
 									dataSource: currentCategory().ctgList ,
 									primaryKey: 'perInfoCtgId' ,
 									columns: currentCategory().ctgColums ,
 									multiple: false,
+									columnResize: true,
 									value: currentItemId,
 									rows:15 }"
 									tabindex="10">
@@ -230,7 +208,7 @@
 																	data-bind="ntsTextEditor: {
 																	name:  itemName ,
 																	value: stringValue , 
-																	constraint: constraint,
+																	constraint: itemCode,
 																	required: true},
 																	attr: { NameID: itemName }" />
 															</com:ko-if>
@@ -252,7 +230,7 @@
 																	data-bind="ntsTextEditor: {
 																	name:  itemName ,
 																	value: stringValue , 
-																	constraint: constraint},
+																	constraint: itemCode},
 																	attr: { NameID: itemName }" />
 															</com:ko-if>
 	
@@ -427,11 +405,10 @@
 																	<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 																		name: $parent.itemName,
 																 		value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
-																		immediate: false,
 																		required: true},
 																		attr: { NameID: $parent.itemName }" />
 																</div>
@@ -443,11 +420,10 @@
 																	<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 																	 		name: $parent.itemName,
 																	 		value: value,
-																			constraint: constraint,
+																			constraint: $parent.itemCode,
 																			option: option,
 																			enable: enable,
-																			readonly: readonly,
-																			immediate: false},
+																			readonly: readonly},
 																			attr: { NameID: $parent.itemName }" />
 																</div>
 															</com:ko-if>
@@ -460,7 +436,7 @@
 																	<input class="sub-input-units save-error  " id="number" data-bind="ntsNumberEditor: { 
 				 														name: $parent.itemName,
 				 														value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
@@ -474,7 +450,7 @@
 																	<input class="sub-input-units save-error " id="number" data-bind="ntsNumberEditor: { 
 																		name: $parent.itemName,
 																		value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,

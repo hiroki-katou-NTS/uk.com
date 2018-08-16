@@ -7,10 +7,15 @@ module nts.uk.com.view.cmm007.e {
     export module viewmodel {
         export class ScreenModel {
             mapObj: KnockoutObservable<Map<number, model.OvertimeWorkFrameDto>>;
+            checkStatusSetOptions: KnockoutObservableArray<any>;
             
             constructor(){
                 let _self = this;
                 _self.mapObj = new Map<number, model.OvertimeWorkFrameDto>();
+                _self.checkStatusSetOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("CMM007_101") },
+                    { code: false, name: nts.uk.resource.getText("CMM007_102") }
+                ]);
             }
             
              /**
@@ -45,7 +50,7 @@ module nts.uk.com.view.cmm007.e {
                     arrDto.push(value); 
                 });
                 
-                
+                nts.uk.ui.block.grayout();
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
                     _self.findAll().done(() => {
                     });
@@ -56,6 +61,8 @@ module nts.uk.com.view.cmm007.e {
                     
                 }).fail(function() {
 //                    console.log("fail");
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                   
                 return dfd.promise();
@@ -87,9 +94,9 @@ module nts.uk.com.view.cmm007.e {
                 return dfd.promise();
             }
         
-            public checkStatusEnable(value): boolean {
+            public checkStatusEnable(value): KnockoutObservable<boolean> {
                 let _self = this;
-                return _self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? true : false;
+                return ko.observable(_self.mapObj.get(value).useAtr() == USE_CLASSIFICATION.USE ? true : false);
             }
         
             public myFunction(value): void {
