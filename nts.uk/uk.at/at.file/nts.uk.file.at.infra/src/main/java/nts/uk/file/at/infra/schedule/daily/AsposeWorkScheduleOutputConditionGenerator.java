@@ -224,6 +224,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 16;
 	
+	/** The Constant LIMIT_DATA_PACK. */
+	private static final int LIMIT_DATA_PACK = 5;
+	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
 	
@@ -449,12 +452,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		if (!lstEmployeeNoWorkplace.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
@@ -535,12 +538,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
 		if (!lstEmployeeIdNoData.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            

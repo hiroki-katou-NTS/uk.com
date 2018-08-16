@@ -113,7 +113,7 @@ public class TotalDayCountWs {
 					//int dayCount = lstWorkType.size();
 					switch (dayType) {
 					case HOLIDAY:
-						totalCountDay.setWorkingDay(totalCountDay.getWorkingDay() + dayCount);
+						totalCountDay.setHolidayDay(totalCountDay.getHolidayDay() + dayCount);
 						break;
 					case ABSENCE:
 						totalCountDay.setAbsenceDay(totalCountDay.getAbsenceDay() + dayCount);
