@@ -99,6 +99,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         maxDayline1: KnockoutObservable<string> = ko.observable('');
         maxDayline2: KnockoutObservable<string> = ko.observable('');
         requiredRela: KnockoutObservable<boolean> = ko.observable(true);
+        //上限日数
+        maxDay: KnockoutObservable<number> = ko.observable(0);
+        //喪主加算日数
+        dayOfRela: KnockoutObservable<number> = ko.observable(0);
+        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
+        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
+        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
 
             let self = this;
@@ -128,15 +135,35 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     let line1 = getText('KAF006_44');
                     let maxDay = 0;
                     if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                        maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                        maxDay = data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
                     }else{//・その以外 ⇒ 上限日数
                         maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                    }
+                    if(data.maxDayObj != null){
+                        self.maxDay(data.maxDayObj.maxDay);
+                        self.dayOfRela(data.maxDayObj.dayOfRela);  
                     }
                     let line2 = getText('KAF006_46',[maxDay]);
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
                 });
+            });
+            self.isCheck.subscribe(function(checkChange){
+                if(self.mournerDis()){
+                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                    let line1 = getText('KAF006_44');
+                    let maxDay = 0;
+                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                        maxDay = self.maxDay() + self.dayOfRela();
+                    }else{//・その以外 ⇒ 上限日数
+                        maxDay = self.maxDay();
+                    }
+                    let line2 = getText('KAF006_46',[maxDay]);
+                    
+                    self.maxDayline1(line1);
+                    self.maxDayline2(line2);
+                }
             });
         }
         /**
@@ -310,6 +337,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                }
+                if(data.maxDayObj != null){
+                    self.maxDay(data.maxDayObj.maxDay);
+                    self.dayOfRela(data.maxDayObj.dayOfRela);  
                 }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
