@@ -432,7 +432,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							}
 
 						}
-						stampOutput.getReflectStampOutput().setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+						if (shortTimeOfDailyPerformance != null) {
+							stampOutput.getReflectStampOutput().setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+						}						
 					}
 				}
 			}
@@ -445,9 +447,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 				errMesInfos.forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
-				stampOutput.getErrMesInfos().forEach(item -> {
-					this.errMessageInfoRepository.add(item);
-				});
+				if(stampOutput.getErrMesInfos()!= null){
+					stampOutput.getErrMesInfos().forEach(item -> {
+						this.errMessageInfoRepository.add(item);
+					});
+				}
 			}
 		}
 	}

@@ -495,6 +495,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
 
                             if (data.length > 0) {
+                                // order by list
+                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
+                                 }
+                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
+                                 }
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
@@ -513,6 +520,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             self.listLogBasicInforModel.push(logtemp);
                                         }
                                         if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
                                             self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                         countLog++;
@@ -553,6 +561,39 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
         }
 
+        getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
+            let tempList = logBasicInfoModel.lstLogOutputItemDto;
+            var subColumHeaderTemp: IgGridColumnModel[] = [];
+            _.forEach(logBasicInfoModel.lstLogOutputItemDto, function(logOutputItemDto) {
+                // generate columns header chidrent
+                switch (logOutputItemDto.itemNo) {
+                    case ITEM_NO.ITEM_NO22:
+                    case ITEM_NO.ITEM_NO23:
+                    case ITEM_NO.ITEM_NO24: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_TAGET_DATE, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO26: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_CORRECT_ATTR, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO27: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_NAME, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO30: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_BEFOR, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO31: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_AFTER, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                }
+            });
+            logBasicInfoModel.subColumnsHeaders = subColumHeaderTemp;
+            return logBasicInfoModel;
+        }
         getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) {
             let tempList = logBasicInfoModel.lstLogOutputItemDto;
             var subColumHeaderTemp: IgGridColumnModel[] = [];
