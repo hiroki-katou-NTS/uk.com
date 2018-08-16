@@ -257,7 +257,7 @@ module nts.uk.at.view.kmk006.a {
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE) return;
                     self.selectedCurrentWkp(codeChanged);
-                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
+                    if (!_.isEmpty(codeChanged) && !$('#work-place-base-date').ntsError('hasError')) {
                         self.loadWkpAutoCal(codeChanged);
 
                         nts.uk.ui.block.invisible();
@@ -292,7 +292,7 @@ module nts.uk.at.view.kmk006.a {
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;                    
                     self.selectedCurrentWkp(codeChanged);
-                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
+                    if (!_.isEmpty(codeChanged) && !$('#kmk0006-basedate').ntsError('hasError')) {
                         if(!nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
                             self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
                             service.getWkpJobAutoCal(codeChanged, self.totalSelectedCode()).done((data) => {
@@ -308,7 +308,7 @@ module nts.uk.at.view.kmk006.a {
                         let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
                         var params: any = {
                             "workplaceId": wkplId,
-                            "baseDate"   : self.baseDateTreeList()
+                            "baseDate"   : self.inputDate()
                         };
                         service.getDetailWkpl(params).done(function(data: any){
                             nts.uk.ui.block.clear();
