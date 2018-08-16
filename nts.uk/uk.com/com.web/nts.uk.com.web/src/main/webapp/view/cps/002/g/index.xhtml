@@ -21,6 +21,7 @@
 			<com:scriptfile path="cps002.g.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.usesetting.EmpCodeLetter
+				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.pereg.dom.usesetting.CardNoLetter
 			</com:ValidatorScript>
 
@@ -49,10 +50,10 @@
 										value: employeeCodeType ,
 										enable: true }"></div>
 								<div id="empCodeLetter">
-									<input id="employeeCodeLetter"
+									<input id="employeeCode"
 										data-bind="ntsTextEditor: {
 													value: employeeCodeLetter ,
-													constraint:'EmpCodeLetter',
+													constraint:'EmployeeCode',
 													name: '#{i18n.getText('CPS002_77')}',
 													option: {
 														textmode: 'text',
