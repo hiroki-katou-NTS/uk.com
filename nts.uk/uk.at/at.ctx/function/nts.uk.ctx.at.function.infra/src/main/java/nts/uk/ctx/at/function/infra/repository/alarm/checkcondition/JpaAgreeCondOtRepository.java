@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
@@ -98,6 +99,9 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 */
 	@Override
 	public void update(AgreeCondOt agreeCondOt) {
+		if(agreeCondOt.getNo()>=100) {
+			throw new BusinessException("Msg_1311");	
+		}
 		this.commandProxy().update(toEntity(agreeCondOt));
 	}
 	/**
@@ -108,6 +112,9 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	public void insert(AgreeCondOt agreeCondOt) {
 		if(agreeCondOt.getId() == null){
 			agreeCondOt.setId(agreeCondOt.createId());
+		}
+		if(agreeCondOt.getNo()>=100) {
+			throw new BusinessException("Msg_1311");	
 		}
 		this.commandProxy().insert(toEntity(agreeCondOt));
 	}

@@ -86,19 +86,29 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
         return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
+	@Override
+	public Integer getSpecialHolidayFrame() {
+		return this.entityNursing.getSpecialHolidayFrame();
+	}
+
+	@Override
+	public Integer getWorkAbsence() {
+		return this.entityNursing.getWorkAbsence();
+	}
+
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getWorkTypeCodes()
      */
-    @Override
-    public List<String> getWorkTypeCodes() {
-        return this.entityNursing.getListWorkType().stream()
-                .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == this.entityNursing
-                        .getKnlmtNursingLeaveSetPK().getNursingCtr())
-                .map(entity -> entity.getWorkTypeCode())
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<String> getWorkTypeCodes() {
+//        return this.entityNursing.getListWorkType().stream()
+//                .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == this.entityNursing
+//                        .getKnlmtNursingLeaveSetPK().getNursingCtr())
+//                .map(entity -> entity.getWorkTypeCode())
+//                .collect(Collectors.toList());
+//    }
 
 }

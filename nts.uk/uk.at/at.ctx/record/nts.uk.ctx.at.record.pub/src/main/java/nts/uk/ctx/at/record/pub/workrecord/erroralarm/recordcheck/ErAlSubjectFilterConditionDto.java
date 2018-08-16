@@ -9,6 +9,8 @@ import lombok.Data;
 @Builder
 public class ErAlSubjectFilterConditionDto {
 	
+	private String errorAlarmId;
+	
 	// 勤務種別でしぼり込む
 	private Boolean filterByBusinessType;
 

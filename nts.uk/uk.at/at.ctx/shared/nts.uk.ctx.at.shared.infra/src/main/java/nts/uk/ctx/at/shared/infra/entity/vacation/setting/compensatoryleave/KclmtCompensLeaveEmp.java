@@ -42,6 +42,11 @@ public class KclmtCompensLeaveEmp extends UkJpaEntity implements Serializable {
     @Column(name = "MANAGE_ATR")
     private Integer manageAtr;
     
+    /** The manage atr. */
+    @Basic(optional = false)
+    @Column(name = "DEADL_CHECK_MONTH")
+    private Integer deadlCheckMonth;
+    
     /** The kclmt acquisition emp. */
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
             @JoinColumn(name = "EMPCD", referencedColumnName = "EMPCD", insertable = false, updatable = false)})

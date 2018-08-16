@@ -6,11 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@EqualsAndHashCode
 public class KrcmtDailyAttendanceItemPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

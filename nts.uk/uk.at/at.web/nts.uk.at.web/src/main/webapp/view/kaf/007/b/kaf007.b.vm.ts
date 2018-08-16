@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf007.b {
             requiredPrePost: KnockoutObservable<boolean> = ko.observable(false);
             //A5 勤務を変更する:表示/活性
             isWorkChange: KnockoutObservable<boolean> = ko.observable( true );
-            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );            
+            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );          
             //A8 勤務時間２
             isMultipleTime: KnockoutObservable<boolean> = ko.observable( false );
             //kaf000
@@ -44,6 +44,7 @@ module nts.uk.at.view.kaf007.b {
             workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable( true );
+            appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
             
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
@@ -64,7 +65,7 @@ module nts.uk.at.view.kaf007.b {
                         let appCommonSettingDto = settingData.appCommonSettingDto;
                         //勤務変更申請設定
                         let appWorkChangeCommonSetting = settingData.workChangeSetDto;
-
+                        self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
                         //A2_申請者 ID
                         self.employeeID = settingData.sid;
                         //A3 事前事後区分

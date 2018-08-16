@@ -46,7 +46,7 @@ module a6 {
             var self = this;
             self.fixTableOptionFlow = {
                 maxRow: 5,
-                minRow: 1,
+                minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,

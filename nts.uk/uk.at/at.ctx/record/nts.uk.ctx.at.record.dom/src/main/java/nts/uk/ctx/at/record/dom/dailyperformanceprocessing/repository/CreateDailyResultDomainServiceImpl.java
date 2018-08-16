@@ -15,21 +15,16 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -41,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
 
@@ -69,7 +63,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
@@ -121,8 +115,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 						.stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
 						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
 				
-				Stopwatches.start("start create");
-				
 				StateHolder stateHolder = new StateHolder(emloyeeIds.size());
 				
 				/** 並列処理、AsyncTask */
@@ -159,7 +151,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					// Force shut down executor services.
 					executorService.shutdown();
 				}
-				Stopwatches.stop("start create");
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION)
 						.findFirst().orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {
@@ -177,7 +168,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	}
 	
 
-	@Transactional(value = TxType.REQUIRES_NEW)
+//	@Transactional(value = TxType.SUPPORTS)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private ProcessState createData(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime, ExecutionAttr executionAttr,
 			String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			TaskDataSetter dataSetter, EmployeeGeneralInfoImport employeeGeneralInfoImport,

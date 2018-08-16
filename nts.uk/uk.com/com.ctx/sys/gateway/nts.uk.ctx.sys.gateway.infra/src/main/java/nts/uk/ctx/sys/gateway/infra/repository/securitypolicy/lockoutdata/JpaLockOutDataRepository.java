@@ -126,4 +126,35 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	private LockOutData toDomain(SgwmtLockoutData entity) {
 		return new LockOutData(new JpaLockOutDataGetMemento(entity));
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository#findByUserIdAndContractCode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<LockOutData> findByUserIdAndContractCode(String userId, String contractCd) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		//Check UserId
+		predicateList.add(
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
+		predicateList.add(
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCd));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		//Get Result
+		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
+
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new LockOutData(new JpaLockOutDataGetMemento(result.get(0))));
+		}
+	}
 }

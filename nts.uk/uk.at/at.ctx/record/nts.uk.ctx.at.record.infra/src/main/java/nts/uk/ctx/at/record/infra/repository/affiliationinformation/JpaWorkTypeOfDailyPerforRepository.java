@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,28 +52,56 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	@Override
 	public void add(WorkTypeOfDailyPerformance workTypeOfDailyPerformance) {
-		this.commandProxy().insert(KrcdtDaiWorkType.toEntity(workTypeOfDailyPerformance));
-		this.getEntityManager().flush();
+		// this.commandProxy().insert(KrcdtDaiWorkType.toEntity(workTypeOfDailyPerformance));
+		// this.getEntityManager().flush();
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String insertTableSQL = "INSERT INTO KRCDT_DAI_WORKTYPE ( SID , YMD , WORKTYPE_CODE ) " + "VALUES( '"
+					+ workTypeOfDailyPerformance.getEmployeeId() + "' , '" + workTypeOfDailyPerformance.getDate() + "' , '"
+					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' )";
+			Statement statementI = con.createStatement();
+			statementI.executeUpdate(insertTableSQL);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void update(WorkTypeOfDailyPerformance workTypeOfDailyPerformance) {
-		Optional<KrcdtDaiWorkType> data = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiWorkType.class)
-				.setParameter("employeeId", workTypeOfDailyPerformance.getEmployeeId())
-				.setParameter("ymd", workTypeOfDailyPerformance.getDate()).getSingle();
-		if (data.isPresent()) {
-			data.get().krcdtDaiWorkTypePK.employeeId = workTypeOfDailyPerformance.getEmployeeId();
-			data.get().krcdtDaiWorkTypePK.ymd = workTypeOfDailyPerformance.getDate();
-			data.get().workTypeCode = workTypeOfDailyPerformance.getWorkTypeCode().v();
-			
-			this.commandProxy().update(data.get());
+		// Optional<KrcdtDaiWorkType> data =
+		// this.queryProxy().query(FIND_BY_KEY, KrcdtDaiWorkType.class)
+		// .setParameter("employeeId",
+		// workTypeOfDailyPerformance.getEmployeeId())
+		// .setParameter("ymd",
+		// workTypeOfDailyPerformance.getDate()).getSingle();
+		// if (data.isPresent()) {
+		// data.get().krcdtDaiWorkTypePK.employeeId =
+		// workTypeOfDailyPerformance.getEmployeeId();
+		// data.get().krcdtDaiWorkTypePK.ymd =
+		// workTypeOfDailyPerformance.getDate();
+		// data.get().workTypeCode =
+		// workTypeOfDailyPerformance.getWorkTypeCode().v();
+		//
+		// this.commandProxy().update(data.get());
+		// }
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+
+			String updateTableSQL = " UPDATE KRCDT_DAI_WORKTYPE SET WORKTYPE_CODE = '"
+					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
+					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
+			Statement statementU = con.createStatement();
+			statementU.executeUpdate(updateTableSQL);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public Optional<WorkTypeOfDailyPerformance> findByKey(String employeeId, GeneralDate processingDate) {
-		Optional<WorkTypeOfDailyPerformance> data = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiWorkType.class).setParameter("employeeId", employeeId)
-				.setParameter("ymd", processingDate).getSingle(f -> f.toDomain());
+		Optional<WorkTypeOfDailyPerformance> data = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiWorkType.class)
+				.setParameter("employeeId", employeeId).setParameter("ymd", processingDate)
+				.getSingle(f -> f.toDomain());
 		if (data.isPresent()) {
 			return data;
 		} else {
@@ -85,11 +115,10 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd <= :end AND af.krcdtDaiWorkTypePK.ymd >= :start");
-		TypedQueryWrapper<KrcdtDaiWorkType> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
+		TypedQueryWrapper<KrcdtDaiWorkType> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds)
-								.setParameter("start", baseDate.start())
-								.setParameter("end", baseDate.end()).getList(af -> af.toDomain()));
+			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", baseDate.start())
+					.setParameter("end", baseDate.end()).getList(af -> af.toDomain()));
 		});
 		return result;
 	}
@@ -100,13 +129,13 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiWorkType> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
+		TypedQueryWrapper<KrcdtDaiWorkType> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-								.getList().stream()
-								.filter(c -> p.get(c.krcdtDaiWorkTypePK.employeeId).contains(c.krcdtDaiWorkTypePK.ymd))
-								.map(af -> af.toDomain()).collect(Collectors.toList()));
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream()
+					.filter(c -> p.get(c.krcdtDaiWorkTypePK.employeeId).contains(c.krcdtDaiWorkTypePK.ymd))
+					.map(af -> af.toDomain()).collect(Collectors.toList()));
 		});
 		return result;
 	}

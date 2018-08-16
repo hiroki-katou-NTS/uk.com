@@ -8,7 +8,7 @@ public interface EmployeeDailyPerErrorPub {
 	List<EmployeeDailyPerErrorPubExport> getByErrorCode(String employeeId, DatePeriod datePeriod, List<String> errorCodes);
 	
 	/**
-	 * RequestList No303
+	 * RequestList303
 	 * @param employeeId
 	 * @param datePeriod
 	 * @return

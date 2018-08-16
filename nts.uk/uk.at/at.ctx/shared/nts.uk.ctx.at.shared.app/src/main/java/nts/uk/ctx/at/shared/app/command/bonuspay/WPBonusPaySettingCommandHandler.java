@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class WPBonusPaySettingCommandHandler extends CommandHandler<WPBonusPaySettingCommand> {
@@ -19,23 +20,24 @@ public class WPBonusPaySettingCommandHandler extends CommandHandler<WPBonusPaySe
 	@Override
 	protected void handle(CommandHandlerContext<WPBonusPaySettingCommand> context) {
 		WPBonusPaySettingCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		switch (command.getAction()) {
 		case 0:
-			Optional<WorkplaceBonusPaySetting> domain = repo.getWPBPSetting(new WorkplaceId(command.getWorkplaceId()));
+			Optional<WorkplaceBonusPaySetting> domain = repo.getWPBPSetting(companyId, new WorkplaceId(command.getWorkplaceId()));
 			if (domain.isPresent()) {
-				repo.updateWPBPSetting(toDomain(command));
+				repo.updateWPBPSetting(toDomain(command, companyId));
 			} else {
-				this.repo.addWPBPSetting(toDomain(command));
+				this.repo.addWPBPSetting(toDomain(command, companyId));
 			}
 			break;
 		case 1:
-			this.repo.removeWPBPSetting(toDomain(command));
+			this.repo.removeWPBPSetting(toDomain(command, companyId));
 			break;
 		}
 	}
 
-	private WorkplaceBonusPaySetting toDomain(WPBonusPaySettingCommand command) {
-		return WorkplaceBonusPaySetting.createFromJavaType(command.getWorkplaceId(), command.getBonusPaySettingCode());
+	private WorkplaceBonusPaySetting toDomain(WPBonusPaySettingCommand command, String companyId) {
+		return WorkplaceBonusPaySetting.createFromJavaType(companyId, command.getWorkplaceId(), command.getBonusPaySettingCode());
 	}
 
 }

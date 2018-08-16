@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -19,18 +20,24 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSHST_RELATIONSHIP")
 /**
- * @author yennth
+ * @author sonnlb
  */
-public class KshstRelationshipItem extends UkJpaEntity implements Serializable{
+// 続柄
+public class KshstRelationshipItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KshstRelationshipPK kshstRelationshipPK;
 	/* 名称 */
 	@Column(name = "RELATIONSHIP_NAME")
 	public String relationshipName;
+
+	/* 3親等以内とする */
+	@Column(name = "THREE_PARENT_OR_LESS")
+	public boolean threeParentOrLess;
+
 	@Override
 	protected Object getKey() {
 		return kshstRelationshipPK;
 	}
-	
+
 }

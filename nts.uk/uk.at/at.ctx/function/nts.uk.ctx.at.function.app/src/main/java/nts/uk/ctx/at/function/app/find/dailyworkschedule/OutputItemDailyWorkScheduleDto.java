@@ -29,4 +29,7 @@ public class OutputItemDailyWorkScheduleDto {
 	
 	/** The zone name. */
 	private int workTypeNameDisplay;
+	
+	/** The remark input no. */
+	private int remarkInputNo;
 }

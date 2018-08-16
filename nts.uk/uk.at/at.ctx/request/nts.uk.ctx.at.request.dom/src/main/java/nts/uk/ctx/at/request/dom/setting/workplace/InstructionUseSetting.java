@@ -20,7 +20,7 @@ public class InstructionUseSetting extends DomainObject{
 	/**
 	 * 備考
 	 */
-	public Memo instructionRemarks;
+	public Memo500 instructionRemarks;
 	/**
 	 * 利用区分
 	 */

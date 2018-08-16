@@ -3,6 +3,7 @@ package nts.uk.shr.infra.web.request;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.Filter;
@@ -54,6 +55,8 @@ public class StartPageLogWriter implements Filter {
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		String requestPagePath = httpRequest.getRequestURL().toString();
 		
+		boolean isStartFromMenu = isStartFromMenu(httpRequest);
+		
 		ScreenIdentifier targetPg = screenIdentify(requestPagePath, httpRequest.getQueryString());
 		
 		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true)){
@@ -79,13 +82,19 @@ public class StartPageLogWriter implements Filter {
 					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
 				}), targetPg, Optional.empty());
 		
-		saveLog(initLog(httpRequest, basic));
+		saveLog(initLog(httpRequest, basic, isStartFromMenu));
+	}
+	
+	private boolean isStartFromMenu(HttpServletRequest httpRequest){
+		if(httpRequest.getCookies() == null){
+			return false;
+		}
+		return Stream.of(httpRequest.getCookies()).filter(c -> c.getName().equals(FilterConst.JUMP_FROM_MENU)).findFirst().isPresent();
 	}
 
-	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic) {
-		Boolean isJumpFromMenu = (Boolean) httpRequest.getAttribute(FilterConst.JUMP_FROM_MENU);
+	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic, boolean requestedFromMenu) {
 		
-		if(isJumpFromMenu != null && isJumpFromMenu){
+		if(requestedFromMenu){
 			return StartPageLog.specialStarted(basic);
 		}
 		
@@ -123,7 +132,7 @@ public class StartPageLogWriter implements Filter {
 	private String getQueryStringFrom(String query){
 		String[] qs = query.split(FilterConst.QUERY_STRING_SEPARATOR);
 		QueryStringAnalyzer analyzer = new QueryStringAnalyzer(qs.length == 2 ? qs[1] : "");
-		return analyzer.buildQueryExclude(FilterConst.MENU_FLAG);
+		return analyzer.buildQueryExclude();
 	}
 	
 	private <U, T> T getValue(U source, Function<U, T> getter){

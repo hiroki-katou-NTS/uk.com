@@ -93,7 +93,7 @@ public class AlarmPatternSettingFinder {
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
 			
-		} else if (domain.isMonthly()) {
+		} else if (domain.isMonthly() || domain.isMultipleMonth()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 			ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto

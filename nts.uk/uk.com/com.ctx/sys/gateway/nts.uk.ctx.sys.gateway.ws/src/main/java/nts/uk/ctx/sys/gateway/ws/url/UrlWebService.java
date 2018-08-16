@@ -137,7 +137,7 @@ public class UrlWebService {
 		
 		// 社員コードの存在チェック
 		if(Strings.isBlank(employeeCD)){
-			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport());
+			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport(), false);
 		} else {
 			String companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
 			submitLoginFormTwoCommandHandler.setLoggedInfo(

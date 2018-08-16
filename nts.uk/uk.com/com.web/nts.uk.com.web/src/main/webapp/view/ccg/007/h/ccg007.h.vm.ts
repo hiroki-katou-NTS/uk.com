@@ -35,7 +35,7 @@ module nts.uk.pr.view.ccg007.h {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 
-                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                let url = _.toLower($(location).attr('href'));
                 self.embeddedId(url.substring(url.indexOf("=") + 1, url.length));
 
                 // block ui

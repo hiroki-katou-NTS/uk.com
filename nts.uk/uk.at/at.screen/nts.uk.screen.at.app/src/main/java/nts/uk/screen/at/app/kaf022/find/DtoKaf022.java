@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempDto;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionDto;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstructionDto;
+import nts.uk.ctx.at.request.app.find.setting.company.otrestappcommon.OvertimeRestAppCommonSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
@@ -56,4 +57,8 @@ public class DtoKaf022 {
 	// A14
 	public JobAssignSettingDto jobAssign;
 	public ApprovalSettingDto approvalSettingDto;
+	// B8 -> B26
+	public OvertimeRestAppCommonSetDto otRestAppCom;
+	// G10 -> G23
+	public OvertimeRestAppCommonSetDto otRestApp7;
 }

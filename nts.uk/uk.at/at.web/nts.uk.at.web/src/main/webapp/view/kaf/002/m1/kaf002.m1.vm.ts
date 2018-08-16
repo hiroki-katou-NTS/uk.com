@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf002.m1 {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([]);
-            supFrameNo: number = 3;
+            supFrameNo: number = 10;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -18,51 +18,64 @@ module nts.uk.at.view.kaf002.m1 {
             displayItemNo: number = this.supFrameNo;
             editable: KnockoutObservable<boolean> = ko.observable(true);
             screenMode: KnockoutObservable<number> = ko.observable(0);
-            constructor(){
-                var self = this;
-                self.extendsMode.subscribe((v)=>{ 
-                    if(v){
-                        self.refreshData();
-                    }
-                });        
-            }
+            attendanceItems: Array<any> = [];
+            employeeID: string;
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+            start(appStampData: any, data: vmbase.AppStampNewSetDto, listWorkLocation: Array<vmbase.IWorkLocation>, 
+                editable: any, screenMode: any, employeeID: string){
                 var self = this;    
+                if(!nts.uk.util.isNullOrUndefined(appStampData)){
+                    let stampLoop = _.find(appStampData, (o) => { return o.stampFrameNo > 2; });
+                    if(!nts.uk.util.isNullOrUndefined(stampLoop)){
+                        self.extendsModeDisplay(false);    
+                    }        
+                }
+                let stampRequestSetDto = data.appStampSetDto.stampRequestSettingDto;
+                self.employeeID = employeeID;
                 self.screenMode(screenMode);
                 self.editable(editable);
                 self.workLocationList = listWorkLocation;
-                self.supFrameNo = data.supFrameDispNO;
-                self.stampPlaceDisplay(data.stampPlaceDisp);
-                if(data.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
-                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
-                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
+                // self.supFrameNo = stampRequestSetDto.supFrameDispNO;
+                self.stampPlaceDisplay(stampRequestSetDto.stampPlaceDisp);
+                if(stampRequestSetDto.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
+                if(stampRequestSetDto.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
+                if(stampRequestSetDto.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
                 self.stampAtr(_.first(self.stampAtrList()).code);
-                if(data.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
-                if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
-                if(data.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
-                if(data.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
-                self.refreshData();
-                if(!nts.uk.util.isNullOrUndefined(appStampData)){
-                    self.appStampList.removeAll();
-                    _.forEach(appStampData, item => {
-                        self.appStampList.push(
-                            new vmbase.AppStampGoOutPermit(
-                                item.stampAtr,
-                                item.stampFrameNo,
-                                item.stampGoOutReason,
-                                new vmbase.CheckBoxTime(item.startTime,true,false),
-                                new vmbase.CheckBoxLocation(item.startLocation,self.findWorkLocationName(item.startLocation),true,false),
-                                new vmbase.CheckBoxTime(item.endTime,true,false),
-                                new vmbase.CheckBoxLocation(item.endLocation,self.findWorkLocationName(item.endLocation),true,false) 
-                        ));      
-                        self.stampAtr(item.stampAtr);  
-                    });
-                }
+                if(stampRequestSetDto.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
+                if(stampRequestSetDto.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
+                if(stampRequestSetDto.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
+                if(stampRequestSetDto.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
+                self.getAttendanceItem(data.appCommonSettingDto.generalDate, [self.employeeID]).done(()=>{
+                    if(!nts.uk.util.isNullOrUndefined(appStampData)){
+                        self.stampAtr(appStampData[0].stampAtr);
+                        _.forEach(appStampData, item => {
+                            let stampLoop = _.find(self.appStampList(), (o) => { return o.stampFrameNo() == item.stampFrameNo; });
+                            if(nts.uk.util.isNullOrUndefined(stampLoop)){
+                                return;    
+                            }
+                            self.appStampList.remove(stampLoop);
+                            let stampInit = new vmbase.AppStampGoOutPermit(
+                                    item.stampAtr,
+                                    item.stampFrameNo,
+                                    item.stampGoOutReason,
+                                    new vmbase.CheckBoxTime(item.startTime,true,false),
+                                    new vmbase.CheckBoxLocation(item.startLocation,self.findWorkLocationName(item.startLocation),true,false),
+                                    new vmbase.CheckBoxTime(item.endTime,true,false),
+                                    new vmbase.CheckBoxLocation(item.endLocation,self.findWorkLocationName(item.endLocation),true,false) 
+                            );      
+                            self.appStampList.push(stampInit);
+                        });
+                        self.appStampList(_.sortBy(self.appStampList(), (o) => { return o.stampFrameNo(); }));
+                    }
+                    nts.uk.ui.block.clear();      
+                }).fail(()=>{
+                    nts.uk.ui.block.clear();    
+                }); 
+                
                 self.stampAtr.subscribe((value)=>{ 
                     nts.uk.ui.errors.clearAll();
                     if(value == 1){
-                        self.displayItemNo = self.extendsMode() ? 10 : 3;   
+                        self.displayItemNo = 10;   
                         self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
                     } else {
                         self.displayItemNo = 2;
@@ -70,12 +83,10 @@ module nts.uk.at.view.kaf002.m1 {
                     }
                     self.refreshData();
                 });
-                nts.uk.ui.block.clear();
             }
             
             extendsModeEvent(){
                 var self = this;
-                self.displayItemNo = 10;
                 self.extendsMode(!self.extendsMode());    
                 self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1)); 
             }
@@ -83,18 +94,16 @@ module nts.uk.at.view.kaf002.m1 {
             refreshData(){
                 var self = this;
                 let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
-                self.appStampList.removeAll();
-                for(let i=1;i<=self.displayItemNo;i++) {
-                    self.appStampList.push(
-                        new vmbase.AppStampGoOutPermit(
-                            self.stampAtr(),
-                            i,
-                            stampGoOutAtr,
-                            new vmbase.CheckBoxTime(null,true,false),
-                            new vmbase.CheckBoxLocation('','',true,false),
-                            new vmbase.CheckBoxTime(null,true,false),
-                            new vmbase.CheckBoxLocation('','',true,false)));    
-                }     
+                if(self.stampAtr()==1){
+                    self.displayItemNo = 10;
+                    self.setGoOutItem(self.attendanceItems);      
+                } else if(self.stampAtr()==2){
+                    self.displayItemNo = 2;     
+                    self.setChildCareItem(self.attendanceItems);   
+                } else {
+                    self.displayItemNo = 2;
+                    self.setCareItem(self.attendanceItems);       
+                } 
             }
             
             findWorkLocationName(workLocationCD: string): string {
@@ -122,11 +131,7 @@ module nts.uk.at.view.kaf002.m1 {
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
-                    appStampGoOutPermitCmds: _.filter(
-                                                    _.map(self.appStampList(), (item) => self.convertToJS(item)), 
-                                                    o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
-                                                                  !nts.uk.util.isNullOrEmpty(o.startLocation)||
-                                                                  !nts.uk.util.isNullOrEmpty(o.endTime)}),
+                    appStampGoOutPermitCmds: _.map(self.filterAppStamp(self.appStampList()), item => self.convertToJS(item)),
                     appStampWorkCmds: null,
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null  
@@ -171,11 +176,7 @@ module nts.uk.at.view.kaf002.m1 {
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
-                    appStampGoOutPermitCmds: _.filter(
-                                                    _.map(self.appStampList(), (item) => self.convertToJS(item)), 
-                                                    o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
-                                                                  !nts.uk.util.isNullOrEmpty(o.startLocation)||
-                                                                  !nts.uk.util.isNullOrEmpty(o.endTime)}),
+                    appStampGoOutPermitCmds: _.map(self.filterAppStamp(self.appStampList()), item => self.convertToJS(item)),
                     appStampWorkCmds: null,
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null 
@@ -202,6 +203,29 @@ module nts.uk.at.view.kaf002.m1 {
                         }
                     });  
                 }
+            }
+            
+            filterAppStamp(appStamp: KnockoutObservableArray<vmbase.AppStampGoOutPermit>){
+                var self = this;
+                if(self.stampAtr()==1){
+                    if(self.stampPlaceDisplay()==1){
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });     
+                    } else {
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });       
+                    }
+                } else {
+                    return _.filter(appStamp, item => {
+                        return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))     
+                    });     
+                }   
             }
             
             convertToJS(appStamp: KnockoutObservable<vmbase.AppStampGoOutPermit>){
@@ -241,6 +265,182 @@ module nts.uk.at.view.kaf002.m1 {
                             
                     }     
                 });    
+            }
+            
+            getAttendanceItem(date: any, employeeList: Array<any>){
+                let self = this;
+                var dfd = $.Deferred();
+                service.getAttendanceItem({
+                    employeeIDLst: employeeList, 
+                    date: date,
+                    stampRequestMode: 0
+                }).done((data)=>{
+                    if(!nts.uk.util.isNullOrEmpty(data)){
+                        self.attendanceItems = data[0].attendanceItems;    
+                    }
+                    self.refreshData();
+                    dfd.resolve();
+                }).fail((res)=>{
+                    dfd.reject(res);    
+                });    
+                return dfd.promise();       
+            }
+            
+            setGoOutItem(attendanceItems: any){
+                let self = this;
+                self.appStampList.removeAll();
+                for(let i=1;i<=self.displayItemNo;i++) {
+                    if(i==1){
+                        self.setValueAppStamp(attendanceItems, 86, 88, 90, 87, 89, 0);
+                    }
+                    if(i==2){
+                        self.setValueAppStamp(attendanceItems, 91, 93, 95, 92, 94, 1);    
+                    }
+                    if(i==3){
+                        self.setValueAppStamp(attendanceItems, 96, 67, 70, 65, 68, 2);    
+                    }
+                    if(i==4){
+                        self.setValueAppStamp(attendanceItems, 101, 103, 105, 102, 104, 3);     
+                    }
+                    if(i==5){
+                        self.setValueAppStamp(attendanceItems, 106, 108, 110, 107, 109, 4);    
+                    }
+                    if(i==6){
+                        self.setValueAppStamp(attendanceItems, 111, 113, 115, 112, 114, 5);    
+                    }
+                    if(i==7){
+                        self.setValueAppStamp(attendanceItems, 116, 118, 120, 117, 119, 6);    
+                    }
+                    if(i==8){
+                        self.setValueAppStamp(attendanceItems, 121, 123, 125, 122, 124, 7);    
+                    }
+                    if(i==9){
+                        self.setValueAppStamp(attendanceItems, 126, 128, 130, 127, 129, 8);    
+                    }
+                    if(i==10){
+                        self.setValueAppStamp(attendanceItems, 131, 133, 135, 132, 134, 9);     
+                    }
+                }
+            }
+            
+            setChildCareItem(attendanceItems: any){
+                let self = this;
+                self.appStampList.removeAll();
+                for(let i=1;i<=self.displayItemNo;i++) {
+                    if(i==1){
+                        self.setValueAppStamp(attendanceItems, null, 747, 748, null, null, 0);
+                    }
+                    if(i==2){
+                        self.setValueAppStamp(attendanceItems, null, 749, 750, null, null, 1);    
+                    }
+                }    
+            }
+            
+            setCareItem(attendanceItems: any){
+                let self = this;
+                self.appStampList.removeAll();
+                for(let i=1;i<=self.displayItemNo;i++) {
+                    if(i==1){
+                        self.setValueAppStamp(attendanceItems, null, 751, 752, null, null, 0);
+                    }
+                    if(i==2){
+                        self.setValueAppStamp(attendanceItems, null, 753, 754, null, null, 1);    
+                    }
+                }    
+            }   
+            
+            setValueAppStamp(attendanceItems: any, goOutAtrID: any, startTimeID: any, endTimeID: any, startPlaceID: any, endPlaceID: any, order: any){
+                let self = this, 
+                    goOutAtr, startTime, endTime, startPlaceCD, endPlaceCD,
+                    goOutAtrParam, 
+                    startTimeParam, startTimeCheckValue, startTimeCheckEnable, 
+                    endTimeParam, endTimeCheckValue, endTimeCheckEnable,
+                    startPlaceCDParam, startPlaceCheckValue, startPlaceCheckEnable,
+                    endPlaceCDParam, endPlaceCheckValue, endPlaceCheckEnable;
+                goOutAtr = _.find(attendanceItems, (o) => { return o.itemId == goOutAtrID; });    
+                if(!nts.uk.util.isNullOrUndefined(goOutAtr)){
+                    if(!nts.uk.util.isNullOrUndefined(goOutAtr.value)){
+                        goOutAtrParam = parseInt(goOutAtr.value);       
+                    } else {
+                        goOutAtrParam = _.first(self.stampGoOutAtrList()).code;    
+                    }
+                } else {
+                    goOutAtrParam = _.first(self.stampGoOutAtrList()).code;     
+                }      
+                startTime = _.find(attendanceItems, (o) => { return o.itemId == startTimeID; });    
+                if(!nts.uk.util.isNullOrUndefined(startTime)){
+                    if(!nts.uk.util.isNullOrUndefined(startTime.value)){
+                        startTimeParam = parseInt(startTime.value);    
+                        startTimeCheckEnable = true;
+                        startTimeCheckValue = false;
+                    } else {
+                        startTimeParam = null;    
+                        startTimeCheckEnable = false;
+                        startTimeCheckValue = true;
+                    }
+                } else {
+                    startTimeParam = null;  
+                    startTimeCheckEnable = false;
+                    startTimeCheckValue = true;    
+                }
+                endTime = _.find(attendanceItems, (o) => { return o.itemId == endTimeID; });    
+                if(!nts.uk.util.isNullOrUndefined(endTime)){
+                    if(!nts.uk.util.isNullOrUndefined(endTime.value)){
+                        endTimeParam = parseInt(endTime.value); 
+                        endTimeCheckEnable = true;
+                        endTimeCheckValue = false;
+                    } else {
+                        endTimeParam = null;    
+                        endTimeCheckEnable = false;
+                        endTimeCheckValue = true;
+                    }  
+                } else {
+                    endTimeParam = null;     
+                    endTimeCheckEnable = false;
+                    endTimeCheckValue = true; 
+                }
+                startPlaceCD = _.find(attendanceItems, (o) => { return o.itemId == startPlaceID; });    
+                if(!nts.uk.util.isNullOrUndefined(startPlaceCD)){
+                    if(!nts.uk.util.isNullOrUndefined(startPlaceCD.value)){
+                        startPlaceCDParam = startPlaceCD.value;   
+                        startPlaceCheckEnable = true;
+                        startPlaceCheckValue = false;
+                    } else {
+                        startPlaceCDParam = null;    
+                        startPlaceCheckEnable = false;
+                        startPlaceCheckValue = true;
+                    }
+                } else {
+                    startPlaceCDParam = null;     
+                    startPlaceCheckEnable = false;
+                    startPlaceCheckValue = true; 
+                }
+                endPlaceCD = _.find(attendanceItems, (o) => { return o.itemId == endPlaceID; });    
+                if(!nts.uk.util.isNullOrUndefined(endPlaceCD)){
+                    if(!nts.uk.util.isNullOrUndefined(endPlaceCD.value)){
+                        endPlaceCDParam = endPlaceCD.value; 
+                        endPlaceCheckEnable = true;
+                        endPlaceCheckValue = false;   
+                    } else {
+                        endPlaceCDParam = null;  
+                        endPlaceCheckEnable = false;
+                        endPlaceCheckValue = true;  
+                    }
+                } else {
+                    endPlaceCDParam = null;      
+                    endPlaceCheckEnable = false;
+                    endPlaceCheckValue = true;
+                }   
+                self.appStampList.push(
+                    new vmbase.AppStampGoOutPermit(
+                        self.stampAtr(),
+                        order,
+                        goOutAtrParam,
+                        new vmbase.CheckBoxTime(startTimeParam, startTimeCheckValue, startTimeCheckEnable),
+                        new vmbase.CheckBoxLocation(startPlaceCDParam,self.findWorkLocationName(startPlaceCDParam), startPlaceCheckValue, startPlaceCheckEnable),
+                        new vmbase.CheckBoxTime(endTimeParam, endTimeCheckValue, endTimeCheckEnable),
+                        new vmbase.CheckBoxLocation(endPlaceCDParam,self.findWorkLocationName(endPlaceCDParam), endPlaceCheckValue, endPlaceCheckEnable) 
+                ));     
             }
         }
     }

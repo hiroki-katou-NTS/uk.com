@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf000.test{
         var screenModel = new kaf000.test.viewmodel.ScreenModel();
         //screenModel.start().done(function() {
             __viewContext.bind(screenModel);
-            
+            service.getAppData(); 
         //});
     });
 }

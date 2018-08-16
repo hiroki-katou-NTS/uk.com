@@ -20,5 +20,7 @@ public interface ErAlWorkRecordCheckAdapter {
 	
 	public List<ErrorRecordImport> check(List<String> EACheckIDs, DatePeriod workingDate, Collection<String> employeeIds);
 	
-
+	public Map<String, List<RegulationInfoEmployeeResult>> filterEmployees(DatePeriod targetPeriod,
+			Collection<String> employeeIds, List<AlarmCheckTargetCondition> conditions);
+	
 }

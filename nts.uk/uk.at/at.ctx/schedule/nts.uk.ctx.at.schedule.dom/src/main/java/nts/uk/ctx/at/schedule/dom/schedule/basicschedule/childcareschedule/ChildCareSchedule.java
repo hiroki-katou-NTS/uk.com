@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class ChildCareSchedule.
  */
 // 勤務予定育児介護時間帯
+@AllArgsConstructor
 @Getter
 public class ChildCareSchedule extends DomainObject{
 	

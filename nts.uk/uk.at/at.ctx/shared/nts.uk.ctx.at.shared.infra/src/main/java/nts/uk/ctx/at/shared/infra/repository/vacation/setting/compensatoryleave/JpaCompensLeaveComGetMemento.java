@@ -62,8 +62,9 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-        return new CompensatoryAcquisitionUse(
-                new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionCom()));
+    	JpaCompensAcquisitionUseGetMemento memento = new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionCom());
+    	CompensatoryAcquisitionUse data = new CompensatoryAcquisitionUse(memento);
+        return data;
     }
 
     /*

@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.ejb.Stateless;
 
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
+import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -81,9 +83,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN6", "AL6", "AJ6", "AH6", "AF6", "AD6" });
-
+	
 	/** The Constant END_REPORT_COL2. */
-	private static final String END_REPORT_COL2 = "AO";
+	private static final String END_REPORT_PAGE_BREAK= "AP";
 
 	/** The Constant REPORT_LEFT_COL_ADDR. */
 	private static final String REPORT_LEFT_COL_ADDR = "A%d:T%d";
@@ -203,10 +205,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
-
-					if (dataSource.getMode() == EXPORT_PDF) {
-						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-					}
+					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+					pageSetup.setFitToPagesTall(1);
+					pageSetup.setFitToPagesWide(1);
 
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
@@ -326,8 +328,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// update start page row value
 		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
 
+		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
+		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-		hPageBreaks.add(END_REPORT_COL2 + (startNewPage + 1));
+		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 
 		return startNewPage;
 	}

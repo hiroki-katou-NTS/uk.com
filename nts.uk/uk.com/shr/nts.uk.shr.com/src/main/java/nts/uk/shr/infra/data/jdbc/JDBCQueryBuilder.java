@@ -134,7 +134,7 @@ public class JDBCQueryBuilder {
 		List<String> values = new ArrayList<>();
 		Stream.concat(defaultI, changeFields.stream()).forEach(fv -> {
 			fields.add(fv.field);
-			values.add(JDBCUtil.toString(fv.value == null ? "NULL" : fv.value.toString()));
+			values.add(JDBCUtil.toString(fv.value));
 		});
 
 		template = template.replace(JDBCUtil.TARGET_FIELD, StringUtils.join(fields.toArray(), ", "));
@@ -151,7 +151,7 @@ public class JDBCQueryBuilder {
 		Stream<FieldWithValue> defaultU = JDBCUtil.getDefaultUpdateField();
 
 		Object updated[] = Stream.concat(changeFields.stream(), defaultU).map(
-				f -> StringUtils.join(f.field, " = ", JDBCUtil.toString(f.value == null ? "NULL" : f.value.toString())))
+				f -> StringUtils.join(f.field, " = ", JDBCUtil.toString(f.value)))
 				.collect(Collectors.toList()).toArray();
 
 		return template.replace(JDBCUtil.TARGET_FIELD, StringUtils.join(updated, ", "));

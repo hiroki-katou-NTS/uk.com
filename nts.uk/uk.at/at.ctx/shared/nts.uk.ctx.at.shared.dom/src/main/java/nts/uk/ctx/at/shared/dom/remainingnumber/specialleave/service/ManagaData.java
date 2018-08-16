@@ -20,5 +20,5 @@ public class ManagaData {
 	/**
 	 * 蓄積上限日数
 	 */
-	Optional<Double> limitDays;
+	Optional<Integer> limitDays;
 }

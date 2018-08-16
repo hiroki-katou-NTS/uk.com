@@ -370,4 +370,53 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		
 		return optClosure.get();
 	}
+
+	@Override
+	public DatePeriod getClosurePeriod(Closure closure, YearMonth processYm) {
+		// 【処理概要】
+				// 当月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+				val currentPeriods = closure.getPeriodByYearMonth(processYm);
+				if (currentPeriods.size() <= 0)
+					return null;
+
+				// 当月の期間が2つある時は、2つめを当月の期間とする （1つの時は、1つめを当月の期間とする）
+				val currentPeriod = currentPeriods.get(currentPeriods.size() - 1);
+
+				// 翌月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+				val nextPeriods = closure.getPeriodByYearMonth(processYm.addMonths(1));
+
+				// 締め変更により、変更前・後期間がある年月か確認する
+				// ※ 翌月の期間が2つ返ってくれば、翌月の1つめの期間が、当月の後期間に当たる （月度解釈のズレがある）
+				boolean isMultiPeriod = false;
+				if (nextPeriods.size() > 1)
+					isMultiPeriod = true;
+
+				if (isMultiPeriod) {
+					// 前・後期間のある月度の時
+
+					val currentMonth = closure.getClosureMonth();
+					if (processYm.equals(currentMonth.getProcessingYm())) {
+						// 「締め．当月．処理当月」と同じ年月の時
+
+						if (currentMonth.getClosureClassification().isPresent()) {
+							if (currentMonth.getClosureClassification()
+									.get() == ClosureClassification.ClassificationClosingBefore) {
+								// 「締め．当月．締め日変更区分」＝「締め日変更前期間」の時 → 当月の期間を返す
+								return currentPeriod;
+							} else {
+								// 「締め．当月．締め日変更区分」＝「締め日変更後期間」の時 → 翌月の1つめの期間を返す
+								return nextPeriods.get(0);
+							}
+						} else {
+							// 「締め．当月．締め日変更区分」がない時 → 当月の期間を返す
+							return currentPeriod;
+						}
+					} else {
+						// 「締め．当月．処理当月」と異なる年月の時
+						return currentPeriod;
+					}
+				}
+				// 前・後期間のない月度の時 → 当月の期間を返す
+				return currentPeriod;
+	}
 }

@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.auth.pub.user.getuser;
 
 
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +17,24 @@ public class GetUserDto {
 	
 	private String loginId;
 	
-	private String userName;
+	private Optional<String> userName;
 	
-	private String associatedPersonID;
+	private Optional<String> associatedPersonID;
 	
-	private String mailAddress;
+	private Optional<String> mailAddress;
 	
 	private String password;
+
+	public GetUserDto(String userId, String loginId, String userName, String associatedPersonID,
+			String mailAddress, String password) {
+		super();
+		this.userId = userId;
+		this.loginId = loginId;
+		this.userName = Optional.ofNullable(userName == null ? null : userName);
+		this.associatedPersonID = Optional.ofNullable(associatedPersonID== null ? null :associatedPersonID);
+		this.mailAddress = Optional.ofNullable(mailAddress == null ? null : mailAddress);
+		this.password = password;
+	}
+
 	
 }

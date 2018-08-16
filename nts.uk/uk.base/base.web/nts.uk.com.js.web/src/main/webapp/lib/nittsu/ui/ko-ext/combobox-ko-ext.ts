@@ -215,7 +215,7 @@ module nts.uk.ui.koExtentions {
                             let data = $element.data(DATA);
 
                             // select first if !select and !editable
-                            if (!data[EDITABLE] && !data[VALUE]) {
+                            if (!data[EDITABLE] && _.isNil(data[VALUE])) {
                                 $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
                                 //reload data
                                 data = $element.data(DATA);
@@ -287,6 +287,7 @@ module nts.uk.ui.koExtentions {
                     }
                 })
                 .trigger(CHANGED, [DATA, options])
+                .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
                 .addClass('ntsControl')
                 .on('blur', () => { $element.css('box-shadow', ''); })
                 .on('focus', () => {
@@ -417,11 +418,17 @@ module nts.uk.ui.koExtentions {
                     // set new value
                     .igCombo("value", value);
 
+                if (!enable) {
+                    $element.removeAttr(TAB_INDEX);
+                } else {
+                    $element.attr(TAB_INDEX, data[TAB_INDEX]);
+                }
+
                 // validate if has dataOptions
                 $element
                     .trigger(VALIDATE, [true]);
 
-                if (!value) {
+                if (_.isNil(value)) {
                     $element
                         .igCombo("deselectAll");
                 }

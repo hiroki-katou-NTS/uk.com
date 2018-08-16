@@ -1,6 +1,7 @@
-/**
- * 
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
 import java.util.ArrayList;
@@ -210,13 +211,22 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.classification.affiliate.
+	 * AffClassHistItemRepository#getByHistoryIds(java.util.List)
+	 */
 	@Override
 	public List<AffClassHistItem> getByHistoryIds(List<String> historyIds) {
 		if (historyIds.isEmpty()) {
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
-		List<BsymtAffClassHistItem> entities = this.queryProxy().query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
+
+		List<BsymtAffClassHistItem> entities = this.queryProxy()
+				.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
 				.setParameter("historyIds", historyIds).getList();
+
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 

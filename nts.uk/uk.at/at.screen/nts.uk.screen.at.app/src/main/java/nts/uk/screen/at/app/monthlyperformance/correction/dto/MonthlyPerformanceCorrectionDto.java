@@ -21,6 +21,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerforman
 /**
  * TODO
  */
+
 @Data
 public class MonthlyPerformanceCorrectionDto {
 
@@ -92,6 +93,14 @@ public class MonthlyPerformanceCorrectionDto {
 	private Boolean showRegisterButton;
 	
 	private MonthlyItemControlByAuthDto authDto;
+	/**
+	 * A4_8
+	 */
+	private List<ClosureInfoOuput> lstclosureInfoOuput;
+	/**
+	 * A4_7
+	 */
+	private Integer selectedClosure;
 	
 	public MonthlyPerformanceCorrectionDto(){
 		super();

@@ -15,7 +15,8 @@ module nts.uk.com.view.cdl008.a {
             selectedSelWorkplace: KnockoutObservable<string>;
             baseDate: KnockoutObservable<Date>;
             workplaces: TreeComponentOption;
-            isMultiple: boolean;
+            isMultipleSelect: boolean;
+            isMultipleUse: boolean;
             selectedSystemType: KnockoutObservable<number>;
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
@@ -25,14 +26,20 @@ module nts.uk.com.view.cdl008.a {
                 self.baseDate = ko.observable(new Date());
                 self.selectedMulWorkplace = ko.observableArray([]);
                 self.selectedSelWorkplace = ko.observable('');
-                self.isMultiple = false;
+                self.isMultipleSelect = false;
+                self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
-                self.restrictionOfReferenceRange = false;
+                self.restrictionOfReferenceRange = true;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
-                    self.isMultiple = inputCDL008.isMultiple;
-                    if (self.isMultiple) {
+                    self.isMultipleSelect = inputCDL008.isMultiple;
+                    if (_.isNil(inputCDL008.isShowBaseDate)) {
+                        self.isMultipleUse = false;
+                    } else {
+                        self.isMultipleUse = inputCDL008.isShowBaseDate ? false : true;
+                    }
+                    if (self.isMultipleSelect) {
                         self.selectedMulWorkplace(inputCDL008.selectedCodes);
                     }
                     else {
@@ -46,12 +53,13 @@ module nts.uk.com.view.cdl008.a {
                     }
 
                     // If Selection Mode is Multiple Then not show Unselected Row
-                    self.isDisplayUnselect = ko.observable(self.isMultiple ? false : inputCDL008.showNoSelection);
+                    self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
-                    isMultiSelect: self.isMultiple,
+                    isMultiSelect: self.isMultipleSelect,
+                    isMultipleUse: self.isMultipleUse,
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
@@ -64,7 +72,7 @@ module nts.uk.com.view.cdl008.a {
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
                     isShowNoSelectRow: self.isDisplayUnselect()
                 };
-                if (self.isMultiple) {
+                if (self.isMultipleSelect) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
                 }
                 else {
@@ -77,20 +85,20 @@ module nts.uk.com.view.cdl008.a {
              */
             private selectedWorkplace(): void {
                 var self = this;
-                if (self.isMultiple) {
+                if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;
                     }
                 }
 
                 var selectedCode: any = self.selectedMulWorkplace();
-                if (!self.isMultiple) {
+                if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
                 }
                 nts.uk.ui.windows.setShared('outputCDL008', selectedCode);

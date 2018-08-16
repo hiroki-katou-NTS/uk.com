@@ -30,20 +30,15 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	private AdTimeAnyItemStoredForDailyCalc adTimeAnyItemStoredForDailyCalc;
 	
 	@Override
-	public void addAndUpdate(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
-		String empId = attendanceTime != null ? attendanceTime.getEmployeeId()
-											  : anyItem.isPresent() ? anyItem.get().getEmployeeId()
-													  			    : null;
-		GeneralDate ymd = attendanceTime != null ? attendanceTime.getYmd()
-				  								 : anyItem.isPresent() ? anyItem.get().getYmd()
-				  										 		       : null;
+	public void addAndUpdate(String empId ,GeneralDate ymd,
+							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
 		//勤怠時間更新
-		if(attendanceTime != null) {
-			if(attendanceTimeRepository.find(attendanceTime.getEmployeeId(), attendanceTime.getYmd()).isPresent()) {
-				attendanceTimeRepository.update(attendanceTime);
+		if(attendanceTime.isPresent()) {
+			if(attendanceTimeRepository.find(empId, ymd).isPresent()) {
+				attendanceTimeRepository.update(attendanceTime.get());
 			}
 			else {
-				attendanceTimeRepository.add(attendanceTime);
+				attendanceTimeRepository.add(attendanceTime.get());
 			}
 		}
 		//任意項目更新
@@ -58,7 +53,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 		}
 		//ストアド実行
 		if(empId != null && ymd != null)
-			adTimeAnyItemStoredForDailyCalc.storeAd(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
+			adTimeAnyItemStoredForDailyCalc.storeAd(empId, ymd);
 		
 	}
 

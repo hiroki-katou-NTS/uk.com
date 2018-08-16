@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -116,7 +117,8 @@ public class UserInfoFinder {
 		if (listUser.isEmpty()) {
 			return listUserMap;
 		}
-		Map<String, UserImport> mapUser = listUser.stream()
+
+		Map<Optional<String>, UserImport> mapUser = listUser.stream()
 				.collect(Collectors.toMap(UserImport::getAssociatePersonId, Function.identity()));
 
 		listUserAccount.forEach(item -> {

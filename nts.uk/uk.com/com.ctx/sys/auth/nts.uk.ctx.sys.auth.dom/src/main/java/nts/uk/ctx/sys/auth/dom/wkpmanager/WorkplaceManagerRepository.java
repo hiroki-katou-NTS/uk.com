@@ -22,4 +22,6 @@ public interface WorkplaceManagerRepository {
 	
 	
 	List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
+	
+	List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate, List<String> wkpManagerIDLst);
 }

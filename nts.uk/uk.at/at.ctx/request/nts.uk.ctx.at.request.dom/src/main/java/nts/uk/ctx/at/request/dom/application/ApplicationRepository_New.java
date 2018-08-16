@@ -92,4 +92,26 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
+	/**
+	 * @author hoatt
+	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
+	 * get By List SID
+	 * @param companyId
+	 * @param lstSID
+	 * @param sDate
+	 * @param eDate
+	 * @return
+	 */
+	public List<Application_New> getByListSID(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
+	/**
+	 * @author hoatt
+	 * 申請者ID＝社員ID（リスト）
+	 * get By List Applicant
+	 * @param companyId
+	 * @param lstSID
+	 * @param sDate
+	 * @param eDate
+	 * @return
+	 */
+	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
 }

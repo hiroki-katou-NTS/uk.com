@@ -75,7 +75,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
         version: number = 0;
-
+        editable: KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
@@ -238,6 +239,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     data.authorizableFlags,
                     data.alternateExpiration,
                     data.loginInputOrApproval);
+                self.editable(data.initMode==0?false:true);
                 dfd.resolve(data);
             }).fail(function(res: any) {
                 dfd.reject();

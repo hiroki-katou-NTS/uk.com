@@ -95,8 +95,11 @@ public class UserAdapterImpl implements UserAdapter {
 	 */
 	private Optional<UserImport> covertToImportDomain(Optional<UserExport> user) {
 		UserExport userInfo = user.get();
-		return Optional.of(UserImport.builder().userId(userInfo.getUserID()).userName(userInfo.getUserName())
-				.mailAddress(userInfo.getMailAddress()).loginId(userInfo.getLoginID())
+		return Optional.of(UserImport.builder().
+				userId(userInfo.getUserID()).
+				userName(userInfo.getUserName()).
+				mailAddress(userInfo.getMailAddress()).
+				loginId(userInfo.getLoginID())
 				.associatePersonId(userInfo.getAssociatedPersonID()).password(userInfo.getPassword())
 				.expirationDate(userInfo.getExpirationDate()).contractCode(userInfo.getContractCode()).build());
 	}
@@ -110,9 +113,16 @@ public class UserAdapterImpl implements UserAdapter {
 	private Optional<UserImportNew> covertToImportDomainNew(Optional<UserExport> user) {
 		UserExport userInfo = user.get();
 		
-		return Optional.of(new UserImportNew(userInfo.getUserID(), userInfo.getUserName(), userInfo.getMailAddress(),
-				userInfo.getLoginID(), userInfo.getAssociatedPersonID(), userInfo.getPassword(),
-				userInfo.getContractCode(), userInfo.getExpirationDate(), userInfo.getPassStatus()));
+		return Optional.of(new UserImportNew(
+				userInfo.getUserID(),
+				userInfo.getUserName(),
+				userInfo.getMailAddress(),
+				userInfo.getLoginID(),
+				userInfo.getAssociatedPersonID(),
+				userInfo.getPassword(),
+				userInfo.getContractCode(),
+				userInfo.getExpirationDate(),
+				Integer.valueOf( userInfo.getPassStatus())));
 	}
 
 	/*

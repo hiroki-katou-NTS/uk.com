@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Chec
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ErrorAlarmRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.PerTimeMonActualResultService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Check36AgreementValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
@@ -60,15 +61,15 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 
 	@Override
-	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36PubEx agreementCheckCon36) {
-		boolean check = checking36AgreementCondition.check36AgreementCondition(
+	public Check36AgreementValue check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36PubEx agreementCheckCon36) {
+		Check36AgreementValue check36AgreementValue =  checking36AgreementCondition.check36AgreementCondition(
 				employeeId,
 				yearMonth, 
 				closureID, 
 				closureDate,
 				convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36));
 				
-		return check;
+		return check36AgreementValue;
 	}
 
 	@Override

@@ -101,7 +101,10 @@ public class ChangePasswordWebService extends WebService{
 		if (urlExec.isPresent()){
 			//get User
 			Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(urlExec.get().getContractCd(), urlExec.get().getLoginId());
-			return new LoginInforDto(urlExec.get().getLoginId(), user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
+			return new LoginInforDto(urlExec.get().getLoginId(),
+					user.get().getUserName().get(),
+					user.get().getUserId(),
+					user.get().getContractCode());
 		}
 		return new LoginInforDto();
 	}
@@ -119,7 +122,10 @@ public class ChangePasswordWebService extends WebService{
 		Optional<UserImport> user = this.userAdapter.findUserByContractAndLoginId(contractCode, loginId);
 		
 		if (user.isPresent()){
-			return new LoginInforDto(loginId, user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
+			return new LoginInforDto(loginId, 
+					user.get().getUserName().get(),
+					user.get().getUserId(),
+					user.get().getContractCode());
 		}
 		
 		return new LoginInforDto();
@@ -144,7 +150,10 @@ public class ChangePasswordWebService extends WebService{
 		
 		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(em.getPersonalId());
 		if (user.isPresent()){
-			return new LoginInforDto(infor.getEmployeeCode(), user.get().getUserName(), user.get().getUserId(), user.get().getContractCode());
+			return new LoginInforDto(infor.getEmployeeCode(),
+					user.get().getUserName().get(),
+					user.get().getUserId(),
+					user.get().getContractCode());
 		}
 		return new LoginInforDto();
 	}

@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
@@ -56,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTim
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
@@ -108,6 +111,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	AnyItemValueOfDailyRepo getAnyItemValueOfDaily();
 	/** 年休付与残数データ */
 	AnnLeaGrantRemDataRepository getAnnLeaGrantRemData();
+	/** 積立年休付与残数データ */
+	RervLeaGrantRemDataRepository getRsvLeaGrantRemData();
 
 	/** 勤怠項目値変換 */
 	AttendanceItemConvertFactory getAttendanceItemConverter();
@@ -199,6 +204,10 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	FormulaRepository getFormula();
 	/** 年休設定 */
 	AnnualPaidLeaveSettingRepository getAnnualPaidLeaveSet();
+	/** 積立年休設定 */
+	RetentionYearlySettingRepository getRetentionYearlySet();
+	/** 雇用積立年休設定 */
+	EmploymentSettingRepository getEmploymentSet();
 
 	/** 週開始の取得 */
 	GetWeekStart getWeekStart();

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
  * The Class BasicSchedule. 勤務予定基本情報
  */
 @Getter
+@Setter
 public class BasicSchedule extends AggregateRoot {
 
 	/** The employee id. */
@@ -222,6 +224,18 @@ public class BasicSchedule extends AggregateRoot {
 			return false;
 		return true;
 	}
+	
+	public boolean equalWorkTypeCode(String workTypeCd){
+		return workTypeCode.equals(workTypeCd);
+	}
+	
+	public boolean equalWorkTimeCode(String workTimeCd){
+		return workTimeCode.equals(workTimeCd);
+	}
+	
+	public boolean equalConfirmedAtr(ConfirmedAtr cfAtr){
+		return confirmedAtr == cfAtr;
+	}
 
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
 		this.workScheduleTimeZones = workScheduleTimeZones;
@@ -234,7 +248,19 @@ public class BasicSchedule extends AggregateRoot {
 	public void setWorkScheduleMaster(ScheMasterInfo scheduleMaster) {
 		this.workScheduleMaster = scheduleMaster;
 	}
-
+	
+	public void setWorkScheduleTime(WorkScheduleTime scheduleTime) {
+		this.workScheduleTime = Optional.ofNullable(scheduleTime);
+	}
+	
+	public void setWorkScheduleState(List<WorkScheduleState> scheduleState) {
+		this.workScheduleStates = scheduleState;
+	}
+	
+	public void setWorkScheduleBreaks(List<WorkScheduleBreak> scheduleBreaks) {
+		this.workScheduleBreaks = scheduleBreaks;
+	}
+	
 	public BasicSchedule(String workTypeCode, ScheMasterInfo workScheduleMaster) {
 		super();
 		this.workTypeCode = workTypeCode;

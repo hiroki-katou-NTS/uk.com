@@ -603,14 +603,6 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
-
-                    .layout-control.inputable .nts-help-button-image {
-                        width: 300px !important;
-                    }
-
-                    .layout-control.inputable .nts-help-button-image .caret-helpbutton.caret-left {
-                        top: unset !important;
-                    }
                     
                     .layout-control .ntsHelpButton {
                         margin-left: -50px;
@@ -664,162 +656,163 @@ module nts.custombinding {
                                             SET_MULTILINE_W_TITLE: 'SET_MULTILINE_W_TITLE'
                                         }
                                     }">
-                                <!-- ko if: layoutItemType == LAYOUT_TYPE.ITEM -->
-                                    <!-- ko foreach: { data: renders(), as: '_item' } -->
-                                        <div class="item-control" data-bind="let: { _item: _item }">
-                                            <div data-bind="ntsFormLabel: { 
-                                                text: _item.itemName || '',
-                                                cssClass: cssClass,
-                                                required: _item.required,
-                                                constraint: _item.constraint }" class="limited-label"></div>
-            
-                                            <!-- ko if: _item.dispType == DISP_TYPE.SINGLE -->
-                                                <!-- ko template: { data: _item, name: 'ctr_template' } --><!-- /ko -->
-                                            <!-- /ko -->
-    
-                                            <!-- ko if: _item.dispType == DISP_TYPE.SET_INLINE -->
-                                                <!-- ko template: { data: _item.childs[0], name: 'ctr_template' } --><!-- /ko -->
-                                                <span class="value-text readonly set-item-sperator" data-bind="text: text('CPS001_89')"></span>
-                                                <!-- ko template: { data: _item.childs[1], name: 'ctr_template' } --><!-- /ko -->
-                                            <!-- /ko -->
-            
-                                            <!-- ko if: [
-                                                            DISP_TYPE.SET_MULTILINE, 
-                                                            DISP_TYPE.SET_MULTILINE_W_RADIO,
-                                                            DISP_TYPE.SET_MULTILINE_W_TITLE
-                                                        ].indexOf(_item.dispType) > -1 -->
-                                                <div class="set-items">
-                                                    <!-- ko if: _item.dispType == DISP_TYPE.SET_MULTILINE -->
-                                                        <div class="set-group"></div>
-                                                    <!-- /ko -->
-        
-                                                    <!-- ko ifnot: _item.dispType == DISP_TYPE.SET_MULTILINE_W_TITLE -->
-                                                        <!-- ko foreach: { data: _item.childs, as: '_sitem' } -->
-                                                            <div class="set-group">
-                                                                <span class="child-label" data-bind="text: _sitem.itemName"></span>
-                                                                <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
-                                                                    <!-- ko template: { data: _sitem, name: 'ctr_template' } --><!-- /ko -->
-                                                                <!-- /ko -->
+                                <!-- ko let: { _index: $index() } -->
+                                    <!-- ko if: layoutItemType == LAYOUT_TYPE.ITEM -->
+                                        <!-- ko foreach: { data: renders(), as: '_item' } -->
+                                            <div class="item-control" data-bind="let: { _item: _item }">
+                                                <div data-bind="ntsFormLabel: { 
+                                                    text: _item.itemName || '',
+                                                    cssClass: cssClass,
+                                                    required: _item.required,
+                                                    constraint: _item.constraint }" class="limited-label"></div>
                 
-                                                                <!-- ko if: _sitem.dispType == DISP_TYPE.SET_INLINE -->
-                                                                    <!-- ko template: { data: _sitem.childs[0], name: 'ctr_template' } --><!-- /ko -->
-                                                                    <span class="value-text readonly set-item-sperator" data-bind="text: text('CPS001_89')"></span>
-                                                                    <!-- ko template: { data: _sitem.childs[1], name: 'ctr_template' } --><!-- /ko -->
-                                                                <!-- /ko -->
-                                                            </div>
+                                                <!-- ko if: _item.dispType == DISP_TYPE.SINGLE -->
+                                                    <!-- ko template: { data: _item, name: 'ctr_template' } --><!-- /ko -->
+                                                <!-- /ko -->
+        
+                                                <!-- ko if: _item.dispType == DISP_TYPE.SET_INLINE -->
+                                                    <!-- ko template: { data: _item.childs[0], name: 'ctr_template' } --><!-- /ko -->
+                                                    <span class="value-text readonly set-item-sperator" data-bind="text: text('CPS001_89')"></span>
+                                                    <!-- ko template: { data: _item.childs[1], name: 'ctr_template' } --><!-- /ko -->
+                                                <!-- /ko -->
+                
+                                                <!-- ko if: [
+                                                                DISP_TYPE.SET_MULTILINE, 
+                                                                DISP_TYPE.SET_MULTILINE_W_RADIO,
+                                                                DISP_TYPE.SET_MULTILINE_W_TITLE
+                                                            ].indexOf(_item.dispType) > -1 -->
+                                                    <div class="set-items">
+                                                        <!-- ko if: _item.dispType == DISP_TYPE.SET_MULTILINE -->
+                                                            <div class="set-group"></div>
                                                         <!-- /ko -->
-                                                    <!-- /ko -->
-        
-                                                    <!-- ko if: _item.dispType == DISP_TYPE.SET_MULTILINE_W_TITLE -->
-                                                        <div class="set-group math-title" data-bind="text: text('CPS001_114')"></div>
-                                                        <!-- ko foreach: { data: _item.childs, as: '_sitem' } -->
-                                                            <div class="set-group">
-                                                                <div data-bind="ntsFormLabel: { 
-                                                                        text: _sitem.itemName,
-                                                                        cssClass: cssClass,
-                                                                        required: _sitem.required 
-                                                                    }" class="limited-label"></div>
-                                                                <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
-                                                                    <div class="childs-row" data-bind="template: { data: _sitem, name: 'ctr_template' }"></div>
-                                                                <!-- /ko -->
-                
-                                                                <!-- ko if: _sitem.dispType == DISP_TYPE.SET_INLINE -->
-                                                                    <!-- ko foreach: {
-                                                                            data: _(_sitem.childs).map(function(v, i) { 
-                                                                                return { 
-                                                                                    i: Math.floor(i / 2),
-                                                                                    v: v
-                                                                                }
-                                                                            })
-                                                                            .groupBy(function(x) { return x.i; })
-                                                                            .map(function(x) {  
-                                                                                return x.map(function(k) { 
-                                                                                    return k.v;
-                                                                                }); 
-                                                                            })
-                                                                            .value(), as: '_group' } -->
-                                                                        <div class="childs-row">
-                                                                            <!-- ko foreach: { data: _group, as: 'young' } -->
-                                                                                <!-- ko if: young.title -->
-                                                                                    <span class="child-label" data-bind="text: young.itemName"></span>
+            
+                                                        <!-- ko ifnot: _item.dispType == DISP_TYPE.SET_MULTILINE_W_TITLE -->
+                                                            <!-- ko foreach: { data: _item.childs, as: '_sitem' } -->
+                                                                <div class="set-group">
+                                                                    <span class="child-label" data-bind="text: _sitem.itemName"></span>
+                                                                    <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
+                                                                        <!-- ko template: { data: _sitem, name: 'ctr_template' } --><!-- /ko -->
+                                                                    <!-- /ko -->
+                    
+                                                                    <!-- ko if: _sitem.dispType == DISP_TYPE.SET_INLINE -->
+                                                                        <!-- ko template: { data: _sitem.childs[0], name: 'ctr_template' } --><!-- /ko -->
+                                                                        <span class="value-text readonly set-item-sperator" data-bind="text: text('CPS001_89')"></span>
+                                                                        <!-- ko template: { data: _sitem.childs[1], name: 'ctr_template' } --><!-- /ko -->
+                                                                    <!-- /ko -->
+                                                                </div>
+                                                            <!-- /ko -->
+                                                        <!-- /ko -->
+            
+                                                        <!-- ko if: _item.dispType == DISP_TYPE.SET_MULTILINE_W_TITLE -->
+                                                            <div class="set-group math-title" data-bind="text: text('CPS001_114')"></div>
+                                                            <!-- ko foreach: { data: _item.childs, as: '_sitem' } -->
+                                                                <div class="set-group">
+                                                                    <div data-bind="ntsFormLabel: { 
+                                                                            text: _sitem.itemName,
+                                                                            cssClass: cssClass,
+                                                                            required: _sitem.required 
+                                                                        }" class="limited-label"></div>
+                                                                    <!-- ko if: _sitem.dispType == DISP_TYPE.SINGLE -->
+                                                                        <div class="childs-row" data-bind="template: { data: _sitem, name: 'ctr_template' }"></div>
+                                                                    <!-- /ko -->
+                    
+                                                                    <!-- ko if: _sitem.dispType == DISP_TYPE.SET_INLINE -->
+                                                                        <!-- ko foreach: {
+                                                                                data: _(_sitem.childs).map(function(v, i) { 
+                                                                                    return { 
+                                                                                        i: Math.floor(i / 2),
+                                                                                        v: v
+                                                                                    }
+                                                                                })
+                                                                                .groupBy(function(x) { return x.i; })
+                                                                                .map(function(x) {  
+                                                                                    return x.map(function(k) { 
+                                                                                        return k.v;
+                                                                                    }); 
+                                                                                })
+                                                                                .value(), as: '_group' } -->
+                                                                            <div class="childs-row">
+                                                                                <!-- ko foreach: { data: _group, as: 'young' } -->
+                                                                                    <!-- ko if: young.title -->
+                                                                                        <span class="child-label" data-bind="text: young.itemName"></span>
+                                                                                    <!-- /ko -->
+                                                                                    <!-- ko template: { data: young, name: 'ctr_template' } --><!-- /ko -->
                                                                                 <!-- /ko -->
-                                                                                <!-- ko template: { data: young, name: 'ctr_template' } --><!-- /ko -->
-                                                                            <!-- /ko -->
-                                                                        </div>
+                                                                            </div>
+                                                                        <!-- /ko -->
+                                                                    <!-- /ko -->
+                                                                </div>
+                                                            <!-- /ko -->
+                                                        <!-- /ko -->
+                                                    </div>
+                                                <!-- /ko -->
+                
+                                                <!-- ko if: _item.dispType == DISP_TYPE.SET_TABLE -->
+                                                    <div class="set-table-items" data-bind="template: { data: _item.childs, name: 'set_table_template' }"></div>
+                                                <!-- /ko -->
+                                            </div>
+                                        <!-- /ko -->
+                                    <!-- /ko -->
+    
+                                    <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
+                                        <div class="item-controls">
+                                            <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
+                                            <div class="table-container header-1rows" data-bind="let: {
+                                                        __lft: ko.observable(0),
+                                                        __flft: ko.observable(0)
+                                                    }">
+                                                <div class="table-scroll" data-bind="ntsProp: {
+                                                            left: __lft,
+                                                            scrollDown: 'tbody>tr',
+                                                            maxHeight: {
+                                                                byChild: 'tbody>tr',
+                                                                length: 5
+                                                            }
+                                                        }">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th data-bind="ntsProp: { left: __flft }">
+                                                                    <div data-bind="style: { 'margin-left': (__flft() - __lft()) + 'px' }, text: text('CPS001_146')"></div>
+                                                                </th>
+                                                                <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
+                                                                    <!-- ko let: { __wdt: ko.observable(0) } -->
+                                                                    <th data-bind="ntsProp: { width: __wdt }">
+                                                                        <div data-bind="ntsFormLabel: { 
+                                                                                text: header.itemName,
+                                                                                required: header.required,
+                                                                                constraint: header.constraint,
+                                                                                inline: true
+                                                                            },
+                                                                            style: {
+                                                                                'width': __wdt() + 'px',
+                                                                                'margin-left': (__flft() - __lft()) + 'px'
+                                                                            }" class="limited-label"></div>
+                                                                    </th>
                                                                     <!-- /ko -->
                                                                 <!-- /ko -->
-                                                            </div>
-                                                        <!-- /ko -->
-                                                    <!-- /ko -->
-                                                </div>
-                                            <!-- /ko -->
-            
-                                            <!-- ko if: _item.dispType == DISP_TYPE.SET_TABLE -->
-                                                <div class="set-table-items" data-bind="template: { data: _item.childs, name: 'set_table_template' }"></div>
-                                            <!-- /ko -->
-                                        </div>
-                                    <!-- /ko -->
-                                <!-- /ko -->
-
-                                <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
-                                    <div class="item-controls">
-                                        <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
-                                        <div class="table-container header-1rows" data-bind="let: {
-                                                    __lft: ko.observable(0),
-                                                    __flft: ko.observable(0)
-                                                }">
-                                            <div class="table-scroll" data-bind="ntsProp: {
-                                                        left: __lft,
-                                                        scrollDown: 'tbody>tr',
-                                                        maxHeight: {
-                                                            byChild: 'tbody>tr',
-                                                            length: 5
-                                                        }
-                                                    }">
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th data-bind="ntsProp: { left: __flft }">
-                                                                <div data-bind="style: { 'margin-left': (__flft() - __lft()) + 'px' }, text: text('CPS001_146')"></div>
-                                                            </th>
-                                                            <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
-                                                                <!-- ko let: { __wdt: ko.observable(0) } -->
-                                                                <th data-bind="ntsProp: { width: __wdt }">
-                                                                    <div data-bind="ntsFormLabel: { 
-                                                                            text: header.itemName,
-                                                                            required: header.required,
-                                                                            constraint: header.constraint,
-                                                                            inline: true
-                                                                        },
-                                                                        style: {
-                                                                            'width': __wdt() + 'px',
-                                                                            'margin-left': (__flft() - __lft()) + 'px'
-                                                                        }" class="limited-label"></div>
-                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
+                                                            <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#aaa' : '#fff'}">
+                                                                <td>
+                                                                    <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
+                                                                </td>
+                                                                <!-- ko foreach: { data: row.items, as: 'col' } -->
+                                                                <td data-bind="template: { data: col, name: 'ctr_template' }"></td>
                                                                 <!-- /ko -->
-                                                            <!-- /ko -->
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
-                                                        <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#aaa' : '#fff'}">
-                                                            <td>
-                                                                <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
-                                                            </td>
-                                                            <!-- ko foreach: { data: row.items, as: 'col' } -->
-                                                            <td data-bind="template: { data: col, name: 'ctr_template' }"></td>
-                                                            <!-- /ko -->
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <!-- /ko -->
+    
+                                    <!-- ko if: layoutItemType == LAYOUT_TYPE.SEPRL -->
+                                        <div class="item-sperator"><hr /></div>
+                                    <!-- /ko -->
                                 <!-- /ko -->
-
-                                <!-- ko if: layoutItemType == LAYOUT_TYPE.SEPRL -->
-                                    <div class="item-sperator"><hr /></div>
-                                <!-- /ko -->
-
                                 <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove($data, event); }">✖</span>
                             </div>
                         </div>
@@ -845,7 +838,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: resourceId }, text: text('？')">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: [itemName] }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: {
                                 DATE_TYPE: {
@@ -1572,7 +1565,6 @@ module nts.custombinding {
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
-                                        constraint.charType = 'AnyHalfWidth';
                                         break;
                                     case ITEM_STRING_TYPE.EMPLOYEE_CODE:
                                         constraint.itemCode = 'EmployeeCode';

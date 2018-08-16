@@ -14,9 +14,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         SUNDAY_TEXT_COLOR = "#FF0000",
         TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
         getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
-            <a class='approved' href='void(0)' data-bind="click: $vm.clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
+            <a class='approved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.UnApproved}' }}
-            <a class='unapproved' href='void(0)' data-bind="click: $vm.clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
+            <a class='unapproved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
             <a class='cannotApproved' href='void(0);'>＿</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.Disable}' }}
@@ -407,7 +407,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 $(`#approvalSttGrid_${moment(index).format("YYYYMMDD")}i`)
                     .css('cursor', 'pointer')
                     .css('text-decoration', 'underline')
-                    .attr('data-bind', `click: $vm.clickDateJumpToKdw003.bind($data, '${moment(index).format("YYYY/MM/DD")}')`);
+                    .attr('data-bind', `click: clickDateJumpToKdw003.bind($data, '${moment(index).format("YYYY/MM/DD")}')`);
 
                 index = index.add(1, "d");
             }

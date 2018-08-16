@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 /**
  * 
  * @author Doan Duy Hung
@@ -41,6 +43,9 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	
 	@Inject
 	private ApplicationApprovalService_New applicationApprovalService;
+	
+	@Inject
+	private StampRequestSettingRepository stampRequestSettingRepository;
 
 	@Override
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
@@ -65,8 +70,9 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	
 	// 打刻申請の新規登録
 	private ProcessResult appStampRegistration(AppStamp appStamp) {
+		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
 		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(),0);
-		appStamp.customValidate();
+		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);
 		applicationApprovalService.insert(appStamp.getApplication_New());
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(

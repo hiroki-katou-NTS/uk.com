@@ -25,6 +25,10 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 			+ " WHERE c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId"
 			+ " AND c.kacmtWorkPlaceAuthorityPK.companyId  = :companyId  ";
 	
+	private static final String  FIND_BY_FUNC_AVAIL = GET_ALL_WRK_AUTHORITY
+			+ " AND c.kacmtWorkPlaceAuthorityPK.functionNo  = :functionNo "
+			+ " AND c.availability = :available ";
+	
 
 	@Override
 	public List<WorkPlaceAuthority> getAllWorkPlaceAuthority(String companyId) {
@@ -71,6 +75,16 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 		List<KacmtWorkPlaceAuthorityPK> deleteListPK = getAllWorkPlaceAuthorityByRoleId(companyId, roleId)
 				.stream().map(c -> KacmtWorkPlaceAuthority.toEntity(c).kacmtWorkPlaceAuthorityPK).collect(Collectors.toList());
 		this.commandProxy().removeAll(KacmtWorkPlaceAuthority.class, deleteListPK);
+	}
+
+	@Override
+	public List<WorkPlaceAuthority> getByFunctionAndAvailable(String companyID, int functionNo, boolean available) {
+		List<WorkPlaceAuthority> data = this.queryProxy().query(FIND_BY_FUNC_AVAIL,KacmtWorkPlaceAuthority.class)
+				.setParameter("companyId", companyID)
+				.setParameter("functionNo", functionNo)
+				.setParameter("available", available)
+				.getList(c->c.toDomain());
+		return data;
 	}
 
 }

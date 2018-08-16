@@ -34,7 +34,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			return false;
 		}
 		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-			for(int i = 0; application.getStartDate().get().compareTo(application.getEndDate().get()) + i <= 0; i++){
+			for(int i = 0; application.getStartDate().get().daysTo(application.getEndDate().get()) - i >= 0; i++){
 				GeneralDate loopDate = application.getStartDate().get().addDays(i);
 				if(!processScheReflect.isSche(application.getEmployeeID(), loopDate)) {
 					return false;

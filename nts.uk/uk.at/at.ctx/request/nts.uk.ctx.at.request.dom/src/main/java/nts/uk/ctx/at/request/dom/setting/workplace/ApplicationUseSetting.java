@@ -18,7 +18,7 @@ public class ApplicationUseSetting extends DomainObject {
 	/**
 	 * 備考
 	 */
-	private Memo memo;
+	private Memo500 memo;
 	
 	/**
 	 * 利用区分

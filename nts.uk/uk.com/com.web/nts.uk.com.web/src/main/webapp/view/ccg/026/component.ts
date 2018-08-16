@@ -245,6 +245,8 @@ module nts.uk.com.view.ccg026.component {
                         if (!_.isEqual($grid.igGrid("option", "dataSource"), data)) {
                             requestDone(data, CHANGED.LOAD);
                         }
+                        // set weight of grid
+                        $grid.igGrid("option", "height", `${_.min([ko.toJS(params.maxRow) || 0, _.size(data)]) * 32 + 25}px`);
                     });
                 }
 

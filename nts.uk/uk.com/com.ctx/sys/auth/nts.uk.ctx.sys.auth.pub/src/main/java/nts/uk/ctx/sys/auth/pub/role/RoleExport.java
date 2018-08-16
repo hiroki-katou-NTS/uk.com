@@ -4,17 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.role;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Gets the role name.
- *
- * @return the role name
+ * The Class RoleExport.
  */
 @Getter
-@AllArgsConstructor
 public class RoleExport {
+	
+	/** The company Id. */
+	public String companyId;
 
 	/** The role id. */
 	public String roleId;
@@ -25,18 +24,26 @@ public class RoleExport {
 	/** The role name. */
 	public String roleName;
 	
-	/** The company Id. */
-	public String companyId;
+	/** The assign atr. */
+	private Integer assignAtr; 
 
 	/**
-	 * @param roleId
-	 * @param roleCode
-	 * @param roleName
+	 * Instantiates a new role export.
+	 *
+	 * @param companyId the company id
+	 * @param roleId the role id
+	 * @param roleCode the role code
+	 * @param roleName the role name
+	 * @param assignAtr the assign atr
 	 */
-	public RoleExport(String roleId, String roleCode, String roleName) {
+	public RoleExport(String companyId, String roleId, String roleCode, String roleName,
+			Integer assignAtr) {
 		super();
+		this.companyId = companyId;
 		this.roleId = roleId;
 		this.roleCode = roleCode;
 		this.roleName = roleName;
+		this.assignAtr = assignAtr;
 	}
+	
 }

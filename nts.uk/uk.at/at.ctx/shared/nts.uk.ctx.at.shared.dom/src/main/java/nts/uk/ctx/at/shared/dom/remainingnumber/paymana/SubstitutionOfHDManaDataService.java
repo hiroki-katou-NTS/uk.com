@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +88,7 @@ public class SubstitutionOfHDManaDataService {
 		List<String> errorList = new ArrayList<>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = addSubHdManagementService.getClosureDate(closureId, processYearMonth);
-		if (closureDate.isPresent() && dayoffDate.compareTo(closureDate.get()) >= 0) {
+		if (closureDate.isPresent() && dayoffDate != null && dayoffDate.compareTo(closureDate.get()) >= 0) {
 			errorList.add("Msg_744");
 		}
 //		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getDayoffDateBysubOfHDID(subOfHDID);
@@ -110,12 +111,18 @@ public class SubstitutionOfHDManaDataService {
 	}
 
 	public List<String> updateSubOfHD(SubstitutionOfHDManagementData data, int closureId) {
-		List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
-				data.getSubOfHDID(), data.getSID());
-		if (errorListClosureDate.isEmpty()) {
-			substitutionOfHDManaDataRepository.update(data);
+		
+		if (data.getHolidayDate().getDayoffDate().isPresent()){
+			List<String> errorListClosureDate = checkClosureDate(closureId, data.getHolidayDate().getDayoffDate().get(),
+					data.getSubOfHDID(), data.getSID());
+			if (!errorListClosureDate.isEmpty()) {
+				return errorListClosureDate;
+			}
 		}
-		return errorListClosureDate;
+		
+		substitutionOfHDManaDataRepository.update(data);
+		
+		 return Collections.emptyList();
 	}
 
 	// setToFree when delete payoutId

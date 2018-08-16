@@ -51,4 +51,12 @@ public interface ClassificationRepository {
 	 */
 	List<Classification> getAllManagementCategory(String companyId);
 
+	/**
+	 * Gets the classification by codes.
+	 *
+	 * @param companyId the company id
+	 * @param codes the codes
+	 * @return the classification by codes
+	 */
+	List<Classification> getClassificationByCodes(String companyId, List<String> codes);
 }

@@ -10,6 +10,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         workTypeList: Array<any>;
         appSetData: KnockoutObservable<PreBeforeAppSetData> = ko.observable(new PreBeforeAppSetData(''));
         alreadySettingData: Array<any>;
+        codeStart: string = '';
         //previewData: any = null;
         //previewCode: string = "";
         //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
@@ -20,7 +21,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 isShowAlreadySet: true,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
-                selectType: SelectType.SELECT_FIRST_ITEM,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: self.selectedCode,
                 isDialog: false,
                 isShowNoSelectRow: false,
@@ -52,8 +53,8 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     self.workTypeList = data;
                     //Load data setting
                     self.reloadData().done(data => {
+                        self.selectedCode(self.codeStart);
                         dfd.resolve();
-                        self.selectedCode.valueHasMutated();
                         nts.uk.ui.block.clear();
                     }).fail((res) => {
                         dfd.reject();
@@ -80,6 +81,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 if(data!= null && data.length > 0){
                     //Get Employment List.
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
+                    self.codeStart = employmentList[0].code;
                         let alreadyLst: Array<UnitModel> = _.filter(employmentList, 
                                             function(emp) {
                                                 let foundEmployment = _.find(data, function(item:any) { return item.employmentCode === emp.code; });
@@ -90,10 +92,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                                                     return alreadyList;}));
                     //Store for preview process
                     self.alreadySettingData = data;
-                    self.updateWorkTypeName();                    
+                    self.updateWorkTypeName();
                     dfd.resolve();
                 }
-                nts.uk.ui.block.clear();
             }).fail((res) => {
                 dfd.reject();
                 nts.uk.ui.block.clear();
@@ -211,11 +212,17 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         registerEmploymentSet(parent:any){
             nts.uk.ui.block.invisible();
             let self = parent;
+            var dfd = $.Deferred(); 
+            let code = self.selectedCode();
             let commands = [];
             var overTimeSet = ko.mapping.toJS(self.appSetData().overTimeSet());
             commands.push(overTimeSet);
              _.forEach(self.appSetData().absenceSet(), function(item: any) {
-                commands.push(ko.mapping.toJS(item));
+                 let noKo = ko.mapping.toJS(item);
+                 if(!noKo.displayFlag){
+                    noKo.holidayTypeUseFlg = false;  
+                 }
+                commands.push(noKo);
             });
             commands.push(ko.mapping.toJS(self.appSetData().workChangeSet()));
             commands.push(ko.mapping.toJS(self.appSetData().businessTripSet()));
@@ -229,37 +236,43 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             });            
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
-            if(self.screenMode() === ScreenMode.INSERT){
-                service.addEmploymentSet(commands).done(()=>{
-                    //マスタリストを更新。マスタ設定済みとする 
-                    //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
-                    //self.alreadySettingList.push(alreadyList);
-                    //self.alreadySettingList.valueHasMutated();
-                    self.screenMode(ScreenMode.UPDATE);
-                    //情報メッセージ（Msg_15）を表示する
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //Load data setting
-                        self.reloadData(); 
-                        nts.uk.ui.block.clear();
+            if (nts.uk.ui.errors.hasError() === false) {
+                if (self.screenMode() === ScreenMode.INSERT) {
+                    service.addEmploymentSet(commands).done(() => {
+                        //マスタリストを更新。マスタ設定済みとする 
+                        //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
+                        //self.alreadySettingList.push(alreadyList);
+                        //self.alreadySettingList.valueHasMutated();
+                        self.screenMode(ScreenMode.UPDATE);
+                        //情報メッセージ（Msg_15）を表示する
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //Load data setting
+                            self.start().done(() => {
+                                self.selectedCode(code);
+                            });
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
                     });
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.ui.block.clear();
+                } else {
+                    service.updateEmploymentSet(commands).done(() => {
+                        //情報メッセージ（Msg_15）を表示する
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //Load data setting
+                            self.start().done(() => {
+                                self.selectedCode(code);
+                            });
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
                     });
-                }); 
-            }else{
-                service.updateEmploymentSet(commands).done(()=>{;
-                    //情報メッセージ（Msg_15）を表示する
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //Load data setting
-                        self.reloadData();  
-                        nts.uk.ui.block.clear();
-                    });
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.ui.block.clear();
-                    });
-                });                 
+                }
             }
         }
         /**
@@ -508,7 +521,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         initDefaultAbsenceSet(employmentCode: string): KnockoutObservableArray<DataSetting>{
             let self = this,
             absenceSet: KnockoutObservableArray<DataSetting> = ko.observableArray([]);
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 7; i++) {
                 let resId: number = 47 + i;
                 let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.ABSENCE_APPLICATION, i);
                 if (dataSetting.displayFlag) {

@@ -5,21 +5,21 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCon36FunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunImport;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Check36AgreementValue;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.AttendanceItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErAlAtdItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErAlConditionsAttendanceItemPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.AgreementCheckCon36PubEx;
-import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 @Stateless
@@ -45,9 +45,10 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}
 
 	@Override
-	public boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36FunImport agreementCheckCon36) {
-		return checkResultMonthlyPub.check36AgreementCondition(employeeId, yearMonth, closureID, closureDate,
-				convertToAgreementCheckCon36Import(agreementCheckCon36));
+	public Check36AgreementValueImport check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36FunImport agreementCheckCon36) {
+		
+		return convertToCheck36AgreementValue(checkResultMonthlyPub.check36AgreementCondition(employeeId, yearMonth, closureID, closureDate,
+				convertToAgreementCheckCon36Import(agreementCheckCon36)));
 	}
 	
 	private AgreementCheckCon36PubEx convertToAgreementCheckCon36Import(AgreementCheckCon36FunImport agreementCheckCon36) {
@@ -56,6 +57,14 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 				agreementCheckCon36.getClassification(),
 				agreementCheckCon36.getCompareOperator(),
 				agreementCheckCon36.getEralBeforeTime()
+				);
+	}
+	
+	private Check36AgreementValueImport convertToCheck36AgreementValue(Check36AgreementValue export ) {
+		return new Check36AgreementValueImport(
+				export.isCheck36AgreementCon(),
+				export.getErrorValue(),
+				export.getAlarmValue()
 				);
 	}
 

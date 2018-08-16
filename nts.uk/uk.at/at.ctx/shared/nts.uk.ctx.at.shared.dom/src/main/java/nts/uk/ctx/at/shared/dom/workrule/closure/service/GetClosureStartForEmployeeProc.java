@@ -80,10 +80,12 @@ public class GetClosureStartForEmployeeProc {
 			val employmentCd = bsEmploymentHist.getEmploymentCode();
 			
 			// 雇用に紐づく締めを取得する
+			Integer closureId = 1;
 			val closureEmploymentOpt = this.closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
-			if (!closureEmploymentOpt.isPresent()) break;
-			val closureEmployment = closureEmploymentOpt.get();
-			val closureId = closureEmployment.getClosureId();
+			if (closureEmploymentOpt.isPresent()){
+				val closureEmployment = closureEmploymentOpt.get();
+				closureId = closureEmployment.getClosureId();
+			}
 			
 			// 締め情報．期間を取得
 			ClosureInfo targetClosureInfo = null;

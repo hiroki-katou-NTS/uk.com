@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireListWorkplaceByEmpIDService;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
@@ -71,22 +70,22 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 					// 取得した社員参照範囲＝部門・職場（配下含む）にする
 					empRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value;
 				}
-			}
 			
-			// ドメインモデル「時間外労働時間参照設定」を取得する
-			OvertimeReferSet overtimeReferSet = overtimeReferSetRepository.getOvertimeReferSet(companyId).get();
-			
-			// 職場管理者参照＝するの場合
-			List<String> listWorkPlaceID = new ArrayList<>();
-			if (overtimeReferSet.isReferWkpAdmin()) {
-				// 指定社員が参照可能な職場リストを取得する (Lấy list workplace của employee chỉ định)
-				listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
-			} else { // 職場管理者参照＝しないの場合
-				listWorkPlaceID = acquireListWorkplace.getListWorkPlaceIDNoWkpAdmin(employeeID, optEmpRange.getAsInt(), referenceDate);
-			}
-			
-			if (listWorkPlaceID.size() >= 1) {
-				return listWorkPlaceID;
+				// ドメインモデル「時間外労働時間参照設定」を取得する
+				OvertimeReferSet overtimeReferSet = overtimeReferSetRepository.getOvertimeReferSet(companyId).get();
+				
+				// 職場管理者参照＝するの場合
+				List<String> listWorkPlaceID = new ArrayList<>();
+				if (overtimeReferSet.isReferWkpAdmin()) {
+					// 指定社員が参照可能な職場リストを取得する (Lấy list workplace của employee chỉ định)
+					listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, empRange, referenceDate);
+				} else { // 職場管理者参照＝しないの場合
+					listWorkPlaceID = acquireListWorkplace.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange, referenceDate);
+				}
+				
+				if (listWorkPlaceID.size() >= 1) {
+					return listWorkPlaceID;
+				}
 			}
 		}
 		

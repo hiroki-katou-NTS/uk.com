@@ -13,22 +13,25 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
  */
 @Getter
 public class WorkplaceBonusPaySetting extends AggregateRoot {
+	
+	private String companyId;
 
 	private String workplaceId;
 
 	private BonusPaySettingCode bonusPaySettingCode;
 
-	private WorkplaceBonusPaySetting(String workplaceId, BonusPaySettingCode bonusPaySettingCode) {
+	private WorkplaceBonusPaySetting(String companyId, String workplaceId, BonusPaySettingCode bonusPaySettingCode) {
 		super();
 		this.workplaceId = workplaceId;
 		this.bonusPaySettingCode = bonusPaySettingCode;
+		this.companyId = companyId;
 	}
 
 	private WorkplaceBonusPaySetting() {
 		super();
 	}
 
-	public static WorkplaceBonusPaySetting createFromJavaType(String workplaceId, String bonusPaySettingCode) {
-		return new WorkplaceBonusPaySetting(workplaceId, new BonusPaySettingCode(bonusPaySettingCode));
+	public static WorkplaceBonusPaySetting createFromJavaType(String companyId, String workplaceId, String bonusPaySettingCode) {
+		return new WorkplaceBonusPaySetting(companyId, workplaceId, new BonusPaySettingCode(bonusPaySettingCode));
 	}
 }

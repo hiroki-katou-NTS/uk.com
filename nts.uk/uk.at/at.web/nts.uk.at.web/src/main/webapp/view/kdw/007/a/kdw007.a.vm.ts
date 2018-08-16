@@ -1299,8 +1299,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : null);
-            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : null);
+            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, false) ? param.compareStartValue : null);
+            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, false) ? param.compareEndValue : null);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
         }

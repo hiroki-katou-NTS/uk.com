@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.displayname.AppDispName
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ApprovalTempCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.OvertimeRestAppCommonSetCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequestSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
@@ -60,4 +61,8 @@ public class Kaf022AddCommand {
 	private JobAssignSettingCommand jobAssign;
 	
 	private ApprovalSettingCommand approvalSet;
+	// B8 -> B26
+	private OvertimeRestAppCommonSetCmd otRest;
+	// G
+	private OvertimeRestAppCommonSetCmd otRestApp7;
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.shortworktime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
@@ -90,6 +92,10 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 	 */
 	@Override
 	public List<ShShortWorkTimeExport> findShortWorkTimes(List<String> empIds, DatePeriod period) {
+		if(CollectionUtil.isEmpty(empIds)) {
+			return Collections.emptyList();
+		}
+		
 		// find short work time history
 		List<ShortWorkTimeHistory> opWorkTimeHist = this.workTimeHistRepo
 				.findLstByEmpAndPeriod(empIds, period);
@@ -107,6 +113,10 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 		Map<String, ShortWorkTimeHistoryItem> mapShortWorkTimeHistoryItem = shortWorkTimeHistoryItems
 				.stream().collect(Collectors.toMap(ShortWorkTimeHistoryItem::getHistoryId,
 						Function.identity()));
+		
+		if(CollectionUtil.isEmpty(opWorkTimeHist) || CollectionUtil.isEmpty(shortWorkTimeHistoryItems)) {
+			return Collections.emptyList();
+		}
 
 		// return value
 		return opWorkTimeHist.parallelStream().map(workTimeHist -> {

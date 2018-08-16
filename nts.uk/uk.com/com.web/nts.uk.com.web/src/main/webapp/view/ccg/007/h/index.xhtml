@@ -41,7 +41,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_16')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="1" id="password-input"
+								<input tabindex="1" id="password-input-new"
 									data-bind="ntsTextEditor: {
 										name: '#[CCG007_2]',
 										constraint: 'RawPassword',
@@ -50,7 +50,7 @@
 										option: {textmode: 'password',width: '180px'},
 										enable: true,
 										readonly: false
-										}, valueUpdate: 'afterkeydown'" />
+										}" />
 							</div>
 						</td>
 					</tr>
@@ -60,7 +60,7 @@
 								<label data-bind="text: '#{i18n.getText('CCG007_17')}'"><br /></label></div>
 						</td>
 						<td style="padding-bottom: 15px;"><div>
-								<input tabindex="2" id="password-input"
+								<input tabindex="2" id="password-input-confirm"
 									data-bind="ntsTextEditor: {
 										name: '#[CCG007_2]',
 										constraint: 'RawPassword',
@@ -69,7 +69,7 @@
 										option: {textmode: 'password',width: '180px'},
 										enable: true,
 										readonly: false
-										}, valueUpdate: 'afterkeydown'" />
+										}" />
 							</div>
 						</td>
 					</tr>

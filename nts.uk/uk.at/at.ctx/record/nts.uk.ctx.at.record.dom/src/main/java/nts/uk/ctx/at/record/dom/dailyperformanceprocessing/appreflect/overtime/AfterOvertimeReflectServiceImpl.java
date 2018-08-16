@@ -5,12 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 
@@ -29,7 +28,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Inject
 	private CalculateDailyRecordService calculate;
 	@Inject
-	private AttendanceTimeRepository attendanceTime;
+	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Override
 	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
@@ -63,8 +62,9 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()),null,Optional.empty(),Optional.empty());
-			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()),null,Optional.empty(),Optional.empty());			
+			timeAndAnyItemUpService.addAndUpdate(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), 
+					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
 			return true;
 			
 		} catch (Exception e) {

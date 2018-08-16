@@ -70,10 +70,10 @@ public class ExtractAlarmForEmployeeService {
 				// カテゴリ：4週4休のチェック条件(4 week 4 day)
 				else if (checkCondition.is4W4D()) {
 					// アルゴリズム「4週4休の集計処理」を実行する
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkConditionCode);
+//					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
+						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkCondition.getCheckConditionList());
 						result.addAll(w4d4AlarmList);
-					}
+//					}
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {

@@ -57,7 +57,7 @@ public class LockOutDataUserFinder {
 				Optional<UserImportNew> findByUserId = userAdapter.findByUserId(item.getUserId());
 				findByUserId.ifPresent(value -> {
 					lockOutDataUserDto.setLoginId(value.getLoginId().trim());
-					lockOutDataUserDto.setUserName(value.getUserName());
+					lockOutDataUserDto.setUserName(value.getUserName().get());
 				});
 				lstLockOutDataUserDto.add(lockOutDataUserDto);
 

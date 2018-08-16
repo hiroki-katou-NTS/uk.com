@@ -1,10 +1,10 @@
 @CHARSET "UTF-8";
 .tab-content-1, .tab-content-2, .tab-content-3 {
-	width: 650px;
+	width: 560px;
 	height: 600px;
 }
 .table-label {
-	width: 650px;
+	width: 600px;
 	margin-left: 20px;
 }
 

@@ -69,12 +69,13 @@ public class SpecialHolidayFrame {
 	}
 
 	/**
-	 * 
-	 * @param companyId
-	 * @param specialHdFrameNo
-	 * @param specialHdFrameName
-	 * @param deprecateSpecialHd
-	 * @return
+	 * Creates the from java type.
+	 *
+	 * @param companyId the company id
+	 * @param specialHdFrameNo the special hd frame no
+	 * @param specialHdFrameName the special hd frame name
+	 * @param deprecateSpecialHd the deprecate special hd
+	 * @return the special holiday frame
 	 */
 	public static SpecialHolidayFrame createFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
 			int deprecateSpecialHd) {

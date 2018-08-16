@@ -2,44 +2,30 @@ package nts.uk.ctx.sys.assist.infra.entity.mastercopy;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 
 /**
- * The Class SspdtMastercopyData.
+ * The persistent class for the SSPMT_MASTERCOPY_DATA database table.
+ * 
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="SSPMT_MASTERCOPY_DATA")
-public class SspmtMastercopyData extends UkJpaEntity implements Serializable {
-	
-	/** The Constant serialVersionUID. */
+public class SspmtMastercopyData implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	/** The master copy id. */
-	@Id
-	@Column(name="MASTER_COPY_ID")
-	private String masterCopyId;
 
-	/** The master copy target. */
-	@Column(name="MASTER_COPY_TARGET")
-	private String masterCopyTarget;
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.masterCopyId;
-	}
-
+	/** The id. */
+	@EmbeddedId
+	private SspmtMastercopyDataPK id;
 }

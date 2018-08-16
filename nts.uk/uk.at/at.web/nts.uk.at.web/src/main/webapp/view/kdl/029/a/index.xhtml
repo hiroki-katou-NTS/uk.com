@@ -9,7 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 860 , height: 700};</script>
+			<script>var dialogSize = { width: 560 , height: 560};</script>
 			<!-- kcp005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -19,22 +19,19 @@
 			<com:scriptfile path="kdl029.a.start.js" />
 			<com:scriptfile path="kdl029.a.service.js" />
 			<com:scriptfile path="kdl029.a.vm.js" />
-			<com:ValidatorScript>
-				nts.uk.ctx.at.request.dom.application.AppReason
-			</com:ValidatorScript>
-
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area"></div>
-
-			<div id="contents-area" class="cf">
-				<div id="content-left">
+			<div id="contents-area">
+				<div id="content-left" data-bind = "visible: displayKCP005">
 					<!-- A1 -->
-					<label>#{i18n.getText('KDL029_2')}</label>
+					<div style = "margin-left: 20px; margin-top: 10px;">
+						<label>#{i18n.getText('KDL029_2')}</label>
+					</div>
 					<!-- A2 -->
-					<div id="component-items-list" tabindex="7" class="pull-left contentkcp005"></div>
+					<!-- KCP005 -->
+					<div id="component-items-list" class="pull-left"></div>
 				</div>
-				<div id="content-right">
+				<div id="content-right" style = "margin-left: 20px; float: left">
 					<div id="content_right_top">
 						<div class="div_line">
 								<!-- A3_1 -->
@@ -42,27 +39,22 @@
 								<!-- A3_2 -->
 								<label class ="margin-left-employee" data-bind ="text: employeeName"> </label>
 						</div>
-						<div class="div_line">
+						<div class="table_dta">
 							<!-- A4 -->
-							<table id="single-list"
+							<table id="table_Hd_Grant"
 								data-bind="ntsGridList: {
-										width: 500 ,								
-										height: 100,
+										name: '#{i18n.getText('KDL029_8')}',
 										dataSource: dataHolidayGrantInfo ,
 										primaryKey: 'code',
 										columns: columnHolidayGrantInfos ,
-										multiple: false ,
-										value: value
+										multiple: false,
+										value: value,
+										rows: 4
 									}"></table>
-							<table id="totalTable">
-								<tr>
-									<td class ="width_td">#{i18n.getText('KDL029_21')}</td>
-									<td class ="width_td"></td>
-									<td class ="width_td"></td>
-									<td class ="width_td">a12</td>
-									<td class ="width_td"></td>
-								</tr>
-							</table>
+							<div class = "total_css">
+								<div style = "display: inline-block; margin-left: 5px;">#{i18n.getText('KDL029_21')}</div>
+								<div style = "display: inline-block; margin-left: 250px;" data-bind = "text: totalRemain"></div>
+							</div>
 						</div>
 					</div>
 					<div id="content_right_bottom">
@@ -73,15 +65,15 @@
 							</div>
 							<div class="div_line">
 								<!-- A6 -->
-								<table id="single-list"
+								<table id="table_tmp"
 									data-bind="ntsGridList: {
-										width: 400 ,								
-										height: 100,
+										name: '#{i18n.getText('KDL029_16')}',
 										dataSource: dataSteadyUseInfor,
 										primaryKey: 'code',
 										columns: columnSteadyUseInfors ,
-										multiple: false ,
-										value: value
+										multiple: false,
+										value: value,
+										rows: 8
 									}"></table>
 							</div>
 						</div>

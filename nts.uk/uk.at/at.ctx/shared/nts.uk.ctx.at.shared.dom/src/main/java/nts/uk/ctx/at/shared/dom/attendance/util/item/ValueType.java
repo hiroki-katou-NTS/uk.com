@@ -15,7 +15,8 @@ public enum ValueType {
 	UNKNOWN(11, "UNKNOWN", "UNKNOWN"),
 	DAYS(12, "DAYS", "日数"),
 	AMOUNT(13, "AMOUNT", "金額"),
-	NUMBER(14, "NUMBER", "数");
+	NUMBER(14, "NUMBER", "数"),
+	TIME_WITH_DAY(15, "TIME_WITH_DAY", "時刻（日区分付き）");
 
 	public final int value;
 	public final String name;
@@ -33,7 +34,7 @@ public enum ValueType {
 	 */
 	public boolean isInteger() {
 		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this) || AMOUNT.equals(this)
-				|| NUMBER.equals(this) || COUNT.equals(this);
+				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this);
 	}
 	
 	/**
@@ -74,5 +75,27 @@ public enum ValueType {
 	 */
 	public boolean isUnknownType() {
 		return UNKNOWN.equals(this);
+	}
+	
+	/**
+	 * INTEGERであるか判定する (countable)
+	 * Added by HoangNDH for exporting purpose
+	 * @return
+	 */
+	public boolean isIntegerCountable() {
+		return COUNT.equals(this) || TIME.equals(this) || AMOUNT.equals(this);
+	}
+	
+	/**
+	 * Doubleであるか判定する (countable
+	 * Added by HoangNDH for exporting purpose
+	 * @return　Doubleである
+	 */
+	public boolean isDoubleCountable() {
+		return COUNT_WITH_DECIMAL.equals(this);
+	}
+	
+	public boolean isTime() {
+		return TIME.equals(this) || CLOCK.equals(this);
 	}
 }

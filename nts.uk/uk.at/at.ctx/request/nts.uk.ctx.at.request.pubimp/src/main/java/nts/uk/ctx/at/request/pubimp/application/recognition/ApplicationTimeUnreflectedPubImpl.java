@@ -47,7 +47,7 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 		
 		Integer flexExTime = 0;
 		if(appOt.isPresent()) {
-			flexExTime = appOt.get().getFlexExessTime();
+			flexExTime = appOt.get().getFlexExessTime() != null? appOt.get().getFlexExessTime():0;
 		}
 		
 		data.setTotalOtHours(flexExTime);

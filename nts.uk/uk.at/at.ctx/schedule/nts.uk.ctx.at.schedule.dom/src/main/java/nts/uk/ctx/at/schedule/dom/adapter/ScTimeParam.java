@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.adapter;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Value
 @Builder
+@AllArgsConstructor
 public class ScTimeParam {
 	//社員ID
 	String employeeId;

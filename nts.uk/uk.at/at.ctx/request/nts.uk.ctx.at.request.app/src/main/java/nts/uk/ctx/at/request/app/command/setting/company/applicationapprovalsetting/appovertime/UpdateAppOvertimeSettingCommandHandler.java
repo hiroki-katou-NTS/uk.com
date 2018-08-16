@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -22,18 +20,19 @@ public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOv
 	protected void handle(CommandHandlerContext<AppOvertimeSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		AppOvertimeSettingCommand data = context.getCommand();
-		Optional<AppOvertimeSetting> appOver = appOverRep.getAppOver();
+//		Optional<AppOvertimeSetting> appOver = appOverRep.getAppOver();
 		AppOvertimeSetting appOvertime = AppOvertimeSetting.createFromJavaType(companyId, 
-				data.getFlexExcessUseSetAtr(), data.getPreTypeSiftReflectFlg(), data.getPreOvertimeReflectFlg(), 
-				data.getPostTypesiftReflectFlg(), data.getPostBreakReflectFlg(), 
-				data.getPostWorktimeReflectFlg(), data.getCalendarDispAtr(), data.getEarlyOverTimeUseAtr(), 
-				data.getInstructExcessOtAtr(), data.getPriorityStampSetAtr(), data.getUnitAssignmentOvertime(), 
-				data.getNormalOvertimeUseAtr(), data.getAttendanceId(), data.getUseOt(), data.getRestAtr(), 1);
-		if(appOver.isPresent()){
+				data.getFlexJExcessUseSetAtr(), data.getPreTypeSiftReflectFlg(), 
+				data.getPreOvertimeReflectFlg(), 
+				data.getPostTypeSiftReflectFlg(), data.getPostBreakReflectFlg(), 
+				data.getPostWorktimeReflectFlg(), 0, 0, 
+				0, data.getPriorityStampSetAtr(), 0, 
+				0, 0, 0, data.getRestAtr(), data.getWorkTypeChangeFlag());
+//		if(appOver.isPresent()){
 			appOverRep.update(appOvertime);
-			return;
-		}
-		appOverRep.insert(appOvertime);
+//			return;
+//		}
+//		appOverRep.insert(appOvertime);
 	};
 	
 }

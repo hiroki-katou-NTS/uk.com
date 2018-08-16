@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK;
 
 /**
  * The Class JpaMasterCopyDataSetMemento.
@@ -30,7 +31,12 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 	 */
 	@Override
 	public void setMasterCopyId(String masterCopyId) {
-		this.entity.setMasterCopyId(masterCopyId);
+		SspmtMastercopyDataPK id = this.entity.getId();
+		if (id == null) {
+			id = new SspmtMastercopyDataPK(masterCopyId, null);
+			this.entity.setId(id);
+		}
+		this.entity.getId().setMasterCopyId(masterCopyId);
 
 	}
 
@@ -42,7 +48,12 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 	 */
 	@Override
 	public void setMasterCopyTarget(MasterCopyTarget masterCopyTarget) {
-		this.entity.setMasterCopyTarget(masterCopyTarget.toString());
+		SspmtMastercopyDataPK id = this.entity.getId();
+		if (id == null) {
+			id = new SspmtMastercopyDataPK(null, masterCopyTarget.toString());
+			this.entity.setId(id);
+		}
+		this.entity.getId().setMasterCopyTarget(masterCopyTarget.toString());
 
 	}
 

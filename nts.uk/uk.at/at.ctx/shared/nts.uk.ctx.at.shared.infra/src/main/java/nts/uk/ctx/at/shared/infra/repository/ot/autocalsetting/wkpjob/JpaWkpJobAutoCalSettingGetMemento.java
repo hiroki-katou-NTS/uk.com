@@ -97,7 +97,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public AutoCalRaisingSalarySetting getRaisingSalary() {
-		return new AutoCalRaisingSalarySetting(this.entity.isRaisingCalcAtr(), this.entity.isSpecificRaisingCalcAtr());
+		return new AutoCalRaisingSalarySetting(this.entity.isSpecificRaisingCalcAtr(), this.entity.isRaisingCalcAtr());
 	}
 
 	/* (non-Javadoc)

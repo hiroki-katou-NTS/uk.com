@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -22,6 +23,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -57,6 +59,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalActionByEmpl;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateParam;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootSituation;
@@ -67,6 +70,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverEmployeeState;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
@@ -702,5 +706,59 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	@Override
 	public void deleteConfirmDay(String employeeID, GeneralDate date) {
 		approvalRootStateRepository.deleteConfirmDay(employeeID, date);
+	}
+	/**
+	 * RequestList No.483
+	 * 1.承認フェーズ毎の承認者を取得する
+	 * @param phase
+	 * @return
+	 */
+	@Override
+	public List<String> getApproverFromPhase(ApprovalPhaseStateParam param) {
+		ApprovalPhaseState phase = ApprovalPhaseState.createFormTypeJava(param.getRootStateID(), param.getPhaseOrder(),
+				param.getApprovalAtr(),param.getApprovalForm(), 
+				param.getListApprovalFrame().stream().map(c->new ApprovalFrame(c.getRootStateID(),
+					c.getPhaseOrder(),
+					c.getFrameOrder(),
+					EnumAdaptor.valueOf(c.getApprovalAtr(), ApprovalBehaviorAtr.class),
+					EnumAdaptor.valueOf(c.getConfirmAtr(), ConfirmPerson.class),
+					c.getListApproverState().stream().map(x -> new ApproverState(x.getRootStateID(),
+						x.getPhaseOrder(),
+						x.getFrameOrder(),
+						x.getApproverID(),
+						x.getCompanyID(),
+						x.getDate())).collect(Collectors.toList()),
+					c.getApproverID(),
+					c.getRepresenterID(),
+					c.getApprovalDate(),
+					c.getApprovalReason())).collect(Collectors.toList()));
+		return judgmentApprovalStatusService.getApproverFromPhase(phase);
+	}
+	/**
+	 * RequestList 479
+	 * 差し戻し対象者一覧を取得
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public List<ApproverRemandExport> getListApproverRemand(String appID) {
+		List<ApproverRemandExport> lstResult = new ArrayList<>();
+		String companyID = AppContexts.user().companyId();
+		//ドメインモデル「承認フェーズインスタンス」から最大の承認済フェーズを取得-(Lấy phase đã approve có order lớn nhất từ domain 「承認フェーズインスタンス」)
+		List<ApprovalPhaseState> phaseMax = approvalRootStateRepository.findPhaseApprovalMax(appID);
+		for (ApprovalPhaseState phase : phaseMax) {
+			//アルゴリズム「1.承認フェーズ毎の承認者を取得する」 - RequestList No.483
+			List<String> lstApprover = judgmentApprovalStatusService.getApproverFromPhase(phase);
+			for (String approver : lstApprover) {
+				lstResult.add(new ApproverRemandExport(phase.getPhaseOrder(), approver, false));
+			}
+			//アルゴリズム「承認代行情報の取得処理」を実行する-(3-1) (Thực hiện "xử lý lấy thông tin đại diện approval")
+			AgentPubExport agent = this.getApprovalAgentInfor(companyID, lstApprover);
+			//「承認者の代行情報リスト」に存在する承認者に代行を付加する-(thêm thằng đại diện vào list -承認者の代行情報リスト」)
+			for (String agentId : agent.getListRepresenterSID()) {
+				lstResult.add(new ApproverRemandExport(phase.getPhaseOrder(), agentId, true));
+			}
+		}
+		return lstResult;
 	}
 }

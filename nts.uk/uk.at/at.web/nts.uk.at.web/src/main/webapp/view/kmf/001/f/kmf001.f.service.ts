@@ -11,6 +11,7 @@ module nts.uk.pr.view.kmf001.f {
             enumTimeVacationDigestiveUnit: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/timevacationdigestiveunit',
             enumCompensatoryOccurrenceDivision: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/compensatoryoccurrencedivision',
             enumTransferSettingDivision: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/transfersettingdivision',
+            enumDeadlCheckMonth: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/deadlcheckmonth',
             //com
             update: 'ctx/at/shared/vacation/setting/compensatoryleave/save',
             find: 'ctx/at/shared/vacation/setting/compensatoryleave/find',
@@ -51,6 +52,13 @@ module nts.uk.pr.view.kmf001.f {
          */
         export function getEnumExpirationTime(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(servicePath.enumExpirationTime);
+        }
+        
+        /**
+         * Get DeadlCheckMonth Enum.
+         */
+        export function getEnumDeadlCheckMonth(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(servicePath.enumDeadlCheckMonth);
         }
 
         /**

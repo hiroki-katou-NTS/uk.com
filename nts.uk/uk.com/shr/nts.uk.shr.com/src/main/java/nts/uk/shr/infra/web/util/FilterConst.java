@@ -29,9 +29,7 @@ public class FilterConst {
 	/** REFERED_REQUEST */
 	public static final String REFERED_REQUEST = "referer";
 	
-	public static final String JUMP_FROM_MENU = "jump_from_menu";
-	
-	public static final String MENU_FLAG = "m";
+	public static final String JUMP_FROM_MENU = "startfrommenu";
 
 	/** Web app map. */
 	public static final Map<WebAppId, String> webApps = new HashMap<>();

@@ -30,6 +30,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             baseDate: KnockoutObservable<Date>;
+            groupYear: KnockoutObservable<number>;
 
             // Start month.
             startMonth: KnockoutObservable<number>;
@@ -54,6 +55,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.baseDate = ko.observable(new Date());
+                self.groupYear = ko.observable(new Date().getFullYear());
                 
                 self.worktimeSetting = new WorktimeSetting();
                 
@@ -62,7 +64,8 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 if (!nts.uk.util.isNullOrEmpty(year) && "null" != year) {
                     self.worktimeSetting.normalSetting().year(parseInt(year));
                 }
-                self.worktimeSetting.normalSetting().year.subscribe((v) => {
+                self.groupYear.subscribe((v) => {
+                    self.worktimeSetting.updateYear(v);
                     if (nts.uk.util.isNullOrEmpty(v) || $('#worktimeYearPicker').ntsError('hasError')) {
                         return;
                     } else {

@@ -22,6 +22,7 @@ import nts.uk.query.model.employee.EmployeeRoleRepository;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.model.employee.RoleWorkPlaceAdapter;
+import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
@@ -78,12 +79,14 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> find(RegulationInfoEmpQueryDto queryDto) {
-		if (queryDto.getReferenceRange() == null) {
+		// Do not change workplace when system type = admin or searchReferenceRange = DO_NOT_CONSIDER_REFERENCE_RANGE
+		if (queryDto.getSystemType() == CCG001SystemType.ADMINISTRATOR.value
+				|| queryDto.getReferenceRange() == SearchReferenceRange.DO_NOT_CONSIDER_REFERENCE_RANGE.value) {
 			return this.findEmployeesInfo(queryDto);
 		}
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
-		if (this.canSearchOnlyMe(role, queryDto)) {
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
 			return Arrays.asList(this.findCurrentLoginEmployeeInfo());
 		}
 
@@ -184,14 +187,17 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
 	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
-		// check param referenceRange
-		switch (EmployeeReferenceRange.valueOf(queryDto.getReferenceRange())) {
+		EmployeeReferenceRange employeeReferenceRange = role.getEmployeeReferenceRange(); // employee's reference authority
+		SearchReferenceRange searchReferenceRange = SearchReferenceRange.valueOf(queryDto.getReferenceRange());
+
+		// An employee's search reference range depends on his reference authority
+		switch (searchReferenceRange) {
 		case ALL_EMPLOYEE:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				// not change workplaceCodes
 				break;
 			} else {
-				// Get list String Workplace
+				queryDto.setReferenceRange(employeeReferenceRange.value);
 				this.changeListWorkplaces(queryDto);
 			}
 			break;
@@ -200,7 +206,7 @@ public class RegulationInfoEmployeeFinder {
 			this.changeListWorkplaces(queryDto);
 			break;
 		case DEPARTMENT_AND_CHILD:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+			if (employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
 				this.changeListWorkplaces(queryDto);
 				break;
@@ -315,18 +321,6 @@ public class RegulationInfoEmployeeFinder {
 	}
 
 	/**
-	 * Can search only me.
-	 *
-	 * @param role the role
-	 * @param queryDto the query dto
-	 * @return true, if successful
-	 */
-	private boolean canSearchOnlyMe(EmployeeRoleImported role, RegulationInfoEmpQueryDto queryDto) {
-		return (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF)
-				|| queryDto.getReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF.value;
-	}
-
-	/**
 	 * To dto.
 	 *
 	 * @param model the model
@@ -380,6 +374,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	private List<String> narrowEmpListByReferenceRange(List<String> sIds, Integer systemType) {
+		// Do not narrowEmpListByReferenceRange when system type = admin
 		if (systemType == CCG001SystemType.ADMINISTRATOR.value) {
 			return sIds;
 		}
@@ -412,8 +407,6 @@ public class RegulationInfoEmployeeFinder {
 			return RoleType.SALARY;
 		case HUMAN_RESOURCES:
 			return RoleType.HUMAN_RESOURCE;
-		case ADMINISTRATOR:
-			// TODO: Confirm.
 		default:
 			throw new RuntimeException();
 		}

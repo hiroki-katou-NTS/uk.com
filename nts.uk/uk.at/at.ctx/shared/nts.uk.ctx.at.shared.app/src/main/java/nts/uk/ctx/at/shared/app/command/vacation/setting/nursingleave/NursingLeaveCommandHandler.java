@@ -128,6 +128,5 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         setting.setStartMonthDay(null);
         setting.setNursingNumberLeaveDay(null);
         setting.setNursingNumberPerson(null);
-        setting.setWorkTypeCodes(new ArrayList<>());
     }
 }

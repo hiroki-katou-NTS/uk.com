@@ -102,6 +102,38 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     //                    sharemodel.setupCurrent(data);
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                        self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+                        let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                        self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                        // setting comparison value range
+    
+                        self.comparisonRange = ko.observable(self.initComparisonValueRange());
+    
+                        self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+    
+                        // change select item check
+                        self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                            errors.clearAll();
+                            if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                                self.initialScreen().then(function() {
+                                    if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                        setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                                    }
+                                });
+                            }
+                            $(".nts-input").ntsError("clear");
+                        });
+                        self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                            self.settingEnableComparisonMaxValueField();
+                        });
+                        self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
+                            self.required_BA1_4(newV > 0);
+                            $(".nts-input").ntsError("clear");
+                        });
+                        break;
                 default: break;
             }
 
@@ -125,6 +157,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.MONTHLY:
 
                     $.when(self.getAllEnums(), self.getSpecialholidayframe()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                // MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                    $.when(self.getAllEnums(), self.initialScreen()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -758,6 +798,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         
                     });
                     break;
+                    //MinhVV add
+                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                   
+                    break; 
                 default: break;
             }
 
@@ -774,42 +818,90 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (typeCheck == 6) { //combobox select
                 //With type 回数 - Times , Number  = 2
-                service.getAttendanceItemByAtrNew(2,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(2, mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
+                service.getAttendanceItemByAtrNew(2,mode).done((data) => {
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
                         }
-                        dfd.resolve(lstAtdItem);
+                        dfd.resolve(data);
                     });
+//                    service.getOptItemByAtrNew(2, mode).done((lstOptItem) => {
+//                        for (let i = 0; i < lstOptItem.length; i++) {
+//                            lstAtdItem.push(lstOptItem[i]);
+//                        }
+//                        dfd.resolve(lstAtdItem);
+//                    });
                 });
             } else if (typeCheck == 4) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtrNew(1,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
+                service.getAttendanceItemByAtrNew(1,mode).done((data) => {
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
                         }
-                        dfd.resolve(lstAtdItem);
+                        dfd.resolve(data);
                     });
+//                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
+//                        for (let i = 0; i < lstOptItem.length; i++) {
+//                            lstAtdItem.push(lstOptItem[i]);
+//                        }
+//                        dfd.resolve(lstAtdItem);
+//                    });
                 });
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtrNew(4,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
+                service.getAttendanceItemByAtrNew(4,mode).done((data) => {
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
                         }
-                        dfd.resolve(lstAtdItem);
+                        dfd.resolve(data);
                     });
+//                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
+//                        for (let i = 0; i < lstOptItem.length; i++) {
+//                            lstAtdItem.push(lstOptItem[i]);
+//                        }
+//                        dfd.resolve(lstAtdItem);
+//                    });
                 });
             } else if(typeCheck == 5) { // 日数
-                service.getAttendanceItemByAtrNew(3,mode).done((lstAtdItem) => {
-                    service.getOptItemByAtrNew(3,mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
+                service.getAttendanceItemByAtrNew(3,mode).done((data) => {
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
                         }
-                        dfd.resolve(lstAtdItem);
+                        dfd.resolve(data);
                     });
+//                    service.getOptItemByAtrNew(3,mode).done((lstOptItem) => {
+//                        for (let i = 0; i < lstOptItem.length; i++) {
+//                            lstAtdItem.push(lstOptItem[i]);
+//                        }
+//                        dfd.resolve(lstAtdItem);
+//                    });
                 });
             }else{
                 dfd.resolve([]);
@@ -945,10 +1037,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     break;
                 case sharemodel.CATEGORY.MONTHLY:
-                    let retData = ko.mapping.toJS(self.extraResultMonthly());
+                    let retData = ko.toJS(self.extraResultMonthly());
                     windows.setShared('outputKal003b', retData);
                     windows.close();
-                    
+                    break;
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
                     break;
                 default: break;
             }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 
 /**
  * 
@@ -14,6 +14,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 @AllArgsConstructor
 @Data
 public class WorkRestTimeZoneDto {
-	private List<DeductionTime> listOffdayWorkTimezone;
-	private List<DeductionTime> listHalfDayWorkTimezone;
+	private List<AmPmWorkTimezone> listOffdayWorkTimezone;
+	private List<AmPmWorkTimezone> listHalfDayWorkTimezone;
 }

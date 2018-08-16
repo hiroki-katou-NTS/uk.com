@@ -53,4 +53,11 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 * @return the work type name display
 	 */
 	NameWorkTypeOrHourZone getWorkTypeNameDisplay();
+	
+	/**
+	 * Gets the remark input no.
+	 *
+	 * @return the remark input no
+	 */
+	RemarkInputContent getRemarkInputNo();
 }

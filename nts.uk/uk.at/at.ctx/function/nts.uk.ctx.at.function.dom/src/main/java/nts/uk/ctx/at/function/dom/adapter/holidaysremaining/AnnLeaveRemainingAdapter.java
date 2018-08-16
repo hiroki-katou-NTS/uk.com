@@ -23,9 +23,9 @@ public interface AnnLeaveRemainingAdapter {
 	public AnnLeaveOfThisMonthImported getAnnLeaveOfThisMonth(String employeeId);
 
 	/**
-	 * RequestList #No.363
+	 * RequestList #No.369
+	 * @param companyId
 	 * @param employeeId
-	 * @param datePeriod
 	 * @return
 	 */
 	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId);

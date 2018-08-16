@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -26,12 +27,11 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
-
+	
 	private final List<ItemValue> itemValues = new ArrayList<>();
 
 	/** 勤務情報： 日別実績の勤務情報 */
@@ -146,6 +146,14 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		default:
 			return null;
 		}
+	}
+	
+	public List<String> getAvailableLayout(){
+		return Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_CALCULATION_ATTR_CODE, DAILY_AFFILIATION_INFO_CODE,
+				DAILY_BUSINESS_TYPE_CODE, DAILY_OUTING_TIME_CODE, DAILY_BREAK_TIME_CODE, DAILY_ATTENDANCE_TIME_CODE,
+				DAILY_ATTENDANCE_TIME_BY_WORK_CODE, DAILY_ATTENDACE_LEAVE_CODE, DAILY_SHORT_TIME_CODE,
+				DAILY_SPECIFIC_DATE_ATTR_CODE, DAILY_ATTENDANCE_LEAVE_GATE_CODE, DAILY_OPTIONAL_ITEM_CODE,
+				DAILY_EDIT_STATE_CODE, DAILY_TEMPORARY_TIME_CODE, DAILY_PC_LOG_INFO_CODE, DAILY_REMARKS_CODE);
 	}
 
 	@Override

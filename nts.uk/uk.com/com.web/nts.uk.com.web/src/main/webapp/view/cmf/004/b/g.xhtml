@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition>
+    <!-- G:データ復旧社員選択 -->
+    <div class="contentG">
+        <div class="div-line push-left">
+            <!--G3_1 コード名称-->
+            <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_140')}</div>
+            <!--G3_2 保存コード-->
+            <label style="margin-right: 15px;" data-bind="text: recoverySourceCode"/>
+            <!--G3_3 保存名称-->
+            <label data-bind="text: recoverySourceName"/>
+        </div>
+        <div class="div-line push-left">
+            <!--G3_4 補足説明ラベル-->
+            <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_141')}</div>
+            <!--G3_5 補足説明-->
+            <label data-bind="text: supplementaryExplanation"/>
+        </div>
+        <div class="div-line push-left">
+            <!-- KCP005 -->
+            <!-- G4_1 社員リスト -->
+            <div tabindex="1" class = "inputs" id="kcp005component" style="margin-top: 20px;"/>
+        </div>
+        <div class="halign-center" style="width: 760px;">
+            <!--G5_1 復旧期間設定へ-->
+            <button tabindex="2" class="large inputs" data-bind="click: backToPreviousScreen">#{i18n.getText('CMF004_142')}</button>
+            <!--G5_2 次へボタン-->
+            <button tabindex="3" class="x-large proceed inputs" data-bind="click: nextToScreenH,enable: selectedEmployeeCodeScreenG().length != 0">#{i18n.getText('CMF004_143')}</button>
+        </div>
+    </div>
+</ui:composition>
+</body>
+</html>

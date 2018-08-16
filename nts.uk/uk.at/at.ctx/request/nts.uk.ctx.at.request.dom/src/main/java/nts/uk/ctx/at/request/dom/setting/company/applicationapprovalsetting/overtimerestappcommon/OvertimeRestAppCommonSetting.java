@@ -70,7 +70,7 @@ public class OvertimeRestAppCommonSetting {
 	/**
 	 * 実績超過区分
 	 */
-	private UseAtr performanceExcessAtr;
+	private AppDateContradictionAtr performanceExcessAtr;
 	
 	/**
 	 * 指示表示区分
@@ -122,7 +122,7 @@ public class OvertimeRestAppCommonSetting {
 				EnumAdaptor.valueOf(bonusTimeDisplayAtr,UseAtr.class),
 				EnumAdaptor.valueOf(outingSettingAtr,OutingSettingAtr.class), 
 				EnumAdaptor.valueOf(performanceDisplayAtr,UseAtr.class),
-				EnumAdaptor.valueOf(performanceExcessAtr,UseAtr.class),
+				EnumAdaptor.valueOf(performanceExcessAtr,AppDateContradictionAtr.class),
 				EnumAdaptor.valueOf(intructDisplayAtr,UseAtr.class),
 				EnumAdaptor.valueOf(extratimeDisplayAtr,UseAtr.class),
 				EnumAdaptor.valueOf(extratimeExcessAtr,UseAtr.class),

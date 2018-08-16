@@ -8,7 +8,11 @@ module nts.uk.at.view.kdw002.a {
             getControlOfDailyItem: "at/shared/scherec/daily/findById/",
             getControlOfMonthlyItem: "at/shared/scherec/monthly/findById/",
             updateDaily: "at/shared/scherec/daily/update",
-            updateMonthly: "at/shared/scherec/monthly/update"
+            updateMonthly: "at/shared/scherec/monthly/update",
+            
+            //name
+            getNameDaily  :"screen/at/correctionofdailyperformance/getNamedailyAttItem",
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
         }
         export function getListDailyAttdItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListDailyAttdItem);
@@ -29,6 +33,13 @@ module nts.uk.at.view.kdw002.a {
 
         export function updateMonthly(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateMonthly, command);
+        }
+        //
+        export function getNameDaily(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameDaily,listID);
+        }
+        export function getNameMonthly(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameMonthly,listID);
         }
     }
 }

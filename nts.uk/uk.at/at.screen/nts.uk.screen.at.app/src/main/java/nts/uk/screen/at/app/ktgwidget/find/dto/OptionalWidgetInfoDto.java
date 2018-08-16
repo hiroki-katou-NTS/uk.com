@@ -71,13 +71,13 @@ public class OptionalWidgetInfoDto {
 	private int publicHDNo = 0;
 	
 	/** 21 Holiday Remain Number 子の看護休暇残数 */
-	private int hDRemainNo = 0;
+	private double hDRemainNo = 0.0;
 	
 	/** 22 Care Leave Number 介護休暇残数 */
-	private int careLeaveNo = 0;
+	private double careLeaveNo = 0.0;
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
-	private int sPHDRamainNo = 0;
+	private double sPHDRamainNo = 0.0;
 	
 	/** ６０Ｈ超休残数 */
 	private TimeOT extraRest = new TimeOT(0, 0);

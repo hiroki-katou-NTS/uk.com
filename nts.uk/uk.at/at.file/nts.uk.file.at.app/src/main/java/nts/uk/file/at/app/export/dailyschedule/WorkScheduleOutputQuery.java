@@ -5,9 +5,14 @@ import java.util.List;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
+// TODO: Auto-generated Javadoc
 /**
  * Instantiates a new work schedule output query.
  * @author HoangNDH
+ */
+
+/**
+ * Instantiates a new work schedule output query.
  */
 @Data
 public class WorkScheduleOutputQuery implements Cloneable {
@@ -27,6 +32,9 @@ public class WorkScheduleOutputQuery implements Cloneable {
 	/** The file type. */
 	private FileOutputType fileType;
 	
+	/** The General date. */
+	private GeneralDate baseDate;
+	
 	/**
 	 * Creates the from java type.
 	 *
@@ -39,6 +47,7 @@ public class WorkScheduleOutputQuery implements Cloneable {
 		query.setEndDate(dto.getEndDate());
 		query.setEmployeeId(dto.getLstEmployeeId());
 		query.setFileType(FileOutputType.valueOf(dto.getFileType()));
+		query.setBaseDate(dto.getBaseDate());
 		query.setCondition(WorkScheduleOutputCondition.createFromJavaType(dto.getCondition()));
 		return query;
 	}

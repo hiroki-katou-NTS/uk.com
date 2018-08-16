@@ -43,6 +43,8 @@ module nts.uk.at.view.kal003.a.tab {
             }
 
             $("#check-condition-table").ntsFixedTable({ height: 300 });
+            // MinhVV add
+            $("#check-condition-table_category9").ntsFixedTable({ height: 300 });
 
             self.isAllCheckCondition = ko.pureComputed({
                 read: function () {
@@ -61,8 +63,14 @@ module nts.uk.at.view.kal003.a.tab {
                 owner: self
             });
             self.currentRowSelected.subscribe((data) => {
-                $("#check-condition-table tr").removeClass("ui-state-active");
-                $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
+                // MinhVV edit check category 5 or 9
+                if(self.category()==5){
+                    $("#check-condition-table tr").removeClass("ui-state-active");
+                    $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
+                }else if(self.category()==9){
+                    $("#check-condition-table_category9 tr").removeClass("ui-state-active");
+                    $("#check-condition-table_category9 tr[data-id='" + data + "']").addClass("ui-state-active");
+                }
             });
             
         }
@@ -84,7 +92,12 @@ module nts.uk.at.view.kal003.a.tab {
 
             self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
             self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
-            $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
+            // MinhVV edit
+            if(self.category()==5){
+                $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
+            }else if(self.category()==9){
+                $("#check-condition-table_category9 tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
+            }
         }
 
         /**
@@ -135,11 +148,12 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length) {
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length || _.filter(self.listWorkRecordExtractingConditions(), function(o) { return o.useAtr(); }).length==0) {
                 block.clear();
                 return;
             }
-            self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            //self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            self.listWorkRecordExtractingConditions.remove(function(item) { return item.useAtr(); })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                 self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
@@ -149,7 +163,12 @@ module nts.uk.at.view.kal003.a.tab {
             }
             self.currentRowSelected.valueHasMutated();
             if (self.currentRowSelected() > 0) 
-                $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+               // MinhVV edit
+                if(self.category()==5){
+                    $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+                }else{
+                    $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
+                }
             info({ messageId: "Msg_16" }).then(() => {
                 block.clear();
             });
@@ -158,10 +177,14 @@ module nts.uk.at.view.kal003.a.tab {
 }
 
 $(function() {
+    // MinhVV edit
     $("#check-condition-table").on("click", "tr", function() {
         var id = $(this).attr("data-id");
         nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
     })
+    $("#check-condition-table_category9").on("click", "tr", function() {
+        var id = $(this).attr("data-id");
+        nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
+    })
 })
-
 

@@ -4,7 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.workrule.closure;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -85,6 +91,29 @@ public class ShClosurePubImpl implements ShClosurePub {
 		}else{
 			return Optional.empty();
 		}
+	}
+
+	@Override
+	public Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date) {
+		Map<Integer, DatePeriod> resultExport = new HashMap<>();
+		List<Closure> optClosures = closureRepo.findByListId(cId, closureId);
+		optClosures = optClosures.stream()
+				.filter(x -> x.getUseClassification().value == UseClassification.UseClass_Use.value)
+				.collect(Collectors.toList());
+		// Check exist and active
+		if (optClosures.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		optClosures.forEach(closure -> {
+			// Get Processing Ym 処理年月
+			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+			DatePeriod closurePeriod = closureService.getClosurePeriod(closure, processingYm);
+			resultExport.put(closure.getClosureId().value, closurePeriod);
+		});
+
+		return resultExport;
+
 	}
 
 }

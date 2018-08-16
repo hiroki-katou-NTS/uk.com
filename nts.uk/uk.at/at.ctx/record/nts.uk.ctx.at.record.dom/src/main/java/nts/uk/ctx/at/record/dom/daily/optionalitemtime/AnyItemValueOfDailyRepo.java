@@ -24,4 +24,6 @@ public interface AnyItemValueOfDailyRepo {
 	public void add(AnyItemValueOfDaily domain);
 	
 	public void remove(AnyItemValueOfDaily domain);
+	
+	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingDate);
 }

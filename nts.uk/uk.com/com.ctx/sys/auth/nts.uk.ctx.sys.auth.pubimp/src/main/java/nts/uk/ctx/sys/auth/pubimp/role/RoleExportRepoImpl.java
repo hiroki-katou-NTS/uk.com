@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.role;
@@ -50,7 +50,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		List<Role> lstRole = roleRepo.findByListRoleId(companyId, lstRoleId);
 		if (!lstRole.isEmpty()) {
 			return lstRole.stream().map(role -> {
-				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v());
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value);
 			}).collect(Collectors.toList());
 		}
 		return null;
@@ -87,7 +88,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		List<Role> lstRole = roleRepo.findById(roleId);
 		if (!lstRole.isEmpty()) {
 			return lstRole.stream().map(role -> {
-				return new RoleExport(role.getRoleId(), role.getRoleCode().v(), role.getName().v(), role.getCompanyId());
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value);
 			}).collect(Collectors.toList());
 		}
 		return null;
@@ -231,6 +233,26 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 			int result = optRole.get().getEmployeeReferenceRange().value;
 			return OptionalInt.of(result);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByRoleId(java.lang.
+	 * String)
+	 */
+	@Override
+	public Optional<RoleExport> findByRoleId(String roleId) {
+		Optional<Role> optRole = roleRepo.findByRoleId(roleId);
+		if (!optRole.isPresent()) {
+			return Optional.empty();
+		}
+
+		Role role = optRole.get();
+
+		return Optional
+				.of(new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value));
 	}
 
 }

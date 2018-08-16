@@ -27,6 +27,6 @@ public class RemainAnnualLeaveCalculation {
 		String companyId = AppContexts.user().companyId();
 		return getRemainNum.algorithm(companyId, empId, period.getPeriod(), TempAnnualLeaveMngMode.MONTHLY,
 				period.getPeriod().end(), true, true, Optional.empty(), Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 	}
 }

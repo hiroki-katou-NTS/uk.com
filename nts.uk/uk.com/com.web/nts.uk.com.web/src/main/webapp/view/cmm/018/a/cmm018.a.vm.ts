@@ -344,9 +344,9 @@ module nts.uk.com.view.cmm018.a {
                 baseDate: moment.utc().toISOString(), // 基準日
                 periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
                 periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
-                inService: false, // 在職区分
-                leaveOfAbsence: false, // 休職区分
-                closed: false, // 休業区分
+                inService: true, // 在職区分
+                leaveOfAbsence: true, // 休職区分
+                closed: true, // 休業区 
                 retirement: false, // 退職区分
 
                 /** Quick search tab options */

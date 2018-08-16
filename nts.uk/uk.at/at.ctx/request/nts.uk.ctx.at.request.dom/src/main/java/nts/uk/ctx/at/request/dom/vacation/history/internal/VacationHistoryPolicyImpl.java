@@ -28,16 +28,18 @@ public class VacationHistoryPolicyImpl implements VacationHistoryPolicy {
 	 * nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory)
 	 */
 	@Override
-	public void validate(Boolean isCreated, PlanVacationHistory vacationHistory) {
+	public void validate(Boolean isCreated, PlanVacationHistory vacationHistory, Boolean isCheck) {
 
-		DatePeriod period = new DatePeriod(vacationHistory.start(), vacationHistory.end());
-		Integer count = this.historyRepository.countByDatePeriod(vacationHistory.getCompanyId(),
-				vacationHistory.getWorkTypeCode(), period, vacationHistory.identifier());
-		// Validate Msg_106
-		if (count.intValue() > 0) {
-			throw new BusinessException("Msg_106");
+		if (isCheck){
+			DatePeriod period = new DatePeriod(vacationHistory.start(), vacationHistory.end());
+			Integer count = this.historyRepository.countByDatePeriod(vacationHistory.getCompanyId(),
+					vacationHistory.getWorkTypeCode(), period, vacationHistory.identifier());
+			// Validate Msg_106
+			if (count.intValue() > 0) {
+				throw new BusinessException("Msg_106");
+			}
 		}
-
+		
 		//Validate Msg_976
 		if (isCreated) {
 			if (this.historyRepository

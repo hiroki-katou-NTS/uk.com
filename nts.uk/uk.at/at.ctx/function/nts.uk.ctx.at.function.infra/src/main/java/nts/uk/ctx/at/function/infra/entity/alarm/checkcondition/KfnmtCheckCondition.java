@@ -159,6 +159,11 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
 			
+		} else if (this.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value) {
+			listExtractPerMonth.forEach(e -> {
+				if (e.pk.unit == 3)
+					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
+			});
 		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
 			extractPeriodList.add(extractionPerUnit.toDomain());
 			
@@ -194,7 +199,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
 			return entity;
 			
-		} else if (domain.isMonthly()) {		
+		} else if (domain.isMonthly() || domain.isMultipleMonth()) {		
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 
@@ -207,7 +212,6 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 					Arrays.asList(KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
 							domain.getAlarmCategory().value, extractionPeriodMonth)));
 			return entity;
-			
 		} else if (domain.is4W4D()) {
 
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
@@ -267,13 +271,13 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
 			
-		} else if (entity.pk.alarmCategory == AlarmCategory.MONTHLY.value) {
+		} else if (entity.pk.alarmCategory == AlarmCategory.MONTHLY.value || 
+				entity.pk.alarmCategory == AlarmCategory.MULTIPLE_MONTH.value ) {
 			
 			this.listExtractPerMonth= new ArrayList<KfnmtExtractPeriodMonth>();
 			entity.listExtractPerMonth.forEach(item -> {
 				this.listExtractPerMonth.add(item);
 			});
-			
 		} else if (entity.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
 			
 			this.extractionPerUnit.fromEntity(entity.extractionPerUnit);

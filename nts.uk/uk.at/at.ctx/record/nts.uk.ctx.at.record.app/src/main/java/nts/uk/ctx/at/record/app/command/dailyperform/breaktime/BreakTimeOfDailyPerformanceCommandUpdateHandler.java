@@ -16,6 +16,11 @@ public class BreakTimeOfDailyPerformanceCommandUpdateHandler extends CommandFaca
 	@Override
 	protected void handle(CommandHandlerContext<BreakTimeOfDailyPerformanceCommand> context) {
 		BreakTimeOfDailyPerformanceCommand command = context.getCommand();
+		
+		if(command.shouldDelete()){
+			repo.delete(command.getEmployeeId(), command.getWorkDate());
+			return;
+		}
 		if (!command.getData().isEmpty()) {
 			repo.update(command.toDomain());
 		}

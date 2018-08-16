@@ -28,9 +28,7 @@ public class OtherEmTimezoneLateEarlyPolicyImpl implements OtherEmTimezoneLateEa
 	 */
 	@Override
 	public void validLateTime(BundledBusinessException be, PredetemineTimeSetting predTime, OtherEmTimezoneLateEarlySet otSet) {
-		if (otSet.getGraceTimeSet().getGraceTime().v() >= predTime.getRangeTimeDay().v()) {
-			be.addMessage("Msg_517");
-		}
+		
 	}
 
 }

@@ -206,7 +206,7 @@ public class AddSubHdManagementService {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
 		// 休出（年月日）と締め日をチェックする
-		if (!closureDate.get().after(holidayDate)) {
+		if (closureDate.isPresent() && holidayDate != null && !closureDate.get().after(holidayDate)) {
 			errorList.add("Msg_745");
 			return errorList;
 		}
@@ -233,20 +233,20 @@ public class AddSubHdManagementService {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
 		// 代休（年月日）と締め日をチェックする
-		if (closureDate.isPresent() && !closureDate.get().after(subHolidayDate)) {
+		if (closureDate.isPresent() && subHolidayDate != null && !closureDate.get().after(subHolidayDate)) {
 			errorList.add("Msg_746");
 		}
 
 		// 休出（年月日）と代休（年月日）をチェックする
 		if (checkHoliday) {
-			if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
+			if (holidayDate.isPresent() && subHolidayDate != null && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 				errorList.add("Msg_730");
 			}
 		}
 		// チェックボタン「分割消化」をチェックする
 		if (checkSplit && splitDate.isPresent()) {
 			// 代休（年月日）と分割消化.代休（年月日）をチェックする
-			if (subHolidayDate.compareTo(splitDate.get()) == 0) {
+			if (subHolidayDate != null && subHolidayDate.compareTo(splitDate.get()) == 0) {
 				errorList.add("Msg_744");
 			}
 			// 分割消化.代休（年月日）と締め日をチェックする

@@ -10,7 +10,7 @@ public interface CheckResultMonthlyAdapter {
 	
 	boolean checkPublicHoliday(String companyId, String employeeCd , String employeeId,String workplaceId ,boolean isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckConFunImport specHolidayCheckCon );
 	
-	boolean check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36FunImport agreementCheckCon36);
+	Check36AgreementValueImport check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36FunImport agreementCheckCon36);
 	
 	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemConAdapterDto attendanceItemCondition);
 }

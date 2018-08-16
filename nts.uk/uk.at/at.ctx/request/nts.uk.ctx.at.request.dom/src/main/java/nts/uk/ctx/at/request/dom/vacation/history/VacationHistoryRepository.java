@@ -84,5 +84,5 @@ public interface VacationHistoryRepository {
      * 			 ・INPUT．終了日 >= 期間．開始日
      * @return 
      */
-    List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, Period dateData);
+    List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, DatePeriod dateData);
 }

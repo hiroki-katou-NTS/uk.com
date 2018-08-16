@@ -148,7 +148,7 @@ public class PayoutManagementDataService {
 	}
 	
 	private boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
-		if (closureDate.isPresent() && date.after(closureDate.get())) {
+		if (closureDate.isPresent() && !closureDate.get().after(date)) {
 			return true;
 		}
 		return false;
@@ -191,15 +191,20 @@ public class PayoutManagementDataService {
 		return errorList;
 	}
 
-	private List<String> checkBox(boolean checkBox, int stateAtr, GeneralDate dayoffDate, GeneralDate expiredDate,
+	private List<String> checkBox(boolean checkBox, int stateAtr, Optional<GeneralDate> dayoffDate, boolean unknownDate, GeneralDate expiredDate,
 			double unUsedDays) {
 		List<String> errorList = new ArrayList<>();
 		if (!checkBox) {
 			if (stateAtr == DigestionAtr.EXPIRED.value) {
 				errorList.add("Msg_1212");
 				return errorList;
-			} else if (dayoffDate.compareTo(expiredDate) >= 0) {
-				errorList.add("Msg_825");
+			} else {
+				if (unknownDate || !dayoffDate.isPresent()){
+					return errorList;
+				}
+				else if (dayoffDate.get().compareTo(expiredDate) >= 0) {
+					errorList.add("Msg_825");
+				}
 			}
 			return errorList;
 		} else {
@@ -211,28 +216,33 @@ public class PayoutManagementDataService {
 	}
 
 	public List<String> update(PayoutManagementData data, int closureId, boolean checkBox) {
-		List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
-		if (!errorListClosureDate.isEmpty()) {
-			return errorListClosureDate;
-		} else {
-			List<String> errorListCheckBox = checkBox(checkBox, data.getStateAtr().value,
-					data.getPayoutDate().getDayoffDate().get(), data.getExpiredDate(), data.getUnUsedDays().v());
-			if (!errorListCheckBox.isEmpty()) {
-				return errorListCheckBox;
-			} else {
-				// Update state 
-				if (checkBox){
-					data.setStateAtr(DigestionAtr.EXPIRED.value);
-				} else if (ZERO.equals(data.getUnUsedDays().v()) ){
-					data.setStateAtr(DigestionAtr.USED.value);
-				} else {
-					data.setStateAtr(DigestionAtr.UNUSED.value);
-				}
-				
-				payoutManagementDataRepository.update(data);
-				return Collections.emptyList();
+		
+		if (data.getPayoutDate().getDayoffDate().isPresent()){
+			
+			List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
+			
+			if(!errorListClosureDate.isEmpty()){
+				return errorListClosureDate;
 			}
 		}
+		List<String> errorListCheckBox = checkBox(checkBox, data.getStateAtr().value,
+				data.getPayoutDate().getDayoffDate(), data.getPayoutDate().isUnknownDate(), data.getExpiredDate(), data.getUnUsedDays().v());
+		if (!errorListCheckBox.isEmpty()) {
+			return errorListCheckBox;
+		}
+		// Update state 
+		if (checkBox){
+			if (!data.getPayoutDate().isUnknownDate()){
+				data.setStateAtr(DigestionAtr.EXPIRED.value);
+			}
+		} else if (ZERO.equals(data.getUnUsedDays().v()) ){
+			data.setStateAtr(DigestionAtr.USED.value);
+		} else {
+			data.setStateAtr(DigestionAtr.UNUSED.value);
+		}
+		
+		payoutManagementDataRepository.update(data);
+		return Collections.emptyList();
 	}
 	
 	 //setToFree when delete subOfHDId

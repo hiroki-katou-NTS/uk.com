@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 
 import java.util.List;
 
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
 
@@ -28,5 +29,8 @@ public interface EmpInfoAdapter {
 	 * @return the list person info
 	 */
 	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+	
+	// RequestList61
+	List<EmpInfoImport> getEmpInfo(List<String> lstSid);
 
 }

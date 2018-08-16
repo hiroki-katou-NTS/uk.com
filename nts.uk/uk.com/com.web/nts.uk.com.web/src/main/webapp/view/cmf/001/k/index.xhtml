@@ -23,8 +23,8 @@
 					data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF001_375')}</div>
 				<div id="K2_1" class="table-contents-area">
 					<div id="K2_2"
-						data-bind="ntsPanel:{width: '280px', height: '310px', direction: 'none', showIcon: true, visible: true}">
-						<div
+						data-bind="ntsPanel:{width: '300px', height: '310px', direction: 'none', showIcon: true, visible: true}">
+						<div tabindex = "1"
 							data-bind="ntsSearchBox: {
 							searchMode: 'highlight', 
 							targetKey: 'dispConvertCode', 
@@ -36,8 +36,8 @@
 							mode: 'igGrid'}" 
 							/>
 
-						<table tabindex = "-1" id="K3_1" class = "auto-increment"
-							data-bind="ntsGridList: {
+						<table tabindex = "2" id="K3_1" class = "auto-increment"
+							data-bind="ntsGridList: { 
 								rows: 10,
 								width: 300,
 								name:'#{i18n.getText('CMF001_376')}',
@@ -46,7 +46,7 @@
 									columns: [
 					                { headerText: '#{i18n.getText('CMF001_377')}', key: 'dispConvertCode', width: 70, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF001_378')}', key: 'dispConvertName', width: 200, formatter: _.escape }
-					            ],
+					            ],	
 								multiple: false,
 								value: selectedConvertCode
 							}">
@@ -55,9 +55,9 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="K4_1" class="x-large proceed "
+				<button tabindex = "3" id="K4_1" class="x-large proceed "
 					data-bind="click: selectConvertCode">#{i18n.getText('CMF001_379')}</button>
-				<button id="K4_2" class="large"
+				<button tabindex = "4" id="K4_2" class="large"
 					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF001_380')}</button>
 			</div>
 		</ui:define>

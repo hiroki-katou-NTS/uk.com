@@ -235,13 +235,6 @@ module nts.uk.com.view.cmm001.f {
                 });
             }
         }
-
-        //        export enum systemType {
-        //            共通 = 0,
-        //            就業 = 1,
-        //            給与 = 2,
-        //            人事 = 3
-        //        }
     }
 
 }

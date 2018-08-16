@@ -213,8 +213,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
-                    self.selectedEmployeeCode(data.listEmployee.map(item => item.code));
                     self.applyKCP005ContentSearch(data.listEmployee);
+                    self.startDateString(data.periodStart);
+                    self.endDateString(data.periodEnd);
                 }
             }
         }
@@ -273,7 +274,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.reloadCcg001();
                     dfd.resolve(self);
                }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
@@ -303,6 +304,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var self = this;
             self.employeeList([]);
             var employeeSearchs: UnitModel[] = [];
+            self.selectedEmployeeCode([]);
             for (var employeeSearch of dataList) {
                 var employee: UnitModel = {
                     code: employeeSearch.employeeCode,
@@ -310,6 +312,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     workplaceName: employeeSearch.workplaceName
                 };
                 employeeSearchs.push(employee);
+                self.selectedEmployeeCode.push(employee.code);
             }
             self.employeeList(employeeSearchs);
             self.lstPersonComponentOption = {
@@ -327,8 +330,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
-            self.startDateString($('#inp-period-startYM').val());
-            self.endDateString($('#inp-period-endYM').val());
         }
 
         /**
@@ -390,9 +391,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
             service.saveAsExcel(data).done(() => {
-                nts.uk.ui.block.clear();
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError(res.messageId);
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(() => {
                 nts.uk.ui.block.clear();
             });
         }
@@ -408,10 +409,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.holidayRemainingSelectedCd(getShared('KDR001B2A_cd'));
                 service.findAll().done(function(data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
-                    nts.uk.ui.block.clear();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                    nts.uk.ui.block.clear();    
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             });
         }

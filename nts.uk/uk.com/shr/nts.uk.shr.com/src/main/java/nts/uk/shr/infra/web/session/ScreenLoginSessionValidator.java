@@ -40,8 +40,8 @@ public class ScreenLoginSessionValidator implements Filter {
             httpResponse.sendRedirect(ScreenPath.basedOn(request).error().sessionTimeout());
             return;
 		}
-		
-		String requestPagePath = ((HttpServletRequest) request).getRequestURL().toString();
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String requestPagePath = (httpRequest).getRequestURL().append(getQueryString(httpRequest)).toString();
 		
 		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
 		String pcName = FilterHelper.getPcName(ip);
@@ -54,6 +54,10 @@ public class ScreenLoginSessionValidator implements Filter {
 		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 		
 		chain.doFilter(request, response);
+	}
+
+	private String getQueryString(HttpServletRequest httpRequest) {
+		return StringUtil.isNullOrEmpty(httpRequest.getQueryString(), true) ? "" : "?" + httpRequest.getQueryString();
 	}
 
 	@Override

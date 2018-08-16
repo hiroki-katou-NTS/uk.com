@@ -19,6 +19,11 @@
 			<com:scriptfile path="cmm045.a.vm.js" />
 			<com:scriptfile path="cmm045.a.service.js" />
 			<com:scriptfile path="cmm045.a.start.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -71,19 +76,19 @@
 								</table>
 							</div>
 						</div>
-						
 					</div>
 					
 					<div class = "cell" style ="padding: 20px; border:1px solid #AAAAAA;">
 						<!-- A2: Switch button -->
-						<div data-bind = "visible: mode()==1">
+						<!-- delete - ver35 -->
+						<!-- <div data-bind = "visible: mode()==1">
 							<div tabindex = "3"  data-bind="ntsSwitchButton: {
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedRuleCode,
 								enable: true }"></div>
-						</div>
+						</div> -->
 						<!-- A4_1 -->
 						<div>
 							<table>
@@ -141,17 +146,24 @@
 					</div>
 				</div>
 				<div>
-					<!-- <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM045_29')}</div> -->
 
 				</div>
 				<br/>
 				<div style="margin-left: 20px;"
 					class="compact-grid">
+					<!-- Mode Approval -->
 					<table tabindex="8" id="grid1"></table>
 				</div>
 				<div style="margin-left: 20px;"
 					class="compact-grid">
-					<table tabindex="9" id="grid2"></table>
+					<!-- Mode Application -->
+					<!-- CCG_001 -->
+					<div style = "display: inline-block;" data-bind = "visible: mode()==0">
+						<div id="ccgcomponent"></div>
+					</div>
+					<div style = "margin-left: 70px;, display: inline-block;">
+						<table tabindex="9" id="grid2"></table>
+					</div>
 				</div>
 				<br/>
 			</div>

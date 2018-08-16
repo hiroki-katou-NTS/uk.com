@@ -6,7 +6,10 @@
 	height:auto;
 	display:flex;
 }
-
+#bodyScreen{
+	overflow-y:auto;
+	height: 440px;
+}
 #C2_1{
 	margin-left: 20px;
 	margin:10px;

@@ -7,462 +7,483 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMethod;
-import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
-import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
-import nts.uk.ctx.at.shared.dom.specialholiday.UseAge;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantDaySingleType;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularMethod;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodic;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodicPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegularPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSingle;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSinglePK;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeStandard;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdClassfication;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdClassficationPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdEmployment;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdEmploymentPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimit;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimitPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsence;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsencePK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSpecLeave;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSpecLeavePK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecCls;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecClsPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmp;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestrictionPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantRegular;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantRegularPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodic;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodicPK;
+import nts.uk.shr.com.time.calendar.MonthDay;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The class JpaSpecialHolidayRepository
+ * Jpa Special Holiday Repository
  * 
- * @author phongtq
+ * @author tanlv
  *
  */
 @Stateless
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
-
-	private static final String SELECT_BY_CID;
-	private static final String CHECK_BY_CID;
-	static {
-
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM KshstSpecialHoliday e");
-		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
-		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
-		SELECT_BY_CID = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM KshstSpecialHoliday e");
-		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
-		builderString.append(" AND e.kshstSpecialHolidayPK.specialHolidayCode = :specialHolidayCode");
-		CHECK_BY_CID = builderString.toString();
-	}
-
-	/**
-	 * Convert to Domain Special Holiday
-	 * 
-	 * @param kshstSpecialHoliday
-	 * @return
-	 */
-	private SpecialHoliday convertToDomain(KshstSpecialHoliday kshstSpecialHoliday) {
-		List<String> workTypeList = kshstSpecialHoliday.sphdWorkTypes.stream()
-				.map(x -> x.kshstSphdWorkTypePK.workTypeCode).collect(Collectors.toList());
-
-		GrantRegular grantRegular = convertToDomainRegular(kshstSpecialHoliday.grantRegular);
-		GrantPeriodic grantPeriodic = convertToDomainPeriodic(kshstSpecialHoliday.grantPeriodic);
-		SphdLimit sphdLimit = convertToDomainLimit(kshstSpecialHoliday.sphdLimit);
-		SubCondition subCondition = convertToDomainSubCondition(kshstSpecialHoliday.subCondition);
-		GrantSingle grantSingle = convertToDomainGrantSingle(kshstSpecialHoliday.grantSingle);
-
-		SpecialHoliday specialHoliday = SpecialHoliday.createFromJavaType(
-				kshstSpecialHoliday.kshstSpecialHolidayPK.companyId,
-				kshstSpecialHoliday.kshstSpecialHolidayPK.specialHolidayCode, kshstSpecialHoliday.specialHolidayName,
-				kshstSpecialHoliday.grantMethod, kshstSpecialHoliday.memo, workTypeList, grantRegular, grantPeriodic,
-				sphdLimit, subCondition, grantSingle);
-		return specialHoliday;
-	}
-
-	/**
-	 * 
-	 * Convert to Database Type Special Holiday
-	 * 
-	 * @param specialHoliday
-	 * @return
-	 */
-	private KshstSpecialHoliday convertToDbType(SpecialHoliday specialHoliday) {
-		KshstSpecialHoliday kshstSpecialHoliday = new KshstSpecialHoliday();
-		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(),
-				specialHoliday.getSpecialHolidayCode().v());
-		kshstSpecialHoliday.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
-		kshstSpecialHoliday.grantMethod = specialHoliday.getGrantMethod().value;
-		kshstSpecialHoliday.memo = specialHoliday.getMemo().v();
-		// Add list KDL 002
-		List<KshstSphdWorkType> workTypes = specialHoliday.getWorkTypeList().stream().map(x -> {
-			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(),
-					specialHoliday.getSpecialHolidayCode().v(), x);
-			return new KshstSphdWorkType(key);
-		}).collect(Collectors.toList());
-
-		kshstSpecialHoliday.sphdWorkTypes = workTypes;
-		kshstSpecialHoliday.kshstSpecialHolidayPK = kshstSpecialHolidayPK;
-
-		kshstSpecialHoliday.grantRegular = convertToDbTypeRegular(specialHoliday.getGrantRegular());
-		kshstSpecialHoliday.grantPeriodic = convertToDbTypePeriodic(specialHoliday.getGrantPeriodic());
-		kshstSpecialHoliday.sphdLimit = convertToDbTypeSphdLimit(specialHoliday.getSphdLimit());
-		kshstSpecialHoliday.subCondition = convertToDbTypeSubCondition(specialHoliday.getSubCondition());
-		kshstSpecialHoliday.grantSingle = convertToDbTypeGrantSingle(specialHoliday.getGrantSingle());
-		return kshstSpecialHoliday;
-	}
-
-	/**
-	 * Convert to Database Type Grant Regular
-	 * 
-	 * @param grantRegular
-	 * @return
-	 */
-	private KshstGrantRegular convertToDbTypeRegular(GrantRegular grantRegular) {
-		if (grantRegular == null) {
-			return null;
+	private final static String SELECT_SPHD_BY_COMPANY_ID_QUERY = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.memo FROM KshstSpecialHoliday e "
+			+ "WHERE e.pk.companyId = :companyId "
+			+ "ORDER BY e.pk.specialHolidayCode ASC";
+	
+	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
+			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
+			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
+			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
+			+ " FROM KshstSpecialHoliday sphd"
+			+ " LEFT JOIN KshstGrantRegular gra"
+			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstGrantPeriodic pe"
+			+ " ON sphd.pk.companyId = pe.pk.companyId AND sphd.pk.specialHolidayCode = pe.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstSpecialLeaveRestriction re"
+			+ " ON sphd.pk.companyId = re.pk.companyId AND sphd.pk.specialHolidayCode = re.pk.specialHolidayCode"
+			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
+			+ " ORDER BY sphd.pk.specialHolidayCode";
+	
+	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String FIND_GRANT_REGULAR = "SELECT e,f FROM KshstGrantRegular e "
+			+ " LEFT JOIN KshstGrantDateTbl f "
+			+ " ON e.pk.companyId = f.pk.companyId AND e.pk.specialHolidayCode = f.pk.specialHolidayCode";
+	
+	private final static String FIND_GRANT_REGULAR_TEST = FIND_GRANT_REGULAR
+			+ " WHERE e.pk.companyId = 'hung-test'";
+	
+	private final static String FIND_SPECICAL_LEAVE =  "SELECT g,h,i FROM KshstSpecialLeaveRestriction g"
+			+ " LEFT JOIN KshstSpecEmp h"
+			+ " ON g.pk.companyId = h.pk.companyId AND g.pk.specialHolidayCode = h.pk.specialHolidayCode"
+			+ "	LEFT JOIN KshstSpecCls i"
+			+ " ON i.pk.companyId = i.pk.companyId AND i.pk.specialHolidayCode = i.pk.specialHolidayCode";
+	
+	private final static String FIND_BY_CID = "SELECT a, b, c, d, k, l "
+			+ " FROM KshstSpecialHoliday a"
+			+ " LEFT JOIN ("
+			+ FIND_GRANT_REGULAR
+			+ " ) b"
+			+ " ON a.pk.companyId = b.pk.companyId AND a.pk.specialHolidayCode = b.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstGrantPeriodic c"
+			+ " ON a.pk.companyId = c.pk.companyId AND a.pk.specialHolidayCode = c.pk.specialHolidayCode"
+			+ " LEFT JOIN ("
+			+ FIND_SPECICAL_LEAVE
+			+ " ) d"
+			+ " ON a.pk.companyId = d.pk.companyId AND a.pk.specialHolidayCode = d.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstSphdSpecLeave k"
+			+ " ON a.pk.companyId = k.pk.companyId AND a.pk.specialHolidayCode = k.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstSphdAbsence l"
+			+ " ON a.pk.companyId = l.pk.companyId AND a.pk.specialHolidayCode = l.pk.specialHolidayCode"
+			+ " WHERE a.pk.companyId = :companyId ORDER BY e.pk.specialHolidayCode ASC";
+	
+	private final static String DELETE_SPECICAL_LEAVE_RESTRICTION = "DELETE FROM KshstSpecialLeaveRestriction a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String DELETE_SPHD_ABSENCE = "DELETE FROM KshstSphdAbsence a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+	
+	private final static String DELETE_SPHD_SPEC_LEAVE = "DELETE FROM KshstSphdSpecLeave a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+	
+	private final static String DELETE_SPEC_CLS = "DELETE FROM KshstSpecCls a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+	
+	private final static String DELETE_SPEC_EMP = "DELETE FROM KshstSpecEmp a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+	
+	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
+			+ " WHERE c.pk.companyId = :companyId"
+			+ " AND c.pk.absFameNo = :absFameNo";
+	
+	private SpecialHoliday createDomainFromEntity(Object[] c) {
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		String specialHolidayName = String.valueOf(c[2]);
+		String memo = String.valueOf(c[3]);
+		int typeTime = Integer.parseInt(String.valueOf(c[4]));
+		int grantDate = Integer.parseInt(String.valueOf(c[5]));
+		boolean allowDisappear = Integer.parseInt(String.valueOf(c[6])) == 1 ? true : false;
+		int interval = c[7] != null ? Integer.parseInt(String.valueOf(c[7])) : 0;
+		int grantedDays = c[8] != null ? Integer.parseInt(String.valueOf(c[8])) : 0;
+		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
+		GeneralDate startDate = c[10] != null ? (GeneralDate)c[10] : null;
+		GeneralDate endDate = c[11] != null ? (GeneralDate)c[11] : null;
+		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
+		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
+		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
+		int restrictionCls = Integer.parseInt(String.valueOf(c[15]));
+		int ageLimit = Integer.parseInt(String.valueOf(c[16]));
+		int genderRest = Integer.parseInt(String.valueOf(c[17]));
+		int restEmp = Integer.parseInt(String.valueOf(c[18]));
+		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[19])) : 0;
+		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[20])) : null;
+		MonthDay ageBaseDate = null;
+		if(ageBaseDateValue!=null){
+			ageBaseDate = new MonthDay(ageBaseDateValue/100, ageBaseDateValue%100);
 		}
-		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
-				grantRegular.getSpecialHolidayCode().v());
-		KshstGrantRegular newEntity = KshstGrantRegular.toEntity(grantRegular);
+		int ageLowerLimit = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : 0;
+		int ageHigherLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
+		int gender = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
 		
-		Optional<KshstGrantRegular > optUpdateEntity = this.queryProxy().find(kshstGrantRegularPK, KshstGrantRegular.class);
-		if(optUpdateEntity.isPresent()){
-			KshstGrantRegular updateEntity = optUpdateEntity.get();
-			updateEntity.grantStartDate = grantRegular.getGrantStartDate();
-			if (GrantRegularMethod.GrantStartDateSpecify.equals(grantRegular.getGrantRegularMethod())) {
-				updateEntity.months = grantRegular.getMonths().v();
-				updateEntity.years = grantRegular.getYears().v();
-			}
-			updateEntity.grantRegularMethod = grantRegular.getGrantRegularMethod().value;
-			updateEntity.kshstGrantRegularPK = kshstGrantRegularPK;
-			return updateEntity;
-		}
-		return newEntity;
-	}
-
-	/**
-	 * Convert to Database Type Grant Periodic
-	 * 
-	 * @param grantPeriodic
-	 * @return
-	 */
-	private KshstGrantPeriodic convertToDbTypePeriodic(GrantPeriodic grantPeriodic) {
-		if (grantPeriodic == null) {
-			return null;
-		}
-		KshstGrantPeriodicPK kshstGrantPeriodicPK = new KshstGrantPeriodicPK(grantPeriodic.getCompanyId(),
-				grantPeriodic.getSpecialHolidayCode().v());
-		KshstGrantPeriodic newEntity = KshstGrantPeriodic.toEntity(grantPeriodic);
-		Optional<KshstGrantPeriodic > optUpdateEntity = this.queryProxy().find(kshstGrantPeriodicPK, KshstGrantPeriodic.class);
-		if(optUpdateEntity.isPresent()){
-			KshstGrantPeriodic updateEntity = optUpdateEntity.get();
-			updateEntity.grantDay = grantPeriodic.getGrantDay().v();
-			updateEntity.splitAcquisition = grantPeriodic.getSplitAcquisition().value;
-			updateEntity.grantPerioricMethod = grantPeriodic.getGrantPeriodicMethod().value;
-			updateEntity.kshstGrantPeriodicPK = kshstGrantPeriodicPK;
-			return updateEntity;
-		}
-		return newEntity;
-	}
-
-	/**
-	 * Convert to Database Type Sphd Limit
-	 * 
-	 * @param sphdLimit
-	 * @return
-	 */
-	private KshstSphdLimit convertToDbTypeSphdLimit(SphdLimit sphdLimit) {
-		if (sphdLimit == null) {
-			return null;
-		}
+		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
+		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
+		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
-		KshstSphdLimitPK kshstSphdLimitPK = new KshstSphdLimitPK(sphdLimit.getCompanyId(),
-				sphdLimit.getSpecialHolidayCode().v());
-		KshstSphdLimit newEntity = KshstSphdLimit.toEntity(sphdLimit);
-		Optional<KshstSphdLimit > optUpdateEntity = this.queryProxy().find(kshstSphdLimitPK, KshstSphdLimit.class);
-		if(optUpdateEntity.isPresent()){
-			KshstSphdLimit updateEntity = optUpdateEntity.get();
-		if (SpecialVacationMethod.AvailableGrantDateDesignate.equals(sphdLimit.getSpecialVacationMethod())) {
-			updateEntity.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
-			updateEntity.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
-		}
-		updateEntity.grantCarryForward = sphdLimit.getGrantCarryForward().value;
-		updateEntity.limitCarryoverDays = sphdLimit.getLimitCarryoverDays() != null ? sphdLimit.getLimitCarryoverDays().v() : null;
-		updateEntity.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
-		updateEntity.kshstSphdLimitPK = kshstSphdLimitPK;
-		return updateEntity;
-		}
-		return newEntity;
+		DatePeriod availabilityPeriod = new DatePeriod(startDate != null ? startDate : GeneralDate.min(), endDate != null ? endDate : GeneralDate.min());
+		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
+		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
+		
+		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
+		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
+		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls, 
+				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
+		
+		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName, grantRegular, grantPeriodic, specialLeaveRestriction, memo);
 	}
 	
-	private KshstSphdClassfication convertToDbTypeClass(String companyId, String code, int sphdCode) {
-
-		KshstSphdClassficationPK classficationPK = new KshstSphdClassficationPK(companyId,
-				sphdCode, code);
-		KshstSphdClassfication newEntity = new KshstSphdClassfication(classficationPK);
-		Optional<KshstSphdClassfication > optUpdateEntity = this.queryProxy().find(classficationPK, KshstSphdClassfication.class);
-		if(optUpdateEntity.isPresent()){
-			KshstSphdClassfication updateEntity = optUpdateEntity.get();
-			updateEntity.kshstSphdClassficationPK = classficationPK;
-			return updateEntity;
-		}
-		return newEntity;
+	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		String specialHolidayName = String.valueOf(c[2]);
+		String memo = String.valueOf(c[3]);
+		
+		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName, memo);
 	}
 	
-	private KshstSphdEmployment convertToDbTypeEmt(String companyId, String code, int sphdCode) {
-		KshstSphdEmploymentPK employmentPK = new KshstSphdEmploymentPK(companyId,
-				sphdCode, code);
-		KshstSphdEmployment newEntity = new KshstSphdEmployment(employmentPK);
-		Optional<KshstSphdEmployment > optUpdateEntity = this.queryProxy().find(employmentPK, KshstSphdEmployment.class);
-		if(optUpdateEntity.isPresent()){
-			KshstSphdEmployment updateEntity = optUpdateEntity.get();
-			updateEntity.kshstSphdEmploymentPK = employmentPK;
-			return updateEntity;
-		}
-		return newEntity;
+	private KshstSpecialHoliday createSpecialHolidayFromDomain(SpecialHoliday domain) {
+		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+		return new KshstSpecialHoliday(pk, domain.getSpecialHolidayName().v(), domain.getMemo().v());
 	}
-
-
-	/**
-	 * Convert to Database Type Sub Condition
-	 * 
-	 * @param subCondition
-	 * @return
-	 */
-	private KshstSphdSubCondition convertToDbTypeSubCondition(SubCondition subCondition) {
-		if (subCondition == null) {
-			return null;
-		}
-
-		
-		KshstSphdSubConditionPK kshstSphdSubConditionPK = new KshstSphdSubConditionPK(subCondition.getCompanyId(),
-				subCondition.getSpecialHolidayCode().v());
-		Optional<KshstSphdSubCondition > optUpdateEntity = this.queryProxy().find(kshstSphdSubConditionPK, KshstSphdSubCondition.class);
-		if(optUpdateEntity.isPresent()){
-				KshstSphdSubCondition updateEntity = optUpdateEntity.get();
-				updateEntity.useGender = subCondition.getUseGender().value;
-				updateEntity.useEmployee = subCondition.getUseEmployee().value;
-				updateEntity.useCls = subCondition.getUseCls().value;
-				updateEntity.useAge = subCondition.getUseAge().value;
-				updateEntity.genderAtr = subCondition.getGenderAtr().value;
-			if (UseAge.Allow.equals(subCondition.getUseAge())) {
-				updateEntity.limitAgeFrom = subCondition.getLimitAgeFrom() .v();
-				updateEntity.limitAgeTo = subCondition.getLimitAgeTo().v();
-			}
-			updateEntity.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;
-			updateEntity.ageBaseYearAtr = subCondition.getAgeBaseYearAtr().value;
-			updateEntity.ageBaseDates = subCondition.getAgeBaseDates().v();
-			updateEntity.sphdEmployments = subCondition.getEmploymentList().stream().map(c -> convertToDbTypeEmt(subCondition.getCompanyId(), c, subCondition.getSpecialHolidayCode().v())).collect(Collectors.toList());
-			updateEntity.sphdClassfications = subCondition.getClassificationList().stream().map(c -> convertToDbTypeClass(subCondition.getCompanyId(), c, subCondition.getSpecialHolidayCode().v())).collect(Collectors.toList());
-
-			updateEntity.kshstSphdSubConditionPK = kshstSphdSubConditionPK;
-			return updateEntity;
-		}
-		return KshstSphdSubCondition.toEntity(subCondition);
+	
+	private List<KshstSphdAbsence> createKshstSphdAbsenceLst(SpecialHoliday domain){
+		String companyID = domain.getCompanyId();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
+		List<KshstSphdAbsence> kshstSphdAbsenceLst = domain.getTargetItem().getAbsenceFrameNo()
+				.stream().map(x -> new KshstSphdAbsence(new KshstSphdAbsencePK(companyID, specialHolidayCD, x)))
+				.collect(Collectors.toList());
+		return kshstSphdAbsenceLst;
 	}
-
-	/**
-	 * Convert to Database Type Grant Single
-	 * 
-	 * @param grantSingle
-	 * @return
-	 */
-	private KshstGrantSingle convertToDbTypeGrantSingle(GrantSingle grantSingle) {
-		if (grantSingle == null) {
-			return null;
-		}
-		KshstGrantSinglePK kshstGrantSinglePK = new KshstGrantSinglePK(grantSingle.getCompanyId(),
-				grantSingle.getSpecialHolidayCode().v());
-		KshstGrantSingle newEntity =  KshstGrantSingle.toEntity(grantSingle);
-		Optional<KshstGrantSingle > optUpdateEntity = this.queryProxy().find(kshstGrantSinglePK, KshstGrantSingle.class);
-		if(optUpdateEntity.isPresent()){
-			KshstGrantSingle updateEntity = optUpdateEntity.get();
-			updateEntity.grantDaySingleType = grantSingle.getGrantDaySingleType().value;
-			if (GrantDaySingleType.FixDay.equals(grantSingle.getGrantDaySingleType())) {
-				updateEntity.fixNumberDays = grantSingle.getFixNumberDays().v();
-			}
-			updateEntity.makeInvitation = grantSingle.getMakeInvitation().value;
-			updateEntity.holidayExcusionAtr = grantSingle.getHolidayExclusionAtr().value;
-			updateEntity.kshstGrantSinglePK = kshstGrantSinglePK;
-			return updateEntity;
-		}
-		
-		return newEntity;
+	
+	private List<KshstSphdSpecLeave> createKshstSphdSpecLeaveLst(SpecialHoliday domain){
+		String companyID = domain.getCompanyId();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
+		List<KshstSphdSpecLeave> kshstSphdSpecLeaveLst = domain.getTargetItem().getFrameNo()
+				.stream().map(x -> new KshstSphdSpecLeave(new KshstSphdSpecLeavePK(companyID, specialHolidayCD, x)))
+				.collect(Collectors.toList());
+		return kshstSphdSpecLeaveLst;
 	}
-
-	/**
-	 * 
-	 * @param kshstGrantRegular
-	 * @return
-	 */
-	private GrantRegular convertToDomainRegular(KshstGrantRegular kshstGrantRegular) {
-		if (kshstGrantRegular == null) {
-			return null;
-		}
-		GrantRegular grantRegular = GrantRegular.createFromJavaType(kshstGrantRegular.kshstGrantRegularPK.companyId,
-				kshstGrantRegular.kshstGrantRegularPK.specialHolidayCode, kshstGrantRegular.grantStartDate,
-				kshstGrantRegular.months, kshstGrantRegular.years, kshstGrantRegular.grantRegularMethod);
-
-		return grantRegular;
+	
+	private KshstGrantRegular createKshstGrantRegular(SpecialHoliday domain) {
+		return new KshstGrantRegular(
+				new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), 
+				domain.getGrantRegular().getTypeTime().value, 
+				domain.getGrantRegular().getGrantDate().value, 
+				domain.getGrantRegular().isAllowDisappear()?1:0, 
+				domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v(), 
+				domain.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
 	}
-
-	/**
-	 * 
-	 * @param kshstgrantPeriodic
-	 * @return
-	 */
-	private GrantPeriodic convertToDomainPeriodic(KshstGrantPeriodic kshstgrantPeriodic) {
-		if (kshstgrantPeriodic == null) {
-			return null;
-		}
-		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(
-				kshstgrantPeriodic.kshstGrantPeriodicPK.companyId,
-				kshstgrantPeriodic.kshstGrantPeriodicPK.specialHolidayCode, kshstgrantPeriodic.grantDay,
-				kshstgrantPeriodic.splitAcquisition, kshstgrantPeriodic.grantPerioricMethod);
-
-		return grantPeriodic;
+	
+	private KshstGrantPeriodic createKshstGrantPeriodic(SpecialHoliday domain){
+		return new KshstGrantPeriodic(
+				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), 
+				domain.getGrantPeriodic().getTimeSpecifyMethod().value, 
+				domain.getGrantPeriodic().getAvailabilityPeriod().start(), 
+				domain.getGrantPeriodic().getAvailabilityPeriod().end(), 
+				domain.getGrantPeriodic().getExpirationDate().getMonths().v(), 
+				domain.getGrantPeriodic().getExpirationDate().getYears().v(), 
+				domain.getGrantPeriodic().getLimitCarryoverDays().v());
 	}
-
-	/**
-	 * 
-	 * @param kshstLimitSphd
-	 * @return
-	 */
-	private SphdLimit convertToDomainLimit(KshstSphdLimit kshstLimitSphd) {
-		if (kshstLimitSphd == null) {
-			return null;
-		}
-		SphdLimit sphdLimit = SphdLimit.createFromJavaType(kshstLimitSphd.kshstSphdLimitPK.companyId,
-				kshstLimitSphd.kshstSphdLimitPK.specialHolidayCode, kshstLimitSphd.specialVacationMonths,
-				kshstLimitSphd.specialVacationYears, kshstLimitSphd.grantCarryForward,
-				kshstLimitSphd.limitCarryoverDays, kshstLimitSphd.specialVacationMethod);
-
-		return sphdLimit;
+	
+	private KshstSpecialLeaveRestriction createKshstSpecialLeaveRestriction(SpecialHoliday domain){
+		MonthDay ageBaseDate = domain.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
+		return new KshstSpecialLeaveRestriction(
+				new KshstSpecialLeaveRestrictionPK(
+						domain.getCompanyId(), 
+						domain.getSpecialHolidayCode().v()), 
+				domain.getSpecialLeaveRestriction().getRestrictionCls().value, 
+				domain.getSpecialLeaveRestriction().getAgeLimit().value, 
+				domain.getSpecialLeaveRestriction().getGenderRest().value, 
+				domain.getSpecialLeaveRestriction().getRestEmp().value, 
+				domain.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value, 
+				ageBaseDate.getMonth()*100+ageBaseDate.getDay(),
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+						: 0, 
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+						: 0, 
+				domain.getSpecialLeaveRestriction().getGender().value);
 	}
-
-	/**
-	 * 
-	 * @param kshstSphdSubCondition
-	 * @return
-	 */
-	private SubCondition convertToDomainSubCondition(KshstSphdSubCondition kshstSphdSubCondition) {
-		if (kshstSphdSubCondition == null) {
-			return null;
-		}
-		List<String> classficationsList = kshstSphdSubCondition.sphdClassfications.stream()
-				.map(x -> x.kshstSphdClassficationPK.classficationCode).collect(Collectors.toList());
-		
-		List<String> employmentsList = kshstSphdSubCondition.sphdEmployments.stream()
-				.map(x -> x.kshstSphdEmploymentPK.employmentCode).collect(Collectors.toList());
-
-				
-		SubCondition subCondition = SubCondition.createFromJavaType(
-				
-				kshstSphdSubCondition.kshstSphdSubConditionPK.companyId,
-				kshstSphdSubCondition.kshstSphdSubConditionPK.specialHolidayCode, kshstSphdSubCondition.useGender,
-				kshstSphdSubCondition.useEmployee, kshstSphdSubCondition.useCls, kshstSphdSubCondition.useAge,
-				kshstSphdSubCondition.genderAtr, kshstSphdSubCondition.limitAgeFrom, kshstSphdSubCondition.limitAgeTo,
-				kshstSphdSubCondition.ageCriteriaAtr, kshstSphdSubCondition.ageBaseYearAtr,
-				kshstSphdSubCondition.ageBaseDates, employmentsList, classficationsList);
-
-		return subCondition;
+	
+	private List<KshstSpecCls> createKshstSpecClsLst(SpecialHoliday domain){
+		String companyID = domain.getCompanyId();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
+		return domain.getSpecialLeaveRestriction().getListCls().stream()
+			.map(x -> new KshstSpecCls(new KshstSpecClsPK(companyID, specialHolidayCD, x)))
+			.collect(Collectors.toList());
 	}
-
-	/**
-	 * 
-	 * @param kshstGrantSingle
-	 * @return
-	 */
-	private GrantSingle convertToDomainGrantSingle(KshstGrantSingle kshstGrantSingle) {
-		if (kshstGrantSingle == null) {
-			return null;
-		}
-		GrantSingle grantSingle = GrantSingle.createSimpleFromJavaType(kshstGrantSingle.kshstGrantSinglePK.companyId,
-				kshstGrantSingle.kshstGrantSinglePK.specialHolidayCode, kshstGrantSingle.grantDaySingleType,
-				kshstGrantSingle.fixNumberDays, kshstGrantSingle.makeInvitation, kshstGrantSingle.holidayExcusionAtr);
-
-		return grantSingle;
+	
+	private List<KshstSpecEmp> createKshstSpecEmpLst(SpecialHoliday domain){
+		String companyID = domain.getCompanyId();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
+		return domain.getSpecialLeaveRestriction().getListEmp().stream()
+			.map(x -> new KshstSpecEmp(new KshstSpecEmpPK(companyID, specialHolidayCD, x)))
+			.collect(Collectors.toList());
 	}
-
-	/**
-	 * Find by Company Id
-	 */
+	
 	@Override
 	public List<SpecialHoliday> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshstSpecialHoliday.class).setParameter("companyId", companyId)
-				.getList(c -> convertToDomain(c));
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.getList(c -> {
+					return createSphdDomainFromEntity(c);
+				});
 	}
-
-	/**
-	 * Check Exists Special Holiday Code
-	 */
+	
 	@Override
-	public boolean checkExists(String companyId, int specialHolidayCode) {
-		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
-				.setParameter("companyId", companyId).setParameter("specialHolidayCode", specialHolidayCode).getList();
-
-		return !branchs.isEmpty();
+	public Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode) {
+		return this.queryProxy().query(SELECT_SPHD_BY_CODE_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
+				.getSingle(c -> {
+					return createDomainFromEntity(c);
+				});
 	}
 
-	/**
-	 * Add Special Holiday
-	 */
 	@Override
 	public void add(SpecialHoliday specialHoliday) {
-		this.commandProxy().insert(convertToDbType(specialHoliday));
+		this.commandProxy().insert(createSpecialHolidayFromDomain(specialHoliday));
+		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
+		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
+		this.commandProxy().insert(createKshstGrantRegular(specialHoliday));
+		this.commandProxy().insert(createKshstGrantPeriodic(specialHoliday));
+		this.commandProxy().insert(createKshstSpecialLeaveRestriction(specialHoliday));
+		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
+		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
 	}
 
-	/**
-	 * Update Special Holiday
-	 */
 	@Override
 	public void update(SpecialHoliday specialHoliday) {
-		KshstSpecialHolidayPK primaryKey = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(),
+		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
+		KshstSpecialHoliday old = this.queryProxy().find(pk, KshstSpecialHoliday.class).orElse(null);
+		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
+		old.memo = specialHoliday.getMemo().v();
+		this.commandProxy().update(old);
+		
+		KshstGrantPeriodicPK grantPeriodicPK = new KshstGrantPeriodicPK(
+				specialHoliday.getCompanyId(), 
 				specialHoliday.getSpecialHolidayCode().v());
-		KshstSpecialHoliday entity = this.queryProxy().find(primaryKey, KshstSpecialHoliday.class).get();
-		entity.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
-		entity.grantMethod = specialHoliday.getGrantMethod().value;
-		entity.memo = specialHoliday.getMemo().v();
-		List<KshstSphdWorkType> workTypes = specialHoliday.getWorkTypeList().stream().map(x -> {
-			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(),
-					specialHoliday.getSpecialHolidayCode().v(), x);
-			return new KshstSphdWorkType(key);
-		}).collect(Collectors.toList());
-
-		entity.grantRegular = convertToDbTypeRegular(specialHoliday.getGrantRegular());
-		entity.grantPeriodic = convertToDbTypePeriodic(specialHoliday.getGrantPeriodic());
-		entity.sphdLimit = convertToDbTypeSphdLimit(specialHoliday.getSphdLimit());
-		entity.subCondition = convertToDbTypeSubCondition(specialHoliday.getSubCondition());
-		entity.grantSingle = convertToDbTypeGrantSingle(specialHoliday.getGrantSingle());
-		entity.sphdWorkTypes = workTypes;
-		entity.kshstSpecialHolidayPK = primaryKey;
-		this.commandProxy().update(entity);
+		KshstGrantPeriodic oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodic.class).orElse(null);
+		GrantPeriodic grantPeriodic = specialHoliday.getGrantPeriodic();
+		oldGrantPeriodic.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
+		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().start();
+		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().end();
+		oldGrantPeriodic.deadlineMonths = grantPeriodic.getExpirationDate().getMonths().v();
+		oldGrantPeriodic.deadlineYears = grantPeriodic.getExpirationDate().getYears().v();
+		oldGrantPeriodic.limitCarryoverDays = grantPeriodic.getLimitCarryoverDays().v();
+		this.commandProxy().update(oldGrantPeriodic);
+		
+		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(
+				specialHoliday.getCompanyId(), 
+				specialHoliday.getSpecialHolidayCode().v());
+		KshstGrantRegular oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegular.class).orElse(null);
+		GrantRegular grantRegular = specialHoliday.getGrantRegular();
+		oldGrantRegular.typeTime = grantRegular.getTypeTime().value;
+		oldGrantRegular.grantDate = grantRegular.getGrantDate().value;
+		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
+		oldGrantRegular.interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
+		oldGrantRegular.grantedDays = grantRegular.getGrantTime().getFixGrantDate().getGrantDays().v();
+		this.commandProxy().update(oldGrantRegular);
+		
+		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
+				specialHoliday.getCompanyId(), 
+				specialHoliday.getSpecialHolidayCode().v());
+		KshstSpecialLeaveRestriction oldSpecialLeaveRestriction = this.queryProxy()
+				.find(specialLeaveRestrictionPK, KshstSpecialLeaveRestriction.class).orElse(null);
+		oldSpecialLeaveRestriction.restrictionCls = specialHoliday.getSpecialLeaveRestriction().getRestrictionCls().value;
+		oldSpecialLeaveRestriction.ageLimit = specialHoliday.getSpecialLeaveRestriction().getAgeLimit().value;
+		oldSpecialLeaveRestriction.genderRest = specialHoliday.getSpecialLeaveRestriction().getGenderRest().value;
+		oldSpecialLeaveRestriction.restEmp = specialHoliday.getSpecialLeaveRestriction().getRestEmp().value;
+		oldSpecialLeaveRestriction.ageCriteriaCls = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value;
+		MonthDay ageBaseDate = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
+		oldSpecialLeaveRestriction.ageBaseDate = ageBaseDate.getMonth()*100+ageBaseDate.getDay();
+		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+			: null;
+		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+			: null;
+		oldSpecialLeaveRestriction.gender = specialHoliday.getSpecialLeaveRestriction().getGender().value;
+		this.commandProxy().update(oldSpecialLeaveRestriction);
+		
+		this.getEntityManager().createQuery(DELETE_SPHD_ABSENCE)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
+		
+		this.getEntityManager().createQuery(DELETE_SPHD_SPEC_LEAVE)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
+		
+		this.getEntityManager().createQuery(DELETE_SPEC_CLS)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
+		
+		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
+		
 	}
 
-	/**
-	 * Delete Special Holiday
-	 */
 	@Override
 	public void delete(String companyId, int specialHolidayCode) {
-		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
-		this.commandProxy().remove(KshstSpecialHoliday.class, kshstSpecialHolidayPK);
+		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
+		this.commandProxy().remove(KshstSpecialHoliday.class, pk);
+		
+		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(companyId, specialHolidayCode);
+		this.commandProxy().remove(KshstGrantRegular.class, grantRegularPK);
+		
+		KshstGrantPeriodicPK grantPeriodicPK = new KshstGrantPeriodicPK(companyId, specialHolidayCode);
+		this.commandProxy().remove(KshstGrantPeriodic.class, grantPeriodicPK);
+		
+		this.getEntityManager().createQuery(DELETE_SPECICAL_LEAVE_RESTRICTION)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_SPHD_ABSENCE)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_SPHD_SPEC_LEAVE)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_SPEC_CLS)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+	}
+
+	/*@Override
+	public void findByCID(String companyID) {
+		List<Object[]> result1 = this.queryProxy().query(FIND_GRANT_REGULAR_TEST, Object[].class).getList();
+		Map<KshstGrantRegular, List<KshstGrantDateTbl>> gratnRegularMap = result1
+						.stream().collect(Collectors.groupingBy(item -> {
+							return (KshstGrantRegular)item[0];
+						}, Collectors.collectingAndThen(Collectors.toList(), 
+								list -> list.stream().filter(c -> c[1] != null)
+								.map(c -> (KshstGrantDateTbl)c[1]))));
+		List<Object[]> result2 = this.queryProxy().query(FIND_SPECICAL_LEAVE, Object[].class).getList();
+		List<Object[]> result = this.queryProxy().query(FIND_BY_CID, Object[].class).getList();
+		System.out.println(result);
+	}*/
+
+	@Override
+	public Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD) {
+		
+		return this.findByCode(companyID, specialHolidayCD)
+			.map(x -> {
+				List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> Integer.valueOf(c.pk.absFameNo));
+				List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.sphdNo);
+				List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.clsCode);
+				List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.empCode);
+				if(!absenceFrameNoLst.isEmpty()) {
+					x.getTargetItem().setAbsenceFrameNo(absenceFrameNoLst);	
+				}
+				if(!frameNoLst.isEmpty()) {
+					x.getTargetItem().setFrameNo(frameNoLst);	
+				}
+				if(!listCls.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListCls(listCls);	
+				}
+				if(!listEmp.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListEmp(listEmp);	
+				}				
+				return x;
+			});
+		
 	}
 
 	@Override
-	public Optional<SpecialHoliday> findByCidHolidayCd(String cid, int specialCode) {
-		KshstGrantPeriodicPK key = new KshstGrantPeriodicPK(cid, specialCode);
-		return this.queryProxy().find(key, KshstSpecialHoliday.class).map(x -> convertToDomain(x));
+	public List<Integer> findByAbsframeNo(String cid, int absFrameNo) {
+		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshstSphdAbsence.class)
+				.setParameter("companyId", cid)
+				.setParameter("absFameNo", absFrameNo)
+				.getList().stream()
+				.map(c -> {
+					return c.pk.specialHolidayCode;
+				}).collect(Collectors.toList());
 	}
-
-	
 }

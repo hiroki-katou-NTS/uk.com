@@ -32,5 +32,11 @@ public class PersonRoleWebservice extends WebService {
 	public void delteAuth(DeletePersonRoleCommand command) {
 		deleteHandler.handle(command);
 	}
+	
+	@POST
+	@Path("check")
+	public void checkRole(String roleId) {
+		deleteHandler.checkRoleUse(roleId);
+	}
 
 }

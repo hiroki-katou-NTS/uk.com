@@ -133,6 +133,7 @@ module nts.uk.com.view.cmm020.a {
 
             public newItem() {
                 var self = this;
+                self.clearError();
                 self.refreshEraShow();
                 self.currentCode(null);
                 self.activeUpdate(true);

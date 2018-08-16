@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.pub.workinformation;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface RecordWorkInfoPub {
 
@@ -17,5 +19,9 @@ public interface RecordWorkInfoPub {
 
 	Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
 	
+	List<InfoCheckNotRegisterPubExport> findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod);
+	
 	Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd);
+	
+	
 }

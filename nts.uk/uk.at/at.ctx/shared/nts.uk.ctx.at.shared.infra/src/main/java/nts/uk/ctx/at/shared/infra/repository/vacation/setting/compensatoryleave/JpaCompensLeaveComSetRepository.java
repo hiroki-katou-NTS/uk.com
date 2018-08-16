@@ -103,4 +103,10 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
         setting.saveToMemento(memento);
         return entity;
     }
+
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
 }

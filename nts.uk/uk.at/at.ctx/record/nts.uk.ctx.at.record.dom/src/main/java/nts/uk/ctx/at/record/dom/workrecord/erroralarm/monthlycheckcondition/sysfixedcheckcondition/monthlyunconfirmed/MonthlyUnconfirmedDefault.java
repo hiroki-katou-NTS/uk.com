@@ -43,7 +43,7 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 				return Optional.empty();
 			}
 			//取得できなかった場合
-			GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth)+"01", "yyyy/MM/DD");
+			GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0, 4) + '-' + String.valueOf(yearMonth).substring(4, 6) + '-' +"01", "yyyy-MM-dd");
 			return Optional.of(new ValueExtractAlarmWR(null,
 														employeeID,
 														date,

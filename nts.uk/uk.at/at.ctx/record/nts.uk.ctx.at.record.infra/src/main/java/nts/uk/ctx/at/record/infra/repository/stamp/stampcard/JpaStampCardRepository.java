@@ -18,6 +18,11 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	private static final String GET_ALL_BY_SID = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid ORDER BY a.registerDate, a.cardNo ASC";
 
+	private static final String GET_ALL_BY_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.contractCd = :contractCode ";
+	
+	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids ";
+
+
 	private static final String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
 	
 	private static final String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";
@@ -137,6 +142,30 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return Optional.empty();
 		}
 		return Optional.of(cardNoList.get(0));
+	}
+
+	@Override
+	public List<StampCard> getLstStampCardByContractCode(String contractCode) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_ALL_BY_CONTRACT_CODE, KwkdtStampCard.class)
+				.setParameter("contractCode", contractCode).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
+
+		return entities.stream()
+				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<StampCard> getLstStampCardByLstSid(List<String> sids) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID, KwkdtStampCard.class)
+				.setParameter("sids", sids).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
+
+		return entities.stream()
+				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.collect(Collectors.toList());
 	}
 
 	

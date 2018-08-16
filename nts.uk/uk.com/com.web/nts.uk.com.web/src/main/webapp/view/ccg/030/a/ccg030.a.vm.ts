@@ -135,7 +135,8 @@ module ccg030.a.viewmodel {
 
         /** Download zip file */
         download() {
-            nts.uk.request.file.download(this.selectedFlowMenu().fileID());
+            nts.uk.request.specials.donwloadFile(this.selectedFlowMenu().fileID());
+
         }
 
         /** Close Dialog */

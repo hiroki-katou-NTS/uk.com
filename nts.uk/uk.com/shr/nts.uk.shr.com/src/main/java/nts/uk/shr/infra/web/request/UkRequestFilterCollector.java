@@ -24,7 +24,6 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 	}
 	
 	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
-			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new FirstFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new RequestPerformanceLogFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new CorsPreflightFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()),
@@ -32,8 +31,12 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
 			RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher()),
-			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new StartPageLogWriter())
-//			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
+			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new StartPageLogWriter()),
+//			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS)),
+		
+			// This must be executed last
+			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch())
 			);
 
 	@Override

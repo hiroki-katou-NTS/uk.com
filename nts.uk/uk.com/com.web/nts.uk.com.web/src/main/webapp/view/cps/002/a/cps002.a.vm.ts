@@ -644,6 +644,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
@@ -708,6 +709,24 @@ module cps002.a.vm {
                         || (command.inputs[i].items[10].value == undefined)){
                         _.remove(command.inputs, function(n: any) {
                             return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+                    }
+                }
+                
+                // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
+                // fix bug #96124
+                if (command.inputs[i].categoryCd === 'CS00037') {
+                    if ((command.inputs[i].items[0].value == undefined)
+                        || (command.inputs[i].items[1].value == undefined)
+                        || (command.inputs[i].items[3].value == undefined)
+                        || (command.inputs[i].items[4].value == undefined)
+                        || (command.inputs[i].items[5].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+
+                        _.remove(self.layout().listItemCls(), function(m: any) {
+                            return m.personInfoCategoryCD == 'CS00037';
                         });
                     }
                 }

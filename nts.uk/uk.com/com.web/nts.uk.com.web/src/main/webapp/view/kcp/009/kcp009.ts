@@ -148,6 +148,10 @@ module kcp009.viewmodel {
                     },
                     dismissible: false
                 });
+
+                // set z-index higher than CCG001
+                $('#item-list-' + self.prefix()).css('z-index', 998);
+
                 // Toggle
                 $(btnShowListEl).click(function() { 
                     $(itemListEl).ntsPopup('toggle');

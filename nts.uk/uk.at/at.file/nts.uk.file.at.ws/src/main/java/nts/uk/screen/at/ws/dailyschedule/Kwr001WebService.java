@@ -33,8 +33,11 @@ public class Kwr001WebService extends WebService {
 	 */
 	@POST
 	@Path("export")
-	public ExportServiceResult exportData(WorkScheduleOutputQueryDto dto) {
+	public DailyPerformanceExportResponse exportData(WorkScheduleOutputQueryDto dto) {
 		WorkScheduleOutputQuery query = WorkScheduleOutputQuery.createFromJavaType(dto);
-		return service.start(query);
+		ExportServiceResult result = service.start(query);
+		DailyPerformanceExportResponse response = new DailyPerformanceExportResponse();
+		response.setTaskId(result.getTaskId());
+		return response;
 	}
 }

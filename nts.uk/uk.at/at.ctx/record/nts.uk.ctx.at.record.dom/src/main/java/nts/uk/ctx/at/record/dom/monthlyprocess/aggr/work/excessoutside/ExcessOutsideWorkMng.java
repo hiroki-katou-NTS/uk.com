@@ -41,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -868,10 +867,7 @@ public class ExcessOutsideWorkMng {
 		this.totalExcessOutside = new AttendanceTimeMonth(0);
 		
 		// 「時間外超過の内訳項目」を取得する
-		val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
-		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
-		for (val outsideOTBDItem : outsideOTBDItems){
+		for (val outsideOTBDItem : this.companySets.getOutsideOTBDItems()){
 			
 			// 内訳項目に設定されている項目の値を取得する
 			val totalTime = this.excessOutsideWorkDetail.getTotalTimeAfterRound();
@@ -911,10 +907,7 @@ public class ExcessOutsideWorkMng {
 		// 丸め差分時間を時間外超過の値に割り当てる
 		{
 			// 「時間外超過の内訳項目」を取得する
-			val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
-			outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-			outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
-			for (val outsideOTBDItem : outsideOTBDItems){
+			for (val outsideOTBDItem : this.companySets.getOutsideOTBDItems()){
 				
 				// 内訳項目に設定されている項目の値を取得する
 				val roundDiffTime = this.excessOutsideWorkDetail.getRoundDiffTime();
@@ -940,10 +933,7 @@ public class ExcessOutsideWorkMng {
 	private void askExcessOutsideWorkEachDay(GeneralDate procDate){
 		
 		// 「時間外超過の内訳項目」を取得する
-		val outsideOTBDItems = this.companySets.getOutsideOverTimeSet().getBreakdownItems();
-		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
-		for (val outsideOTBDItem : outsideOTBDItems){
+		for (val outsideOTBDItem : this.companySets.getOutsideOTBDItems()){
 			
 			// 内訳項目に設定されている項目の値を取得する
 			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
@@ -968,9 +958,7 @@ public class ExcessOutsideWorkMng {
 	private void askExcessOutsideWorkEachBreakdown(AttendanceTimeMonth breakdownItemTime, int breakdownItemNo){
 		
 		// 「超過時間一覧」を取得する
-		val overTimes = this.companySets.getOutsideOverTimeSet().getOvertimes();
-		overTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		overTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
+		val overTimes = this.companySets.getOutsideOTOverTimes();
 		
 		for (int ixOverTime = 0; ixOverTime < overTimes.size(); ixOverTime++){
 			val overTime = overTimes.get(ixOverTime);

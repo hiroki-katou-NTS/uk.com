@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,10 +9,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleAction;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -22,7 +25,9 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -30,10 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /** Event：出退勤時刻を補正する */
 @Stateless
-public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeLeaveUpdateByWorkInfoChangeCommand> {
-
-	private final static List<Integer> LEAVE_ITEMS = Arrays.asList(31, 41);
-	private final static List<Integer> ATTENDANCE_ITEMS = Arrays.asList(34, 44);
+public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithResult<TimeLeaveUpdateByWorkInfoChangeCommand, EventHandleResult<TimeLeavingOfDailyPerformance>> {
 
 	@Inject
 	private WorkInformationRepository workInfoRepo;
@@ -54,48 +56,55 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	private EditStateOfDailyPerformanceRepository editStateRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<TimeLeaveUpdateByWorkInfoChangeCommand> context) {
+	protected EventHandleResult<TimeLeavingOfDailyPerformance> handle(CommandHandlerContext<TimeLeaveUpdateByWorkInfoChangeCommand> context) {
 		TimeLeaveUpdateByWorkInfoChangeCommand command = context.getCommand();
 
-		this.workInfoRepo.find(command.getEmployeeId(), command.getTargetDate()).ifPresent(wi -> {
-			String companyId = AppContexts.user().companyId();
-			workTypeRepo.findByPK(companyId, wi.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-				/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
-				if (wt.isWokingDay()) {
-					val wts = wt.getWorkTypeSetAvailable();
-					if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-						val tlo = timeLeaveRepo.findByKey(command.getEmployeeId(), command.getTargetDate());
-						TimeLeavingOfDailyPerformance tl = null;
-						if (tlo.isPresent()) {
-							tl = mergeWithEditStates(command.getEmployeeId(), command.getTargetDate(), tlo.get(), wts);
-						}
-						updateTimeLeave(companyId, wi, tl, command.getEmployeeId(), command.getTargetDate());
-					}
-				} else {
-					/** どちらか一方が 年休 or 特別休暇 の場合 */
-					if (wt.getDailyWork().isHalfDayAnnualOrSpecialHoliday()) {
-						deleteTimeLeave(true, command.getEmployeeId(), command.getTargetDate());
-						return;
-					}
-					deleteTimeLeave(false, command.getEmployeeId(), command.getTargetDate());
+		WorkInfoOfDailyPerformance wi = command.cachedWorkInfo.orElse(getDefaultWorkInfo(command));
+		if(wi == null) {
+			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
+		};
+		
+		String companyId = command.companyId.orElse(AppContexts.user().companyId());
+		
+		WorkType wt = command.cachedWorkType.orElse(getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
+		if(wt == null) {
+			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
+		}
+		
+		/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
+		if (wt.isWokingDay()) {
+			val wts = wt.getWorkTypeSetAvailable();
+			if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+				TimeLeavingOfDailyPerformance tlo = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
+				TimeLeavingOfDailyPerformance tl = null;
+				if (tlo != null) {
+					tl = mergeWithEditStates(command, tlo, wts);
 				}
-			});
-		});
+				return EventHandleResult.withResult(EventHandleAction.UPDATE, updateTimeLeave(companyId, wi, tl, command));
+			}
+		}
+		
+		/** どちらか一方が 年休 or 特別休暇 の場合 */
+		if (wt.getDailyWork().isHalfDayAnnualOrSpecialHoliday()) {
+			return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
+		}
+		return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(false, command));
 	}
 
 	/** 取得したドメインモデル「編集状態」を見て、マージする */
-	private TimeLeavingOfDailyPerformance mergeWithEditStates(String employeeId, GeneralDate workingDate,
+	private TimeLeavingOfDailyPerformance mergeWithEditStates(TimeLeaveUpdateByWorkInfoChangeCommand command,
 			TimeLeavingOfDailyPerformance timeLeave, WorkTypeSet wts) {
-		List<Integer> inputByReflect = this.editStateRepo.findByItems(employeeId, workingDate, mergeItems()).stream()
-				.filter(es -> isInputByReflect(es.getEditStateSetting())).map(c -> c.getAttendanceItemId())
-				.collect(Collectors.toList());
+		List<Integer> inputByReflect = getEditStateByItems(command).stream()
+																	.filter(es -> isInputByReflect(es.getEditStateSetting()))
+																	.map(c -> c.getAttendanceItemId())
+																	.collect(Collectors.toList());
 		if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK) {
 			/** 「所定勤務の設定．打刻の扱い方．出勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> ATTENDANCE_ITEMS.contains(id));
+			inputByReflect.removeIf(id -> DailyCorrectEventServiceCenter.ATTENDANCE_ITEMS.contains(id));
 		}
 		if (wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			/** 「所定勤務の設定．打刻の扱い方．退勤時刻を直行とする」＝ TRUE */
-			inputByReflect.removeIf(id -> LEAVE_ITEMS.contains(id));
+			inputByReflect.removeIf(id -> DailyCorrectEventServiceCenter.LEAVE_ITEMS.contains(id));
 		}
 		if (!inputByReflect.isEmpty()) {
 			removeAttendanceLeave(timeLeave, inputByReflect, 0);
@@ -104,20 +113,27 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 		return timeLeave;
 	}
 
+	private List<EditStateOfDailyPerformance> getEditStateByItems(TimeLeaveUpdateByWorkInfoChangeCommand command) {
+		List<Integer> needCheckItems = mergeItems();
+		return command.cachedEditState.orElse(getDefaultEditStates(command, needCheckItems))
+											.stream().filter(e -> needCheckItems.contains(e.getAttendanceItemId()))
+											.collect(Collectors.toList());
+	}
+
 	/** 「日別実績の出退勤．出退勤の打刻」を削除する */
-	private void removeAttendanceLeave(TimeLeavingOfDailyPerformance timeLeave, List<Integer> inputByReflect,
-			int index) {
-		if (inputByReflect.contains(LEAVE_ITEMS.get(index)) || inputByReflect.contains(ATTENDANCE_ITEMS.get(index))) {
+	private void removeAttendanceLeave(TimeLeavingOfDailyPerformance timeLeave, List<Integer> inputByReflect, int index) {
+		if (inputByReflect.contains(DailyCorrectEventServiceCenter.LEAVE_ITEMS.get(index)) 
+				|| inputByReflect.contains(DailyCorrectEventServiceCenter.ATTENDANCE_ITEMS.get(index))) {
 			timeLeave.getAttendanceLeavingWork(index + 1).ifPresent(alw -> {
 				alw.getAttendanceStamp().ifPresent(as -> {
-					if (inputByReflect.contains(ATTENDANCE_ITEMS.get(index)) && as.getStamp().isPresent() 
-							&& !as.getStamp().get().isFromSPR()) {
+					if (inputByReflect.contains(DailyCorrectEventServiceCenter.ATTENDANCE_ITEMS.get(index)) 
+							&& as.getStamp().isPresent() && !as.getStamp().get().isFromSPR()) {
 						as.removeStamp();
 					}
 				});
 				alw.getLeaveStamp().ifPresent(ls -> {
-					if (inputByReflect.contains(LEAVE_ITEMS.get(index)) && ls.getStamp().isPresent() 
-							&& !ls.getStamp().get().isFromSPR()) {
+					if (inputByReflect.contains(DailyCorrectEventServiceCenter.LEAVE_ITEMS.get(index)) 
+							&& ls.getStamp().isPresent() && !ls.getStamp().get().isFromSPR()) {
 						ls.removeStamp();
 					}
 				});
@@ -126,7 +142,8 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	}
 
 	private List<Integer> mergeItems() {
-		return Stream.of(LEAVE_ITEMS, ATTENDANCE_ITEMS, Arrays.asList(157)).flatMap(List::stream).collect(Collectors.toList());
+		return Stream.of(DailyCorrectEventServiceCenter.LEAVE_ITEMS, DailyCorrectEventServiceCenter.ATTENDANCE_ITEMS)
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	/** 申請反映の勤怠項目を判断する */
@@ -135,17 +152,23 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	}
 
 	/** 日別実績の出退勤を更新する */
-	private void updateTimeLeave(String companyId, WorkInfoOfDailyPerformance workInfo,
-			TimeLeavingOfDailyPerformance timeLeave, String employeeID, GeneralDate day) {
+	private TimeLeavingOfDailyPerformance updateTimeLeave(String companyId, WorkInfoOfDailyPerformance workInfo,
+			TimeLeavingOfDailyPerformance timeLeave, TimeLeaveUpdateByWorkInfoChangeCommand command) {
 		/** 自動打刻セットする */
-		timeLeave = reflectService.createStamp(companyId, workInfo, workConditionRepo.getBySidAndStandardDate(employeeID, day),
-				timeLeave, employeeID, day, null);
+		timeLeave = reflectService.createStamp(companyId, workInfo, getWorkConditionOrDefault(command),
+				timeLeave, command.employeeId, command.targetDate, null);
 		if(timeLeave != null) {
 			timeLeave.setWorkTimes(new WorkTimes(countTime(timeLeave)));
-			this.timeLeaveRepo.update(timeLeave);
-			/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
-			timeLeave.timeLeavesChanged();
+			if(!command.actionOnCache){
+				this.timeLeaveRepo.update(timeLeave);
+			}
+			
+			if(command.isTriggerRelatedEvent) {
+				/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+				timeLeave.timeLeavesChanged();
+			}
 		}
+		return timeLeave;
 	}
 
 	/** 出退勤回数の計算 */
@@ -158,8 +181,9 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 	}
 
 	/** 日別実績の出退勤を削除する */
-	private void deleteTimeLeave(boolean isSPR, String employeeId, GeneralDate date) {
-		timeLeaveRepo.findByKey(employeeId, date).ifPresent(tl -> {
+	private TimeLeavingOfDailyPerformance deleteTimeLeave(boolean isSPR, TimeLeaveUpdateByWorkInfoChangeCommand command) {
+		TimeLeavingOfDailyPerformance tl = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
+		if(tl != null) {
 			if (isSPR) {
 				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
 					tlw.getAttendanceStamp().ifPresent(as -> {
@@ -193,9 +217,17 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 				});
 			}
 
-			this.timeLeaveRepo.update(tl);
-			tl.timeLeavesChanged();
-		});
+
+			if(!command.actionOnCache){
+				this.timeLeaveRepo.update(tl);
+			}
+
+			if(command.isTriggerRelatedEvent) {
+				/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+				tl.timeLeavesChanged();
+			}
+		}
+		return tl;
 	}
 
 	private boolean isRemoveStamp(WorkStamp ass) {
@@ -203,6 +235,30 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION ||
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON || 
 				ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO;
+	}
+
+	private Optional<WorkingConditionItem> getWorkConditionOrDefault(TimeLeaveUpdateByWorkInfoChangeCommand command) {
+		if(command.cachedWorkCondition.isPresent()){
+			return command.cachedWorkCondition;
+		}
+		return workConditionRepo.getBySidAndStandardDate(command.employeeId, command.targetDate);
+	}
+
+	private TimeLeavingOfDailyPerformance getTimeLeaveDefault(TimeLeaveUpdateByWorkInfoChangeCommand command) {
+		return timeLeaveRepo.findByKey(command.employeeId, command.targetDate).orElse(null);
+	}
+
+	private WorkType getDefaultWorkType(String workTypeCode, String companyId) {
+		return workTypeRepo.findByPK(companyId, workTypeCode).orElse(null);
+	}
+
+	private WorkInfoOfDailyPerformance getDefaultWorkInfo(TimeLeaveUpdateByWorkInfoChangeCommand command) {
+		return this.workInfoRepo.find(command.employeeId, command.targetDate).orElse(null);
+	}
+
+	private List<EditStateOfDailyPerformance> getDefaultEditStates(TimeLeaveUpdateByWorkInfoChangeCommand command,
+			List<Integer> needCheckItems) {
+		return this.editStateRepo.findByItems(command.employeeId, command.targetDate, needCheckItems);
 	}
 
 }

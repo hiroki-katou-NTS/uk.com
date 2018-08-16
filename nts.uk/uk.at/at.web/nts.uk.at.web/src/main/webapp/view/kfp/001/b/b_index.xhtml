@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<com:ValidatorScript>
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.OptionalAggrName
+		</com:ValidatorScript>
+		<div id="left-content" tabindex="3"
+			class="bg-green caret-right caret-background cf"
+			style="width: 290px; height: 335px;" >
+			<div id="LST_001" style="margin-left: 10px; padding: 10px; " tabindex="-1" >
+				<div id="LST_001" style="margin-left: -10px; padding: 10px;">
+					<table id="single-list" tabindex="-1"
+						data-bind="ntsGridList: {								
+						width: 250,
+						height: 300,
+						dataSource: optionalList,
+						primaryKey: 'aggrFrameCode',
+						columns: columns,
+						multiple: false,
+						value: currentCode
+					}"></table>
+				</div>
+
+
+			</div>
+		</div>
+		<div id="right-content">
+			<div class="control-group" data-bind="with: currentItem">
+				<div>
+					<div id="label1-B4_1" class="label"
+						data-bind="ntsFormLabel: {required: true, constraint:['AggrFrameCode']}">
+						#{i18n.getText('KFP001_14')}</div>
+					<span> <input id="code-text-d4-2"
+						style="margin-left: 40px ! important" tabindex="4"
+						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}, hasFocus: $parent.isFocus" /></span>
+					<hr></hr>
+				</div>
+				<div>
+					<div id="label2-B5_1" class="label"
+						data-bind="ntsFormLabel: {required: true, constraint:['OptionalAggrName']}">
+						<span>#{i18n.getText('KFP001_16')}</span>
+					</div>
+					<div id="code-text-d4" style="margin-top: -30px">
+						<input id="code-text-d4-21" style="margin-left: 130px ! important"
+							tabindex="5"
+							data-bind="ntsTextEditor: {value: optionalAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:$parent.enableText}" />
+					</div>
+					<hr></hr>
+				</div>
+			</div>
+		</div>
+		
+		<div id="label2-B5_1" class="label" style="margin-left: 341px"
+					data-bind="ntsFormLabel: {required: true}">
+					#{i18n.getText('KFP001_18')}</div>
+		<div id = "data-range" style="margin-top: -33px">
+		<div id="daterangepicker" tabindex="6" style="margin-left: 470px"
+			data-bind="ntsDateRangePicker: { required: true, 
+											enable: enableText, 
+											showNextPrevious: false, 
+											value: dateValue, 
+											maxRange: 'oneYear'}" />
+											</div>
+		<hr id="hr-3"></hr>
+		<div id="update-mode" style="margin-left: 340px;">
+			<div id="label-hidden">
+				<div id="label2-B7_1" class="label"
+					data-bind="ntsFormLabel: {required: true}">
+					#{i18n.getText('KFP001_22')}</div>
+				<span id="people" style="margin-left: 40px;" data-bind="text: peopleCount"></span>
+				<button id="button-reference-B7_3" data-bind="click : opendScreenF"
+					tabindex="8">#{i18n.getText('KFP001_24')}</button>
+				<hr style="width: 447px; float: right; margin-top: 10px;"></hr>
+			</div>
+		</div>
+		<button id="next-button-B" class="proceed x-large"
+			data-bind="click : opendScreenBorJ,enable: $root.errors.isEmpty" tabindex="9" >#{i18n.getText('KFP001_25')}</button>
+	</ui:composition>
+</body>
+</html>

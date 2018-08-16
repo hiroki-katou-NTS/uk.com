@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 950, height: 540 };</script>
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
+				nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf004.i.main.css" />
+			<com:scriptfile path="kmf004.i.vm.js" />
+			<com:scriptfile path="kmf004.i.service.js" />
+			<com:scriptfile path="kmf004.i.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" style="height: 55px">
+				<!-- I1_1 -->
+				<a tabindex="0" class="goback"
+					data-bind="ntsLinkButton: {jump: '/view/kmf/004/x/index.xhtml'}">
+					#{i18n.getText('KMF004_70')} </a>
+				<!-- I1_2 -->
+				<button class="proceed"
+					data-bind="click:saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+				<!-- I1_3 -->
+				<button class="danger"
+					data-bind="click:deleteItem, enable: !currentSHEvent().createNew()">#{i18n.getText('KMF004_3')}</button>
+				<!-- I1_4 -->
+				<button data-bind="click:openHDialog">#{i18n.getText('KMF004_71')}</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<!-- I2_2 -->
+					<table id="tblFrame"
+						data-bind="ntsGridList: {								
+									height: 400,
+									dataSource: frameItems ,
+									primaryKey: 'specialHdFrameNo',
+									columns: frameColumns ,
+									multiple: false,
+									value: currentFrameCd,
+									rows:15
+								}"></table>
+				</div>
+				<div id="right-content" style="float: left;"
+					data-bind="with:currentSHEvent">
+					<div class="div_line">
+						<!-- I5_1 -->
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_10')}</div>
+						<!-- I5_2 -->
+						<textarea style="height: 100px" id="memo"
+							data-bind="ntsMultilineEditor: {
+									value: memo ,
+									constraint:'Memo',
+									name: '#{i18n.getText('KMF004_10')}',
+									option: {
+									resizeable: false ,
+			                    	width: '500'
+			                    	}
+			                   	}" />
+					</div>
+
+					<div class="div_line">
+						<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
+							<div class="tab-content-1">
+								<div class="div_line">
+									<!-- I7_1 -->
+									<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMF004_75')}</div>
+								</div>
+								<div class="div_line">
+									<div class="float_left">
+										<div id="limit_group"
+											data-bind="ntsRadioBoxGroup: {
+											options: $parent.limits ,
+											optionsValue: 'id' ,
+											optionsText: 'name' ,
+											value: maxNumberDay ,
+											enable: true }"></div>
+									</div>
+									<div class="float_left" style="margin-left: 30px">
+										<div class="div_line">
+											<!-- I7_5 -->
+											<label> #{i18n.getText('KMF004_78')} </label>
+											<!-- I7_6 -->
+											<input id="max_date"
+												data-bind="ntsNumberEditor:{
+																		name: '#{i18n.getText('KMF004_78')}',
+																		value: fixedDayGrant,
+																		constraint:'FixedDayGrant',
+																		option: {
+														                 	width: '80',
+														                    unitID: 'DAYS'
+														                	}, 
+														                required: false,
+														                enable: maxNumberDay()==1}" />
+										</div>
+										<div class="div_line">
+											<div class="div_line">
+												<!-- I7_7 -->
+												<button
+													data-bind="click:$parent.openGDialog,enable:maxNumberDay()==2">#{i18n.getText('KMF004_79')}</button>
+											</div>
+											<div class="div_line" data-bind="visible:maxNumberDay()==2">
+												<!-- I7_8 -->
+												<label>#{i18n.getText('KMF004_80')} </label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="div_line">
+									<!-- I8_1 -->
+									<div data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KMF004_81')}</div>
+								</div>
+								<div style="margin-left: 20px">
+									<div class="div_line">
+										<!-- I8_2 -->
+										<div data-bind="ntsCheckBox: { checked: makeInvitation }">#{i18n.getText('KMF004_82')}</div>
+									</div>
+									<!-- I8_10 -->
+									<div class="div_line">
+										<label> #{i18n.getText('KMF004_84')} </label>
+									</div>
+									<div class="div_line">
+										<!-- I8_6 -->
+										<div data-bind="ntsCheckBox: { checked: includeHolidays }">#{i18n.getText('KMF004_83')}</div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-2">
+								<div class="div_line">
+									<!-- I9_1 -->
+									<label style="width: 310px; line-height: 25px;">#{i18n.getText('KMF004_47')}</label>
+								</div>
+								<div
+									style="margin-left: 20px; display: inline-block; margin-top: 20px;">
+									<!-- I10_1 -->
+									<div class="div_line">
+										<div class="div_line_col_1">
+											<div data-bind="ntsCheckBox: { checked: genderRestrict }">#{i18n.getText('KMF004_53')}</div>
+										</div>
+										<div class="float_left">
+											<!-- I10_2 -->
+											<div class="cf"
+												data-bind="ntsSwitchButton: {
+																		name: '#{i18n.getText('KMF004_54')}',
+																		options: $parent.genderLst ,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: gender ,
+																		required: true,
+																		enable: genderRestrict }">
+											</div>
+										</div>
+									</div>
+									<div class="div_line">
+										<div class="div_line_col_1">
+											<!-- I11_1 -->
+											<div data-bind="ntsCheckBox: { checked: restrictEmployment }">#{i18n.getText('Com_Employment')}</div>
+										</div>
+										<div class="float_left">
+											<!-- I11_2 -->
+											<button
+												data-bind="enable: restrictEmployment , click:openCDL002 ">#{i18n.getText('KMF004_9')}</button>
+											<!-- I11_3 -->
+											<input style="margin-left: 20px"
+												data-bind="ntsTextEditor: {
+														value: employmentTxt ,
+														option: {
+												            	textmode: 'text',
+												            	placeholder: '',
+												            	width: '350px',
+												            	textalign: 'left'
+												            },
+														enable: restrictEmployment ,
+														readonly: true }" />
+										</div>
+									</div>
+
+									<div class="div_line">
+										<div class="div_line_col_1">
+											<!-- I12_1 -->
+											<div
+												data-bind="ntsCheckBox: { checked: restrictClassification }">#{i18n.getText('Com_Class')}</div>
+										</div>
+										<div class="float_left">
+											<!-- I12_2 -->
+											<button
+												data-bind="enable:restrictClassification , click:openCDL003">#{i18n.getText('KMF004_9')}</button>
+											<!-- I12_3 -->
+											<input style="margin-left: 20px"
+												data-bind="ntsTextEditor: {
+														value: classificationTxt ,
+														option: {
+												            	textmode: 'text',
+												            	placeholder: '',
+												            	width: '350px',
+												            	textalign: 'left'
+												            },
+														enable: restrictClassification ,
+														readonly: true }" />
+										</div>
+									</div>
+
+									<div class="div_line">
+										<div class="div_line_col_1">
+											<!-- I13_1 -->
+											<div data-bind="ntsCheckBox: { checked: ageLimit }">#{i18n.getText('KMF004_48')}</div>
+										</div>
+										<div class="float_left" data-bind="with:ageRange">
+											<!-- I13_2 -->
+											<input
+												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			value: ageLowerLimit ,
+																			enable: $parent.ageLimit ,
+																			option:{width:'60',unitID:'AGE'},
+																			 required:$parent.ageLimit
+																			}" />
+											<!-- I13_3 -->
+											#{i18n.getText('KMF004_45')}
+											<!-- I13_4 -->
+											<input
+												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			value: ageHigherLimit ,
+																			enable: $parent.ageLimit ,
+																			option:{width:'60',unitID:'AGE'} ,
+																		 	required:$parent.ageLimit
+																			}" />
+										</div>
+									</div>
+									<div class="div_line">
+										<div id="standardArena">
+											<!-- I13_5 -->
+											<label style="vertical-align: top;">
+												#{i18n.getText('KMF004_51')} </label>
+											<!-- I13_6 -->
+											<div id="combo-box" style="margin-left: 20px;"
+												data-bind="ntsComboBox: {
+													name: '#{i18n.getText('KMF004_51')}',
+													options: $parent.ageStandardlst ,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: ageStandard,
+													optionsText: 'name',
+													editable: false ,
+													enable: true ,
+													width:'70',
+													columns: [
+														{ prop: 'name', length: 4 },
+													]}"></div>
+
+											<!-- I13_8 -->
+											<div style="margin-left: 20px;"
+												data-bind="ntsDatePicker: {value: ageStandardBaseDate ,enable: ageLimit , dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYY/MM/DD', required:ageLimit}"></div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

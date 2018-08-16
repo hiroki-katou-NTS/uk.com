@@ -51,19 +51,17 @@ public class NursingLeaveFinder {
             return null;
         }
         // Find all work type by company id
-        List<WorkTypeDto> listWorkType = this.workTypeFinder.findByCompanyId();
+        //List<WorkTypeDto> listWorkType = this.workTypeFinder.findByCompanyId();
         
         // NURSING
         NursingLeaveSetting nursingSetting = listSetting.get(INDEX_NURSING_SETTING);
         NursingLeaveSettingDto nursingSettingDto = new NursingLeaveSettingDto();
         nursingSetting.saveToMemento(nursingSettingDto);
-        nursingSettingDto.setWorkType(this.findWorkType(listWorkType, nursingSetting.getWorkTypeCodes()));
         
         // CHILD NURSING
         NursingLeaveSetting childNursingSetting = listSetting.get(INDEX_CHILD_NURSING_SETTING);
         NursingLeaveSettingDto childNursingSettingDto = new NursingLeaveSettingDto();
         childNursingSetting.saveToMemento(childNursingSettingDto);
-        childNursingSettingDto.setWorkType(this.findWorkType(listWorkType, childNursingSetting.getWorkTypeCodes()));
         
         return Arrays.asList(nursingSettingDto, childNursingSettingDto);
     }

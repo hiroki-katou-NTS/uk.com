@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1200,
-					height : 770
+					height : 810
 				};
 			</script>
 			
@@ -130,7 +130,8 @@
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
-											outerDrag: { left: true, right: true } 
+											outerDrag: { left: true, right: true },
+											itemsLimit: { right: 48 }
 										}"></div>
 										<!--Updown Button-->
 										<div id="up-down"
@@ -153,30 +154,48 @@
 									<!-- C8_2 -->
 									<hr/>
 									
+									<div class="remarkInput">
+										<!-- C8_3 -->
+										<div tabindex="12" data-bind="ntsCheckBox: { checked: checkedRemarksInput }">#{i18n.getText('KWR001_67')}</div>
+										<!-- C8_14 -->
+										<!-- C8_15 -->
+										<div tabindex="13" id="combo-box-remarkInput" data-bind="ntsComboBox: {
+																		name: '#[KWR001_117]',
+																		options: remarkInputContents,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		visibleItemsCount: 5,
+																		value: currentRemarkInputContent,
+																		required: true,
+																		enable: isEnableRemarkInputContents,
+																		columns: [
+																			{ prop: 'name'}
+																		]}"></div>
+									</div>
+									
+									
 									<div class="check-box-list">
 										<ul>
-											<!-- C8_3 -->
-											<li><div tabindex="12" data-bind="ntsCheckBox: { checked: checkedRemarksInput }">#{i18n.getText('KWR001_67')}</div></li>
 											<!-- C8_4 -->
-											<li><div tabindex="13" data-bind="ntsCheckBox: { checked: checkedMasterUnregistered }">#{i18n.getText('KWR001_68')}</div></li>
+											<li><div tabindex="14" data-bind="ntsCheckBox: { checked: checkedMasterUnregistered }">#{i18n.getText('KWR001_68')}</div></li>
 											<!-- C8_5 -->
-											<li><div tabindex="14" data-bind="ntsCheckBox: { checked: checkedEngraving }">#{i18n.getText('KWR001_69')}</div></li>
+											<li><div tabindex="15" data-bind="ntsCheckBox: { checked: checkedEngraving }">#{i18n.getText('KWR001_69')}</div></li>
 											<!-- C8_6 -->
-											<li><div tabindex="15" data-bind="ntsCheckBox: { checked: checkedImprintingOrderNotCorrect }">#{i18n.getText('KWR001_70')}</div></li>
+											<li><div tabindex="16" data-bind="ntsCheckBox: { checked: checkedImprintingOrderNotCorrect }">#{i18n.getText('KWR001_70')}</div></li>
 											<!-- C8_7 -->
-											<li><div tabindex="16" data-bind="ntsCheckBox: { checked: checkedLeavingEarly }">#{i18n.getText('KWR001_71')}</div></li>
+											<li><div tabindex="17" data-bind="ntsCheckBox: { checked: checkedLeavingEarly }">#{i18n.getText('KWR001_71')}</div></li>
 											<!-- C8_8 -->
-											<li><div tabindex="17" data-bind="ntsCheckBox: { checked: checkedHolidayStamp }">#{i18n.getText('KWR001_72')}</div></li>
+											<li><div tabindex="18" data-bind="ntsCheckBox: { checked: checkedHolidayStamp }">#{i18n.getText('KWR001_72')}</div></li>
 											<!-- C8_9 -->
-											<li><div tabindex="18" data-bind="ntsCheckBox: { checked: checkedDoubleEngraved }">#{i18n.getText('KWR001_73')}</div></li>
+											<li><div tabindex="19" data-bind="ntsCheckBox: { checked: checkedDoubleEngraved }">#{i18n.getText('KWR001_73')}</div></li>
 											<!-- C8_10 --> 
-											<li><div tabindex="19" data-bind="ntsCheckBox: { checked: checkedAcknowledgment }">#{i18n.getText('KWR001_74')}</div></li>
+											<li><div tabindex="20" data-bind="ntsCheckBox: { checked: checkedAcknowledgment }">#{i18n.getText('KWR001_74')}</div></li>
 											<!-- C8_11 --> 
-											<li><div tabindex="20" data-bind="ntsCheckBox: { checked: checkedManualInput }">#{i18n.getText('KWR001_75')}</div></li>
+											<li><div tabindex="21" data-bind="ntsCheckBox: { checked: checkedManualInput }">#{i18n.getText('KWR001_75')}</div></li>
 											<!-- C8_12 --> 
-											<li><div tabindex="21" data-bind="ntsCheckBox: { checked: checkedNotCalculated }">#{i18n.getText('KWR001_76')}</div></li>
+											<li><div tabindex="22" data-bind="ntsCheckBox: { checked: checkedNotCalculated }">#{i18n.getText('KWR001_76')}</div></li>
 											<!-- C8_13 -->
-											<li><div tabindex="22" data-bind="ntsCheckBox: { checked: checkedExceedByApplication }">#{i18n.getText('KWR001_77')}</div></li>
+											<li><div tabindex="23" data-bind="ntsCheckBox: { checked: checkedExceedByApplication }">#{i18n.getText('KWR001_77')}</div></li>
 										</ul>
 									</div>
 								</div>

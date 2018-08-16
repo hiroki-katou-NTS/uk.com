@@ -32,6 +32,20 @@ module nts.uk.at.view.kmk005.f {
                 self.currentSpecBonusPayTimesheets = ko.observableArray([]);
                 self.specDateItem = ko.observableArray([]);
                 self.isUpdate = ko.observable(true);
+                self.currentBPSetCode.subscribe(function(value) {
+                    nts.uk.ui.errors.clearAll();
+                    if (value != '') {
+                        self.isUpdate(true);
+                        self.currentBonusPaySetting(ko.mapping.fromJS(_.find(self.bonusPaySettingList(), (o) => {
+                            let codes = o.code;
+                            return String(codes) == value;
+                        })));
+                        self.getBonusPayTimesheets(value);
+                    } else {
+                        self.isUpdate(false);
+                        self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
+                    }
+                });
             }
 
             startPage(): JQueryPromise<any> {
@@ -56,8 +70,8 @@ module nts.uk.at.view.kmk005.f {
                         });
                         if (dfdBonusPaySettingData.length != 0) {
                             self.bonusPaySettingList(dfdBonusPaySettingData);
-                            self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
-                            self.currentBPSetCode(self.currentBonusPaySetting().code());
+//                            self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
+                            self.currentBPSetCode(self.bonusPaySettingList()[0].code);
                             self.getBonusPayTimesheets(self.currentBPSetCode());
                             self.isUpdate(true);
                         } else {
@@ -65,20 +79,6 @@ module nts.uk.at.view.kmk005.f {
                             self.createData(true);
                             self.currentBPSetCode('');
                         }
-                        self.currentBPSetCode.subscribe(function(value) {
-                            nts.uk.ui.errors.clearAll();
-                            if (value != '') {
-                                self.isUpdate(true);
-                                self.currentBonusPaySetting(ko.mapping.fromJS(_.find(self.bonusPaySettingList(), (o) => {
-                                    let codes = o.code;
-                                    return String(codes) == value;
-                                })));
-                                self.getBonusPayTimesheets(value);
-                            } else {
-                                self.isUpdate(false);
-                                self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
-                            }
-                        });
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     }).fail((res1, res2, res3, res4) => {
@@ -88,7 +88,7 @@ module nts.uk.at.view.kmk005.f {
                 return dfd.promise();
             }
 
-            getBonusPaySetting(): JQueryPromise<any> {
+            getBonusPaySetting(code: string): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
@@ -97,8 +97,7 @@ module nts.uk.at.view.kmk005.f {
                         if (data.length != 0) {
                             self.isUpdate(true);
                             self.bonusPaySettingList(data);
-                            self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
-                            self.currentBPSetCode(self.currentBonusPaySetting().code());
+                            self.currentBPSetCode(code);
                         } else {
                             self.isUpdate(false);
                             self.bonusPaySettingList([]);
@@ -199,7 +198,7 @@ module nts.uk.at.view.kmk005.f {
                             }
                             else {
                                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                                self.getBonusPaySetting();
+                                self.getBonusPaySetting(self.currentBonusPaySetting().code());
                             }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
@@ -221,7 +220,7 @@ module nts.uk.at.view.kmk005.f {
                             }
                             else {
                                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                                self.getBonusPaySetting();
+                                self.getBonusPaySetting(self.currentBonusPaySetting().code());
                             }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
@@ -239,10 +238,14 @@ module nts.uk.at.view.kmk005.f {
 
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                     .ifYes(() => {
+                        let i = _.findIndex(self.bonusPaySettingList(), x => { return x.code == self.currentBPSetCode() });
                         fService.deleteBonusPaySetting(
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
-                            self.getBonusPaySetting();
+                            if (i >= self.bonusPaySettingList().length - 1)
+                                self.getBonusPaySetting(self.bonusPaySettingList()[i - 1].code);
+                            else
+                                self.getBonusPaySetting(self.bonusPaySettingList()[i + 1].code);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             nts.uk.ui.block.clear();
                         }).fail((res) => {

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -110,5 +109,21 @@ public class WorkScheduleTimeZone extends DomainObject {
 	 */
 	public void updateBounceAtr(BounceAtr bounceAtr) {
 		this.bounceAtr = bounceAtr;
+	}
+	
+	public boolean equalScheduleCnt(int scheCnt){
+		return scheduleCnt == scheCnt;
+	}
+	
+	public boolean equalScheduleStartClock(TimeWithDayAttr scheStartClock){
+		return scheduleStartClock.v() == scheStartClock.v();
+	}
+	
+	public boolean equalScheduleEndClock(TimeWithDayAttr scheEndClock){
+		return scheduleEndClock.v() == scheEndClock.v();
+	}
+	
+	public boolean equalBounceAtr(BounceAtr bAtr){
+		return bounceAtr.value == bAtr.value;
 	}
 }

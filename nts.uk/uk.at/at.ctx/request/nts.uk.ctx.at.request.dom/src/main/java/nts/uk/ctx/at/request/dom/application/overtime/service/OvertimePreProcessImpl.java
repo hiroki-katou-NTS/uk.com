@@ -595,7 +595,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 			if (!personalBonusPaySetting.isPresent()) {
 				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository
-						.getWPBPSetting(new WorkplaceId(sWkpHistImport.getWorkplaceId()));
+						.getWPBPSetting(companyID, new WorkplaceId(sWkpHistImport.getWorkplaceId()));
 				if (!workplaceBonusPaySetting.isPresent()) {
 					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
 							.getSetting(companyID);

@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * 
@@ -64,4 +65,12 @@ public class ApplicationStampWebService extends WebService {
 		return this.appStampFinder.getStampCombinationAtr();
 	}
 	
+	@POST
+	@Path("getAttendanceItem")
+	public List<AttendanceResultImport> getAttendanceItem(StampAttendanceParam param){
+		return this.appStampFinder.getAttendanceItem(
+				param.getEmployeeIDLst(), 
+				param.getDate(), 
+				param.getStampRequestMode());
+	}
 }

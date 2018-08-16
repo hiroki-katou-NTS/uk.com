@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.workinformation;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.record.pub.workinformation.CommonTimeSheet;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
@@ -171,6 +174,22 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		Optional<WorkInfoOfDailyPerformance> optWorkInfo =  workInformationRepository.find(employeeId, ymd);
 		if(!optWorkInfo.isPresent()) return Optional.ofNullable(null);		
 		return Optional.of(optWorkInfo.get().getRecordInfo().getWorkTypeCode().v());
+	}
+
+	@Override
+	public List<InfoCheckNotRegisterPubExport> findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod) {
+		List<WorkInfoOfDailyPerformance> data = workInformationRepository.findByPeriodOrderByYmdAndEmps(employeeIds, datePeriod);
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data.stream().map(c->convertToExportInfor(c)).collect(Collectors.toList());
+	}
+	
+	private InfoCheckNotRegisterPubExport convertToExportInfor(WorkInfoOfDailyPerformance domain) {
+		return new InfoCheckNotRegisterPubExport(
+				domain.getEmployeeId(),
+				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTimeCode()==null?null:domain.getRecordInfo().getWorkTimeCode().v()),
+				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTypeCode()==null?null:domain.getRecordInfo().getWorkTypeCode().v())
+				);
 	}
 	
 }

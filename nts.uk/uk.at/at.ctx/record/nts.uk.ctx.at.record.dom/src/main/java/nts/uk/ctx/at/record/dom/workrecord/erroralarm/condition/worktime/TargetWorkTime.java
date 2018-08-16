@@ -40,7 +40,7 @@ public class TargetWorkTime extends DomainObject {
 		if (this.isUse()) {
 			return this.lstWorkTime.contains(target);
 		}
-		return true;
+		return false;
 	}
 	
 	public boolean isUse() {

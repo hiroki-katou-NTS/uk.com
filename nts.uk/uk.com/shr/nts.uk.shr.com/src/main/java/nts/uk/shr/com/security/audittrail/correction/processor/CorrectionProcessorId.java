@@ -11,6 +11,8 @@ public enum CorrectionProcessorId {
 
 	SAMPLE(0),
 	
+	DAILY(1),
+	
 	;
 	public final int value;
 	

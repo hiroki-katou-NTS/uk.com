@@ -1,15 +1,68 @@
-.wrap-content {
+#tabpanel-m .wrap-content {
 	padding: 40px;
 }
 
-#wkp-list {
+#tabpanel-m #wkp-list {
 	display: inline-block;
 }
 
-#display-detail {
+#tabpanel-m #display-detail {
 	display: inline-block;
 }
 
-#display-detail .ntsRadioBox {
-	display: block !IMPORTANT;
+#tabpanel-m #display-detail .ntsRadioBox {
+	display: block !important;
+}
+
+#tabpanel-m #left-content {
+	margin: 20px 30px 0 16px;
+	float: left;
+}
+
+#tabpanel-m #right-content {
+	margin: 0;
+	float: left;
+	width: 990px;
+}
+
+#tabpanel-m #fixed-table-wkp-setting {
+	margin-bottom: 20px;
+}
+
+#tabpanel-m #fixed-table-wkp-setting th,
+#tabpanel-m #fixed-table-wkp-setting td {
+	padding: 3px;
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+#tabpanel-m #fixed-table-wkp-setting th.color-header {
+	font-weight: bold;
+	height: 32px;
+}
+
+#tabpanel-m #fixed-table-wkp-setting td:last-child {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#tabpanel-m #fixed-table-wkp-setting td:last-child .nts-editor-wrapped {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#tabpanel-m #fixed-table-wkp-setting td:last-child textarea {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+#tabpanel-m #fixed-table-wkp-setting td .ntsControl,
+#tabpanel-m #fixed-table-wkp-setting td .ntsControl .ntsRadioBox {
+    display: block;            
+}
+
+#tabpanel-m {
+	padding: 10px;
 }

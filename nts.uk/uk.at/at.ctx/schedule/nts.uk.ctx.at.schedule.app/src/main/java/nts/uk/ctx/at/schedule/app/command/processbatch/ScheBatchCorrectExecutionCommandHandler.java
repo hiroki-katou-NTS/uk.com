@@ -110,9 +110,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
 	
-	/** Interrupt flag */
-	private static boolean isInterrupted = false;
-			
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,16 +151,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
-		// Set interrupt flag to false to start execution
-		isInterrupted = false;
-		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
 			// Stop if being interrupted
-			if (isInterrupted) {
-				break;
-			}
-			
 			GeneralDate startDate = command.getStartDate();
 			GeneralDate endDate = command.getEndDate();
 			 	
@@ -173,11 +163,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 			// 開始日から終了日までループ
 			while (currentDateCheck.compareTo(endDate) <= 0) {
 				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
-				
-				// Stop if being interrupted
-				if (isInterrupted) {
-					break;
-				}
 				
 				if (optErrorMsg.isPresent()) {
 					
@@ -219,10 +204,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
 		//setter.updateData(DATA_EXECUTION, dto);
-	}
-	
-	public void interrupt() {
-		isInterrupted = true;
 	}
 	
 	/**

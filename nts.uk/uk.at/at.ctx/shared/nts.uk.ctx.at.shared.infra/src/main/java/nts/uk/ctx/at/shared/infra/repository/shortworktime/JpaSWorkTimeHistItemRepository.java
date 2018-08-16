@@ -5,6 +5,8 @@
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
@@ -119,6 +122,11 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 */
 	@Override
 	public List<ShortWorkTimeHistoryItem> findByHistIds(List<String> histIds) {
+		// Check
+		if(CollectionUtil.isEmpty(histIds)) {
+			return Collections.emptyList();
+		}
+		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<BshmtWorktimeHistItem> query = builder

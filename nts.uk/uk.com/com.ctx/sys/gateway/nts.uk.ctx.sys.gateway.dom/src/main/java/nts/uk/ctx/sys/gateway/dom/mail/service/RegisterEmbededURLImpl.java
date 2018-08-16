@@ -58,13 +58,13 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		} 
 		String cid = AppContexts.user().companyId();
 		// Request list 313
-//		if(Strings.isNotBlank(employeeId)){
-//			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
-//			if(opUserInforEx.isPresent()){
-//				loginId = opUserInforEx.get().getLoginID();
-//				employeeCD = opUserInforEx.get().getEmpCD();
-//			};
-//		}	
+		if(Strings.isNotBlank(employeeId)){
+			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
+			if(opUserInforEx.isPresent()){
+				loginId = opUserInforEx.get().getLoginID();
+				employeeCD = opUserInforEx.get().getEmpCD();
+			};
+		}	
 		GeneralDateTime issueDate = GeneralDateTime.now();
 		GeneralDateTime startDate = GeneralDateTime.now();
 		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);

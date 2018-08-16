@@ -207,7 +207,7 @@ module nts.uk.at.view.kal004.share.model {
             }
             
             
-            if(alarmCategory == 7 ){
+            if(alarmCategory == 7  || alarmCategory == 9){
                 if(listExtractionMonthly.length==0){
                     this.setDefaultMonthly(3);
                 }else{

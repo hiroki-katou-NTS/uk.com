@@ -476,4 +476,44 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByHistory(java.util.List)
+	 */
+	@Override
+	public List<WorkplaceInfo> findByHistory(List<String> historyList) {
+		if (CollectionUtil.isEmpty(historyList)) {
+			return null;
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
+		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
+
+		// select root
+		cq.select(root);
+
+		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(historyList, MAX_ELEMENTS, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId)
+					.in(subList));
+			
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+
+		if (CollectionUtil.isEmpty(resultList)) {
+			return null;
+		}
+
+		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+				.collect(Collectors.toList());
+	}
 }

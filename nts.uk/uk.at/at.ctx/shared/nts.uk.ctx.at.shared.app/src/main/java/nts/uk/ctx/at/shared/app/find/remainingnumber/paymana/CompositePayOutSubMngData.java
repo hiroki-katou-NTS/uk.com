@@ -67,7 +67,9 @@ public class CompositePayOutSubMngData {
 		this.cID = domain.getCID();
 		this.sID = domain.getSID();
 		this.unknownDatePayout = domain.getPayoutDate().isUnknownDate();
-		this.dayoffDatePyout = domain.getPayoutDate().getDayoffDate().get();
+		domain.getPayoutDate().getDayoffDate().ifPresent(dayoff->{
+			this.dayoffDatePyout = dayoff;
+		});
 		this.expiredDate = domain.getExpiredDate();
 		this.lawAtr = domain.getLawAtr().value;
 		this.occurredDays = domain.getOccurredDays().v();
@@ -86,7 +88,9 @@ public class CompositePayOutSubMngData {
 		this.cID = domain.getCid();
 		this.sID = domain.getSID();
 		this.unknownDateSub = domain.getHolidayDate().isUnknownDate();
-		this.dayoffDateSub = domain.getHolidayDate().getDayoffDate().get();
+		domain.getHolidayDate().getDayoffDate().ifPresent(dayoff->{
+			this.dayoffDateSub  = dayoff;
+		});
 		this.requiredDays = domain.getRequiredDays().v();	
 		this.remainDays = domain.getRemainDays().v();
 		

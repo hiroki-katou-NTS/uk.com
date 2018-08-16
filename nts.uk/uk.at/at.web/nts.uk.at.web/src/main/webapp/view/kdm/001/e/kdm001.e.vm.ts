@@ -58,7 +58,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.residualDayDisplay(model.formatterDay(day));
             self.residualDay(day);
             _.each(self.currentList(), function (x) {
-                if (self.dateHoliday() === x.dayoffDate) {
+                if (self.dateHoliday() === x.dayoffDate && self.dateHoliday() != null && x.dayoffDate != null) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_729" });
                 } else {                
                     sumNum = sumNum + x.remainDays;

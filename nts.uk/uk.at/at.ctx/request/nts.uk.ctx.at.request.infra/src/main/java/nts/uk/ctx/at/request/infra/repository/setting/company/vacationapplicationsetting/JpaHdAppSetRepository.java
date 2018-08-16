@@ -68,6 +68,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 		entity.wrkHours = domain.getWrkHours().value;
 		entity.yearHdName = domain.getYearHdName() == null ? null : domain.getYearHdName().v();
 		entity.yearResig = domain.getYearResig() == null ? null : domain.getYearResig().v();
+		entity.displayUnselect = domain.getDisplayUnselect().value;
 		return entity;
 	}
 	
@@ -87,32 +88,38 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 	@Override
 	public void update(HdAppSet hdAppSet) {
 		KrqstHdAppSet entity = toEntity(hdAppSet);
-		KrqstHdAppSet oldEntity = this.queryProxy().find(entity.krqstHdAppSetPK, KrqstHdAppSet.class).get();
-		oldEntity.absenteeism = entity.absenteeism;
-		oldEntity.actualDisp = entity.actualDisp;
-		oldEntity.appDateContra = entity.appDateContra;
-		oldEntity.changeWrkHour = entity.changeWrkHour;
-		oldEntity.ckuperLimit = entity.ckuperLimit;
-		oldEntity.concheckDateRelease = entity.concheckDateRelease;
-		oldEntity.concheckOutLegal = entity.concheckOutLegal;
-		oldEntity.furikyuName = entity.furikyuName;
-		oldEntity.hdName = entity.hdName;
-		oldEntity.obstacleName = entity.obstacleName;
-		oldEntity.pridigCheck = entity.pridigCheck;
-		oldEntity.regisInsuff = entity.regisInsuff;
-		oldEntity.regisLackPubHd = entity.regisLackPubHd;
-		oldEntity.regisNumYear = entity.regisNumYear;
-		oldEntity.regisShortLostHd = entity.regisShortLostHd;
-		oldEntity.regisShortReser = entity.regisShortReser;
-		oldEntity.specialVaca = entity.specialVaca;
-		oldEntity.timeDigest = entity.timeDigest;
-		oldEntity.use60h = entity.use60h;
-		oldEntity.useGener = entity.useGener;
-		oldEntity.useYear = entity.useYear;
-		oldEntity.wrkHours = entity.wrkHours;
-		oldEntity.yearHdName = entity.yearHdName;
-		oldEntity.yearResig = entity.yearResig;
-		this.commandProxy().update(oldEntity);
+		Optional<KrqstHdAppSet> oldEntity = this.queryProxy().find(entity.krqstHdAppSetPK, KrqstHdAppSet.class);
+		if(oldEntity.isPresent()){
+			KrqstHdAppSet entityUpdate = oldEntity.get();
+			entityUpdate.absenteeism = entity.absenteeism;
+			entityUpdate.actualDisp = entity.actualDisp;
+			entityUpdate.appDateContra = entity.appDateContra;
+			entityUpdate.changeWrkHour = entity.changeWrkHour;
+			entityUpdate.ckuperLimit = entity.ckuperLimit;
+			entityUpdate.concheckDateRelease = entity.concheckDateRelease;
+			entityUpdate.concheckOutLegal = entity.concheckOutLegal;
+			entityUpdate.furikyuName = entity.furikyuName;
+			entityUpdate.hdName = entity.hdName;
+			entityUpdate.obstacleName = entity.obstacleName;
+			entityUpdate.pridigCheck = entity.pridigCheck;
+			entityUpdate.regisInsuff = entity.regisInsuff;
+			entityUpdate.regisLackPubHd = entity.regisLackPubHd;
+			entityUpdate.regisNumYear = entity.regisNumYear;
+			entityUpdate.regisShortLostHd = entity.regisShortLostHd;
+			entityUpdate.regisShortReser = entity.regisShortReser;
+			entityUpdate.specialVaca = entity.specialVaca;
+			entityUpdate.timeDigest = entity.timeDigest;
+			entityUpdate.use60h = entity.use60h;
+			entityUpdate.useGener = entity.useGener;
+			entityUpdate.useYear = entity.useYear;
+			entityUpdate.wrkHours = entity.wrkHours;
+			entityUpdate.yearHdName = entity.yearHdName;
+			entityUpdate.yearResig = entity.yearResig;
+			entityUpdate.displayUnselect = entity.displayUnselect;
+			this.commandProxy().update(entityUpdate);
+		}else{
+			this.commandProxy().insert(hdAppSet);
+		}
 	}
 	/**
 	 * insert hd app set

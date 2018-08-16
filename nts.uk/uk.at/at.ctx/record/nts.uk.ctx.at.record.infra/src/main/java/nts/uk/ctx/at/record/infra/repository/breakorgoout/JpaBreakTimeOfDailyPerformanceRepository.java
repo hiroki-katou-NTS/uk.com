@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -126,8 +129,24 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void insert(BreakTimeOfDailyPerformance breakTimes) {
-		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
-		this.getEntityManager().flush();
+//		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
+//		this.getEntityManager().flush();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			Statement statementI = con.createStatement();
+			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
+				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
+						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
+						+ breakTimes.getYmd() + "' , "
+						+ breakTimes.getBreakType().value + " , "
+						+ breakTimeSheet.getBreakFrameNo().v() + " , "
+						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
+						+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
+				statementI.executeUpdate(insertTableSQL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -161,6 +180,43 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			this.delete(breakTimes.getEmployeeId(), breakTimes.getYmd());
 		}
 		this.getEntityManager().flush();
+//		Connection con = this.getEntityManager().unwrap(Connection.class);
+//		try {
+//			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
+//				int result = 0;
+//				String selectTableSQL = "SELECT COUNT(*) from KRCDT_DAI_BREAK_TIME_TS WHERE SID = '"
+//						+ breakTimes.getEmployeeId() + "' AND YMD = '" + breakTimes.getYmd() + "'" + " AND BREAK_TYPE = " 
+//						+ breakTimes.getBreakType().value 
+//						+ " AND BREAK_FRAME_NO = " + breakTimeSheet.getBreakFrameNo().v();
+//				Statement statement = con.createStatement();
+//				ResultSet rs = statement.executeQuery(selectTableSQL);
+//				while (rs.next()) {
+//				    result = rs.getInt("COUNT(*)");
+//				}
+//				if (result > 0) {
+//					String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
+//							+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
+//							+ breakTimes.getYmd() + "' , "
+//							+ breakTimes.getBreakType().value + " , "
+//							+ breakTimeSheet.getBreakFrameNo().v() + " , "
+//							+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
+//							+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
+//					Statement statementI = con.createStatement();
+//					statementI.executeUpdate(insertTableSQL);
+//				} else {
+//					String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
+//							+ breakTimeSheet.getStartTime().valueAsMinutes() + " AND END_STAMP_TIME = " + breakTimeSheet.getEndTime().valueAsMinutes()
+//							+ " WHERE SID = '"
+//							+ breakTimes.getEmployeeId() + "' AND YMD = '" + breakTimes.getYmd() + "'" + " AND BREAK_TYPE = " 
+//							+ breakTimes.getBreakType().value 
+//							+ " AND BREAK_FRAME_NO = " + breakTimeSheet.getBreakFrameNo().v();
+//					Statement statementU = con.createStatement();
+//					statementU.executeUpdate(updateTableSQL);
+//				}
+//			}
+//		} catch (Exception e) {
+//			
+//		}
 	}
 
 	@Override

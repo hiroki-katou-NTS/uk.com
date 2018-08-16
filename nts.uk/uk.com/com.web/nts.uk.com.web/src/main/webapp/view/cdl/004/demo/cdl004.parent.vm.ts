@@ -7,6 +7,7 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
         selectMode: KnockoutObservable<boolean>;
         showNoSelection: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>
+        isShowBaseDate: KnockoutObservable<boolean>
         constructor() {
             var self = this;
             //construct codes 
@@ -15,6 +16,7 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
             self.showNoSelection = ko.observable(false);
             self.selectJobtitleCodes = ko.observable('');
             self.baseDate = ko.observable(new Date());
+            self.isShowBaseDate = ko.observable(false);
         }
 
         /**
@@ -27,7 +29,8 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
                 baseDate: self.baseDate(),
                 selectedCodes: self.selectMode() ? canSelected : canSelected[0],
                 showNoSelection: self.showNoSelection(),
-                isMultiple: self.selectMode()
+                isMultiple: self.selectMode(),
+                isShowBaseDate: self.isShowBaseDate()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/004/a/index.xhtml').onClosed(function(): any {

@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
@@ -54,6 +53,8 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Attendan
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
@@ -72,13 +73,13 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.Ille
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
 import nts.uk.ctx.at.record.dom.weekly.AgreementTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrDivgTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
@@ -86,7 +87,6 @@ import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekA
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -214,19 +214,6 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	@Column(name = "TOTAL_SPENT_TIME")
 	public int totalSpentTime;
 	
-	/** 36協定時間 */
-	@Column(name = "AGREEMENT_TIME")
-	public int agreementTime;
-	/** 限度エラー時間 */
-	@Column(name = "LIMIT_ERROR_TIME")
-	public int limitErrorTime;
-	/** 限度アラーム時間 */
-	@Column(name = "LIMIT_ALARM_TIME")
-	public int limitAlarmTime;
-	/** 状態 */
-	@Column(name = "AGREEMENT_STATUS")
-	public int agreementStatus;
-
 	/** 勤務日数 */
 	@Column(name = "VT_WORK_DAYS")
 	public double vtWorkDays;
@@ -257,6 +244,15 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 欠勤合計時間 */
 	@Column(name = "VT_TOTAL_ABSENCE_TIME")
 	public int vtTotalAbsenceTime;
+	/** 振出日数 */
+	@Column(name = "VT_RECRUIT_DAYS")
+	public double vtRecruitDays;
+	/** 特別休暇合計日数 */
+	@Column(name = "VT_TOTAL_SPCVACT_DAYS")
+	public double vtTotalSpecialVacationDays;
+	/** 特別休暇合計時間 */
+	@Column(name = "VT_TOTAL_SPCVACT_TIME")
+	public int vtTotalSpecialVacationTime;
 	/** 給与出勤日数 */
 	@Column(name = "VT_PAY_ATTENDANCE_DAYS")
 	public double vtPayAttendanceDays;
@@ -461,6 +457,9 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 縦計：勤務日数：集計特定日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrSpecDays> krcdtWekAggrSpecDays;
+	/** 縦計：勤務日数：集計特別休暇日数 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
+	public List<KrcdtWekAggrSpvcDays> krcdtWekAggrSpvcDays;
 	/** 縦計：勤務時間：集計加給時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrBnspyTime> krcdtWekAggrBnspyTime;
@@ -568,11 +567,7 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 				new AttendanceTimeMonth(this.totalSpentTime));
 		
 		// 週別の36協定時間
-		val agreementTime = AgreementTimeOfWeekly.of(
-				new AttendanceTimeMonth(this.agreementTime),
-				new LimitWeek(this.limitErrorTime),
-				new LimitWeek(this.limitAlarmTime),
-				EnumAdaptor.valueOf(this.agreementStatus, AgreementTimeStatusOfMonthly.class));
+		val agreementTime = new AgreementTimeOfWeekly();
 		
 		// 週別の計算
 		val weeklyCalculation = WeeklyCalculation.of(
@@ -640,7 +635,13 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.vtTemporaryWorkTimes)),
 				LeaveOfMonthly.of(
 						fixLeaveDaysList,
-						anyLeaveDaysList));
+						anyLeaveDaysList),
+				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(this.vtRecruitDays)),
+				SpcVacationDaysOfMonthly.of(
+						new AttendanceDaysMonth(this.vtTotalSpecialVacationDays),
+						new AttendanceTimeMonth(this.vtTotalSpecialVacationTime),
+						this.krcdtWekAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList()))
+				);
 		
 		// 育児外出
 		List<GoOutForChildCare> goOutForChildCares = new ArrayList<>();
@@ -841,11 +842,12 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		this.spentVarienceTime = totalSpentTime.getVarienceTimeSpentAtWork().v();
 		this.totalSpentTime = totalSpentTime.getTotalTimeSpentAtWork().v();
 		
-		val agreementTime = weeklyCalculation.getAgreementTime();
-		this.agreementTime = agreementTime.getAgreementTime().v();
-		this.limitErrorTime = agreementTime.getLimitErrorTime().v();
-		this.limitAlarmTime = agreementTime.getLimitAlarmTime().v();
-		this.agreementStatus = agreementTime.getStatus().value;
+		// ※　一旦、不要とする。2018.7.22 del shuichi_ishida
+		//val agreementTime = weeklyCalculation.getAgreementTime();
+		//this.agreementTime = agreementTime.getAgreementTime().v();
+		//this.limitErrorTime = agreementTime.getLimitErrorTime().v();
+		//this.limitAlarmTime = agreementTime.getLimitAlarmTime().v();
+		//this.agreementStatus = agreementTime.getStatus().value;
 		
 		val verticalTotal = domain.getVerticalTotal();
 		val vtWorkDays = verticalTotal.getWorkDays();
@@ -859,6 +861,9 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		this.vtHolidayWorkDays = vtWorkDays.getHolidayWorkDays().getDays().v();
 		this.vtTotalAbsenceDays = vtWorkDays.getAbsenceDays().getTotalAbsenceDays().v();
 		this.vtTotalAbsenceTime = vtWorkDays.getAbsenceDays().getTotalAbsenceTime().v();
+		this.vtRecruitDays = vtWorkDays.getRecruitmentDays().getDays().v();
+		this.vtTotalSpecialVacationDays = vtWorkDays.getSpecialVacationDays().getTotalSpcVacationDays().v();
+		this.vtTotalSpecialVacationTime = vtWorkDays.getSpecialVacationDays().getTotalSpcVacationTime().v();
 		this.vtPayAttendanceDays = vtWorkDays.getPayDays().getPayAttendanceDays().v();
 		this.vtPayAbsenceDays = vtWorkDays.getPayDays().getPayAbsenceDays().v();
 		

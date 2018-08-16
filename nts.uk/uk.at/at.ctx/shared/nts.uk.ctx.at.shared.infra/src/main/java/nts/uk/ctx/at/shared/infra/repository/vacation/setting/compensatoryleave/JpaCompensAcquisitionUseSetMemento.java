@@ -7,9 +7,11 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmp;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class JpaCompensAcquisitionUseSetMemento.
  */
@@ -80,5 +82,17 @@ public class JpaCompensAcquisitionUseSetMemento implements CompensatoryAcquisiti
             this.entityEmp.setPreempPermitAtr(preemptionPermit.value);
         }
     }
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseSetMemento#setDeadlCheckMonth(nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth)
+	 */
+	@Override
+	public void setDeadlCheckMonth(DeadlCheckMonth deadlCheckMonth) {
+		if (this.entityCom != null) {
+			this.entityCom.setDeadlCheckMonth(deadlCheckMonth.value);
+		} else {
+			this.entityEmp.setDeadlCheckMonth(deadlCheckMonth.value);
+		}
+	}
 
 }

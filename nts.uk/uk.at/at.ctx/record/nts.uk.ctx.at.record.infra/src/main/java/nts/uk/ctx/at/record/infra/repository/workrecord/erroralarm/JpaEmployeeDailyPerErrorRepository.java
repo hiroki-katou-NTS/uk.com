@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
@@ -94,12 +97,32 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
-//		if (KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).size() > 1) {
-//			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).get(0));
-//		} else {
-			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
-//		}
-		this.getEntityManager().flush();
+//		this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+//		this.getEntityManager().flush();
+		String id = IdentifierUtil.randomUniqueId();
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			Statement statementI = con.createStatement();
+			String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent() ? "'" + employeeDailyPerformanceError.getErrorAlarmMessage().get().v() + "'" : null;
+			String insertTableSQL = "INSERT INTO KRCDT_SYAIN_DP_ER_LIST ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID , ERROR_CANCELABLE , ERROR_MESSAGE ) "
+					+ "VALUES( '" + id + "' , '"
+					+ employeeDailyPerformanceError.getErrorAlarmWorkRecordCode().v() + "' , '"
+					+ employeeDailyPerformanceError.getEmployeeID() + "' , '"
+					+ employeeDailyPerformanceError.getDate() + "' , '"
+					+ employeeDailyPerformanceError.getCompanyID() + "' , "
+					+ employeeDailyPerformanceError.getErrorCancelAble() + " , "
+					+ errorAlarmMessage + " )";
+			statementI.executeUpdate(insertTableSQL);
+			
+			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()){
+				String insertAttendanceItem = "INSERT INTO KRCDT_ER_ATTENDANCE_ITEM ( ID , ATTENDANCE_ITEM_ID ) "
+						+ "VALUES( '" + id + "' , "
+						+ attendanceItemId + " )";			
+				statementI.executeUpdate(insertAttendanceItem);
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

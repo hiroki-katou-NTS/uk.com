@@ -53,6 +53,7 @@ public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
 	}
 
 	private JobTitleValueImport convertToExport(EmployeeJobHistExport export) {
+		if(export != null){
 		return new JobTitleValueImport(
 				null,
 				export.getEmployeeId(),
@@ -61,6 +62,9 @@ public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
 				null,
 				export.getStartDate(),
 				export.getEndDate());
+		}
+		else
+			return null;
 
 	}
 }

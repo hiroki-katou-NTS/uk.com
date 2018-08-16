@@ -12,7 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveCompanyAutoCal">#{i18n.getText('KMK006_9')}</button>
-			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KMK006_11')}</button>
+			<button tabindex="2" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KMK006_11')}</button>
 		</ui:define>
 	
 		<ui:define name="extended-222">
@@ -48,7 +48,7 @@
 					</tr>
 				</table>
 
-				<div data-bind="ifnot: $parent.isLoading">
+				<div tabindex="3" data-bind="ifnot: $parent.isLoading">
 					<ui:include src="data-table.xhtml" />
 				</div>
 			</div>

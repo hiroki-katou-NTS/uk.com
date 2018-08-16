@@ -831,4 +831,21 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		return resultList.stream().map(item -> this.toDomain(item, this.findHistoryByClosureId(companyId, 
 				item.getKclmtClosurePK().getClosureId()))).collect(Collectors.toList());
 	}
+
+	private static final String SELECT_CLOSURE_HISTORY = "SELECT c FROM KclmtClosure c "
+			+ "WHERE c.kclmtClosurePK.cid =:companyId "
+			+ "AND c.kclmtClosurePK.closureId =:closureId "
+			+ "AND c.useClass =:useClass ";
+	@Override
+	public Optional<Closure> findClosureHistory(String companyId, int closureId, int useClass) {
+		Optional<KclmtClosure> kclmtClosure = this.queryProxy().query(SELECT_CLOSURE_HISTORY, KclmtClosure.class)
+			.setParameter("companyId", companyId)
+			.setParameter("closureId", closureId)
+			.setParameter("useClass", useClass)
+			.getSingle();
+		if(kclmtClosure.isPresent()) {
+			return Optional.of(this.toDomain(kclmtClosure.get(), this.findHistoryByClosureId(companyId, closureId)));
+		}
+		return Optional.empty();
+	}
 }

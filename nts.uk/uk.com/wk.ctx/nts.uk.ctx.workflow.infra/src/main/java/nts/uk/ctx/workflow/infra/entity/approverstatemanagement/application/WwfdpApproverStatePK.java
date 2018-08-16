@@ -24,7 +24,7 @@ public class WwfdpApproverStatePK {
 	@Column(name="FRAME_ORDER")
 	public Integer frameOrder;
 	
-	@Column(name="APPROVER_ID")
+	@Column(name="APPROVER_CHILD_ID")
 	public String approverID;
 	
 }

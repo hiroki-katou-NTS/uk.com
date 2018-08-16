@@ -2,7 +2,8 @@ package nts.uk.ctx.sys.assist.app.command.mastercopy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,13 +13,12 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyDataFindDto;
-import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyDataFinder;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyTargetItem;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterDataCopyEvent;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterDataCopyEvent.MasterDataCopyEventBuilder;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopyDataCommand> {
@@ -81,51 +81,65 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		// Set interrupt flag to false to start execution
 		isInterrupted = false;
 
-		for (MasterCopyCategoryDto listData : command.getMasterDataList()) {
-			// Stop if being interrupted
-			if (isInterrupted) {
-				break;
-			}
+		MasterDataCopyEventBuilder eventBuilder = MasterDataCopyEvent.builder();
+		eventBuilder.companyId(command.getCompanyId());
+		eventBuilder.taskId("taskId");
+		
+		Map<String, Integer> categoryCopyMethod = command.getMasterDataList().stream().collect(Collectors.toMap(MasterCopyCategoryDto::getMasterCopyId, MasterCopyCategoryDto::getCopyMethod));
+		
+		List<CopyTargetItem> copyTargetList = repository
+				.findByMasterCopyIds(
+						categoryCopyMethod.keySet().stream().collect(Collectors.toList()))
+				.stream()
+				.map(item -> new CopyTargetItem(item.getMasterCopyId(),
+						item.getMasterCopyTarget().v(),
+						CopyMethod.valueOf(categoryCopyMethod.get(item.getMasterCopyId()))))
+				.collect(Collectors.toList());
+		
+		eventBuilder.copyTargetList(copyTargetList);
 
-			Optional<MasterCopyData> masterCopyData = repository.findByMasterCopyId(listData.getMasterCopyId());
-			if (!masterCopyData.isPresent()) {
-
-				ErrorContentDto errorContentDto = new ErrorContentDto();
-				errorContentDto.setCategoryName(listData.getCategoryName());
-				errorContentDto.setOrder(listData.getOrder());
-				errorContentDto.setSystemType(listData.getSystemType().toString());
-				errorContentDto.setMessage(TextResource.localize("Msg_1146"));
-
-				// Add to error list (save to DB every 5 error records)
-				if (errorList.size() >= MAX_ERROR_RECORD) {
-					errorRecordCount++;
-					setter.setData(DATA_PREFIX + errorRecordCount, dto);
-
-					// Clear the list for the new batch of error record
-					errorList.clear();
-				}
-				countError += 1;
-				errorList.add(errorContentDto);
-				setter.updateData(NUMBER_OF_ERROR, countError); // update
-																		// the
-																		// number
-																		// of
-																		// errors
-				if (errorList.size() == 1)
-					dto.setWithError(WithError.WITH_ERROR); // if there is even
-															// one error, output
-															// it
-			} else {
-
-				MasterDataCopyEvent event = new MasterDataCopyEvent(companyId, listData.getCopyMethod());
-				event.toBePublished();
-
-				countSuccess++;
-				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
-			}
-
-			// TO DO: handle copy
-		}
+//		for (MasterCopyCategoryDto listData : command.getMasterDataList()) {
+//			// Stop if being interrupted
+//			if (isInterrupted) {
+//				break;
+//			}
+//
+//			Optional<MasterCopyData> masterCopyData = repository.findByMasterCopyId(listData.getMasterCopyId());
+//			if (!masterCopyData.isPresent()) {
+//
+//				ErrorContentDto errorContentDto = new ErrorContentDto();
+//				errorContentDto.setCategoryName(listData.getCategoryName());
+//				errorContentDto.setOrder(listData.getOrder());
+//				errorContentDto.setSystemType(listData.getSystemType().toString());
+//				errorContentDto.setMessage(TextResource.localize("Msg_1146"));
+//
+//				// Add to error list (save to DB every 5 error records)
+//				if (errorList.size() >= MAX_ERROR_RECORD) {
+//					errorRecordCount++;
+//					setter.setData(DATA_PREFIX + errorRecordCount, dto);
+//
+//					// Clear the list for the new batch of error record
+//					errorList.clear();
+//				}
+//				countError += 1;
+//				errorList.add(errorContentDto);
+//				setter.updateData(NUMBER_OF_ERROR, countError); // update
+//																		// the
+//																		// number
+//																		// of
+//																		// errors
+//				if (errorList.size() == 1)
+//					dto.setWithError(WithError.WITH_ERROR); // if there is even
+//															// one error, output
+//															// it
+//			} else {
+//				countSuccess++;
+//				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+//			}
+//
+//		}
+		
+		eventBuilder.build().toBePublished();
 
 		// Send the last batch of errors if there is still records unsent
 		if (!errorList.isEmpty()) {

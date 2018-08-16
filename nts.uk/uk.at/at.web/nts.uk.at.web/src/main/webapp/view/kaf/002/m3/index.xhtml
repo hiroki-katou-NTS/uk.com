@@ -4,39 +4,40 @@
 	</div>
 	<div class="cell" id="m3-div" data-bind="let: { screenEditable: editable }">
 		<div id="m3-backgroud"></div>
-		<table id="m3-table">
-			<thead>
-				<tr>
-					<td></td>
-					<td>
-						<span class="label m3-label">#{i18n.getText('KAF002_27')}</span>
-						<button data-bind="ntsHelpButton: {image: '/view/kaf/002/m3/m3-msg.PNG', position: 'right top', enable: screenEditable }">?</button>
-					</td>
-				</tr>
-			</thead>
-			<tbody data-bind="foreach: appStampList">
-				<tr>
-					<td>
-						<div>
-							<span class="label m3-label">Demo</span>
-						</div>
-					</td>
-					<td>
-						<span class="label m3-label m3-time-detail">Demo</span>
-						<div class="cf m3-switch" data-bind="ntsSwitchButton: {
-							name: '#[KAF002_28]',
-							options: ko.observableArray([
-					            { code: 1, name: '#{i18n.getText('KAF002_36')}' },
-					            { code: 0, name: '#{i18n.getText('KAF002_37')}' }
-					        ]),
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: cancelAtr,
-							enable: screenEditable }"></div>
-					</td>
-				</tr>	
-			</tbody>
-		</table>	
-		
+		<div class="table" style="background-color: #CFF1A5;">
+			<div class="cell" style="width: 120px;"></div>
+			<div class="cell" style="width: 430px; padding-left: 20px;">
+				<span class="label m3-label">#{i18n.getText('KAF002_27')}</span>
+				<button data-bind="ntsHelpButton: {image: '/view/kaf/002/m3/m3-msg.PNG', position: 'right top', enable: screenEditable }">?</button>
+			</div>
+		</div>
+		<div class="m3-table-div">
+			<table id="m3-table">
+				<tbody data-bind="foreach: appStampList">
+					<tr>
+						<td>
+							<div>
+								<span class="label m3-label" data-bind="text: label"></span>
+							</div>
+						</td>
+						<td>
+							<span class="label m3-label m3-time-detail-1" data-bind="text: startTime"></span>
+							<span class="label m3-label" style="width: 10px;">#{i18n.getText('KAF002_21')}</span>
+							<span class="label m3-label m3-time-detail-2" data-bind="text: endTime"></span>
+							<div class="cf m3-switch" data-bind="ntsSwitchButton: {
+								name: '#[KAF002_28]',
+								options: ko.observableArray([
+						            { code: 1, name: '#{i18n.getText('KAF002_36')}' },
+						            { code: 0, name: '#{i18n.getText('KAF002_37')}' }
+						        ]),
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: cancelAtr,
+								enable: screenEditable }"></div>
+						</td>
+					</tr>	
+				</tbody>
+			</table>	
+		</div>
 	</div>
 </div>

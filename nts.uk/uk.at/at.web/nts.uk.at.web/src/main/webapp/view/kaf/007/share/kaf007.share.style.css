@@ -168,3 +168,6 @@ div.form-label.broken {
 .row-width-inputTime{
 	width: 203px !important;
 }
+.bold{
+	font-weight: bold;
+}
