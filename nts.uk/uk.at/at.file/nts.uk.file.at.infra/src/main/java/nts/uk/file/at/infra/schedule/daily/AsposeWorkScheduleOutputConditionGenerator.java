@@ -836,7 +836,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
 							else {
-								personalPerformanceDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+								personalPerformanceDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 							}
 						});
 					});
@@ -1030,7 +1030,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 				}
 				else {
-					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 			});
 		});
