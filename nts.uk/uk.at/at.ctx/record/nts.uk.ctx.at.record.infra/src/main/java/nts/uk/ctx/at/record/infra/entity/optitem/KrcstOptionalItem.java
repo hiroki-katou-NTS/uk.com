@@ -55,6 +55,10 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 	@Column(name = "EMP_CONDITION_ATR")
 	private int empConditionAtr;
 
+	/** The unit of optional item. */
+	@Column(name = "UNIT_OF_OPTIONAL_ITEM")
+	private String unitOfOptionalItem;
+
 	/** The krcst calc result range. */
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),

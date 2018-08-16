@@ -11,15 +11,16 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmployeeGeneralInfoService {
-	
+
 	@Inject
 	private EmployeeGeneralInfoAdapter employeeGeneralInfoAdapter;
 
-	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> emloyeeIds, DatePeriod periodTime){
-		
-		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoAdapter.getEmployeeGeneralInfo(emloyeeIds, periodTime,true,true,true,true,true);
-		
+	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> emloyeeIds, DatePeriod periodTime) {
+
+		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoAdapter
+				.getEmployeeGeneralInfo(emloyeeIds, periodTime, true, true, true, true, false);
+
 		return employeeGeneralInfoImport;
 	}
-	
+
 }

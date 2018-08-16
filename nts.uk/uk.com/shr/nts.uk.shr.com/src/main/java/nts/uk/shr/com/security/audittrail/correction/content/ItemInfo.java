@@ -33,6 +33,13 @@ public class ItemInfo {
 		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueAfter, attr));
 	}
 	
+	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore,
+			String viewValueBefore, Object valueAfter, String viewValueAfter) {
+		return new ItemInfo(id, name,
+				Value.create(valueBefore, viewValueBefore == null ? attr.format(valueBefore) : viewValueBefore, attr),
+				Value.create(valueAfter, viewValueAfter == null ? attr.format(valueAfter) : viewValueAfter, attr));
+	}
+	
 	/**
 	 * create to read data only, not to write
 	 * @param id
@@ -60,6 +67,10 @@ public class ItemInfo {
 		
 		static Value create(Object value, DataValueAttribute attr) {
 			return new Value(new RawValue(Type.defaultOf(attr), value), attr.format(value));
+		}
+		
+		static Value create(Object value, String viewValue, DataValueAttribute attr) {
+			return new Value(new RawValue(Type.defaultOf(attr), value), viewValue);
 		}
 		
 		/**
@@ -115,10 +126,21 @@ public class ItemInfo {
 					return DECIMAL;
 				case MONEY:
 				case TIME:
+				case CLOCK:
 					return INTEGER;
+				case DATE:
+					return DATE;
 				default:
 					return STRING;
 				}
+			}
+		}
+		
+		public String toString() {
+			if(this.value == null) {
+				return null;
+			}else {
+				return this.value.toString();
 			}
 		}
 	}

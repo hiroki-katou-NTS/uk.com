@@ -136,7 +136,7 @@
 								</div>
 								<div class="valign-center control-group">
 									<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
-									<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
+									<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: isAtdItemColor">#{i18n.getText('KDW007_12')}</button>
 									<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span>
 								</div>
 								<div class="valign-center control-group">
@@ -173,7 +173,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByEmployment }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseEmployment, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_51')}</button>
+									    	<button data-bind="click: chooseEmployment, enable: true">#{i18n.getText('KDW007_51')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstEmployment" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_51]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstEmployment, 
@@ -187,7 +187,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByClassification }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseClassification, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_53')}</button>
+									    	<button data-bind="click: chooseClassification, enable: true">#{i18n.getText('KDW007_53')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstClassification" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_53]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstClassification, 
@@ -201,7 +201,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByJobTitle }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseJobTitle, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_54')}</button>
+									    	<button data-bind="click: chooseJobTitle, enable: true">#{i18n.getText('KDW007_54')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstJobTitle" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_54]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstJobTitle, 
@@ -215,7 +215,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByBusinessType }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseBusinessType, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_58')}</button>
+									    	<button data-bind="click: chooseBusinessType, enable: true">#{i18n.getText('KDW007_58')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstBusinessType" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_58]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstBusinessType, 

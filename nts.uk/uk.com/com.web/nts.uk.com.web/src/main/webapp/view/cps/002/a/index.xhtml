@@ -37,6 +37,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
+				<span class="licenseCheck" data-bind="text:licenseCheck,css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden' } "></span>
 				<button data-bind="click:openGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
 			</div>
 
@@ -286,7 +287,7 @@
 															selected: initSettingSelectedCode , 
 															selectedKey: 'itemCode', 
 															fields: ['itemName'],
-															placeHolder:'#{i18n.getText('CPS002_41')}'
+															placeHolder:'#{i18n.getText('CPS002_42')}'
 															}" />
 
 									</div>

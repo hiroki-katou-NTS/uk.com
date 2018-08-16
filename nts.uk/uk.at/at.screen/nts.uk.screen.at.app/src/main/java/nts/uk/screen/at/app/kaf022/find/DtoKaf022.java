@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayins
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstructionDto;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.remandsetting.ContentOfRemandMailDto;
 import nts.uk.ctx.at.request.app.find.setting.company.otrestappcommon.OvertimeRestAppCommonSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
@@ -67,4 +68,6 @@ public class DtoKaf022 {
 	public ContentOfRemandMailDto contentMail;
 	// A16_17
 	public UrlEmbeddedDto url;
+	//A8_36 -> A8_43
+	public List<DisplayReasonDto> listDplReason;
 }

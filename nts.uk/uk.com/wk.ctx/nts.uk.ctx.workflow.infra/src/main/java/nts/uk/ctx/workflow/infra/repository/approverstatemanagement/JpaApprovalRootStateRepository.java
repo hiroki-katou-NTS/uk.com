@@ -819,7 +819,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("employeeID", employeeID)
 				.getList(x -> new WwfdpApprovalRootDayPK(x.wwfdpApprovalRootDayPK.rootStateID));
 		this.commandProxy().removeAll(WwfdtApprovalRootDay.class, rootDayKeyList);
-		this.getEntityManager().flush();
 	}
 
 	@Override

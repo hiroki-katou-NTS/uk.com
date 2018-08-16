@@ -110,6 +110,11 @@ public class HolidayShipmentDto {
 	private String wkTimeCD;
 	
 	/**
+	 * 就業時間帯
+	 */
+	private String wkTimeName;
+	
+	/**
 	 * 承認処理時に自動でメールを送信する
 	 */
 	private boolean sendMailWhenApprovalFlg;

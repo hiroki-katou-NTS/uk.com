@@ -25,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
@@ -35,9 +33,6 @@ import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcess
 
 @Stateless
 public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorrectCommand> {
-
-	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 	
 	@Inject
 	private CompareItemValue compareItemValue;
@@ -57,37 +52,12 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		}
 		
 		// Get Name of attendanceItemId
-		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attItemIds)
-				.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-						x -> x.getAttendanceItemName()));
-		
 		List<ScheduleItem> itemIdNameList = this.scheduleItemManagementRepository.findAllScheduleItem(companyId);
 		
 		List<ScheduleItem> newItemIdNameList = itemIdNameList.stream().filter(item -> attItemIds.contains(Integer.valueOf(item.getScheduleItemId()))).collect(Collectors.toList());
 		
 		Map<String, String> itemNameIdMap  = newItemIdNameList.stream().collect(Collectors.toMap(ScheduleItem :: getScheduleItemId, x -> x.getScheduleItemName()));
 		
-		
-//		// get data
-//		// Map< Pair<employeeId, date> , List<ScheLogDto>>
-//		Map<Pair<String, GeneralDate>, List<ScheLogDto>> scheLog = context.getCommand().getScheLog();
-//		
-//		scheLog.forEach((key, value) -> {
-//			// set employeeId and date
-//			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
-//			for(ScheLogDto scheLogDto : value){
-//				ScheduleCorrectedItem scheduleCorrectedItem = new ScheduleCorrectedItem(scheLogDto.getAttendanceItemName(),
-//						scheLogDto.getAttendanceItemId(),
-//						scheLogDto.getBefore(),
-//						scheLogDto.getAfter(), 
-//						scheLogDto.getValueType(), 
-//						null,
-//						EnumAdaptor.valueOf(scheLogDto.getAttr(), CorrectionAttr.class));
-//				// set list ScheduleCorrectedItem
-//				daiTarget.getCorrectedItems().add(scheduleCorrectedItem);
-//			}
-//			targets.add(daiTarget);
-//		});
 		val correctionLogParameter = new BasicScheduleCorrectionParameter(
 				mapToScheduleCorrection(convertToItemValue(context.getCommand().getDomainNew()),
 						convertToItemValue(context.getCommand().getDomainOld()), itemNameIdMap));

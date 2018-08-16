@@ -139,13 +139,18 @@ module nts.uk.at.view.kmf002.b {
             
             public saveWorkpalce(): void {
                 let _self = this;
+                
                 if (!nts.uk.ui.errors.hasError()) {
+                    _self.enableSave(false);
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), 
                                     _self.commonTableMonthDaySet().arrMonth(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
                     _self.getDataFromService();
-                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});                    
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});
+                                             
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
                 });    
                 }  
             }
@@ -167,6 +172,10 @@ module nts.uk.at.view.kmf002.b {
             
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.dataDefault();
+                    return;
+                }
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth()).done(function(data: any, data2: any) {

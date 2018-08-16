@@ -67,6 +67,9 @@ public class CompareRange<V> extends CheckedCondition {
     }
 
     public boolean checkRange(Integer targetV, Function<V, Integer> value) {
+    	if(targetV == null){
+    		return false;
+    	}
         Integer startV = value.apply(startValue);
         Integer endV = value.apply(endValue);
         switch (this.compareOperator) {

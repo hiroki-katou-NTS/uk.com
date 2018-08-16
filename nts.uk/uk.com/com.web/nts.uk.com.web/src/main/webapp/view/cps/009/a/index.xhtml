@@ -149,7 +149,7 @@
 
 							<div id='sub-left'>
 								<!-- A3_005: list カテゴリ一覧 -->
-								<table id="single-list"
+								<table id="item_grid"
 									data-bind="ntsGridList: {	
 									dataSource: currentCategory().ctgList ,
 									primaryKey: 'perInfoCtgId' ,
@@ -230,7 +230,7 @@
 																	data-bind="ntsTextEditor: {
 																	name:  itemName ,
 																	value: stringValue , 
-																	constraint: constraint,
+																	constraint: itemCode,
 																	required: true},
 																	attr: { NameID: itemName }" />
 															</com:ko-if>
@@ -252,7 +252,7 @@
 																	data-bind="ntsTextEditor: {
 																	name:  itemName ,
 																	value: stringValue , 
-																	constraint: constraint},
+																	constraint: itemCode},
 																	attr: { NameID: itemName }" />
 															</com:ko-if>
 	
@@ -427,7 +427,7 @@
 																	<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 																		name: $parent.itemName,
 																 		value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
@@ -443,7 +443,7 @@
 																	<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
 																	 		name: $parent.itemName,
 																	 		value: value,
-																			constraint: constraint,
+																			constraint: $parent.itemCode,
 																			option: option,
 																			enable: enable,
 																			readonly: readonly,
@@ -460,7 +460,7 @@
 																	<input class="sub-input-units save-error  " id="number" data-bind="ntsNumberEditor: { 
 				 														name: $parent.itemName,
 				 														value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
@@ -474,7 +474,7 @@
 																	<input class="sub-input-units save-error " id="number" data-bind="ntsNumberEditor: { 
 																		name: $parent.itemName,
 																		value: value,
-																		constraint: constraint,
+																		constraint: $parent.itemCode,
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,

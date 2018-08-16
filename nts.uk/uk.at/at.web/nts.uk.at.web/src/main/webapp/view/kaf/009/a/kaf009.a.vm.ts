@@ -314,6 +314,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         registry() {
             let self = this;
             nts.uk.ui.block.invisible();
+            if(self.prePostDisp()){
+                $('#pre_post').trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){

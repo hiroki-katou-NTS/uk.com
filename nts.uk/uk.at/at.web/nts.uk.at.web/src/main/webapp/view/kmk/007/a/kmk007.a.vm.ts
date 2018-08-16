@@ -403,7 +403,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError(error);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });

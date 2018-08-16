@@ -95,12 +95,15 @@ public class SpecialHolidayEventFinder {
 
 	private void addNursingNos(String companyId, List<Integer> hasSettingNos) {
 		List<NursingLeaveSetting> nurSettings = this.nurRepo.findByCompanyId(companyId);
-		nurSettings.forEach(x -> {
-			x.getSpecialHolidayFrame().ifPresent(value -> {
-				hasSettingNos.add(value);
+		if (nurSettings != null) {
+			nurSettings.forEach(x -> {
+				if (x.getSpecialHolidayFrame() != null) {
+					x.getSpecialHolidayFrame().ifPresent(value -> {
+						hasSettingNos.add(value);
+					});
+				}
 			});
-		});
-
+		}
 	}
 
 	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,

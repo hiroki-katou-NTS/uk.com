@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 
@@ -17,7 +18,8 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 @AllArgsConstructor
 public class LogBasicInfoDto {
 
-
+	/** parentKey */
+	private String parentKey;
 	/** operationId */
 	private String operationId;
 	/** userName login */
@@ -53,11 +55,12 @@ public class LogBasicInfoDto {
 	//log login
 	private String methodName;
 	private String loginStatus;
+	
 	public static LogBasicInfoDto fromDomain(LogBasicInformation domain) {
-		return new LogBasicInfoDto(
+		String parentKey = IdentifierUtil.randomUniqueId();
+		return new LogBasicInfoDto(parentKey,
 				domain.getOperationId(),domain.getUserInfo().getUserName(),null,null,null,null,null,null,
-				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:ss"),null,null,null,null,null,null,null,null);
+				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:mm:ss"),null,null,null,null,null,null,null,null);
 	}
-
 
 }

@@ -9,6 +9,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
     export class ScreenModel {
         screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+        isAtdItemColor: KnockoutObservable<boolean> = ko.observable(true);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             //fix bug 98671
             //{ code: 0, name: "全てを表示する" },
@@ -91,6 +92,23 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 self.screenMode(ScreenMode.Monthly);
             }
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
+            self.showTypeAtr.subscribe((val) => {
+                if (self.lstErrorAlarm().length > 0) {
+                    //fix bug 98671
+                    //                    if (val == 0) {
+                    //                        self.lstFilteredData(self.lstErrorAlarm());
+                    //                    } else 
+                    if (val == 0) {
+                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 0; }));
+                    } else if (val == 1) {
+                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 1; }));
+                        if (self.screenMode() == ScreenMode.Daily) {
+                            self.updateTab();
+                        }
+                    }
+                }
+                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
+            });
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem: ErrorAlarmWorkRecord = _.find(self.lstErrorAlarm(), (item) => {
@@ -102,28 +120,29 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         if (self.screenMode() == ScreenMode.Daily && self.showTypeAtr() == 1) {
                             self.updateTab();
                         }
+                        if (self.screenMode() == ScreenMode.Daily && self.showTypeAtr() == 0) {
+                            self.newTab();
+                        }
+                        if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {
+                            self.isAtdItemColor(false);
+                        }
                     }
-                } else {
+
                     if (self.screenMode() == ScreenMode.Daily && self.isNewMode() == true) {
                         self.newTab();
                     }
                 }
+            });
 
-            });
-            self.showTypeAtr.subscribe((val) => {
-                if (self.lstErrorAlarm().length > 0) {
-                    //fix bug 98671
-                    //                    if (val == 0) {
-                    //                        self.lstFilteredData(self.lstErrorAlarm());
-                    //                    } else 
-                    if (val == 0) {
-                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 0; }));
-                    } else if (val == 1) {
-                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 1; }));
-                    }
+            self.selectedErrorAlarm().typeAtr.subscribe((val) => {
+                if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {
+                    self.isAtdItemColor(false);
+                } else {
+                    self.isAtdItemColor(true);
+
                 }
-                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
             });
+
             self.screenMode.subscribe((val) => {
                 if (val == ScreenMode.Monthly) {
                     self.tabs()[0].visible(false);
@@ -132,11 +151,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.tabs()[4].visible(false);
 
                 } else if (val == ScreenMode.Daily) {
-                    if (self.isNewMode() == false && self.showTypeAtr() == 1) {
-                        self.updateTab();
-                    } else {
-                        self.newTab();
-                    }
+                    self.tabs()[0].visible(true);
+                    self.tabs()[1].visible(true);
+                    self.tabs()[2].visible(true);
+                    self.tabs()[4].visible(true);
 
                 }
                 self.tabs.valueHasMutated();
@@ -206,6 +224,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                $('#pg-name').text('KDW007A ' + nts.uk.resource.getText("KDW007_41"));
                 self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
@@ -336,6 +355,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.tabs()[2].visible(true);
             self.tabs()[3].visible(true);
             self.tabs()[4].visible(true);
+            self.isAtdItemColor(true);
         }
 
         updateTab() {
@@ -343,6 +363,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
+            if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr == 2) {
+                self.isAtdItemColor(false);
+            }
         }
 
         update() {
@@ -842,7 +865,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
             });
             this.lstClassification.subscribe((lstClss) => {
-                let displayText = "";   
+                let displayText = "";
                 if (lstClss && lstClss.length > 0) {
                     let lstItem = [];
                     let dfd = $.Deferred();
