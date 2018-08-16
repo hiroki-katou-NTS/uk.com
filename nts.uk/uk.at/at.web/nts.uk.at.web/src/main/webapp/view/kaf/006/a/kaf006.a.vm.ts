@@ -379,6 +379,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 } else {
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -422,6 +427,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 } else {
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -443,7 +453,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             });
             return dfd.promise();
         }
-        // change by workType
+        /**
+         * when change by workType A5_2
+         */
         findChangeWorkType(value: any) {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
@@ -504,6 +516,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.totalEmployee(nts.uk.resource.getText("KAF006_65",total.toString()));
             }
         }
+        /**
+         * when click button A1_1 - 登録
+         */
         registerClick() {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
