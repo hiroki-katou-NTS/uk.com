@@ -413,6 +413,7 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(userSetting));
                         self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
+                    }).always(() => {
                         // show content
                         $('#contents-area').css('visibility', 'visible');
                     });
