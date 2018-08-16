@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +20,13 @@ public class TripRequestSet extends AggregateRoot{
 	// 会社ID
 	private String companyId;
 	// コメント１
-	private Comment comment1;
+	private Optional<Comment> comment1;
 	// 上部コメント.色
 	private FontColor color1;
 	// 上部コメント.太字
 	private Weight weight1;
 	// コメント2
-	private Comment comment2;
+	private Optional<Comment> comment2;
 	// 下部コメント.色
 	private FontColor color2;
 	// 下部コメント.太字
@@ -44,9 +46,9 @@ public class TripRequestSet extends AggregateRoot{
 			String color1, int weight1, String comment2, String color2, int weight2, int workType, 
 			int workChange, int workChangeTime, int contractCheck, int lateLeave){
 		return new TripRequestSet(companyId, 
-				StringUtil.isNullOrEmpty(comment1, true) ? null : new Comment(comment1), 
+				comment1 == null ? Optional.empty() : Optional.of(new Comment(comment1)), 
 				new FontColor(color1), EnumAdaptor.valueOf(weight1, Weight.class), 
-				StringUtil.isNullOrEmpty(comment2, true) ? null : new Comment(comment2), 
+				comment2 == null ? Optional.empty() : Optional.of(new Comment(comment2)), 
 				new FontColor(color2),
 				EnumAdaptor.valueOf(weight2, Weight.class), 
 				EnumAdaptor.valueOf(workType, WorkTypeBusinessTrip.class),
