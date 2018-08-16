@@ -120,6 +120,7 @@ module nts.uk.com.view.cmm050.a {
                 
                 //handle when value have been changed
                 _self.authMethod.subscribe(function(authMethodChanged){
+                     errors.clearAll();
                     _self.fillUI(authMethodChanged);
                 });
                 
