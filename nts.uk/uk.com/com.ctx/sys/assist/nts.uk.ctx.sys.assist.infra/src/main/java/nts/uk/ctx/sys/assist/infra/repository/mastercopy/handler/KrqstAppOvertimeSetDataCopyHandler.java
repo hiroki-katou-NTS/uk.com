@@ -1,18 +1,26 @@
-package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
+package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrqstWithDrawalAppSetDataCopyHandler.
+ * The Class KrqstAppOvertimeSetDataCopyHandler.
  */
-public class KrqstWithDrawalAppSetDataCopyHandler implements DataCopyHandler {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class KrqstAppOvertimeSetDataCopyHandler implements DataCopyHandler {
 	
 	/** The entity manager. */
 	private EntityManager entityManager;
@@ -24,18 +32,18 @@ public class KrqstWithDrawalAppSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_WITHDRAWAL_APP_SET(CID, PRE_REFLECT_SET, BREAK_TIME, WORK_TIME, CHECK_NO_HD_TIME, TYPES_OF_PAID_LEAVE, WORK_CHANGE_SET, "
-			+ "TIME_INITIAL_DISP, CHECK_OUTSIDE_LEGAL, PREFIX_LEAVE_PERMISSION, "
-			+ "UNIT_TIME_HD, APP_SIMULTANEOUS_APP_SET, BOUNCE_SEGMENT_ATR, DIRECT_DIVISION_ATR, REST_TIME, OVERRIDE_SET, CALCULATION_STAMP_MISS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private String INSERT_QUERY = "INSERT INTO KRQST_APP_OVERTIME_SET(CID, FLEX_EXCESS_USE_SET_ATR, PRE_TYPE_SIFT_REFLECT_FLG, PRE_OVERTIME_REFLECT_FLG, POST_TYPESIFT_REFLECT_FLG"
+			+ ", POST_BREAK_REFLECT_FLG, POST_WORKTIME_REFLECT_FLG, CALENDAR_DISP_ATR, EARLY_OVER_TIME_USE_ATR, "
+			+ "INSTRUCT_EXCESS_OT_ATR, PRIORITY_STAMP_SET_ATR, UNIT_ASSIGNMENT_OVERTIME, NORMAL_OVERTIME_USE_ATR, DATTENDANCE_ID, USE_OT_WORK, REST_ATR, WORKTYPE_PERMISSION_FLAG) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PRE_REFLECT_SET, BREAK_TIME, WORK_TIME, CHECK_NO_HD_TIME, TYPES_OF_PAID_LEAVE, WORK_CHANGE_SET, "
-			+ "TIME_INITIAL_DISP, CHECK_OUTSIDE_LEGAL, PREFIX_LEAVE_PERMISSION, "
-			+ "UNIT_TIME_HD, APP_SIMULTANEOUS_APP_SET, BOUNCE_SEGMENT_ATR, DIRECT_DIVISION_ATR, REST_TIME, OVERRIDE_SET, CALCULATION_STAMP_MISS "
-			+ "FROM KRQST_WITHDRAWAL_APP_SET WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, FLEX_EXCESS_USE_SET_ATR, PRE_TYPE_SIFT_REFLECT_FLG, PRE_OVERTIME_REFLECT_FLG, POST_TYPESIFT_REFLECT_FLG"
+			+ ", POST_BREAK_REFLECT_FLG, POST_WORKTIME_REFLECT_FLG, CALENDAR_DISP_ATR, EARLY_OVER_TIME_USE_ATR, "
+			+ "INSTRUCT_EXCESS_OT_ATR, PRIORITY_STAMP_SET_ATR, UNIT_ASSIGNMENT_OVERTIME, NORMAL_OVERTIME_USE_ATR, DATTENDANCE_ID, USE_OT_WORK, REST_ATR, WORKTYPE_PERMISSION_FLAG "
+			+ "FROM KRQST_APP_OVERTIME_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_WITHDRAWAL_APP_SET WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APP_OVERTIME_SET WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
@@ -91,13 +99,13 @@ public class KrqstWithDrawalAppSetDataCopyHandler implements DataCopyHandler {
 	}
 
 	/**
-	 * Instantiates a new krqst with drawal app set data copy handler.
+	 * Instantiates a new krqst app overtime set data copy handler.
 	 *
 	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqstWithDrawalAppSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+	public KrqstAppOvertimeSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
 		super();
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;

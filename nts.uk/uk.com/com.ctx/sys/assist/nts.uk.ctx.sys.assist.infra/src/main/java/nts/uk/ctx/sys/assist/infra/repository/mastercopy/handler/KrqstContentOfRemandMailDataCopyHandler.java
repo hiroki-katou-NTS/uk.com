@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
+package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -9,20 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
-
 /**
- * The Class KrqstAppWorkChangeSetDataCopyHandler.
+ * The Class KrqstContentOfRemandMailDataCopyHandler.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
-
+public class KrqstContentOfRemandMailDataCopyHandler implements DataCopyHandler {
+	
 	/** The entity manager. */
 	private EntityManager entityManager;
 	
@@ -33,13 +32,13 @@ public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_APP_WORK_CHANGE_SET(CID, EXCLUDE_HOLIDAY, WORK_CHANGE_TIME_ATR, DISPLAY_RESULT_ATR, INIT_DISPLAY_WORKTIME, COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private String INSERT_QUERY = "INSERT INTO KRQST_REMAND_MAIL(CID, MAIL_TITLE, MAIL_BODY) VALUES (?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, EXCLUDE_HOLIDAY, WORK_CHANGE_TIME_ATR, DISPLAY_RESULT_ATR, INIT_DISPLAY_WORKTIME, COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2 FROM KRQST_APP_WORK_CHANGE_SET WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, MAIL_TITLE, MAIL_BODY FROM KRQST_REMAND_MAIL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APP_WORK_CHANGE_SET WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_REMAND_MAIL WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
@@ -68,14 +67,6 @@ public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
 					insertQuery.setParameter(i * 11 + 1, this.companyId);
 					insertQuery.setParameter(i * 11 + 2, dataArr[1]);
 					insertQuery.setParameter(i * 11 + 3, dataArr[2]);
-					insertQuery.setParameter(i * 11 + 4, dataArr[3]);
-					insertQuery.setParameter(i * 11 + 5, dataArr[4]);
-					insertQuery.setParameter(i * 11 + 6, dataArr[5]);
-					insertQuery.setParameter(i * 11 + 7, dataArr[6]);
-					insertQuery.setParameter(i * 11 + 8, dataArr[7]);
-					insertQuery.setParameter(i * 11 + 9, dataArr[8]);
-					insertQuery.setParameter(i * 11 + 10, dataArr[9]);
-					insertQuery.setParameter(i * 11 + 11, dataArr[10]);
 				}
 				
 				// Run insert query
@@ -85,16 +76,18 @@ public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
 			default: 
 				break;
 		}
+
 	}
 
 	/**
-	 * Instantiates a new krqst app work change set data copy handler.
+	 * Instantiates a new krqst content of remand mail data copy handler.
 	 *
 	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqstAppWorkChangeSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+	public KrqstContentOfRemandMailDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod,
+			String companyId) {
 		super();
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;

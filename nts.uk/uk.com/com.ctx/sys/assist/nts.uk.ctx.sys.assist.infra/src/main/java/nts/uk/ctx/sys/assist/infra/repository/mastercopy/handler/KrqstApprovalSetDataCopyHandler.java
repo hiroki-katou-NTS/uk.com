@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
+package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -9,19 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrqstLateEarlyRequestDataCopyHandler.
+ * The Class KrqstApprovalSetDataCopyHandler.
  */
+// KRQST_APPROVAL_SET execute master copy
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstLateEarlyRequestDataCopyHandler implements DataCopyHandler {
-	
+public class KrqstApprovalSetDataCopyHandler implements DataCopyHandler{
 	/** The entity manager. */
 	private EntityManager entityManager;
 	
@@ -32,14 +32,17 @@ public class KrqstLateEarlyRequestDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_LATE_EARLY_REQUESET(CID, SHOW_RESULT) VALUES (?, ?);";
+	private String INSERT_QUERY = "INSERT INTO KRQST_APPROVAL_SET(CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
+			+ "HD_PERFORM_ATR, MSG_EXCEEDED_ATR, WARNING_DATE_DISP_ATR, SCHEDULE_CONFIRM_ATR, ACHIEVEMENT_CONFIRM_ATR) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, SHOW_RESULT FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
+			+ "HD_PERFORM_ATR, MSG_EXCEEDED_ATR, WARNING_DATE_DISP_ATR, SCHEDULE_CONFIRM_ATR, ACHIEVEMENT_CONFIRM_ATR "
+			+ "FROM KRQST_APPROVAL_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
-	
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APPROVAL_SET WHERE CID = ?";
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
 	 */
@@ -64,8 +67,17 @@ public class KrqstLateEarlyRequestDataCopyHandler implements DataCopyHandler {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
 					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * 2 + 1, this.companyId);
-					insertQuery.setParameter(i * 2 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 11 + 1, this.companyId);
+					insertQuery.setParameter(i * 11 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 11 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 11 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 11 + 5, dataArr[4]);
+					insertQuery.setParameter(i * 11 + 6, dataArr[5]);
+					insertQuery.setParameter(i * 11 + 7, dataArr[6]);
+					insertQuery.setParameter(i * 11 + 8, dataArr[7]);
+					insertQuery.setParameter(i * 11 + 9, dataArr[8]);
+					insertQuery.setParameter(i * 11 + 10, dataArr[9]);
+					insertQuery.setParameter(i * 11 + 11, dataArr[10]);
 				}
 				
 				// Run insert query
@@ -79,13 +91,13 @@ public class KrqstLateEarlyRequestDataCopyHandler implements DataCopyHandler {
 	}
 
 	/**
-	 * Instantiates a new krqst late early request data copy handler.
+	 * Instantiates a new krqst approval set data copy handler.
 	 *
 	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqstLateEarlyRequestDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+	public KrqstApprovalSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
 		super();
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;

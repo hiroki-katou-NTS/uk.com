@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.mastercopy.handler;
+package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
