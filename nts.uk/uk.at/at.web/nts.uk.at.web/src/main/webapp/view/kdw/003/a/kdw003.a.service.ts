@@ -13,7 +13,8 @@ module nts.uk.at.view.kdw003.a.service {
         loadRow: "screen/at/correctionofdailyperformance/loadRow",
         getNameMonthlyAttItem: "screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
         searchEmployee: 'screen/at/correctionofdailyperformance/get-info',
-        calcTime: 'screen/at/correctionofdailyperformance/calcTime'
+        calcTime: 'screen/at/correctionofdailyperformance/calcTime',
+        calculation: 'screen/at/correctionofdailyperformance/calculation'
     }
 
     export function startScreen(param) {
@@ -71,4 +72,9 @@ module nts.uk.at.view.kdw003.a.service {
     export function calcTime(param: any) {
         return nts.uk.request.ajax(paths.calcTime, param);
     }
+    
+    export function calculation(param: any) {
+        return nts.uk.request.ajax(paths.calculation, param);
+    }
+    
 }
