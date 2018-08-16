@@ -52,6 +52,7 @@ module nts.uk.at.view.kmk008.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.errors.clearAll();
                 self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
                 self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
