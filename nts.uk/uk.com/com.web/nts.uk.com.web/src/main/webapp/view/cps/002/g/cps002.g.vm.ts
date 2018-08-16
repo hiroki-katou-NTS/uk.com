@@ -31,8 +31,8 @@ module cps002.g.vm {
 
         ]);
 
-        employeeCodeType2: KnockoutObservable<number> = ko.observable(2);
-        cardNumberType2: KnockoutObservable<number> = ko.observable(5);
+        employeeCodeType2: KnockoutObservable<number>;
+        cardNumberType2: KnockoutObservable<number>;
         currentUserSetting: KnockoutObservable<UserSetting> = ko.observable(new UserSetting());
         requiredCode: KnockoutObservable<boolean> = ko.observable(false);
         requiredCard: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,7 +40,8 @@ module cps002.g.vm {
 
         constructor() {
             var self = this;
-            self.employeeCodeType2 = ko.observable();
+            self.employeeCodeType2 = ko.observable(2);
+            self.cardNumberType2 = ko.observable(3);
             self.employeeCodeType2.subscribe((data) => {
                 if (data == 1) {
                     self.requiredCode(true);
@@ -50,7 +51,6 @@ module cps002.g.vm {
                     $('#employeeCode').ntsError('clear');
                 }
             });
-            
             self.cardNumberType2.subscribe((data) => {
                 if (data == 1) {
                     self.requiredCard(true);
@@ -107,7 +107,7 @@ module cps002.g.vm {
         recentRegistrationType: KnockoutObservable<number> = ko.observable(1);
         employeeCodeType: KnockoutObservable<number> = ko.observable(2);
         employeeCodeLetter: KnockoutObservable<string> = ko.observable("");
-        cardNumberType: KnockoutObservable<number> = ko.observable(5);
+        cardNumberType: KnockoutObservable<number> = ko.observable(3);
         cardNumberLetter: KnockoutObservable<string> = ko.observable("");
         constructor(param?: IUserSetting) {
             if (param) {
