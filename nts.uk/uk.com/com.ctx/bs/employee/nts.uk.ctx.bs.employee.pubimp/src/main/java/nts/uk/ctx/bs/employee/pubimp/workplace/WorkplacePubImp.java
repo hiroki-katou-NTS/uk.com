@@ -484,6 +484,9 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		Optional<WorkplaceConfigInfo> wkpConfigInfo = workplaceConfigInfoRepo.findAllByParentWkpId(companyId, baseDate,
 				workplaceId);
 
+		if (!wkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
 		List<WorkplaceHierarchy> listWkpHierachy = wkpConfigInfo.get().getLstWkpHierarchy();
 
 		return listWkpHierachy.stream().map(wkpHierachy -> wkpHierachy.getWorkplaceId()).collect(Collectors.toList());
