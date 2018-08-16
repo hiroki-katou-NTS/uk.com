@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonth
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -38,6 +39,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -81,6 +84,9 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private ExtraResultMonthlyFunAdapter extraResultMonthly;
+	
+	@Inject
+	private MultiMonthFucAdapter multiMonthCond;
 
 	@Inject
 	private IAgreeCondOtRepository condOtRep;
@@ -122,6 +128,10 @@ public class AlarmCheckConditionByCategoryFinder {
 		List<FixedExtraMonFunDto> listFixedExtraMonFun = new ArrayList<>();
 		List<ExtraResultMonthlyDomainEventDto> arbExtraCon = new ArrayList<>();
 		List<String> listEralCheckIDOld = new ArrayList<>();
+		// multiple month
+		List<MulMonCheckCondDomainEventDto> mulMonCheckCondDomainEventDtos = new ArrayList<>();
+		List<String> listEralCheckMulMonIDOld = new ArrayList<>();
+		
 		// AgreeConditionErrorFinder
 		List<AgreeConditionError> listConError = errorRep.findAll(domain.getCode().v(), domain.getCategory().value);
 		List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
@@ -184,6 +194,15 @@ public class AlarmCheckConditionByCategoryFinder {
 				}
 			} // end for
 		}
+		
+		
+		if (domain.getCategory() == AlarmCategory.MULTIPLE_MONTH && domain.getExtractionCondition() != null) {
+			MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
+
+//			get arbExtraCon
+			mulMonCheckCondDomainEventDtos = multiMonthCond.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
+			listEralCheckIDOld = mulMonAlarmCond.getErrorAlarmCondIds();
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value,
 				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(), domain.getExtractTargetCondition().isFilterByClassification(), domain.getExtractTargetCondition().isFilterByJobTitle(),
@@ -191,10 +210,11 @@ public class AlarmCheckConditionByCategoryFinder {
 						domain.getExtractTargetCondition().getLstJobTitleId(), domain.getExtractTargetCondition().getLstBusinessTypeCode()),
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(), dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(), lstWorkRecordExtraCon, listFixedConditionWkRecord),
-				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon,listEralCheckIDOld), new AlarmChkCondAgree36Dto(listCondError, listCondOt));
+				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon,listEralCheckIDOld), new AlarmChkCondAgree36Dto(listCondError, listCondOt), 
+				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos,listEralCheckMulMonIDOld));
 	}
 
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
-		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value, null, null, 0, null, null, null);
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value, null, null, 0, null, null, null, null);
 	}
 }

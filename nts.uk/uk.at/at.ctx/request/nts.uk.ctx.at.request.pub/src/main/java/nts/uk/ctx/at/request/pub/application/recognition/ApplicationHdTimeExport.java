@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.pub.application.recognition;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class ApplicationHdTimeExport {
 	/**
 	 * 年月日
@@ -11,7 +13,7 @@ public class ApplicationHdTimeExport {
 	private GeneralDate date;
 	
 	/**
-	 * total残業時間
+	 * total休出時間
 	 */
 	private int breakTime;
 }

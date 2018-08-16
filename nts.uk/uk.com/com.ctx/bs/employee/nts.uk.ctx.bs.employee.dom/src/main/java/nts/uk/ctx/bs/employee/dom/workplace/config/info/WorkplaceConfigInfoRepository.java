@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info;
@@ -114,4 +114,16 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> workplaceIds);
+	
+	/**
+	 * Find all parent by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpId the wkp id
+	 * @param isSortAscHierarchyCd the is sort asc hierarchy cd
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId,
+			GeneralDate baseDate, String wkpId, boolean isSortAscHierarchyCd);
 }

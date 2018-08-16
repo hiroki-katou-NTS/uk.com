@@ -9,7 +9,9 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -36,6 +38,12 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 期間内の休出代休残数を取得する */
 	@Inject
 	private BreakDayOffMngInPeriodQuery breakDayoffMng;
+	/** 出勤率計算用日数を取得する */
+	@Inject
+	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 月別実績の編集状態 */
+	@Inject
+	private EditStateOfMonthlyPerRepository editStateRepo;
 	
 	/** 集計処理　（アルゴリズム） */
 	@Override
@@ -50,7 +58,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.repositories,
 				this.getAnnAndRsvRemNumWithinPeriod,
 				this.absenceRecruitMng,
-				this.breakDayoffMng);
+				this.breakDayoffMng,
+				this.getDaysForCalcAttdRate,
+				this.editStateRepo);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);

@@ -345,7 +345,7 @@ public class ErAlWorkRecordCheckService {
 
 	private Integer getValue(ItemValue value) {
 		if (value.value() == null) {
-			return 0;
+			return null;
 		}
 		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
 				: (Integer) value.value();

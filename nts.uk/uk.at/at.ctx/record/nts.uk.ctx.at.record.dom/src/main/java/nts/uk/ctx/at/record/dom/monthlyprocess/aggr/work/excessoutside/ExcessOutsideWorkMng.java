@@ -733,53 +733,49 @@ public class ExcessOutsideWorkMng {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// 法定労働時間　確認
-		val statutoryWorkingTimeMonth = this.settingsByDefo.getStatutoryWorkingTimeMonth();
-		
-		// 精算期間を取得する
+		// 精算期間を取得する　（当月除く過去分の期間内年月リスト）
 		val settlementPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this.settingsByDefo.getDeforAggrSet());
 		val settlementMonths = settlementPeriod.getPastSettlementYearMonths(this.yearMonth);
-		settlementMonths.add(this.yearMonth);
 		int totalStatutoryWorkingMinutes = 0;
 		int totalRecordMinutes = 0;
 		for (val settlementMonth : settlementMonths){
-			boolean isCurrentMonth = settlementMonth.equals(this.yearMonth);
 			
-			// 確認中年月の月別実績を確認する　（当月除く）
+			// 法定労働時間を取得する
+			val monAndWeekStatTimeOpt = repositories.getMonthlyStatutoryWorkingHours().getMonAndWeekStatutoryTime(
+					this.companyId, this.employmentCd, this.employeeId, this.procPeriod.end(),
+					settlementMonth, WorkingSystem.VARIABLE_WORKING_TIME_WORK);
+			if (!monAndWeekStatTimeOpt.isPresent()) continue;
+			int statutoryWorkingTimeMonth = monAndWeekStatTimeOpt.get().getMonthlyEstimateTime().v();
+			
+			// 確認中年月の月別実績を確認する
 			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
-			if (!isCurrentMonth){
-				attendanceTimes = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
-						this.employeeId, settlementMonth);
-			}
+			attendanceTimes = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
+					this.employeeId, settlementMonth);
 			
 			// 取得した法令労働時間を法定労働時間累計に加算する
-			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth.v();
+			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth;
 			
-			// 当月以外の過去月の時間を元に実績累計に加算する
-			if (!isCurrentMonth){
+			// 取得した法定労働時間を確認する
+			if (statutoryWorkingTimeMonth <= 0){
 				
-				// 取得した法定労働時間を確認する
-				if (statutoryWorkingTimeMonth.lessThanOrEqualTo(0)){
-					
-					// 就業時間＋変形期間繰越時間を実績累計に加算する
-					for (val attendanceTime : attendanceTimes){
-						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-						val workTime = monthlyCalculation.getAggregateTime().getWorkTime();
-						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
-						val irgPeriodCryfwdMinutes = irregTime.getIrregularPeriodCarryforwardTime().v();
-						totalRecordMinutes += workTime.getWorkTime().v();
-						if (irgPeriodCryfwdMinutes > 0) totalRecordMinutes += irgPeriodCryfwdMinutes;
-					}
+				// 就業時間＋変形期間繰越時間を実績累計に加算する
+				for (val attendanceTime : attendanceTimes){
+					val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+					val workTime = monthlyCalculation.getAggregateTime().getWorkTime();
+					val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
+					val irgPeriodCryfwdMinutes = irregTime.getIrregularPeriodCarryforwardTime().v();
+					totalRecordMinutes += workTime.getWorkTime().v();
+					if (irgPeriodCryfwdMinutes > 0) totalRecordMinutes += irgPeriodCryfwdMinutes;
 				}
-				else {
-					
-					// 法定労働時間＋変形期間繰越時間を実績累計に加算する
-					totalRecordMinutes += statutoryWorkingTimeMonth.v();
-					for (val attendanceTime : attendanceTimes){
-						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
-						totalRecordMinutes += irregTime.getIrregularPeriodCarryforwardTime().v();
-					}
+			}
+			else {
+				
+				// 法定労働時間＋変形期間繰越時間を実績累計に加算する
+				totalRecordMinutes += statutoryWorkingTimeMonth;
+				for (val attendanceTime : attendanceTimes){
+					val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+					val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
+					totalRecordMinutes += irregTime.getIrregularPeriodCarryforwardTime().v();
 				}
 			}
 		}

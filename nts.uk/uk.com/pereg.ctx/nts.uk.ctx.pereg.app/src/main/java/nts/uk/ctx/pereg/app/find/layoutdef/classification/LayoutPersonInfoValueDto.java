@@ -29,6 +29,9 @@ public class LayoutPersonInfoValueDto {
 	@NonNull
 	private String categoryCode;
 	
+	// categoryName 
+	private String categoryName;
+	
 	private int ctgType;
 
 	// itemDefID
@@ -108,6 +111,7 @@ public class LayoutPersonInfoValueDto {
 
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(perInfoCategory.getCategoryCode().v());
+		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
 
 		dataObject.setItemDefId(itemDef.getId());
@@ -131,12 +135,13 @@ public class LayoutPersonInfoValueDto {
 		return dataObject;
 	}
 
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef) {
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, String categoryName) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setRecordId(itemDef.getRecordId());
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
+		dataObject.setCategoryName(categoryName);
 		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());

@@ -180,6 +180,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 showAllClosure?: boolean; // 全締め表示
                 showPeriod?: boolean; // 対象期間利用
                 periodFormatYM?: boolean; // 対象期間精度
+                maxPeriodRange?: string; // 最長期間
+                showSort?: boolean; // 並び順利用
+                nameType?: number; // 氏名の種類
 
                 /** Required parameter */
                 baseDate?: string; // 基準日
@@ -210,6 +213,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 isInDialog?: boolean;
                 showOnStart?: boolean;
                 isTab2Lazy?: boolean;
+                tabindex?: number;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;

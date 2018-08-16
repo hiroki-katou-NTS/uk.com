@@ -368,7 +368,7 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
                 gridList.ntsGridList("setSelectedValue", []);
                 _.defer(() => {
@@ -754,9 +754,6 @@ module kcp.share.list {
          */
         private initSelectedValue() {
             var self = this;
-            if (!_.isEmpty(self.selectedCodes()) && self.selectType != SelectType.SELECT_ALL) {
-                return;
-            }
             switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
                     if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {
@@ -999,7 +996,7 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
-            findAllClosureItems: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
+            findAllClosureItems: 'ctx/at/shared/workrule/closure/find/currentyearmonthandused',
             findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
             findEmploymentByCodes: 'bs/employee/employment/findByCodes'
         }

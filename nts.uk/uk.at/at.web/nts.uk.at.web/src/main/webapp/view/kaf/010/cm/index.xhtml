@@ -1,12 +1,12 @@
 <div>
-	<div  data-bind="if: indicationOvertimeFlg" >
+	<div data-bind="if: screenModeNew()&amp;&amp;indicationOvertimeFlg()">
 		<div class="cf valign-center control-group"
 			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
 			style = "margin-left: -2px; background: #f8efd4;width: 778px;">
 			<!--A2_7時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF010_23')}</div>
 			<div class="pull-left">
-				<table id="fixed-table-indicate-holiday">
+				<table id="kaf010_overtimeAgreement_table">
 					<colgroup>
 						<col width="109px" />
 						<col width="109px" />
@@ -17,29 +17,29 @@
 					<thead>
 						<tr>
 							<!--A2_9 年月ラベル-->
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF010_24')}</th>
+							<th class="kaf010_overtimeAgreement_header">#{i18n.getText('KAF010_24')}</th>
 							<!--A2_10  限度ラベル-->						
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF010_25')}</th>
+							<th class="kaf010_overtimeAgreement_header">#{i18n.getText('KAF010_25')}</th>
 							<!--A2_11 実績ラベル--> 						
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF010_26')}</th>
+							<th class="kaf010_overtimeAgreement_header">#{i18n.getText('KAF010_26')}</th>
 							<!--A2_12  申請ラベル-->	
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF010_27')}</th>
+							<th class="kaf010_overtimeAgreement_header">#{i18n.getText('KAF010_27')}</th>
 							<!--A2_13  合計ラベル-->
-							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF010_28')}</th>
+							<th class="kaf010_overtimeAgreement_header">#{i18n.getText('KAF010_28')}</th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: overtimeWork">
 						<tr>
 							<!--A2_14 当月--> 						
-							<td class="header" data-bind="text: yearMonth"></td>
+							<td data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_15 当月限度時間--> 						
-							<td><input data-bind="ntsTimeWithDayEditor: {value: limitTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+							<td data-bind="text: limitTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_16 当月実績時間--> 						
-							<td><input data-bind="ntsTimeWithDayEditor: {value: actualTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+							<td data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_17  当月申請時間-->
-							<td><input data-bind="ntsTimeWithDayEditor: {value: appTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+							<td data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_18  当月合計時間-->
-							<td><input data-bind="ntsTimeWithDayEditor: {value: totalTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+							<td data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -81,10 +81,10 @@
 			data-bind="if: displayPrePostFlg">
 			
 			<!--A3_3 事前事後ラベル-->
-			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF010_30')}</div>
+			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF010_30')}</div>
 			<div data-bind="if: screenModeNew" style="display: inline-block;">
 				<!--A3_4 事前事後スイッチ-->
-				<div tabindex="5" class="cf fix-margin-left"
+				<div tabindex="5" class="cf fix-margin-left" id ="kaf010-pre-post-select"
 					data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF010_31')}',
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
@@ -93,7 +93,8 @@
 									optionsValue: 'prePostCode',
 									optionsText: 'prePostName',
 									value: prePostSelected,
-									enable: prePostEnable}">
+									enable: prePostEnable,
+									required: true }">
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
@@ -295,10 +296,21 @@
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="16" class="right-content"
-								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF010_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
-							<!--A5_7 終了時刻--> 						
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, 
+										ntsTimeWithDayEditor: {name: '#[KAF010_337]',
+										value: startTime,
+										constraint:'TimeWithDayAttr',
+										option: {width: '85px', timeWithDay: true},
+										enable: false}" /></td>
+							<!-- A5_7 -->
 							<td><input tabindex="17" class="right-content"
-								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF010_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()},
+										ntsTimeWithDayEditor: {name: '#[KAF010_338]',
+										value: endTime,
+										constraint:'TimeWithDayAttr',
+										option: {width: '85px',
+										timeWithDay: true},
+										enable: false}" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -479,7 +491,7 @@
 		</div>
 		<!-- 申請理由（ラベル) -->
 		<div class="cf valign-top control-group"
-			data-bind="if: displayAppReasonContentFlg">
+			data-bind="if: isShowReason()">
 			<!--A9_3 申請理由ラベル--> 			
 			<div class="lblTitle cm-column"
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_88')}</div>
@@ -493,6 +505,7 @@
 			                    	width: '500',
 			                    	required: requiredReason()
 			                   	},
+			                   	enable:displayAppReasonContentFlg
 							}" />
 			</div>
 		</div>

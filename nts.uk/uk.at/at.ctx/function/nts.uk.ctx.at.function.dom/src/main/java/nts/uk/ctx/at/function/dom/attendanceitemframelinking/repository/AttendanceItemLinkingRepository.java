@@ -14,6 +14,13 @@ public interface AttendanceItemLinkingRepository {
 	List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds);
 	
 	/**
+	 * @author tutk
+	 * Get Full Data AttendanceItemLinking 
+	 * @param attendanceItemIds
+	 * @return
+	 */
+	List<AttendanceItemLinking> getFullDataByListAttdaId(List<Integer> attendanceItemIds);
+	/**
 	 * Gets the by any item category.
 	 *
 	 * @param type the type
@@ -24,4 +31,11 @@ public interface AttendanceItemLinkingRepository {
 	List<AttendanceItemLinking> getByAnyItemCategory(TypeOfItem type);
 	
 	List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type);
+	/**
+	 * @author tutk
+	 * Get Full Data AttendanceItemLinking  by type and list attendanceItemIds
+	 * @param attendanceItemIds
+	 * @return
+	 */
+	List<AttendanceItemLinking> getFullDataByAttdIdAndType(List<Integer> attendanceItemIds, TypeOfItem type);
 }

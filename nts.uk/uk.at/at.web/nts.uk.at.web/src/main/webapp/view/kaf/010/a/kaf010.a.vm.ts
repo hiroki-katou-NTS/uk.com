@@ -98,7 +98,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
 
-        overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
+        overtimeWork: KnockoutObservableArray<common.OvertimeWork> = ko.observableArray([
+            new common.OvertimeWork("",0,0,0,0,"",""),
+            new common.OvertimeWork("",0,0,0,0,"",""),    
+        ]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         
 
@@ -139,6 +142,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         ltsEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
         leaverAppID: KnockoutObservable<string> = ko.observable(null);
         payoutType: KnockoutObservable<number> = ko.observable(null);
+        targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -148,12 +152,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.leaverAppID(transferData.appID);
                 self.appDate(transferData.appDate);
                 self.employeeID(transferData.employeeID);
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = transferData.appDate;        
+                }
             }
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 6, self.targetDate).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
@@ -217,6 +224,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     return dfd.promise();
                     });
                    self.prePostSelected.subscribe(function(value){
+                       $('#kaf010-pre-post-select').ntsError('clear');
                       if(value == 0){
                            $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                       }else if(value == 1){
@@ -245,6 +253,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             });
             return dfd.promise();
 
+        }
+        
+        isShowReason(){
+             let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.typicalReasonDisplayFlg() || self.displayAppReasonContentFlg();
+            }
         }
 
         initData(data: any) {
@@ -299,6 +316,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+            if(nts.uk.util.isNullOrUndefined(data.agreementTimeDto)){
+                self.indicationOvertimeFlg(false);       
+            } else {
+                common.Process.setOvertimeWork(data.agreementTimeDto, self);
+            }
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             // list employeeID
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
@@ -348,6 +370,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            $('#kaf010-pre-post-select').ntsError('check');
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");

@@ -64,10 +64,10 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public void updateRemainingNumber(
 			List<ReserveLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
-		// 年休付与残数データから年休（マイナスあり）を作成
+		// 積立年休付与残数データから積立年休（マイナスあり）を作成
 		this.reserveLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
 		
-		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
+		// 積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除
 		this.reserveLeaveNoMinus.setValueFromRealReserveLeave(this.reserveLeaveWithMinus);
 	}
 }

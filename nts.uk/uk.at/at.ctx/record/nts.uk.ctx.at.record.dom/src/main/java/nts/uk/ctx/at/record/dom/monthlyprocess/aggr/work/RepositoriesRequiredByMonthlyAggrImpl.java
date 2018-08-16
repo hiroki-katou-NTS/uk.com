@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
@@ -74,6 +75,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWork
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * 実装：月別集計が必要とするリポジトリ
@@ -136,6 +139,15 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 積立年休付与残数データ */
 	@Inject
 	private RervLeaGrantRemDataRepository rsvLeaGrantRemData;
+	/** 年休社員基本情報 */
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfo;
+	/** 年休付与テーブル設定 */
+	@Inject
+	private YearHolidayRepository yearHoliday;
+	/** 勤続年数テーブル */
+	@Inject
+	private LengthServiceRepository lengthService;
 
 	/** 勤怠項目値変換 */
 	@Inject

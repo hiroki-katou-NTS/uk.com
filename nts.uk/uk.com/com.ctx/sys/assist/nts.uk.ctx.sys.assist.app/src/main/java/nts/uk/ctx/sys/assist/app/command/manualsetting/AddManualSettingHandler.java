@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.sys.assist.app.command.manualsetting;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,6 +94,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 					return x;
 				}).collect(Collectors.toList());
 			}
+			listTargetEmp.sort(Comparator.comparing(TargetEmployees::getScd));
 			totalTargetEmployees = listTargetEmp.size();
 			targetEmployeesRepo.addAll(listTargetEmp);
 			manualSetOfDataSaveService.start(domain);

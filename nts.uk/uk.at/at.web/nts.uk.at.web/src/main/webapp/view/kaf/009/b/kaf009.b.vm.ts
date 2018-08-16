@@ -97,6 +97,7 @@ module nts.uk.at.view.kaf009.b {
             checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
             workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
             workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
+            targetDate:  any = moment(new Date()).format("YYYY/MM/DD");
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
@@ -105,6 +106,7 @@ module nts.uk.at.view.kaf009.b {
                     width: "500",
                     textalign: "left",
                 }));
+                self.targetDate = currentApp.appDate;
                 //self.startPage(currentApp.appID);
                 self.startPage(self.appID());
                 //self.appID(currentApp.appID);                
@@ -122,7 +124,10 @@ module nts.uk.at.view.kaf009.b {
                 let notChange = 2; //2:変更しない
                 let change = 3; //3:変更する
                 //get Common Setting
-                service.getGoBackSetting().done(function(settingData: any) {
+                service.getGoBackSetting({
+                    employeeIDs: [], 
+                    appDate: self.targetDate
+                }).done(function(settingData: any) {
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(self.displayTypicalReason()||
@@ -154,47 +159,47 @@ module nts.uk.at.view.kaf009.b {
                     //申請表示設定.事前事後区分　＝　表示する　〇
                     //申請表示設定.事前事後区分　＝　表示しない ×
                     self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
-                    if(settingData.goBackSettingDto　!= undefined){
-                        //事前事後区分 Enable ※A２
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
-                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
-                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
-                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
-                        if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
-                          || settingData.goBackSettingDto.workChangeFlg == initialSelection){
-                            self.isWorkChange(true);
-                            self.checkboxDisplay(true);
-                            self.workChangeBtnDisplay(true);
-                            self.checkboxEnable(true&&self.isNewScreen());
-                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
-                                self.workChangeAtr(false);
-                            }else{
-                                self.workChangeAtr(true);
-                            }
-                            
-                        }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
-                            self.isWorkChange(false);
-                            self.workChangeAtr(false);
-                            self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(false);
-                            self.checkboxEnable(false&&self.isNewScreen());
-                        }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
-                            self.workChangeAtr(true);
-                            self.isWorkChange(true);
-                            self.workState(false);
-                            self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(true);
-                            self.checkboxEnable(false&&self.isNewScreen());
-                            self.workLabelRequired(self.workChangeAtr());
-                        }
-                        
-                    }
                     //共通設定.複数回勤務
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
                         self.isNewScreen(detailData.outMode==1?true:false);
+                        if(settingData.goBackSettingDto　!= undefined){
+                            //事前事後区分 Enable ※A２
+                            //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                            //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                            self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                            //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                            //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                              || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                                self.isWorkChange(true);
+                                self.checkboxDisplay(true);
+                                self.workChangeBtnDisplay(true);
+                                self.checkboxEnable(true&&self.isNewScreen());
+                                if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                                    self.workChangeAtr(false);
+                                }else{
+                                    self.workChangeAtr(true);
+                                }
+                                
+                            }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                                self.isWorkChange(false);
+                                self.workChangeAtr(false);
+                                self.checkboxDisplay(false);
+                                self.workChangeBtnDisplay(false);
+                                self.checkboxEnable(false&&self.isNewScreen());
+                            }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                                self.workChangeAtr(true);
+                                self.isWorkChange(true);
+                                self.workState(false);
+                                self.checkboxDisplay(false);
+                                self.workChangeBtnDisplay(true);
+                                self.checkboxEnable(false&&self.isNewScreen());
+                                self.workLabelRequired(self.workChangeAtr());
+                            }
+                            
+                        }
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
@@ -514,7 +519,7 @@ module nts.uk.at.view.kaf009.b {
                     self.selectedBack2(data.backHomeAtr2);
                     self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
                     //workType, Sift
-                    self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
+                    // self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
                     self.workTypeCd(data.workTypeCD);
                     self.siftCD(data.siftCD);
                 }
@@ -528,9 +533,6 @@ module nts.uk.at.view.kaf009.b {
                 let comboSource: Array<common.ComboReason> = [];
                 _.forEach(data, function(value: common.ReasonDto) {
                     self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
-                    if(value.defaultFlg === 1){
-                        self.selectedReason(value.reasonID);
-                    }
                 });
             }
 

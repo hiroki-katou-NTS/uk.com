@@ -48,6 +48,8 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkT
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -151,6 +153,12 @@ public class MonAggrCompanySettings {
 	/** 年休設定 */
 	@Getter
 	private AnnualPaidLeaveSetting annualLeaveSet;
+	/** 年休付与テーブル設定 */
+	@Getter
+	private ConcurrentMap<String, GrantHdTblSet> grantHdTblSetMap;
+	/** 勤続年数テーブル */
+	@Getter
+	private ConcurrentMap<String, List<LengthServiceTbl>> lengthServiceTblListMap;
 	/** 積立年休設定 */
 	@Getter
 	private Optional<RetentionYearlySetting> retentionYearlySet;
@@ -189,6 +197,8 @@ public class MonAggrCompanySettings {
 		this.optionalItemMap = new ConcurrentHashMap<>();
 		this.empConditionMap = new ConcurrentHashMap<>();
 		this.formulaList = new CopyOnWriteArrayList<>();
+		this.grantHdTblSetMap = new ConcurrentHashMap<>();
+		this.lengthServiceTblListMap = new ConcurrentHashMap<>();
 		this.retentionYearlySet = Optional.empty();
 		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
 		this.actualLockMap = new ConcurrentHashMap<>();
@@ -238,6 +248,15 @@ public class MonAggrCompanySettings {
 		// 年休設定
 		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
 
+		// 年休付与テーブル設定、勤続年数テーブル
+		val yearHolidays = repositories.getYearHoliday().findAll(companyId);
+		for (val yearHoliday : yearHolidays){
+			val yearHolidayCode = yearHoliday.getYearHolidayCode().v();
+			domain.grantHdTblSetMap.put(yearHolidayCode, yearHoliday);
+			domain.lengthServiceTblListMap.put(yearHolidayCode,
+					repositories.getLengthService().findByCode(companyId, yearHolidayCode));
+		}
+		
 		// 積立年休設定
 		domain.retentionYearlySet = repositories.getRetentionYearlySet().findByCompanyId(companyId);
 		

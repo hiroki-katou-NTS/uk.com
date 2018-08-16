@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
@@ -293,6 +294,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			holidayMng.setSpecialHolidayCode(speHolidayDetail.getSpecialHolidayCode());
 			holidayMng.setMngAtr(ManagermentAtr.DAYS);
 			holidayMng.setUseDays(Optional.of(new UseDay(speHolidayDetail.getDays())));
+			holidayMng.setUseTimes(Optional.of(new UseTime(0)));
 			specialHolidayData.add(holidayMng);
 		}
 		mngData.setSpecialHolidayData(specialHolidayData);

@@ -87,6 +87,10 @@ public class ClosureEmploymentService {
 		Optional<ClosureEmployment> closureEmpOpt = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, empHistOpt.get().getEmploymentCode());
 		
+		if (!closureEmpOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
 		// Find closure.
 		return this.closureRepository.findById(companyId, closureEmpOpt.get().getClosureId());
 	}

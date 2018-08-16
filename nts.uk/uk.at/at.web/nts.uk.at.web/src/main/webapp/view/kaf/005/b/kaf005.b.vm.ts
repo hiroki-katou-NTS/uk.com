@@ -168,6 +168,15 @@ module nts.uk.at.view.kaf005.b {
                 return dfd.promise();
             }
             
+            isShowReason(){
+            let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.displayAppReasonContentFlg() || self.typicalReasonDisplayFlg();
+            }
+        }
+            
             initData(data: any) {
                 var self = this;
                 self.version = data.application.version;
@@ -176,6 +185,7 @@ module nts.uk.at.view.kaf005.b {
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
+                self.requiredReason(data.displayAppReasonContentFlg);
                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
                 self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                 self.displayBonusTime(data.displayBonusTime);
@@ -215,14 +225,14 @@ module nts.uk.at.view.kaf005.b {
                     self.selectedReason2(reasonID);
                     self.multilContent2(data.divergenceReasonContent);
                 }
-                self.overtimeAtr(data.overtimeAtr);
-                if (data.overtimeAtr == 0) {
-                    self.heightOvertimeHours(56);
-                } else if (data.overtimeAtr == 1) {
-                    self.heightOvertimeHours(180);
-                } else {
-                    self.heightOvertimeHours(216);
-                }
+//                self.overtimeAtr(data.overtimeAtr);
+//                if (data.overtimeAtr == 0) {
+//                    self.heightOvertimeHours(56);
+//                } else if (data.overtimeAtr == 1) {
+//                    self.heightOvertimeHours(180);
+//                } else {
+//                    self.heightOvertimeHours(216);
+//                }
                 self.instructInforFlag(data.displayOvertimeInstructInforFlg);
                 self.instructInfor(data.overtimeInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
@@ -308,22 +318,21 @@ module nts.uk.at.view.kaf005.b {
                         color = '#F69164';
                     }
                     if(item.frameNo == 11){
-                        if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
-                            if (item.errorCode)
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID,
-                                    item.appID,
-                                    item.attendanceID,
-                                    "",
-                                    item.frameNo,
-                                    item.timeItemTypeAtr,
-                                    nts.uk.resource.getText("KAF005_63"),
-                                    item.applicationTime,
-                                    null,
-                                    null, "#[KAF005_64]", "", color));
+                        if (data.appOvertimeNightFlg == 1) {
+                            self.overtimeHours.push(new common.OvertimeCaculation(
+                                item.companyID,
+                                item.appID,
+                                item.attendanceID,
+                                "",
+                                item.frameNo,
+                                item.timeItemTypeAtr,
+                                nts.uk.resource.getText("KAF005_63"),
+                                item.applicationTime,
+                                null,
+                                null, "#[KAF005_64]", "", color));
                         }
                     } else if (item.frameNo == 12) {
-                        if (data.flexFLag && data.overtimeAtr != 0) {
+                        if (data.flexFLag) {
                             self.overtimeHours.push(new common.OvertimeCaculation(
                                 item.companyID,
                                 item.appID,
@@ -377,6 +386,25 @@ module nts.uk.at.view.kaf005.b {
                         null, 
                         null, "","",""));
                 }); 
+                
+                switch(self.overtimeHours().length){
+                    case 1: 
+                        self.heightOvertimeHours(56);
+                        break;         
+                    case 2:
+                        self.heightOvertimeHours(88);
+                        break;     
+                    case 3: 
+                        self.heightOvertimeHours(120);    
+                        break;
+                    case 4:
+                        self.heightOvertimeHours(152);    
+                        break;
+                    case 5:
+                        self.heightOvertimeHours(184);    
+                        break;    
+                    default: break;
+                }
             }
             
             update(): JQueryPromise<any> {                

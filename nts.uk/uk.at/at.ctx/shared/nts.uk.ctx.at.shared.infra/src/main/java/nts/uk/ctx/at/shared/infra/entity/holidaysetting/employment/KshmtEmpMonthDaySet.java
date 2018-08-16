@@ -6,7 +6,6 @@
 package nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -32,10 +31,6 @@ public class KshmtEmpMonthDaySet extends UkJpaEntity implements Serializable {
     /** The kshmt emp month day set PK. */
     @EmbeddedId
     protected KshmtEmpMonthDaySetPK kshmtEmpMonthDaySetPK;
-    
-    /** The exclus ver. */
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
    
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")

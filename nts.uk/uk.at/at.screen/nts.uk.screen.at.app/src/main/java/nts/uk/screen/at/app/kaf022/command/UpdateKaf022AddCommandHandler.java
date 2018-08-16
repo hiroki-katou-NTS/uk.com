@@ -19,9 +19,12 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsettin
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDispNameCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateApprovalTempCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateContentOfRemandMailCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailHdInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailOtInstructionCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.mailcontenturlsetting.UpdateUrlEmbeddedCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.UpdateOvertimeRestAppCommonSetCmdHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.UpdateDisplayReasonCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
@@ -87,7 +90,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	//遅刻早退取消申請設定
 	@Inject
 	private UpdateLateEarReqHandler updateLateEar;
-	
+	// 
 	@Inject
 	private UpdateAppTypeBfCommandHandler updateBf;
 	
@@ -102,6 +105,15 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// B8->12 残業休出申請共通設定
 	@Inject
 	private UpdateOvertimeRestAppCommonSetCmdHandler updateOtRest;
+	// 差し戻しのメール内容
+	@Inject
+	private UpdateContentOfRemandMailCmdHandler updateMail;
+	// メール内容のURL埋込設定
+	@Inject 
+	private UpdateUrlEmbeddedCmdHandler updateurl;
+	// 申請理由表示
+	@Inject
+	private UpdateDisplayReasonCmdHandler updateDplReason;
 	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
@@ -157,5 +169,11 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateOtRest.handle(kaf022.getOtRest());
 		// G
 		this.updateOtRest.handle(kaf022.getOtRestApp7());
+		// A16_14, A16_15
+		this.updateMail.handle(kaf022.getContentMail());
+		
+		this.updateurl.handle(kaf022.getUrl());
+		// A8_36 -> A8_43
+		this.updateDplReason.handle(kaf022.getDplReasonCmd());
 	}
 }

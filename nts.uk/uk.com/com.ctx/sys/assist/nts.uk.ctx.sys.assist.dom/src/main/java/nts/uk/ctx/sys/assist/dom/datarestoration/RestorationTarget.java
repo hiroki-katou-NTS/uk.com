@@ -101,16 +101,16 @@ public class RestorationTarget extends DomainObject {
 				break;
 			case ANNUAL:
 				saveDateFrom = tableListData.getSaveDateFrom().isPresent() ? Integer.parseInt(tableListData.getSaveDateFrom().get().replaceAll("-", "").replaceAll("/", "")) : null;
-				saveDateTo = tableListData.getSaveDateTo().isPresent() ? Integer.parseInt(tableListData.getSaveDateFrom().get().replaceAll("-", "").replaceAll("/", "")) : null;
+				saveDateTo = tableListData.getSaveDateTo().isPresent() ? Integer.parseInt(tableListData.getSaveDateTo().get().replaceAll("-", "").replaceAll("/", "")) : null;
 				restoreTarget = new RestorationTarget(processingId, tableListData.getCategoryId(), tableListData.getRetentionPeriodCls().value, saveDateFrom, saveDateTo, null, null, null, null);
 				break;
 			case MONTHLY:
 				saveDateFrom = tableListData.getSaveDateFrom().isPresent() ? Integer.parseInt(tableListData.getSaveDateFrom().get().replaceAll("-", "").replaceAll("/", "")) : null;
-				saveDateTo = tableListData.getSaveDateTo().isPresent() ? Integer.parseInt(tableListData.getSaveDateFrom().get().replaceAll("-", "").replaceAll("/", "")) : null;
+				saveDateTo = tableListData.getSaveDateTo().isPresent() ? Integer.parseInt(tableListData.getSaveDateTo().get().replaceAll("-", "").replaceAll("/", "")) : null;
 				restoreTarget = new RestorationTarget(processingId, tableListData.getCategoryId(), tableListData.getRetentionPeriodCls().value, null, null, saveDateFrom, saveDateTo, null, null);
 				break;
 			case DAILY:
-				GeneralDate dateFrom = tableListData.getSaveDateFrom().isPresent() ? GeneralDate.fromString(tableListData.getSaveDateTo().get(), "yyyy/MM/dd") : null;
+				GeneralDate dateFrom = tableListData.getSaveDateFrom().isPresent() ? GeneralDate.fromString(tableListData.getSaveDateFrom().get(), "yyyy/MM/dd") : null;
 				GeneralDate dateTo = tableListData.getSaveDateTo().isPresent() ? GeneralDate.fromString(tableListData.getSaveDateTo().get(), "yyyy/MM/dd") : null;
 				restoreTarget = new RestorationTarget(processingId, tableListData.getCategoryId(), tableListData.getRetentionPeriodCls().value, null, null, null, null, dateFrom, dateTo);
 				break;

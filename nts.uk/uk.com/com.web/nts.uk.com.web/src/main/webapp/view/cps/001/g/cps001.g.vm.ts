@@ -105,36 +105,37 @@ module nts.uk.com.view.cps001.g.vm {
         public startPage(annID?: string): JQueryPromise<any> {
             let _self = this;
             block();
-            _self.getItemDef();
-            _self.alllist.removeAll();
-            _self.listAnnualLeaveGrantRemainData.removeAll();
-            service.getAllList(_self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
-                if (data && data.length > 0) {
-                    // Set to update mode
-                    _self.createMode(false);
-                    _self.alllist(data);
-                    _self.changeFollowExpSta(_self.checked());
+            _self.getItemDef().done(() => {
+                _self.alllist.removeAll();
+                _self.listAnnualLeaveGrantRemainData.removeAll();
+                service.getAllList(_self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+                    if (data && data.length > 0) {
+                        // Set to update mode
+                        _self.createMode(false);
+                        _self.alllist(data);
+                        _self.changeFollowExpSta(_self.checked());
 
-                    let currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) {
-                        return item.annLeavID == annID;
-                    });
-                    // Set focus
-                    if (annID && currentIndex > 0) {
-                        _self.currentValue(annID);
-                    } else if (_self.listAnnualLeaveGrantRemainData().length > 0) {
-                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                        let currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) {
+                            return item.annLeavID == annID;
+                        });
+                        // Set focus
+                        if (annID && currentIndex > 0) {
+                            _self.currentValue(annID);
+                        } else if (_self.listAnnualLeaveGrantRemainData().length > 0) {
+                            _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                        } else {
+                            _self.create();
+                        }
                     } else {
+                        // Set to cr eate mode
                         _self.create();
                     }
-                } else {
-                    // Set to cr eate mode
-                    _self.create();
-                }
 
 
-                unblock();
-            }).fail((_data) => {
-                unblock();
+                    unblock();
+                }).fail((_data) => {
+                    unblock();
+                });
             });
         }
 
@@ -156,10 +157,11 @@ module nts.uk.com.view.cps001.g.vm {
                 _self.setItemDefValue(_self.itemDefs);
             }
         }
-        getItemDef() {
-            let self = this;
+        getItemDef(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             if (self.itemDefs.length > 0) {
                 self.setItemDefValue(self.itemDefs);
+                dfd.resolve();
             } else {
                 service.getItemDef().done((data) => {
                     if (!data[6].display && !data[9].display && !data[12].display) {
@@ -171,9 +173,10 @@ module nts.uk.com.view.cps001.g.vm {
                     self.setItemDefValue(data).done(() => {
                         self.setGridList();
                     });
+                    dfd.resolve();
                 });
             }
-
+            return dfd.promise();
         }
         setItemDefValue(data: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();

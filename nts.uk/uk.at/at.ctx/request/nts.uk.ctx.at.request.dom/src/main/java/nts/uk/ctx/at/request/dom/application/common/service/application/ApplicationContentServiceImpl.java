@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -41,6 +42,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -109,6 +112,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
+	
+	@Inject
+	private HdAppSetRepository repoHdAppSet;
 	
 	@Override
 	public String getApplicationContent(Application_New app) {
@@ -443,40 +449,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (appAbsen.getAllDayHalfDayLeaveAtr() == AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE) {
 				String holidayType = "";
 				if (Objects.isNull(appAbsen.getAppForSpecLeave())) {
-					switch (appAbsen.getHolidayAppType()) {
-					case ANNUAL_PAID_LEAVE: {
-						holidayType = "年休名称";
-						break;
-					}
-					case SUBSTITUTE_HOLIDAY: {
-						holidayType = "代休名称";
-						break;
-					}
-					case REST_TIME: {
-						holidayType = "振休名称";
-						break;
-					}
-					case ABSENCE: {
-						holidayType = "欠勤名称";
-						break;
-					}
-					case SPECIAL_HOLIDAY: {
-						holidayType = "特別休暇名称";
-						break;
-					}
-					case YEARLY_RESERVE: {
-						holidayType = "積立年休名称";
-						break;
-					}
-					case HOLIDAY: {
-						holidayType = "休日名称";
-						break;
-					}
-					case DIGESTION_TIME: {
-						holidayType = "時間消化名称";
-						break;
-					}
-					}
+					//Bug #98194
+					holidayType = this.findHdName(appAbsen.getHolidayAppType());
 					content += I18NText.getText("CMM045_248") + I18NText.getText("CMM045_230", holidayType);
 				} else {
 					holidayType = "特別休暇";
@@ -491,7 +465,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 
 			} else {
 				content += I18NText.getText("CMM045_249")
-						+ I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v())
+						+ (appAbsen.getWorkTimeCode() == null ? "" : I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v()))
 						+ (!Objects.isNull(appAbsen.getStartTime1())
 								? appAbsen.getStartTime1().v() + I18NText.getText("CMM045_100") : "")
 						+ (!Objects.isNull(appAbsen.getEndTime1()) ? appAbsen.getEndTime1().v() : "")
@@ -502,7 +476,44 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		}
 		return content + "\n" + appReason;
 	}
-
+	//Bug #98194
+	private String findHdName(HolidayAppType hdApp){
+		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)
+		Optional<HdAppSet> opHdAppSet = repoHdAppSet.getAll();
+		boolean check = false;
+		HdAppSet hdSet = null;
+		if(opHdAppSet.isPresent()){
+			check = true;
+			hdSet = opHdAppSet.get();
+		}
+		switch (hdApp) {
+			case ANNUAL_PAID_LEAVE: {
+				return check && hdSet.getYearHdName() != null ? hdSet.getYearHdName().v() : "年休名称";
+			}
+			case SUBSTITUTE_HOLIDAY: {
+				return check && hdSet.getObstacleName() != null ? hdSet.getObstacleName().v() : "代休名称";
+			}
+			case REST_TIME: {
+				return check && hdSet.getFurikyuName() != null ? hdSet.getFurikyuName().v() : "振休名称";
+			}
+			case ABSENCE: {
+				return check && hdSet.getAbsenteeism() != null ? hdSet.getAbsenteeism().v() : "欠勤名称";
+			}
+			case SPECIAL_HOLIDAY: {
+				return check && hdSet.getSpecialVaca() != null ? hdSet.getSpecialVaca().v() : "特別休暇名称";
+			}
+			case YEARLY_RESERVE: {
+				return check && hdSet.getYearResig() != null ? hdSet.getYearResig().v() : "積立年休名称";
+			}
+			case HOLIDAY: {
+				return check && hdSet.getHdName() != null ? hdSet.getHdName().v() : "休日名称";
+			}
+			case DIGESTION_TIME: {
+				return check && hdSet.getTimeDigest() != null ? hdSet.getTimeDigest().v() : "時間消化名称";
+			}
+		}
+		return "";
+	}
 	private String getWorkChangeAppContent(Application_New app, String companyID, String appID, String appReason) {
 		// DONE
 		String content = I18NText.getText("CMM045_250");

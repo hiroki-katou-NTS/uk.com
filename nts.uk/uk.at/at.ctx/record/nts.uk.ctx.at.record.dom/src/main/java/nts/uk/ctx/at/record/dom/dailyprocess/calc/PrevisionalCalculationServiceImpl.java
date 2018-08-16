@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -61,16 +64,11 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
-
-	@Inject
-	private WorkInformationRepository workInformationRepository;
-
-	@Inject
-	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepository;
@@ -82,32 +80,31 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
 
 	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainServiceImpl;
 
 	@Override
-	public Optional<IntegrationOfDaily> calculation(String employeeId, GeneralDate targetDate,
-			Map<Integer, TimeZone> timeSheets, WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,
-			List<BreakTimeSheet> breakTimeSheets, List<OutingTimeSheet> outingTimeSheets,
-			List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
-		if (workTypeCode == null)
-			return Optional.empty();
-		// 疑似的な日別実績を作成
-		val provisionalRecord = createProvisionalDailyRecord(employeeId, targetDate, workTypeCode, workTimeCode,
-				timeSheets);
-		if (!provisionalRecord.isPresent())
-			return Optional.empty();
-		// 控除置き換え
-		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), breakTimeSheets,
-				outingTimeSheets, shortWorkingTimeSheets, employeeId, targetDate);
+	public List<IntegrationOfDaily> calculation(List<PrevisionalForImp> impList) {
+		return calculationPassCompanyCommonSetting(impList, Optional.empty());
+	}
+	
+	@Override
+	public List<IntegrationOfDaily> calculationPassCompanyCommonSetting(List<PrevisionalForImp> impList,Optional<ManagePerCompanySet> companySetting){
 		List<IntegrationOfDaily> integraionList = new ArrayList<>();
-		integraionList.add(provisionalDailyRecord);
+		for(PrevisionalForImp imp:impList) {
+			if (imp.getWorkTypeCode() == null)
+				return Collections.emptyList();
+			//疑似的な日別実績を作成
+			val provisionalRecord = createProvisionalDailyRecord(imp.getEmployeeId(), imp.getTargetDate(), imp.getWorkTypeCode(), imp.getWorkTimeCode(),
+					imp.getTimeSheets());
+			if (!provisionalRecord.isPresent())
+				return Collections.emptyList();
+			//控除置き換え
+			val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), imp.getBreakTimeSheets(),
+				imp.getOutingTimeSheets(), imp.getShortWorkingTimeSheets(), imp.getEmployeeId(), imp.getTargetDate());
+			integraionList.add(provisionalDailyRecord);
+		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		val test = calculateDailyRecordServiceCenter.calculate(integraionList);
-		return test.stream().findFirst();
-
+		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(integraionList, companySetting);
 	}
 
 	/**
@@ -116,7 +113,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	private Optional<IntegrationOfDaily> createProvisionalDailyRecord(String employeeId, GeneralDate ymd,
 			WorkTypeCode workTypeCode, WorkTimeCode workTimeCode, Map<Integer, TimeZone> timeSheets) {
 		// 日別実績の勤務情報
-		Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
+		//Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
 		String setWorkTimeCode = null;
 		if (workTimeCode != null)
 			setWorkTimeCode = workTimeCode.v();
@@ -130,7 +127,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 日別実績の外出時間帯
 		val goOutTimeSheet = outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, ymd);
 		// 日別実績の短時間勤務時間帯
-		Optional<ShortTimeOfDailyPerformance> ShortTimeOfDailyPerformance = Optional.empty();
+		//Optional<ShortTimeOfDailyPerformance> ShortTimeOfDailyPerformance = Optional.empty();
 		// 日別実績の臨時出退勤
 		// ;
 		// 日別実績の出退勤

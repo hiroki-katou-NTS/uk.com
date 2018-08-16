@@ -39,6 +39,7 @@ public class AggregationProcessService {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
 		
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
+		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
 		if(!alarmPatternSetting.isPresent())
 			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
@@ -90,6 +91,7 @@ public class AggregationProcessService {
 		map.put(TextResource.localize("KAL010_62"), AlarmCategory.SCHEDULE_4WEEK);
 		map.put(TextResource.localize("KAL010_100"), AlarmCategory.MONTHLY);
 		map.put(TextResource.localize("KAL010_208"), AlarmCategory.AGREEMENT);
+		map.put(TextResource.localize("KAL010_250"), AlarmCategory.MULTIPLE_MONTH);
 		return map;
 	} 
 	

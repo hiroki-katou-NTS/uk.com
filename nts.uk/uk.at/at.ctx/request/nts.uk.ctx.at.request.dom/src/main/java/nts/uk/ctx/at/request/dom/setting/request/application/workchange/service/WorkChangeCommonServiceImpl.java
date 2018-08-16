@@ -8,22 +8,18 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
@@ -35,21 +31,19 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	EmployeeRequestAdapter employeeAdapter;
 	@Inject
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	@Inject
-	private StartupErrorCheckService startupErrorCheckService;
-	@Inject
-	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject 
 	WorkManagementMultipleRepository workManagerRepo;	
 	@Inject
 	IDataWorkService dataWorkService;
 	@Inject
 	private AtEmployeeAdapter atEmpAdaptor;
+	@Inject
+	private IWorkChangeRegisterService workChangeRegisterService;
 	@Override
-	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds) {		
+	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds, GeneralDate appDate) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyId,
-				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
+				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, appDate);
 
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		/*ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
@@ -78,12 +72,12 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		//勤務就業ダイアログ用データ取得
-		GeneralDate appDate = GeneralDate.today();//基準日
 		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
 		wcBasicData.setWorkingData(workingData);
 		
 		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
+		
+		wcBasicData.setTimeRequired(workChangeRegisterService.isTimeRequired(workingData.getSelectedWorkTypeCd()));
 		
 		// 勤務変更申請基本データ
 		return wcBasicData;

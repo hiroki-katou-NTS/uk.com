@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
@@ -271,5 +272,40 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 					new JpaWorkTimeSettingGetMemento(item));
 			return worktimeSetting;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<WorkTimeSetting> findByCodeAndAbolishCondition(String companyId, String workTimeCode,
+			AbolishAtr abolishAtr) {
+		if (StringUtil.isNullOrEmpty(workTimeCode, true)) {
+			return Optional.empty();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
+		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd), workTimeCode));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), abolishAtr.value));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+		if (lstKwtstWorkTimeSet.isEmpty()) {
+			return Optional.empty();
+		} else {
+			// get first item of list have 1 element
+			return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(lstKwtstWorkTimeSet.get(0))));
+		}
 	}
 }

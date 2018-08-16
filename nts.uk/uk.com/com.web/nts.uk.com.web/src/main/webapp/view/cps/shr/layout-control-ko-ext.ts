@@ -86,6 +86,9 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
+                    html {
+                        -ms-overflow-y: hidden;
+                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }
@@ -838,7 +841,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: [itemName] }, text: text('？')">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: resourceParams }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: {
                                 DATE_TYPE: {
@@ -1840,7 +1843,8 @@ module nts.custombinding {
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
                     //def.required = _.has(def, "required") ? (ko.isObservable(def.required) ? def.required : ko.observable(def.required)) : ko.observable(!!item.isRequired);
 
-                    def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
+                    def.resourceId = _.has(def, "resourceId") ? ko.isObservable(def.resourceId) ? def.resourceId : ko.observable(def.resourceId) : ko.observable();
+                    def.resourceParams = _.has(def, "resourceParams") ? ko.isObservable(def.resourceParams) ? def.resourceParams : ko.observableArray(def.resourceParams) : ko.observableArray();
 
                     def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
 

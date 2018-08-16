@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<!-- F Screen -->
+		
+		<div class="contentF">
+			<com:ko-if bind="isDisplayText">
+				<div id="F2_2">
+					<label>#{i18n.getText('CLI003_60')}</label>
+				</div>
+			</com:ko-if>
+			<div id="F2">
+				<table tabindex="2" id="igGridLog"></table>
+			</div>
+			<button id="F3_1" class="small" data-bind="click: previousScreenE">#{i18n.getText('CLI003_20')}</button>
+
+		</div>
+	</ui:composition>
+</body>
+</html>

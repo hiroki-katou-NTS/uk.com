@@ -21,6 +21,8 @@ public class SampleCorrectionLogCommandHandler extends CommandHandler<SampleCorr
 		val correctionLogParameter = new SampleCorrectionLogParameter(new ArrayList<>());
 		DataCorrectionContext.setParameter(correctionLogParameter);
 		
+		DataCorrectionContext.transactionFinishing();
+		
 	}
 
 	// transactionFinishingはhandleの中に実装しても良いが、

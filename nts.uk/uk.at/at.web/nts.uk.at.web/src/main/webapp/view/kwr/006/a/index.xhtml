@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kwr006.a.main.css" />
+			<com:scriptfile path="kwr006.a.service.js" />
+			<com:scriptfile path="kwr006.a.vm.js" />
+			<com:scriptfile path="kwr006.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click: exportExcel">#{i18n.getText('KWR006_5')}</button>
+				<!-- A1_2 -->
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf">#{i18n.getText('KWR006_6')}</button>
+			</div>
+			
+			<div id="content-area" style="display: none" data-bind="visible: true">
+				<div id="ccgcomponent"></div>
+				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
+			
+				<table class="table1">
+					<tr>
+						<td class="td-left">
+							<!-- A1_4 -->
+							<div class="panel panel-frame row left">
+								<!-- A1_5 -->
+								<span class="label with-image A1_5">
+									<i class="image image-calendar"/>
+									<span>#{i18n.getText('KWR006_7')}</span>
+								</span> 
+								<!--A1_6-->
+								<!--A1_7-->
+								<!--A1_8-->
+								<div tabindex="3" class="A1_6" id="daterangepicker" data-bind="ntsDateRangePicker: {
+										required: requiredDatePicker,
+										type: 'yearmonth',
+										enable: enableDatePicker, 
+										showNextPrevious: true, 
+										value: datepickerValue, 
+										maxRange: 'oneYear'}"/>
+								</div>
+							
+							<!-- A3_1 -->
+							<div class="panel panel-frame row">
+								<div tabindex="5" id="component-items-list"></div>
+							</div>
+						</td>
+						
+						<td class="td-right">
+							<div class="right">
+								<!-- A4_1 -->
+								<div class="panel panel-frame" id="output-setting-content">
+									<!-- A5_1 -->
+									<div class="label A5_1">#{i18n.getText('KWR006_8')}</div>
+									<div class="row">
+										<!-- A6_1 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_9')}</div>
+										<!-- A6_2 -->
+										<div tabindex="6" id="output-format" class="cf" data-bind="ntsSwitchButton: {
+											name: '#[KWR006_9]',
+											options: dataOutputType,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: monthlyWorkScheduleConditionModel.outputType,
+											required: true,
+											enable: true }"></div>
+									</div>
+									
+									<div class="row">
+										<!-- A7_1 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_12')}</div>
+									</div>
+									
+									<div class="row">
+										<!-- A7_2 -->
+										<span class="label A7_2">#{i18n.getText('KWR006_13')}</span>
+										<!-- A7_3 -->
+										<div tabindex="7" id="combo-box" data-bind="ntsComboBox: {
+											name: '#[KWR006_13]',
+											options: itemListCodeTemplate,
+											optionsValue: 'code',
+											visibleItemsCount: 10,
+											value: monthlyWorkScheduleConditionModel.selectedCode,
+											optionsText: 'name',
+											columns: [
+												{ prop: 'code', length: 2 },
+												{ prop: 'name', length: 6 },
+											]}"></div>
+										<!-- A7_6 -->
+										<button tabindex="8" data-bind="click: openScreenC, enable: enableBtnConfigure">#{i18n.getText('KWR001_14')}</button>
+									</div>
+									
+									<div class="row">
+										<!-- A9_1 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_15')}</div>
+										<!-- A9_2 -->
+										<div tabindex="10" class="type-page-brake" id="combo-box" data-bind="ntsComboBox: {
+											name: '#[KWR006_15]',
+											options: itemListTypePageBrake,
+											optionsValue: 'code',
+											visibleItemsCount: 3,
+											value: monthlyWorkScheduleConditionModel.pageBreakIndicator,
+											optionsText: 'name',
+											columns: [
+												{ prop: 'name', length: 5 },
+											]}"></div>
+									</div>
+									
+									<div class="row">
+										<!-- A10_1 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_16')}</div>
+									</div>
+									
+									<table class="table2" data-bind="with: monthlyWorkScheduleConditionModel.totalOutputSetting">
+										<tr>
+											<td class="A10-left">
+												<!-- A10_2 -->
+												<div tabindex="11" data-bind="ntsCheckBox: { checked: details }">#{i18n.getText('KWR006_17')}</div>
+												<!-- A10_3 -->
+												<div tabindex="12" data-bind="ntsCheckBox: { checked: personalTotal, enable: isIndividualTypeSelected }">#{i18n.getText('KWR006_18')}</div>
+												<!-- A10_4 -->
+												<div tabindex="13" data-bind="ntsCheckBox: { checked: workplaceTotal }">#{i18n.getText('KWR006_19')}</div>
+												<!-- A10_5 -->
+												<div tabindex="15" data-bind="ntsCheckBox: { checked: grossTotal }">#{i18n.getText('KWR006_21')}</div>
+												
+											</td>
+											<td>
+												<!-- A10_6 -->
+												<div tabindex="16" data-bind="ntsCheckBox: { checked: cumulativeWorkplace }">#{i18n.getText('KWR006_22')}</div>
+												<!-- A11_1 -->
+												<div class="panel panel-frame" data-bind="with: workplaceHierarchyTotal">
+													<!-- A11_2 -->
+													<div tabindex="" class="label">#{i18n.getText('KWR006_23')}</div>
+													<!-- A11_3 -->
+													<div tabindex="17" data-bind="ntsCheckBox: { checked: firstLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_24')}</div>
+													<!-- A11_4 -->
+													<div tabindex="18" data-bind="ntsCheckBox: { checked: secondLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_25')}</div>
+													<!-- A11_5 -->
+													<div tabindex="19" data-bind="ntsCheckBox: { checked: thirdLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_26')}</div>
+													<!-- A11_6 -->
+													<div tabindex="20" data-bind="ntsCheckBox: { checked: fourthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_27')}</div>
+													<!-- A11_7 -->
+													<div tabindex="21" data-bind="ntsCheckBox: { checked: fifthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_28')}</div>
+													<!-- A11_8 -->
+													<div tabindex="22" data-bind="ntsCheckBox: { checked: sixthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_29')}</div>
+													<!-- A11_9 -->
+													<div tabindex="23" data-bind="ntsCheckBox: { checked: seventhLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_30')}</div>
+													<!-- A11_10 -->
+													<div tabindex="24" data-bind="ntsCheckBox: { checked: eightLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_31')}</div>
+													<!-- A11_11 -->
+													<div tabindex="25" data-bind="ntsCheckBox: { checked: ninthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_32')}</div>
+													<!-- A11_12 -->
+													<div class="label A10_19">#{i18n.getText('KWR006_33')}</div>
+												</div>
+											</td>
+										</tr>
+									</table>
+									<br />
+									
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,4 +1,5 @@
 __viewContext.ready(function() {
+    debugger;
     var url_string = window.location.href;
     var urlID = _.split(url_string, '=')[1];
     var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
@@ -36,6 +37,10 @@ __viewContext.ready(function() {
                 break;
             }
             case "kaf010": {
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] }); 
+                break;    
+            }   
+            case "kaf011": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [success.urlTaskValueList[0]], 'currentApp': success.urlTaskValueList[0] }); 
                 break;    
             }   

@@ -86,31 +86,31 @@ module nts.uk.at.view.kdw008.b {
                 self.currentBusinessType = ko.observable(new BusinessTypeDetailModel(null));
 
                 self.columns1 = ko.observableArray([
-                    { headerText: 'コード', key: 'businessTypeCode', width: 100 },
-                    { headerText: '勤務種別名称', key: 'businessTypeName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_7'), key: 'businessTypeCode', width: 100 },
+                    { headerText: getText('KDW008_26'), key: 'businessTypeName', width: 180, formatter: _.escape }
                 ]);
                 this.selectedCode = ko.observable();
 
                 self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 15, formatter: _.escape0 }
                 ]);
                 self.columns3 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
 
                 self.columns5 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
 
                 //swap list 1
@@ -223,8 +223,8 @@ module nts.uk.at.view.kdw008.b {
                                 }  
                             }    
                         }
-                        self.listMonthlyAttdItem(data);
-                        self.listMonthlyAttdItemFullData(_.cloneDeep(data));
+                        self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
+                        self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
                         dfd.resolve();
                     });
                 });
@@ -300,6 +300,7 @@ module nts.uk.at.view.kdw008.b {
                         new MonthlyActualResults(listSheetMonthly)
                     );
                     nts.uk.ui.block.invisible();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             nts.uk.ui.block.clear();
@@ -315,6 +316,9 @@ module nts.uk.at.view.kdw008.b {
                         nts.uk.ui.block.clear();
                         $('#currentCode').ntsError('set', error);
                     });
+                         }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                        });
                 }
             }
 
@@ -351,7 +355,7 @@ module nts.uk.at.view.kdw008.b {
                         })
 
                         // show data tab 1
-                        self.monthlyDataSource(_.clone(dailyDataSource));
+                        self.monthlyDataSource(_.clone(_.sortBy(dailyDataSource, ["attendanceItemDisplayNumber"])));
                         self.monthlyDataSource.valueHasMutated();
                         data.businessTypeFormatMonthlyDtos = _.sortBy(data.businessTypeFormatMonthlyDtos, ["order"]);
                         if (data.businessTypeFormatMonthlyDtos) {
@@ -378,7 +382,7 @@ module nts.uk.at.view.kdw008.b {
                         //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
                         self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
-                        self.dailyDataSource(_.clone(dailyDataSource));
+                        self.dailyDataSource(_.clone(_.sortBy(dailyDataSource, ["attendanceItemDisplayNumber"])));
                         self.dailyDataSource.valueHasMutated();
                         if (data.businessTypeFormatDailyDto != null && data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) {
                             data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
@@ -419,7 +423,7 @@ module nts.uk.at.view.kdw008.b {
                         let temp = data.displayItem.listSheetCorrectedMonthly;
                         for (let i = 0; i < temp.length; i++) {
                             if (temp[i].sheetNo == no) {
-                                self.valuesMonth(temp[i].listDisplayTimeItem);
+                                self.valuesMonth(_.sortBy(temp[i].listDisplayTimeItem, ["displayOrder"]));
                             }
                         }
                         if(_.filter(temp, function(o) { return o.sheetNo == no; }).length>0){
@@ -428,16 +432,17 @@ module nts.uk.at.view.kdw008.b {
                             self.selectedSheetName("");
                         }
                         if (self.valuesMonth()) {
+                            //_.sortBy(self.valuesMonth(), ["displayOrder"]);
                             var attendanceItemModelMonth = _.map(self.valuesMonth(), item => {
                                 var obj = {
                                     attendanceItemId: item.itemDaily,
                                     attendanceItemName: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemName,
-                                    attendanceItemDisplayNumber: item.displayOrder,
+                                    attendanceItemDisplayNumber: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemDisplayNumber,
                                     columnWidth: item.columnWidthTable
                                 };
                                 return new AttendanceItemModel(obj);
                             });
-                            self.valuesMonth(_.sortBy(attendanceItemModelMonth, ["attendanceItemDisplayNumber"]));
+                            self.valuesMonth(attendanceItemModelMonth);
 
                         } else self.valuesMonth([]);
                     } else {

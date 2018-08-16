@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cli003.b.vm.js" />
+			<com:scriptfile path="cli003.b.service.js" />
+			<com:scriptfile path="cli003.b.start.js" />
+			<com:stylefile path="cli003.b.style.css" />
+			<com:stylefile path="cli003.c.style.css" />
+			<com:stylefile path="cli003.d.style.css" />
+			<com:stylefile path="cli003.e.style.css" />
+			
+			<com:ValidatorScript>
+			nts.uk.shr.com.time.AttendanceClock
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CLI003_2')}</a>
+
+				<com:ko-if bind="(activeStep() == '4')">
+					<button tabindex="1" id="F1_1" data-bind="click: exportCsvF, hasFocus:true">#{i18n.getText('CLI003_8')}</button>
+				</com:ko-if>
+
+			</div>
+			<div id="contents-area">
+				<div id="ccgcomponent" tabindex="2"></div>
+				<div id="ex_accept_wizard" 
+					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image" data-icon="../resource/149.png"></div>
+						<div class="content">#{i18n.getText('CLI003_3')}</div>
+					</div>
+					<div class="steps">
+						<div class="step-1">#{i18n.getText('CLI003_4')}</div>
+						<div class="step-2">#{i18n.getText('CLI003_5')}</div>
+						<div class="step-3">#{i18n.getText('CLI003_6')}</div>
+						<div class="step-4">#{i18n.getText('CLI003_7')}</div>
+						<div class="end step-5">#{i18n.getText('CLI003_8')}</div>
+					</div>
+
+					<div class="contents">
+						<div class="step-1">
+							<ui:include src="b.xhtml" />
+						</div>
+						<div class="step-2">
+							<ui:include src="c.xhtml" />
+						</div>
+						<div class="step-3">
+							<ui:include src="d.xhtml" />
+						</div>
+						<!-- Hoi them man hinh E -->
+						<div class="step-4">
+							<ui:include src="e.xhtml" />
+						</div>
+						<div class="step-5">
+							<ui:include src="f.xhtml" />
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

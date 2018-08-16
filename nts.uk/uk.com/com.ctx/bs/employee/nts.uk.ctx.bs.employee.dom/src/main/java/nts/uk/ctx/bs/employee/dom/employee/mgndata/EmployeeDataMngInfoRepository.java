@@ -116,5 +116,15 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	List<EmployeeDataMngInfo> getAllByCid(String cid);
+	
+	/**
+	 * Find by cid employee code and deleted status.
+	 *
+	 * @param cid the cid
+	 * @param pid the pid
+	 * @param deletedStatus the deleted status
+	 * @return the optional
+	 */
+	Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid, EmployeeDeletionAttr deletedStatus);
 
 }

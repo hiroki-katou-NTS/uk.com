@@ -2,6 +2,7 @@ module nts.uk.pr.view.kmf001.l {
     export module viewmodel {
         
         import EnumertionModel = service.model.EnumerationModel;
+        import message = nts.uk.resource.getMessage;
         
         export class ScreenModel {
             numberEditorOption: KnockoutObservable<any>;
@@ -75,10 +76,8 @@ module nts.uk.pr.view.kmf001.l {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let command = self.toJsObject();
-                
-                nts.uk.ui.block.grayout();
-                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
@@ -95,8 +94,10 @@ module nts.uk.pr.view.kmf001.l {
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                let itemNull = new ItemModel("0", "なし");
                 service.findAllSpecialHoliday().done(function(allSpecialSetting: Array<any>) {
                     var specialSettingList: ItemModel[] = [];
+                    specialSettingList.push(itemNull);
                     allSpecialSetting.forEach(specialHolidayItem => {
                         let item = new ItemModel(specialHolidayItem.specialHdFrameNo, specialHolidayItem.specialHdFrameName);
                         specialSettingList.push(item);
@@ -105,6 +106,7 @@ module nts.uk.pr.view.kmf001.l {
                     
                     service.findAllAbsenceFrame().done(function(allAbsenceSetting: Array<any>) {
                         var absenceSettingList: ItemModel[] = [];
+                        absenceSettingList.push(itemNull);
                         allAbsenceSetting.forEach(absenceFrameItem => {
                             let item = new ItemModel(absenceFrameItem.absenceFrameNo, absenceFrameItem.absenceFrameName);
                             absenceSettingList.push(item);
@@ -194,10 +196,44 @@ module nts.uk.pr.view.kmf001.l {
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
                 }
+                if ((self.nursingSetting().selectedManageNursing() == 1 && self.nursingSetting().nursingLeaveSpecialHoliday() == 0 && self.nursingSetting().nursingLeaveWorkAbsence() == 0)
+                    || (self.childNursingSetting().selectedManageNursing() == 1 && self.childNursingSetting().nursingLeaveSpecialHoliday() == 0 && self.childNursingSetting().nursingLeaveWorkAbsence() == 0)) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1368", message: message("Msg_1368")});
+                    return false;
+                }
+                if (self.nursingSetting().selectedManageNursing() == 1 && self.childNursingSetting().selectedManageNursing() == 1 ) {
+                    if (self.nursingSetting().nursingLeaveSpecialHoliday() == self.childNursingSetting().nursingLeaveSpecialHoliday()) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1366", message: message("Msg_1366")});
+                        return false;
+                    } else if (self.nursingSetting().nursingLeaveWorkAbsence() == self.childNursingSetting().nursingLeaveWorkAbsence()) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1367", message: message("Msg_1367")});
+                        return false;
+                    }
+                }
+                if (self.nursingSetting().selectedManageNursing() == 1) {
+                    if (self.nursingSetting().nursingNumberLeaveDay() < 5) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [5]});
+                        return false;
+                    }
+                    if (self.nursingSetting().nursingNumberPerson() < 10) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [10]});
+                        return false;
+                    }
+                }
+                if (self.childNursingSetting().selectedManageNursing() == 1) {
+                    if (self.childNursingSetting().nursingNumberLeaveDay() < 5) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [5]});
+                        return false;
+                    }
+                    if (self.childNursingSetting().nursingNumberPerson() < 10) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [10]});
+                        return false;
+                    }
+                }
                 return true;
             }
             
-            private clearError(): void {
+            public clearError(): void {
                 // 子の看護
                 $('#nursing-month').ntsError('clear');
                 $('#nursing-day').ntsError('clear');

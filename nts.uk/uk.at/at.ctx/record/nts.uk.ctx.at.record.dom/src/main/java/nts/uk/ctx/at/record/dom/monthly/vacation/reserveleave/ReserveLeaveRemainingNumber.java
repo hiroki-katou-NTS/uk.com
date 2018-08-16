@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
@@ -74,6 +75,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		
 		for (val remainingData : remainingDataList){
+			if (remainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 			
 			// 「積立年休不足ダミーフラグ」をチェック

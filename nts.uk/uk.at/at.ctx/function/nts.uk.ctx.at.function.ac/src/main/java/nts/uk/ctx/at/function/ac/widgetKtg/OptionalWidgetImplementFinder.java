@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.KTGRsvLeaveInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
@@ -34,6 +35,8 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveGrant
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveManageInforExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveRemainingNumberExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.ReNumAnnLeaReferenceDateExport;
+import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumCriteriaDate;
+import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaNumByCriteriaDate;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
@@ -90,6 +93,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@Inject
 	private DailyLateAndLeaveEarlyTimePub dailyLateAndLeaveEarlyTimePub;
 	
+	@Inject
+	private GetRsvLeaNumCriteriaDate getRsvLeaNumCriteriaDate;
+	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
 		return overTimeInstructPub.acquireOverTimeWorkInstruction(employeeId, startDate, endDate).size();
@@ -140,7 +146,11 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		Map<GeneralDate,DailyExcessTotalTimeExpParam> map =  dailyExcessTotalTimePub.getExcessTotalTime(new DailyExcessTotalTimePubImport(employeeId, datePeriod)).getMap();
 		List<DailyExcessTotalTimeImport> result = new ArrayList<>();
 		map.entrySet().forEach(c -> {
-			result.add(new DailyExcessTotalTimeImport(c.getKey(), new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute())));
+			result.add(new DailyExcessTotalTimeImport(c.getKey(), 
+					new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute()),
+					new AttendanceTimeImport(c.getValue().getHolidayWorkTime().hour(),c.getValue().getHolidayWorkTime().minute()),
+					new AttendanceTimeImport(c.getValue().getFlexOverTime().hour(),c.getValue().getFlexOverTime().minute()),
+					new AttendanceTimeImport(c.getValue().getExcessMidNightTime().hour(),c.getValue().getExcessMidNightTime().minute())));
 		});
 		return result;
 	}
@@ -200,7 +210,11 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		AnnualLeaveRemainingNumberExport remainNumber = reNumAnnLeaReferenceDateExport.getAnnualLeaveRemainNumberExport();
 		List<AnnualLeaveGrantExport> AnnualLeaveGrant = reNumAnnLeaReferenceDateExport.getAnnualLeaveGrantExports();
 		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = reNumAnnLeaReferenceDateExport.getAnnualLeaveManageInforExports();
-		AnnualLeaveRemainingNumberImport annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
+		AnnualLeaveRemainingNumberImport annualLeaveRemainNumberImport = null;
+		if(remainNumber == null) {
+			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
+		}else {
+			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
 																				remainNumber.getAnnualLeaveGrantPreDay(),
 																				remainNumber.getAnnualLeaveGrantPreTime(),
 																				remainNumber.getNumberOfRemainGrantPre(),
@@ -211,6 +225,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 																				remainNumber.getTimeAnnualLeaveWithMinusGrantPost(),
 																				remainNumber.getAttendanceRate(),
 																				remainNumber.getWorkingDays());
+		}
 		List<AnnualLeaveGrantImport> annualLeaveGrantImport = AnnualLeaveGrant.stream().map(c->new AnnualLeaveGrantImport(c.getGrantDate(), c.getGrantNumber(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getRemainDays(), c.getRemainMinutes(), c.getDeadline())).collect(Collectors.toList());
 		List<AnnualLeaveManageInforImport> annualLeaveManageInforImport = annualLeaveManageInforExports.stream().map(c->new AnnualLeaveManageInforImport(c.getYmd(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getScheduleRecordAtr())).collect(Collectors.toList());
 		
@@ -223,16 +238,39 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
 				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
-																c.getEarly1()==1?true:false, 
 																c.getLate1()==1?true:false, 
-																c.getEarly2()==1?true:false, 
-																c.getLate2()==1?true:false)).collect(Collectors.toList());
+																c.getEarly1()==1?true:false, 
+																c.getLate2()==1?true:false, 
+																c.getEarly2()==1?true:false)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<DailyLateAndLeaveEarlyTimeImport> getLateLeaveEarly(String employeeId, DatePeriod datePeriod) {
 		DailyLateAndLeaveEarlyTimePubExport map = dailyLateAndLeaveEarlyTimePub.getLateLeaveEarly(new DailyLateAndLeaveEarlyTimePubImport(employeeId, datePeriod));
 		return map.getList().stream().map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getDate(), c.isLate1(), c.isLeaveEarly1(), c.isLate2(), c.isLeaveEarly2())).collect(Collectors.toList());
+	}
+
+	@Override
+	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, DatePeriod datePeriod) {
+		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, datePeriod.end());
+		 
+		if(rsvLeaNumByCriteriaDate.isPresent()) {
+			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
+			////付与日
+			GeneralDate grantDay = GeneralDate.today();
+			grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			////付与前残数
+			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
+									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+			//付与後残数
+			Double aftRemainDay = 0.0;
+			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().isPresent()){
+				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().get().getTotalRemainingDays().v();
+			}
+			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
+		}else {
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, GeneralDate.today());
+		}
 	}
 
 	

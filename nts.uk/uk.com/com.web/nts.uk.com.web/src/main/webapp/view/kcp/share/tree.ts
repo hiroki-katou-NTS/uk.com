@@ -272,6 +272,11 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
+            // validate baseDate
+            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+                return;
+            }
+
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
@@ -654,14 +659,17 @@ module kcp.share.tree {
 
                 // set selected workplaced
                 if (!_.isNil(self.selectedWorkplaceIds())) {
-                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
+                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
+                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
                 }
 
                 // init event selected changed
                 self.initEvent();
 
                 // fix bug scroll on tree
-                _.defer(() => $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind'));
+                _.defer(() => {
+                    $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind');
+                });
 
                 // defined function get data list.
                 self.createGlobalVarDataList();

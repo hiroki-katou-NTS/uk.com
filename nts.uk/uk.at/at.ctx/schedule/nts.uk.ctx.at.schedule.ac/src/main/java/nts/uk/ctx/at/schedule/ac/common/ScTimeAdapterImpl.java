@@ -33,6 +33,7 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 				.totalWorkTime(export.getTotalWorkTime())
 				.weekDayTime(export.getWeekDayTime())
 				.ymd(export.getYmd())
+				.personalExpenceTime(export.getPersonalExpenceTime())
 				.build();
 	}
 

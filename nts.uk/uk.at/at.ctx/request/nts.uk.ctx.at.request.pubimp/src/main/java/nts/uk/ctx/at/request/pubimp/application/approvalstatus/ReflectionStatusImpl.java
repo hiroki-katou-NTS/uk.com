@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ApplicationNewExport;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ReflectionInformation_NewDto;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ReflectionStatusPub;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReflectionStatusImpl implements ReflectionStatusPub {
 	
@@ -50,7 +51,8 @@ public class ReflectionStatusImpl implements ReflectionStatusPub {
 	}
 	@Override
 	public List<ApplicationNewExport> getByListRefStatus(String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
-		List<ApplicationNewExport> data = repo.getByListRefStatus(employeeID, startDate, endDate, listReflecInfor).stream().map(c->fromDomain(c)).collect(Collectors.toList()); 
+		String companyID = AppContexts.user().companyId();
+		List<ApplicationNewExport> data = repo.getByListRefStatus(companyID, employeeID, startDate, endDate, listReflecInfor).stream().map(c->fromDomain(c)).collect(Collectors.toList()); 
 		return data;
 	}
 	

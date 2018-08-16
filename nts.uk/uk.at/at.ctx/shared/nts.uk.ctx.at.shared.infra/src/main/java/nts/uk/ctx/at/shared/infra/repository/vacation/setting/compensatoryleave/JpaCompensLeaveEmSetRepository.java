@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
@@ -123,6 +122,8 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
                 KclmtCompensLeaveEmpPK_.cid), companyId));
         
         query.where(predicateList.toArray(new Predicate[]{}));
+        
+        List<KclmtCompensLeaveEmp> result = em.createQuery(query).getResultList();
         
         return em.createQuery(query).getResultList().stream()
                 .map(entity -> new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity)))

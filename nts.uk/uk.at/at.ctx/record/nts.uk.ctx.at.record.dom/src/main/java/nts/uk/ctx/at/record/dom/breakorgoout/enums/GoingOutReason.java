@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.breakorgoout.enums;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 
@@ -90,5 +92,12 @@ public enum GoingOutReason {
 		default:
 			return false;
 		}
+	}
+	
+	public static Optional<GoingOutReason> corvert(int value) {
+		for(GoingOutReason reason:GoingOutReason.values()) {
+			if(reason.value == value) return Optional.of(reason);
+		}
+		return Optional.empty();
 	}
 }
