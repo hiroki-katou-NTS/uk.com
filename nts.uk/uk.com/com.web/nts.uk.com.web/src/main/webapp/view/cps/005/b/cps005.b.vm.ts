@@ -308,10 +308,13 @@ module nts.uk.com.view.cps005.b {
         constructor(params: IItemData) {
             let self = this;
             if (params) {
+                let personEmployeeType = __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType,
+                    dataTypeEnumArray = (personEmployeeType == 2) ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5];
+                
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
-                    return [1, 2, 3, 4, 5, 6].indexOf(c.value) > -1;
+                    return dataTypeEnumArray.indexOf(c.value) > -1;
                 });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
                 self.stringItemTypeEnumFilter = _.filter(params.stringItemTypeEnum, function(c) {
