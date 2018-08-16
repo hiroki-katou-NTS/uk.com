@@ -47,6 +47,12 @@ public class PerInfoInitValueSetItemFinder {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
+	
+	private final static String nameStartDate = "開始日";
+	
+	private final static String nameEndDate = "終了日";
+	
+
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItemDetail> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
@@ -75,6 +81,7 @@ public class PerInfoInitValueSetItemFinder {
 		} else {
 			itemList.addAll(this.createItemTimePointOfCS00070());
 		}
+		
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
 		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
@@ -82,6 +89,15 @@ public class PerInfoInitValueSetItemFinder {
 				item = item.stream().filter(c -> {
 					return !itemList.contains(c.getItemCode());
 				}).collect(Collectors.toList());
+			} else if(ctgCode.equals("CS00003")) {
+				item = item.stream().filter(c -> {
+					return !c.getItemCode().equals("IS00020");
+				}).collect(Collectors.toList());
+			} else if(ctgCode.equals("CS00001")) {
+				item = item.stream().filter(c -> {
+					return !c.getItemCode().equals("IS00001");
+				}).collect(Collectors.toList());
+				
 			}
 			this.setRequiredBackGround(item, ctg, itemDto, itemRequired);
 			ctgState.setItemLst(itemDto);
