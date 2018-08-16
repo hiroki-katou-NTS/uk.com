@@ -51,9 +51,10 @@ public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
 				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		
 		if(zeroCompanyDatas.length == 0)
 			return;
-		this.entityManager.joinTransaction();
+
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)

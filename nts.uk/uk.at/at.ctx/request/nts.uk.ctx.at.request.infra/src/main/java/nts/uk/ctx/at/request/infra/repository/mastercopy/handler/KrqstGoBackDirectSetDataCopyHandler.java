@@ -14,13 +14,13 @@ import nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class KrqstWithDrawalReqSetDataCopyHandler.
+ * The Class KrqstGoBackDirectSetDataCopyHandler.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstWithDrawalReqSetDataCopyHandler implements DataCopyHandler {
+public class KrqstGoBackDirectSetDataCopyHandler implements DataCopyHandler {
 	
 	/** The entity manager. */
 	private EntityManager entityManager;
@@ -32,17 +32,17 @@ public class KrqstWithDrawalReqSetDataCopyHandler implements DataCopyHandler {
 	private String companyId;
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_WITHDRAWAL_REQ_SET(CID, PERMISSION_DIVISION, APPLI_DATE_CONTRAC, USE_ATR, CHECK_UPLIMIT_HALFDAY_HD, PICKUP_COMMENT, PICKUP_BOLD, "
-			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private String INSERT_QUERY = "INSERT INTO KRQST_GO_BACK_DIRECT_SET(CID, WORK_CHANGE_FLG, WORK_CHANGE_TIME_ATR, PERFORMANCE_DISPLAY_ATR, CONTRADITION_CHECK_ATR, WORK_TYPE, LATE_LEAVE_EARLY_SETTING_ATR, "
+			+ "COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PERMISSION_DIVISION, APPLI_DATE_CONTRAC, USE_ATR, CHECK_UPLIMIT_HALFDAY_HD, PICKUP_COMMENT, PICKUP_BOLD, "
-			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE "
-			+ "FROM KRQST_WITHDRAWAL_REQ_SET WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, WORK_CHANGE_FLG, WORK_CHANGE_TIME_ATR, PERFORMANCE_DISPLAY_ATR, CONTRADITION_CHECK_ATR, WORK_TYPE, LATE_LEAVE_EARLY_SETTING_ATR, "
+			+ "COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2 "
+			+ "FROM KRQST_GO_BACK_DIRECT_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_WITHDRAWAL_REQ_SET WHERE CID = ?";
-
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_GO_BACK_DIRECT_SET WHERE CID = ?";
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
 	 */
@@ -67,20 +67,19 @@ public class KrqstWithDrawalReqSetDataCopyHandler implements DataCopyHandler {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
 					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * 14 + 1, this.companyId);
-					insertQuery.setParameter(i * 14 + 2, dataArr[1]);
-					insertQuery.setParameter(i * 14 + 3, dataArr[2]);
-					insertQuery.setParameter(i * 14 + 4, dataArr[3]);
-					insertQuery.setParameter(i * 14 + 5, dataArr[4]);
-					insertQuery.setParameter(i * 14 + 6, dataArr[5]);
-					insertQuery.setParameter(i * 14 + 7, dataArr[6]);
-					insertQuery.setParameter(i * 14 + 8, dataArr[7]);
-					insertQuery.setParameter(i * 14 + 9, dataArr[8]);
-					insertQuery.setParameter(i * 14 + 10, dataArr[9]);
-					insertQuery.setParameter(i * 14 + 11, dataArr[10]);
-					insertQuery.setParameter(i * 14 + 12, dataArr[11]);
-					insertQuery.setParameter(i * 14 + 13, dataArr[12]);
-					insertQuery.setParameter(i * 14 + 14, dataArr[13]);
+					insertQuery.setParameter(i * 13 + 1, this.companyId);
+					insertQuery.setParameter(i * 13 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 13 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 13 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 13 + 5, dataArr[4]);
+					insertQuery.setParameter(i * 13 + 6, dataArr[5]);
+					insertQuery.setParameter(i * 13 + 7, dataArr[6]);
+					insertQuery.setParameter(i * 13 + 8, dataArr[7]);
+					insertQuery.setParameter(i * 13 + 9, dataArr[8]);
+					insertQuery.setParameter(i * 13 + 10, dataArr[9]);
+					insertQuery.setParameter(i * 13 + 11, dataArr[10]);
+					insertQuery.setParameter(i * 13 + 12, dataArr[11]);
+					insertQuery.setParameter(i * 13 + 13, dataArr[12]);
 				}
 				
 				// Run insert query
@@ -94,13 +93,13 @@ public class KrqstWithDrawalReqSetDataCopyHandler implements DataCopyHandler {
 	}
 
 	/**
-	 * Instantiates a new krqst with drawal req set data copy handler.
+	 * Instantiates a new krqst go back direct set data copy handler.
 	 *
 	 * @param entityManager the entity manager
 	 * @param copyMethod the copy method
 	 * @param companyId the company id
 	 */
-	public KrqstWithDrawalReqSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
+	public KrqstGoBackDirectSetDataCopyHandler(EntityManager entityManager, CopyMethod copyMethod, String companyId) {
 		super();
 		this.entityManager = entityManager;
 		this.copyMethod = copyMethod;

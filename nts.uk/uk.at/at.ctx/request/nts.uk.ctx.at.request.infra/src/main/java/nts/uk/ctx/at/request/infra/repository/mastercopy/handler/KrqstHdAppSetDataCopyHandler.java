@@ -61,7 +61,7 @@ public class KrqstHdAppSetDataCopyHandler implements DataCopyHandler {
 		
 		if(zeroCompanyDatas.length == 0)
 			return;
-		this.entityManager.joinTransaction();
+
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
