@@ -206,47 +206,29 @@ public class ItemValue {
 		return item;
 	}
 	
-	public static List<ItemValue> convertItemLog(List<ItemValue> items, List<ItemValue> itemInvisible, String itemCode, DatePeriodSet datePeriod){
-		List<ItemValue> itemValues= new ArrayList<>();
-		
-		items.stream().forEach( c ->{
-			Object oldValue = formatValue(c, c.valueBefore(), true);
-			Object newValue = formatValue(c, c.valueAfter(), false);
+	public static  ItemValue filterItem(ItemValue item){
+			Object oldValue = formatValue(item, item.valueBefore());
+			Object newValue = formatValue(item, item.valueAfter());
+			
+			if(oldValue == null && newValue == null) {
+				return null;
+			}
 			
 			if(oldValue == null && newValue != null) {
-				itemValues.add(setContent(c));
-			}
-			
-			if(c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
-			}
-			
-			if(datePeriod != null) {
-				if (c.itemCode().equals(datePeriod.getStartCode())) {
-					itemValues.add(setContent(c));
-				}
+				return item;
 			}
 			
 			if(oldValue != null) {
 				if (!oldValue.equals(newValue)) {
-					itemValues.add(setContent(c));
+					return item;
 				}
 			}
 			
-		});		
-		
-		itemInvisible.stream().forEach(c -> {
-			if (c.itemCode().equals(itemCode)) {
-				itemValues.add(setContent(c));
-			}
-
-		});
-		
-		return itemValues;
+		return null;
 	}
 	
 	
-	private static Object formatValue(ItemValue item, Object value,  boolean isOld) {
+	public static Object formatValue(ItemValue item, Object value) {
 		
 		if (value == null || value == "") return null;
 		
