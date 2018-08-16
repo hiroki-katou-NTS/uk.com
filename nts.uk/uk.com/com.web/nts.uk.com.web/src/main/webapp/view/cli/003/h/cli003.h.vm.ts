@@ -42,10 +42,10 @@ module nts.uk.com.view.cli003.h.viewmodel {
 
             $("#H1_2").html(getShared('itemName'));
             self.comboColumns = ko.observableArray([{ prop: 'name' }]);
-            
-            $("#H2_1 tr").eq(1).find('td:first div').find('input:checkbox').attr('tabindex', '-1');
-            $("#H2_1 tr").eq(1).find('td:first div').find('input:checkbox').focus();
-            
+        }
+        
+        enterPress() {
+            //
         }
 
         closePopup() {
@@ -54,6 +54,7 @@ module nts.uk.com.view.cli003.h.viewmodel {
 
         submit() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             if (self.checkData()) {
                 var list = [];
                 for (var i = 0; i < self.conditionSets().length; i++) {
@@ -66,6 +67,14 @@ module nts.uk.com.view.cli003.h.viewmodel {
             }
         }
         
+         private validateForm() {
+            $(".validate_form").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        };
+        
         checkData() {
             let self = this;
             let flgReturn = true;
@@ -77,7 +86,11 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 }
             });
             if (!flgReturn) {
-                alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});    
+                alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')] });
+            } else {
+                if (!self.validateForm()) {
+                    flgReturn = false;
+                }
             }
             return flgReturn;
         }

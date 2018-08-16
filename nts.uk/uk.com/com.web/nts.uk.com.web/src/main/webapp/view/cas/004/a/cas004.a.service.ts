@@ -59,8 +59,9 @@ module nts.uk.com.view.cas004.a {
             associatedPersonID: any;
             specialUser: boolean;
             multiCompanyConcurrent: boolean;
+            cid: any;
             
-            constructor(userID: string, loginID: string, userName: string, password: any, expirationDate: string, mailAddress: string, associatedPersonID: any, specialUser: boolean, multiCompanyConcurrent: boolean) {
+            constructor(userID: string, loginID: string, userName: string, password: any, expirationDate: string, mailAddress: string, associatedPersonID: any, specialUser: boolean, multiCompanyConcurrent: boolean, cid: any) {
                 this.userID = userID;
                 this.loginID = loginID;
                 this.userName = userName;
@@ -70,6 +71,7 @@ module nts.uk.com.view.cas004.a {
                 this.associatedPersonID = associatedPersonID;
                 this.specialUser = specialUser;
                 this.multiCompanyConcurrent = multiCompanyConcurrent;
+                this.cid = cid;
             }
         }
         

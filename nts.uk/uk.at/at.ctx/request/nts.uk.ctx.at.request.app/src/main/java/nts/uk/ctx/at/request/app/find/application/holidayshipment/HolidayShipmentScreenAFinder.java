@@ -479,24 +479,17 @@ public class HolidayShipmentScreenAFinder {
 
 	private void setWkTimeInfoForAbsApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
 		AbsenceLeaveAppDto absAppOutPut = output.getAbsApp();
-		AbsenceLeaveAppDto absApp = new AbsenceLeaveAppDto();
 		if (absAppOutPut != null) {
-			absApp = absAppOutPut;
+			setSelectedWkTimeInfo(companyID, WkTimeCD, absAppOutPut);
 		}
-		absApp.setFromAppDto(setSelectedWkTimeInfo(companyID, WkTimeCD));
-		output.setAbsApp(absApp);
 
 	}
 
 	private void setWkTimeInfoForRecApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
 		RecruitmentAppDto recAppOutPut = output.getRecApp();
-		RecruitmentAppDto recApp = new RecruitmentAppDto();
 		if (recAppOutPut != null) {
-			recApp = recAppOutPut;
+			setSelectedWkTimeInfo(companyID, WkTimeCD, recAppOutPut);
 		}
-		recApp.setFromAppDto(setSelectedWkTimeInfo(companyID, WkTimeCD));
-		output.setRecApp(recApp);
-
 	}
 
 	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output,
@@ -542,39 +535,34 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private HolidayShipmentAppDto setSelectedWkTimeInfo(String companyID, String wkTimeCode) {
+	private void setSelectedWkTimeInfo(String companyID, String wkTimeCode, HolidayShipmentAppDto recAppOutPut) {
 		// アルゴリズム「就業時間帯表示情報（単体）の取得」を実行する
-		HolidayShipmentAppDto result = new HolidayShipmentAppDto();
-		if (wkTimeCode != null) {
+		if (wkTimeCode != null && recAppOutPut != null) {
 			boolean isGetHiddenItems = true;
-			result = setWkTimeZoneDisplayInfo(companyID, wkTimeCode, isGetHiddenItems);
+			setWkTimeZoneDisplayInfo(companyID, wkTimeCode, isGetHiddenItems, recAppOutPut);
 		}
-		return result;
 
 	}
 
-	private HolidayShipmentAppDto setWkTimeZoneDisplayInfo(String companyID, String wkTimeCode,
-			boolean isGetHiddenItems) {
-		HolidayShipmentAppDto appOut = new HolidayShipmentAppDto();
-		if (isGetHiddenItems) {
+	private void setWkTimeZoneDisplayInfo(String companyID, String wkTimeCode, boolean isGetHiddenItems,
+			HolidayShipmentAppDto recAppOutPut) {
+		if (isGetHiddenItems && recAppOutPut != null) {
 			Optional<WorkTimeSetting> wkTimeOpt = this.wkTimeSetRepo.findByCode(companyID, wkTimeCode);
 
 			if (wkTimeOpt.isPresent()) {
 
-				appOut.updateFromWkTimeSet(wkTimeOpt.get());
+				recAppOutPut.updateFromWkTimeSet(wkTimeOpt.get());
 
 				wkTimeCode = wkTimeOpt.get().getWorktimeCode().v();
 
 				Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID,
 						wkTimeCode);
 				if (preTimeSetOpt.isPresent()) {
-					appOut.updateFromPreTimeSet(preTimeSetOpt.get());
-					appOut.setWorkTimeName(wkTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v());
+					recAppOutPut.updateFromPreTimeSet(preTimeSetOpt.get());
+					recAppOutPut.setWorkTimeName(wkTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v());
 				}
 			}
 		}
-
-		return appOut;
 
 	}
 

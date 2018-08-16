@@ -898,6 +898,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if (typeCheck == 6) { //combobox select
                 //With type 回数 - Times , Number  = 2
                 service.getAttendanceItemByAtrNew(2,mode).done((data) => {
+                    service.getOptItemByAtrNew(2,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
@@ -920,6 +925,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             } else if (typeCheck == 4) {
                 //With type 時間 - Time
                 service.getAttendanceItemByAtrNew(1,mode).done((data) => {
+                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
@@ -942,6 +952,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
                 service.getAttendanceItemByAtrNew(4,mode).done((data) => {
+                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
