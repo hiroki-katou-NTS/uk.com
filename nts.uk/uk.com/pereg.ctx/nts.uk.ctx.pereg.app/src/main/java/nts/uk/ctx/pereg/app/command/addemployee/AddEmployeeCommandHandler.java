@@ -324,21 +324,21 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			if (ctgTarget != null) {
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
-			// log phần avatar
-			if(command.getAvatarOrgId() != "") {
-				List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
-				lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
-						command.getAvatarOrgId(), command.getFileName(), 1));
-				
-				ctgTarget = new PersonCategoryCorrectionLogParameter(
-						input.getCategoryId(),
-						command.getCategoryName(),
-						InfoOperateAttr.UPDATE,
-						lstItemInfo, 
-						new TargetDataKey(CalendarKeyType.NONE,
-						null, command.getCardNo()), Optional.empty());
-				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
-			}
+		}
+		// log phần avatar
+		if(command.getAvatarOrgId() != "") {
+			List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
+			lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
+					command.getAvatarOrgId(), command.getFileName(), 1));
+			
+			PersonCategoryCorrectionLogParameter ctgAvatar = new PersonCategoryCorrectionLogParameter(
+					null,
+					command.getCategoryName(),
+					InfoOperateAttr.UPDATE,
+					lstItemInfoAvatar, 
+					new TargetDataKey(CalendarKeyType.NONE,
+					null, command.getCardNo()), Optional.empty());
+			DataCorrectionContext.setParameter(ctgAvatar.getHashID(), ctgAvatar);
 		}
 	}
 	

@@ -38,7 +38,7 @@
 
 						<div>
 							<div id="checked"
-								data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
+								data-bind="ntsCheckBox: { checked: ckbDisplayAbolition}">#{i18n.getText('CPS006_22')}</div>
 						</div>
 
 						<div>
@@ -95,7 +95,7 @@
 
 							<com:ko-if bind="currentItem().canAbolition === true">
 								<div id="B2_5"
-									data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
+									data-bind="ntsCheckBox: { checked: ckbIsAbolition, style: 'warnpanel' }">#{i18n.getText('CPS006_24')}</div>
 							</com:ko-if>
 
 						</div>
@@ -252,7 +252,7 @@
 
 									</div>
 									<com:ko-if
-										bind=" currentItem().itemTypeState.dataTypeState.numericItemMin !=null &amp; currentItem().itemTypeState.dataTypeState.numericItemMax !=null">
+										bind="currentItem().itemTypeState.dataTypeState.numericItemMax !=null">
 										<div class="div_line">
 
 											<div class="line_col_1">

@@ -454,6 +454,7 @@ module cps002.a.vm {
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
                     if (self.createTypeId() === 3) {
+                        $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));  
                         self.gotoStep2();
                         return;
                     }
@@ -482,7 +483,6 @@ module cps002.a.vm {
 
         backToStep0() {
             let self = this;
-
             self.currentStep(0);
 
             self.start();
@@ -570,6 +570,8 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
+            //Name Screen D 
+            $('#pg-name').text('CPS002D'+ ' ' + text('CPS002_4'));  
         }
 
         isUseInitValue() {
@@ -587,14 +589,18 @@ module cps002.a.vm {
             if (self.isUseInitValue()) {
 
                 //start Screen C
-
+                //Set name Screen C　#CPS002_3
+                 $('#pg-name').text('CPS002C'+ ' ' + text('CPS002_3'));  
                 self.loadInitSettingData();
 
 
             } else {
 
                 //start Screen B
+                  //Set name Screen B　#CPS002_2             
 
+                  $('#pg-name').text('CPS002B'+ ' ' + text('CPS002_2'));
+                
                 $('#search_box').hide();
 
                 self.loadCopySettingCtgData();
@@ -602,6 +608,7 @@ module cps002.a.vm {
                     $('#hor-scroll-button-show').trigger('click');
                 }
                 $('#inp_baseDate').focus();
+             
 
             }
 
@@ -676,12 +683,15 @@ module cps002.a.vm {
             self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
+                 $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));  
             }
             if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
+                
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                 $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));  
                 return;
             }
         }
