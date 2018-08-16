@@ -306,7 +306,7 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
-                    $input.ntsError('clear');
+                    //$input.ntsError('clear');
                     if (result.isValid) {
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
@@ -315,7 +315,15 @@ module nts.uk.ui.koExtentions {
                             value(result.parsedValue);
                         }
                     } else {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
+                           $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        } else {
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                            }
+                        }
                         
                         if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
                             valueChanging.markUserChange($input);
