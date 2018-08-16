@@ -209,6 +209,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							if (outPut.getErrMesInfos() == null
 									|| (outPut.getErrMesInfos() != null && outPut.getErrMesInfos().isEmpty())) {
 								shortTimeOfDailyPerformance = outPut.getShortTimeOfDailyPerformance();
+								ReflectStampOutput output2 = new ReflectStampOutput();
+								output2.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+								stampOutput.setReflectStampOutput(output2);
 							} else {
 								errMesInfos.addAll(outPut.getErrMesInfos());
 							}
@@ -433,14 +436,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 
 						}						
 					}
-						if (shortTimeOfDailyPerformance != null) {
-							stampOutput.getReflectStampOutput().setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
-						}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && (stampOutput.getErrMesInfos()!= null && stampOutput.getErrMesInfos().isEmpty())
-					&& stampOutput.getErrMesInfos() == null) {
+			if (errMesInfos.isEmpty() && ((stampOutput.getErrMesInfos()!= null && stampOutput.getErrMesInfos().isEmpty())
+					|| stampOutput.getErrMesInfos() == null)) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput.getReflectStampOutput(), affiliationInfor, dailyPerformance,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, null, breakTimeOfDailyPerformance);
