@@ -1331,19 +1331,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
-		if (setting.getConvertCode().isPresent() && outputCodeConvertRepo
-				.getOutputCodeConvertById(cid, setting.getConvertCode().get().v()).isPresent()) {
-			Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid,
-					setting.getConvertCode().get().v());
-			for (CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
-				if (targetValue.equals(convertDetail.getSystemCd())) {
-					targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get().v() : "";
-					inConvertCode = true;
-					break;
+		Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
+		if (setting.getConvertCode().isPresent() && codeConvert.isPresent()) {
+			for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
+				if (!targetValue.equals(convertDetail.getSystemCd())) {
+					continue;
 				}
+				targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
+				inConvertCode = true;
+				break;
 			}
 
-			if (!inConvertCode && (codeConvert.get().getAcceptWithoutSetting() == NotUseAtr.NOT_USE)) {
+			if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
 				state = RESULT_NG;
 				errorMess = "mes-678";
 
@@ -1361,8 +1360,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue.replaceAll("^\\s+", "");
 		}
 
-		if ((setting.getCdEditting() == NotUseAtr.USE) && setting.getCdEditDigit().isPresent()
-				&& (targetValue.length() < setting.getCdEditDigit().get().v())) {
+		if ((setting.getCdEditting() == NotUseAtr.USE)
+				&& targetValue.length() < setting.getCdEditDigit().map(i->i.v()).orElse(-1)) {
 			targetValue = fixlengthData(targetValue, setting.getCdEditDigit().get().v(), setting.getCdEdittingMethod());
 		}
 
