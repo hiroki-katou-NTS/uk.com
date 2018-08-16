@@ -1220,7 +1220,7 @@ public class ProgramsManager {
 	/**
 	 * CPS002E
 	 */
-	public static final Program CPS002E = new Program(WebAppId.COM, ProgramIdConsts.CPS002E, "CPS002_5",
+	public static final Program CPS002E = new Program(WebAppId.COM, ProgramIdConsts.CPS002E, "CPS002_110",
 			"/view/cps/002/e/index.xhtml");
 
 	/**
