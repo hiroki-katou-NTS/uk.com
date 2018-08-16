@@ -179,7 +179,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                         } else {
                             self.index(self.index() - 1);
                         }
-                        self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
+                        if (self.conditionSettingList().length != 1) {
+                            self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
+                        } else {
+                            self.initScreen(null);
+                        }
                     }); 
                 });
              });
