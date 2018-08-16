@@ -375,6 +375,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 } else {
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
