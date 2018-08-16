@@ -261,16 +261,22 @@ module nts.uk.ui.koExtentions {
             });
             
             $input.on("keyup", (e) => {
+                if ($input.attr('readonly')) {
+                    return;                
+                }
+                
                 var code = e.keyCode || e.which;
-                if (!$input.attr('readonly') && _.toString(code) !== '9') {
-                    let validator = self.getValidator(data);
-                    var newText = $input.val();
-                    var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
-                    if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                    } 
-                } 
+                if (_.includes(KeyCodes.NotValueKeys, code)) {
+                    return;
+                }
+                
+                let validator = self.getValidator(data);
+                var newText = $input.val();
+                var result = validator.validate(newText, { isCheckExpression: true });
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                }
             });
             
             // Format on blur
