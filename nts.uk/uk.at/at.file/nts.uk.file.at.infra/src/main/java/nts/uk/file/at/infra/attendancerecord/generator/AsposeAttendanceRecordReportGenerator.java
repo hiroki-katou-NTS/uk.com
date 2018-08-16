@@ -209,7 +209,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 					pageSetup.setFitToPagesTall(1);
 					pageSetup.setFitToPagesWide(1);
-
+					
+					// Set header value
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16" + dataSource.getData().getReportName());
+					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9&D　&T\npage&P");
+					
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
 				}
