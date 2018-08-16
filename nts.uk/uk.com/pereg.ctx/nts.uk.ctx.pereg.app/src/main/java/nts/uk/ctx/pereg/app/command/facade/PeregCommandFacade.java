@@ -474,26 +474,11 @@ public class PeregCommandFacade {
 						
 					}
 					
-					if(item.valueAfter() == null && item.valueBefore() == null) break;
-					
-					if (isAdd == PersonInfoProcessAttr.ADD) {
-						
-						if (!item.valueAfter().equals(item.valueBefore())) {
-							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-						}
-					} else {
-
-						if(!item.valueAfter().equals(item.valueBefore())) {
-							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-						}
-						
-						if (item.valueAfter() != null && item.valueBefore() == null) {
-							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-						}
+					if (ItemValue.filterItem(item) != null) {
+						lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
 					}
+					
 				}
-
-				
 
 				// Add category correction data
 				PersonCategoryCorrectionLogParameter ctgTarget = null;
