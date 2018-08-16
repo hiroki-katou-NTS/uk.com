@@ -102,6 +102,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         maxDay: KnockoutObservable<number> = ko.observable(0);
         //喪主加算日数
         dayOfRela: KnockoutObservable<number> = ko.observable(0);
+        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
+        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
+        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
 
             let self = this;

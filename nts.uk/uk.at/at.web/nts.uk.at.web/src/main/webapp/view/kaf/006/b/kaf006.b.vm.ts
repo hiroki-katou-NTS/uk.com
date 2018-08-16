@@ -101,6 +101,9 @@ module nts.uk.at.view.kaf006.b{
         maxDay: KnockoutObservable<number> = ko.observable(0);
         //喪主加算日数
         dayOfRela: KnockoutObservable<number> = ko.observable(0);
+        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
+        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
+        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -432,7 +435,13 @@ module nts.uk.at.view.kaf006.b{
                 self.eblTimeEnd1(false);
                 self.enbReasonCombo(false);
                 self.enbContentReason(false);
+                self.relaEnable(false);
+                self.relaMourner(false);
+                self.relaRelaReason(false);
             }else if(data.initMode == 1){
+                self.relaEnable(true);
+                self.relaMourner(true);
+                self.relaRelaReason(true);
                 // edit Mode
                 self.enbAllDayHalfDayFlg(true);
                 self.enbWorkType(true);
