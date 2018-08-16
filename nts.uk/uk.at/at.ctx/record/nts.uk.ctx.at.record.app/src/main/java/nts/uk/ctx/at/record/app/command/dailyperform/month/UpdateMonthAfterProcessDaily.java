@@ -14,12 +14,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -39,7 +41,7 @@ public class UpdateMonthAfterProcessDaily {
 	private UpdateAllDomainMonthService updateAllDomainMonthService;
 
 	public List<IntegrationOfMonthly> updateMonth(List<DailyRecordWorkCommand> commandNew,
-			List<IntegrationOfDaily> domainDailyNew, Optional<IntegrationOfMonthly> monthlyWork) {
+			List<IntegrationOfDaily> domainDailyNew, Optional<IntegrationOfMonthly> monthlyWork, UpdateMonthDailyParam month) {
 		String companyId = AppContexts.user().companyId();
 		List<IntegrationOfMonthly> result = new ArrayList<>();
 		List<Pair<String, GeneralDate>> lstDaily = commandNew.stream()
@@ -69,7 +71,11 @@ public class UpdateMonthAfterProcessDaily {
 		if (!domainDailyNew.isEmpty()) {
 			updateAllDomainMonthService.insertUpdateAll(result);
 		} else if (monthlyWork.isPresent()) {
-			updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthlyWork.get()));
+			List<IntegrationOfDaily> domainDailyGroupEmp = commandNew.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+			Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId, month.getEmployeeId(),
+					new YearMonth(month.getYearMonth()), ClosureId.valueOf(month.getClosureId()), month.getClosureDate().toDomain(), month.getDatePeriod(), Optional.empty(), domainDailyGroupEmp,
+					monthlyWork);
+			updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
 		}
 		
 		return result;

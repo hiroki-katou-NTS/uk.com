@@ -200,6 +200,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         lstDomainOld: any = [];
         lstDataSourceLoad: any;
         lstDomainEdit: any = [];
+        
+        flagCalculation: boolean = false;
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
@@ -554,14 +556,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //let objectName = {};
                             //                            objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
                             //                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
-                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
+                            //$("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
+                            self.updateCellSpr("_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
                             sprStamp.change31 = true;
                         }
 
                         if (data.changeSPR.change34) {
                             //let objectName = {};
                             //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
-                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
+                             self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                             //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                             sprStamp.change34 = true;
                         }
@@ -590,7 +593,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //let objectName = {};
                         //objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
                         //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
-                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
+                         self.updateCellSpr("_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
                         sprStamp.change31 = true;
                     }
 
@@ -598,7 +601,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //let objectName = {};
                         //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
                         //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
-                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
+                         self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                         sprStamp.change34 = true;
                     }
                     if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
@@ -610,6 +613,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
+        updateCellSpr(rowId: any, item: any, value: any) {
+            let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            $("#dpGrid").mGrid("updateCell", rowId, item, value);
+            self.inputProcess(rowId, item, value).done(value => {
+                _.each(value.cellEdits, itemResult => {
+                    $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value);
+                })
+                nts.uk.ui.block.clear();
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
         convertMinute(value): string {
             return Math.floor(value / 60) + ':' + value % 60;
         }
@@ -924,11 +943,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstHeader: self.lstHeaderReceive,
                 autBussCode: self.autBussCode(),
                 dateMonth: moment(self.dateRanger().endDate).utc().toISOString(),
-                onlyLoadMonth: onlyLoadMonth
+                onlyLoadMonth: onlyLoadMonth,
+                dailys: self.lstDomainEdit
             }
 
             let dfd = $.Deferred();
             service.loadRow(param).done((data) => {
+                self.lstDomainEdit = data.domainOld;
+                self.lstDomainOld = _.cloneDeep(data.domainOld);
                 if (onlyLoadMonth) {
                     self.processFlex(data, true);
                     nts.uk.ui.block.clear();
@@ -1223,8 +1245,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     localStorage.setItem('kdw003_type', data.typeBussiness);
                     self.dataAll(data);
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
-                    //let idC = self.createKeyLoad();
-                    //TO Thanh: set data for list attendance item after load by extract click
                     self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                     self.itemValueAll(data.itemValues);
                     self.createSumColumn(data);
@@ -1524,6 +1544,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
+                            self.lstDomainOld = data.domainOld;
+                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -1602,6 +1624,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
+                            self.lstDomainOld = data.domainOld;
+                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -2415,7 +2439,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         clickButtonList(data) {
-            //TODO
             let dataShareCmm = {
                 appListAtr: 0,
                 appType: -1,
@@ -2758,7 +2781,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred(),
                 keyId: any,
                 valueError: any;
-            
+            __viewContext.vm.flagCalculation = false;
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
@@ -2782,7 +2805,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return String(value.id) === keyId;
                 })
                 let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
-                let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0, columnKey);
+                let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
                 let param = {
                     dailyEdits: __viewContext.vm.lstDomainEdit,

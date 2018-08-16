@@ -58,6 +58,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -93,14 +94,14 @@ public class DailyModifyResCommandFacade {
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
 	public List<DPItemValueRC> handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
-			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month) {
+			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode) {
 		String sid = AppContexts.user().employeeId();
 
 		List<DailyRecordWorkCommand> commandNew = createCommands(sid, dtoNews, querys);
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
 		
-		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month);
+		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
 	}
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
@@ -170,7 +171,9 @@ public class DailyModifyResCommandFacade {
 						month.getClosureDate());
 				IntegrationOfMonthly domainMonth = monthModifyCommandFacade.toDto(monthQuery).toDomain(month.getEmployeeId(), new YearMonth(month.getYearMonth()), month.getClosureId(), month.getClosureDate());
 				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.of(domainMonth);
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(), month.getClosureId(), month.getClosureDate(), domainMonthOpt);
+				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
+						month.getClosureId(), month.getClosureDate(), domainMonthOpt, new DatePeriod(
+								dataParent.getDateRange().getStartDate(), dataParent.getDateRange().getEndDate()));
 //				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
 //					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 //							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
@@ -245,7 +248,7 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam);
+			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam, dataParent.getMode());
 			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
 					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 		} else {
@@ -289,7 +292,9 @@ public class DailyModifyResCommandFacade {
 						month.getClosureDate());
 				IntegrationOfMonthly domainMonth = monthModifyCommandFacade.toDto(monthQuery).toDomain(month.getEmployeeId(), new YearMonth(month.getYearMonth()), month.getClosureId(), month.getClosureDate());
 				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.of(domainMonth);
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(), month.getClosureId(), month.getClosureDate(), domainMonthOpt);
+				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
+						month.getClosureId(), month.getClosureDate(), domainMonthOpt, new DatePeriod(
+								dataParent.getDateRange().getStartDate(), dataParent.getDateRange().getEndDate()));
 			}
 		}
 
@@ -303,8 +308,18 @@ public class DailyModifyResCommandFacade {
 
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
 		// map to list result -> check error;
-		List<DailyRecordDto> dailyOlds = dataParent.getDailyOlds().stream().filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList());
-		List<DailyRecordDto> dailyEdits = dataParent.getDailyEdits().stream().filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList());
+		List<DailyRecordDto> dailyOlds, dailyEdits = new ArrayList<>();
+		if(!querys.isEmpty()){
+			dailyOlds = dataParent.getDailyOlds().stream()
+					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
+					.collect(Collectors.toList());
+			dailyEdits = dataParent.getDailyEdits().stream()
+					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
+					.collect(Collectors.toList());
+		} else {
+			dailyOlds = dataParent.getDailyOlds();
+			dailyEdits = dataParent.getDailyEdits();
+		}
 		List<DailyModifyResult> resultOlds = dailyOlds.stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
@@ -338,7 +353,7 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam);
+			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode());
 			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
 					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 		} else {

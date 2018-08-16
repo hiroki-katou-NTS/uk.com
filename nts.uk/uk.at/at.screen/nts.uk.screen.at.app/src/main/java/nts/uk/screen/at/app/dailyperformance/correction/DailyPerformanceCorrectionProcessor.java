@@ -466,6 +466,7 @@ public class DailyPerformanceCorrectionProcessor {
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
+		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
 		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
@@ -1303,7 +1304,6 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setFormatCode(disItem.getFormatCode());
 		result.setSettingUnit(disItem.isSettingUnit());
 		List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
-		Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
 		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
 		if (!lstAtdItemUnique.isEmpty()) {
@@ -1326,8 +1326,10 @@ public class DailyPerformanceCorrectionProcessor {
 		setOptionalItemAtr(lstAttendanceItem, optionalItemOpt, optionalItemAtrOpt);
 		
 		result.createSheets(disItem.getLstSheet());
-		mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+		Map<Integer, DPAttendanceItem> mapDP = lstAttendanceItem.stream().filter(x -> x.getAttendanceAtr().intValue() != DailyAttendanceAtr.ReferToMaster.value).collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setMapDPAttendance(mapDP);
+		result.setLstAttendanceItem(new ArrayList<>(mapDP.values()));
+		lstFormat = lstFormat.stream().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {
@@ -1675,11 +1677,11 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
-		// Su
+		     // Sunday
 		if(date.dayOfWeek() == 1){
 			screenDto.setCellSate(rowId, columnKey, COLOR_SUN);
 		}else if(date.dayOfWeek() == 7){
-			// Sa
+			// Saturday
 			screenDto.setCellSate(rowId, columnKey, COLOR_SAT);
 		}
 	}

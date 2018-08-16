@@ -106,11 +106,11 @@ public class DPHeaderDto {
 					false, "Link2", false, false, "center-align", null));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
-		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
+		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value && item.getTypeGroup() != null) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			groups.add(new DPHeaderDto("NO", "NO" + getCode(key), "number", String.valueOf(withChild) + "px", "", false,
-					"", "comboCode_"+"Name"+ getCode(key), "", false, false, null));
+					"", "comboCode_"+"Name"+ getCode(key), "", false, false, inputProcess(Integer.parseInt(getCode(key)))));
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null);

@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.dailymodify.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,9 +12,9 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 
 /** 日別修正QueryProcessor */
@@ -47,7 +48,18 @@ public class DailyModifyQueryProcessor {
 			return Pair.of(Collections.emptyList(), Collections.emptyList());
 		}
 		List<DailyRecordDto> dtoOlds = this.fullFinder.find(query.getEmployeeIds(), query.getPeriod());
-		//List<IntegrationOfDaily> domains = dtoOlds.stream().map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+		val resultValues = dtoOlds.stream()
+				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+				.collect(Collectors.toList());
+		return Pair.of(resultValues, dtoOlds);
+	}
+	
+	public Pair<List<DailyModifyResult>, List<DailyRecordDto>> getRow(Map<String, List<GeneralDate>> mapDate) {
+		if(mapDate.isEmpty()){
+			return Pair.of(Collections.emptyList(), Collections.emptyList());
+		}
+		List<DailyRecordDto> dtoOlds = this.fullFinder.find(mapDate);
 		val resultValues = dtoOlds.stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())

@@ -29,6 +29,9 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -39,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DailyCorrectEventServiceCenter {
@@ -54,6 +58,9 @@ public class DailyCorrectEventServiceCenter {
 
 	@Inject
 	private WorkingConditionItemRepository workConditionRepo;
+	
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 	
 	public final static List<Integer> WORK_INFO_ITEMS = Arrays.asList(28, 29);
 	
@@ -109,7 +116,7 @@ public class DailyCorrectEventServiceCenter {
 				});
 		DailyRecordDto correctted = AttendanceItemUtil.fromItemValues(DailyRecordDto.from(domain), updated.getItems());
 		
-		return new EventCorrectResult(baseDto, correctted, updated, correctedType);
+		return new EventCorrectResult(setOptionalItemAtr(baseDto), setOptionalItemAtr(correctted), updated, correctedType);
 	}
 	
 	public List<DailyRecordWorkCommand> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
@@ -283,6 +290,16 @@ public class DailyCorrectEventServiceCenter {
 	
 	private <T> T getFirstOrDefault(List<T> source, T defaultV){
 		return CollectionUtil.isEmpty(source) ? defaultV : source.get(0);
+	}
+	
+	private DailyRecordDto setOptionalItemAtr(DailyRecordDto dto){
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		dto.getOptionalItem().ifPresent(optional -> {
+			optional.correctItems(optionalMaster);
+		});
+		return dto;
 	}
 	
 	@AllArgsConstructor

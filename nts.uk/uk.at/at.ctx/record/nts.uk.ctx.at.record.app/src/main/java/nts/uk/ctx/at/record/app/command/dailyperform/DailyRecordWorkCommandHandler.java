@@ -317,8 +317,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	// fix response
 	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
-			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month) {
-		return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month);
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode) {
+		return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month, mode);
 	}
 		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
@@ -369,7 +369,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth());
+		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth(), month);
 		
 		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -392,7 +392,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 	
 	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
-			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
 		long time = System.currentTimeMillis();
 		//remove  domain error
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
@@ -419,7 +419,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth());
+		if (mode == 0) {
+			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+					month == null ? Optional.empty() : month.getDomainMonth(), month);
+		}
 		
 		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
 		ExecutorService executorService = Executors.newFixedThreadPool(1);

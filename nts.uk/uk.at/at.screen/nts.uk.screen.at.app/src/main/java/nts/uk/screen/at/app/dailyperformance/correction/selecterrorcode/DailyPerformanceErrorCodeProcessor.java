@@ -14,12 +14,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -66,9 +67,6 @@ public class DailyPerformanceErrorCodeProcessor {
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
 	@Inject
-	private ApplicationListForScreen applicationListFinder;
-
-	@Inject
 	private DailyPerformanceCorrectionProcessor dailyProcessor;
 	
 	@Inject
@@ -78,6 +76,8 @@ public class DailyPerformanceErrorCodeProcessor {
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
 	private static final String STATE_DISABLE = "mgrid-disable";
+	private static final String LOCK_APPLICATION_LIST = "ApplicationList";
+	private static final String LOCK_SIGN = "sign";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
@@ -124,7 +124,8 @@ public class DailyPerformanceErrorCodeProcessor {
 		for (DPErrorDto dto : lstError) {
 			mapIdError.put(dto.getEmployeeId(), "");
 		}
-		//lstEmployee = lstEmployee.stream().filter(x -> mapIdError.get(x.getId()) != null).collect(Collectors.toList());
+		lstEmployee = lstEmployee.stream().filter(x -> mapIdError.get(x.getId()) != null).collect(Collectors.toList());
+		listEmployeeId = listEmployeeId.stream().filter(x -> mapIdError.containsKey(x)).collect(Collectors.toList());
 		if (lstEmployee.isEmpty()) {
 			throw new BusinessException("Msg_672");
 		}
@@ -157,9 +158,14 @@ public class DailyPerformanceErrorCodeProcessor {
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 		DisplayItem disItem = dailyProcessor.getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId,
 				showButton, dailyPerformanceDto);
+		
 		List<DailyModifyResult> results = new ArrayList<>();
-		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor)
-				.call();
+		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
+		results = resultPair.getLeft();
+		screenDto.setDomainOld(resultPair.getRight());
+		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
+		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
+		
 		DPControlDisplayItem dPControlDisplayItem = dailyProcessor.getItemIdNames(disItem, showButton);
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
@@ -210,28 +216,25 @@ public class DailyPerformanceErrorCodeProcessor {
 				? codeNameReason.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> dailyProcessor.mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
-		// No 20 get submitted application
-		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList()
-				: applicationListFinder.getApplicationBySID(listEmployeeId, dateRange.getStartDate(),
-						dateRange.getEndDate());
-		Map<String, String> appMapDateSid = new HashMap<>();
-		appplication.forEach(x -> {
-			String key = x.getEmployeeID() + "|" + x.getAppDate();
-			if (appMapDateSid.containsKey(key)) {
-				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
-			} else {
-				appMapDateSid.put(key, x.getAppTypeName());
-			}
-		});
-		// get check box sign(Confirm day)
-		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
 		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
 		screenDto.getLstFixedHeader().forEach(column -> {
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+
+		// No 20 get submitted application
+		// disable check box sign
+		Map<String, Boolean> disableSignMap = new HashMap<>();
+		Map<String, String> appMapDateSid = dailyProcessor.getApplication(listEmployeeId, dateRange, disableSignMap);
+
+		// get check box sign(Confirm day)
+		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
 		
-		// set cell data
+		Map<String, ApproveRootStatusForEmpDto> approvalDayMap = dailyProcessor.getCheckApproval(approvalStatusAdapter, listEmployeeId,
+				dateRange, sId, mode);
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -247,15 +250,19 @@ public class DailyPerformanceErrorCodeProcessor {
 			}
 			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			data.addCellData(new DPCellDataDto(LOCK_APPLICATION_LIST, "", "", ""));
 			// set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
-			Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  dailyProcessor.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
-			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
-		//	if(mode == ScreenMode.APPROVAL.value){
+			// state check box sign
+			if (disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
+					&& disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())) {
+				screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			}
+			ApproveRootStatusForEmpDto approveRootStatus = approvalDayMap
+					.get(data.getEmployeeId() + "|" + data.getDate());
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
-			DailyModifyResult resultOfOneRow = dailyProcessor.getRow(resultDailyMap, data.getEmployeeId(),
-					data.getDate());
-			if (resultOfOneRow != null && !data.getError().equals("")) {
+			DailyModifyResult resultOfOneRow = dailyProcessor.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
+			if (resultOfOneRow != null) {
 				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 				boolean lock = dailyProcessor.checkLockAndSetState(employeeAndDateRange, data);
 				if (lock) {

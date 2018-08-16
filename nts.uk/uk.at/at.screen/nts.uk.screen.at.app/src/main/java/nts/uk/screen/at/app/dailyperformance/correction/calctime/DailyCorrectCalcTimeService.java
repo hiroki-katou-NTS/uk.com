@@ -108,6 +108,7 @@ public class DailyCorrectCalcTimeService {
 	
 	private void getWplPosId(DPItemValue itemEdit) {
 		// map id -> code possition and workplace
+		if(itemEdit.getTypeGroup() == null) return;
 		if (itemEdit.getTypeGroup() == TypeLink.POSSITION.value) {
 			CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(itemEdit.getTypeGroup(),
 					new ParamDialog(itemEdit.getDate(), itemEdit.getValue()));

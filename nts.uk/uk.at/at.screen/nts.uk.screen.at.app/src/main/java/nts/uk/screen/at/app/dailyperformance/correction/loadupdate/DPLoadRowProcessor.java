@@ -13,8 +13,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
@@ -132,15 +135,24 @@ public class DPLoadRowProcessor {
 		}
 		
 		
-		List<DailyModifyResult> results = new GetDataDaily(listEmployeeId, dateRange, itemIds, dailyModifyQueryProcessor).call();
-		
-		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
+		//List<DailyModifyResult> results = new GetDataDaily(listEmployeeId, dateRange, itemIds, dailyModifyQueryProcessor).call();
+		Map<String, List<GeneralDate>> mapDate = param.getLstData().stream()
+				.collect(Collectors.groupingBy(x -> x.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+						x -> x.stream().map(y -> y.getDate()).collect(Collectors.toList()))));
+		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(mapDate, dailyModifyQueryProcessor).getDataRow();
+		List<DailyModifyResult> resultDailys = resultPair.getLeft();
+		//List<DailyRecordDto> dailyRow = resultPair.getRight();
+		Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange = resultPair.getRight().stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+		result.setDomainOld(param.getDailys().stream().map(x ->{
+			return mapDtoChange.getOrDefault(Pair.of(x.getEmployeeId(), x.getDate()), x);
+		}).collect(Collectors.toList()));
+		Map<String, DailyModifyResult> resultDailyMap = resultDailys.stream().collect(Collectors
 				.toMap(x -> process.mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
 		
-		Map<Integer, DPAttendanceItem> mapDP =param.getLstAttendanceItem().stream()
+		Map<Integer, DPAttendanceItem> mapDP = param.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setLstEmployee(param.getLstEmployee());
 		
