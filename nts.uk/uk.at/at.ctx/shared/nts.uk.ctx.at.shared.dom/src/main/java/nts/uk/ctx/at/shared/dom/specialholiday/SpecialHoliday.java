@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
@@ -100,5 +101,21 @@ public class SpecialHoliday extends AggregateRoot {
 				specialLeaveRestriction,
 				new TargetItem(),
 				new Memo(memo));
+	}
+	
+	public void publishEvent(boolean flag) {
+		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
+						this.specialHolidayCode,
+						this.specialHolidayName);
+		
+		event.toBePublished();
+	}
+	
+	public void publishEvent(boolean flag, int code, String name) {
+		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
+				new SpecialHolidayCode(code),
+				new SpecialHolidayName(name));
+		
+		event.toBePublished();
 	}
 }

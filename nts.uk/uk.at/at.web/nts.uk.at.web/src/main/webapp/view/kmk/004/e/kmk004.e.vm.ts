@@ -59,11 +59,12 @@ module nts.uk.at.view.kmk004.e {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                nts.uk.ui.block.grayout();
                 service.findUsageUnitSetting().done(function(data) {
                     self.usageUnitSettingModel.updateData(data);
                     self.updateView();
                     dfd.resolve();
-                });
+                }).always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
             }
 
@@ -84,6 +85,7 @@ module nts.uk.at.view.kmk004.e {
              */
             public save(): void {
                 var self = this;
+                nts.uk.ui.block.grayout();
                 service.saveUsageUnitSetting(self.collectData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         nts.uk.ui.windows.close();
@@ -92,7 +94,7 @@ module nts.uk.at.view.kmk004.e {
                     nts.uk.ui.dialog.alertError(error).then(function() {
                         nts.uk.ui.windows.close();
                     });
-                });
+                }).always(() => nts.uk.ui.block.clear());
             }
 
             /**
