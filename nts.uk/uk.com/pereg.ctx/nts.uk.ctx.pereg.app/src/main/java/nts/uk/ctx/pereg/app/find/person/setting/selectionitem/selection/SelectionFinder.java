@@ -104,10 +104,6 @@ public class SelectionFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		if (perEmplType == PersonEmployeeType.PERSON){
-			companyId = AppContexts.user().zeroCompanyIdInContract();
-		}
-		// Zero company
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
 		List<Selection> domainLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date);
 		if (domainLst != null) {
