@@ -871,35 +871,39 @@ public class AppAbsenceFinder {
 		}
 		return null;
 	}
+	private boolean checkHdType(List<AppEmploymentSetting> appEmploymentWorkType, int hdType){
+		for (AppEmploymentSetting appEmploymentSetting : appEmploymentWorkType) {
+			if(appEmploymentSetting.getHolidayOrPauseType() == hdType){
+				//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
+				//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
+				return appEmploymentSetting.getHolidayTypeUseFlg() ? false : true;
+			}
+		}
+		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
+		return true;
+	}
 	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
 			List<HolidayAppTypeName> holidayAppTypes,AppCommonSettingOutput appCommonSettingOutput){
 		List<Integer> holidayAppTypeCodes = new ArrayList<>();
-		if (CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
-			holidayAppTypeCodes.add(0);
-			holidayAppTypeCodes.add(1);
-			holidayAppTypeCodes.add(2);
-			holidayAppTypeCodes.add(3);
-			holidayAppTypeCodes.add(4);
-			holidayAppTypeCodes.add(7);
-		}else{
-			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
-				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
-						&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
-					holidayAppTypeCodes.add(appEmploymentSetting.getHolidayOrPauseType());
-				}
+		for(int hdType = 0; hdType <=7; hdType ++){
+			if(hdType == 5 || hdType == 6){
+				continue;
 			}
+			if(this.checkHdType(appCommonSettingOutput.appEmploymentWorkType, hdType)){
+				holidayAppTypeCodes.add(hdType);
+			}
+		}
 			//comment hoatt 2018.07.16 bug #97414
 //			if (CollectionUtil.isEmpty(holidayAppTypeCodes)) {
 //				throw new BusinessException("Msg_473");
 //			}
-		}
 		for (Integer holidayCode : holidayAppTypeCodes) {
 				switch (holidayCode) {
-				case 0:
+				case 0://年休
 					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getYearHdName() == null ? "" : hdAppSet.get().getYearHdName().toString()));
 					break;
-				case 1:
+				case 1://代休
 					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getObstacleName() == null ? "" : hdAppSet.get().getObstacleName().toString()));
 					break;
@@ -911,11 +915,11 @@ public class AppAbsenceFinder {
 					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getSpecialVaca() == null ? "" : hdAppSet.get().getSpecialVaca().toString()));
 					break;
-				case 4:
+				case 4://積立
 					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getYearResig() == null ? "" : hdAppSet.get().getYearResig().toString()));
 					break;
-				case 7:
+				case 7://振休
 					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getFurikyuName() == null ? "" :  hdAppSet.get().getFurikyuName().toString()));
 					break;
