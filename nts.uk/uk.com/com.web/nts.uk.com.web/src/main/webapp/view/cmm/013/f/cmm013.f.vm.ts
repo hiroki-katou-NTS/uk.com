@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm013.f {
                 
                 _self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('CMM013_23'), key: 'sequenceCode', width: 75},
-                    { headerText: nts.uk.resource.getText('CMM013_24'), key: 'sequenceName', width: 135}
+                    { headerText: nts.uk.resource.getText('CMM013_24'), key: 'sequenceName', width: 135, formatter: _.escape}
                 ]); 
                 
                 _self.sequenceCode = ko.observable("");
