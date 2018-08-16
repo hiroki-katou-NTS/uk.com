@@ -26,126 +26,145 @@
 							<!-- C3_1 -->
 							<td><div
 									data-bind="ntsFormLabel: { required: true, constraint: 'TempAbsenceFrameName' }">#{i18n.getText('CMM007_3')}</div></td>
+							
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(1).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(1).tempAbsenceFrNo(), data)}">
-									<!-- C3_2 -->
+								<!-- C3_2 -->
 									<span>#{i18n.getText('CMM007_28')}</span>
-								</div>
-							</td>
-							<td>
 								<!-- C3_3 --> <span
 								data-bind="text: mapModel.get(1).tempAbsenceFrName, enable: false"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(1).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(1).tempAbsenceFrNo(), data)}">
+									
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(2).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(2).tempAbsenceFrNo(), data)}">
-									<!-- C3_4 -->
-									<span>#{i18n.getText('CMM007_29')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_4 -->
+								<span>#{i18n.getText('CMM007_29')}</span>
 								<!-- C3_5 --> <span
 								data-bind="text: mapModel.get(2).tempAbsenceFrName"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(2).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(2).tempAbsenceFrNo(), data)}">
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(3).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(3).tempAbsenceFrNo(), data)}">
-									<!-- C3_6 -->
-									<span>#{i18n.getText('CMM007_30')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_6 -->
+								<span>#{i18n.getText('CMM007_30')}</span>
 								<!-- C3_7 --> <span
 								data-bind="text: mapModel.get(3).tempAbsenceFrName"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(3).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(3).tempAbsenceFrNo(), data)}">
+								</div>
+							</td>
+							
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(4).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(4).tempAbsenceFrNo(), data)}">
-									<!-- C3_8 -->
-									<span>#{i18n.getText('CMM007_31')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_8 -->
+								<span>#{i18n.getText('CMM007_31')}</span>
 								<!-- C3_9 --> <span
 								data-bind="text: mapModel.get(4).tempAbsenceFrName"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(4).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(4).tempAbsenceFrNo(), data)}">	
+								</div>
+							</td>
+							
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(5).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(5).tempAbsenceFrNo(), data)}">
-									<!-- C3_10 -->
-									<span>#{i18n.getText('CMM007_32')}</span>
-								</div>
-							</td>
-							<td>
+								<span>#{i18n.getText('CMM007_32')}</span>
 								<!-- C3_11 --> <span
 								data-bind="text: mapModel.get(5).tempAbsenceFrName"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(5).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(5).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(6).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(6).tempAbsenceFrNo(), data)}">
-									<!-- C3_12 -->
-									<span>#{i18n.getText('CMM007_33')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_12 -->
+								<span>#{i18n.getText('CMM007_33')}</span>
 								<!-- C3_13 --> <span
 								data-bind="text: mapModel.get(6).tempAbsenceFrName"></span>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(6).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(6).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								</div>
+							</td>
+							
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(7).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(7).tempAbsenceFrNo(), data)}">
-									<!-- C3_14 -->
-									<span>#{i18n.getText('CMM007_34')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_14 -->
+								<span>#{i18n.getText('CMM007_34')}</span>
 								<!-- C3_15 --> <input id="tempAbsenceNo7" type="text"
 								tabindex="2"
 								data-bind="ntsTextEditor: { 
@@ -156,21 +175,26 @@
 																						required: true,
 																						option: {width: '130px'}}"></input>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(7).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(7).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(8).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(8).tempAbsenceFrNo(), data)}">
-									<!-- C3_16 -->
-									<span>#{i18n.getText('CMM007_35')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_16 -->
+								<span>#{i18n.getText('CMM007_35')}</span>
 								<!-- C3_17 --> <input id="tempAbsenceNo8" type="text"
 								tabindex="3"
 								data-bind="ntsTextEditor: { 
@@ -181,21 +205,26 @@
 																						required: true, 
 																						option: {width: '130px'}}"></input>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(8).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(8).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								</div>
+							</td>
+							
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(9).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(9).tempAbsenceFrNo(), data)}">
-									<!-- C3_18 -->
-									<span>#{i18n.getText('CMM007_36')}</span>
-								</div>
-							</td>
-							<td>
+								<!-- C3_18 -->
+								<span>#{i18n.getText('CMM007_36')}</span>
 								<!-- C3_19 --> <input id="tempAbsenceNo9" type="text"
 								tabindex="4"
 								data-bind="ntsTextEditor: { 
@@ -206,21 +235,25 @@
 																						required: true,
 																						option: {width: '130px'}}"></input>
 							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(9).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(9).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
-							<td>
-								<div class=" " tabindex="-1"
-									data-bind="ntsCheckBox: { 
-																					checked: checkStatusEnable(mapModel.get(10).tempAbsenceFrNo()), 
-																					enable: 'true', 
-																				},
-																				click: function (data) { clickCheckbox(mapModel.get(10).tempAbsenceFrNo(), data)}">
-									<!-- C3_20 -->
-									<span>#{i18n.getText('CMM007_37')}</span>
-								</div>
-							</td>
-							<td>
+							<td style="padding-left: 21px !important">
+								<!-- C3_20 -->
+								<span>#{i18n.getText('CMM007_37')}</span>
 								<!-- C3_21 --> <input id="tempAbsenceNo10" type="text"
 								tabindex="5"
 								data-bind="ntsTextEditor: { 
@@ -230,6 +263,19 @@
 																						constraint: 'TempAbsenceFrameName',
 																						required: true,
 																						option: {width: '130px'}}"></input>
+							</td>
+							<td>
+								<div class=" " tabindex="-1"
+									data-bind="ntsSwitchButton: {
+												name: '#[CMM007_103]',
+												options: checkStatusSetOptions,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: checkStatusEnable(mapModel.get(10).tempAbsenceFrNo()), 
+												enable: true,
+												},
+												click: function (data) { clickCheckbox(mapModel.get(10).tempAbsenceFrNo(), data)}">	<!-- C3_10 -->
+								</div>
 							</td>
 						</tr>
 					</table>

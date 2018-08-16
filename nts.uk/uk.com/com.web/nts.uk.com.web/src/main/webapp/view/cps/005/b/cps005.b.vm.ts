@@ -75,6 +75,11 @@ module nts.uk.com.view.cps005.b {
             }
 
             addUpdateData() {
+                $("#item-name-control").trigger("validate");
+                if(this.currentItemData().currentItemSelected().dataType() === 2){
+                    $("#integerPart").trigger("validate");
+                }
+                if (nts.uk.ui.errors.hasError()) { return; }
                 let self = this,
                     newItemDef;
                 block.invisible();
@@ -236,9 +241,15 @@ module nts.uk.com.view.cps005.b {
                         newItemDef.singleItem.hintTimeMin("");
                         block.clear();
                         return true;
-                    } else if (newItemDef.singleItem.timeItemMax === null) {
+                    }
+                    else if (newItemDef.singleItem.timeItemMax === null) {
                         $("#timeItemMax").focus();
                         newItemDef.singleItem.hintTimeMax("");
+                        block.clear();
+                        return true;
+                    }
+                    else if(newItemDef.singleItem.timeItemMin > newItemDef.singleItem.timeItemMax){
+                        $('#timeItemMin').ntsError('set', {messageId:"Msg_1399"});
                         block.clear();
                         return true;
                     }
@@ -251,6 +262,11 @@ module nts.uk.com.view.cps005.b {
                         return true;
                     } else if (newItemDef.singleItem.timePointItemMax === undefined) {
                         $("#timePointItemMax").focus();
+                        block.clear();
+                        return true;
+                    }
+                    else if(newItemDef.singleItem.timePointItemMin > newItemDef.singleItem.timePointItemMax){
+                        $('#timePointItemMin').ntsError('set', {messageId:"Msg_1399"});
                         block.clear();
                         return true;
                     }

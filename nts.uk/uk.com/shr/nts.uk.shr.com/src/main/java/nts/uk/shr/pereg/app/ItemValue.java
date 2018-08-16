@@ -277,7 +277,8 @@ public class ItemValue {
 		ItemValueType itemValueType = EnumAdaptor.valueOf(logType, ItemValueType.class);
 		
 		if (viewContent == null || value == null) return null;
-		if ((viewContent == "" && logType != ItemValueType.STRING.value) || (value == "" && logType != ItemValueType.STRING.value)) return null;
+		if (viewContent.equals("") && logType != ItemValueType.STRING.value) return null;
+		if (value.equals("") && logType != ItemValueType.STRING.value) return null;
 		
 		switch(itemValueType) {
 		case STRING:

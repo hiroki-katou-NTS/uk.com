@@ -1,3 +1,10 @@
+let $: any = window['$'],
+    _: any = window['_'],
+    ko: any = window['ko'],
+    nts: any = window['nts'],
+    moment: any = window['moment'],
+    __viewContext: any = window['__viewContext'];
+
 module cps002.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
@@ -14,6 +21,7 @@ module cps002.a.vm {
     import permision = service.getCurrentEmpPermision;
     import alertError = nts.uk.ui.dialog.alertError;
     import alertWarning = nts.uk.ui.dialog.caution;
+
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -63,15 +71,11 @@ module cps002.a.vm {
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         // check quyen có thể setting copy 
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
         enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
-        
-        licenseCheck: KnockoutObservable<string> = ko.observable("");
-        
-        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -115,12 +119,32 @@ module cps002.a.vm {
                 self.copyEmployee(data.listEmployee[0]);
             }
         };
-         licenseCheck: KnockoutObservable<string> = ko.observable("");
+
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
         licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
         classWarning: KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             let self = this;
+
+            ko.computed({
+                read: () => {
+                    let step = ko.toJS(self.currentStep),
+                        typi = ko.toJS(self.createTypeId);
+
+                    if (step == 1 && typi == 1) {
+                        $('#ccgcomponent').css('visibility', '');
+                    } else {
+                        $('#ccgcomponent').css('visibility', 'hidden');
+                    }
+
+                    if (step != 2) {
+                        $('#emp_reg_info_wizard').css('min-height', '');
+                    } else {
+                        $('#emp_reg_info_wizard').css('min-height', '720px');
+                    }
+                }
+            });
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
@@ -250,8 +274,8 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this;
                 self.autoUpdateCardNo(employeeCode);
-            }); 
-            
+            });
+
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
@@ -275,10 +299,12 @@ module cps002.a.vm {
                                 break;
                             }
                         }
+                    } else {
+                        emp.cardNo("");
                     }
                 }
             });
-            
+
             // check quyen có thể setting copy hoặc setting init
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
@@ -319,12 +345,12 @@ module cps002.a.vm {
                 });
             }
         }
-        
+
         logMouseOver() {
             let self = this;
             self.autoUpdateCardNo(self.currentEmployee().employeeCode());
         }
-        
+
         autoUpdateCardNo(employeeCode) {
             let self = this;
             let employee = self.currentEmployee();
@@ -353,12 +379,10 @@ module cps002.a.vm {
                     break;
             }
         }
-        
-        start() : JQueryPromise<any>{
+
+        start() {
             let self = this;
             self.currentEmployee().clearData();
-
-            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 self.subContraint(false);
@@ -368,9 +392,7 @@ module cps002.a.vm {
                     self.employeeBasicInfo(data);
                 });
                 self.getLayout();
-                dfd.resolve(data);
             });
-            return dfd.promise();
         }
 
         getLayout() {
@@ -391,6 +413,8 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(userSetting));
                         self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
+                        // show content
+                        $('#contents-area').css('visibility', 'visible');
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
@@ -418,13 +442,13 @@ module cps002.a.vm {
             }
         }
 
-        initStampCard(newEmployeeCode : string) {
+        initStampCard(newEmployeeCode: string) {
             let self = this;
             service.getInitCardNumber(newEmployeeCode).done((value) => {
                 self.currentEmployee().cardNo(value);
             });
         }
-        
+
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -452,6 +476,7 @@ module cps002.a.vm {
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
                     if (self.createTypeId() === 3) {
+                        $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));  
                         self.gotoStep2();
                         return;
                     }
@@ -484,11 +509,11 @@ module cps002.a.vm {
             self.currentStep(0);
 
             self.start();
-            
+
             self.getUserSetting();
-            
+
         }
-        
+
         getUserSetting(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -568,6 +593,8 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
+            //Name Screen D 
+            $('#pg-name').text('CPS002D'+ ' ' + text('CPS002_4'));
         }
 
         isUseInitValue() {
@@ -585,6 +612,8 @@ module cps002.a.vm {
             if (self.isUseInitValue()) {
 
                 //start Screen C
+                //Set name Screen C　#CPS002_3
+                $('#pg-name').text('CPS002C'+ ' ' + text('CPS002_3'));
 
                 self.loadInitSettingData();
 
@@ -592,6 +621,8 @@ module cps002.a.vm {
             } else {
 
                 //start Screen B
+                //Set name Screen B　#CPS002_2
+                $('#pg-name').text('CPS002B'+ ' ' + text('CPS002_2'));
 
                 $('#search_box').hide();
 
@@ -674,12 +705,14 @@ module cps002.a.vm {
             self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
             }
             if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
                 return;
             }
         }
@@ -720,28 +753,28 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
             command.categoryName = nts.uk.resource.getText("CPS001_152");
             command.itemName = nts.uk.resource.getText("CPS001_150");
-            
+
             // list category nghỉ đặc biệt còn lại
-            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
-                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
+            var listCtg = [{ ctgCode: 'CS00039' }, { ctgCode: 'CS00040' }, { ctgCode: 'CS00041' }, { ctgCode: 'CS00042' }, { ctgCode: 'CS00043' }, { ctgCode: 'CS00044' }, { ctgCode: 'CS00045' }, { ctgCode: 'CS00046' }, { ctgCode: 'CS00047' }, { ctgCode: 'CS00048' },
+                { ctgCode: 'CS00059' }, { ctgCode: 'CS00060' }, { ctgCode: 'CS00061' }, { ctgCode: 'CS00062' }, { ctgCode: 'CS00063' }, { ctgCode: 'CS00064' }, { ctgCode: 'CS00065' }, { ctgCode: 'CS00066' }, { ctgCode: 'CS00067' }, { ctgCode: 'CS00068' }];
             for (var i = 0; i < command.inputs.length; i++) {
                 if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
-                    if((command.inputs[i].items[0].value == undefined) 
-                        ||(command.inputs[i].items[1].value == undefined) 
-                        || (command.inputs[i].items[3].value == undefined) 
-                        || (command.inputs[i].items[4].value == undefined) 
-                        || (command.inputs[i].items[5].value == undefined) 
-                        || (command.inputs[i].items[6].value == undefined) 
-                        || (command.inputs[i].items[7].value == undefined) 
-                        || (command.inputs[i].items[8].value == undefined) 
-                        || (command.inputs[i].items[9].value == undefined) 
-                        || (command.inputs[i].items[10].value == undefined)){
+                    if ((command.inputs[i].items[0].value == undefined)
+                        || (command.inputs[i].items[1].value == undefined)
+                        || (command.inputs[i].items[3].value == undefined)
+                        || (command.inputs[i].items[4].value == undefined)
+                        || (command.inputs[i].items[5].value == undefined)
+                        || (command.inputs[i].items[6].value == undefined)
+                        || (command.inputs[i].items[7].value == undefined)
+                        || (command.inputs[i].items[8].value == undefined)
+                        || (command.inputs[i].items[9].value == undefined)
+                        || (command.inputs[i].items[10].value == undefined)) {
                         _.remove(command.inputs, function(n: any) {
                             return n.categoryCd == command.inputs[i].categoryCd;
                         });
                     }
                 }
-                
+
                 // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
                 // fix bug #96124
                 if (command.inputs[i].categoryCd === 'CS00037') {
@@ -749,7 +782,7 @@ module cps002.a.vm {
                         || (command.inputs[i].items[1].value == undefined)
                         || (command.inputs[i].items[3].value == undefined)
                         || (command.inputs[i].items[4].value == undefined)
-                        || (command.inputs[i].items[5].value == undefined)){
+                        || (command.inputs[i].items[5].value == undefined)) {
                         _.remove(command.inputs, function(n: any) {
                             return n.categoryCd == command.inputs[i].categoryCd;
                         });
@@ -760,10 +793,9 @@ module cps002.a.vm {
                     }
                 }
             }
-            
+
 
             if (!self.isError()) {
-                console.log(command);
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
@@ -809,7 +841,7 @@ module cps002.a.vm {
                 }
             });
         }
-        
+
 
         openJModal(param, data) {
 
@@ -825,8 +857,8 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#cardNumber").ntsError("clear");
-                        currentEmp.cardNo(result);
-                        currentEmp.cardNo.valueHasMutated();
+                    currentEmp.cardNo(result);
+                    currentEmp.cardNo.valueHasMutated();
                 }
             });
         }
@@ -865,20 +897,20 @@ module cps002.a.vm {
                 setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
-                setShared("openIDialog",self.currentEmployee().avatarOrgId());
+                setShared("openIDialog", self.currentEmployee().avatarOrgId());
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
                     let dataShare = getShared("imageId");
                     if (dataShare) {
                         self.currentEmployee().avatarOrgId(dataShare.imageOriginalId),
-                        self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
-                        self.currentEmployee().fileName(dataShare.fileName)
+                            self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
+                            self.currentEmployee().fileName(dataShare.fileName)
                     }
                 });
 
             }
         }
-        
+
         openInitModal() {
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
@@ -886,20 +918,21 @@ module cps002.a.vm {
         }
 
         checkLicense() {
-            var self = this;
+            let self = this;
+
             service.licenseCheck().done((data: ILicensenCheck) => {
                 self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 self.licenseCheckDipslay(data.display);
-                if (data.message === 'Msg_1370') {
+
+                if (!!data.message) {
                     self.classWarning('color-schedule-error');
                     alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] }).then(() => {
-                        jump('/view/ccg/008/a/index.xhtml');
+                        if (data.message === 'Msg_1370') {
+                            jump('/view/ccg/008/a/index.xhtml');
+                        }
                     });
-                } else if(data.message === 'Msg_1371') {
-                    self.classWarning('color-schedule-error');
-                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] });
-                } else{
-                    self.classWarning('');    
+                } else {
+                    self.classWarning('');
                 }
             });
         }
@@ -927,7 +960,7 @@ module cps002.a.vm {
         avatarCropedId: KnockoutObservable<string> = ko.observable("");
         categoryName: KnockoutObservable<string> = ko.observable("");
         itemName: KnockoutObservable<string> = ko.observable("");
-        fileName:  KnockoutObservable<string> = ko.observable("");
+        fileName: KnockoutObservable<string> = ko.observable("");
         clearData() {
             let self = this;
             self.employeeName("");
@@ -1199,7 +1232,7 @@ module cps002.a.vm {
         PreviousSpace = 3,
         AfterSpace = 4
     }
-    
+
     enum CardNoValType {
         //頭文字指定 (InitialDesignation)
         INIT_DESIGNATION = 1,
@@ -1210,14 +1243,14 @@ module cps002.a.vm {
         //最大値 (MaxValue)
         MAXVALUE = 4,
         //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
-        CPC_AND_EMPC = 5 
+        CPC_AND_EMPC = 5
     }
 
     enum POSITION {
         Previous = 0,
         After = 1
     }
-    
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
@@ -1239,7 +1272,7 @@ module cps002.a.vm {
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
-     interface ILicensenCheck {
+    interface ILicensenCheck {
         display: boolean;
         registered: number;
         canBeRegistered: number;

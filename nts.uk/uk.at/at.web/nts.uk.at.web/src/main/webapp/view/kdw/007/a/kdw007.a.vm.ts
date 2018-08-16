@@ -9,6 +9,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
     export class ScreenModel {
         screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+        isAtdItemColor: KnockoutObservable<boolean> = ko.observable(true);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             //fix bug 98671
             //{ code: 0, name: "全てを表示する" },
@@ -122,13 +123,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         if (self.screenMode() == ScreenMode.Daily && self.showTypeAtr() == 0) {
                             self.newTab();
                         }
+                        if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {
+                            self.isAtdItemColor(false);
+                        }
                     }
 
                     if (self.screenMode() == ScreenMode.Daily && self.isNewMode() == true) {
                         self.newTab();
                     }
                 }
+            });
 
+            self.selectedErrorAlarm().typeAtr.subscribe((val) => {
+                if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr() == '2') {
+                    self.isAtdItemColor(false);
+                } else {
+                    self.isAtdItemColor(true);
+
+                }
             });
 
             self.screenMode.subscribe((val) => {
@@ -212,6 +224,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                $('#pg-name').text('KDW007A ' + nts.uk.resource.getText("KDW007_41"));
                 self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
@@ -342,6 +355,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.tabs()[2].visible(true);
             self.tabs()[3].visible(true);
             self.tabs()[4].visible(true);
+            self.isAtdItemColor(true);
         }
 
         updateTab() {
@@ -349,6 +363,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
+            if (self.screenMode() == ScreenMode.Daily && self.selectedErrorAlarm().typeAtr == 2) {
+                self.isAtdItemColor(false);
+            }
         }
 
         update() {

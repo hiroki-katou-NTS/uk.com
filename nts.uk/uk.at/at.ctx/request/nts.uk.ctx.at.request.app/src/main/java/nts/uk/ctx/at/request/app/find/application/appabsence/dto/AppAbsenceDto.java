@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,8 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeD
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 
 @Data
 @AllArgsConstructor
@@ -168,7 +171,15 @@ public class AppAbsenceDto {
 	private boolean sendMailWhenRegisterFlg;
 	
 	private CheckDispHolidayType checkDis;
-	
+	private MaxDaySpecHdOutput maxDayObj;
+	//事象に応じた特休フラグ(true, false)
+	private boolean specHdForEventFlag;
+	private List<DateSpecHdRelationOutput> lstRela;
+	/* 上限日数の設定方法 */
+	private Integer maxNumberDayType;
+	/* 忌引とする */
+	private Integer makeInvitation;
+	private AppForSpecLeaveDto specHdDto;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -201,7 +212,11 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null,true, false, false, null);
+								false,null,true, false, false, null, null, false,
+								new ArrayList<>(),
+								null,
+								null,
+								null);
 	}
 }
 

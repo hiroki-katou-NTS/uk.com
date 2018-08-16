@@ -871,22 +871,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     }
                 }
 
-                self.dateValue.subscribe(x => {
-                    let itemName: string = this.itemName();
-                    if (__viewContext["viewModel"].errorList().errors !== undefined) {
-                        if (__viewContext["viewModel"].errorList().errors.length > 0) {
-                            $('.bundled-errors-alert .ntsClose').trigger('click');
-                            let res = _.remove(__viewContext["viewModel"].errorList().errors, function(n) {
-                                return n.parameterIds[0] === itemName;
-                            });
-                            if (__viewContext["viewModel"].errorList().errors.length > 0) {
-                                nts.uk.ui.dialog.bundledErrors(__viewContext["viewModel"].errorList());
-                            } else {
-                                $('.bundled-errors-alert .ntsClose').trigger('click');
-                            }
-                        }
-                    }
-                });
             }
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
@@ -931,7 +915,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "0");
+                self.selectedCode = ko.observable(params.stringValue || "1");
             }
 
 
@@ -948,14 +932,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                 self.numbereditor = {
-                    value: ko.observable(params.intValue || 0),
+                    value: ko.observable(params.intValue || null),
                     constraint: params.itemCode,
                     option: new nts.uk.ui.option.NumberEditorOption({
                         grouplength: 3,
                         decimallength: 0,
-                        width: "",
-                        textalign: "left",
-                        currencyformat: "JPY"
+                        textalign: "left"
                     }),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
@@ -963,14 +945,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             } else {
 
                 self.numbereditor = {
-                    value: ko.observable(params.intValue || 0),
+                    value: ko.observable(params.intValue || null),
                     constraint: params.itemCode,
                     option: new nts.uk.ui.option.NumberEditorOption({
                         grouplength: 3,
                         decimallength: params.numberDecimalPart,
-                        width: "",
-                        textalign: "left",
-                        currencyformat: "JPY"
+                        textalign: "left"
                     }),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
@@ -983,23 +963,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.stringItemDataType = params.stringItemDataType || undefined;
                 self.numericItemMin = params.numericItemMin || undefined;
                 self.numericItemMax = params.numericItemMax || undefined;
-                self.stringValue.subscribe(x => {
-                    let itemName: string = this.itemName();
-                    if (__viewContext["viewModel"].errorList().errors !== undefined) {
-                        if (__viewContext["viewModel"].errorList().errors.length > 0) {
-                            $('.bundled-errors-alert .ntsClose').trigger('click');
-                            let res = _.remove(__viewContext["viewModel"].errorList().errors, function(n) {
-                                return n.parameterIds[0] === itemName;
-                            });
-                            if (__viewContext["viewModel"].errorList().errors.length > 0) {
-                                nts.uk.ui.dialog.bundledErrors(__viewContext["viewModel"].errorList());
-                            } else {
-                                $('.bundled-errors-alert .ntsClose').trigger('click');
-                            }
-                        }
-                    }
-
-                });
             }
 
             self.selectedRuleCode.subscribe(value => {

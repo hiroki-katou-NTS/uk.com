@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
@@ -92,6 +93,12 @@ public class WorkchangeService extends WebService {
 	@Path("workChangeSet")
 	public AppWorkChangeSetDto getWorkChangeSet() {
 		return appWorkFinder.findByCom();
+	}
+	
+	@POST
+	@Path("isTimeRequired")
+	public boolean isTimeRequired(String workTypeCD) {
+		return appWorkFinder.isTimeRequired(workTypeCD);
 	}
 
 }

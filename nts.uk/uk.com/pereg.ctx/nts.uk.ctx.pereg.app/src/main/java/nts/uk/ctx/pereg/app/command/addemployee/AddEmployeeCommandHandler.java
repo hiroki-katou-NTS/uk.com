@@ -324,21 +324,21 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			if (ctgTarget != null) {
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
-			// log phần avatar
-			if(command.getAvatarOrgId() != "") {
-				List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
-				lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
-						command.getAvatarOrgId(), command.getFileName(), 1));
-				
-				ctgTarget = new PersonCategoryCorrectionLogParameter(
-						input.getCategoryId(),
-						command.getCategoryName(),
-						InfoOperateAttr.UPDATE,
-						lstItemInfo, 
-						new TargetDataKey(CalendarKeyType.NONE,
-						null, command.getCardNo()), Optional.empty());
-				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
-			}
+		}
+		// log phần avatar
+		if(command.getAvatarOrgId() != "") {
+			List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
+			lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
+					command.getAvatarOrgId(), command.getFileName(), 1));
+			
+			PersonCategoryCorrectionLogParameter ctgAvatar = new PersonCategoryCorrectionLogParameter(
+					null,
+					command.getCategoryName(),
+					InfoOperateAttr.UPDATE,
+					lstItemInfoAvatar, 
+					new TargetDataKey(CalendarKeyType.NONE,
+					null, command.getCardNo()), Optional.empty());
+			DataCorrectionContext.setParameter(ctgAvatar.getHashID(), ctgAvatar);
 		}
 	}
 	
@@ -412,7 +412,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00002")).findFirst().get().getItems().add(itemPersonName);
 		}else {
 			// thêm category CS0002 vào list inputs
-			Optional<PersonInfoCategory> ctgCS00002Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00001" , AppContexts.user().companyId());
+			Optional<PersonInfoCategory> ctgCS00002Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00002" , AppContexts.user().companyId());
 			if(ctgCS00002Opt.isPresent()) {
 				ItemsByCategory ctgCS00002 = new ItemsByCategory(ctgCS00002Opt.get().getPersonInfoCategoryId(),
 						 ctgCS00002Opt.get().getCategoryCode().v(),
@@ -444,13 +444,16 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			PersonInfoItemDefinition itemDf = itemdfOpt.get();
 			itemHireDate = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), command.getHireDate().toString(), command.getHireDate().toString(), null, null, ItemValueType.DATE.value, ItemValueType.DATE.value);
 		}else {
-			itemHireDate = new ItemValue("", "IS00003", "個人名", command.getHireDate().toString(), command.getHireDate().toString(), null, null, 3, 3);
+			itemHireDate = new ItemValue("", "IS00020", "個人名", command.getHireDate().toString(), command.getHireDate().toString(), null, null, 3, 3);
 		}
 		if (affComHistCategory.isPresent()) {
-			inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(itemHireDate);
+			Optional<ItemValue> checkExit = inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().stream().filter(i -> i.itemCode().equals("IS00020")).findFirst();
+			if(!checkExit.isPresent()) {
+				inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(itemHireDate);
+			}
 		}else {
 			// thêm category CS0003 vào list inputs
-			Optional<PersonInfoCategory> ctgCS00003Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00001" , AppContexts.user().companyId());
+			Optional<PersonInfoCategory> ctgCS00003Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00003" , AppContexts.user().companyId());
 			if(ctgCS00003Opt.isPresent()) {
 				ItemsByCategory ctgCS00002 = new ItemsByCategory(ctgCS00003Opt.get().getPersonInfoCategoryId(),
 						ctgCS00003Opt.get().getCategoryCode().v(),
