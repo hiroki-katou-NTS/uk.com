@@ -94,14 +94,18 @@ public class DailyModifyResCommandFacade {
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
 	public List<DPItemValueRC> handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
-			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode) {
+			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode, boolean flagCalculation) {
 		String sid = AppContexts.user().employeeId();
 
 		List<DailyRecordWorkCommand> commandNew = createCommands(sid, dtoNews, querys);
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
-		
-		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+		if (!flagCalculation) {
+			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+		}else{
+			this.handler.handlerNoCalc(commandNew, commandOld, dailyItems, true, month, mode);
+			return Collections.emptyList();
+		}
 	}
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
@@ -141,14 +145,21 @@ public class DailyModifyResCommandFacade {
 	}
 
 	private DailyRecordWorkCommand createCommand(String sid, DailyRecordDto dto, DailyModifyQuery query) {
+		if(query == null){
+			return  DailyRecordWorkCommand.open().withData(dto).forEmployeeIdAndDate().fromItems(Collections.emptyList());
+		}
 		DailyRecordWorkCommand command = DailyRecordWorkCommand.open().forEmployeeId(query.getEmployeeId())
-				.withWokingDate(query.getBaseDate()).withData(dto).fromItems(query.getItemValues());
+				.withWokingDate(query.getBaseDate()).withData(dto).fromItems(query == null ? Collections.emptyList(): query.getItemValues());
 		command.getEditState().updateDatas(convertTo(sid, query));
 		return command;
 	}
 
 	private List<DailyRecordWorkCommand> createCommands(String sid, List<DailyRecordDto> lstDto,
 			List<DailyModifyQuery> querys) {
+		if(querys.isEmpty()) return lstDto.stream().map(o -> {
+			return createCommand(sid, o, null);
+		}).collect(Collectors.toList());
+		
 		return lstDto.stream().map(o -> {
 			DailyModifyQuery query = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
@@ -248,7 +259,7 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam, dataParent.getMode());
+			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam, dataParent.getMode(), dataParent.isFlagCalculation());
 			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
 					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 		} else {
@@ -309,7 +320,7 @@ public class DailyModifyResCommandFacade {
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
 		// map to list result -> check error;
 		List<DailyRecordDto> dailyOlds, dailyEdits = new ArrayList<>();
-		if(!querys.isEmpty()){
+		if(!querys.isEmpty() && !dataParent.isFlagCalculation()){
 			dailyOlds = dataParent.getDailyOlds().stream()
 					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
 					.collect(Collectors.toList());
@@ -332,30 +343,34 @@ public class DailyModifyResCommandFacade {
 		List<DPItemValue> itemInputErors = new ArrayList<>();
 		List<DPItemValue> itemInputError28 = new ArrayList<>();
 		List<DPItemValue> itemInputDeviation = new ArrayList<>();
-		mapSidDate.entrySet().forEach(x -> {
-			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
-					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
-					.collect(Collectors.toList());
-			List<DailyModifyResult> itemValues =  itemCovert.isEmpty() ? Collections.emptyList() : mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
-			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
-			if (!items.isEmpty()) {
-				itemErrors.addAll(items);
-			} else {
-				List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
-				itemInputErors.addAll(itemInputs);
-			}
+		if (!dataParent.isFlagCalculation()) {
+			mapSidDate.entrySet().forEach(x -> {
+				List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
+						.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
+						.collect(Collectors.toList());
+				List<DailyModifyResult> itemValues = itemCovert.isEmpty() ? Collections.emptyList()
+						: mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
+				List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+				if (!items.isEmpty()) {
+					itemErrors.addAll(items);
+				} else {
+					List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
+					itemInputErors.addAll(itemInputs);
+				}
 
-			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert, itemValues);
-			itemInputError28.addAll(itemInputs28);
+				List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert, itemValues);
+				itemInputError28.addAll(itemInputs28);
 
-		});
-
+			});
+		}
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode());
+			if(querys.isEmpty() ? dataParent.isFlagCalculation() : true){
+			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode(), dataParent.isFlagCalculation());
 			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
 					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
+			}
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
 			resultError.put(TypeError.COUPLE.value, itemInputErors);
@@ -372,7 +387,7 @@ public class DailyModifyResCommandFacade {
 		// insert approval
 		insertApproval(dataParent.getDataCheckApproval());
 
-		if (dataParent.getMode() == 0) {
+		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation()) {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 					dataParent.getDateRange());
 			if (!dataCheck.isEmpty()) {

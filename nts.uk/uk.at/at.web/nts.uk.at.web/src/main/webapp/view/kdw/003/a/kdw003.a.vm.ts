@@ -824,7 +824,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     mode: self.displayFormat(),
                     spr: sprStampSourceInfo,
                     dailyOlds: self.lstDomainOld,
-                    dailyEdits: self.lstDomainEdit
+                    dailyEdits: self.lstDomainEdit,
+                    flagCalculation: self.flagCalculation
                 }
                 if (self.displayFormat() == 0) {
                     if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -840,14 +841,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare;
                 if (checkDailyChange || self.valueUpdateMonth != null) {
                     let dfd = $.Deferred();
-                    service.addAndUpdate(dataParent).done((data) => {
+                    service.addAndUpdate(dataParent).done((dataAfter) => {
                         // alert("done");
                         self.valueUpdateMonth = null;
                         self.initScreenSPR = 1;
                         self.clickFromExtract = false;
                         self.showTextStyle = false;
                         dataChange = {};
-                        if (_.isEmpty(data)) {
+                        if (_.isEmpty(dataAfter)) {
                             if (checkDailyChange) {
                                 // self.reloadScreen();
                                 self.loadRowScreen(false);
@@ -857,31 +858,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         } else {
                             nts.uk.ui.block.clear();
-                            if (data[0] != undefined) {
-                                self.listCareError(data[0])
+                            if (dataAfter[0] != undefined) {
+                                self.listCareError(dataAfter[0])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
                             }
-                            if (data[1] != undefined) {
-                                self.listCareInputError(data[1])
+                            if (dataAfter[1] != undefined) {
+                                self.listCareInputError(dataAfter[1])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                            if (data[2] != undefined) {
-                                self.listCheckHolidays(data[2]);
+                            if (dataAfter[2] != undefined) {
+                                self.listCheckHolidays(dataAfter[2]);
                                 self.loadRowScreen(false);
                             }
 
-                            if (data[3] != undefined) {
-                                self.listCheck28(data[3]);
+                            if (dataAfter[3] != undefined) {
+                                self.listCheck28(dataAfter[3]);
                             }
 
-                            if (data[4] != undefined) {
-                                self.listCheckDeviation = data[4];
+                            if (dataAfter[4] != undefined) {
+                                self.listCheckDeviation = dataAfter[4];
                             }
                             self.showErrorDialog();
                         }
                         dfd.resolve();
                     }).fail((data) => {
-                        nts.uk.ui.block.clear();
+                        nts.uk.ui.block.clear(); 
                         nts.uk.ui.dialog.alert(data.message);
                         dfd.resolve();
                     });

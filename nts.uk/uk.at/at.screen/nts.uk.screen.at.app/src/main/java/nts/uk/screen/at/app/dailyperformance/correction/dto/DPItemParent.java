@@ -31,4 +31,6 @@ public class DPItemParent {
 	
 	private List<DailyRecordDto> dailyEdits;
 	
+	private boolean flagCalculation;
+	
 }
