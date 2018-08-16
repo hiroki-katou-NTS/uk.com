@@ -162,7 +162,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
-            block.grayout();    
+            block.invisible();    
             //「個人情報の選択項目」を登録する
             service.addDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();
@@ -197,14 +197,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            }).always(()=>block.clear);
+            }).always(()=>block.clear());
         }
 
         //更新モード
         update() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
-            block.grayout();    
+            block.invisible();    
             //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
 
