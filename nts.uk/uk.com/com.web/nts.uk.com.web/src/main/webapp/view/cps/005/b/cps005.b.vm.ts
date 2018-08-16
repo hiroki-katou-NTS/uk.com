@@ -75,6 +75,11 @@ module nts.uk.com.view.cps005.b {
             }
 
             addUpdateData() {
+                $("#item-name-control").trigger("validate");
+                if(this.currentItemData().currentItemSelected().dataType() === 2){
+                    $("#integerPart").trigger("validate");
+                }
+                if (nts.uk.ui.errors.hasError()) { return; }
                 let self = this,
                     newItemDef;
                 block.invisible();
