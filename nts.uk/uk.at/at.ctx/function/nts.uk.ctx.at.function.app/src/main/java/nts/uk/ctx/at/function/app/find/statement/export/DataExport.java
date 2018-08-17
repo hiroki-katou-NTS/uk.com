@@ -204,33 +204,35 @@ public class DataExport {
 		} else {
 			lstStampItem.stream().forEach(objStampItem -> {
 				String employeeId = objStampItem.getEmployeeId();
-				mapEmpIdWkps.get(employeeId).forEach(obj -> {
-					String wkpId = obj.getWorkplaceId();
-					// Check workplace is exist
-					if (mapWkpIdWkpInfo.containsKey(wkpId)) {
-						dateStampItem = objStampItem.getDate().toDate();
-						// Date period Employee corresponding to workplace
-						DatePeriod wkpDatePeriod = obj.getPeriod();
-						WkpInfoHistImport obj2 = mapWkpIdWkpInfo.get(wkpId).get(0);
-						if (wkpDatePeriod.start().beforeOrEquals(dateStampItem) 
-								&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
-								/*&& wkpDatePeriod.start().after(obj2.getPeriod().start())
-								&& wkpDatePeriod.end().before(obj2.getPeriod().end())*/
-							) {
-							StatementList dto = new StatementList();
-							dto.setWkpCode(obj2.getWkpCode());
-							dto.setWkpName(obj2.getWkpDisplayName());
-							dto.setEmpCode(mapEmpIdCd.get(employeeId));
-							dto.setEmpName(mapEmpIdName.get(employeeId));
-							dto.setCardNo(objStampItem.getCardNumber().v());
-							dto.setDate(objStampItem.getDate());
-							dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
-							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd().v()));
-							dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
-							dataReturn.add(dto);
+				if (mapEmpIdWkps.get(employeeId) != null) {
+					mapEmpIdWkps.get(employeeId).forEach(obj -> {
+						String wkpId = obj.getWorkplaceId();
+						// Check workplace is exist
+						if (mapWkpIdWkpInfo.containsKey(wkpId)) {
+							dateStampItem = objStampItem.getDate().toDate();
+							// Date period Employee corresponding to workplace
+							DatePeriod wkpDatePeriod = obj.getPeriod();
+							WkpInfoHistImport obj2 = mapWkpIdWkpInfo.get(wkpId).get(0);
+							if (wkpDatePeriod.start().beforeOrEquals(dateStampItem) 
+									&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
+									/*&& wkpDatePeriod.start().after(obj2.getPeriod().start())
+									&& wkpDatePeriod.end().before(obj2.getPeriod().end())*/
+								) {
+								StatementList dto = new StatementList();
+								dto.setWkpCode(obj2.getWkpCode());
+								dto.setWkpName(obj2.getWkpDisplayName());
+								dto.setEmpCode(mapEmpIdCd.get(employeeId));
+								dto.setEmpName(mapEmpIdName.get(employeeId));
+								dto.setCardNo(objStampItem.getCardNumber().v());
+								dto.setDate(objStampItem.getDate());
+								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd().v()));
+								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+								dataReturn.add(dto);
+							}
 						}
-					}
-				});
+					});
+				}
 			});
 		}
 		

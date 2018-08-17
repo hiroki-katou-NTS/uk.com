@@ -18,7 +18,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         prerequisiteUseAtr = ko.observableArray([
-            { code: 0, name: text("KAF022_291") },
+            { code: 0, name: text("KAF022_291") },  
             { code: 1, name: text("KAF022_292") }
         ]);
 
@@ -79,6 +79,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
         selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
         hasLoadedKcp004: boolean = false;
+        allowRegister: KnockoutObservable<boolean> = ko.observable(true);
 
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
@@ -108,6 +109,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectVer27.subscribe(v => {
+                self.allowRegister(true);
                 if (v == 1 && !self.hasLoadedKcp004) {
                     $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
                         $('#wkp-list').focusTreeGridComponent();
@@ -120,6 +122,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectedWorkplaceId.subscribe((val) => {
+                if(val){
+                    self.allowRegister(true);    
+                }else{
+                    self.allowRegister(false);    
+                }
+                
                 let exsistedSetting = _.find(self.lstAppApprovalSettingWkp, (setting: IApplicationApprovalSettingWkp) => {
                     return val === setting.wkpId;
                 });
@@ -236,13 +244,17 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
+            let self = this;
+            if(!self.allowRegister()){
+                return;
+            }
             $('.memo').trigger("validate");
-            let self = this,
-                command = ko.mapping.toJS(self.selectedSetting);
+            
+            let command = ko.mapping.toJS(self.selectedSetting);
             
             _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
                 // remove private function
-                delete setting.update;
+                delete setting.update;   
 
                 // convert boolean type to number type
                 setting.breakInputFieldDisFlg = Number(setting.breakInputFieldDisFlg);
@@ -253,9 +265,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
 
             if (nts.uk.ui.errors.hasError() === false) {
+                nts.uk.ui.block.grayout();
                 if (!!self.selectVer27()) {
                     service.update([command]).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.clear();
                             self.reloadData();
                         });
                     }).fail(msg => {
@@ -271,6 +285,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                     service.saveCom(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.clear();
                             self.reloadData();
                         });
                     }).fail(() => {
@@ -334,15 +349,17 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
 
             self.wkpId.subscribe((val) => {
-                let $wkpl = $('#wkp-list');
+                if(val){
+                    let $wkpl = $('#wkp-list');
 
-                if ($wkpl.getDataList && $wkpl.getRowSelected) {
-                    let lwps = $wkpl.getDataList(),
-                        rstd = $wkpl.getRowSelected(),
-                        flwps = flat(_.cloneDeep(lwps), "childs"),
-                        wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
-
-                    self.wkpName(wkp ? wkp.name : '');
+                    if ($wkpl.getDataList && $wkpl.getRowSelected) {
+                        let lwps = $wkpl.getDataList(),
+                            rstd = $wkpl.getRowSelected(),
+                            flwps = flat(_.cloneDeep(lwps), "childs"),
+                            wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
+    
+                        self.wkpName(wkp ? wkp.name : '');
+                    }
                 }
             });
 

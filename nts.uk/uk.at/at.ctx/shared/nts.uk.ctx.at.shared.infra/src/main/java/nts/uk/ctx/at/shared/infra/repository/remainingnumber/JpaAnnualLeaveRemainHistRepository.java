@@ -63,7 +63,7 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 	@Override
 	public void delete(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate) {
 		String sql = "DELETE FROM KrcdtAnnLeaRemainHist a WHERE a.sid = :employeeId and a.yearMonth = :ym AND a.closureId = :closureId AND a.closeDay = :closeDay AND a.isLastDay = :isLastDay";
-		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym)
+		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
 				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
 	}

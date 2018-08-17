@@ -25,7 +25,7 @@ public class AnnualHolidayFinder {
 	@Inject
 	private AtEmployeeAdapter EmpAdapter;
 
-	public AnnualHolidayDto starPage(int selectMode, GeneralDate baseDate, List<String> sIDs) {
+	public AnnualHolidayDto starPage(GeneralDate baseDate, List<String> sIDs) {
 
 		String sID = sIDs.get(0);
 		// 228
@@ -43,7 +43,7 @@ public class AnnualHolidayFinder {
 		String cId = AppContexts.user().companyId();
 		AnnualHolidayDto result = new AnnualHolidayDto();
 		// 210
-		result.setAnnualLeaveGrant(holidayAdapter.acquireNextHolidayGrantDate(cId, sID,baseDate));
+		result.setAnnualLeaveGrant(holidayAdapter.acquireNextHolidayGrantDate(cId, sID, baseDate));
 		// 323
 		holidayAdapter.getDaysPerYear(cId, sID).ifPresent(x -> result.setAttendNextHoliday(x));
 		// 198

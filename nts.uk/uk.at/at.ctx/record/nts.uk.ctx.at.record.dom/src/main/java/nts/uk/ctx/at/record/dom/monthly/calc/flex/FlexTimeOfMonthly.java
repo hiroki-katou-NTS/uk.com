@@ -271,8 +271,7 @@ public class FlexTimeOfMonthly {
 						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
 						
 						// 時間外超過の集計
-						newWeek.getExcessOutside().aggregate(
-								companySets.getOutsideOverTimeSet(), weekCalc, companySets);
+						newWeek.getExcessOutside().aggregate(weekCalc, companySets);
 						
 						ConcurrentStopwatches.stop("12222.5:時間外超過の集計：");
 					}
