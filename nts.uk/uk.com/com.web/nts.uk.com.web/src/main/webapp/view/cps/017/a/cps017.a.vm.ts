@@ -379,9 +379,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 $('#code').ntsError('set', { messageId: "Msg_3" });
 
             } else {
+                block.invisible();
+                self.enableRegister(false);
                 service.saveDataSelection(command).done(function(newSelectionId) {
                     self.listSelection.removeAll();
-
+                    
                     service.getAllOrderItemSelection(histId)
                         .done((itemList: Array<ISelection>) => {
                             if (itemList && itemList.length) {
@@ -397,17 +399,20 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                     self.enableOpenDialogB(true);
                                     self.enableCreateNew(true);
                                     self.selection().selectionID(newSelectionId);
+                                    self.enableRegister(true);
                                 });
                                 
                             }
                         });
-                });
+                }).always(()=>block.clear());
+                self.enableRegister(true);
             }
 
         }
 
         //更新モード
         update() {
+            block.invisible();
             let self = this,
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
@@ -432,6 +437,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                 });
             });
+            block.clear();
         }
 
         //削除ボタン
