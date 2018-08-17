@@ -587,7 +587,7 @@ module nts.uk.com.view.cps005.b {
     export class NumericItemModel {
         numericItemMin: KnockoutObservable<number> = ko.observable();
         numericItemMax: KnockoutObservable<number> = ko.observable();
-        numericItemAmount: KnockoutObservable<number> = ko.observable(1);
+        numericItemAmount: KnockoutObservable<number> = ko.observable(0);
         numericItemAmountText: KnockoutObservable<string> = ko.observable("");
         numericItemMinus: KnockoutObservable<number> = ko.observable(1);
         numericItemMinusText: KnockoutObservable<string> = ko.observable("");
@@ -718,16 +718,17 @@ module nts.uk.com.view.cps005.b {
         selectionItemId: KnockoutObservable<string> = ko.observable("");
         // danh sach cac selection cua item
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionLstColumns: KnockoutObservableArray<any>;
+        selected: KnockoutObservable<string> = ko.observable("");
         selectionId: KnockoutObservable<string> = ko.observable("");
         selectionItemName: KnockoutObservable<string> = ko.observable("");
-
-
-        selectionColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'selectionId', key: 'selectionId', width: 100, hidden: true },
-            { headerText: getText('CPS005_59'), key: 'selectionCode', width: 80 },
-            { headerText: getText('CPS005_60'), key: 'selectionName', width: 160 }]);
         constructor(data: ISelectionItem) {
             let self = this;
+            self.selectionLstColumns = ko.observableArray([
+                { headerText: getText('CPS005_59'), key: 'selectionCode', width: 80 }, 
+                { headerText: getText('CPS005_60'), key: 'selectionName', width: 200}
+            ]);
+            self.selected("");
             if (!data) return;
             self.selectionItemRefCode(data.typeCode || data.enumName || data.masterType || undefined);
             if (data.referenceType === "DESIGNATED_MASTER") {
