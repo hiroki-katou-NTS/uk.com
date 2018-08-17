@@ -209,6 +209,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							if (outPut.getErrMesInfos() == null
 									|| (outPut.getErrMesInfos() != null && outPut.getErrMesInfos().isEmpty())) {
 								shortTimeOfDailyPerformance = outPut.getShortTimeOfDailyPerformance();
+								ReflectStampOutput output2 = new ReflectStampOutput();
+								output2.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+								stampOutput.setReflectStampOutput(output2);
 							} else {
 								errMesInfos.addAll(outPut.getErrMesInfos());
 							}
@@ -431,15 +434,13 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().orElse(null));
 							}
 
-						}
-						if (shortTimeOfDailyPerformance != null) {
-							stampOutput.getReflectStampOutput().setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
 						}						
 					}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && stampOutput.getErrMesInfos().isEmpty()) {
+			if (errMesInfos.isEmpty() && ((stampOutput.getErrMesInfos()!= null && stampOutput.getErrMesInfos().isEmpty())
+					|| stampOutput.getErrMesInfos() == null)) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput.getReflectStampOutput(), affiliationInfor, dailyPerformance,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, null, breakTimeOfDailyPerformance);
@@ -447,7 +448,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 				errMesInfos.forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
-				if(stampOutput.getErrMesInfos()!= null){
+				if(stampOutput.getErrMesInfos() != null){
 					stampOutput.getErrMesInfos().forEach(item -> {
 						this.errMessageInfoRepository.add(item);
 					});

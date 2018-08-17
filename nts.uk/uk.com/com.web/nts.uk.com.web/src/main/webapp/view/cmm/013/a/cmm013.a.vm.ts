@@ -55,7 +55,11 @@ module nts.uk.com.view.cmm013.a {
 
                 _self.selectedJobTitleId = ko.observable(null);
                 _self.selectedJobTitleId.subscribe((newValue) => {
-                    _self.findJobHistoryById(newValue);
+                    if (_.isEmpty(newValue) || newValue == "undefined") {
+                        _self.startCreateMode();
+                    } else {
+                        _self.findJobHistoryById(newValue);
+                    }
                 });
 
                 _self.isShowAlreadySet = ko.observable(false);
@@ -72,7 +76,7 @@ module nts.uk.com.view.cmm013.a {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: false,
                     listType: 3,
-                    selectType: 1,
+                    selectType: 3,
                     selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
