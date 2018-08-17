@@ -937,12 +937,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dataTemp = _.find(dataSource, (item: any) => {
                         return item.id == data.rowId;
                     });
-
                     if (data.columnKey != "sign" && data.columnKey != "approval") {
                         if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                             if (data.columnKey.indexOf("Name") != -1) {
                             } else {
-
                                 // check itemCare 
                                 let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
                                 if (groupCare == 0 || groupCare == 1 || groupCare == 2) {
@@ -970,7 +968,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             } else {
                                 columnKey = data.columnKey.substring(2, data.columnKey.length);
                             }
-                            //TO Thanh: move find logic out if condition
                             item = _.find(self.lstAttendanceItem(), (data) => {
                                 return String(data.id) === columnKey;
                             })
@@ -981,30 +978,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, data.columnKey);
                             dataChangeProcess.push(dataMap);
                         }
-//                    } else {
-//                        if (data.columnKey == "sign") {
-//                            dataCheckSign.push({ rowId: data.rowId, itemId: "sign", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: false });
-//                        } else {
-//                            let flag = false;
-//                            if (data.rowId == self.sprRemoveApprovalAll) {
-//                                flag = true;
-//                                self.sprRemoveApprovalAll = null;
-//                            }
-//                            dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId, date: dataTemp.dateDetail.utc().toISOString(), flagRemoveAll: flag });
-//                        }
                     }
                 });
-//                if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
-//                    //                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-//                    //                    let dataLiveTime = new InfoCellEdit("", "34", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-//                    //                    dataChangeProcess.push(dataGout);
-//                    //                    dataChangeProcess.push(dataLiveTime);
-//                    if (self.sprStampSourceInfo() != null) {
-//                        sprStampSourceInfo = self.sprStampSourceInfo();
-//                        sprStampSourceInfo.employeeId = self.shareObject().initClock.employeeId;
-//                        sprStampSourceInfo.date = self.shareObject().initClock.dateSpr.utc().toISOString();
-//                    }
-//                }
                 let dataParent = {
                     itemValues: dataChangeProcess,
                     dataCheckSign: dataCheckSign,
@@ -1047,9 +1022,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
                                         if (itemValue)
                                             $("#dpGrid").mGrid("updateCell", row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
-                                    } else {
-                                        console.log("khong update cell");
-                                    }
+                                    } 
                                 });
                             });
                             self.flagCalculation = true;
@@ -2289,6 +2262,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (self.hasEmployee) {
                         self.loadKcp009();
                     }
+                    self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.btnExtraction_Click();
                 },
             }

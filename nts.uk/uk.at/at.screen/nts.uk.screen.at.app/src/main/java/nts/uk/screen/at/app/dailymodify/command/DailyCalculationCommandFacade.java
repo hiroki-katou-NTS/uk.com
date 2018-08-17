@@ -27,6 +27,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -129,8 +131,7 @@ public class DailyCalculationCommandFacade {
 				List<DailyRecordDto> calculatedDtos = editedDomains.stream().map(d -> DailyRecordDto.from(d))
 						.collect(Collectors.toList());
 				List<DailyModifyResult> resultValues = calculatedDtos.stream().map(
-						c -> DailyModifyResult.builder()
-						.items(AttendanceItemUtil.toItemValues(c).stream().map(item -> {
+						c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c).stream().map(item -> {
 							return (item.getValueType() == ValueType.TIME || item.getValueType() == ValueType.CLOCK
 									|| item.getValueType() == ValueType.TIME_WITH_DAY)
 											? new ItemValue(
@@ -139,24 +140,9 @@ public class DailyCalculationCommandFacade {
 													item.getValueType(), item.getLayoutCode(), item.getItemId(),
 													item.getPathLink())
 											: item;
-						}).sorted((i1, i2) -> { return i1.getItemId() - i2.getItemId(); }).collect(Collectors.toList()))
-						.workingDate(c.workingDate())
-						.employeeId(c.employeeId())
-						.completed())
+						}).collect(Collectors.toList())).workingDate(c.workingDate()).employeeId(c.employeeId())
+								.completed())
 						.collect(Collectors.toList());
-//				resultValues.forEach(r -> {
-//					int size = r.getItems().size();
-//					for (int i = 0; i < size; i++) {
-//						ItemValue item = r.getItems().get(i);
-//						if (item.getValueType() == ValueType.TIME || item.getValueType() == ValueType.CLOCK
-//								|| item.getValueType() == ValueType.TIME_WITH_DAY) {
-//							r.getItems().set(i, new ItemValue(
-//									item.getValue() == null ? ""
-//											: converTime(item.getValueType().value, item.getValue()),
-//									item.getValueType(), item.getLayoutCode(), item.getItemId(), item.getPathLink()));
-//						}
-//					}
-//				});
 				DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos,
 						resultValues, null);
 				return returnData;
@@ -199,7 +185,6 @@ public class DailyCalculationCommandFacade {
 			itemInputErors.addAll(itemInputs);
 			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert, itemValues);
 			itemInputError28.addAll(itemInputs28);
-			// con thieu 2 loai check
 		});
 		resultError.put(TypeError.DUPLICATE.value, itemErrors);
 		resultError.put(TypeError.COUPLE.value, itemInputErors);
@@ -245,19 +230,32 @@ public class DailyCalculationCommandFacade {
 	private Map<Integer, List<DPItemValue>> errorCheckAfterCalculation(List<IntegrationOfDaily> dailyResults,
 			List<IntegrationOfMonthly> monthlyResults) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		List<DPItemValue> divergenceErrors = new ArrayList<>();
+		
 		// 乖離エラーのチェック
+		List<DPItemValue> divergenceErrors = new ArrayList<>();
 		for (IntegrationOfDaily d : dailyResults) {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
 				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D")) {
-					// divergenceErrors.add(new DPItemValue(rowId, employeeId,
-					// date, itemId))
+					divergenceErrors.addAll(err.getAttendanceItemList().stream()
+							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+							.collect(Collectors.toList()));
 				}
 			}
 		}
+		resultError.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
+
 		// フレックス繰越時間が正しい範囲で入力されているかチェックする
+		
+
+		// 残数系のエラーチェック
 		for (IntegrationOfMonthly m : monthlyResults) {
+			for (EmployeeMonthlyPerError e : m.getEmployeeMonthlyPerErrorList()) {
+				if (e.getErrorType() != ErrorType.FLEX) {
+					// add error to display
+					// cho confirm
+				}
+			}
 		}
 		return resultError;
 	}
