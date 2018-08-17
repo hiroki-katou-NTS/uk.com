@@ -174,9 +174,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 				SrcdtDataHistoryLog dhl = toDHLEntity(ccl, cce.ctgCorrectionLogID);
 
 				ccl.getItemInfos().forEach(ii -> {
+					if(ii.getValueAfter().getRawValue().getValue() != null && ii.getValueAfter().getViewValue() != null) {
 					SrcdtItemInfoLog iil = toIILEntity(ii, cce.ctgCorrectionLogID);
 
 					commandProxy().insert(iil);
+					}
 				});
 
 				commandProxy().insert(cce);
