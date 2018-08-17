@@ -41,9 +41,14 @@ module nts.uk.at.view.kwr001.c {
             // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
-            // end: variable global store data from service 
+            // end: variable global store data from service
+            
+            // store map to convert id and code attendance item
             mapIdCodeAtd: any;
             mapCodeIdAtd: any;
+            
+            // isFirstStartPage to identity case to convert code or id of attendance item 
+            isFirstStartPage: boolean;
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
@@ -88,16 +93,22 @@ module nts.uk.at.view.kwr001.c {
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         nts.uk.ui.errors.clearAll();
-                        self.C3_2_value(codeChoose.itemCode);
-                        self.C3_3_value(codeChoose.itemName);
-                        let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-                                                                return codeChoose.itemCode == o.itemCode;             
-                                                            })
-                        self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
-                        self.selectedRuleCode(codeChoose.workTypeNameDisplay);
-                        self.enableBtnDel(true);
-                        self.enableCodeC3_2(false);
-                        self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
+                        blockUI.grayout();
+                        service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
+                            self.C3_2_value(codeChoose.itemCode);
+                            self.C3_3_value(codeChoose.itemName);
+//                            let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
+//                                                                    return codeChoose.itemCode == o.itemCode;             
+//                                                                })
+                            self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
+                            self.selectedRuleCode(codeChoose.workTypeNameDisplay);
+                            self.enableBtnDel(true);
+                            self.enableCodeC3_2(false);
+                            self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
+                            blockUI.clear();
+                        })
+                        
+                        
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -137,6 +148,7 @@ module nts.uk.at.view.kwr001.c {
                 })
                 
                 self.isEnableRemarkInputContents = ko.observable(false);
+                self.isFirstStartPage = true;
             }
             
             /*
@@ -151,8 +163,14 @@ module nts.uk.at.view.kwr001.c {
                 self.items.removeAll();
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
-                    temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});    
+                    temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});
+//                    if (self.isFirstStartPage == true) {
+//                        temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});    
+//                    } else {
+//                        temp1.push({code: value.attendanceDisplay, name: value.attendanceName, id: self.mapCodeIdAtd[value.attendanceDisplay]});
+//                    }    
                 })
+//                self.isFirstStartPage = false;
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
                 })
@@ -220,12 +238,14 @@ module nts.uk.at.view.kwr001.c {
                         arrCodeName.push({code: value.itemCode+"", name: value.itemName, id: ""});
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(data.dailyAttendanceItem);
                     
                     _.forEach(data.dailyAttendanceItem, (value) => {
                         self.mapCodeIdAtd[value.code] = value.id;
                         self.mapIdCodeAtd[value.id] = value.code;        
                     })
+                    
+                    self.items(data.dailyAttendanceItem);                    
+                    
                     dfd.resolve();
                 })
                 

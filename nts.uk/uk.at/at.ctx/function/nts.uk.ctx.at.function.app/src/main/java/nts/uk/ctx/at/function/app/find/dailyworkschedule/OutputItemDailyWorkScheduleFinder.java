@@ -360,4 +360,90 @@ public class OutputItemDailyWorkScheduleFinder {
 		return lst.stream().collect(
                 Collectors.toMap(DailyAttendanceItemDto::getId, DailyAttendanceItemDto::getName));
 	}
+	
+	public OutputItemDailyWorkScheduleDto findByCodeId(String code) {
+		String companyId = AppContexts.user().companyId();
+		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
+		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByCidAndCode(companyId, code).get();
+		
+		
+		Map<String, Object> mapDtoReturn = new HashMap<>();
+		
+		// Start algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
+		// 対応するドメインモデル「画面で利用できる勤怠項目一覧」を取得する (get domain model đối ứng 「画面で利用できる勤怠項目一覧」 )
+		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
+		
+		// Get domain 任意項目
+		List<OptionalItem> lstOptionalItem = optionalItemRepository.findAll(companyId);
+		
+		Set<Integer> setScreenUseAtr = lstAttendanceType.stream().map(domain -> domain.getScreenUseAtr().value).collect(Collectors.toSet());
+		
+		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
+																	.filter(domainOptionItem -> {
+																			// 実績区分　=　日別実績 
+																			if (domainOptionItem.getPerformanceAtr().value != PerformanceAtr.DAILY_PERFORMANCE.value) {
+																				return false;
+																			}
+																		
+																			// 出勤簿時間　=　時間
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value)) {
+																				return true;
+																			}
+																			// 出勤簿回数　=　回数
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && setScreenUseAtr.contains(ScreenUseAtr.ATTENDANCE_TIMES.value)) {
+																				return true;
+																			}
+																			// 出勤簿金額　=　金額
+																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && setScreenUseAtr.contains(ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)) {
+																				return true;
+																			}
+																			// 日別勤務表　=　時間or回数or金額
+																			if ((domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value
+																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
+																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value)
+																				&& setScreenUseAtr.contains(ScreenUseAtr.DAILY_WORK_SCHEDULE.value)) {
+																				return true;
+																			}
+																			return false;})
+																	.map(domainOptionItem -> domainOptionItem)
+																	.distinct()
+																	.collect(Collectors.toList());
+		// End algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
+		
+		// get list attendanceId of OptionalItem 任意項目. according file 日次項目一覧.xls参照
+		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
+				.map(domain -> domain.getOptionalItemNo().v() + 640)
+				.collect(Collectors.toList());
+		
+		// get list attendanceId of AttendanceType 画面で利用できる勤怠項目一覧
+		List<Integer> lstAttendanceID2 = lstAttendanceType.stream()
+				.map(domain -> domain.getAttendanceItemId())
+				.collect(Collectors.toList());
+		lstAttendanceID.addAll(lstAttendanceID2);
+		
+		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
+		// アルゴリズム「勤怠項目に対応する名称を生成する」
+		if (!lstAttendanceID.isEmpty()) {
+			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
+					.map(domain -> {
+						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
+						dto.setCode(domain.getAttendanceItemDisplayNumber());
+						dto.setName(domain.getAttendanceItemName());
+						dto.setId(domain.getAttendanceItemId());
+						return dto;
+					}).sorted(Comparator.comparing(DailyAttendanceItemDto::getCode)).collect(Collectors.toList()));
+		} else {
+			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
+		}		
+		
+		Map<Integer, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
+		
+		dtoOIDW.setItemCode(domainOIDW.getItemCode().v());
+		dtoOIDW.setItemName(domainOIDW.getItemName().v());
+		dtoOIDW.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domainOIDW.getLstDisplayedAttendance(), mapCodeManeAttendance));
+		dtoOIDW.setLstRemarkContent(toDtoPrintRemarksContent(domainOIDW.getLstRemarkContent()));
+		dtoOIDW.setWorkTypeNameDisplay(domainOIDW.getWorkTypeNameDisplay().value);
+		dtoOIDW.setRemarkInputNo(domainOIDW.getRemarkInputNo().value);
+		return dtoOIDW;
+	}
 }
