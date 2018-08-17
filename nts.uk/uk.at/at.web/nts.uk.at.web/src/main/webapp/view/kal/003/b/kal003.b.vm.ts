@@ -828,10 +828,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         
                     });
                     break;
-        }
+                    }
                     //MinhVV add
                  case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
             let attdAtr = CONDITIONATR.TIMES;
+                    let attdAtr = CONDITIONATR.TIMES;
                     let mulMonCheckItem = self.mulMonCheckCondSet().typeCheckItem();
                     if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
@@ -1290,21 +1291,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.TIME:          //時間
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME:
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME:{
                     conditionAtr = CONDITIONATR.TIME;
                     break;
+                    }
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES:      //回数
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES:
-                    conditionAtr = CONDITIONATR.TIME;
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES:{
+                    conditionAtr = CONDITIONATR.TIMES;
                     break;
+                    }
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT: //金額
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT:
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT:{
                     conditionAtr = CONDITIONATR.AMOUNT;
                     break;
+                    }
                 default:
                     return;
             }
