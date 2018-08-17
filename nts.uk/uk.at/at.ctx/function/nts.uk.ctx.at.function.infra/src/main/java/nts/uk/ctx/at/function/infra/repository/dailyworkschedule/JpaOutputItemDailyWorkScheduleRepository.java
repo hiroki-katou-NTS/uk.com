@@ -126,12 +126,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code) {
-		/*KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
-		key.setCid(companyId);
-		key.setItemCode(code);
-		return this.queryProxy().find(key, KfnmtItemWorkSchedule.class).map(entity -> this.toDomain(entity));*/
-		
-		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

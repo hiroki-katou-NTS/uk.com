@@ -24,7 +24,6 @@ module nts.uk.at.view.kwr001.c {
             selectedRuleCode: any;
             
             currentCodeListSwap: KnockoutObservableArray<ItemModel>;
-            test: KnockoutObservableArray<any>;
 
             checkedRemarksInput: KnockoutObservable<boolean>;
             checkedMasterUnregistered: KnockoutObservable<boolean>;
@@ -46,9 +45,6 @@ module nts.uk.at.view.kwr001.c {
             // store map to convert id and code attendance item
             mapIdCodeAtd: any;
             mapCodeIdAtd: any;
-            
-            // isFirstStartPage to identity case to convert code or id of attendance item 
-            isFirstStartPage: boolean;
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
@@ -76,7 +72,6 @@ module nts.uk.at.view.kwr001.c {
                 self.roundingRules = ko.observableArray([]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
-                self.test = ko.observableArray([]);
                 
                 self.currentCodeListSwap.subscribe(function(value) {
                 })
@@ -97,9 +92,6 @@ module nts.uk.at.view.kwr001.c {
                         service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
                             self.C3_2_value(codeChoose.itemCode);
                             self.C3_3_value(codeChoose.itemName);
-//                            let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-//                                                                    return codeChoose.itemCode == o.itemCode;             
-//                                                                })
                             self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
                             self.selectedRuleCode(codeChoose.workTypeNameDisplay);
                             self.enableBtnDel(true);
@@ -107,8 +99,6 @@ module nts.uk.at.view.kwr001.c {
                             self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
                             blockUI.clear();
                         })
-                        
-                        
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -148,7 +138,8 @@ module nts.uk.at.view.kwr001.c {
                 })
                 
                 self.isEnableRemarkInputContents = ko.observable(false);
-                self.isFirstStartPage = true;
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
             
             /*
@@ -164,13 +155,7 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
                     temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});
-//                    if (self.isFirstStartPage == true) {
-//                        temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});    
-//                    } else {
-//                        temp1.push({code: value.attendanceDisplay, name: value.attendanceName, id: self.mapCodeIdAtd[value.attendanceDisplay]});
-//                    }    
                 })
-//                self.isFirstStartPage = false;
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
                 })
@@ -220,8 +205,6 @@ module nts.uk.at.view.kwr001.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                self.mapIdCodeAtd = {};
-                self.mapCodeIdAtd = {};
                 service.getDataStartPage().done(function(data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemDailyWorkSchedule);
@@ -321,6 +304,9 @@ module nts.uk.at.view.kwr001.c {
                         let arrTemp: any[] = [];
                         _.forEach(self.outputItemPossibleLst(), function(value) {
                             arrTemp.push(value);
+                        })
+                        _.forEach(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose, (value) => {
+                            value.code = self.mapIdCodeAtd[value.id];    
                         })
                         self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
                         self.items(arrTemp);
