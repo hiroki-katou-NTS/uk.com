@@ -370,7 +370,7 @@
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents-kaf007"
-		data-bind="visible: application().prePostAtr() == 1">
+		data-bind="visible: $parent.showRightContent()  ">
 		<div class="panel panel-gray-bg panel-kaf007 panel-frame"
 			data-bind="with: $parent.recordWorkInfo">
 			<!--A30_1 実績の内容(ラベル)-->
