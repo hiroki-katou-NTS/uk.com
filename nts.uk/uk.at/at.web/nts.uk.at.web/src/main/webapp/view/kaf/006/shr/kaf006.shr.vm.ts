@@ -388,5 +388,16 @@ module nts.uk.at.view.kaf006.share {
                 this.workClockTo2 = workClockTo2;
             }
         }
+        
+        export class DisplayReason {
+            typeLeave: number;    
+            displayFixedReason: boolean;
+            displayAppReason: boolean;
+            constructor(typeLeave: number, displayFixedReason: boolean, displayAppReason: boolean){
+                this.typeLeave = typeLeave;
+                this.displayFixedReason = displayFixedReason;
+                this.displayAppReason = displayAppReason;              
+            }
+        }
     }
 }

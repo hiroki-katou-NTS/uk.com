@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
+import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
@@ -180,6 +182,8 @@ public class AppAbsenceDto {
 	/* 忌引とする */
 	private Integer makeInvitation;
 	private AppForSpecLeaveDto specHdDto;
+	
+	private List<DisplayReasonDto> displayReasonDtoLst;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -216,7 +220,8 @@ public class AppAbsenceDto {
 								new ArrayList<>(),
 								null,
 								null,
-								null);
+								null,
+								Collections.emptyList());
 	}
 }
 
