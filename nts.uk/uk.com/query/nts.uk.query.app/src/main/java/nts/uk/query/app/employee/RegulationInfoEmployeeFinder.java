@@ -208,7 +208,8 @@ public class RegulationInfoEmployeeFinder {
 			this.changeListWorkplaces(queryDto);
 			break;
 		case DEPARTMENT_AND_CHILD:
-			if (employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+					|| employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
 				this.changeListWorkplaces(queryDto);
 				break;
