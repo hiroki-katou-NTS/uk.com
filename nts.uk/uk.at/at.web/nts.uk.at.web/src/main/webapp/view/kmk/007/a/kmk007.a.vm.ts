@@ -401,7 +401,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.currentCode(workType.workTypeCode());
                 });
 
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError(error);
             }).always(function() {
@@ -776,7 +776,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
 
             service.insert(obj).done(() => {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getWorkType();
                 self.findWorkTypeLanguage();
                 dfd.resolve();
