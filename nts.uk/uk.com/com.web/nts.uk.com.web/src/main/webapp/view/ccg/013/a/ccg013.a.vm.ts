@@ -131,11 +131,15 @@ module ccg013.a.viewmodel {
             (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
 
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                self.isCreated(false);
-                self.getWebMenu().done(() => {
-                    self.currentWebMenuCode(webMenu.webMenuCode());
+//                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.isCreated(false);
+                    self.getWebMenu().done(() => {
+                        self.currentWebMenuCode(webMenu.webMenuCode());
+                    });
+
                 });
+
             }).fail(function(error) {             
                 self.isDefaultMenu(true);
                 nts.uk.ui.dialog.alertError(error.message);
