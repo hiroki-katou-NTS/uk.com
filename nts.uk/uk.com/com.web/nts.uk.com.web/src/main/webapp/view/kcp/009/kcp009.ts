@@ -22,6 +22,7 @@ module kcp009.viewmodel {
         isDisplay: KnockoutObservable<boolean>;
         isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
+        componentWrapperId: string;
 
         constructor() {
             var self = this;
@@ -38,6 +39,7 @@ module kcp009.viewmodel {
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
+            self.componentWrapperId = nts.uk.util.randomId();
         }
 
         // Initialize Component
@@ -150,11 +152,6 @@ module kcp009.viewmodel {
                 // set z-index higher than CCG001
                 $('#item-list-' + self.prefix()).css('z-index', 998);
 
-                // Toggle
-                $(btnShowListEl).click(function() { 
-                    $(itemListEl).ntsPopup('toggle');
-                });
-
                 self.initKcp009Event();
 
                 // Enter keypress
@@ -175,8 +172,9 @@ module kcp009.viewmodel {
         private initKcp009Event(): void {
             let self = this;
 
-            if (!($(document.body).attr('kcp009-event-click-registered'))) {
-                $(document.body).attr('kcp009-event-click-registered', 'true');
+            const componentWrapperParent = $('#' + self.componentWrapperId).parent();
+            if (!componentWrapperParent.attr('kcp009-event-click-registered')) {
+                componentWrapperParent.attr('kcp009-event-click-registered', 'true');
 
                 $(document.body).on('click', e => {
                     const listBox = $('#item-list-' + self.prefix());
