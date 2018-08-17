@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionComm
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
@@ -175,7 +176,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
 
-		processHistoryPeriod(inputs, command.getHireDate());
+//		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
@@ -536,24 +537,24 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
-		inputs.forEach(category -> {
-			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
-				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
-				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
-
-				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
-					category.getItems()
-							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
-				}
-				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems()
-							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
-				}
-
-			}
-		});
-	}
+//	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
+//		inputs.forEach(category -> {
+//			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
+//				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
+//				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
+//
+//				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
+//					category.getItems()
+//							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
+//				}
+//				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
+//					category.getItems()
+//							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
+//				}
+//
+//			}
+//		});
+//	}
 
 	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user

@@ -103,6 +103,9 @@ public class PeregCommandFacade {
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
 	
+	@Inject
+	private FacadeUtils facadeUtils;
+	
 	private final static String nameStartDate = "開始日";
 	
 	private final static String nameEndate = "終了日";
@@ -284,15 +287,22 @@ public class PeregCommandFacade {
 			// Check is enough item to regist
 			List<String> listScreenItem = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
 			
-			List<ItemValue> listDefault = FacadeUtils.getListDefaultItem(itemsByCategory.getCategoryCd(),listScreenItem);
+			List<ItemValue> listDefault = facadeUtils.getListDefaultItem(itemsByCategory.getCategoryCd(),listScreenItem, container.getEmployeeId());
 			itemsByCategory.getItems().addAll(listDefault);
 			
 			List<String> listItemAfter = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
 			
-			Optional<String> itemExclude = itemByCtgId.get(itemsByCategory.getCategoryId()).stream().filter(i -> !listItemAfter.contains(i)).findFirst();
+			Optional<String> itemExclude = Optional.empty();
 			
-			if (itemExclude.isPresent()){
+			if (itemByCtgId.containsKey(itemsByCategory.getCategoryId())) {
+
+				itemExclude = itemByCtgId.get(itemsByCategory.getCategoryId()).stream().filter(i -> !listItemAfter.contains(i))
+						.findFirst();
+			}
+			if (itemExclude.isPresent() && isCps002){
 				throw new BusinessException("Msg_1351");
+			} else if (itemExclude.isPresent() && !isCps002){
+				throw new BusinessException("Msg_1353");
 			}
 			
 			// In case of optional category fix category doesn't exist

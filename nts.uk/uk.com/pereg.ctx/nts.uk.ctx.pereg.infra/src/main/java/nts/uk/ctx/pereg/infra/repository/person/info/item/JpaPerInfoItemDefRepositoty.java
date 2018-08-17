@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -300,7 +301,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1";
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1 AND ic.itemType <> 1";
 	
 	
 	@Override
@@ -1096,6 +1097,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public Map<String, List<String>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd) {
+		
+		Map<String, List<String>> result =  new HashMap<>();
+		
+		
+		if (lstPerInfoCategoryId.isEmpty()){
+			return result;
+		}
+		
 		List<Object[]> lstObj = this.queryProxy().query(SELECT_REQUIRED_ITEM, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
 		
@@ -1103,7 +1112,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
 		
 		// Map to List
-		Map<String, List<String>> result = perInfoItemDefByList.entrySet().stream()
+		result = perInfoItemDefByList.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
 					List<Object[]> listItem = e.getValue();
 					return listItem.stream().map(x-> String.valueOf(x[0])).collect(Collectors.toList());

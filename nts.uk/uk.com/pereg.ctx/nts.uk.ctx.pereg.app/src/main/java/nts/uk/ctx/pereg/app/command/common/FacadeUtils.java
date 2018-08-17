@@ -4,11 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -16,20 +22,86 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
 
 @Stateless
 public class FacadeUtils {
 	
-	public static final List<String> categoryDefaultValue = Arrays.asList("CS00020", "CS00025", "CS00026",
-			"CS00027", "CS00028", "CS00029", "CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00035",
-			"CS00036", "CS00037", "CS00038", "CS00039", "CS00040", "CS00041", "CS00042", "CS00043", "CS00044",
-			"CS00045", "CS00046", "CS00047", "CS00048", "CS00049", "CS00050", "CS00051", "CS00052", "CS00053",
-			"CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00059", "CS00060", "CS00061", "CS00062",
-			"CS00063", "CS00064", "CS00065", "CS00066", "CS00067", "CS00068");
+//	private static final List<String> categoryDefaultValue = Arrays.asList("CS00020", "CS00025", "CS00026",
+//			"CS00027", "CS00028", "CS00029", "CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00035",
+//			"CS00036", "CS00037", "CS00038", "CS00039", "CS00040", "CS00041", "CS00042", "CS00043", "CS00044",
+//			"CS00045", "CS00046", "CS00047", "CS00048", "CS00049", "CS00050", "CS00051", "CS00052", "CS00053",
+//			"CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00059", "CS00060", "CS00061", "CS00062",
+//			"CS00063", "CS00064", "CS00065", "CS00066", "CS00067", "CS00068");
 	
-	public static final String FUNCTION_NAME = "getListDefault";
+	
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
+
+	private static final Map<String, String> startDateItemCodes;
+	static {
+		Map<String, String> aMap = new HashMap<>();
+		// 所属会社履歴
+		aMap.put("CS00003", "IS00020");
+		// 分類１
+		aMap.put("CS00004", "IS00026");
+		// 雇用
+		aMap.put("CS00014", "IS00066");
+		// 職位本務
+		aMap.put("CS00016", "IS00077");
+		// 職場
+		aMap.put("CS00017", "IS00082");
+		// 休職休業
+		aMap.put("CS00018", "IS00087");
+		// 短時間勤務
+		aMap.put("CS00019", "IS00102");
+		// 労働条件
+		aMap.put("CS00020", "IS00119");
+		// 勤務種別
+		aMap.put("CS00021", "IS00255");
+		// 労働条件２
+		aMap.put("CS00070", "IS00781");
+
+		startDateItemCodes = Collections.unmodifiableMap(aMap);
+	}
+
+	private static final Map<String, String> endDateItemCodes;
+	static {
+		Map<String, String> aMap = new HashMap<>();
+		// 所属会社履歴
+		aMap.put("CS00003", "IS00021");
+		// 分類１
+		aMap.put("CS00004", "IS00027");
+		// 雇用
+		aMap.put("CS00014", "IS00067");
+		// 職位本務
+		aMap.put("CS00016", "IS00078");
+		// 職場
+		aMap.put("CS00017", "IS00083");
+		// 休職休業
+		aMap.put("CS00018", "IS00088");
+		// 短時間勤務
+		aMap.put("CS00019", "IS00103");
+		// 労働条件
+		aMap.put("CS00020", "IS00120");
+		// 勤務種別
+		aMap.put("CS00021", "IS00256");
+		// 労働条件２
+		aMap.put("CS00070", "IS00782");
+
+		endDateItemCodes = Collections.unmodifiableMap(aMap);
+	}
+	
+	@Inject 
+	private AffCompanyHistRepository affCompanyHistRepository;
+	
+	private static final String FUNCTION_NAME = "getListDefault";
 	
 	// CS00020
 	public List<ItemValue> getListDefaultCS00020(){
@@ -259,7 +331,7 @@ public class FacadeUtils {
 	}
 	
 	public static ItemValue createItem(String itemCode, int type, String itemValue){
-		return new ItemValue("",itemCode,"",itemValue,"","", "", type, type);
+		return new ItemValue("",itemCode,"",itemValue,"",itemValue, itemValue, type, type);
 	}
 	
 	public static List<ItemValue> createListItems(String[][] listItem){
@@ -282,8 +354,8 @@ public class FacadeUtils {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 */
-	public static List<ItemValue> getListDefaultItem(String categoryCode,
-			List<String> listItemCodeInScreen) {
+	public List<ItemValue> getListDefaultItem(String categoryCode,
+			List<String> listItemCodeInScreen,String sid) {
 		
 		List<ItemValue> listItemResult = new ArrayList<>();
 		try {
@@ -294,6 +366,50 @@ public class FacadeUtils {
 		} catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		
+		listItemResult.addAll(processHistoryPeriod(categoryCode,listItemCodeInScreen,sid));		
+		
 		return listItemResult.stream().filter(i-> !listItemCodeInScreen.contains(i.itemCode())).collect(Collectors.toList());
+	}
+	
+	public List<ItemValue> processHistoryPeriod(String categoryCode,List<String> listItemCodeInScreen, String sid) {
+		List<ItemValue> listItemResult = new ArrayList<>();
+		int dataType = DataTypeValue.DATE.value;
+		
+		Optional<GeneralDate> hireDate = getHireDate(sid);
+		
+		if (!hireDate.isPresent()){
+			return listItemResult;
+		}
+		
+		if (historyCategoryCodeList.contains(categoryCode)) {
+			String startDateItemCode = startDateItemCodes.get(categoryCode);
+			String endDateItemCode = endDateItemCodes.get(categoryCode);
+
+			if (!listItemCodeInScreen.stream().anyMatch(item -> item.equals(startDateItemCode))) {
+				listItemResult
+						.add(createItem(startDateItemCode, dataType, hireDate.get().toString()));
+			}
+			if (!listItemCodeInScreen.stream().anyMatch(item -> item.equals(endDateItemCode))) {
+				listItemResult
+						.add(createItem(endDateItemCode, dataType, GeneralDate.max().toString()));
+			}
+
+		}
+		return listItemResult;
+	}
+	
+	/**
+	 * Get hire date
+	 * @param sid
+	 * @return
+	 */
+	public Optional<GeneralDate> getHireDate(String sid){
+		AffCompanyHist affcom = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(),sid);
+		AffCompanyHistByEmployee hist = affcom.getAffCompanyHistByEmployee(sid);
+		if (hist.getHistory().isPresent()){
+			return Optional.of(hist.getHistory().get().start());
+		}
+		return Optional.empty();
 	}
 }
