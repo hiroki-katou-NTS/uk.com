@@ -11,7 +11,7 @@
 			<script>
 				var dialogSize = {
 					width : 1030,
-					height : 255
+					height : 300
 				};
 			</script>
 			<com:ValidatorScript>
@@ -31,6 +31,8 @@
 				<div class="valign-center control-group mb-20">
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_93')}</div>
 					<div id="conditionAtr-cbb" data-bind="ntsComboBox: {
+						dropDownAttachedToBody: true,
+						visibleItemsCount: 4,
 						options: enumConditionAtr,
 						optionsValue: 'code',
 						value: currentAtdItemCondition.conditionAtr,
@@ -67,7 +69,8 @@
 							optionsText: 'name',
 							enable: true,
 							width: '265px',
-							visibleItemsCount: 4,
+							visibleItemsCount: 6,
+							dropDownAttachedToBody: true,
 							columns: [
 								{ prop: 'name', length: 10 },
 							],
@@ -80,7 +83,8 @@
 							value: currentAtdItemCondition.inputCheckCondition,
 							optionsText: 'name',
 							enable: true,
-							visibleItemsCount: 4,
+							dropDownAttachedToBody: true,
+							visibleItemsCount: 6,
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>
