@@ -122,6 +122,7 @@ module nts.uk.at.view.kmk011.d {
              * save divergence reference setting
              */
             public saveDivergenceRefSetting() {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
@@ -134,6 +135,7 @@ module nts.uk.at.view.kmk011.d {
                 }
 
                 if (_self.hasError()) {
+                    blockUI.clear();
                     return;
                 }
 
@@ -159,6 +161,8 @@ module nts.uk.at.view.kmk011.d {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail((res: any) => {
                     _self.showMessageError(res);
+                }).always(() => {
+                    blockUI.clear();    
                 });
             }
 
