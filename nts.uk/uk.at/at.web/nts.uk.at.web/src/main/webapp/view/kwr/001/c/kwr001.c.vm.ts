@@ -42,6 +42,8 @@ module nts.uk.at.view.kwr001.c {
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
             // end: variable global store data from service 
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
@@ -60,7 +62,7 @@ module nts.uk.at.view.kwr001.c {
                 self.outputItemList = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR001_52"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180 }
+                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
                 self.currentCodeList = ko.observable();
                 self.C3_2_value = ko.observable("");
@@ -144,12 +146,12 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 
                 // variable temporary
-                let temp2: any[] = [];
-                let temp1: any[] = [];
+                let temp2: ItemModel[] = [];
+                let temp1: ItemModel[] = [];
                 self.items.removeAll();
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
-                    temp1.push({code: value.attendanceDisplay+"", name: value.attendanceName});    
+                    temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});    
                 })
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
@@ -200,6 +202,8 @@ module nts.uk.at.view.kwr001.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
                 service.getDataStartPage().done(function(data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemDailyWorkSchedule);
@@ -213,10 +217,15 @@ module nts.uk.at.view.kwr001.c {
                     
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
-                        arrCodeName.push({code: value.itemCode+"", name: value.itemName});
+                        arrCodeName.push({code: value.itemCode+"", name: value.itemName, id: ""});
                     });
                     self.outputItemList(arrCodeName);
                     self.items(data.dailyAttendanceItem);
+                    
+                    _.forEach(data.dailyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;        
+                    })
                     dfd.resolve();
                 })
                 
@@ -259,16 +268,11 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 service.getEnumRemarkInputContent().done(function(data: any) {
                     let arr: ItemModel[] = [];
-                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118")));
-                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119")));
-                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120")));
-                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121")));
-                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122")));
-//                    arr.push(new ItemModel('1', data[0].localizedName));
-//                    arr.push(new ItemModel('2', data[1].localizedName));
-//                    arr.push(new ItemModel('3', data[2].localizedName));
-//                    arr.push(new ItemModel('4', data[3].localizedName));
-//                    arr.push(new ItemModel('5', data[4].localizedName));
+                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118"), ''));
+                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119"), ''));
+                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120"), ''));
+                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121"), ''));
+                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122"), ''));
                     self.remarkInputContents(arr);
                     dfd.resolve();
                 })
@@ -325,7 +329,7 @@ module nts.uk.at.view.kwr001.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 _.forEach(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({sortBy: index, itemToDisplay: value.code});
+                    command.lstDisplayedAttendance.push({sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code]});
                 });
                 command.lstRemarkContent = [];
                 command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedRemarksInput()), printItem: 0});
@@ -475,9 +479,11 @@ module nts.uk.at.view.kwr001.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
-                this.name = name;  
+                this.name = name;
+                this.id = id;
             }
         } 
     }
