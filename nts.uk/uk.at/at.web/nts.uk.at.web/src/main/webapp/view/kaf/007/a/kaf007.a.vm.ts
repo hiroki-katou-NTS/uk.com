@@ -141,6 +141,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
             }    
             }
+        showRightContent(){
+        let self =this;
+         return   self.appChangeSetting().displayResultAtr() && self.appWorkChange().application().prePostAtr() == 1   ; 
+        }
         /**
          * 起動する
          */

@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -473,20 +472,8 @@ public class OverTimeOfMonthly implements Cloneable {
 			// 取得した「残業枠時間」を「集計残業時間」に入れる
 			for (val overTimeFrame : overTimeFrames){
 				int frameNo = overTimeFrame.getOverWorkFrameNo().v();
-				boolean isLegal = false;
-				if (roleOverTimeFrameMap.containsKey(frameNo)){
-					if (roleOverTimeFrameMap.get(frameNo).getRoleOTWorkEnum() == RoleOvertimeWorkEnum.OT_STATUTORY_WORK){
-						isLegal = true;		// 法定内
-					}
-				}
-				if (isLegal){
-					val target = this.getTargetAggregateOverTime(new OverTimeFrameNo(frameNo));
-					target.addLegalOverTimeInTimeSeriesWork(ymd, overTimeFrame);
-				}
-				else {
-					val target = this.getTargetAggregateOverTime(new OverTimeFrameNo(frameNo));
-					target.addOverTimeInTimeSeriesWork(ymd, overTimeFrame);
-				}
+				val target = this.getTargetAggregateOverTime(new OverTimeFrameNo(frameNo));
+				target.addOverTimeInTimeSeriesWork(ymd, overTimeFrame);
 			}
 		}
 		
