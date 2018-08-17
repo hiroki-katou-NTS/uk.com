@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import java.util.UUID;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -77,9 +79,11 @@ public class KmlmtPersonCostCalculationDataCopyHandler implements DataCopyHandle
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
 			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+				UUID hisId = UUID.randomUUID();
+				String hisIdValue = hisId.toString();
 				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 1, this.companyId);
-				insertQuery.setParameter(i * PARAMETER_QUANTITY + 2, dataArr[1]);
+				insertQuery.setParameter(i * PARAMETER_QUANTITY + 2, hisIdValue);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 3, dataArr[2]);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 4, dataArr[3]);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 5, dataArr[4]);
