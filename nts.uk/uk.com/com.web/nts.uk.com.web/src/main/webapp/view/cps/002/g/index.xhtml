@@ -21,6 +21,7 @@
 			<com:scriptfile path="cps002.g.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.usesetting.EmpCodeLetter
+				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.pereg.dom.usesetting.CardNoLetter
 			</com:ValidatorScript>
 
@@ -46,20 +47,21 @@
 										options: $parent.employeeInitItemList ,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: employeeCodeType ,
+										value: $parent.employeeCodeType2 ,
 										enable: true }"></div>
 								<div id="empCodeLetter">
-									<input id="employeeCodeLetter"
+									<input id="employeeCode"
 										data-bind="ntsTextEditor: {
 													value: employeeCodeLetter ,
-													constraint:'EmpCodeLetter',
-													name: '#{i18n.getText('CPS002_77')}',
+													constraint:'EmployeeCode',
+													name: '#{i18n.getText('CPS002_81')}',
 													option: {
 														textmode: 'text',
 										            	width: '80px',
 										            	textalign: 'left'
 													},
-													enable: employeeCodeType() === 1
+													enable: $parent.employeeCodeType2() === 1,
+													required: $parent.requiredCode
 													}" />
 									<span>#{i18n.getText('CPS002_82')}</span>
 								</div>
@@ -73,22 +75,23 @@
 										options: $parent.cardNoInitItemList ,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: cardNumberType ,
+										value: $parent.cardNumberType2 ,
 										enable: true }"></div>
 
 								<div id="cardNoLetter">
 
-									<input
+									<input id="cardNumber"
 										data-bind="ntsTextEditor: {
 													value: cardNumberLetter ,
 													constraint:'CardNoLetter',
-													name: '#{i18n.getText('CPS002_83')}',
+													name: '#{i18n.getText('CPS002_81')}',
 													option: {
 														textmode: 'text',
 										            	width: '80px',
 										            	textalign: 'left'
 													},
-													enable: cardNumberType() === 1
+													enable: $parent.cardNumberType2() === 1,
+													required: $parent.requiredCard
 													}" />
 
 									<span>#{i18n.getText('CPS002_87')}</span>
@@ -112,7 +115,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: register">#{i18n.getText('CPS002_91')}</button>
+				<button class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty()">#{i18n.getText('CPS002_91')}</button>
 				<button data-bind="click: close">#{i18n.getText('CPS002_92')}</button>
 			</div>
 		</ui:define>
