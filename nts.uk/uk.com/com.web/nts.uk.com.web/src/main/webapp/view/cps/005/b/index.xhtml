@@ -466,7 +466,7 @@
 									data-bind="with: timeItem, visible: dataType() == 4">
 									<div
 										class="valign-center control-group control-group-margin-custom">
-										<div data-bind="ntsFormLabel: {required: true}"
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeItemMin'}"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_29')}' "></span>
 										</div>
@@ -513,7 +513,7 @@
 									data-bind="with: timePointItem, visible: dataType() == 5">
 									<div
 										class="valign-center control-group control-group-margin-custom">
-										<div data-bind="ntsFormLabel: {required: true}"
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeWithDayAttr'}"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_32')}' "></span>
 										</div>
