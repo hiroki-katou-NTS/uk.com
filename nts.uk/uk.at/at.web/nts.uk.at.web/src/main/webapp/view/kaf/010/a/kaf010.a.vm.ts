@@ -225,7 +225,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     });
                    self.prePostSelected.subscribe(function(value){
                        $('#kaf010-pre-post-select').ntsError('clear');
-                      if(value == 0){
+                       nts.uk.ui.errors.clearAll();
+                       $("#inputdate").trigger("validate");
+                      if(value == 0){                           
                            $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                       }else if(value == 1){
                            $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
@@ -375,6 +377,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
+            }
+            if (self.prePostSelected() == 1) {
+                $('.breakTimesCheck').ntsError('check');
+            } else if (self.prePostSelected() == 0) {
+                $('.breakTimesCheckPre').ntsError('check');
             }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   

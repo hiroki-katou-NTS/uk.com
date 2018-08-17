@@ -416,6 +416,11 @@ module nts.uk.at.view.kaf005.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
+                if (self.prePostSelected() == 1) {
+                    $('.overtimeHoursCheck').ntsError('check');
+                } else if (self.prePostSelected() == 0) {
+                    $('.overtimeHoursCheckPre').ntsError('check');
+                }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();
