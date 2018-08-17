@@ -506,12 +506,8 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 let dataSource = self.employeeList();
-                let itemListSetting = [];
-                self.alreadySettingList().forEach(function (item: any){
-                    if(dataSource.filter(e => e.code == item.code).length > 0){
-                        dataSource.filter(e => e.code == item.code)[0].isAlreadySetting = true;
-                        itemListSetting.push(dataSource.filter(e => e.code == item.code)[0]);
-                    } 
+                let itemListSetting = _.map(self.alreadySettingList(), item => {
+                    return _.find(dataSource, i => i.code == item.code).id;
                 });
                 
                 let object: IObjectDuplication = {
