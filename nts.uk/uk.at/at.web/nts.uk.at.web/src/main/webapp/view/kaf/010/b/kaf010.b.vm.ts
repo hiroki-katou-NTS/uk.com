@@ -421,6 +421,11 @@ module nts.uk.at.view.kaf010.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
+                if (self.prePostSelected() == 1) {
+                    $('.breakTimesCheck').ntsError('check');
+                } else if (self.prePostSelected() == 0) {
+                    $('.breakTimesCheckPre').ntsError('check');
+                }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();
