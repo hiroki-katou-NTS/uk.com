@@ -22,10 +22,6 @@ public class KrcdtEditStateOfMothlyPerPK implements Serializable {
 	@Column(name = "SID")
 	public String employeeID;
 	
-	/** 勤怠項目ID */
-	@Column(name = "ATTENDANCE_ITEM_ID")
-	public Integer attendanceItemID;
-	
 	/** 処理年月 */
 	@Column(name = "YM")
 	public int processDate;
@@ -37,4 +33,8 @@ public class KrcdtEditStateOfMothlyPerPK implements Serializable {
 	/** 締め日 */
 	@Column(name = "CLOSURE_DAY")
 	public Integer closeDay;
+	
+	/** 勤怠項目ID */
+	@Column(name = "ATTENDANCE_ITEM_ID")
+	public Integer attendanceItemID;
 }
