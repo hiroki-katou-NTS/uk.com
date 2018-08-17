@@ -475,12 +475,16 @@ public class PeregCommandFacade {
 					}
 					
 					if (ItemValue.filterItem(item) != null) {
-						invisibles.stream().forEach(invisible -> {
-							if(!invisible.itemCode().equals(item.itemCode())) {
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-							}
-						});
-						
+						if (invisibles.size() == 0) {
+							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+						} else {
+							invisibles.stream().forEach(invisible -> {
+								if (!invisible.itemCode().equals(item.itemCode())) {
+									lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								}
+							});
+						}
+
 					}
 					
 				}
