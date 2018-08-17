@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk007.c.viewmodel {
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservable<any>;
@@ -66,10 +67,11 @@ module nts.uk.at.view.kmk007.c.viewmodel {
         initialize() {
             var self = this;
             
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_414" }).ifYes(() => {
-                self.items.removeAll();
+            dialog.confirm({ messageId: "Msg_414" }).ifYes(() => {
+                self.items([]);
                 self.items(self.oldDataItems());
                 self.selectedCodes.removeAll();
+                dialog.info({ messageId: "Msg_394"});
             });
         }
         

@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -24,10 +23,6 @@ public class RegistrationUserFinder {
 	/** The company adapter. */
 	@Inject
 	private CompanyAdapter companyAdapter;
-	
-	/** The employee info adapter. */
-	@Inject
-	private EmployeeInfoAdapter employeeInfoAdapter;
 	
 	/** The user repo. */
 	@Inject
@@ -63,11 +58,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by current CID
 	 */
 	public List<UserDto> getLoginUserListByCurrentCID(String cid) {
-//		String cid = AppContexts.user().companyId();
-		// get list Associated Person ID = EmployeeInfoImport. Personal ID
-		List<String> listAssociatePersonId = new ArrayList<>();
-		employeeInfoAdapter.getEmployeesAtWorkByBaseDate(cid, GeneralDate.today()).stream().forEach(c -> listAssociatePersonId.add(c.getPersonId()));
-		return userRepo.getListUserByListAsIDOrderByLoginID(listAssociatePersonId).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getListUserByCompanyId(cid, GeneralDate.today()).stream().map(c -> UserDto.fromDomain(c, cid))
 				.collect(Collectors.toList());
 	}
 
@@ -77,20 +68,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by contract code
 	 */
 	public List<UserDto> getLoginUserListByContractCode() {
-		return userRepo.getByContractCode(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getByContractCdAndAsIDNull(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c, null))
 				.collect(Collectors.toList());
 	}
-	
-	/**
-	 * Gets the user by user id.
-	 *
-	 * @param userId the user id
-	 * @return the user by user id
-	 */
-	public UserDto getUserByUserId(String userId) {
-		if(!userRepo.getByUserID(userId).isPresent())
-			return null;
-		return UserDto.fromDomain(userRepo.getByUserID(userId).get());
-	}
-
 }

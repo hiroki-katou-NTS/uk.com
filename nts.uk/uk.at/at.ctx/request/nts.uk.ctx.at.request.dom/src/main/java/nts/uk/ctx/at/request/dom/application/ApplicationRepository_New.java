@@ -80,7 +80,7 @@ public interface ApplicationRepository_New {
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 	
-	public List<Application_New> getByListRefStatus(String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
+	public List<Application_New> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 	
 	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate);
 	/**
@@ -114,4 +114,17 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
+	/**
+	 * getListAppByType
+	 * sort：申請日（ASC）、入力日（DESC）
+	 * @param companyId
+	 * @param sID: 申請者＝パラメータ．社員ID
+	 * @param appDate: パラメータ．期間．開始日＜＝　申請日　＜＝パラメータ．期間．終了日
+	 * @param prePostAtr: 事前事後区分＝事後
+	 * @param appType: 休日出勤申請
+	 * @param lstRef: 実績反映状態＝未承認 or 反映待ち
+	 * @return
+	 */
+	public List<Application_New> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate, 
+			int prePostAtr, int appType, List<Integer> lstRef);
 }

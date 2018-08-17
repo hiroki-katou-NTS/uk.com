@@ -33,13 +33,14 @@
 				<td class="thut"><div data-bind="if: screenModeNew"
 						style="display: inline-block;">
 						<!--A3_4 事前事後スイッチ-->
-						<div tabindex="7"
+						<div tabindex="7" id = "switch_prePost"
 							data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF006_9')}',
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF006_10')}' },
 							                { prePostCode: 1, prePostName: '#{i18n.getText('KAF006_11')}' }
 							                ]),
 									optionsValue: 'prePostCode',
+									required: true,
 									optionsText: 'prePostName',
 									value: prePostSelected,
 									enable: prePostEnable}">

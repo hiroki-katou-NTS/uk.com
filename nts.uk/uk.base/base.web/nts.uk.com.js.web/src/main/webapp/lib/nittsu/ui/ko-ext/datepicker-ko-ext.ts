@@ -142,6 +142,7 @@ module nts.uk.ui.koExtentions {
                     }
 //                    container.data("changed", true);
                     value(result.parsedValue);
+                    value.valueWillMutate();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);

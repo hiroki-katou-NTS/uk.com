@@ -79,6 +79,7 @@ module nts.uk.at.view.kwr001.a {
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
+            errorLogsNoWorkplace : KnockoutObservableArray<EmployeeError>;
             
             constructor() {
                 let self = this;
@@ -137,6 +138,7 @@ module nts.uk.at.view.kwr001.a {
                 
                 self.taskId = ko.observable('');
                 self.errorLogs = ko.observableArray([]);
+                self.errorLogsNoWorkplace = ko.observableArray([]);
                 
                 // start set variable for CCG001
                 self.ccg001ComponentOption = {
@@ -486,6 +488,7 @@ module nts.uk.at.view.kwr001.a {
                             service.exportExcel(dto).done(function(response){
                                 var employeeStr = "";
                                 self.errorLogs.removeAll();
+                                self.errorLogsNoWorkplace.removeAll();
                                 _.forEach(response.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         var errors = JSON.parse(item.valueAsString);
@@ -498,10 +501,23 @@ module nts.uk.at.view.kwr001.a {
                                             self.errorLogs.push(errorEmployee);
                                         });
                                     }
+                                    else if (item.key.substring(0, 6) == "NOWPK_") {
+                                        var errors = JSON.parse(item.valueAsString);
+                                        _.forEach(errors, error => {
+                                            var errorEmployee : EmployeeError = {
+                                                employeeCode : error.employeeCode,
+                                                employeeName : error.employeeName
+                                            }   
+                                            employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                            self.errorLogsNoWorkplace.push(errorEmployee);
+                                        });
+                                    }
                                 });
                                 // Show error in msg_1344
                                 if (self.errorLogs().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+                                if (self.errorLogsNoWorkplace().length > 0)
+                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
                                 nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
@@ -536,6 +552,7 @@ module nts.uk.at.view.kwr001.a {
                             service.exportExcel(dto).done(function(response){
                                 var employeeStr = "";
                                 self.errorLogs.removeAll();
+                                self.errorLogsNoWorkplace.removeAll();
                                 _.forEach(response.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         var errors = JSON.parse(item.valueAsString);
@@ -548,10 +565,23 @@ module nts.uk.at.view.kwr001.a {
                                             self.errorLogs.push(errorEmployee);
                                         });
                                     }
+                                    else if (item.key.substring(0, 6) == "NOWPK_") {
+                                        var errors = JSON.parse(item.valueAsString);
+                                        _.forEach(errors, error => {
+                                            var errorEmployee : EmployeeError = {
+                                                employeeCode : error.employeeCode,
+                                                employeeName : error.employeeName
+                                            }   
+                                            employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                            self.errorLogsNoWorkplace.push(errorEmployee);
+                                        });
+                                    }
                                 });
                                 // Show error in msg_1344
                                 if (self.errorLogs().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+                                if (self.errorLogsNoWorkplace().length > 0)
+                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
                                 nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {

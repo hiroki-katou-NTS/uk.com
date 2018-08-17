@@ -177,7 +177,7 @@ module nts.uk.ui.koExtentions {
                     rendered: function(evt, ui) {
                         $element
                             .find('.ui-igcombo')
-                            .css('background', '#f6f6f6')
+                            .css('background', '#fff')
                             .find('.ui-igcombo-fieldholder').hide();
 
                         $element

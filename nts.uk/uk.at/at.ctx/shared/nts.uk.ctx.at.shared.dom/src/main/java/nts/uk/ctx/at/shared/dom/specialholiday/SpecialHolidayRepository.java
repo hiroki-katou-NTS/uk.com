@@ -26,6 +26,14 @@ public interface SpecialHolidayRepository {
 	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
 	
 	/**
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCodes
+	 * @return
+	 */
+	List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes);
+	
+	/**
 	 * Add Special Holiday
 	 * @param specialHoliday
 	 */

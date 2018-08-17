@@ -233,6 +233,12 @@ public class BasicSchedule extends AggregateRoot {
 	}
 	
 	public boolean diffWorkTimeCode(String workTimeCd){
+		if(workTimeCode == null && workTimeCd == null){
+			return false;
+		}
+		if(workTimeCode == null && workTimeCd != null){
+			return true;
+		}
 		return !workTimeCode.equals(workTimeCd);
 	}
 	

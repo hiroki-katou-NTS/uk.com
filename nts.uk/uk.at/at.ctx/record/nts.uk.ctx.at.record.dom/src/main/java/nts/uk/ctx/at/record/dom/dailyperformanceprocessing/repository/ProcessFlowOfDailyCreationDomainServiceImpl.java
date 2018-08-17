@@ -122,7 +122,12 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			
 			//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
 			//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
-			dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
+			if (finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
+				this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
+			} else {
+				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+			}
 		}
 		
 		//***** ↓　以下、仮実装。ログ制御全体を見直して、正確な手順に再修正要。（2018.1.16 Shuichi Ishida）
@@ -153,32 +158,28 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
 		} else {
 			// 完了処理 (Xử lý hoàn thành)
-			ExeStateOfCalAndSum executionStatus = this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
-			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, executionStatus.value);
-		}
-		
+			List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
+			if (errMessageInfos.isEmpty()) {
+				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.DONE.value);
+
+			} else {
+				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.DONE_WITH_ERROR.value);
+			}
+		}		
 	}
 	
-	private ExeStateOfCalAndSum updateExecutionState(TaskDataSetter dataSetter, String empCalAndSumExecLogID){
-		
-		// 0 : 完了
-		// 1 : 完了（エラーあり）
-		ExeStateOfCalAndSum executionStatus = ExeStateOfCalAndSum.DONE;
+	private void updateExecutionState(TaskDataSetter dataSetter, String empCalAndSumExecLogID){
 		
 		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
 		List<String> errorMessage = errMessageInfos.stream().map(error -> {
 			return error.getMessageError().v();
 		}).collect(Collectors.toList());
 		if (errorMessage.isEmpty()) {
-			executionStatus = ExeStateOfCalAndSum.DONE;
 			dataSetter.updateData("dailyCreateHasError", ErrorPresent.NO_ERROR.nameId);
 
 		} else {
-			executionStatus = ExeStateOfCalAndSum.DONE_WITH_ERROR;
 			dataSetter.updateData("dailyCreateHasError", ErrorPresent.HAS_ERROR.nameId);
 		}
-		
-		return executionStatus;
 	}
 
 	

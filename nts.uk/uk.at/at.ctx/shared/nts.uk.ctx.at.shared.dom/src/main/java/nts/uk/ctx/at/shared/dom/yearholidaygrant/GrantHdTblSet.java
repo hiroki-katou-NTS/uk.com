@@ -149,7 +149,10 @@ public class GrantHdTblSet extends AggregateRoot {
 			if (grantCondition.getUseConditionAtr() == UseConditionAtr.NOT_USE) continue;
 			
 			// 基準値と付与条件．条件値を比較
-			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) target = grantCondition;
+			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) {
+				target = grantCondition;
+				break;
+			}
 		}
 		
 		// 付与条件を返す

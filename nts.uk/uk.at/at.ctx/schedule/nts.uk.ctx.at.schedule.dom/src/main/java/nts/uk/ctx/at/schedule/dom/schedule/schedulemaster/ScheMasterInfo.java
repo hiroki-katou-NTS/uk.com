@@ -58,6 +58,13 @@ public class ScheMasterInfo {
 	}
 	
 	public boolean diffClassificationCd(String claCd){
+		if(classificationCd == null && claCd == null){
+			return false;
+		}
+		if(classificationCd == null && claCd != null){
+			return true;
+		}
+		
 		return !classificationCd.equals(claCd);
 	}
 	

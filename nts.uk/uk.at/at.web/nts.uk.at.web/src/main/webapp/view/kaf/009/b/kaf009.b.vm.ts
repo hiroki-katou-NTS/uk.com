@@ -97,6 +97,7 @@ module nts.uk.at.view.kaf009.b {
             checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
             workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
             workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
+            targetDate:  any = moment(new Date()).format("YYYY/MM/DD");
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
@@ -105,6 +106,7 @@ module nts.uk.at.view.kaf009.b {
                     width: "500",
                     textalign: "left",
                 }));
+                self.targetDate = currentApp.appDate;
                 //self.startPage(currentApp.appID);
                 self.startPage(self.appID());
                 //self.appID(currentApp.appID);                
@@ -122,7 +124,10 @@ module nts.uk.at.view.kaf009.b {
                 let notChange = 2; //2:変更しない
                 let change = 3; //3:変更する
                 //get Common Setting
-                service.getGoBackSetting().done(function(settingData: any) {
+                service.getGoBackSetting({
+                    employeeIDs: [], 
+                    appDate: self.targetDate
+                }).done(function(settingData: any) {
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(self.displayTypicalReason()||
@@ -528,9 +533,6 @@ module nts.uk.at.view.kaf009.b {
                 let comboSource: Array<common.ComboReason> = [];
                 _.forEach(data, function(value: common.ReasonDto) {
                     self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
-                    if(value.defaultFlg === 1){
-                        self.selectedReason(value.reasonID);
-                    }
                 });
             }
 

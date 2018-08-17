@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -174,6 +175,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// Comment
 		if (monPerformanceFun.isPresent()) {
 			screenDto.setComment(monPerformanceFun.get().getComment().v());
+			screenDto.setDailySelfChkDispAtr(monPerformanceFun.get().getDailySelfChkDispAtr());
 		}
 		if (formatPerformance.isPresent()) {
 			screenDto.setFormatPerformance(FormatPerformanceDto.fromDomain(formatPerformance.get()));
@@ -609,16 +611,24 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MPHeaderDto> lstMPHeaderDto = MPHeaderDto.GenerateFixedHeader();
 		int size = lstMPHeaderDto.size();
 		
-		//G7 2* hidden column approval
-		if(approvalProcessingUseSetting.getUseMonthApproverConfirm()==false){
-			for (int i = 0; i < size; i++) {
-				MPHeaderDto mpHeaderDto = lstMPHeaderDto.get(i);
-				if("approval".equals(mpHeaderDto.getKey())){
-					lstMPHeaderDto.remove(mpHeaderDto);
-					break;
-				}
+		//G7 G8 G9 hidden column identitfy, approval, dailyconfirm
+		for (Iterator<MPHeaderDto> iter = lstMPHeaderDto.listIterator(); iter.hasNext(); ) {
+			MPHeaderDto mpHeaderDto = iter.next();
+			if ("identify".equals(mpHeaderDto.getKey())
+					&& screenDto.getIdentityProcess().getUseMonthSelfCK() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+			if ("approval".equals(mpHeaderDto.getKey())
+					&& approvalProcessingUseSetting.getUseMonthApproverConfirm() == false) {
+				iter.remove();
+				continue;
 			}
-			
+			if ("dailyconfirm".equals(mpHeaderDto.getKey())
+					&& screenDto.getDailySelfChkDispAtr() == 0) {
+		        iter.remove();
+		        continue;
+		    }
 		}
 		
 		/**

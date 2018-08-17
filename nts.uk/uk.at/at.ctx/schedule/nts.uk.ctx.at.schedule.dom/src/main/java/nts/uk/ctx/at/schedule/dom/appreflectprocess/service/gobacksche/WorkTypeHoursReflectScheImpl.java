@@ -43,13 +43,13 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 					1,
 					gobackPara.getDatePara(),
 					gobackPara.getEmployeeId());
-			workScheReposi.updateScheduleEditState(scheData);
+			workScheReposi.updateOrInsert(scheData);
 			//就業時間帯の編集状態を更新する
 			WorkScheduleState scheDataTime = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
 					2,
 					gobackPara.getDatePara(),
 					gobackPara.getEmployeeId());
-			workScheReposi.updateScheduleEditState(scheDataTime);
+			workScheReposi.updateOrInsert(scheDataTime);
 			return true;
 		}
 		return false;

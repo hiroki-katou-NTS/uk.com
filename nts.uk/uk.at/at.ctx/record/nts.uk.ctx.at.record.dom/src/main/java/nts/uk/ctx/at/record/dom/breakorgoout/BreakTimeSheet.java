@@ -63,6 +63,7 @@ public class BreakTimeSheet extends DomainObject {
 																			  Optional.empty(),
 																			  Finally.empty(),
 																			  Finally.of(BreakClassification.BREAK),
+																			  Optional.empty(),
 																			  DeductionClassification.BREAK
 																			  );
 	}

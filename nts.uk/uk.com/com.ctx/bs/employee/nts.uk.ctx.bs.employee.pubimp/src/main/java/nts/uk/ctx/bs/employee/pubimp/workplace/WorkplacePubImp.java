@@ -484,6 +484,9 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		Optional<WorkplaceConfigInfo> wkpConfigInfo = workplaceConfigInfoRepo.findAllByParentWkpId(companyId, baseDate,
 				workplaceId);
 
+		if (!wkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
 		List<WorkplaceHierarchy> listWkpHierachy = wkpConfigInfo.get().getLstWkpHierarchy();
 
 		return listWkpHierachy.stream().map(wkpHierachy -> wkpHierachy.getWorkplaceId()).collect(Collectors.toList());
@@ -751,9 +754,17 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){
 		List<WorkplaceConfig> wkps = this.wkpConfigRepository.findByCompanyIdAndPeriod(companyId, period);
 		
-		return wkps.stream().map(item -> {
-			return item.getWkpConfigHistoryLatest().span();
+		List<DatePeriod> dateList = new ArrayList<>();
+		
+		wkps.stream().map(item -> { 
+			List<DatePeriod> dates = new ArrayList<>();
+			dates = item.getWkpConfigHistory().stream().map(hst -> {
+				return hst.span();
+			}).collect(Collectors.toList());
+			return dates;
 		}).collect(Collectors.toList());
+		
+		return dateList;
 	}
 	/*
 	 * (non-Javadoc)

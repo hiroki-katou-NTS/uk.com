@@ -49,7 +49,9 @@ public class DailyCorrectionLogParameter implements Serializable {
 		private final CorrectionAttr attr; 
 
 		public ItemInfo toItemInfo() {
-			return ItemInfo.create(String.valueOf(this.itemNo), itemName, DataValueAttribute.of(valueType), valueTimeMoney(valueType, before), valueTimeMoney(valueType, after));
+			return ItemInfo.create(String.valueOf(this.itemNo), itemName, DataValueAttribute.of(valueType),
+					before == null ? null : valueTimeMoney(valueType, before),
+					after == null ? null : valueTimeMoney(valueType, after));
 		}
 		
 		private Object valueTimeMoney(int valueType, String value) {

@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw010.a {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import errors = nts.uk.ui.errors;
 
     const TARGET_TYPE = 1;
     const IGNORE_TYPE = 2;
@@ -140,6 +141,7 @@ module nts.uk.at.view.kdw010.a {
                     //defined target or ignore work type
                     if (typeWorkType == TARGET_TYPE) {
                         self.targetWorkTypes(newItemSelected);
+                        errors.clearAll();
                     } else {
                         self.ignoreWorkTypes(newItemSelected);
                     }

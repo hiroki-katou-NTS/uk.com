@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -81,5 +83,14 @@ public class TimeActualStamp {
 	/** 「打刻」を削除する */
 	public void removeStamp() {
 		this.stamp = Optional.empty();
+	}
+	
+	public void setStampFromPcLogOn(TimeWithDayAttr pcLogOnStamp) {
+		if(this.stamp.isPresent()) {
+			this.stamp.get().setStampFromPcLogOn(pcLogOnStamp);
+		}
+		if(this.actualStamp.isPresent()) {
+			this.actualStamp.get().setStampFromPcLogOn(pcLogOnStamp);
+		}
 	}
 }

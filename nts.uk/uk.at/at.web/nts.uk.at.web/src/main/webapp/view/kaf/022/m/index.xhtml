@@ -14,11 +14,12 @@
 			<div id="wkp-list"></div>
 		</div>
 		<div id="right-content" data-bind="with: selectedSetting">
-			<div class="row">
+			<div class="row" style = "margin-top: 20px; margin-bottom: 10px;">
 			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
 			    <span data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
 		   </div>
-			<div class="row">
+		   <!-- update ver38 theo bug 97952 -->
+			<!-- <div class="row">
 				<div data-bind="ntsFormLabel: {}" style="margin: 10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
 				<div class="cf"
 					data-bind="ntsSwitchButton: {
@@ -28,18 +29,18 @@
 							value: selectionFlg,
 							enable: true
 						}"></div>
-			</div>
+			</div> -->
 			<table id="fixed-table-wkp-setting">
 				<colgroup>
 					<col width="140px" />
 					<col width="150px" />
 					<col width="140px" />
 					<col width="360px" />
-					<col width="200px" />
+					<col width="200px" />  
 				</colgroup>
 				<thead>
 					<tr>
-						<th class="color-header">#{i18n.getText('KAF022_278')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_277')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_19')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_283')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_284')}</th>
@@ -112,7 +113,7 @@
 									enable: true
 								}"></div>
 						</td>
-						<td><textarea style="height: 220px; width: 174px"
+						<td><textarea class = "memo" style="height: 220px; width: 174px"
 								data-bind="ntsMultilineEditor: { 
 									value: $data.memo, 
 									constraint: 'Memo',
@@ -135,7 +136,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 						</td>
 					</tr>
@@ -154,7 +155,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: {
 										value: $data.memo,
 										constraint: 'Memo',
@@ -177,7 +178,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: {
 									value: $data.memo, 
 									constraint: 'Memo', 
@@ -200,7 +201,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 						</td>
 					</tr>
@@ -268,7 +269,7 @@
 									enable: true
 								}"></div>
 						</td>
-						<td><textarea style="height: 220px; width: 174px"
+						<td><textarea class = "memo" style="height: 220px; width: 174px"
 								data-bind="ntsMultilineEditor: {
 									value: $data.memo,
 									constraint: 'Memo',
@@ -300,7 +301,7 @@
 									enable: true
 								}"></div>
 						</td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
 						</td>
 					</tr>
@@ -333,7 +334,7 @@
 							value: $data.lateOrLeaveAppSettingFlg,
 							enable: true}"></div>
 						</td>
-						<td><textarea style="height: 80px; width: 174px"
+						<td><textarea class = "memo" style="height: 80px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo' , name:'#{i18n.getText('KAF022_315')}'}" />
 						</td>
 					</tr>
@@ -351,7 +352,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 						</td>
 					</tr>
@@ -369,7 +370,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 						</td>
 					</tr>
@@ -388,7 +389,7 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td><textarea style="height: 40px; width: 174px"
+						<td><textarea class = "memo" style="height: 40px; width: 174px"
 								data-bind="ntsMultilineEditor: { 
 									value: $data.memo, 
 									constraint: 'Memo', 

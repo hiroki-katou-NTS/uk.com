@@ -106,7 +106,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 
-		if (this.authorityFormatMonthlyRepository.checkExistCode(new DailyPerformanceFormatCode(command.getAuthorityMonthlyCommand().getDailyPerformanceFormatCode()))) {
+		if (this.authorityFormatMonthlyRepository.checkExistCode(companyId,new DailyPerformanceFormatCode(command.getAuthorityMonthlyCommand().getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("#Msg_3");
 		} else {
 			this.authorityFormatMonthlyRepository.add(authorityFomatMonthlies);
