@@ -178,6 +178,9 @@ module nts.uk.at.view.kmf002.b {
                     return;
                 }
                 if ($('#tree-grid').getRowSelected()[0] != null) {
+                    if (_.isEmpty(_self.commonTableMonthDaySet().fiscalYear())) {
+                        _self.commonTableMonthDaySet().fiscalYear(moment().format('YYYY'));
+                    }
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {

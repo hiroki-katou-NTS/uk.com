@@ -27,8 +27,8 @@ module nts.uk.at.view.kmf002.e {
             
             public save(): void {
                 let _self = this;
-                blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
+                    blockUI.invisible();
                     _self.enableSave(false);
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()).done((data) => {
                         _self.enableDelete(true);
