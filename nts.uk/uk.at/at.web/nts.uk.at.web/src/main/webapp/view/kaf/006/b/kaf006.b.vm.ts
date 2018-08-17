@@ -97,6 +97,13 @@ module nts.uk.at.view.kaf006.b{
         maxDayline1: KnockoutObservable<string> = ko.observable('');
         maxDayline2: KnockoutObservable<string> = ko.observable('');
         requiredRela: KnockoutObservable<boolean> = ko.observable(true);
+        //上限日数
+        maxDay: KnockoutObservable<number> = ko.observable(0);
+        //喪主加算日数
+        dayOfRela: KnockoutObservable<number> = ko.observable(0);
+        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
+        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
+        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -116,11 +123,31 @@ module nts.uk.at.view.kaf006.b{
                     }else{//・その以外 ⇒ 上限日数
                         maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
                     }
+                    if(data.maxDayObj != null){
+                        self.maxDay(data.maxDayObj.maxDay);
+                        self.dayOfRela(data.maxDayObj.dayOfRela);  
+                    }
                     let line2 = getText('KAF006_46',[maxDay]);
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
                 });
+            self.isCheck.subscribe(function(checkChange){
+                if(self.mournerDis()){
+                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                    let line1 = getText('KAF006_44');
+                    let maxDay = 0;
+                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                        maxDay = self.maxDay() + self.dayOfRela();
+                    }else{//・その以外 ⇒ 上限日数
+                        maxDay = self.maxDay();
+                    }
+                    let line2 = getText('KAF006_46',[maxDay]);
+                    
+                    self.maxDayline1(line1);
+                    self.maxDayline2(line2);
+                }
+            });
             });
         }
         /**
@@ -226,6 +253,10 @@ module nts.uk.at.view.kaf006.b{
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
                 }
+                if(data.maxDayObj != null){
+                    self.maxDay(data.maxDayObj.maxDay);
+                    self.dayOfRela(data.maxDayObj.dayOfRela);  
+                }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
                 self.maxDayline1(line1);
@@ -250,6 +281,11 @@ module nts.uk.at.view.kaf006.b{
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -289,6 +325,11 @@ module nts.uk.at.view.kaf006.b{
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -394,7 +435,13 @@ module nts.uk.at.view.kaf006.b{
                 self.eblTimeEnd1(false);
                 self.enbReasonCombo(false);
                 self.enbContentReason(false);
+                self.relaEnable(false);
+                self.relaMourner(false);
+                self.relaRelaReason(false);
             }else if(data.initMode == 1){
+                self.relaEnable(true);
+                self.relaMourner(true);
+                self.relaRelaReason(true);
                 // edit Mode
                 self.enbAllDayHalfDayFlg(true);
                 self.enbWorkType(true);
