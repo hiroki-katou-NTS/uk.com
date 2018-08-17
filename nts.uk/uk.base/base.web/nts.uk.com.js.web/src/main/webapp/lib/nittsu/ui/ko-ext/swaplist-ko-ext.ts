@@ -127,8 +127,8 @@ module nts.uk.ui.koExtentions {
                     
                     $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
-                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                    initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                 }
                 
                 $searchArea.height(SEARCH_AREA_HEIGHT);
@@ -175,7 +175,7 @@ module nts.uk.ui.koExtentions {
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .withDataSource(data.value())
                                 .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
-                                .setSearchMode(data.searchMode || "highlight")
+                                .setSearchMode("highlight")
                                 .setColumns(rightColumns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
