@@ -230,14 +230,16 @@ module nts.uk.at.view.kaf011.shr {
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    let changeWkTypeParam = {
-                        wkTypeCD: newWkType,
-                        wkTimeCD: self.wkTimeCD()
-                    };
-                    block.invisible();
-                    service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
-                        self.setDataFromWkDto(data);
-                    }).always(() => { block.clear(); });
+                    if (!_.isEmpty(newWkType)) {
+                        let changeWkTypeParam = {
+                            wkTypeCD: newWkType,
+                            wkTimeCD: self.wkTimeCD()
+                        };
+                        block.invisible();
+                        service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
+                            self.setDataFromWkDto(data);
+                        }).always(() => { block.clear(); });
+                    }
                 });
 
                 self.wkTypes.subscribe((items) => {
@@ -291,9 +293,11 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkTime2().clearData();
                         }
                     }
-                    self.wkType().workAtr(data.wkType.workAtr);
-                    self.wkType().morningCls(data.wkType.morningCls);
-                    self.wkType().afternoonCls(data.wkType.afternoonCls);
+                    if (data.wkType) {
+                        self.wkType().workAtr(data.wkType.workAtr);
+                        self.wkType().morningCls(data.wkType.morningCls);
+                        self.wkType().afternoonCls(data.wkType.afternoonCls);
+                    }
                 }
             }
             setWkTypes(wkTypeDtos: Array<any>) {
