@@ -90,10 +90,10 @@ module nts.uk.at.view.kwr001.c {
                         nts.uk.ui.errors.clearAll();
                         blockUI.grayout();
                         service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
-                            self.C3_2_value(codeChoose.itemCode);
-                            self.C3_3_value(codeChoose.itemName);
+                            self.C3_2_value(outputItemDailyWorkSchedule.itemCode);
+                            self.C3_3_value(outputItemDailyWorkSchedule.itemName);
                             self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
-                            self.selectedRuleCode(codeChoose.workTypeNameDisplay);
+                            self.selectedRuleCode(outputItemDailyWorkSchedule.workTypeNameDisplay);
                             self.enableBtnDel(true);
                             self.enableCodeC3_2(false);
                             self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
