@@ -115,6 +115,7 @@ module ccg013.a.viewmodel {
 
         /** Registry Webmenu */
         addWebMenu(): any {
+            $("#webMenuName").trigger("validate");
             nts.uk.ui.block.invisible();
             var self = this;
             var webMenu = self.currentWebMenu();
