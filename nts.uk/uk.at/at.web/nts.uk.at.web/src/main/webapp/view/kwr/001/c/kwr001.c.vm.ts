@@ -87,7 +87,6 @@ module nts.uk.at.view.kwr001.c {
                         return value == o.itemCode; 
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
-                        nts.uk.ui.errors.clearAll();
                         blockUI.grayout();
                         service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
                             self.C3_2_value(outputItemDailyWorkSchedule.itemCode);
@@ -106,6 +105,9 @@ module nts.uk.at.view.kwr001.c {
                         self.enableBtnDel(false);
                         self.enableCodeC3_2(true);
                     }
+                    _.delay(() => {
+                        nts.uk.ui.errors.clearAll();
+                    }, 400);
                 })
                 
                 self.checkedRemarksInput = ko.observable(false);
@@ -390,11 +392,13 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeList('');
                 self.C3_2_value('');
                 self.C3_3_value('');
-                nts.uk.ui.errors.clearAll();
                 $('#C3_2').focus();
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
                 self.selectedRuleCode(0);
+                _.delay(() => {
+                    nts.uk.ui.errors.clearAll();
+                }, 400);
             }
             
             private convertBoolToNum(value: boolean): number {
