@@ -121,6 +121,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         }
                     });
 
+                } else {
+                    self.createNewData();
+                    perInfoSelectionItem.selectionItemName('');
+                    self.listSelection.removeAll();
                 }
 
             });
