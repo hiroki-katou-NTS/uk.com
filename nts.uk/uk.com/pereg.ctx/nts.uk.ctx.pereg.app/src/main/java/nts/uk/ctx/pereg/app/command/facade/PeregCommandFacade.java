@@ -481,12 +481,13 @@ public class PeregCommandFacade {
 							invisibles.stream().forEach(invisible -> {
 								if (!invisible.itemCode().equals(item.itemCode())) {
 									lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								}else {
+									boolean x = lstItemInfo.remove(invisible);
+									System.out.println(x);
 								}
 							});
 						}
-
 					}
-					
 				}
 
 				// Add category correction data

@@ -26,13 +26,15 @@ public class ItemValue {
 	private int type;
 	private int logType;
 
-	
+	// ham nay phuc vu cho viec tren finder chuyen doi sang ItemValue
 	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, String text ,int dataType,
 			Integer selectionRefType, String selectionRefCode) {
 		ItemValue itemValue = new ItemValue();
 		itemValue.definitionId = definitionId;
 		itemValue.itemCode = itemCode;
 		itemValue.itemName = itemName;
+		itemValue.defText = text;
+		itemValue.defValue = value;
 		itemValue.value = value;
 		itemValue.text = text;
 		itemValue.logType = dataType;
@@ -183,15 +185,6 @@ public class ItemValue {
 	
 	public int logType() {
 		return this.logType;
-	}
-
-	
-	public static ItemValue setContent(ItemValue item) {
-		String contentOld = item.contentBefore() == null ? item.valueBefore(): item.contentBefore();
-		String contentNew = (item.contentAfter() == null || item.contentAfter() == "") ? item.valueAfter(): item.contentAfter();
-		item.setContentBefore(formatContent(item.logType(),  contentOld, item.valueBefore()));
-		item.setContentAfter(formatContent(item.logType(), contentNew, item.valueAfter()));
-		return item;
 	}
 	
 	public static ItemValue setContentForCPS002(ItemValue item) {
