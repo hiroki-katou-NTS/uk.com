@@ -87,7 +87,9 @@ public class RegulationInfoEmployeeFinder {
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
 		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-			return Arrays.asList(this.findCurrentLoginEmployeeInfo());
+			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
+					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
+							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT)));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
@@ -342,10 +344,10 @@ public class RegulationInfoEmployeeFinder {
 	 *
 	 * @return the list
 	 */
-	private RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo() {
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, GeneralDateTime.now());
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
 		return RegulationInfoEmployeeDto.builder()
 				.employeeCode(loginEmployee.getEmployeeCode())
 				.employeeId(loginEmployee.getEmployeeID())
