@@ -441,6 +441,9 @@ module nts.uk.at.view.kmk003.a {
                     $('#' + element.id).validateTimeRange();
                 });
                 if (this.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
+                    //assign value avoid exception
+                    this.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.startTime(0);
+                    this.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.endTime(0);
                     $('#coreTimeStart').ntsError('clear');
                     $('#coreTimeEnd').ntsError('clear');
                 }
