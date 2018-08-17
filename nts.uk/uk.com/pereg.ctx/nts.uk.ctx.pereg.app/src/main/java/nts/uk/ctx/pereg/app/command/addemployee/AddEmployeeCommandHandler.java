@@ -203,6 +203,38 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				PersonInfoProcessAttr.ADD,
 				null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
+		
+		// lấy category CS00070 ra từ CS00020 va remove nhưng item cua cyg CS00070 ra khỏi ctg cs00020
+		
+		Optional<ItemsByCategory> CS00020Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
+		
+		Optional<ItemsByCategory> CS00070Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
+		if(CS00070Opt.isPresent()) {
+			inputs.remove(CS00070Opt.get());
+		}
+		
+		if (CS00020Opt.isPresent()) {
+			ItemsByCategory CS00020 = CS00020Opt.get();
+			List<ItemValue> itemsOfCS00070 = CS00020.getItems().stream().filter(i -> i.definitionId().contains("CS00070")).collect(Collectors.toList());
+			if(!itemsOfCS00070.isEmpty()) {
+				Optional<PersonInfoCategory> ctgCS00070Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00070" , AppContexts.user().companyId());
+				ItemsByCategory CS00070 = null;
+				if(ctgCS00070Opt.isPresent()) {
+					PersonInfoCategory ctg = ctgCS00070Opt.get();
+					 CS00070 = new ItemsByCategory(ctg.getPersonInfoCategoryId(), ctg.getCategoryCode().v(), ctg.getCategoryName().v(), CS00020.getCategoryType(), null, false, itemsOfCS00070);
+				}else {
+					 CS00070 = new ItemsByCategory(null, null, null, CS00020.getCategoryType(), null, false, itemsOfCS00070);
+				}
+				inputs.add(CS00070);
+				
+				inputs.remove(CS00020);
+				
+				CS00020.getItems().removeAll(itemsOfCS00070);
+				
+				inputs.add(CS00020);
+			}
+		}
+		
 
 		for (ItemsByCategory input : inputs) {
 			// prepare data
@@ -449,21 +481,24 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 		if (affComHistCategory.isPresent()) {
 			Optional<ItemValue> checkExit = inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().stream().filter(i -> i.itemCode().equals("IS00020")).findFirst();
-			if(!checkExit.isPresent()) {
+			if(checkExit.isPresent()) {
+				inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().remove(checkExit.isPresent());
+				inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(itemHireDate);
+			}else {
 				inputs.stream().filter(category -> category.getCategoryCd().equals("CS00003")).findFirst().get().getItems().add(itemHireDate);
 			}
 		}else {
 			// thêm category CS0003 vào list inputs
 			Optional<PersonInfoCategory> ctgCS00003Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00003" , AppContexts.user().companyId());
 			if(ctgCS00003Opt.isPresent()) {
-				ItemsByCategory ctgCS00002 = new ItemsByCategory(ctgCS00003Opt.get().getPersonInfoCategoryId(),
+				ItemsByCategory ctgCS00003 = new ItemsByCategory(ctgCS00003Opt.get().getPersonInfoCategoryId(),
 						ctgCS00003Opt.get().getCategoryCode().v(),
 						ctgCS00003Opt.get().getCategoryName().v(),
 						 0, 
 						 null,
 						 false,
 						 Arrays.asList(itemHireDate));
-				inputs.add(ctgCS00002);
+				inputs.add(ctgCS00003);
 			} else {
 				ItemsByCategory ctgCS00003 = new ItemsByCategory("",
 						"CS00003",

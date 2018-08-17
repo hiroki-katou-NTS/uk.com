@@ -82,11 +82,11 @@ public class LogBasicInformationFinder {
 
 		// get company id
 		String cid = loginUserContext.companyId();
-		DatePeriod datePeriodOperator = new DatePeriod(logParams.getStartDateOperator(),
-				logParams.getEndDateOperator());
+		/*	DatePeriod datePeriodOperator = new DatePeriod(logParams.getStartDateOperator(),
+		logParams.getEndDateOperator());*/
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
 		List<LogBasicInformation> lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
-				logParams.getListOperatorEmployeeId(), datePeriodOperator);
+				logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),logParams.getEndDateOperator());
 
 		if (!CollectionUtil.isEmpty(lstLogBasicInformation)) {
 			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());

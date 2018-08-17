@@ -342,10 +342,10 @@ public class PeregCommandFacade {
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 
 		if (updateInputs != null && !updateInputs.isEmpty()) {
-			updateInputCategories(container, updateInputs);
 			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 			setParamsForCPS001(container.getEmployeeId(), container.getPersonId(), PersonInfoProcessAttr.UPDATE, updateInputs, target);
 			DataCorrectionContext.transactionFinishing();
+			updateInputCategories(container, updateInputs);
 		}
 
 		updateInputs.forEach(itemsByCategory -> {
@@ -397,12 +397,9 @@ public class PeregCommandFacade {
 				DateRangeDto dateRange = null;
 				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-				List<ItemValue> itemLogs = input.getItems() == null ?
-						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
-				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
 				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),sid, pid);
-				List<ItemValue> invisibles = this.getItemInvisibles(query, input);
-
+				List<ItemValue> invisibles = this.getItemInvisibles(query, input, isAdd);
+				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
 				boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
 						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY;
 
@@ -410,6 +407,28 @@ public class PeregCommandFacade {
 					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
 				} else {
 					dateRange = isHistory == true? dateRangeOp.get(): null;
+				}
+
+				List<ItemValue> itemLogs = input.getItems() == null ?
+						new ArrayList<>() :  input.getItems().stream().filter(distinctByKey(p -> p.itemCode())).collect(Collectors.toList());
+				for (ItemValue c : invisibles) {
+					switch (ctgType) {
+					case SINGLEINFO:
+					case MULTIINFO:
+						if (specialItemCode.contains(c.itemCode())) {
+							itemLogs.add(c);
+						}
+						break;
+					case DUPLICATEHISTORY:
+					case CONTINUOUSHISTORY:
+					case NODUPLICATEHISTORY:
+						if (c.itemCode().equals(dateRange.getStartDateCode())) {
+							itemLogs.add(c);
+						}
+						break;
+					default:
+						break;
+					}
 				}
 				
 				InfoOperateAttr info = InfoOperateAttr.ADD;
@@ -515,27 +534,18 @@ public class PeregCommandFacade {
 					}
 					
 					if (ItemValue.filterItem(item) != null) {
-						if (invisibles.size() == 0) {
-							lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-						} else {
-							invisibles.stream().forEach(invisible -> {
-								if (!invisible.itemCode().equals(item.itemCode())) {
-									lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
-								}else {
-									boolean x = lstItemInfo.remove(invisible);
-									System.out.println(x);
-								}
-							});
-						}
+						input.getItems().stream().forEach(c ->{
+							if(item.itemCode().equals(c.itemCode())) {
+								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+							}
+						});
+						
 					}
 				}
+				
 
 				// Add category correction data
 				PersonCategoryCorrectionLogParameter ctgTarget = null;
-				
-//				lstItemInfo.
-//				lstItemInfo.remove(o)
-
 				
 				if (isAdd == PersonInfoProcessAttr.ADD) {
 					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey, info);
@@ -612,8 +622,8 @@ public class PeregCommandFacade {
 			
 			PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(),
 					itemByCategory.getCategoryCd(), container.getEmployeeId(), container.getPersonId());
-			
-			itemByCategory.getItems().addAll(this.getItemInvisibles(query, itemByCategory));
+			List<ItemValue> invisibles = this.getItemInvisibles(query, itemByCategory, PersonInfoProcessAttr.UPDATE);
+			itemByCategory.getItems().addAll(invisibles);
 		}
 	}
 	
@@ -623,16 +633,17 @@ public class PeregCommandFacade {
 	 * @param itemByCategory
 	 * @return
 	 */
-	private List<ItemValue> getItemInvisibles(PeregQuery query, ItemsByCategory itemByCategory){
-
-		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
-		
-		List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
-				.collect(Collectors.toList());
-		
-		return fullItems.stream().filter(i -> {
-			return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-		}).collect(Collectors.toList());
+	private List<ItemValue> getItemInvisibles(PeregQuery query, ItemsByCategory itemByCategory, PersonInfoProcessAttr isAdd){
+		if(isAdd == PersonInfoProcessAttr.UPDATE) {
+			List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
+			
+			List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
+					.collect(Collectors.toList());
+			return fullItems.stream().filter(i -> {
+				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+			}).collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 
@@ -647,7 +658,7 @@ public class PeregCommandFacade {
 				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(),
 						itemByCategory.getCategoryCd(), container.getEmployeeId(), container.getPersonId());
 
-				itemByCategory.getItems().addAll(this.getItemInvisibles(query, itemByCategory));
+				itemByCategory.getItems().addAll(this.getItemInvisibles(query, itemByCategory, PersonInfoProcessAttr.ADD));
 			}
 		}
 
