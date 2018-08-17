@@ -26,7 +26,7 @@ module nts.uk.at.view.kal001.d.service {
                             if (itemCount.key === "empCount") {
                                 numberEmpSuccess(itemCount.valueAsNumber);
                             }
-                        }
+                        });
                         if(res.succeeded){
                             let data = {};
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });

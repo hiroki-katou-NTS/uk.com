@@ -180,6 +180,10 @@ module nts.uk.at.view.kaf007.b {
                 return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
             }    
             }
+            showRightContent(){
+        let self =this;
+         return   self.appChangeSetting().displayResultAtr()==1 && self.appWorkChange().application().prePostAtr() == 1   ; 
+        }
 
             /**
              * 「登録」ボタンをクリックする
