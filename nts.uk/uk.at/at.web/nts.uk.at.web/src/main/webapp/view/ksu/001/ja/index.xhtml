@@ -7,10 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 845, height: 350 };</script>
+			<script>var dialogSize = { width: 860, height: 350 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
+				nts.uk.ctx.at.request.dom.setting.workplace.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.ja.main.css" />
@@ -54,8 +55,8 @@
 							enable: true }"></div>
 				</div>
 				<div class="mt-10">
-					<div style="margin-right: 38px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
-					<input id="note" data-bind="ntsTextEditor: {value: note, name: '#[KSU001_906]'}" />
+					<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KSU001_906')}</div>
+					<input id="note" data-bind="ntsTextEditor: {value: note, constraint: 'Memo', name: '#[KSU001_906]'}" />
 				</div>
 				<div>
 					<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>

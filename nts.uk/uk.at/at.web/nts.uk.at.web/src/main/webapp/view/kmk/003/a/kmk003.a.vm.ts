@@ -226,6 +226,9 @@ module nts.uk.at.view.kmk003.a {
                         // focus worktime atr
                         $('#search-daily-atr').focus();
                     }
+                    else {
+                        self.enterNewMode();
+                    }
                 });
 
             }
@@ -437,6 +440,10 @@ module nts.uk.at.view.kmk003.a {
                 $('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
+                if (this.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
+                    $('#coreTimeStart').ntsError('clear');
+                    $('#coreTimeEnd').ntsError('clear');
+                }
             }
 
             //save worktime data
