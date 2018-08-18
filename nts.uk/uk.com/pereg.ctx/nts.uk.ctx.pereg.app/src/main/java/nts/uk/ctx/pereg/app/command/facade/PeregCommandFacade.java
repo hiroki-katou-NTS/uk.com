@@ -466,7 +466,6 @@ public class PeregCommandFacade {
 											PersonInfoProcessAttr.UPDATE, null);
 									target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
 											PersonInfoProcessAttr.UPDATE, null);
-									info = InfoOperateAttr.ADD_HISTORY;
 									
 									// trường hợp tạo mới hoàn toàn category
 									for (ComboBoxObject c : historyLst) {
@@ -475,6 +474,7 @@ public class PeregCommandFacade {
 											String[] history = c.getOptionText().split("~");
 											switch (isAdd) {
 											case ADD:
+												info = InfoOperateAttr.ADD_HISTORY;
 												//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 												if (item.itemCode().equals(dateRange.getEndDateCode())) {
 													item.setValueAfter(valueEndate);
@@ -489,6 +489,7 @@ public class PeregCommandFacade {
 												
 												
 											case UPDATE:
+												info = InfoOperateAttr.UPDATE;
 												if (!history[1].equals(" ")) {
 													GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
 													GeneralDate oldStart = GeneralDate.fromString(item.valueBefore(), "yyyy/MM/dd");
@@ -526,9 +527,6 @@ public class PeregCommandFacade {
 								break;
 							
 							}
-
-
-				
 						}
 						
 					}

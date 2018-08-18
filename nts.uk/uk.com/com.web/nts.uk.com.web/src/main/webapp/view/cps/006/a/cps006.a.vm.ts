@@ -343,7 +343,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     isAbolition: cat.isAbolition
 
                 };
-
+            block.grayout();
             service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     let index = _.indexOf(_.map(self.categoryList(), function(obj) { return obj.id }), command.categoryId);
@@ -362,6 +362,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 } else {
                     dialog.alertError({ messageId: res.messageId });
                 }
+            }).always(() => {
+                block.clear();
             });
 
         }
