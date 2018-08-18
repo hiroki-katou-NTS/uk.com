@@ -447,7 +447,10 @@ module nts.uk.com.view.cps005.b {
             }
 
             self.dataType.subscribe(function(value) {
-                if (value === (data != null ? (data.itemTypeState != null ? data.itemTypeState.dataTypeState.dataTypeValue : 1) : 1)) return;
+                if (data != null && data.itemTypeState != null && value === data.itemTypeState.dataTypeState.dataTypeValue){
+                    __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode.valueHasMutated();
+                    return;
+                } 
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
                 self.dateItem(new DateItemModel(null));
