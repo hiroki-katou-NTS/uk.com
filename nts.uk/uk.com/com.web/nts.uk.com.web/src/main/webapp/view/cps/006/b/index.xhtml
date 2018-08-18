@@ -27,9 +27,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="B_1" class="proceed" data-bind="click:updateItemChange, enable: $root.errors.isEmpty">#{i18n.getText('CPS006_19')}</button>
-				<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
-				<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
+				<button id="B_1" tabindex="1" class="proceed" data-bind="click:updateItemChange, enable: $root.errors.isEmpty">#{i18n.getText('CPS006_19')}</button>
+				<button id="B_2" tabindex="2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
+				<button id="B_3" tabindex="3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content_main">
@@ -37,12 +37,12 @@
 						data-bind="ntsPanel:{width: '260px', height: '485px', direction: 'right', showIcon: false, visible: true}">
 
 						<div>
-							<div id="checked"
+							<div id="checked" tabindex="4"
 								data-bind="ntsCheckBox: { checked: ckbDisplayAbolition}">#{i18n.getText('CPS006_22')}</div>
 						</div>
 
 						<div>
-							<div
+							<div tabindex="5"
 								data-bind="ntsSearchBox: {
 							searchMode: 'highlight',
 							targetKey: 'id', 
@@ -89,12 +89,12 @@
 							</div>
 
 							<div class="line_col_2">
-								<input id="itemName"
+								<input id="itemName" tabindex = "6"
 									data-bind="ntsTextEditor: {name: '#[CPS006_16]', value: itemNameText, constraint:'ItemName', required:true}" />
 							</div>
 
 							<com:ko-if bind="currentItem().canAbolition === true">
-								<div id="B2_5"
+								<div id="B2_5" tabindex = "7"
 									data-bind="ntsCheckBox: { checked: ckbIsAbolition, style: 'warnpanel' }">#{i18n.getText('CPS006_24')}</div>
 							</com:ko-if>
 
@@ -108,7 +108,7 @@
 								</div>
 
 								<div class="line_col_2">
-									<div class="cf"
+									<div class="cf" tabindex = "8"
 										data-bind="ntsSwitchButton: {
 									options: roundingRules,
 									optionsValue: 'code',

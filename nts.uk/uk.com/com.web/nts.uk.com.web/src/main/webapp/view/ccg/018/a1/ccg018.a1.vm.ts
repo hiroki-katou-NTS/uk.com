@@ -147,7 +147,8 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(function() {
                     self.searchByDate();
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(function() {
