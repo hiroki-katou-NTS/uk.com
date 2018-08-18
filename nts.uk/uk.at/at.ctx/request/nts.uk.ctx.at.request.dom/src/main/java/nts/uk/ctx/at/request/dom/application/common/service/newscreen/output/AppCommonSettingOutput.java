@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
  * @author Doan Duy Hung
  *
  */
+@Getter
 public class AppCommonSettingOutput {
 	
 	public GeneralDate generalDate;
