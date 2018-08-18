@@ -294,8 +294,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
                     }
                 }
-
-                self.start(params.settingId);
                 block.clear();
             });
 
