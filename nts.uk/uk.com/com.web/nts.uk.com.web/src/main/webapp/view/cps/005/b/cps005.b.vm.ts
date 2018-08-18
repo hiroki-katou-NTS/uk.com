@@ -338,7 +338,7 @@ module nts.uk.com.view.cps005.b {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     block.invisible();
                     service.getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
-                        nts.uk.ui.errors.clearAll();
+                        nts.uk.ui.errors.clearAll();                         
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -375,7 +375,14 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemSelected().numericItem().numericItemMinusText(_.find(self.numericItemMinusAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemMinus(); }).name);
                         self.currentItemSelected().dateItem().dateItemTypeText(_.find(self.dateItemTypeEnum, function(o) { return o.value == self.currentItemSelected().dateItem().dateItemType(); }).localizedName);
                         block.clear();
-                    });
+                    }).always(() => {
+                         let ctrl = $("#item-name-control"),
+                        str = ctrl.val();
+                        if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                            ctrl.focus().val('').val(str);
+                        }
+                        block.clear();
+                    }); 
                 });
 
 
