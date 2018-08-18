@@ -42,37 +42,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
                 self.currentCategory().ctgList.removeAll();
-                if (value) {
-                    block.grayout();
-                    service.getAllCtg(value).done((data: any) => {
-                        self.currentCategory().setData({
-                            settingCode: data.settingCode,
-                            settingName: data.settingName,
-                            ctgList: data.ctgList
-                        });
-                        if (!self.ctgIdUpdate()) {
-                            //perInfoCtgId
-                            if (data.ctgList.length > 0) {
-                                self.currentItemId(data.ctgList[0].perInfoCtgId);
-                            } else {
-                                self.currentItemId(undefined);
-                            }
-                        }
-                        else {
-                            self.ctgIdUpdate(false);
-                        }
-                        self.getItemList(value, self.currentItemId());
-                    }).always(() => {
-                        block.clear();    
-                    });
-
-
-                } else {
-
-                    return;
-                }
-
-                $('#ctgName').focus();
+                if (nts.uk.text.isNullOrEmpty(value)) return;
+                self.getDetail(value);           
 
             });
 
@@ -84,8 +55,39 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.getItemList(self.initSettingId(), value);
 
             });
+            
+            self.initValueList.subscribe(function(value){
+               console.log(value); 
+            });
 
 
+        }
+        
+        getDetail(value: string): any{
+            let self = this;
+            
+            block.grayout();
+            service.getAllCtg(value).done((data: any) => {
+                self.currentCategory().setData({
+                    settingCode: data.settingCode,
+                    settingName: data.settingName,
+                    ctgList: data.ctgList
+                });
+                if (!self.ctgIdUpdate()) {
+                    //perInfoCtgId
+                    if (data.ctgList.length > 0) {
+                        self.currentItemId(data.ctgList[0].perInfoCtgId);
+                    } else {
+                        self.currentItemId(undefined);
+                    }
+                }
+                else {
+                    self.ctgIdUpdate(false);
+                }
+                self.getItemList(value, self.currentItemId());
+            }).always(() => {
+                block.clear();
+            });    
         }
 
         getTitleName(itemName: string) {
