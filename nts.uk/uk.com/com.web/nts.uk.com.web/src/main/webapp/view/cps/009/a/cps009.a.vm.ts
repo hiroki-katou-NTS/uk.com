@@ -36,8 +36,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
+            
             self.initValue();
             self.start(undefined);
+            
             self.initSettingId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
@@ -51,16 +53,23 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
 
-                if (nts.uk.text.isNullOrEmpty(value)) { return; }
+                if (nts.uk.text.isNullOrEmpty(value)) return; 
+                
                 self.getItemList(self.initSettingId(), value);
 
             });
             
-            self.initValueList.subscribe(function(value){
-               console.log(value); 
+            self.initValSettingLst.subscribe(function(value){
+                if(value.length == 0){
+                    self.currentItemId("");
+                    self.currentCategory().itemList.removeAll();
+                    self.currentCategory().setData({
+                        settingCode: "",
+                        settingName: "",
+                        ctgList: []
+                    });
+                }   
             });
-
-
         }
         
         getDetail(value: string): any{
@@ -100,16 +109,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
         getItemList(settingId: string, ctgId: string) {
             let self = this,
                 i: number = 0,
-                currentCtg: any,
-                dataSource: Array<any> = $("#item_grid").igGrid("option", "dataSource");
-            if (self.isFilter()) {
-                currentCtg = self.findCtg(dataSource, ctgId);
-            } else {
-                currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
-            }
+                currentCtg: any;
+            
+            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+            
             if (currentCtg === undefined) { return; }
+            
             self.currentCategory().itemList.removeAll();
-            block.invisible()
+            
+            block.invisible();
+            
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {

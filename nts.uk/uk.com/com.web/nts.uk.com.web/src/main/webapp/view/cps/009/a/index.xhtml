@@ -26,7 +26,7 @@
 				<!-- A1_002: button 登録 -->
 				<button id="A1_002" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty() &amp; initValSettingLst().length > 0"  tabindex="2">#{i18n.getText('CPS009_4')}</button>
 				<!-- A1_003: button 複製 -->
-				<button id="A1_003" data-bind="click: openCDialog" tabindex="3">#{i18n.getText('CPS009_5')}</button>
+				<button id="A1_003" data-bind="click: openCDialog, enable: initValSettingLst().length > 0" tabindex="3">#{i18n.getText('CPS009_5')}</button>
 				<!-- A1_004: button 削除 -->
 				<button id="A1_004" class="danger"
 					data-bind="click: deleteInitValue, enable: initValSettingLst().length > 0" tabindex="4">#{i18n.getText('CPS009_6')}</button>
