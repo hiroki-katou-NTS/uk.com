@@ -36,43 +36,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
+            
             self.initValue();
             self.start(undefined);
+            
             self.initSettingId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
                 self.currentCategory().ctgList.removeAll();
-                if (value) {
-                    block.grayout();
-                    service.getAllCtg(value).done((data: any) => {
-                        self.currentCategory().setData({
-                            settingCode: data.settingCode,
-                            settingName: data.settingName,
-                            ctgList: data.ctgList
-                        });
-                        if (!self.ctgIdUpdate()) {
-                            //perInfoCtgId
-                            if (data.ctgList.length > 0) {
-                                self.currentItemId(data.ctgList[0].perInfoCtgId);
-                            } else {
-                                self.currentItemId(undefined);
-                            }
-                        }
-                        else {
-                            self.ctgIdUpdate(false);
-                        }
-                        self.getItemList(value, self.currentItemId());
-                    }).always(() => {
-                        block.clear();    
-                    });
-
-
-                } else {
-
-                    return;
-                }
-
-                $('#ctgName').focus();
+                if (nts.uk.text.isNullOrEmpty(value)) return;
+                self.getDetail(value);           
 
             });
 
@@ -80,12 +53,50 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
 
-                if (nts.uk.text.isNullOrEmpty(value)) { return; }
+                if (nts.uk.text.isNullOrEmpty(value)) return; 
+                
                 self.getItemList(self.initSettingId(), value);
 
             });
-
-
+            
+            self.initValSettingLst.subscribe(function(value){
+                if(value.length == 0){
+                    self.currentItemId("");
+                    self.currentCategory().itemList.removeAll();
+                    self.currentCategory().setData({
+                        settingCode: "",
+                        settingName: "",
+                        ctgList: []
+                    });
+                }   
+            });
+        }
+        
+        getDetail(value: string): any{
+            let self = this;
+            
+            block.grayout();
+            service.getAllCtg(value).done((data: any) => {
+                self.currentCategory().setData({
+                    settingCode: data.settingCode,
+                    settingName: data.settingName,
+                    ctgList: data.ctgList
+                });
+                if (!self.ctgIdUpdate()) {
+                    //perInfoCtgId
+                    if (data.ctgList.length > 0) {
+                        self.currentItemId(data.ctgList[0].perInfoCtgId);
+                    } else {
+                        self.currentItemId(undefined);
+                    }
+                }
+                else {
+                    self.ctgIdUpdate(false);
+                }
+                self.getItemList(value, self.currentItemId());
+            }).always(() => {
+                block.clear();
+            });    
         }
 
         getTitleName(itemName: string) {
@@ -98,16 +109,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
         getItemList(settingId: string, ctgId: string) {
             let self = this,
                 i: number = 0,
-                currentCtg: any,
-                dataSource: Array<any> = $("#item_grid").igGrid("option", "dataSource");
-            if (self.isFilter()) {
-                currentCtg = self.findCtg(dataSource, ctgId);
-            } else {
-                currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
-            }
+                currentCtg: any;
+            
+            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+            
             if (currentCtg === undefined) { return; }
+            
             self.currentCategory().itemList.removeAll();
-            block.invisible()
+            
+            block.invisible();
+            
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -283,8 +294,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
                     }
                 }
-
-                self.start(params.settingId);
                 block.clear();
             });
 
