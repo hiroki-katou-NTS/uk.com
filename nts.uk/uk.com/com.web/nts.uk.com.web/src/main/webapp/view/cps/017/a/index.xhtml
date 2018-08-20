@@ -96,7 +96,7 @@
 								showNumbering: false,
 								columns: [
 					                { headerText: 'aa', key: 'selectionItemId', hidden: true},
-					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName'}
+					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', formatter: _.escape}
 					            ],
 								multiple: false,
 								value: perInfoSelectionItem().selectionItemId}">
