@@ -189,12 +189,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
-					/*StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approver.getEmployeeId(), baseDate).getStatusOfEmployment();
+					StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approver.getEmployeeId(), baseDate).getStatusOfEmployment();
 					if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 							(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 							(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 						return;
-					}*/
+					}
 					if(employeeAdapter.isEmployeeDelete(approver.getEmployeeId())){
 						return;
 					}
