@@ -36,8 +36,7 @@ module nts.uk.at.view.kdw001.d {
                  self.approvalVisible = ko.observable(true);
                  self.monthCountVisible = ko.observable(true);
                  self.showPeriodTime = ko.observable(true);
-                
-                
+               
                 
                 //Get screenName value from a screen
                 __viewContext.transferred.ifPresent(data => {

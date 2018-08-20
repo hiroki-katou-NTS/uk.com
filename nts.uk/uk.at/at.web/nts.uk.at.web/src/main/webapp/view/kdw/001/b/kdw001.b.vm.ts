@@ -567,6 +567,7 @@ module nts.uk.at.view.kdw001.b {
 
 
                     $("#wizard").ntsWizard("next");
+                     $('#button113').focus();
                 }
 
             }
