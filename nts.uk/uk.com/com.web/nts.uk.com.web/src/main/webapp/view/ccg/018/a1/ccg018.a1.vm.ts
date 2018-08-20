@@ -110,6 +110,7 @@ module ccg018.a1.viewmodel {
             let dfd = $.Deferred();
             blockUI.invisible();
             self.items([]);
+            nts.uk.ui.errors.clearAll();
             ccg018.a1.service.findDataOfJobTitle(self.date())
                 .done(function(data) {
                     if (data.length > 0) {
