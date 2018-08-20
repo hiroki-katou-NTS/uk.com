@@ -66,15 +66,24 @@ module nts.uk.at.view.kmk007.c.viewmodel {
          */
         initialize() {
             var self = this;
-            
+
             dialog.confirm({ messageId: "Msg_414" }).ifYes(() => {
-                self.items([]);
-                self.items(self.oldDataItems());
-                self.selectedCodes.removeAll();
-                dialog.info({ messageId: "Msg_394"});
+                nts.uk.ui.block.invisible();
+                service.initializeOrder().done(data => {
+                    self.oldDataItems([]);
+                    for (let i = 0; i < data.length; i++) {
+                        self.oldDataItems.push(new ItemModel(data[i].workTypeCode, data[i].name, i));
+                    }
+                    self.items([]);
+                    self.items(self.oldDataItems());
+                    self.selectedCodes.removeAll();
+                    dialog.info({ messageId: "Msg_394" });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                })
             });
         }
-        
+
         /**
          * Close the popup
          */
