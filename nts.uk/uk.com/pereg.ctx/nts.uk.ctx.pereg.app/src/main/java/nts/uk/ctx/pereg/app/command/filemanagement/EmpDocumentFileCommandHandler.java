@@ -78,7 +78,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
 				user != null ?user.getUserName(): "",
-			    PersonInfoProcessAttr.ADD,
+			    PersonInfoProcessAttr.UPDATE,
 			    null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 	}

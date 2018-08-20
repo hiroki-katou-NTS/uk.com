@@ -4,6 +4,17 @@ module nts.custombinding {
         ko: any = window['ko'],
         moment: any = window['moment'];
 
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
@@ -2790,6 +2801,7 @@ module nts.custombinding {
                             .removeClass('selected');
                     }, 0);
                 })
+                .on('dblclick', (evt) => { evt.preventDefault() })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
                     $(evt.target)
                         .removeClass('selected');
@@ -2927,7 +2939,8 @@ module nts.custombinding {
                         });
                     }
                 }
-            });
+            })
+                .on('dblclick', (evt) => { evt.stopImmediatePropagation() });
 
             // set data controls and option to element
             $element.data('options', opts);
@@ -2974,6 +2987,15 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
+
+
+            /*if ($(ctrls.listbox).find('[id$="_grid"]').data('igGrid')) {
+                $(ctrls.listbox).find('[id$="_grid"]').igGrid("option", "columns", [
+                    { key: 'id', headerText: '', hidden: true },
+                    { key: 'itemName', headerText: text('CPS007_9') }
+                ]);
+            }*/
+
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }

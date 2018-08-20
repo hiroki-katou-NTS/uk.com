@@ -1,8 +1,6 @@
 package nts.uk.shr.pereg.app;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -109,6 +107,54 @@ public class ItemValue {
 		return this.itemName;
 	}
 
+	public void setValue(Object obj) {
+		if (obj == null){
+			this.value = null;
+			return;
+		}
+		switch (this.saveDataType()) {
+		case NUMERIC:
+			this.value = obj.toString();
+			break;
+		case STRING:
+			this.value = obj.toString();
+			break;
+		case DATE:
+			this.value = ((GeneralDate) obj).toString("yyyy/MM/dd");
+			break;
+		default:
+			throw new RuntimeException("invalid type: " + this.type);
+		}
+	}
+	
+	public int type() {
+		return this.type;
+	}
+	
+	public String valueAfter() {
+		return this.value;
+	}
+	
+	public String valueBefore() {
+		return this.defValue;
+	}
+	
+	public String contentBefore() {
+		return this.defText;
+	}
+	
+	public String contentAfter() {
+		return this.text;
+	}
+
+	public int logType() {
+		return this.logType;
+	}
+
+	public SaveDataType saveDataType() {
+		return EnumAdaptor.valueOf(this.type, SaveDataType.class);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		Object convertedValue;
@@ -139,53 +185,7 @@ public class ItemValue {
 		return (T) convertedValue;
 	}
 
-	public void setValue(Object obj) {
-		if (obj == null){
-			this.value = null;
-			return;
-		}
-		switch (this.saveDataType()) {
-		case NUMERIC:
-			this.value = obj.toString();
-			break;
-		case STRING:
-			this.value = obj.toString();
-			break;
-		case DATE:
-			this.value = ((GeneralDate) obj).toString("yyyy/MM/dd");
-			break;
-		default:
-			throw new RuntimeException("invalid type: " + this.type);
-		}
-	}
 
-	public SaveDataType saveDataType() {
-		return EnumAdaptor.valueOf(this.type, SaveDataType.class);
-	}
-	
-	public int type() {
-		return this.type;
-	}
-	
-	public String valueAfter() {
-		return this.value;
-	}
-	
-	public String valueBefore() {
-		return this.defValue;
-	}
-	
-	public String contentBefore() {
-		return this.defText;
-	}
-	
-	public String contentAfter() {
-		return this.text;
-	}
-	
-	public int logType() {
-		return this.logType;
-	}
 	
 	public static ItemValue setContentForCPS002(ItemValue item) {
 		String contentNew = (item.contentAfter() == null || item.contentAfter() == "") ? item.valueAfter(): item.contentAfter();
@@ -297,6 +297,18 @@ public class ItemValue {
 
 	public void setContentBefore(String defText) {
 		this.defText = defText;
+	}
+	
+	public void setItemId(String itemDfId) {
+		this.definitionId = itemDfId;
+	}
+	
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
+	}
+	
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 	
 }

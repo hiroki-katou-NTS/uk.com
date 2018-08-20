@@ -80,7 +80,7 @@
 						<!-- Start perInfoItem selection is not fixed -->
 						<div data-bind="visible: fixedAtr() == 0">
 							<div
-								class="valign-center control-group control-group-margin-custom"  data-bind="template: { afterRender: function(){ $('#item-name-control').focus();}}">
+								class="valign-center control-group control-group-margin-custom">
 								<div
 									data-bind="ntsFormLabel: { constraint: ['ItemName'], required: true }"
 									class="margin-right-FormLabel">
@@ -466,7 +466,7 @@
 									data-bind="with: timeItem, visible: dataType() == 4">
 									<div
 										class="valign-center control-group control-group-margin-custom">
-										<div data-bind="ntsFormLabel: {required: true}"
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeItemMin'}"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_29')}' "></span>
 										</div>
@@ -513,7 +513,7 @@
 									data-bind="with: timePointItem, visible: dataType() == 5">
 									<div
 										class="valign-center control-group control-group-margin-custom">
-										<div data-bind="ntsFormLabel: {required: true}"
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeWithDayAttr'}"
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_32')}' "></span>
 										</div>
@@ -556,7 +556,7 @@
 								<com:ko-if bind="(dataType() === 6)"> -->
 								<div data-bind="let: { cItemNum : $vm.currentItemData().currentItemSelected()}">
 								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: ((dataType() == 6)  &amp; (selectionItem().selectionItemRefType() == 2))">
+									data-bind="with: selectionItem, visible: ((dataType() == 6)  &amp;&amp; (selectionItem().selectionItemRefType() == 2))">
 									<div>
 										<div
 											class="valign-center control-group control-group-margin-custom">
@@ -582,31 +582,9 @@
 											<button tabindex="22" data-bind="click: settingSelection"
 												style="padding: 0px 20px;">#{i18n.getText('CPS005_49')}</button>
 										</div>
-
-
-										<table class="contents-header">
-											<thead>
-												<tr>
-													<!-- A3_017: header 項目名 -->
-													<td id="COL_1">#{i18n.getText('CPS005_59')}</td>
-													<td id="COL_2">#{i18n.getText('CPS005_60')}</td>
-												</tr>
-											</thead>
-										</table>
-										<section class="table-container">
-											<div>
-												<table>
-													<tbody data-bind="foreach: selectionLst()">
-														<td id="code"><span class="months-input "
-															data-bind="text: selectionCode" /></td>
-														<td id="name"><span class="months-input "
-															data-bind="text: selectionName" /></td>
-													</tbody>
-												</table>
-											</div>
-										</section>
-
-										<!--</table -->
+										<div class="contents-table">
+											<table id="single-list" data-bind="ntsGridList: {rows: 10, dataSource: selectionLst, primaryKey: 'selectionCode', columns: selectionLstColumns, value: selected, multiple: false }"></table>
+										</div>
 									</div>
 								</div>
 								</div>
@@ -770,7 +748,7 @@
 								<!-- Start dataType is selected value 6 - 選択(Selection) -->
 
 								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: (dataTypeFixed() == 6 &amp; (selectionItem().selectionItemRefType() == 2))">
+									data-bind="with: selectionItem, visible: (dataTypeFixed() == 6 &amp;&amp; (selectionItem().selectionItemRefType() == 2))">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
@@ -782,28 +760,10 @@
 										<button tabindex="22" data-bind="click: settingSelection"
 											style="padding: 0px 20px; margin-left: 50px;">#{i18n.getText('CPS005_49')}</button>
 									</div>
-									<table class="contents-header">
-										<thead>
-											<tr>
-												<!-- A3_017: header 項目名 -->
-												<td id="COL_1">#{i18n.getText('CPS005_59')}</td>
-												<td id="COL_2">#{i18n.getText('CPS005_60')}</td>
-											</tr>
-										</thead>
-									</table>
-									<section class="table-container">
-										<div>
-											<table>
-												<tbody data-bind="foreach: selectionLst()">
-													<td id="code"><span class="months-input "
-														data-bind="text: selectionCode" /></td>
-													<td id="name"><span class="months-input "
-														data-bind="text: selectionName" /></td>
-												</tbody>
-											</table>
-										</div>
-									</section>
-								</div>
+									<div class="contents-table">
+										<table id="single-list2" data-bind="ntsGridList: {rows: 10, dataSource: selectionLst, primaryKey: 'selectionCode', columns: selectionLstColumns, value: selected, multiple: false }"></table>
+									</div>
+									</div>
 								<!-- End dataType is selected value 6 - 選択(Selection) -->
 								
 							</div>
