@@ -14,6 +14,7 @@ import lombok.Data;
 public class DailyAttendanceItemDto {
 	
 	/** The code. */
+	// display number
 	private int code;
 	
 	/** The name. */

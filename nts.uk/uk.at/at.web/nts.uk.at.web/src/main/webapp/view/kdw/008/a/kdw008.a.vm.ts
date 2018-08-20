@@ -460,6 +460,7 @@ module nts.uk.at.view.kdw008.a {
                     new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
 
                         if (data) {
+                            data.attendanceItemDtos = _.sortBy(data.attendanceItemDtos, ["attendanceItemDisplayNumber"]);
                             if (data.isDefaultInitial == 1) {
                                 self.isSetFormatToDefault(false);
                                 self.checked(true);
