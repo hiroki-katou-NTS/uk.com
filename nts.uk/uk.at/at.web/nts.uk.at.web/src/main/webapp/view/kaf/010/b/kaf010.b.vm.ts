@@ -457,7 +457,6 @@ module nts.uk.at.view.kaf010.b {
                     if (!self.validate()) { return; }
                 }
                 if (!self.hasAppTimeBreakTimes()) {
-                    let item = self.breakTimes()[0];
                     self.setErrorB6_8();
                 }      
                 //return if has error

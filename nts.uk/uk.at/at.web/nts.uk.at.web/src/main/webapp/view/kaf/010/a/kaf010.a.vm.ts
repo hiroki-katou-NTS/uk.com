@@ -415,7 +415,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 if(!self.validate()){return;}
             }
             if (!self.hasAppTimeBreakTimes()) {
-                let item = self.breakTimes()[0];
                 self.setErrorA6_8();
             }            
             //return if has error
