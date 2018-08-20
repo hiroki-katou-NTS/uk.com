@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.SpecialLeaveCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
@@ -29,7 +30,16 @@ public class SpecialleaveInformationFinder {
 		// TODO Item IS00300 QA 111
 		String grantDate = null;
 		if (spLeaBasicInfo.isPresent()){
-			grantDate = spLeaBasicInfo.get().getGrantSetting().getGrantDate().toString("yyyy/MM/dd");
+			
+			SpecialleaveInformationDto spLeaveInfo = new SpecialleaveInformationDto(query.getEmployeeId(), specialLeaveCD, 
+					spLeaBasicInfo.get().getGrantSetting().getGrantDate(), 
+					spLeaBasicInfo.get().getApplicationSet().value,
+					spLeaBasicInfo.get().getGrantSetting().getGrantTable().map(i->i.v()).orElse(null),
+					spLeaBasicInfo.get().getGrantSetting().getGrantDays().map(i->i.v()).orElse(null),
+					null, null, null);
+			GeneralDate grantedDate = getSPHolidayGrantDate(spLeaveInfo);
+			
+			grantDate = grantedDate.toString("yyyy/MM/dd");
 		}
 		
 		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveCode.class)) {
@@ -198,6 +208,23 @@ public class SpecialleaveInformationFinder {
 			return null;
 		}
 		
+	}
+	
+	/**
+	 * 次回特休情報を取得する
+	 * @param 社員ID sid
+	 * @param 特別休暇コード specialCD
+	 * @param 特休付与基準日 referDate
+	 * @param 適用設定 appSet
+	 * @param 特休付与テーブルコード grantTableCD
+	 * @param 付与日数 grantedDays
+	 * @param 入社年月日 entryDate NULL
+	 * @param 退職年月日 retireDate NULL
+	 * @param 年休付与基準日 year NULL
+	 * @return
+	 */
+	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformationDto spLeaveInfo) {
+		return spLeaveInfo.getGrantDate();
 	}
 	
 }
