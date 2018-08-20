@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import util = nts.uk.util;
+
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -194,6 +196,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 employeeIDs: self.employeeIDs()
             }).done((data) => {
                 self.initData(data);
+                self.checkRequiredOvertimeHours();
                 $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
@@ -239,12 +242,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.prePostSelected.subscribe(function(value){
                         $('#kaf005-pre-post-select').ntsError('clear');
                         let dfd =$.Deferred();
+                        self.clearErrorA6_8();
                         if(value == 1){
-                           $('.overtimeHoursCheck').ntsError('clear');
                            $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 }); 
                         }else if(value == 0){
-                            $('.overtimeHoursCheckPre').ntsError('clear');
                             $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
                             $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                         }
@@ -546,6 +548,62 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 default: break;
             }
         }
+
+        checkRequiredOvertimeHours() {
+            let self = this;
+            _.each(self.overtimeHours(), function(item) {
+                item.applicationTime.subscribe(function(value) {
+                    self.clearErrorA6_8();
+                    if (!self.hasAppTimeOvertimeHours()) {
+                        self.setErrorA6_8();
+                    }
+                })
+            })
+        }
+
+        hasAppTimeOvertimeHours() {
+            let self = this,
+                hasData = false;
+            _.each(self.overtimeHours(), function(item: common.OvertimeCaculation) {
+                let timeValidator = new nts.uk.ui.validation.TimeValidator(self.getValueOfNameId(item.nameID()), "OvertimeAppPrimitiveTime", { required: false, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+                if (!util.isNullOrEmpty(item.applicationTime())) {
+                    hasData = true;
+                }
+                if (item.applicationTime() == null) return;
+
+                let control = $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo());
+                let check = timeValidator.validate(control.val());
+                if (!check.isValid) {
+                    control.ntsError('set', { messageId: check.errorCode, message: check.errorMessage });
+                }
+            })
+            return hasData;
+        }
+
+        setErrorA6_8() {
+            let self = this;
+            _.each(self.overtimeHours(), function(item) {
+                $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo())
+                    .ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [self.getValueOfNameId(item.nameID())] });
+            })
+        }
+
+        getValueOfNameId(nameId) {
+            let name = "";
+            for (let i = 0; i < nameId.length; i++) {
+                let c = nameId.charAt(i);
+                if (c === '#' || c === '[' || c === ']') {
+                    continue;
+                }
+                name += c;
+            }
+            return nts.uk.resource.getText(name);
+        }
+
+        clearErrorA6_8() {
+            $('.overtimeHoursCheck').ntsError('clear');
+        }
+
         //登録処理
         registerClick() {
             let self = this;
@@ -555,10 +613,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
             }
-            if (self.prePostSelected() == 1) {
-                $('.overtimeHoursCheck').ntsError('check');
-            } else if (self.prePostSelected() == 0) {
-                $('.overtimeHoursCheckPre').ntsError('check');
+            if (!self.hasAppTimeOvertimeHours()) {
+                self.setErrorA6_8();
             }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}              
