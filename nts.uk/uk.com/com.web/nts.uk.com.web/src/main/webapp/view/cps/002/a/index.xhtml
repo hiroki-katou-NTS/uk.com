@@ -38,7 +38,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<span class="licenseCheck" data-bind="text:licenseCheck,css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden' } "></span>
-				<button data-bind="click:openGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
+				<button data-bind="click:openGModal" id="init_setting_btn" tabindex="1">#{i18n.getText('CPS002_11')}</button>
 			</div>
 			<div id="contents-area" class="cf" data-bind="let: { 
 										typi: ko.toJS($vm.createTypeId),
@@ -76,7 +76,7 @@
 									<div class="form-group">
 										<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										<div class="form_step1" id="hireDate"
-											data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD',required:true ,name: '#{i18n.getText('CPS002_103')}'}"></div>
+											data-bind="ntsDatePicker: {value: hireDate , dateFormat: 'YYYY/MM/DD',required:true ,name: '#{i18n.getText('CPS002_103')}'}"  tabindex="3"></div>
 									</div>
 									<div class="form-group">
 										<div data-bind="ntsFormLabel: {
@@ -94,8 +94,8 @@
 											 	},
 											}, event: {
 												blur: $vm.logMouseOver.bind($vm)
-											}" />
-										<button data-bind="click: $vm.openEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
+											}" tabindex="4"/>
+										<button data-bind="click: $vm.openEModal.bind($data,'false')" tabindex="5">#{i18n.getText('CPS002_17')}</button>
 									</div>
 									<div class="form-group">
 										<div data-bind="ntsFormLabel: {
@@ -111,7 +111,7 @@
 												option: {
 													width: '295' 
 												}
-										 	}" />
+										 	}" tabindex="7"/>
 									</div>
 									<div class="form-group">
 									    <com:ko-if bind="$vm.subContraint()">
@@ -124,8 +124,8 @@
 												option: {
 													width: '160' 
 												}
-											 }" />
-										<button data-bind=" click: $parent.openJModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+											 }" tabindex="9"/>
+										<button data-bind=" click: $parent.openJModal.bind($data,'true')" tabindex="10">#{i18n.getText('CPS002_17')}</button>
 									</div>
 									<div class="form-group">
 										<div data-bind="ntsFormLabel: {  required: true ,constraint:'LoginId' }">#{i18n.getText('CPS002_108')}</div>
@@ -138,7 +138,7 @@
 												option: {
 											 		width: '160' 
 											 	}
-										 	}" />
+										 	}" tabindex="11"/>
 									</div>
 									<div class="form-group">
 										<div data-bind="ntsFormLabel: {  required: true ,constraint:'RawPassword'}">#{i18n.getText('CPS002_109')}</div>
@@ -152,7 +152,7 @@
 													width: '160',
 												 	textmode:'password' 
 											 	}
-											 }" />
+											 }" tabindex="12"/>
 									</div>
 								</div>
 								<com:ko-if bind="empRegHistory">
@@ -190,23 +190,23 @@
 													optionsText: 'name' ,
 													value: createTypeId ,
 													enable: true
-													       		}">
+													       		}" tabindex="13">
 									</div>
 									<div class="btn-group">
 										<button class="" data-bind="
 													click: openFModal,
 													style: {
 														visibility: enaBtnOpenFModal() ? 'visible' : 'hidden'
-													}">#{i18n.getText('CPS002_30')}</button>
+													}" tabindex="14">#{i18n.getText('CPS002_30')}</button>
 										<button class="" data-bind="
 													click:openInitModal,
 													style: {
 														visibility: enaBtnOpenInitModal() ? 'visible' : 'hidden'
-													}">#{i18n.getText('CPS002_31')}</button>
+													}" tabindex="15">#{i18n.getText('CPS002_31')}</button>
 									</div>
 								</div>
 								<button class="x-large proceed next_btn" id="step1_next_btn"
-										data-bind="click: completeStep0">#{i18n.getText('CPS002_29')}</button>
+										data-bind="click: completeStep0" tabindex="16">#{i18n.getText('CPS002_29')}</button>
 							</div>
 						</div>
 						<!-- step1 -->
