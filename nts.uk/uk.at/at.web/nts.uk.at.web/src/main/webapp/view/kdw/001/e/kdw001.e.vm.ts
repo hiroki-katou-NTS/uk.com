@@ -81,6 +81,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
 
+            $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
                 if (params.dailyCreation == false) {
