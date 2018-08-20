@@ -298,7 +298,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     categoryId: '',
                                                     conditionOutputName: 0,
                                                     autoExecution: 1,
-                                                    delimiter: 4,
+                                                    delimiter: 1,
                                                     stringFormat: 0,
                                                     itemOutputName: ''
                                                     }));
