@@ -146,6 +146,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
 		if(domain != null){
+			dto.setEmployeeId(domain.getWorkInformation().getEmployeeId());
+			dto.setDate(domain.getWorkInformation().getYmd());
 			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(domain.getWorkInformation()));
 			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain.getCalAttr()));
 			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));

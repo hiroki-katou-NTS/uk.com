@@ -344,8 +344,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
+            let startTime = performance.now();
             self.initScreen().done((processDate) => {
                 $("#dpGrid").mGrid("hideZero", true)
+                console.log("time service 1  : "+(performance.now() - startTime).toString());
                 //date process
                 self.yearMonth(processDate);
                 self.initCcg001();
@@ -824,10 +826,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen                    
                     nts.uk.ui.errors.clearAllGridErrors();
-                    if($("#dpGrid").data('igGrid')) {
+                  //  if($("#dpGrid").data('igGrid')) {
                         $("#dpGrid").mGrid("destroy");
                         $("#dpGrid").off();
-                    }
+                  //  }
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();                    
                     $.when(self.initScreen()).done((processDate) => {

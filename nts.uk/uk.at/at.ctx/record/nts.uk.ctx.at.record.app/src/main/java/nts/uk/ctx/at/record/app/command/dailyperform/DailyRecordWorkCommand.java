@@ -264,9 +264,9 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		return this;
 	}
 	
-	public DailyRecordWorkCommand forEmployeeIdAndDate() {
-		this.forEmployee(this.getWorkInfo().getEmployeeId());
-		this.withDate(this.getWorkInfo().getWorkDate());
+	public DailyRecordWorkCommand forEmployeeIdAndDate(String employeeId, GeneralDate date) {
+		this.forEmployee(employeeId);
+		this.withDate(date);
 		return this;
 	}
 

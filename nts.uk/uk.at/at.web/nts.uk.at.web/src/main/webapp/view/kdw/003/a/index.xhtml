@@ -55,8 +55,8 @@
 						data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
 					<button
 						data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
-					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
-					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
+					<button data-bind="visible: showButton().available2, click: btnCalculation_Click">#{i18n.getText('KDW003_6')}</button>
+					<button data-bind="visible: showButton().available3, click: btnReCalculation_Click">#{i18n.getText('KDW003_12')}</button>
 					<button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
 					<button data-bind="click: tighProcess, visible:showTighProcess()">#{i18n.getText('KDW003_88')}</button>
 					<!-- 本人締め処理 -->

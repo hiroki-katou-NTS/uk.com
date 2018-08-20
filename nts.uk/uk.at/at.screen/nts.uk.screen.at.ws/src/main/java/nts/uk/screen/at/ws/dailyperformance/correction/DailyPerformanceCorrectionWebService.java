@@ -22,6 +22,7 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.screen.at.app.dailymodify.command.DailyCalculationCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
@@ -32,6 +33,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
@@ -103,6 +105,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DailyCorrectCalcTimeService dailyCorrectCalcTimeService;
+	
+	@Inject
+	private DailyCalculationCommandFacade dailyCalculationService;
 	
 	@POST
 	@Path("startScreen")
@@ -222,6 +227,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calcTime")
 	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
 		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdit());
+	}
+	
+	@POST
+	@Path("calculation")
+	public DailyPerformanceCalculationDto calculation(DPItemParent dataParent) {
+		return dailyCalculationService.calculateCorrectedResults(dataParent);
 	}
 
 }

@@ -896,6 +896,197 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             }
         }
+        
+        btnCalculation_Click() {
+            let self = this;
+            self.calculate(false);
+        }
+        
+        btnReCalculation_Click() {
+            let self = this;
+            self.calculate(true);
+        }
+        
+        calculate(updateAll: boolean) {
+            var self = this;
+            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                self.dialogShow.close();
+            }
+            if (self.workTypeNotFound.length > 0) {
+                self.showErrorDialog();
+                return;
+            }
+            // insert flex
+            let errorGrid: any = $("#dpGrid").mGrid("errors");
+            let checkDataCare: boolean = true;
+            if (errorGrid == undefined || errorGrid.length == 0) {
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                self.listCareError([]);
+                self.listCareInputError([]);
+                self.listCheckHolidays([]);
+                self.listCheck28([]);
+                self.listCheckDeviation = [];
+                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+                var dataSource = $("#dpGrid").mGrid("dataSource");
+                let dataChangeProcess: any = [];
+                let dataCheckSign: any = [];
+                let dataCheckApproval: any = [];
+                let sprStampSourceInfo: any = null;
+                _.each(dataChange, (data: any) => {
+                    let dataTemp = _.find(dataSource, (item: any) => {
+                        return item.id == data.rowId;
+                    });
+                    if (data.columnKey != "sign" && data.columnKey != "approval") {
+                        if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                            if (data.columnKey.indexOf("Name") != -1) {
+                            } else {
+                                // check itemCare 
+                                let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
+                                if (groupCare == 0 || groupCare == 1 || groupCare == 2) {
+                                    if (self.checkErrorData(groupCare, data, dataSource) == false || self.listCareInputError().length > 0) {
+                                        checkDataCare = false;
+                                    }
+                                }
+                                //get layout , and type
+                                let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                    return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                                });
+                                let item = _.find(self.lstAttendanceItem(), (value) => {
+                                    return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                                })
+                                let value: any;
+                                value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0, data.columnKey);
+                                dataChangeProcess.push(dataMap);
+                            }
+                        } else {
+                            let columnKey: any;
+                            let item: any;
+                            if (data.columnKey.indexOf("Code") != -1) {
+                                columnKey = data.columnKey.substring(4, data.columnKey.length);
+                            } else {
+                                columnKey = data.columnKey.substring(2, data.columnKey.length);
+                            }
+                            item = _.find(self.lstAttendanceItem(), (data) => {
+                                return String(data.id) === columnKey;
+                            })
+
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                return item.itemId == columnKey;
+                            });
+                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, data.columnKey);
+                            dataChangeProcess.push(dataMap);
+                        }
+                    }
+                });
+                let dataParent = {
+                    itemValues: dataChangeProcess,
+                    dataCheckSign: dataCheckSign,
+                    dataCheckApproval: dataCheckApproval,
+                    mode: self.displayFormat(),
+                    spr: sprStampSourceInfo,
+                    dailyOlds: self.lstDomainOld,
+                    dailyEdits: self.lstDomainEdit
+                }
+                if (self.displayFormat() == 0) {
+                    if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
+                        dataParent["employeeId"] = self.shareObject().initClock.employeeId;
+                        dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
+                    } else {
+                        dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
+                        dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
+                    }
+                    dataParent["monthValue"] = self.valueUpdateMonth;
+                }
+
+                let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare;
+                if (checkDailyChange || self.valueUpdateMonth != null) {
+                    let dfd = $.Deferred();
+                    service.calculation(dataParent).done((data) => {
+                        self.valueUpdateMonth = null;
+                        self.initScreenSPR = 1;
+                        self.clickFromExtract = false;
+                        self.showTextStyle = false;
+                        dataChange = {};
+                        if (_.isEmpty(data.resultError)) {
+                            self.lstDomainEdit = data.calculatedRows;
+                            let lstValue = data.resultValues;
+                            _.forEach(self.dpData, row => {
+                                let cellDatas = row.cellDatas;
+                                let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
+                                _.forEach(cellDatas, cell => {
+                                    let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                    if (editedCell == null || updateAll) {
+                                        let itemId = self.getItemIdFromColumnKey(cell.columnKey);
+                                        let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
+                                        if (itemValue)
+                                            $("#dpGrid").mGrid("updateCell", row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
+                                    } 
+                                });
+                            });
+                            self.flagCalculation = true;
+                            nts.uk.ui.block.clear();
+                        } else {
+                            nts.uk.ui.block.clear();
+                            if (data[0] != undefined) {
+                                self.listCareError(data[0])
+                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            }
+                            if (data[1] != undefined) {
+                                self.listCareInputError(data[1])
+                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                            }
+                            if (data[2] != undefined) {
+                                self.listCheckHolidays(data[2]);
+                                self.loadRowScreen(false);
+                            }
+
+                            if (data[3] != undefined) {
+                                self.listCheck28(data[3]);
+                            }
+
+                            if (data[4] != undefined) {
+                                self.listCheckDeviation = data[4];
+                            }
+                            self.showErrorDialog();
+                        }
+                        dfd.resolve();
+                    }).fail((data) => {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alert(data.message);
+                        dfd.resolve();
+                    });
+                    dfd.promise();
+                } else {
+                    nts.uk.ui.block.clear();
+                    if (!checkDataCare) {
+                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        self.showErrorDialog();
+                    }
+                }
+            }
+        }
+
+        getItemIdFromColumnKey(columnKey: string): string {
+            let itemId: string = "";
+            if (columnKey != "sign" && columnKey != "approval") {
+                if (columnKey.indexOf("Code") == -1 && columnKey.indexOf("NO") == -1) {
+                    if (columnKey.indexOf("Name") != -1) {
+                        itemId = "";
+                    } else {
+                        itemId = columnKey.substring(1, columnKey.length);
+                    }
+                } else {
+                    if (columnKey.indexOf("Code") != -1) {
+                        itemId = columnKey.substring(4, columnKey.length);
+                    } else {
+                        itemId = columnKey.substring(2, columnKey.length);
+                    }
+                }
+            }
+            return itemId;
+        }
 
         loadRowScreen(onlyLoadMonth: boolean) {
             var self = this;
@@ -2071,6 +2262,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (self.hasEmployee) {
                         self.loadKcp009();
                     }
+                    self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.btnExtraction_Click();
                 },
             }

@@ -146,7 +146,7 @@ public class DailyModifyResCommandFacade {
 
 	private DailyRecordWorkCommand createCommand(String sid, DailyRecordDto dto, DailyModifyQuery query) {
 		if(query == null){
-			return  DailyRecordWorkCommand.open().withData(dto).forEmployeeIdAndDate().fromItems(Collections.emptyList());
+			return  DailyRecordWorkCommand.open().withData(dto).forEmployeeIdAndDate(dto.employeeId(), dto.getDate()).fromItems(Collections.emptyList());
 		}
 		DailyRecordWorkCommand command = DailyRecordWorkCommand.open().forEmployeeId(query.getEmployeeId())
 				.withWokingDate(query.getBaseDate()).withData(dto).fromItems(query == null ? Collections.emptyList(): query.getItemValues());
@@ -163,7 +163,7 @@ public class DailyModifyResCommandFacade {
 		return lstDto.stream().map(o -> {
 			DailyModifyQuery query = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
-					.findFirst().get();
+					.findFirst().orElse(null);
 			return createCommand(sid, o, query);
 		}).collect(Collectors.toList());
 	}
