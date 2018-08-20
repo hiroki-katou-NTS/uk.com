@@ -944,6 +944,7 @@ module nts.uk.com.view.cmm011.a {
                     endDate: nts.uk.resource.getText("CMM011_27")
                 };
                 self.lstWpkHistory([newHist]);
+                self.selectedHistoryId(newHist.historyId);
             }
 
             /**
