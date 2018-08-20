@@ -948,8 +948,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         lstWorkType: KnockoutObservableArray<any> = ko.observableArray();
         displayWorkTypes: KnockoutObservable<string> = ko.observable('');
         optionName: KnockoutObservable<string> = ko.observable('');
+        enableButton: KnockoutObservable<boolean>;
         constructor(companyId: string, employmentCode: string, appType: number,holidayOrPauseType: number, displayFlag: boolean, holidayTypeUseFlg: boolean, lstWorkType: Array<any>){
             let self = this;
+            this.enableButton = ko.observable((displayFlag == true && holidayTypeUseFlg == false) ? true : false);
             this.companyId = companyId;
             this.employmentCode = employmentCode;
             this.appType = appType;
@@ -963,6 +965,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                                                     }).join(" + "));
             this.lstWorkType.subscribe(value =>{
                     this.displayWorkTypes(_.map(this.lstWorkType(), item =>{return item.workTypeName;}).join(" + "));
+            });
+            this.holidayTypeUseFlg.subscribe(value => {
+                if(value == false && this.displayFlag() == true){
+                    this.enableButton(true);    
+                }else{
+                    this.enableButton(false);
+                }
+            });
+            this.displayFlag.subscribe(obj => {
+                this.holidayTypeUseFlg.valueHasMutated();    
             });
         }        
     }
