@@ -83,7 +83,13 @@ ko.components.register('kaf022-d', {
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="d4" data-bind = "text: text('KAF022_179')"></td>
+                    <td style="border-bottom: none" class="color-header" id="d4">
+                        <div data-bind="ntsFormLabel: {
+                                constraint: 'Comment',
+                                inline: true,
+                                text: text('KAF022_179')
+                            }"></div>
+                    </td>
                     <td>
                         <input tabindex="2" id = "d9" data-bind="ntsTextEditor: {
                                 name: text('KAF022_183'),
@@ -105,7 +111,13 @@ ko.components.register('kaf022-d', {
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="d5" data-bind = "text: text('KAF022_179')"></td>
+                    <td style="border-bottom: none" class="color-header" id="d4">
+                        <div data-bind="ntsFormLabel: {
+                                constraint: 'Comment',
+                                inline: true,
+                                text: text('KAF022_180')
+                            }"></div>
+                    </td>
                     <td>
                         <input tabindex="2" id="d12_1" data-bind="ntsTextEditor: {
                                 name: text('KAF022_183'),
