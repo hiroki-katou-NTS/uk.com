@@ -334,7 +334,7 @@ module nts.uk.at.view.kmf002.a {
                 _self.validateInput();
                 _self.checkValidate();
                 if (!nts.uk.ui.errors.hasError()) {
-                    blockUI.grayout();
+                    blockUI.invisible();
                     $.when(service.save(_self.publicHolidaySetting(), _self.forwardSetOfPubHD(), 
                                         _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });

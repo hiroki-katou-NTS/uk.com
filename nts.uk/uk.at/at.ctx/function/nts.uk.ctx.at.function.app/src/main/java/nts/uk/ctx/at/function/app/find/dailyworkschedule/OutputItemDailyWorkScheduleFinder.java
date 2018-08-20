@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -121,6 +122,11 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
 																	.filter(domainOptionItem -> {
+																			// 実績区分　=　日別実績 
+																			if (domainOptionItem.getPerformanceAtr().value != PerformanceAtr.DAILY_PERFORMANCE.value) {
+																				return false;
+																			}
+																		
 																			// 出勤簿時間　=　時間
 																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value)) {
 																				return true;
@@ -163,15 +169,16 @@ public class OutputItemDailyWorkScheduleFinder {
 			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
 					.map(domain -> {
 						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-						dto.setCode(String.valueOf(domain.getAttendanceItemId()));
+						dto.setCode(domain.getAttendanceItemDisplayNumber());
 						dto.setName(domain.getAttendanceItemName());
+						dto.setId(domain.getAttendanceItemId());
 						return dto;
-					}).collect(Collectors.toList()));
+					}).sorted(Comparator.comparing(DailyAttendanceItemDto::getCode)).collect(Collectors.toList()));
 		} else {
 			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
 		}		
 		
-		Map<String, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
+		Map<Integer, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
 		
 		// get all domain 日別勤務表の出力項目
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
@@ -312,13 +319,13 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @param lstDomainObject the lst domain object
 	 * @return the list
 	 */
-	private List<TimeitemTobeDisplayDto> toDtoTimeitemTobeDisplay(List<AttendanceItemsDisplay> lstDomainObject, Map<String, String> mapCodeManeAttendance) {
+	private List<TimeitemTobeDisplayDto> toDtoTimeitemTobeDisplay(List<AttendanceItemsDisplay> lstDomainObject, Map<Integer, String> mapCodeManeAttendance) {
 		return lstDomainObject.stream()
 									.map(domain -> {
 										TimeitemTobeDisplayDto dto = new TimeitemTobeDisplayDto();
 										dto.setAttendanceDisplay(domain.getAttendanceDisplay());
 										dto.setOrderNo(domain.getOrderNo());
-										dto.setAttendanceName(mapCodeManeAttendance.get(String.valueOf(domain.getAttendanceDisplay())));
+										dto.setAttendanceName(mapCodeManeAttendance.get(domain.getAttendanceDisplay()));
 										return dto;
 									})
 									.sorted(Comparator.comparing(TimeitemTobeDisplayDto::getOrderNo))
@@ -349,8 +356,8 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @param lst the lst
 	 * @return the map
 	 */
-	private Map<String, String> convertListToMapAttendanceItem(List<DailyAttendanceItemDto> lst) {
+	private Map<Integer, String> convertListToMapAttendanceItem(List<DailyAttendanceItemDto> lst) {
 		return lst.stream().collect(
-                Collectors.toMap(DailyAttendanceItemDto::getCode, DailyAttendanceItemDto::getName));
+                Collectors.toMap(DailyAttendanceItemDto::getId, DailyAttendanceItemDto::getName));
 	}
 }

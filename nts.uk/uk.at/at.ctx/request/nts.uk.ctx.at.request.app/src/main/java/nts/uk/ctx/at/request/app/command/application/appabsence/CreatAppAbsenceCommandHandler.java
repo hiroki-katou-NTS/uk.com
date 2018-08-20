@@ -135,12 +135,9 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				//取得した事象に応じた特休フラグをチェックする-(Check specialHolidayEventFlag đã lấy)
 				if(checkSpecHd.isSpecHdForEventFlag()){//取得した事象に応じた特休フラグがtrue(specialHolidayEventFlag = true)
 					SpecialHolidayEvent spHdEv = checkSpecHd.getSpecHdEvent().get();
-					if(specHd == null || specHd.getRelationCD() == null){
-						return;
-					}
 					//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
 					MaxDaySpecHdOutput maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), spHdEv,
-							Optional.of(specHd.getRelationCD()));
+							specHd == null || specHd.getRelationCD() == null ? Optional.empty() :  Optional.of(specHd.getRelationCD()));
 					//申請する日数(ノート1)：
 					int appDay = 0;//申請する日数
 					if(spHdEv.getIncludeHolidays().equals(UseAtr.USE)){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
@@ -154,12 +151,13 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 					}
 					//上限日数(ノート2)：
 					int maxDaySpec = 0;//上限日数
-					if(specHd.getMournerCheck() == true){//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
-						//上限日数=取得した上限日数 + 取得した喪主加算日数
-						maxDaySpec = maxDay.getMaxDay() + maxDay.getDayOfRela();
-					}else{//その以外：
-						//上限日数=取得した上限日数
+					if(specHd == null || specHd.getRelationCD() == null){//TH fix
 						maxDaySpec = maxDay.getMaxDay();
+					}else{
+						//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
+						//上限日数=取得した上限日数 + 取得した喪主加算日数
+						//上限日数=取得した上限日数
+						maxDaySpec = specHd.getMournerCheck() ? maxDay.getMaxDay() + maxDay.getDayOfRela() : maxDay.getMaxDay();
 					}
 					//申請する日数(※ノート1を参照)は上限日数(※ノート2を参照)と比較する-(So sánh appDay(tham khảo note 1) với grantDay(Tham khảo note2))
 					if(appDay > maxDaySpec){//申請する日数 > 上限日数 がtrue(appDay > maxDaySpec)
