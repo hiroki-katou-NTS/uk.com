@@ -27,7 +27,7 @@
 							<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'bottom center', enable: enable }">?</button>
 							<button data-bind="ntsHelpButton: {image: 'test-image2.jpg', position: 'right+200 top-50', enable: enable }">?</button>
 							<button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'] }, text: '？'">？</button>
-							<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: enable}">?</button>
+							<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: true}">?</button>
 						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 						<div id="pop-up-element"> 
@@ -45,13 +45,13 @@
 									<h2>HTML</h2>
 									<pre><![CDATA[
 Image									
-<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: enable }">?</button>
+<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 
 Text
 <button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>
 
 Pop-up Element (New)
-<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: enable}">?</button>
+<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: true}">?</button>
 
 						]]></pre>
 									<h2>API</h2>
