@@ -902,19 +902,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
                     });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
+                    
 //                    service.getOptItemByAtrNew(2, mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
@@ -929,19 +930,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
                     });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
+                    
 //                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
@@ -956,19 +958,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
                     });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
+                    
 //                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
