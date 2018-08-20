@@ -40,8 +40,11 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
     private static final String FIND_ALL_DATE_RANGE_ITEM = "SELECT d FROM PpemtDateRangeItem d " +
             "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdList";
 
-    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_CAT_CD = "SELECT i FROM PpemtPerInfoItem i " +
-            "WHERE i.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:cCd)";
+    private static final String FIND_ALL_PERSONAL_INFO_ITEM_ON_CID_AND_CCD = "SELECT i FROM PpemtPerInfoItem i " +
+            "WHERE i.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:ccd)";
+
+    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_CID_AND_CCD = "SELECT d FROM PpemtDateRangeItem d " +
+            "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:ccd)";
 
     /**
      * The copy method.
@@ -126,6 +129,17 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
     }
 
     /**
+     *
+     * @param cid
+     * @param ccd
+     * @return
+     */
+    private List<PpemtPerInfoItem> findAllPpemtPerInfoItemByCidAndCcd(String cid, String ccd) {
+        return this.queryProxy.query(FIND_ALL_PERSONAL_INFO_ITEM_ON_CID_AND_CCD, PpemtPerInfoItem.class)
+                .setParameter("cid", cid).setParameter("ccd", ccd).getList();
+    }
+
+    /**
      * PpemtPerInfoItemOrder
      *
      * @param personalInfoCatId
@@ -143,9 +157,19 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
      * @return
      */
     private List<PpemtDateRangeItem> findAlldateRangeItemByCatId(Set<String> personalInfoCatId) {
-        this.queryProxy.query(FIND_ALL_DATE_RANGE_ITEM, PpemtDateRangeItem.class)
+        return this.queryProxy.query(FIND_ALL_DATE_RANGE_ITEM, PpemtDateRangeItem.class)
                 .setParameter("perInfoCtgIdList", personalInfoCatId).getList();
-        return null;
+    }
+
+    /**
+     *
+     * @param cid
+     * @param ccd
+     * @return
+     */
+    private PpemtDateRangeItem findAlldateRangeItemByCidAndCcd(String cid, String ccd) {
+        return this.queryProxy.query(FIND_ALL_DATE_RANGE_ITEM_ON_CID_AND_CCD, PpemtDateRangeItem.class)
+                .setParameter("cid", cid).setParameter("ccd", ccd).getSingleOrNull();
     }
 
     /**
@@ -308,17 +332,37 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
                     .collect(Collectors.toSet());
             //overwrite
             for (String catCd : sourcePersonalInfoCatCd) {
+                //1 update overwrite for PpemtPerInfoCtg
                 PpemtPerInfoCtg src = sgroupPersonalInfoCatByCatCd.get(catCd);
                 PpemtPerInfoCtg des = tgroupPersonalInfoCatByCatCd.get(catCd);
                 des.categoryName = src.categoryName;
                 des.abolitionAtr = src.abolitionAtr;
-                //update overwrite
                 this.commandProxy.update(des);
+
+                //2 update overwrite for PpemtPerInfoItem
+                Map<String, PpemtPerInfoItem> sourcePerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(sourceCid, catCd)
+                        .stream().collect(Collectors.toMap(o -> o.itemCd,o -> o));
+                Map<String, PpemtPerInfoItem> destPerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(targetCid, catCd)
+                        .stream().collect(Collectors.toMap(o -> o.itemCd,o -> o));
+
+                for (String itemCd: sourcePerInfoItems.keySet()){
+                    PpemtPerInfoItem srcPerInfoItem = sourcePerInfoItems.get(itemCd);
+                    PpemtPerInfoItem desPerInfoItem = sourcePerInfoItems.get(itemCd);
+                    desPerInfoItem.itemName = srcPerInfoItem.itemName;
+                    desPerInfoItem.abolitionAtr = srcPerInfoItem.abolitionAtr;
+                    desPerInfoItem.requiredAtr = srcPerInfoItem.requiredAtr;
+                    this.commandProxy.update(desPerInfoItem);
+                }
+
+                //3
+                PpemtDateRangeItem sourceDateRangeItem = findAlldateRangeItemByCidAndCcd(sourceCid, catCd);
+                PpemtDateRangeItem destDateRangeItem = findAlldateRangeItemByCidAndCcd(targetCid, catCd);
+                destDateRangeItem.startDateItemId = sourceDateRangeItem.startDateItemId;
+                destDateRangeItem.endDateItemId = sourceDateRangeItem.endDateItemId;
+                destDateRangeItem.dateRangeItemId = sourceDateRangeItem.dateRangeItemId;
+                this.commandProxy.update(destDateRangeItem);
             }
 
-            for (String catId : sourcePersonalInfoCatId) {
-
-            }
         }
     }
 }
