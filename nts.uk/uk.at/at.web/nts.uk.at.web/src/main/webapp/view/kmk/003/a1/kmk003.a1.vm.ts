@@ -116,6 +116,12 @@ module a1 {
                     }
                 }
             });
+            self.coreTimeSettingModel.timesheet.subscribe((v) => {
+                if (v == 0) {
+                    $('#coreTimeStart').ntsError('clear');
+                    $('#coreTimeEnd').ntsError('clear');
+                }
+            });
         }
 
         /**

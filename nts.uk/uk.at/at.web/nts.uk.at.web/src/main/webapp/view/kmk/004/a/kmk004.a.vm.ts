@@ -112,6 +112,13 @@ module nts.uk.at.view.kmk004.a {
                 nts.uk.ui.block.grayout(); // block ui
                 service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
+                    
+                    let resultData: WorktimeSettingDto = new WorktimeSettingDto();
+                    resultData.statWorkTimeSetDto = saveCommand.saveStatCommand;
+                    resultData.monthCalSetDto = saveCommand.saveMonthCommand;
+                    resultData.referenceFlexPred = saveCommand.referenceFlexPred;
+                    self.worktimeVM.worktimeSetting.updateFullData(resultData);
+                    
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);

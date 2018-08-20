@@ -14,8 +14,11 @@ import lombok.Data;
 public class DailyAttendanceItemDto {
 	
 	/** The code. */
-	private String code;
+	private int code;
 	
 	/** The name. */
 	private String name;
+	
+	/** The id. */
+	private int id;
 }

@@ -155,7 +155,7 @@
 				value: coreTimeSettingModel.timesheet,
 				enable: true }">
 			</div>
-			<input tabindex ="37" data-bind="ntsTimeWithDayEditor: {
+			<input id ="coreTimeStart" tabindex ="37" data-bind="ntsTimeWithDayEditor: {
 				name: '#[KMK003_163]',
 				value: coreTimeSettingModel.coreTimeSheet.startTime,
 				constraint: 'TimeWithDayAttr',
@@ -168,7 +168,7 @@
 				immediate: false}" 
 			/>
 		<label>#{i18n.getText('KMK003_160')}</label>
-		<input tabindex ="38" data-bind="ntsTimeWithDayEditor: {
+		<input id ="coreTimeEnd" tabindex ="38" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: coreTimeSettingModel.coreTimeSheet.endTime,
 			constraint: 'TimeWithDayAttr',

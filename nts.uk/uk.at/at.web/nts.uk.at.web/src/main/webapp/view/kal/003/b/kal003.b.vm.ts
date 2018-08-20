@@ -119,6 +119,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.mulMonCheckCondSet().typeCheckItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        //check typeCheckItem initialization times = 0 
+                        self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
                             self.initialMultiMonthScreen().then(function() {
                                 if ((self.checkItemTemp() || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) && self.checkItemTemp() != itemCheck) {
