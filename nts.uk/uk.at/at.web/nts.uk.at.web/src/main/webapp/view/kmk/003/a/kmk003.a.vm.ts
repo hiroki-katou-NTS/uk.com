@@ -26,6 +26,8 @@ module nts.uk.at.view.kmk003.a {
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
     import DiffTimeSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.DiffTimeWorkSettingSaveCommand;
     
+    import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
+    import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -65,6 +67,9 @@ module nts.uk.at.view.kmk003.a {
             
             flexWorkManaging: boolean;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
+            
+            //update for storage tab 11
+            backupCommonSetting: WorkTimezoneCommonSetDto
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -94,6 +99,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 //over time work frame options
                 self.overTimeWorkFrameOptions = ko.observableArray([]);
+                
+                self.backupCommonSetting = null;
             }
            
             /**
@@ -395,6 +402,8 @@ module nts.uk.at.view.kmk003.a {
                         self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
                             self.isLoading(false);
                             self.isLoading(true);
+                            //convert 
+                            self.backupCommonSetting = self.mainSettingModel.commonSetting.toDto();
                         });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                         
@@ -431,6 +440,8 @@ module nts.uk.at.view.kmk003.a {
              */
             private validateInput(): void {
                 let self = this;
+                let commonDayoff = self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
+                let commonOvertime = self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
                 self.clearAllError();
                 $('.nts-editor').each((index, element) => {
                     if (!element.id) {
@@ -450,27 +461,27 @@ module nts.uk.at.view.kmk003.a {
                     $('#coreTimeEnd').ntsError('clear');
                 }
                 if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
-                    self.validateTab11();
+                    self.validateTab11(commonDayoff,commonOvertime);
                 }
                 else {
-                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(0);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(0);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(0);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(0);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
                 }
             }
             
-            private validateTab11() {
+            private validateTab11(commonDayoff: SubHolTransferSetDto,commonOvertime: SubHolTransferSetDto) {
                 let self = this;
                 if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision()) {
                     if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.subHolTransferSetAtr() == 0) {
                         //一定時間
                         $('#certainDayTimeHol').ntsError('clear');
-                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(0);
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
                     }
                     else {//指定時間
-                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(0);
-                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(0);
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonDayoff.designatedTime.halfDayTime);
                         $('#oneDayTimeHol').ntsError('clear');
                         $('#haflDayTimeHol').ntsError('clear');
                     }
@@ -479,19 +490,19 @@ module nts.uk.at.view.kmk003.a {
                     $('#certainDayTimeHol').ntsError('clear');
                     $('#oneDayTimeHol').ntsError('clear');
                     $('#haflDayTimeHol').ntsError('clear');
-                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(0);
-                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(0);
-                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(0);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonDayoff.designatedTime.halfDayTime);
                 }
                 if (self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.useDivision()) {
                     if (self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.subHolTransferSetAtr() == 0) {
                         //一定時間
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(0);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
                         $('#certainDayTimeOT').ntsError('clear');
                     }
                     else {//指定時間
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(0);
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(0);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
                         $('#haflDayTimeOT').ntsError('clear');
                         $('#oneDayTimeOT').ntsError('clear');
                     }
@@ -500,9 +511,9 @@ module nts.uk.at.view.kmk003.a {
                     $('#certainDayTimeOT').ntsError('clear');
                     $('#haflDayTimeOT').ntsError('clear');
                     $('#oneDayTimeOT').ntsError('clear');
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(0);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(0);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(0);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
                 }
                 
                 // Validate Msg_770
