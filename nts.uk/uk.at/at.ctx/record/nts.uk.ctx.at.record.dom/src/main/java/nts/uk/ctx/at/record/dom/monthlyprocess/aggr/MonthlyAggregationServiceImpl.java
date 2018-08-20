@@ -76,7 +76,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 実行状態　初期設定
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("monthlyAggregateCount", 0);
-		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 
 		// 月次集計を実行するかチェックする

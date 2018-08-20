@@ -19,6 +19,7 @@ module nts.uk.at.view.kdw001.d {
             dailyCalVisible: KnockoutObservable<boolean>;
             approvalVisible: KnockoutObservable<boolean>;
             monthCountVisible: KnockoutObservable<boolean>;
+            showPeriodTime : KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -34,7 +35,7 @@ module nts.uk.at.view.kdw001.d {
                  self.dailyCalVisible = ko.observable(true);
                  self.approvalVisible = ko.observable(true);
                  self.monthCountVisible = ko.observable(true);
-                
+                 self.showPeriodTime = ko.observable(true);
                 
                 
                 
