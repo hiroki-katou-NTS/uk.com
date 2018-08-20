@@ -28,12 +28,15 @@ public class DivergenceReferenceTimeUsageUnitFinder {
 	public DivergenceReferenceTimeUsageUnitDto findByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 		Optional<DivergenceReferenceTimeUsageUnit> opt = divergenReferenceTimeUsageUnitRepo.findByCompanyId(companyId);
+		DivergenceReferenceTimeUsageUnitDto dto;
 		if (opt.isPresent()) {
-			DivergenceReferenceTimeUsageUnitDto dto = new DivergenceReferenceTimeUsageUnitDto(opt.get().getCId(),
+			dto = new DivergenceReferenceTimeUsageUnitDto(opt.get().getCId(),
 					opt.get().isWorkTypeUseSet() ? BigDecimal.ONE : BigDecimal.ZERO);
-			return dto;
+		} else {
+			// set default value
+			dto = new DivergenceReferenceTimeUsageUnitDto(companyId, BigDecimal.ZERO);
 		}
 
-		return null;
+		return dto;
 	}
 }

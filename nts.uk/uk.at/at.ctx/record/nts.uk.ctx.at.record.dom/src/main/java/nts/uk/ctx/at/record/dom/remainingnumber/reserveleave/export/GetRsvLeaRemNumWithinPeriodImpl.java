@@ -227,6 +227,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				Optional<ClosureStatusManagement> sttMng = this.closureSttMngRepo.getLatestByEmpId(param.getEmployeeId());
 				if (sttMng.isPresent()){
 					closureStart = sttMng.get().getPeriod().end().addDays(1);
+					closureStartOpt = Optional.of(closureStart);
 				}
 				else {
 					
