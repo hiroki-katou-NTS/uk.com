@@ -272,9 +272,11 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
-            // validate baseDate
-            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
-                return;
+            // set current system date if baseDate is invalid
+            const baseDate = self.$input.find('#work-place-base-date');
+            baseDate.ntsError('check');
+            if (baseDate.ntsError('hasError')) {
+                self.baseDate(new Date());
             }
 
             // Find data.
@@ -736,7 +738,11 @@ module kcp.share.tree {
          */
         public reload() {
             let self = this;
-            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+
+            // validate base date
+            const baseDate = self.$input.find('#work-place-base-date');
+            baseDate.ntsError('check');
+            if (baseDate.ntsError('hasError')) {
                 return;
             }
             const param = <service.WorkplaceParam>{};
