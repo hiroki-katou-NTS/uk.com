@@ -712,14 +712,17 @@ module nts.uk.ui.koExtentions {
                 var gotoEnd = source.splice(0, selected[0].index + 1);
                 source = source.concat(gotoEnd);
             }
-            var iggridColumns = _.map(this.columns, c => {
+            /*var iggridColumns = _.map(this.columns, c => {
                 c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
-            });
+            });*/
+            var searchCriterion = this.searchCriterion;
+            
             var searchedValues = _.find(source, function(val) {
-                return _.find(iggridColumns, function(x) {
-                    return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                return _.find(searchCriterion, function(x) {
+                    //return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                    return val[x].toString().indexOf(value) >= 0;
                 }) !== undefined;
             });
             
