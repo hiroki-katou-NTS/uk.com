@@ -410,6 +410,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         });
                 }).always(()=>block.clear());
                 self.enableRegister(true);
+                self.checkCreateaaa(false);
             }
 
         }
