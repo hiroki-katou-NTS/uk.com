@@ -106,7 +106,7 @@ module nts.uk.at.view.kdw001.b {
                     new RecreateDevisionModel(0, getText('KDW001_56')),
                     new RecreateDevisionModel(1, getText('KDW001_57'))
                 ]);
-                self.selectedRecreateDevision = ko.observable(0);
+                self.selectedRecreateDevision = ko.observable(1);
 
 
 

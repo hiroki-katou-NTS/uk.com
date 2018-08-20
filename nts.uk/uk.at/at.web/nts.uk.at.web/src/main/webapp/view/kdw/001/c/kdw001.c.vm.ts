@@ -403,6 +403,7 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
