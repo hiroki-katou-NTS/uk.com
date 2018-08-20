@@ -595,7 +595,7 @@ module nts.uk.at.view.kmk013.b {
                         if(self.enableB215()==true){
                             self.enableB217(true);
                         }
-                        if (self.selectedB23() == 1 && self.selectedB29() == 1) {
+                        if (self.selectedB23() == 0 && self.selectedB29() == 0) {
                             $('.input-time').ntsError('check');                            
                         }
                     }
@@ -946,12 +946,15 @@ module nts.uk.at.view.kmk013.b {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                self.initData();
-                $( "#b23" ).focus();
-                dfd.resolve();
+                self.initData().done(() => {
+                    $( "#b23" ).focus();
+                    dfd.resolve(); 
+                });
                 return dfd.promise();
             }
-            initData(): void {
+            
+            initData(): JQueryPromise<any> {
+                var dfd = $.Deferred();
                 let self = this;
                 self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
@@ -1194,7 +1197,9 @@ module nts.uk.at.view.kmk013.b {
                     
                     self.notifyVarKnockoutchange();
                     self.isLoadAfterGetData(false);
-                });    
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
             
             notifyVarKnockoutchange(): void {
