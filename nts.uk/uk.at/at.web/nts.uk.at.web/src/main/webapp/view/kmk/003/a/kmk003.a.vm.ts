@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeDisplayModeModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeDisplayModeModel;
     import ManageEntryExitModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.ManageEntryExitModel;
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
@@ -429,6 +430,7 @@ module nts.uk.at.view.kmk003.a {
              * Validate all input
              */
             private validateInput(): void {
+                let _self = this;
                 this.clearAllError();
                 $('.nts-editor').each((index, element) => {
                     if (!element.id) {
@@ -447,8 +449,14 @@ module nts.uk.at.view.kmk003.a {
                     $('#coreTimeStart').ntsError('clear');
                     $('#coreTimeEnd').ntsError('clear');
                 }
+                
+                // Validate Msg_770
+                let shiftTwo: TimezoneModel = _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getShiftTwo();
+                if (shiftTwo.useAtr() && (shiftTwo.start() >= shiftTwo.end())) {
+                    $('#shiftTwoStart').ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText('KMK003_216')]});
+                }
             }
-
+            
             //save worktime data
             public save() {
                 let self = this;
@@ -969,7 +977,7 @@ module nts.uk.at.view.kmk003.a {
                         let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
                         let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
-                        
+                                                                
                         if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr() && _self.tabMode() === TabMode.DETAIL) {
                             _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
