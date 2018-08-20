@@ -517,7 +517,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 // Validate Msg_770
-                let shiftTwo: TimezoneModel = _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getShiftTwo();
+                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getShiftTwo();
                 if (shiftTwo.useAtr() && (shiftTwo.start() >= shiftTwo.end())) {
                     $('#shiftTwoStart').ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText('KMK003_216')]});
                 }
