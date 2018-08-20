@@ -230,7 +230,7 @@
 											selectedKey: 'itemCode', 
 											fields: ['itemName'],
 											placeHolder:'#{i18n.getText('CPS002_42')}'
-										}"></div>
+										}" tabindex="1"></div>
 									<table id="init_list" data-bind="ntsGridList: {								
 											height: 350,
 											dataSource: initValueList ,
@@ -241,7 +241,7 @@
 											multiple: false,
 											value: initSettingSelectedCode,
 											rows:15
-										}">
+										}" tabindex="2">
 									</table>
 								</div>
 								<div id="value_item">
@@ -266,12 +266,12 @@
 												dropDownAttachedToBody: true,
 												columns: [
 													{ prop: 'name', length: 10 },
-												]}"></div>
+												]}" tabindex="1"></div>
 									</div>
 									<div class="form-group">
 										<div id="cover_table">
 											<table class="table_item"
-												data-bind="if:itemSettingList().length>0">
+												data-bind="if:itemSettingList().length>0" tabindex="3">
 												<tr>
 													<th width="180px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_36')}</th>
 													<th width="250px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_37')}</th>
@@ -289,9 +289,9 @@
 									</div>
 									<div class='form-group'>
 										<button class="prev_btn" id="step2_prev_btn"
-											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
+											data-bind="click:prev" tabindex="4">#{i18n.getText('CPS002_38')}</button>
 										<button class="x-large proceed next_btn" id="next_btn"
-											data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
+											data-bind="click:completeStep1" tabindex="5">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
 							</div>
@@ -305,7 +305,7 @@
 							</div>
 							<div class="form-group">
 								<div id="employeeAvatar"
-									data-bind="click: openIModal, css: { isAllowUpload: isAllowAvatarUpload }"></div>
+									data-bind="click: openIModal, css: { isAllowUpload: isAllowAvatarUpload }" tabindex="1"></div>
 								<table class="table_item">
 									<tbody>
 										<tr class="step3-tr">
@@ -342,15 +342,15 @@
 							<div class='form-group'>
 								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
-										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
+										data-bind="click:prev" tabindex="2">#{i18n.getText('CPS002_38')}</button>
 								</com:ko-if>
 								<com:ko-if bind="createTypeId()!==3">
 									<button class="prev_btn" id="step2_prev_btn"
-										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
+										data-bind="click:prev" tabindex="2">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>
 
 								<button class="large proceed next_btn" id="next_btn"
-									data-bind="click:finish">#{i18n.getText('CPS002_53')}</button>
+									data-bind="click:finish" tabindex="3">#{i18n.getText('CPS002_53')}</button>
 							</div>
 
 						</div>
