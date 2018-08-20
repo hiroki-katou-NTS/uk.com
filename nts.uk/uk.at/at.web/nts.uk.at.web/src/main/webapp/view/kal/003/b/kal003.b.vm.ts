@@ -833,31 +833,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     //MinhVV add
                  case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
-            let attdAtr = CONDITIONATR.TIMES;
                     let attdAtr = CONDITIONATR.TIMES;
                     let mulMonCheckItem = self.mulMonCheckCondSet().typeCheckItem();
-                    if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) {
-                        //時間
-                        attdAtr = CONDITIONATR.TIME;
-                    } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
-                        //回数
-                        attdAtr = CONDITIONATR.TIMES;
-                    } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
-                        //金額
-                        attdAtr = CONDITIONATR.AMOUNT;
-                    }
-                    self.getListItemByAtr(attdAtr).done((lstItem) => {
+                    self.getListItemByAtrMultipleMonth(mulMonCheckItem,1).done((lstItem) => {
                         let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-
                         //Open dialog KDW007C
                         let param = {
                             lstAllItems: lstItemCode,
@@ -890,18 +869,96 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
 
 
-        getListItemByAtr(conditionAtr) {
+
+        getListItemByAtrMultipleMonth( mulMonCheckItem: number,mode: number) {
             let self = this;
-            return service.getAttendanceItemByAtr(conditionAtr);
+            let dfd = $.Deferred<any>();
+            if ((mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) ) {
+                        //時間
+                service.getAttendanceItemByAtrNew(CONDITIONATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(CONDITIONATR.TIME,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        dfd.resolve(data);
+                    });
+                });
+            }else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
+                        //回数
+                service.getAttendanceItemByAtrNew(CONDITIONATR.TIMES,mode).done((data) => {
+                    service.getOptItemByAtrNew(CONDITIONATR.TIMES,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        dfd.resolve(data);
+                    });
+                });
+            } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
+                        //金額   
+                service.getAttendanceItemByAtrNew(CONDITIONATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(CONDITIONATR.AMOUNT,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        dfd.resolve(data);
+                    });
+                });
+            }else{
+                dfd.resolve([]);
+            }
+            return dfd.promise();
         }
+        
         //GET ALL MONTHLY
         getListItemByAtrDailyAndMonthly( typeCheck: number,mode: number) {
             let self = this;
             let dfd = $.Deferred<any>();
             if (typeCheck == 6) { //combobox select
                 //With type 回数 - Times , Number  = 2
-                service.getAttendanceItemByAtrNew(2,mode).done((data) => {
-                    service.getOptItemByAtrNew(2,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -927,8 +984,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
             } else if (typeCheck == 4) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtrNew(1,mode).done((data) => {
-                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -954,8 +1011,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtrNew(4,mode).done((data) => {
-                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -980,7 +1037,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
 //                    });
                 });
             } else if(typeCheck == 5) { // 日数
-                service.getAttendanceItemByAtrNew(3,mode).done((data) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS,mode).done((data) => {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
@@ -1373,6 +1430,23 @@ module nts.uk.at.view.kal003.b.viewmodel {
         AMOUNT = 3
 
     }
+    export enum MONTHLYATTENDANCEITEMATR{
+        /** The time. */
+        TIME= 1,
+
+        /** The number. */
+        NUMBER= 2,
+
+        /** The days. */
+        DAYS= 3,
+
+        /** The amount. */
+        AMOUNT = 4,
+
+    
+    }
+    
+    
     export enum COMPARETYPE {
         LESS_OR_EQUAL = 5 //(5, "Enum_SingleValueCompareType_LessOrEqual");
     }
