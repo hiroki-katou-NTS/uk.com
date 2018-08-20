@@ -73,6 +73,10 @@ public class AddEmployeeCommandFacade {
 		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
 		
 		dataServer.forEach(settingItem -> {
+			if(settingItem.getCategoryCode().equals("CS00001") && settingItem.getItemCode().equals("IS00001")) {
+				settingItem.getSaveData().setValue(command.getEmployeeCode());
+				
+			}
 			if (!categoryCodeList.contains(settingItem.getCategoryCode())) {
 				categoryCodeList.add(settingItem.getCategoryCode());
 			}
