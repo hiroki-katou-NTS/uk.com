@@ -30,7 +30,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
         errorList: KnockoutObservableArray<any> = ko.observableArray([]);
-        isFilter: KnockoutObservable<boolean> = ko.observable(false);
         dataSourceFilter: Array<any> = [];
 
         constructor() {
@@ -41,35 +40,30 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
             
             self.initSettingId.subscribe(function(value: string) {
-                nts.uk.ui.errors.clearAll();
-                self.errorList([]);
-                self.currentCategory().ctgList.removeAll();
-                if (nts.uk.text.isNullOrEmpty(value)) return;
+               nts.uk.ui.errors.clearAll();
+               self.errorList.removeAll();
+               self.currentCategory().itemList.removeAll();
+                self.currentCategory().setData({
+                    settingCode: "",
+                    settingName: "",
+                    ctgList: []
+                });
+                if (nts.uk.text.isNullOrEmpty(value))  return;
                 self.getDetail(value);           
 
             });
 
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
-                self.errorList([]);
-
-                if (nts.uk.text.isNullOrEmpty(value)) return; 
+                self.errorList.removeAll();
+                if (nts.uk.text.isNullOrEmpty(value))  return; 
                 
                 self.getItemList(self.initSettingId(), value);
 
             });
             
-            self.initValSettingLst.subscribe(function(value){
-                if(value.length == 0){
-                    self.currentItemId("");
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().setData({
-                        settingCode: "",
-                        settingName: "",
-                        ctgList: []
-                    });
-                }   
-            });
+            
+            
         }
         
         getDetail(value: string): any{
@@ -142,7 +136,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             dataType: obj.dataType,
                             itemCode: obj.itemCode,
                             ctgCode: obj.ctgCode,
-                            constraint: obj.constraint,
                             numberIntegerPart: obj.numberIntegerPart,
                             numberDecimalPart: obj.numberDecimalPart,
                             timeItemMin: obj.timeItemMin,
@@ -282,7 +275,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (itemSelected.isCancel) {
                     return;
                 } else {
-                    let itemLst: Array<any> = _.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                    let itemLst: Array<any> = _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
                         return obj.perInfoItemDefId;
                     });
                     if (itemSelected.lstItem.length > 0) {
@@ -410,7 +403,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             value: obj.value,
                             selectedRuleCode: obj.selectedRuleCode,
                             selectionId: obj.selectedCode,
-                            numberValue: obj.numbereditor.value,
+                            numberValue: obj.numbereditor == null? 0 : obj.numbereditor.value,
                             dateType: obj.dateType,
                             time: obj.dateWithDay
 
@@ -419,8 +412,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 },
                 dateInputList = $('tr').find('#date'),
                 dateInputListOfYear = $('tr').find('#datey'),
-                itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
-                    return item.dataType === 3 && item.selectedRuleCode === 2;
+                itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
+                    return item.dataType == 3 && item.selectedRuleCode == 2;
                 });
             if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
                 let i: number = 0;
@@ -447,16 +440,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);
                     self.ctgIdUpdate(true);
-                    if (self.isFilter()) {
-                        $("#item_grid").igGrid("option", "dataSource", self.dataSourceFilter);
-                    }
 
                 });
                 self.currentItemId(updateObj.perInfoCtgId);
-                $('.bundled-errors-alert .ntsClose').trigger('click');
                 block.clear();
             }).fail(function(res: any) {
-                $('.bundled-errors-alert .ntsClose').trigger('click');
                 self.errorList(res);
                 nts.uk.ui.dialog.bundledErrors(self.errorList());
                 block.clear();
@@ -533,15 +521,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
-        }
-
-
-        checkBrowse() {
-            let Browser = navigator.userAgent;
-
-            if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
-                $("#sub-right>table>tbody").css("height", "495px");
-            }
         }
 
         checkError(itemList: Array<any>) {
@@ -682,8 +661,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // xác định contraint của item đó
         itemCode: string;
         ctgCode: string;
-        constraint: string;
-
         // xác định nếu item thuộc kiểu number thì thuộc loại integer hay decimal
         numberDecimalPart: number;
         numberIntegerPart: number;
@@ -693,7 +670,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         timeItemMax?: number;
 
         // lưu giá trị của integer value or decimal value of numberic type
-        numbereditor: any;
+        numbereditor?: any;
 
         // selectionItemId để kết nối với bảng SelectionItem
         selectionItemId?: string;
@@ -709,7 +686,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         timepointItemMax?: number;
 
         numericItemMin?: number;
-        numericItemMax?: number;
+        numericItemMax?: number;        
+        numberItemAmount?: number;
+        numberItemMinus?: number;
 
         stringItemType?: number;
         stringItemLength?: number;
@@ -770,7 +749,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //constraint
         itemCode: KnockoutObservable<string>;
         ctgCode: KnockoutObservable<string>;
-        constraint: KnockoutObservable<string>;
 
         // kiểu number có 2 loại là số nguyên với số thực
         numbericItem: NumbericItem;
@@ -791,6 +769,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         //number
         numericItemMin: number;
         numericItemMax: number;
+        numberItemAmount: number;
+        numberItemMinus: number;
 
         //string
         stringItemType: number;
@@ -837,6 +817,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
             self.perInfoCtgId = ko.observable(params.perInfoCtgId || "");
+            self.itemCode = ko.observable(params.itemCode || "");
+            self.ctgCode = ko.observable(params.ctgCode || "");
             self.itemName = ko.observable(params.itemName || "");
 
             self.isRequired = ko.observable(params.isRequired || 0);
@@ -862,116 +844,126 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dataType = ko.observable(params.dataType || undefined);
             self.disableCombox(params.disableCombox == true ? false : true);
             self.enableControl(params.enableControl);
-
-            if (params.dataType === 3) {
-                if (params.dateType === 1) {
-                    self.dateValue = ko.observable(params.dateValue || undefined);
-                } else if (params.dateType === 2) {
-                    if (params.dateValue === null) {
-                        self.dateValue = ko.observable(undefined);
-                    } else {
-                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
-                    }
-                } else if (params.dateType === 3) {
-                    if (params.dateValue === null) {
-                        self.dateValue = ko.observable(undefined);
-                    } else {
-                        self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
-                    }
-                }
-
-            }
-
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
+            
+            switch (params.dataType) {
+                case ITEM_SINGLE_TYPE.STRING:
+                    self.stringItemType = params.stringItemType || undefined;
+                    self.stringItemLength = params.stringItemLength || undefined;
+                    self.stringItemDataType = params.stringItemDataType || undefined;
+                    self.numericItemMin = params.numericItemMin || undefined;
+                    self.numericItemMax = params.numericItemMax || undefined;
+                    break;
+                    
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    self.numbericItem = new NumbericItem(params.dataType,
+                        {
+                            numberDecimalPart: params.numberDecimalPart,
+                            numberIntegerPart: params.numberIntegerPart
+                        }) || null;
 
-            if (params.dataType === 6 || params.dataType === 8) {
-                self.selectionItemId = params.selectionItemId || undefined;
+                    if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
+                        self.numbereditor = {
+                            value: ko.observable(params.intValue || null),
+                            constraint: params.itemCode,
+                            option: new nts.uk.ui.option.NumberEditorOption({
+                                grouplength: params.numberItemMinus && 3,
+                                decimallength: 0,
+                                textalign: "left"
+                            }),
+                            enable: ko.observable(true),
+                            readonly: ko.observable(false)
+                        };
+                        break;
+                    } else {
 
-                self.selectionItemRefType = params.selectionItemRefType || undefined;
+                        self.numbereditor = {
+                            value: ko.observable(params.intValue || null),
+                            constraint: params.itemCode,
+                            option: new nts.uk.ui.option.NumberEditorOption({
+                                grouplength: params.numberItemMinus && 3,
+                                decimallength: params.numberDecimalPart,
+                                textalign: "left"
+                            }),
+                            enable: ko.observable(true),
+                            readonly: ko.observable(false)
+                        };
+                        break;
+                    }
+                   
+                case ITEM_SINGLE_TYPE.DATE:
+                    self.dateType = params.dateType || undefined;
+                    switch (params.dateType) {
+                        case DATE_TYPE.YEAR_MONTH_DAY:
+                            self.dateValue = ko.observable(params.dateValue || undefined); break;
+                        case DATE_TYPE.YEAR_MONTH:
+                            if (params.dateValue === null) {
+                                self.dateValue = ko.observable(undefined);
+                                break;
+                            } else {
+                                self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
+                                break;
+                            }
 
-                self.selection = ko.observableArray(params.selection || []);
+                        case DATE_TYPE.YEAR:
+                            if (params.dateValue === null) {
+                                self.dateValue = ko.observable(undefined);
+                                break;
+                            } else {
+                                self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
+                                break;
+                            }
+                    }
+
+                case ITEM_SINGLE_TYPE.TIME:
+                    break;
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    break;
+                case ITEM_SINGLE_TYPE.SELECTION:
+                    self.selectionItemId = params.selectionItemId || undefined;
+                    self.selectionItemRefType = params.selectionItemRefType || undefined;
+                    self.selection = ko.observableArray(params.selection || []);
+                    self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
+
+                    break;
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                    self.radioId = params.selectionItemId || undefined;
+                    self.selectionItemRefType = params.selectionItemRefType || undefined;
+
+                    self.selection = ko.observableArray(params.selection || []);
+                    self.selectedCode = ko.observable(params.stringValue || "1");
+                    break;
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                
+                    self.selectionItemId = params.selectionItemId || undefined;
+                    self.selectionItemRefType = params.selectionItemRefType || undefined;
+                    self.selection = ko.observableArray(params.selection || []);
+                    self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
+
+                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
+
+                    self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+
+                    break;
 
             }
-            if (params.dataType == 6) {
-                self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
-            }
-
-
-            if (params.dataType === 8) {
-                self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
-                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
-                self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
-            }
-
-            self.dateType = params.dateType || undefined;
-
-            if (params.dataType === 3) {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
-                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN },
-                    { code: 4, name: ReferenceMethodType.SAMEASEMPLOYMENTDATE },
-                    { code: 6, name: ReferenceMethodType.SAMEASSYSTEMDATE }]);
-            } else {
-                self.listComboItem = ko.observableArray([
-                    { code: 1, name: ReferenceMethodType.NOSETTING },
-                    { code: 2, name: ReferenceMethodType.FIXEDVALUE },
-                    { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
-            }
-
-            if (params.dataType === 7) {
-                self.radioId = params.selectionItemId || undefined;
-                self.selectionItemRefType = params.selectionItemRefType || undefined;
-
-                self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "1");
-            }
-
-
-            self.itemCode = ko.observable(params.itemCode || "");
-            self.ctgCode = ko.observable(params.ctgCode || "");
-            self.constraint = ko.observable(params.constraint || "");
-
-
-            self.numbericItem = new NumbericItem(params.dataType,
-                {
-                    numberDecimalPart: params.numberDecimalPart,
-                    numberIntegerPart: params.numberIntegerPart
-                }) || null;
-
-            if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
-                self.numbereditor = {
-                    value: ko.observable(params.intValue || null),
-                    constraint: params.itemCode,
-                    option: new nts.uk.ui.option.NumberEditorOption({
-                        grouplength: 3,
-                        decimallength: 0,
-                        textalign: "left"
-                    }),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-            } else {
-
-                self.numbereditor = {
-                    value: ko.observable(params.intValue || null),
-                    constraint: params.itemCode,
-                    option: new nts.uk.ui.option.NumberEditorOption({
-                        grouplength: 3,
-                        decimallength: params.numberDecimalPart,
-                        textalign: "left"
-                    }),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-            }
-
-            if (params.dataType === 1) {
-                self.stringItemType = params.stringItemType || undefined;
-                self.stringItemLength = params.stringItemLength || undefined;
-                self.stringItemDataType = params.stringItemDataType || undefined;
-                self.numericItemMin = params.numericItemMin || undefined;
-                self.numericItemMax = params.numericItemMax || undefined;
+            
+            switch (params.dataType) {
+                case ITEM_SINGLE_TYPE.DATE:
+                    self.listComboItem = ko.observableArray([
+                        { code: 1, name: ReferenceMethodType.NOSETTING },
+                        { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                        { code: 3, name: ReferenceMethodType.SAMEASLOGIN },
+                        { code: 4, name: ReferenceMethodType.SAMEASEMPLOYMENTDATE },
+                        { code: 6, name: ReferenceMethodType.SAMEASSYSTEMDATE }]);
+                    break;
+                
+                default:
+                    self.listComboItem = ko.observableArray([
+                        { code: 1, name: ReferenceMethodType.NOSETTING },
+                        { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                        { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
+                    break;
             }
 
             self.selectedRuleCode.subscribe(value => {
@@ -986,6 +978,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         createItemTimePointOfCS00020(value: any, itemCode: string) {
             let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
                 self = this,
+                itemLst: Array<any> = [],
                 itemSelected: any;
 
             itemSelected = _.filter(self.itemLstTimePoint, { itemCodeParent: itemCode });
@@ -1465,6 +1458,27 @@ module nts.uk.com.view.cps009.a.viewmodel {
         SAMEASNAME = '氏名と同じ ',
         /** (氏名（カナ）と同じ):8 */
         SAMEASKANANAME = '氏名（カナ）と同じ'
+    }
+    
+    export enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
+    }
+    
+    export enum DATE_TYPE{
+        YEAR_MONTH_DAY = 1,
+        YEAR_MONTH = 2,
+        YEAR = 3
     }
 
     export interface IChildData {
