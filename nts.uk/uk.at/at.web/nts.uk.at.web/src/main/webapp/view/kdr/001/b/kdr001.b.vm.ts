@@ -13,7 +13,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
+        allSpecialHolidays: KnockoutObservableArray<SpecialHolidays> = ko.observableArray([]); ; 
+        listSpecialHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
+        listSpecialHolidayEnable: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
@@ -53,15 +55,15 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.displaySubstituteHoliday();
             self.displayPauseItemHoliday();
             service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
-                if (data && data.length > 0) {
-                    data = _.sortBy(data, ['specialHolidayCode']);
-                    self.allSpecialHolidays(data);
-                }
-                // no data
-                else {
-                    self.allSpecialHolidays([]);
-                    $('#rowSpecialHoliday').addClass("hidden");
-                      self.currentHoliday().listSpecialHoliday([]);
+                for (let i = 1; i < 21; i++){
+                    let item = _.find(data, x => { return x.specialHolidayCode == i; });
+                    if (item) {
+                         self.allSpecialHolidays.push(new SpecialHoliday({specialHolidayCode: i,specialHolidayName:item.specialHolidayName,enable:true}));
+                         self.listSpecialHolidayEnable.push(i);
+                    }
+                    else {
+                         self.allSpecialHolidays.push(new SpecialHoliday({specialHolidayCode: i,specialHolidayName:"",enable:false}));
+                    }
                 }
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     if (data && data.length) {
@@ -456,13 +458,13 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         /*特別休暇名称*/
         specialHolidayName: KnockoutObservable<string>;
 
-        statusCheck: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
 
         constructor(param: any) {
             let self = this;
             self.specialHolidayCode = ko.observable(param ? param.specialHolidayCode || null : null);
             self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '');
-            self.statusCheck = ko.observable(param ? param.statusCheck || false : false);
+            self.enable = ko.observable(param ? param.enable || false : false);
         }
     }
 

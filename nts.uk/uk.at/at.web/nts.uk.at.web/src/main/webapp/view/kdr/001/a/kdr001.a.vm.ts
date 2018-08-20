@@ -213,7 +213,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
-                    self.applyKCP005ContentSearch(data.listEmployee);
+                    self.applyKCP005ContentSearch(data.listEmployee).done(() => {
+                        setTimeout(function(){ 
+                            $("#employeeSearch div[id *= 'scrollContainer']").scrollTop(0);
+                        }, 1000);
+                    });
                     self.startDateString(data.periodStart);
                     self.endDateString(data.periodEnd);
                 }
@@ -300,19 +304,26 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         /**
         * apply ccg001 search data to kcp005
         */
-        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred();
             self.employeeList([]);
             var employeeSearchs: UnitModel[] = [];
             self.selectedEmployeeCode([]);
-            for (var employeeSearch of dataList) {
-                var employee: UnitModel = {
+            for (var i = 0; i < dataList.length; i++) {
+                let employeeSearch = dataList[i];
+                let employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
                     workplaceName: employeeSearch.workplaceName
                 };
                 employeeSearchs.push(employee);
                 self.selectedEmployeeCode.push(employee.code);
+                
+                if(i == (dataList.length - 1)) {
+                    dfd.resolve();
+                }
+                
             }
             self.employeeList(employeeSearchs);
             self.lstPersonComponentOption = {
@@ -330,6 +341,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
+            
+            return dfd.promise();
         }
 
         /**
