@@ -36,7 +36,7 @@ module nts.uk.at.view.ksm005.b {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
