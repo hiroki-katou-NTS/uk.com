@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import util = nts.uk.util;
+    
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -187,6 +189,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID()
             }).done((data) => {
                 self.initData(data);
+                self.checkRequiredBreakTimes();
                 $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
@@ -369,6 +372,39 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.enbAppDate(false);
             }
         }
+        
+        checkRequiredBreakTimes() {
+            let self = this;
+            _.each(self.breakTimes(), function(item) {
+                item.applicationTime.subscribe(function(value) {
+                    self.clearErrorA6_8();
+                    if (!self.hasAppTimeBreakTimes()) {
+                        self.setErrorA6_8();
+                    }
+                })
+            })
+        }
+        
+        hasAppTimeBreakTimes(){
+            let self = this,
+                hasData = false;
+            _.each(self.breakTimes(), function(item: common.OvertimeCaculation) {
+                if (!util.isNullOrEmpty(item.applicationTime())) {
+                    hasData = true;
+                    return false;
+                }
+            })
+            return hasData;
+        }
+
+        setErrorA6_8() {
+            $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+        }
+
+        clearErrorA6_8() {
+            $('.breakTimesCheck').ntsError('clear');
+        }
+        
         //登録処理
         registerClick() {
             let self = this;
@@ -378,11 +414,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
             }
-            if (self.prePostSelected() == 1) {
-                $('.breakTimesCheck').ntsError('check');
-            } else if (self.prePostSelected() == 0) {
-                $('.breakTimesCheckPre').ntsError('check');
-            }
+            if (!self.hasAppTimeBreakTimes()) {
+                let item = self.breakTimes()[0];
+                self.setErrorA6_8();
+            }            
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
             

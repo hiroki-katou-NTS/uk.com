@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf010.b {
     import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import util = nts.uk.util;
+
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = "YYYY/MM/DD";
@@ -153,6 +155,7 @@ module nts.uk.at.view.kaf010.b {
                 var dfd = $.Deferred();
                 service.findByAppID(appID).done((data) => { 
                     self.initData(data);
+                    self.checkRequiredBreakTimes();
                     //Check work content Changed
                     self.checkWorkContentChanged();
                     dfd.resolve(); 
@@ -411,7 +414,39 @@ module nts.uk.at.view.kaf010.b {
                         null, "","",""));
                 }); 
             }
+
+            checkRequiredBreakTimes() {
+                let self = this;
+                _.each(self.breakTimes(), function(item) {
+                    item.applicationTime.subscribe(function(value) {
+                        self.clearErrorB6_8();
+                        if (!self.hasAppTimeBreakTimes()) {
+                            self.setErrorB6_8();
+                        }
+                    })
+                })
+            }
             
+            hasAppTimeBreakTimes(){
+                let self = this,
+                    hasData = false;
+                _.each(self.breakTimes(), function(item: common.OvertimeCaculation) {
+                    if (!util.isNullOrEmpty(item.applicationTime())) {
+                        hasData = true;
+                        return false;
+                    }
+                })
+                return hasData;
+            }
+    
+            setErrorB6_8() {
+                $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+            }
+    
+            clearErrorB6_8() {
+                $('.breakTimesCheck').ntsError('clear');
+            }
+
             update(): JQueryPromise<any> {                
                 let self = this,
                 appReason: string,
@@ -421,11 +456,10 @@ module nts.uk.at.view.kaf010.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
-                if (self.prePostSelected() == 1) {
-                    $('.breakTimesCheck').ntsError('check');
-                } else if (self.prePostSelected() == 0) {
-                    $('.breakTimesCheckPre').ntsError('check');
-                }
+                if (!self.hasAppTimeBreakTimes()) {
+                    let item = self.breakTimes()[0];
+                    self.setErrorB6_8();
+                }      
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();
