@@ -878,8 +878,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) ) {
                         //時間
-                service.getAttendanceItemByAtrNew(CONDITIONATR.TIME,mode).done((data) => {
-                    service.getOptItemByAtrNew(CONDITIONATR.TIME,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -902,8 +902,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
                         //回数
-                service.getAttendanceItemByAtrNew(CONDITIONATR.TIMES,mode).done((data) => {
-                    service.getOptItemByAtrNew(CONDITIONATR.TIMES,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -926,8 +926,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         //金額   
-                service.getAttendanceItemByAtrNew(CONDITIONATR.AMOUNT,mode).done((data) => {
-                    service.getOptItemByAtrNew(CONDITIONATR.AMOUNT,mode).done((lstOptItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             data.push(lstOptItem[i]);
                         }
@@ -1432,16 +1432,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
     }
     export enum MONTHLYATTENDANCEITEMATR{
         /** The time. */
-        TIME= 1,
+        TIME = 1,
 
         /** The number. */
-        NUMBER= 2,
+        NUMBER = 2,
 
         /** The days. */
-        DAYS= 3,
+        DAYS = 3,
 
         /** The amount. */
-        AMOUNT = 4,
+        AMOUNT = 4
 
     
     }
