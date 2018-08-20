@@ -385,13 +385,20 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             })
         }
         
-        hasAppTimeBreakTimes(){
+        hasAppTimeBreakTimes() {
             let self = this,
                 hasData = false;
             _.each(self.breakTimes(), function(item: common.OvertimeCaculation) {
+                let timeValidator = new nts.uk.ui.validation.TimeValidator(nts.uk.resource.getText("KAF010_56"), "OvertimeAppPrimitiveTime", { required: false, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
                 if (!util.isNullOrEmpty(item.applicationTime())) {
                     hasData = true;
-                    return false;
+                }
+                if (item.applicationTime() == null) return;
+
+                let control = $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo());
+                let check = timeValidator.validate(control.val());
+                if (!check.isValid) {
+                    control.ntsError('set', { messageId: check.errorCode, message: check.errorMessage });
                 }
             })
             return hasData;
