@@ -107,33 +107,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
 
-	private static final Map<String, String> endDateItemCodes;
-	static {
-		Map<String, String> aMap = new HashMap<>();
-		// 所属会社履歴
-		aMap.put("CS00003", "IS00021");
-		// 分類１
-		aMap.put("CS00004", "IS00027");
-		// 雇用
-		aMap.put("CS00014", "IS00067");
-		// 職位本務
-		aMap.put("CS00016", "IS00078");
-		// 職場
-		aMap.put("CS00017", "IS00083");
-		// 休職休業
-		aMap.put("CS00018", "IS00088");
-		// 短時間勤務
-		aMap.put("CS00019", "IS00103");
-		// 労働条件
-		aMap.put("CS00020", "IS00120");
-		// 勤務種別
-		aMap.put("CS00021", "IS00256");
-		// 労働条件２
-		aMap.put("CS00070", "IS00782");
-
-		endDateItemCodes = Collections.unmodifiableMap(aMap);
-	}
-
 	private static final Map<String, String> mapSpecialCode;
 	static {
 		Map<String, String> aMap = new HashMap<>();

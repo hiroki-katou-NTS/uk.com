@@ -266,7 +266,7 @@ public class PeregCommandFacade {
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
 		
-		// getall item
+		// getall required items by category id
 		Map<String, List<String>> itemByCtgId = perInfoItemDefRepositoty
 				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
 						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
@@ -287,11 +287,13 @@ public class PeregCommandFacade {
 			// Check is enough item to regist
 			List<String> listScreenItem = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
 			
+			// Set all default item
 			List<ItemValue> listDefault = facadeUtils.getListDefaultItem(itemsByCategory.getCategoryCd(),listScreenItem, container.getEmployeeId());
 			itemsByCategory.getItems().addAll(listDefault);
 			
 			List<String> listItemAfter = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
 			
+			// Item missing 
 			Optional<String> itemExclude = Optional.empty();
 			
 			if (itemByCtgId.containsKey(itemsByCategory.getCategoryId())) {
@@ -299,6 +301,8 @@ public class PeregCommandFacade {
 				itemExclude = itemByCtgId.get(itemsByCategory.getCategoryId()).stream().filter(i -> !listItemAfter.contains(i))
 						.findFirst();
 			}
+			
+			// If there is missing item throw error
 			if (itemExclude.isPresent() && isCps002){
 				throw new BusinessException("Msg_1351");
 			} else if (itemExclude.isPresent() && !isCps002){

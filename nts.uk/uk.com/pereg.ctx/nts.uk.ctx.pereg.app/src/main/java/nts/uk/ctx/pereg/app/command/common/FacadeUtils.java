@@ -33,14 +33,6 @@ import nts.uk.shr.pereg.app.ItemValueType;
 @Stateless
 public class FacadeUtils {
 	
-//	private static final List<String> categoryDefaultValue = Arrays.asList("CS00020", "CS00025", "CS00026",
-//			"CS00027", "CS00028", "CS00029", "CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00035",
-//			"CS00036", "CS00037", "CS00038", "CS00039", "CS00040", "CS00041", "CS00042", "CS00043", "CS00044",
-//			"CS00045", "CS00046", "CS00047", "CS00048", "CS00049", "CS00050", "CS00051", "CS00052", "CS00053",
-//			"CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00059", "CS00060", "CS00061", "CS00062",
-//			"CS00063", "CS00064", "CS00065", "CS00066", "CS00067", "CS00068");
-	
-	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
 
@@ -330,10 +322,22 @@ public class FacadeUtils {
 		return FacadeUtils.createListItems(cs00058Item);
 	}
 	
+	/**
+	 * Create item
+	 * @param itemCode
+	 * @param type
+	 * @param itemValue
+	 * @return
+	 */
 	public static ItemValue createItem(String itemCode, int type, String itemValue){
 		return new ItemValue("",itemCode,"",itemValue,"",itemValue, itemValue, type, type);
 	}
 	
+	/**
+	 * Create list items
+	 * @param listItem
+	 * @return
+	 */
 	public static List<ItemValue> createListItems(String[][] listItem){
 		List<ItemValue> listItemResult = new ArrayList<>();
 		for (int i = 0; i < listItem.length;i++){
@@ -372,6 +376,13 @@ public class FacadeUtils {
 		return listItemResult.stream().filter(i-> !listItemCodeInScreen.contains(i.itemCode())).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Set default item for history category
+	 * @param categoryCode
+	 * @param listItemCodeInScreen
+	 * @param sid
+	 * @return
+	 */
 	public List<ItemValue> processHistoryPeriod(String categoryCode,List<String> listItemCodeInScreen, String sid) {
 		List<ItemValue> listItemResult = new ArrayList<>();
 		int dataType = DataTypeValue.DATE.value;
