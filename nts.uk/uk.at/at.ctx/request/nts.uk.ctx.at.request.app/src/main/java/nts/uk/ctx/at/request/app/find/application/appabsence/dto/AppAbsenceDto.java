@@ -182,8 +182,9 @@ public class AppAbsenceDto {
 	/* 忌引とする */
 	private Integer makeInvitation;
 	private AppForSpecLeaveDto specHdDto;
-	
 	private List<DisplayReasonDto> displayReasonDtoLst;
+	//ドメインモデル「申請種類別設定」.事前事後区分を変更できる
+	private boolean prPostChange;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -221,7 +222,8 @@ public class AppAbsenceDto {
 								null,
 								null,
 								null,
-								Collections.emptyList());
+								Collections.emptyList(),
+								false);
 	}
 }
 

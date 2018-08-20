@@ -181,6 +181,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((data) => {
                 $("#inputdate").focus();
                 self.initData(data);
+                //ver16
+                self.prePostEnable(data.prPostChange);
                 self.holidayTypeCode.subscribe(function(value) {
                     let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==value);
                     if(nts.uk.util.isNullOrUndefined(currentDisplay)){
