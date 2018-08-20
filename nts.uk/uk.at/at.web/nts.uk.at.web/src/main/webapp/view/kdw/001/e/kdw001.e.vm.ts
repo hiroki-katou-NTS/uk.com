@@ -165,6 +165,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         // monthly aggregation 
                         self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);                        
 
+                        self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                        self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                        self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
                             self.executionContents(self.contents);
@@ -188,8 +191,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
                             
                             // monthly aggregation
-                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             
                             // Get Log data
                             self.getLogData();
