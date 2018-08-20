@@ -1,22 +1,24 @@
 package nts.uk.ctx.sys.assist.app.command.mastercopy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.mastercopy.*;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterDataCopyEvent.MasterDataCopyEventBuilder;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Stateless
 public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopyDataCommand> {
@@ -35,10 +37,10 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	private static final int DEFAULT_VALUE = 0;
 
 	/** The Constant DATA_PREFIX. */
-	private static final String DATA_PREFIX = "DATA_";
+//	private static final String DATA_PREFIX = "DATA_";
 
 	/** The Constant MAX_ERROR_RECORD. */
-	private static final int MAX_ERROR_RECORD = 5;
+//	private static final int MAX_ERROR_RECORD = 5;
 
 	/** Interrupt flag */
 	private static boolean isInterrupted = false;
@@ -87,97 +89,22 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
         List<MasterCopyData> masterCopyDataList = repository.findByListCategoryNo(new ArrayList<>(categoryCopyMethod.keySet()));
 
 
-        if (masterCopyDataList.isEmpty()) {
+        if (CollectionUtil.isEmpty(masterCopyDataList)) {
             for (MasterCopyCategoryDto categoryDto : command.getMasterDataList()) {
                 if (isInterrupted) break;
                 ErrorContentDto errorContentDto = createErrorReport(categoryDto);
                 errorList.add(errorContentDto);
             }
         } else {
-//            Set<String> copyIds = copyTargetList.stream().map(MasterCopyData::getMasterCopyId).collect(Collectors.toSet());
-//            for (MasterCopyCategoryDto categoryDto: command.getMasterDataList()){
-//                if(isInterrupted) break;
-//                if(!copyIds.contains(categoryDto.getMasterCopyId())){
-//                    ErrorContentDto errorContentDto = createErrorReport(categoryDto);
-//                    errorList.add(errorContentDto);
-//                }
-//            }
-
             //初期値コピー処理
             for (MasterCopyData masterCopyData : masterCopyDataList) {
                 for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
-                    switch (targetTableInfo.getCopyAttribute()){
-                        case COPY_WITH_COMPANY_ID:
-                            //todo: code for case 1
-                            break;
-                        case COPY_MORE_COMPANY_ID:
-                            //todo: code for case 2
-                            break;
-                        case COPY_OTHER:
-                            //todo: code for case 3
-                            break;
-                    }
+                    if (isInterrupted) break;
+                    repository.doCopy(targetTableInfo.getTableName().v(),
+                            CopyMethod.valueOf(categoryCopyMethod.get(masterCopyData.getCategoryNo().v())), companyId);
+
                 }
             }
-
-
-//		for (MasterCopyCategoryDto listData : command.getMasterDataList()) {
-//			// Stop if being interrupted
-//			if (isInterrupted) {
-//				break;
-//			}
-//
-//			Optional<MasterCopyData> masterCopyData = repository.findByMasterCopyId(listData.getMasterCopyId());
-//			if (!masterCopyData.isPresent()) {
-//
-//				ErrorContentDto errorContentDto = new ErrorContentDto();
-//				errorContentDto.setCategoryName(listData.getCategoryName());
-//				errorContentDto.setOrder(listData.getOrder());
-//				errorContentDto.setSystemType(listData.getSystemType().toString());
-//				errorContentDto.setMessage(TextResource.localize("Msg_1146"));
-//
-//				// Add to error list (save to DB every 5 error records)
-//				if (errorList.size() >= MAX_ERROR_RECORD) {
-//					errorRecordCount++;
-//					setter.setData(DATA_PREFIX + errorRecordCount, dto);
-//
-//					// Clear the list for the new batch of error record
-//					errorList.clear();
-//				}
-//				countError += 1;
-//				errorList.add(errorContentDto);
-//				setter.updateData(NUMBER_OF_ERROR, countError); // update
-//																		// the
-//																		// number
-//																		// of
-//																		// errors
-//				if (errorList.size() == 1)
-//					dto.setWithError(WithError.WITH_ERROR); // if there is even
-//															// one error, output
-//															// it
-//			} else {
-//				countSuccess++;
-//				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
-//			}
-//
-//		}
-
-
-//        MasterDataCopyEventBuilder eventBuilder = MasterDataCopyEvent.builder();
-//        eventBuilder.companyId(command.getCompanyId());
-//        eventBuilder.taskId("taskId");
-//        eventBuilder.copyTargetList(copyTargetList);
-//        eventBuilder.build().toBePublished();
-
-		// Send the last batch of errors if there is still records unsent
-		if (!errorList.isEmpty()) {
-			errorRecordCount++;
-			setter.setData(DATA_PREFIX + errorRecordCount, dto);
-		}
-
-            dto.setEndTime(GeneralDateTime.now());
-            dto.setExecutionState(ExecutionState.DONE);
-            // setter.updateData(DATA_EXECUTION, dto);
         }
     }
 
