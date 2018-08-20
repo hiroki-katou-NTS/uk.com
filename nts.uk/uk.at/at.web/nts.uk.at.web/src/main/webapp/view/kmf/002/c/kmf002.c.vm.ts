@@ -276,6 +276,7 @@ module nts.uk.at.view.kmf002.c {
             if (!nts.uk.ui.errors.hasError()) {
                 _self.enableSave(false);
                 let id = _self.mapEmployeeCode.get(_self.selectedCode());
+                blockUI.invisible();
                 service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), id).done((data) => {
                     _self.getDataFromService();
                     _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
@@ -283,7 +284,7 @@ module nts.uk.at.view.kmf002.c {
                             _self.enableSave(true);
                         });
                     $( "#scrC .datePickerYear" ).focus();
-                });    
+                }).always(()=> blockUI.clear());    
             } 
         }
         
