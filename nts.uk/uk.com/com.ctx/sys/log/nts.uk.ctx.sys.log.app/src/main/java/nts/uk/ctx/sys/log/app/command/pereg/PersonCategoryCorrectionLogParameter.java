@@ -92,7 +92,7 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 		private Object convertValue(int valueType, String value) {
 			ItemValueType itemValueType = EnumAdaptor.valueOf(valueType, ItemValueType.class);
 			
-			if (value == null || value.equals("")) return null;
+			if (value == null) return null;
 			
 			switch (itemValueType) {
 			case STRING:
@@ -102,12 +102,14 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 			case READONLY:
 			case READONLY_BUTTON:
 			case RELATE_CATEGORY:
+				if(value.equals("")) return null;
 				return value;
 			case TIME:
 			case TIMEPOINT:
 				return new Integer(value);
 			case NUMBERIC_BUTTON:
 			case NUMERIC:
+				if(value.equals("")) return new BigDecimal(0);
 				return new BigDecimal(value);
 			case DATE:
 				return GeneralDate.fromString(value, "yyyy/MM/dd");

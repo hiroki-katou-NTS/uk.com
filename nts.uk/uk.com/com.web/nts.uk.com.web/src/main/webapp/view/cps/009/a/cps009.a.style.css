@@ -125,7 +125,7 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px;
+	max-height: 495px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	width: 634px;
