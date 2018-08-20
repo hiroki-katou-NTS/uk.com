@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.*;
+import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.CopyDataRepositoryFactory;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,17 +18,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory_;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
-import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.KmfmtRetentionYearlyDataCopyHandler;
 
 @Stateless
 public class JpaMasterCopyDataRepository extends JpaRepository implements MasterCopyDataRepository {
@@ -50,7 +48,22 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 */
 	@Override
 	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
-		new KmfmtRetentionYearlyDataCopyHandler(this.getEntityManager(), copyMethod, companyId).doCopy();
+		//case 0,1
+		CopyDataRepositoryFactory repositoryFactory = new CopyDataRepositoryFactory();
+		DataCopyHandler copyHandler = repositoryFactory.getCopyHandler(tableName);
+		String className = copyHandler.getClass().getName();
+		try {
+			Class<?> clazz = Class.forName(className);
+			final Field em = clazz.getDeclaredField("entityManager");
+			em.set(EntityManager.class, getEntityManager());
+			final Field cm = clazz.getDeclaredField("copyMethod");
+			cm.set(CopyMethod.class, copyMethod);
+			final Field ci = clazz.getDeclaredField("companyId");
+			ci.set(String.class, companyId);
+			copyHandler.doCopy();
+		} catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

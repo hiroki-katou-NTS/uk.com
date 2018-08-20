@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class KrqstWithDrawalAppSetDataCopyHandler.
  */
+@NoArgsConstructor
 public class KrqstWithDrawalAppSetDataCopyHandler implements DataCopyHandler {
 	
 	/** The entity manager. */

@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -26,6 +27,9 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	/** The master copy data finder. */
 	@Inject
 	private MasterCopyDataRepository repository;
+
+	@Inject
+	CopyDataRepository copyDataRepository;
 
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
@@ -94,19 +98,19 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
                 if (isInterrupted) break;
                 ErrorContentDto errorContentDto = createErrorReport(categoryDto);
                 errorList.add(errorContentDto);
-            }
-        } else {
-            //初期値コピー処理
-            for (MasterCopyData masterCopyData : masterCopyDataList) {
-                for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
-                    if (isInterrupted) break;
-                    repository.doCopy(targetTableInfo.getTableName().v(),
-                            CopyMethod.valueOf(categoryCopyMethod.get(masterCopyData.getCategoryNo().v())), companyId);
+			}
+		} else {
+			//初期値コピー処理
+			for (MasterCopyData masterCopyData : masterCopyDataList) {
+				for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
+					if (isInterrupted) break;
+					copyDataRepository.copy(companyId, targetTableInfo,
+							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
 
-                }
-            }
-        }
-    }
+				}
+			}
+		}
+	}
 
     private ErrorContentDto createErrorReport(MasterCopyCategoryDto categoryDto) {
         ErrorContentDto errorContentDto = new ErrorContentDto();

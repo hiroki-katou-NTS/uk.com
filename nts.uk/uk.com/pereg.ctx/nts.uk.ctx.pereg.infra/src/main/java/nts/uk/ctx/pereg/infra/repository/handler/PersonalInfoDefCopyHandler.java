@@ -40,6 +40,9 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
     private static final String FIND_ALL_DATE_RANGE_ITEM = "SELECT d FROM PpemtDateRangeItem d " +
             "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdList";
 
+    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_CAT_CD = "SELECT i FROM PpemtPerInfoItem i " +
+            "WHERE i.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:cCd)";
+
     /**
      * The copy method.
      */
@@ -311,6 +314,10 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
                 des.abolitionAtr = src.abolitionAtr;
                 //update overwrite
                 this.commandProxy.update(des);
+            }
+
+            for (String catId : sourcePersonalInfoCatId) {
+
             }
         }
     }
