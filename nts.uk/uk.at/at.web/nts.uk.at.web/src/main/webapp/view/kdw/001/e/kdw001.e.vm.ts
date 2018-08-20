@@ -193,6 +193,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             
                             // Get Log data
                             self.getLogData();
+                            
+                            self.enableCancelTask(false);
                         }
                     });
                 })

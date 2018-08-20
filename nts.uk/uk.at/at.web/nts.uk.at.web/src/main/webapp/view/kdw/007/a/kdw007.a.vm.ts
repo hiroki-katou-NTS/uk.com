@@ -224,6 +224,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                $('#pg-name').text('KDW007A ' + nts.uk.resource.getText("KDW007_41"));
                 self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {

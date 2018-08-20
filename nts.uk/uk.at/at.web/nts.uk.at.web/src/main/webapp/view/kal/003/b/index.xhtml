@@ -1012,7 +1012,7 @@
 														tcWM.AVERAGE_TIME, tcWM.AVERAGE_TIMES,
 														tcWM.AVERAGE_AMOUNT
 														].indexOf(typeCheckItem()) > -1"> 
-										 		<div id="comBoxOperator" class="combo-box" style = "width: 270px !important; "
+										 		<div id="comBoxOperator" class="combo-box" style = "width: 280px !important; "
 										 			tabindex = "3"
 													data-bind="ntsComboBox: {
 			                                             name:'#[KAL003_60]',
@@ -1035,7 +1035,7 @@
 																tcWM.NUMBER_TIMES, 
 																tcWM.NUMBER_AMOUNT
 															].indexOf(typeCheckItem()) > -1"> 
-										 		<div id="comBoxOperator" class="combo-box" style = "width: 270px !important; "
+										 		<div id="comBoxOperator" class="combo-box" style = "width: 280px !important; "
 										 			tabindex = "3"
 													data-bind="ntsComboBox: {
 			                                             name:'#[KAL003_60]',
@@ -1305,11 +1305,10 @@
 										</td>
 										<td class="pad_left_10px" style="margin-left: 30px">
 											<!-- BA3-2--> 
-											<input class="value-input needcheck" 
-											
+											<input class="value-input needcheck"  id = "settingtimes"
 											tabindex = "8"
 											data-bind="ntsNumberEditor: {
-						                              name: '#[KAL003_44]',
+						                              name: '#[KAL003_182]',
 						                              value: times,
 						                              required: true,
 						                              constraint: 'ContinuousVacationMonths',
