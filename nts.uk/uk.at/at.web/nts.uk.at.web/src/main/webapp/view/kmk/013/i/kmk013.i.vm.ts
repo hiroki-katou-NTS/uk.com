@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.i {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             roundingRules: KnockoutObservableArray<any>;
@@ -24,8 +27,8 @@ module nts.uk.at.view.kmk013.i {
                 return dfd.promise();
             }
             initData() : JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
+                let self = this,
+                    dfd = $.Deferred();
                 service.findByCompanyId().done(arr => {
                     let data = arr[0];
                     if(data != null) {
@@ -38,12 +41,15 @@ module nts.uk.at.view.kmk013.i {
                 return dfd.promise();
             }
             saveData(): void {
-                let self = this;
-                let data = self.data;
+                let self = this,
+                    data: any = self.data;
+                blockUI.grayout();
+                
                 data.legalOtCalc = self.selectedRuleCode();
                 if (self.isCreated()){
                     service.update(data).done(
                         () => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
                                 $("#switch").focus();
                             });
@@ -52,6 +58,7 @@ module nts.uk.at.view.kmk013.i {
                 } else {
                     service.save(data).done(
                         () => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
                                 $("#switch").focus();
                             });

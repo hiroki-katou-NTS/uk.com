@@ -37,7 +37,6 @@ module nts.uk.at.view.kmk013.l {
                 var dfd = $.Deferred();
                 
                 $.when(self.loadData()).done(function() {
-                    //$( "#l2_7" ).focus();
                     dfd.resolve();
                 });
                     
@@ -51,13 +50,14 @@ module nts.uk.at.view.kmk013.l {
                 obj.maxUsage = self.valueL2_7();
                 obj.timeTreatTemporarySame = self.valueL2_9();
                 if (nts.uk.ui.errors.hasError()) {
+                    blockUI.clear();
                     return;
                 }
                 
                 $.when(service.save(obj)).done(function(data: any) {
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     $.when(self.loadData()).done(function() {
-                        
+                        blockUI.clear();
                         dfd.resolve();
                     });
                     $( "#l2_7" ).focus();

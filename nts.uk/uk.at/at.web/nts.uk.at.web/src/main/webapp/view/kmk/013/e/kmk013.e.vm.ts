@@ -98,7 +98,7 @@ module nts.uk.at.view.kmk013.e {
                     service.getPossibleItem(arr).done(listName => {
                         service.findByCompanyId().done(listData => {
                             _.forEach(listName, (element) => {
-                                let obj = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
+                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
                                 let ur;
                                 if (obj) {
                                     ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
@@ -124,7 +124,7 @@ module nts.uk.at.view.kmk013.e {
                 let self = this;
                 blockUI.invisible();
                 service.save(ko.toJS(self.gatherData())).done(() => {
-                    let data = {};
+                    let data:any = {};
                     data.roundingUnit = self.excRoundingUnit();
                     data.roundingProcess = self.excRoundingProc();
                     service.saveExcOut(data).done(() => {

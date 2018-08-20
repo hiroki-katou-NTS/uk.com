@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.b {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             itemsB23: KnockoutObservableArray<any>;
@@ -1217,6 +1220,8 @@ module nts.uk.at.view.kmk013.b {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+                
+                blockUI.grayout();
 
                 obj.referActualWorkHours = self.selectedB23();
                 obj.notReferringAch = self.oldData().notReferringAch;
@@ -1449,9 +1454,10 @@ module nts.uk.at.view.kmk013.b {
                     self.initData();
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     $( "#b23" ).focus();
-                }
-                ).fail((error) => {
+                }).fail((error) => {
                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    blockUI.clear();
                 });
             }
         }
