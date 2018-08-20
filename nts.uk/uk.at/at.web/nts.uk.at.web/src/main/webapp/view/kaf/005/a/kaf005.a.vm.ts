@@ -521,7 +521,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.checkWorkContentChanged(); 
             }
             
-//            self.overtimeAtr(data.overtimeAtr);
+            self.overtimeAtr(data.overtimeAtr);
 //            if(data.overtimeAtr == 0){
 //                self.heightOvertimeHours(56); 
 //            }else if(data.overtimeAtr == 1){
