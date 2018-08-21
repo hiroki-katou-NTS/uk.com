@@ -100,6 +100,9 @@ public class PeregCommandFacade {
 	
 	private final static String valueEndate = "9999/12/31";
 	
+	//edit with category CS00021 勤務種別 change type of category when history item is latest
+	private final static String category21 = "CS00021";
+	
 	/* employeeCode, stardCardNo */
 	private final static List<String> specialItemCode = Arrays.asList("IS00001", "IS00779");
 	
@@ -347,6 +350,9 @@ public class PeregCommandFacade {
 
 			for (ItemsByCategory input : inputs) {
 				DateRangeDto dateRange = null;
+				if(input.getCategoryCd().equals(category21)) {
+					input.setCategoryType(CategoryType.CONTINUOUSHISTORY.value);
+				}
 				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),sid, pid);
@@ -398,8 +404,7 @@ public class PeregCommandFacade {
 						
 						// nếu startDate newValue != afterValue;
 						if (ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.MULTIINFO
-								|| ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
-								|| ctgType == CategoryType.NODUPLICATEHISTORY) {
+								|| ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 							query.setCategoryId(input.getCategoryId());
 							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 							/**
@@ -463,59 +468,7 @@ public class PeregCommandFacade {
 										}
 									}
 								}
-								break;
-
-							case NODUPLICATEHISTORY:							
-									// trường hợp tạo mới hoàn toàn category
-									for (ComboBoxObject c : historyLst) {
-										if (c.getOptionValue() != null) {
-											// optionText có kiểu giá trị 2018/12/01 ~ 2018/12/31
-											String[] history = c.getOptionText().split("~");
-											switch (isAdd) {
-											case ADD:
-												info = InfoOperateAttr.ADD_HISTORY;
-												
-												if (!history[1].equals(" ")) {
-													// giá trị của endDate cũ
-													GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-													// giá trị của startDate sau khi thay đổi
-													GeneralDate newStart = GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd");
-												
-													if(newStart.compareTo(oldEnd) < 0) {
-														reviseInfo = new ReviseInfo(nameEndate,
-																Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-																Optional.empty(), Optional.empty());
-														break;
-													}
-												}
-												break;
-											case UPDATE:
-												info = InfoOperateAttr.UPDATE;
-												if (!history[1].equals(" ")) {
-													// giá trị của endDate cũ
-													GeneralDate oldEnd = GeneralDate.fromString(history[1].substring(1), "yyyy/MM/dd");
-													// giá trị của startDate sau khi thay đổi
-													GeneralDate newStart = GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd");
-													
-													if (newStart.compareTo(oldEnd) < 0) {
-														reviseInfo = new ReviseInfo(nameEndate,
-																Optional.ofNullable(GeneralDate.fromString(item.valueAfter(), "yyyy/MM/dd").addDays(-1)),
-																Optional.empty(), Optional.empty());
-														break;
-													}
-													break;
-												} else {
-													break;
-												}
-
-											default:
-												break;
-											}
-
-										}
-									}
-								break;			
-								
+								break;	
 							case MULTIINFO:
 								if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
 									info = InfoOperateAttr.ADD;
