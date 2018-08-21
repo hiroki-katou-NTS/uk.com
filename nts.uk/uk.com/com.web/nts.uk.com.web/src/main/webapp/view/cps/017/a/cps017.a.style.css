@@ -17,8 +17,7 @@ body {
 }
 
 #contents-area {
-	width: 1260px;
-	/* height: 600px !important; */
+	min-height: 800px;
 }
 
 .pull-left {
