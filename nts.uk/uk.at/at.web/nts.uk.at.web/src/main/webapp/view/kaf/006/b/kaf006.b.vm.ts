@@ -104,6 +104,11 @@ module nts.uk.at.view.kaf006.b{
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
+        //No.376
+        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
+        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
+        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
+        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;

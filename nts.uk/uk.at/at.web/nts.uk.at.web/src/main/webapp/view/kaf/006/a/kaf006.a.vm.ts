@@ -107,6 +107,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         displayReasonLst: Array<common.DisplayReason> = []; 
+        //No.65 + No.376
+        pridigCheck: KnockoutObservable<boolean> = ko.observable(true);
+        numberSubHd: KnockoutObservable<number> = ko.observable(0);
+        numberSubVaca: KnockoutObservable<number> = ko.observable(0);
+        settingNo65: KnockoutObservable<common.SettingNo65> = ko.observable(null);
+        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
+        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
+        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
+        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
         constructor(transferData :any) {
 
             let self = this;
@@ -180,6 +189,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
                 $("#inputdate").focus();
+                //No.65
+                if(data.setingNo65 != null){
+                    self.settingNo65(new common.SettingNo65(data.setingNo65.hdType,data.setingNo65.screenMode, data.setingNo65.pridigCheck,
+                        data.setingNo65.subVacaManage, data.setingNo65.subVacaTypeUseFlg, data.setingNo65.subHdManage, data.setingNo65.subHdTypeUseFlg));
+                }
                 self.initData(data);
                 //ver16
                 self.prePostEnable(data.prPostChange);
@@ -582,6 +596,45 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
+            if(self.holidayTypeCode() != 1){
+                self.registerApp();
+            }else{
+                
+            let paramCheck = {
+                                hdType: self.holidayTypeCode(),
+                                screenMode: 0,//新規モード(new mode)
+                                pridigCheck: self.settingNo65() == null ? 0 : self.settingNo65().pridigCheck,
+                                subVacaManage: self.settingNo65() == null ? false : self.settingNo65().subVacaManage,
+                                subVacaTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subVacaTypeUseFlg,
+                                subHdManage: self.settingNo65() == null ? false : self.settingNo65().subHdManage,
+                                subHdTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subHdTypeUseFlg,
+                                numberSubHd: self.numberSubHd(),
+                                numberSubVaca: self.numberSubVaca()
+                            };
+            //アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
+            service.checkRegister(paramCheck).done(()=>{
+                self.registerApp();
+            }).fail((res)=>{
+                if (res.messageId == 'Msg_1392' || res.messageId == 'Msg_1394') {//エラーメッセージがある場合(t/h có error message)
+                    dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.ui.block.clear();
+                        return;
+                    });
+                } 
+                //確認メッセージがある場合(t/h có confirm message)
+                //確認メッセージを表示する (Hiển thị confirm message)
+                if(res.messageId == 'Msg_1393' || res.messageId == 'Msg_1395'){
+                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                        self.registerApp();
+                    }).ifCancel(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            });
+            }
+        }
+        registerApp(){
+            let self = this;
             let appReason: string;
             appReason = self.getReason(
                 self.selectedReason(),
@@ -646,7 +699,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     .then(function() { nts.uk.ui.block.clear(); });
-            });
+            });    
         }
         getReason(inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReason: string): string {
             let appReason = '';
