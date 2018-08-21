@@ -109,7 +109,9 @@ module nts.uk.at.view.kdl020.a.screenModel {
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                if (self.employeeList().length > 1) {
+                    $('#component-items-list').ntsListComponent(self.listComponentOption);
+                }
                 block.clear();
                 dfd.resolve();
             });

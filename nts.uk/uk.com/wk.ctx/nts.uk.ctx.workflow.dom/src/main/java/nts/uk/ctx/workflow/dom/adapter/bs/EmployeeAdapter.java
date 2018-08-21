@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 
 public interface EmployeeAdapter {
 
@@ -69,4 +70,6 @@ public interface EmployeeAdapter {
 	boolean canApprovalOnBaseDate(String companyId, String employeeID, GeneralDate date);
 	
 	boolean isEmployeeDelete(String sid);
+	
+	StatusOfEmploymentImport getStatusOfEmployment(String employeeID, GeneralDate referenceDate);
 }

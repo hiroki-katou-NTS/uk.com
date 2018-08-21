@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 				nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
 			</com:ValidatorScript>
 
@@ -181,7 +182,7 @@
 									value: selectedTypeHeightExTable,
 									enable: true}"></div>
 							<input id="input-heightExtable"
-								data-bind="ntsTextEditor: {value: ko.observable(''), enable: isEnableInputHeight, required: isEnableInputHeight }" />
+								data-bind="ntsNumberEditor: {value: ko.observable(''), constraint: 'ItemGridHeight', enable: isEnableInputHeight, required: isEnableInputHeight, name: '#[KSU001_91]' }" />
 						</div>
 					</div>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_92')}</div>
