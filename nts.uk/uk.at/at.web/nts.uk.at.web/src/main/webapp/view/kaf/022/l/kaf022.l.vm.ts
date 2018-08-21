@@ -324,6 +324,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 $('#l46').ntsError('set', {messageId:"Msg_1377", messageParams:['勤務変更申請']});
                 clear();
             }
+            else if(wSet.displayFlag === false){
+                wSet.lstWorkType = [];
+            }
             commands.push(ko.mapping.toJS(self.appSetData().businessTripSet()));
             
             let returnDirect = ko.mapping.toJS(self.appSetData().goReturndirectSet());
@@ -332,13 +335,19 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 $('#l48').ntsError('set', {messageId:"Msg_1377", messageParams:['直行直帰申請']});
                 clear();
             }
+            else if(returnDirect.displayFlag === false){
+                returnDirect.lstWorkType = [];
+            }
             
             let breakTime = ko.mapping.toJS(self.appSetData().breakTimeSet());
             commands.push(breakTime);
-            if(returnDirect.displayFlag === true && returnDirect.displayWorkTypes === ""){
+            if(breakTime.displayFlag === true && breakTime.displayWorkTypes === ""){
                 $('#l49').ntsError('set', {messageId:"Msg_1377", messageParams:['休出時間申請']});
                 clear();
             }
+            else if(breakTime.displayFlag === false){
+                breakTime.lstWorkType = [];
+            }            
             
             commands.push(ko.mapping.toJS(self.appSetData().stampSet()));
             commands.push(ko.mapping.toJS(self.appSetData().annualHolidaySet()));
@@ -350,10 +359,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                      $('.lagre-input-code:eq(11)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振出】']});
                      clear();
                  }
+                else if (leave.displayFlag === false && leave.optionName === '【振出】') {
+                    leave.lstWorkType = [];
+                }  
                 if(leave.displayFlag === true && leave.optionName === '【振休】' && (!_.size(leave.lstWorkType) || leave.lstWorkType[0].workTypeCode == "")){
                      $('.lagre-input-code:eq(12)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振休】']});
                      clear();
                  }
+                else if (leave.displayFlag === false && leave.optionName === '【振休】') {
+                    leave.lstWorkType = [];
+                }
             });            
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
@@ -399,7 +414,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             }
         }
         /**
-         * 申請の前準備の削除処理
+         * 申請の前準備の削除処理  
          */
         deleteEmploymentSet(parent:any){
             nts.uk.ui.block.invisible();
@@ -933,8 +948,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         lstWorkType: KnockoutObservableArray<any> = ko.observableArray();
         displayWorkTypes: KnockoutObservable<string> = ko.observable('');
         optionName: KnockoutObservable<string> = ko.observable('');
+        enableButton: KnockoutObservable<boolean>;
         constructor(companyId: string, employmentCode: string, appType: number,holidayOrPauseType: number, displayFlag: boolean, holidayTypeUseFlg: boolean, lstWorkType: Array<any>){
             let self = this;
+            this.enableButton = ko.observable((displayFlag == true && holidayTypeUseFlg == false) ? true : false);
             this.companyId = companyId;
             this.employmentCode = employmentCode;
             this.appType = appType;
@@ -948,6 +965,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                                                     }).join(" + "));
             this.lstWorkType.subscribe(value =>{
                     this.displayWorkTypes(_.map(this.lstWorkType(), item =>{return item.workTypeName;}).join(" + "));
+            });
+            this.holidayTypeUseFlg.subscribe(value => {
+                if(value == false && this.displayFlag() == true){
+                    this.enableButton(true);    
+                }else{
+                    this.enableButton(false);
+                }
+            });
+            this.displayFlag.subscribe(obj => {
+                this.holidayTypeUseFlg.valueHasMutated();    
             });
         }        
     }

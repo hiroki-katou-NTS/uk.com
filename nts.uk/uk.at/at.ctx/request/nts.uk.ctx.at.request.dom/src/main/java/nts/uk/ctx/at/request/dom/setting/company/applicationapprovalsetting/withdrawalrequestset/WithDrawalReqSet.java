@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Weight;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 
 /**
@@ -30,7 +34,7 @@ public class WithDrawalReqSet extends AggregateRoot {
 	private CheckUper checkUpLimitHalfDayHD;
 
 	/** * コメント */
-	private String pickUpComment;
+	private Optional<Comment> pickUpComment;
 
 	/** * 太字 */
 	private Weight pickUpBold;
@@ -39,7 +43,7 @@ public class WithDrawalReqSet extends AggregateRoot {
 	private String pickUpLettleColor;
 
 	/** * コメント */
-	private String deferredComment;
+	private Optional<Comment> deferredComment;
 
 	/** * 太字 */
 	private Weight deferredBold;
@@ -86,10 +90,10 @@ public class WithDrawalReqSet extends AggregateRoot {
 		this.appliDateContrac = EnumAdaptor.valueOf(appliDateContrac, ContractCheck.class);
 		this.useAtr = EnumAdaptor.valueOf(useAtr, UseAtr.class);
 		this.checkUpLimitHalfDayHD = EnumAdaptor.valueOf(checkUpLimitHalfDayHD, CheckUper.class);
-		this.pickUpComment = pickUpComment;
+		this.pickUpComment = pickUpComment == null ? Optional.empty() : Optional.of(new Comment(pickUpComment));
 		this.pickUpBold = EnumAdaptor.valueOf(pickUpBold, Weight.class);
 		this.pickUpLettleColor = pickUpLettleColor;
-		this.deferredComment = deferredComment;
+		this.deferredComment = deferredComment == null ? Optional.empty() : Optional.of(new Comment(deferredComment));
 		this.deferredBold = EnumAdaptor.valueOf(deferredBold, Weight.class);
 		this.deferredLettleColor = deferredLettleColor;
 		this.deferredWorkTimeSelect = EnumAdaptor.valueOf(deferredWorkTimeSelect, WorkUse.class);
@@ -125,9 +129,9 @@ public class WithDrawalReqSet extends AggregateRoot {
 
 		return new WithDrawalReqSet(companyId, permissionDivision, appliDateContrac, 
 									useAtr, checkUpLimitHalfDayHD,
-									StringUtil.isNullOrEmpty(pickUpComment, true) ? null : pickUpComment, 
+									pickUpComment, 
 									pickUpBold, pickUpLettleColor, 
-									StringUtil.isNullOrEmpty(deferredComment, true) ? null : deferredComment, 
+									deferredComment,
 									deferredBold, deferredLettleColor,
 									deferredWorkTimeSelect, simulAppliReq, lettleSuperLeave);
 	}
