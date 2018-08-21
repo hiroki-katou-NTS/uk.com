@@ -14,7 +14,7 @@ public class CopyDataRepositoryFactory {
     static HashMap<String, DataCopyHandler> mapper = new HashMap<>();
 
     static {
-        mapper.put("PPEMT_PER_INFO_CTG", new PersonalInfoDataCopyHandler());
+        mapper.put("PPEMT_PER_INFO_CTG", new PpemtPerInfoCtgDataCopyHandler());
 //        mapper.put("PPEMT_PER_INFO_CTG_ORDER", new PersonalInfoDataCopyHandler());                  //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_PER_INFO_ITEM_CM", new PersonalInfoDataCopyHandler());                    //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_PER_INFO_ITEM", new PersonalInfoDataCopyHandler());                       //Event：個人情報定義の初期値コピー

@@ -875,6 +875,7 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 	}
 }
 

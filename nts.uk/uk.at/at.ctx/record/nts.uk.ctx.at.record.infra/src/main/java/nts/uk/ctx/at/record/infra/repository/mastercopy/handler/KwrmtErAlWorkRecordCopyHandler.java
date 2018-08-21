@@ -14,22 +14,13 @@ import java.util.stream.Collectors;
 /**
  * @author locph
  */
-public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements DataCopyHandler {
+public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
     /**
      * The select query.
      */
     public static final String FIND_ALL_ERAL_WORK_RECORD = "SELECT w FROM KwrmtErAlWorkRecord w " +
             "WHERE w.kwrmtErAlWorkRecordPK.companyId =:cid;";
 
-    /**
-     * The copy method.
-     */
-    private int copyMethod;
-
-    /**
-     * The company Id.
-     */
-    private String companyId;
 
     /**
      * Instantiates a new kshst overtime frame data copy handler.
@@ -37,9 +28,12 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
      * @param copyMethod the copy method
      * @param companyId  the company cd
      */
-    public KwrmtErAlWorkRecordCopyHandler(int copyMethod, String companyId) {
+    public KwrmtErAlWorkRecordCopyHandler(JpaRepository repository, int copyMethod, String companyId) {
         this.copyMethod = copyMethod;
         this.companyId = companyId;
+        this.entityManager = repository.getEntityManager();
+        this.queryProxy = repository.queryProxy();
+        this.commandProxy = repository.commandProxy();
     }
 
     /* (non-Javadoc)
@@ -75,7 +69,7 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
      * @return
      */
     private List<KwrmtErAlWorkRecord> findAllByCid(String cid){
-        return this.queryProxy().query(FIND_ALL_ERAL_WORK_RECORD, KwrmtErAlWorkRecord.class)
+        return this.queryProxy.query(FIND_ALL_ERAL_WORK_RECORD, KwrmtErAlWorkRecord.class)
                 .setParameter("cid", cid).getList();
     }
 
@@ -101,8 +95,8 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
 
         // Is replace all
         if (isReplace) {
-            commandProxy().removeAll(targetWeeklyWorkSetEntities);
-            getEntityManager().flush();
+            commandProxy.removeAll(targetWeeklyWorkSetEntities);
+            entityManager.flush();
         }
 
         List<KwrmtErAlWorkRecord> addWeeklyWorkSetEntities = sourceWeeklyWorkSets;
@@ -112,6 +106,6 @@ public class KwrmtErAlWorkRecordCopyHandler extends JpaRepository implements Dat
                     .filter(item -> !targetWeeklyWorkSetEntities.contains(item))
                     .collect(Collectors.toList());
         }
-        this.commandProxy().insertAll(addWeeklyWorkSetEntities);
+        this.commandProxy.insertAll(addWeeklyWorkSetEntities);
     }
 }
