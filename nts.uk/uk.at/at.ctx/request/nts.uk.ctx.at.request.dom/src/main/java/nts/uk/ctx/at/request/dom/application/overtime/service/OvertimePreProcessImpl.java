@@ -188,28 +188,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// if display then check What call UI?
 			if (applicationSetting.get().getDisplayPrePostFlg().value == AppDisplayAtr.DISPLAY.value) {
 				result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
-				/**
-				 * check UI 0: メニューから起動 :menu other:
-				 * 日別修正、トップページアラームから起動,残業指示から起動
-				 */
-				if (uiType == 0) {
-					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, appType);
-					if (discreteSetting.isPresent()) {
-						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
-						result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
-					}
-				} else if (uiType == 2){
-					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, appType);
-					if (discreteSetting.isPresent()) {
-						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
-					}
-					result.setPrePostCanChangeFlg(false);
-				}else{
-					// 事後申請として起動する(khoi dong cai xin sau len)
-					result.setPrePostAtr(InitValueAtr.POST.value);
-
+				Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
+						.getAppTypeDiscreteSettingByAppType(companyID, appType);
+				if (discreteSetting.isPresent()) {
+					result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
+					result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
 				}
 			} else {
 				// if not display
