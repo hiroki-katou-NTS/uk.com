@@ -204,7 +204,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
 					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-					pageSetup.setZoom(100);
 					
 					// Set header value
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
@@ -215,6 +214,13 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					worksheet.getCells().deleteColumns(42, 20, true);
 					
 					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
+					if (dataSource.getMode() == EXPORT_EXCEL) {
+						pageSetup.setZoom(100);
+					} else if (dataSource.getMode() == EXPORT_PDF) {
+						pageSetup.setFitToPagesTall(1);
+						pageSetup.setFitToPagesWide(1);
+					}
+					
 				}
 			}
 
