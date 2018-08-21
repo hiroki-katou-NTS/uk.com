@@ -20,15 +20,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WwfstApprovalSettingDataCopyHandler implements DataCopyHandler {
+public class WwfstApprovalSettingDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO WWFST_APPROVAL_SETTING(CID ,PRINCIPAL_APPROVAL_FLG) VALUES (?, ?);";

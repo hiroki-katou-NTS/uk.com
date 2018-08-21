@@ -22,16 +22,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PpemtPerInfoCtgDataCopyHandler implements DataCopyHandler {
+public class PpemtPerInfoCtgDataCopyHandler extends DataCopyHandler {
 	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO PPEMT_PER_INFO_CTG(CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR) VALUES (?, ?, ?, ?, ?);";

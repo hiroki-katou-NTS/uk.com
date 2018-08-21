@@ -22,16 +22,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PpemtHistorySelectionDataCopyHandler implements DataCopyHandler {
+public class PpemtHistorySelectionDataCopyHandler extends DataCopyHandler {
 	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO PPEMT_HISTORY_SELECTION(CID, HIST_ID, SELECTION_ITEM_ID, START_DATE, END_DATE) VALUES (?, ?, ?, ?, ?);";

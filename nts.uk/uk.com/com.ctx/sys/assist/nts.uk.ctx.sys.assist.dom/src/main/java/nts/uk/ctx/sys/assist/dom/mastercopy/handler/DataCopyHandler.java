@@ -1,12 +1,25 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+
+import javax.persistence.EntityManager;
+
 /**
  * The Interface CopyHandler.
  */
-public interface DataCopyHandler {
+public abstract class DataCopyHandler {
+
+	/** The entity manager. */
+	protected EntityManager entityManager;
+
+	/** The copy method. */
+    protected CopyMethod copyMethod;
+
+	/** The company Id. */
+    protected String companyId;
 	
 	/**
 	 * Do copy.
 	 */
-	public void doCopy();
+	public abstract void doCopy();
 }
