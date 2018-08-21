@@ -8,7 +8,7 @@ package nts.uk.file.at.app.export.dailyschedule.totalsum;
  */
 public enum DayType {
 	// 出勤
-	ATTEND(0),
+	HOLIDAY(1),
 	// 年休
 	ANNUAL_HOLIDAY(2),
 	// 積立年休

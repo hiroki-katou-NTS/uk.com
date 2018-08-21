@@ -96,7 +96,7 @@
 								showNumbering: false,
 								columns: [
 					                { headerText: 'aa', key: 'selectionItemId', hidden: true},
-					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName'}
+					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', formatter: _.escape}
 					            ],
 								multiple: false,
 								value: perInfoSelectionItem().selectionItemId}">
@@ -183,7 +183,7 @@
 							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
 						<div class="input">
-							<div>
+							
 							 	<span><input id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
@@ -193,8 +193,8 @@
 										enable: $parent.enableSelectionCd, 
 		 								immediate: false}, hasFocus: $vm.focus.code" />
 								</span>
-							</div>
-							<div>
+							
+							
 								<input id="name"
 									data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
@@ -203,7 +203,7 @@
 								required: true, 
  								enable: $parent.enableSelectionName, 
 								immediate: false}, hasFocus: $vm.focus.name" />
-							</div>
+							
 						</div>
 						<div class="form-input">
 							<div class="form-lable"

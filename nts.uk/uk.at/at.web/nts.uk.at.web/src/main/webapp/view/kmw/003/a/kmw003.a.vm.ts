@@ -145,12 +145,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             self.actualTimeSelectedCode.subscribe(value => {
                 self.actualTimeSelectedDat(self.actualTimeDats()[value]);
+//                if(self.monthlyParam().actualTime ==null){
+//                    let temp = {startDate : moment(self.actualTimeSelectedDat().startDate).toISOString(), endDate : moment(self.actualTimeSelectedDat().endDate).toISOString()  };
+//                    self.monthlyParam().actualTime = temp;    
+//                }else{
+//                    self.monthlyParam().actualTime.startDate = moment(self.actualTimeSelectedDat().startDate).toISOString();
+//                    self.monthlyParam().actualTime.endDate = moment(self.actualTimeSelectedDat().endDate).toISOString();    
+//                }
+                
+//                self.initScreen();
                 //実績期間を変更する
                 self.updateActualTime();
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
                 if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen()) self.updateDate(value);
+                
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -695,7 +705,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         selectedIndex = i;
                 }
             }
-            self.actualTimeSelectedCode(selectedIndex);
+            self.actualTimeSelectedCode(0);
         };
         /*********************************/
         receiveData(data) {
@@ -1312,8 +1322,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         updateActualTime() {
             let self = this;
             self.monthlyParam().actualTime = self.actualTimeSelectedDat();
-            //self.actualTimeSelectedDat
-            //self.initScreen();
+//            self.monthlyParam().actualTime.startDate = moment(self.actualTimeSelectedDat().startDate).toISOString();
+//            self.monthlyParam().actualTime.endDate = moment(self.actualTimeSelectedDat().endDate).toISOString();
+//            //self.actualTimeSelectedDat
+//            self.initScreen();
         }
         /**
          * Check all CheckBox

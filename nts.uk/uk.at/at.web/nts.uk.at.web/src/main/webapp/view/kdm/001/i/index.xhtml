@@ -70,7 +70,7 @@
 					editable: false,
 					enable:checkedHoliday,
 					required: checkedHoliday,
-					selectFirstIfNull : false,
+					selectFirstIfNull : true,
 					columns: [
 						{ prop: 'name', length: 5 },
 					]}">
@@ -117,7 +117,7 @@
 					optionsText: 'name',
 					editable: false,
 					enable:checkedSubHoliday,
-					selectFirstIfNull : false,
+					selectFirstIfNull : true,
 					required: checkedSubHoliday,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -149,7 +149,7 @@
 							optionsText: 'name',
 							editable: false,
 							enable: checkedSplit() &amp;&amp; checkedSubHoliday(),
-							selectFirstIfNull : false,
+							selectFirstIfNull : true,
 							required: checkedSplit,
 							columns: [
 								{ prop: 'name', length: 5 },

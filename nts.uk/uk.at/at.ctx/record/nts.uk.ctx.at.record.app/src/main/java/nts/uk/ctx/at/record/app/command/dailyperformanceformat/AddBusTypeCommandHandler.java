@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperformanceformat;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,31 +43,40 @@ public class AddBusTypeCommandHandler extends CommandHandler<AddBusTypeCommand> 
 		if (command.getBusTypeDailyCommand().getBusinessTypeFormatDetailDtos().isEmpty()) {
 			throw new BusinessException("Msg_920");
 		}
-
-		List<BusinessTypeFormatDaily> businessTypeFormatDailies = command.getBusTypeDailyCommand()
-				.getBusinessTypeFormatDetailDtos().stream().map(f -> {
-					return new BusinessTypeFormatDaily(companyId,
-							new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
-							f.getAttendanceItemId(), command.getBusTypeDailyCommand().getSheetNo(), f.getOrder(),
-							f.getColumnWidth());
-				}).collect(Collectors.toList());
-
+		
+		List<BusinessFormatSheet> listBusFormatSheet = businessFormatSheetRepository.getSheetInformationByCode(
+				companyId, command.getBusTypeDailyCommand().getBusinesstypeCode());
+		
 		if (this.businessTypeFormatDailyRepository.checkExistData(companyId, command.getBusTypeDailyCommand().getBusinesstypeCode(), 
 				command.getBusTypeDailyCommand().getSheetNo())) {
 			updateDaily(command.getBusTypeDailyCommand(), companyId);
 		} else {
+			command.getBusTypeDailyCommand().setSheetNo(BigDecimal.valueOf(listBusFormatSheet.size()+1));
+			
+			List<BusinessTypeFormatDaily> businessTypeFormatDailies = command.getBusTypeDailyCommand()
+			.getBusinessTypeFormatDetailDtos().stream().map(f -> {
+				return new BusinessTypeFormatDaily(companyId,
+						new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
+						f.getAttendanceItemId(), command.getBusTypeDailyCommand().getSheetNo(), f.getOrder(),
+						f.getColumnWidth());
+			}).collect(Collectors.toList());
 			this.businessTypeFormatDailyRepository.add(businessTypeFormatDailies);
 		}
 
-		BusinessFormatSheet businessFormatSheet = new BusinessFormatSheet(companyId,
-				new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
-				command.getBusTypeDailyCommand().getSheetNo(), command.getBusTypeDailyCommand().getSheetName());
-
+		
 		if (this.businessFormatSheetRepository.checkExistData(companyId,
 				new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
 				command.getBusTypeDailyCommand().getSheetNo())) {
+			
+			BusinessFormatSheet businessFormatSheet = new BusinessFormatSheet(companyId,
+					new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
+					command.getBusTypeDailyCommand().getSheetNo(), command.getBusTypeDailyCommand().getSheetName());
 			this.businessFormatSheetRepository.update(businessFormatSheet);
 		} else {
+			command.getBusTypeDailyCommand().setSheetNo(BigDecimal.valueOf(listBusFormatSheet.size()+1));
+			BusinessFormatSheet businessFormatSheet = new BusinessFormatSheet(companyId,
+					new BusinessTypeCode(command.getBusTypeDailyCommand().getBusinesstypeCode()),
+					command.getBusTypeDailyCommand().getSheetNo(), command.getBusTypeDailyCommand().getSheetName());
 			this.businessFormatSheetRepository.add(businessFormatSheet);
 		}
 
