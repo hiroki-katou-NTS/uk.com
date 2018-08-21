@@ -350,7 +350,7 @@
 								</com:ko-if>
 
 								<button class="large proceed next_btn" id="next_btn"
-									data-bind="click:finish" tabindex="3">#{i18n.getText('CPS002_53')}</button>
+									data-bind="click:finish , enable: $root.errors.isEmpty" tabindex="3">#{i18n.getText('CPS002_53')}</button>
 							</div>
 
 						</div>
