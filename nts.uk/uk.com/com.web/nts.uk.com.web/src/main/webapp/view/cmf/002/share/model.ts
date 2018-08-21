@@ -69,6 +69,29 @@ module nts.uk.com.view.cmf002.share.model {
         PLUS = 0, // +
         MINUS = 1 // -
     }
+    export enum SYMBOL_OPRERATION {
+        PLUS = 0, // +
+        MINUS = 1 // -
+    }
+    export enum CATEGORY_SETTING {
+        /**
+       * 出力しない
+       */
+        CATEGORY_SETTING = 0,
+        /**
+         * データ系タイプ
+         */
+        DATA_TYPE = 6,
+        /**
+         * マスタ系タイプ(基準日のみ設定)
+         */
+        MASTER_TYPE = 7,
+        /**
+         * マスタ系対ぴ(設定なし)
+         */
+        MASTER_SYSTEM = 8
+    }
+
 
     export enum CONDITION_SYMBOL {
         CONTAIN = 0,// 含む

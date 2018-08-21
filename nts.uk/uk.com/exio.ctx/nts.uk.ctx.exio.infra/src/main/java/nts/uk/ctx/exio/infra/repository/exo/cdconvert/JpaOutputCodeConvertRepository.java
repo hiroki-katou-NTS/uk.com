@@ -85,7 +85,7 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 					return new OiomtCdConvertDetail(
 							new OiomtCdConvertDetailPk(itemDetail.getConvertCd().v(), itemDetail.getLineNumber(), itemDetail.getCid()),
 							itemDetail.getOutputItem().isPresent() ? itemDetail.getOutputItem().get().v() : null,
-							itemDetail.getSystemCd(), null);
+							itemDetail.getSystemCd().v(),null);
 				}).collect(Collectors.toList()));
 	}
 }

@@ -27,12 +27,12 @@ public class CdConvertDetail extends DomainObject {
     /**
     * 出力項目
     */
-    private Optional<OutputItemCode> outputItem;
+    private Optional<CdConvertValue> outputItem;
     
     /**
     * 本システムのコード
     */
-    private String systemCd;
+    private CdConvertValue systemCd;
     
     /**
     * 行番号
@@ -43,8 +43,8 @@ public class CdConvertDetail extends DomainObject {
 		super();
 		this.cid = cid;
 		this.convertCd = new ConvertCode(convertCd);
-		this.outputItem = Optional.of(new OutputItemCode(outputItem));
-		this.systemCd = systemCd;
+		this.outputItem = Optional.of(new CdConvertValue(outputItem));
+		this.systemCd = new CdConvertValue(systemCd);
 		this.lineNumber = lineNumber;
 		
 	}

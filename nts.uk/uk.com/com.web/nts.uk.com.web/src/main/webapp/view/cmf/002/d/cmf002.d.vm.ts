@@ -32,8 +32,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         standardAtr: shareModel.STANDARD_ATR;
         registerMode: shareModel.SCREEN_MODE;
-        
-        optionNum: any;
 
         /**
         * Constructor.
@@ -41,15 +39,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         constructor() {
             let self = this;
             self.standardAtr = shareModel.STANDARD_ATR.STANDARD;
-            self.registerMode = shareModel.SCREEN_MODE.NEW;
+            self.registerMode = shareModel.SCREEN_MODE.NEW
             self.selectedTable.subscribe(table => {
                 let items = _.filter(self.ctgItemDataList(), { "tableName": table });
                 self.itemList(items);
                 self.focusFirstRowD5_4();
                 $('#D5_4').focus();
-            })
-            self.optionNum = new nts.uk.ui.option.NumberEditorOption({
-                textalign: "left"
             })
         }
 
@@ -162,8 +157,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         register() {
             let self = this;
-            console.log(self.registerMode);
-            self.registerMode = shareModel.SCREEN_MODE.UPDATE;
             block.invisible();
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
                 item.validate();
@@ -470,7 +463,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     if (_.isEmpty(self.searchChar())) {
                         self.setError("D6_C4_1", "Msg_656");
                     }
-
                     break;
                 case SWITCH_VIEW.CHARACTER_PERIOD:
                     if (_.isEmpty(self.searchCharStartVal())) {
@@ -481,18 +473,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    if (_.isNil(self.searchNum())) {
+                    if (_.isEmpty(self.searchNum())) {
                         self.setError("D6_C4_4", "Msg_656");
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (_.isNil(self.searchNumStartVal())) {
-                            self.setError("D6_C4_5", "Msg_656");
-                     }
-                     if (_.isNil(self.searchNumEndVal())) {
-                            self.setError("D6_C4_6", "Msg_656");
-                     }
-                    
+                    if (_.isEmpty(self.searchNumStartVal())) {
+                        self.setError("D6_C4_5", "Msg_656");
+                    }
+                    if (_.isEmpty(self.searchNumEndVal())) {
+                        self.setError("D6_C4_6", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.DATE_NORMAL:
                     if (_.isEmpty(self.searchDate())) {
@@ -504,10 +495,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         self.setError("D6_C4_8", "Msg_656");
                     }
                     if (_.isEmpty(self.searchDateEnd())) {
-                        self.setError("D6_C4_9", "Msg_656");
-                    }
-                    if (self.searchDateStart() > self.searchDateEnd()) {
-                        self.setError("D6_C4_8", "Msg_656");
                         self.setError("D6_C4_9", "Msg_656");
                     }
                     break;
@@ -523,10 +510,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     if (_.isNil(self.searchTimeEndVal())) {
                         self.setError("D6_C4_12", "Msg_656");
                     }
-                    if (self.searchTimeStartVal() > self.searchTimeEndVal()) {
-                        self.setError("D6_C4_11", "Msg_656");
-                        self.setError("D6_C4_12", "Msg_656");
-                    }
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
                     if (_.isNil(self.searchClock())) {
@@ -538,10 +521,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         self.setError("D6_C4_14", "Msg_656");
                     }
                     if (_.isNil(self.searchClockEndVal())) {
-                        self.setError("D6_C4_15", "Msg_656");
-                    }
-                    if (self.searchClockStartVal() > self.searchClockEndVal()) {
-                        self.setError("D6_C4_14", "Msg_656");
                         self.setError("D6_C4_15", "Msg_656");
                     }
                     break;
