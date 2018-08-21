@@ -410,7 +410,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 //self.processMapData(data);
-                if (data.lstEmployee == undefined) {
+                if (data.lstEmployee == undefined || data.lstEmployee.length == 0) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_1342" }).then(function() {
                         self.hasEmployee = false;
                         nts.uk.ui.block.clear();
@@ -418,7 +418,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                 } else {
                     dfd.resolve({ bindDataMap: true, data: data });
-                }
+                }   
             }).fail(function(error) {
                 if (error.messageId != "KDW/003/a") {
                     //                    if(error.messageId == "Msg_1342"){
@@ -533,7 +533,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.loadCcg001();
             if (!self.hasEmployee) return;
             self.loadKcp009();
-            self.showTighProcess(data.identityProcessDto.useIdentityOfMonth && self.displayFormat() === 0 && !_.isEmpty(data.lstData) && self.employIdLogin == self.selectedEmployee() && _.filter(data.lstData, (d) => { return d.sign }).length == data.lstData.length);
+            self.showTighProcess(data.showTighProcess);
             self.extractionData();
             console.log("khoi tao Object: " + (performance.now() - startTime));
             self.loadGrid();
@@ -1136,11 +1136,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 autBussCode: self.autBussCode(),
                 dateMonth: moment(self.dateRanger().endDate).utc().toISOString(),
                 onlyLoadMonth: onlyLoadMonth,
-                dailys: self.lstDomainEdit
+                dailys: self.lstDomainEdit,
+                dateExtract: {
+                    startDate: moment(self.dateRanger().startDate).toISOString(),
+                    endDate: moment(self.dateRanger().endDate).toISOString()
+                },
+                identityProcess: self.dataAll().identityProcessDto
             }
 
             let dfd = $.Deferred();
             service.loadRow(param).done((data) => {
+                self.showTighProcess(data.showTighProcess);
                 self.lstDomainEdit = data.domainOld;
                 self.lstDomainOld = _.cloneDeep(data.domainOld);
                 if (onlyLoadMonth) {
@@ -1150,53 +1156,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 let dataSourceRow, dataSource, dataSourceNew, dataRowTemp = [];
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
-                //                 if (!self.displayWhenZero()) {
-                //                    _.each(dataSourceRow, dataSR => {
-                //                        var dtt: any = {};
-                //                        _.each(dataSR, (val, indx) => {
-                //                            if (String(val) === "0" || String(val) === "0:00") {
-                //                                dtt[indx] = "";
-                //                            } else {
-                //                                dtt[indx] = val;
-                //                            }
-                //                        });
-                //                        dataRowTemp.push(dtt);
-                //                    });
-                //                 dataSourceRow = dataRowTemp;
-                //                }
-                //                dataSource = $("#dpGrid").mGrid("dataSource");
-                //                dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
-                //                    let val = _.find(dataSourceRow, (item) => {
-                //                        return item.id == value.id;
-                //                    });
-                //                    return val != undefined ? val : value;
-                //                })
-                //                //get source old 
-                //                _.each(self.dailyPerfomanceData(), (valueT, index) =>{
-                //                    let dataTemp  =  _.find(data.lstData , valueRow =>{
-                //                        return valueT.id == valueRow.id;
-                //                    });
-                //                    if(dataTemp != undefined){
-                //                        self.dailyPerfomanceData()[index] = dataTemp;
-                //                    }
-                //                    //valueT = dataTemp;
-                //                });
-                //               
-                //                console.log(dataSourceNew);
-                //                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
-                //                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
                 _.forEach(dataSourceRow, (valueUpate) => {
-                    //                    delete valueUpate.dateDetail
-                    //                    delete valueUpate.employeeCode
-                    //                    delete valueUpate.employeeId
-                    //                    delete valueUpate.employeeName
-                    //                    delete valueUpate.employmentCode
-                    //                    delete valueUpate.typeGroup
-                    //                    delete valueUpate.workplaceId;
-                    //                    let id = valueUpate.id;
-                    //                    delete valueUpate.id
                     _.each(valueUpate, (value, key) => {
-                        //$("#dpGrid").mGrid("updateCell", valueUpate.id, valueCell);
                         $("#dpGrid").mGrid("updateCell", valueUpate.id, key, value, true)
                     });
                 })
@@ -1443,7 +1404,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
                     self.showSupervisor(data.showSupervisor);
-                    self.showTighProcess(data.identityProcessDto.useIdentityOfMonth && self.displayFormat() === 0 && !_.isEmpty(data.lstData) && self.employIdLogin == self.selectedEmployee() && _.filter(data.lstData, (d) => { return d.sign }).length == data.lstData.length);
+                    self.showTighProcess(data.showTighProcess);
                     self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {

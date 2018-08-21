@@ -82,6 +82,8 @@ public class DailyPerformanceCorrectionDto {
 	private Set<String> autBussCode;
 	
 	private List<DailyRecordDto> domainOld;
+	
+	private boolean showTighProcess;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -94,6 +96,7 @@ public class DailyPerformanceCorrectionDto {
 		this.changeSPR = new ChangeSPR(false, false);
 		this.textStyles = new ArrayList<>();
 		this.autBussCode = new HashSet<>();
+		this.showTighProcess = false;
 	}
 
 	/** Check if employeeId is login user */
@@ -306,4 +309,7 @@ public class DailyPerformanceCorrectionDto {
 
 	}
 
+	public void checkShowTighProcess(int displayMode, boolean userLogin, boolean checkIndentityDay){
+		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && checkIndentityDay;
+	}
 }

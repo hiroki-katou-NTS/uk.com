@@ -47,6 +47,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedPropriety
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -178,6 +179,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private DPLock findLock;
+	
+	@Inject
+	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -318,7 +322,10 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
-		if(listEmployeeId.isEmpty()) return screenDto;
+		if(listEmployeeId.isEmpty()) {
+			screenDto.setLstEmployee(Collections.emptyList());
+			return screenDto;
+		}
 		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart3));
 		//パラメータ「表示形式」をチェックする - Đã thiết lập truyền từ UI nên không cần check lấy theo định dạng nào , nhân viên đã được truyền
 		
@@ -383,6 +390,9 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setMonthResult(monthFlexProcessor
 									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
 											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+						if (emp.get(0).equals(sId)) {
+							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, dateRangeTemp.toListDate()));
+						}
 						// screenDto.setFlexShortage(null);
 					}
 					System.out.println("time flex : " + (System.currentTimeMillis() - start));

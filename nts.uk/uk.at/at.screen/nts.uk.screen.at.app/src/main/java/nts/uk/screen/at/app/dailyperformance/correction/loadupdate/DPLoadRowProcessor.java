@@ -15,12 +15,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -42,16 +40,15 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DPLoadRowProcessor {
@@ -69,26 +66,14 @@ public class DPLoadRowProcessor {
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
     
     @Inject
-	private ApplicationListForScreen applicationListFinder;
-    
-    @Inject
-	private ApprovalStatusAdapter approvalStatusAdapter;
-    
-    @Inject
     private DPMonthFlexProcessor dPMonthFlexProcessor;
     
     @Inject
 	private DPLock findLock;
     
-	private static final String LOCK_EDIT_APPROVAL = "A";
-	private static final String LOCK_APPLICATION = "Application";
-	private static final String COLUMN_SUBMITTED = "Submitted";
-	public static final int MINUTES_OF_DAY = 24 * 60;
-	private static final String STATE_DISABLE = "mgrid-disable";
-	private static final String LOCK_SIGN = "sign";
-
-
-	
+    @Inject
+	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+    
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
 		
@@ -97,7 +82,7 @@ public class DPLoadRowProcessor {
 		Integer displayFormat = param.getDisplayFormat();
 		List<DPDataDto> lstDataTemp = param.getLstData();
 		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
-		
+		result.setIdentityProcessDto(param.getIdentityProcess());
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
@@ -116,6 +101,10 @@ public class DPLoadRowProcessor {
 								process.getEmploymentCode(companyId, new DateRange(null, param.getDateMonth()), emp), dailyPerformanceDto, param.getAutBussCode())));
 			// screenDto.setFlexShortage(null);
 			//}
+			if (emp.equals(sId)) {
+				result.checkShowTighProcess(displayFormat, true,
+						checkIndentityDayConfirm.checkIndentityDay(sId, param.getDateExtract().toListDate()));
+			}
 		}
 		if(param.getOnlyLoadMonth()){
 			return result;
@@ -204,21 +193,21 @@ public class DPLoadRowProcessor {
 			data.resetData();
 			data.setEmploymentCode(result.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				result.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+				result.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
 			}
 			// map name submitted into cell
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
+				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED,
 						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
 			} else {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			}
-			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
-			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
+			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
 			//set checkbox sign
 			data.setSign(dpLock.getSignDayMap().containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
-				result.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				result.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
 			
 			ApproveRootStatusForEmpDto approveRootStatus =  dpLock.getLockCheckApprovalDay().get(data.getEmployeeId() + "|" + data.getDate());

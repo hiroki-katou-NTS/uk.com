@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 
 @Data
 @NoArgsConstructor
@@ -40,5 +41,9 @@ public class DPPramLoadRow {
 	private Boolean onlyLoadMonth;
 	
 	private List<DailyRecordDto> dailys;
+	
+	private DateRange dateExtract;
+	
+	private IdentityProcessUseSetDto identityProcess;
 	
 }
