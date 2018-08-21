@@ -100,6 +100,9 @@ public class PeregCommandFacade {
 	
 	private final static String valueEndate = "9999/12/31";
 	
+	//edit with category CS00021 勤務種別 change type of category when history item is latest
+	private final static String category21 = "CS00021";
+	
 	/* employeeCode, stardCardNo */
 	private final static List<String> specialItemCode = Arrays.asList("IS00001", "IS00779");
 	
@@ -181,17 +184,9 @@ public class PeregCommandFacade {
 			user = userAuth.get(0);
 		}
 		
-		List<ItemsByCategory> updateInput = inputContainer.getInputs().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-		
 		List<ItemsByCategory> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete()).collect(Collectors.toList());
-		if (updateInput.size() > 0) {
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.UPDATE, null);
-		} else {
-			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
-					PersonInfoProcessAttr.ADD, null);
-		}
 		
 		if(deleteInputs.size() == 0) {
 			// ADD COMMAND
@@ -355,13 +350,18 @@ public class PeregCommandFacade {
 
 			for (ItemsByCategory input : inputs) {
 				DateRangeDto dateRange = null;
-				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
+				CategoryType ctgType = null;
+				if (input.getCategoryCd().equals(category21)) {
+					ctgType = CategoryType.CONTINUOUSHISTORY;
+				} else {
+					ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
+				}
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),sid, pid);
 				List<ItemValue> invisibles = this.getItemInvisibles(query, input, isAdd);
 				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(input.getCategoryCd())).findFirst();
 				boolean isHistory = ctgType == CategoryType.DUPLICATEHISTORY
-						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY;
+						|| ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.NODUPLICATEHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 
 				if(input.getCategoryCd().equals("CS00003")) {
 					dateRange = new DateRangeDto(input.getCategoryCd(), "IS00020", "IS00021");
@@ -382,6 +382,7 @@ public class PeregCommandFacade {
 					case DUPLICATEHISTORY:
 					case CONTINUOUSHISTORY:
 					case NODUPLICATEHISTORY:
+					case CONTINUOUS_HISTORY_FOR_ENDDATE:
 						if (c.itemCode().equals(dateRange.getStartDateCode())) {
 							itemLogs.add(c);
 						}
@@ -404,7 +405,8 @@ public class PeregCommandFacade {
 						}
 						
 						// nếu startDate newValue != afterValue;
-						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.MULTIINFO) {
+						if (ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.MULTIINFO
+								|| ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 							query.setCategoryId(input.getCategoryId());
 							List<ComboBoxObject> historyLst =  this.empCtgFinder.getListInfoCtgByCtgIdAndSid(query);
 							/**
@@ -414,19 +416,16 @@ public class PeregCommandFacade {
 							 **/
 							switch(ctgType) {
 							case CONTINUOUSHISTORY:
+							case CONTINUOUS_HISTORY_FOR_ENDDATE:
 								// trường hợp category lịch sử không có history nào
+								boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 								if(historyLst.size() == 1) {
 									if (item.itemCode().equals(dateRange.getEndDateCode())) {
-										item.setValueAfter(valueEndate);
-										item.setContentAfter(valueEndate);
+										item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
+										item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
 									}
 									
-								}else {
-									PersonCorrectionLogParameter correctedLog =  new PersonCorrectionLogParameter(target.userId, target.employeeId, target.userName,
-											PersonInfoProcessAttr.UPDATE, null);
-									target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
-											PersonInfoProcessAttr.UPDATE, null);
-									
+								}else {									
 									// trường hợp tạo mới hoàn toàn category
 									for (ComboBoxObject c : historyLst) {
 										if (c.getOptionValue() != null) {
@@ -437,8 +436,8 @@ public class PeregCommandFacade {
 												info = InfoOperateAttr.ADD_HISTORY;
 												//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 												if (item.itemCode().equals(dateRange.getEndDateCode())) {
-													item.setValueAfter(valueEndate);
-													item.setContentAfter(valueEndate);
+													item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
+													item.setContentAfter(isContinuousHistory? valueEndate: item.contentAfter());
 													break;
 												}else {
 													reviseInfo = new ReviseInfo(nameEndate,
@@ -459,28 +458,24 @@ public class PeregCommandFacade {
 																Optional.empty(), Optional.empty());
 														break;
 													}
+													break;
 												} else {
 													break;
 												}
 
 											default:
 												break;
-											
 											}
 
 										}
 									}
-									
 								}
-								break;
+								break;	
 							case MULTIINFO:
 								if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
-									PersonCorrectionLogParameter correctedLog =  new PersonCorrectionLogParameter(target.userId, target.employeeId, target.userName,
-											PersonInfoProcessAttr.UPDATE, null);
-									target =  new PersonCorrectionLogParameter(correctedLog.userId, correctedLog.employeeId, correctedLog.userName,
-											PersonInfoProcessAttr.UPDATE, null);
-									info = InfoOperateAttr.ADD_HISTORY;
-									
+									info = InfoOperateAttr.ADD;
+								}else {
+									info = InfoOperateAttr.UPDATE;
 								}
 								break;
 							default:
