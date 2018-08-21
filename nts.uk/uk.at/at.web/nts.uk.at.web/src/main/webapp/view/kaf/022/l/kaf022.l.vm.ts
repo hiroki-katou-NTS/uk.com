@@ -228,7 +228,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          */
         registerEmploymentSet(parent:any){
             nts.uk.ui.errors.clearAll();
-            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             let self = parent;      
             var dfd = $.Deferred(); 
             let code = self.selectedCode();
@@ -610,10 +610,11 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          * KDL002-勤務種類選択（ダイアログ）を起動する
          */
         openKDL002Dialog(itemSet: DataSetting) {
+            nts.uk.ui.block.grayout();
             let self = this;
             var dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
-            nts.uk.ui.block.invisible();
+            
             let workTypeCodes = _.map(self.workTypeList, function(item: any) { return item.workTypeCode; });
             let selectedWorkTypes = _.map(itemSet.lstWorkType(), function(item: any) { return item.workTypeCode; });
             setShared('KDL002_Multiple', true);
@@ -785,7 +786,6 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 }
                 clear();
             });
-            clear();
         }
 //        checkSaveChanged() : boolean{
 //            let self = this;
