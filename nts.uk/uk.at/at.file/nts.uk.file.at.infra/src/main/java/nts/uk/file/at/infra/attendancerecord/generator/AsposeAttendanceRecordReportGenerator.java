@@ -89,6 +89,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant REPORT_RIGHT_COL_ADDR. */
 	private static final String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
+	
+	/** The Constant PRINT_TITLE_ROW. */
+	private static final String PRINT_TITLE_ROW = "$6:$7";
 
 	/** The Constant START_EMPLOYEE_DATA_ROW. */
 	private static final int START_EMPLOYEE_DATA_ROW = 5;
@@ -201,8 +204,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
 					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-					pageSetup.setFitToPagesTall(1);
-					pageSetup.setFitToPagesWide(1);
+					pageSetup.setZoom(100);
 					
 					// Set header value
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
@@ -211,6 +213,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
+					
+					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 				}
 			}
 
