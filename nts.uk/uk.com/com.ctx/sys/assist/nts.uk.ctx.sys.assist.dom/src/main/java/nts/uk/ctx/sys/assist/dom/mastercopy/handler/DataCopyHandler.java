@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 
+import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,7 @@ import javax.persistence.EntityManager;
 /**
  * The Interface CopyHandler.
  */
+@Setter
 public abstract class DataCopyHandler {
 
 	/** The entity manager. */

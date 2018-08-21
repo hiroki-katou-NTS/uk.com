@@ -51,22 +51,10 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		//case 0,1
 		CopyDataRepositoryFactory repositoryFactory = new CopyDataRepositoryFactory();
 		DataCopyHandler copyHandler = repositoryFactory.getCopyHandler(tableName);
-		String className = copyHandler.getClass().getName();
-		try {
-			Class<?> clazz = Class.forName(className);
-			final Field em = clazz.getDeclaredField("entityManager");
-			em.setAccessible(true);
-			em.set(EntityManager.class, getEntityManager());
-			final Field cm = clazz.getDeclaredField("copyMethod");
-			cm.setAccessible(true);
-			cm.set(CopyMethod.class, copyMethod);
-			final Field ci = clazz.getDeclaredField("companyId");
-			ci.setAccessible(true);
-			ci.set(String.class, companyId);
-			copyHandler.doCopy();
-		} catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-			e.printStackTrace();
-		}
+		copyHandler.setCompanyId(companyId);
+		copyHandler.setCopyMethod(copyMethod);
+		copyHandler.setEntityManager(getEntityManager());
+		copyHandler.doCopy();
 	}
 
 	/**
