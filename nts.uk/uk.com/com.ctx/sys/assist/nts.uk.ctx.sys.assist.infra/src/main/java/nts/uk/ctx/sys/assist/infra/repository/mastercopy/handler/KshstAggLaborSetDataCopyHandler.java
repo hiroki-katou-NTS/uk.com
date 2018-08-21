@@ -13,37 +13,15 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-
-/**
- * The Class KshstAggLaborSetDataCopyHandler.
- */
-@Getter
-@Setter
-
 /**
  * Instantiates a new kshst agg labor set data copy handler.
  */
+@Getter
+@Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 public class KshstAggLaborSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
-
-//	/**
-//	 * The entity manager.
-//	 */
-//	private EntityManager entityManager;
-//
-//	/**
-//	 * The copy method.
-//	 */
-//	private CopyMethod copyMethod;
-//
-//	/**
-//	 * The company Id.
-//	 */
-//	private String companyId;
 
 	/**
 	 * The insert query.

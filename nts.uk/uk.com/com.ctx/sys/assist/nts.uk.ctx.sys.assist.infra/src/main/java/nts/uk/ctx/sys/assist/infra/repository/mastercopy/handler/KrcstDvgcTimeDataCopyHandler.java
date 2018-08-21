@@ -21,13 +21,6 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstDvgcTimeDataCopyHandler extends DataCopyHandler {
 
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRCST_DVGC_TIME(CID ,NO,DVGC_REASON_INPUTED,DVGC_REASON_SELECTED,DVGC_TIME_NAME,DVGC_TIME_USE_SET,DVGC_TYPE,REASON_INPUT_CANCELED,REASON_SELECT_CANCELED) VALUES (?, ?, ?, ?, ?,?,?,?,?);";

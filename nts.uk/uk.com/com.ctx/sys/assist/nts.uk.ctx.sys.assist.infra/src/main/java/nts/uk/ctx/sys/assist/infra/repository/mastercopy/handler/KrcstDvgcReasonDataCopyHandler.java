@@ -22,14 +22,6 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class KrcstDvgcReasonDataCopyHandler extends DataCopyHandler {
 
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
-
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRCST_DVGC_REASON(CID ,NO,REASON_CD,REASON,REASON_REQUIRED) VALUES (?, ?, ?, ?, ?);";
 

@@ -1,50 +1,26 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
-// TODO: Auto-generated Javadoc
-
-/**
- * The Class KshstFlexWorkSettingDataCopyHandler.
- */
-@Getter
-@Setter
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Instantiates a new kshst flex work setting data copy handler.
  */
+@Getter
+@Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 public class KshstFlexWorkSettingDataCopyHandler extends DataCopyHandler {
 
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
-
-//	/**
-//	 * The entity manager.
-//	 */
-//	private EntityManager entityManager;
-//
-//	/**
-//	 * The copy method.
-//	 */
-//	private CopyMethod copyMethod;
-//
-//	/**
-//	 * The company Id.
-//	 */
-//	private String companyId;
 
 	/**
 	 * The insert query.

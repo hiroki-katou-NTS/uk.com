@@ -5,11 +5,13 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * @author locph
  */
 @Stateless
+@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 public class CopyDataRepoImp implements CopyDataRepository {
 
     @Inject

@@ -19,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KrqstAppReasonDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 6;

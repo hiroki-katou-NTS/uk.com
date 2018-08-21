@@ -19,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KrqstContentOfRemandMailDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */

@@ -26,20 +26,6 @@ public class KrcstVertMonMethodDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
 
-//	/**
-//	 * The entity manager.
-//	 */
-//	private EntityManager entityManager;
-//
-//	/**
-//	 * The copy method.
-//	 */
-//	private CopyMethod copyMethod;
-//
-//	/**
-//	 * The company Id.
-//	 */
-//	private String companyId;
 
 	/**
 	 * The insert query.

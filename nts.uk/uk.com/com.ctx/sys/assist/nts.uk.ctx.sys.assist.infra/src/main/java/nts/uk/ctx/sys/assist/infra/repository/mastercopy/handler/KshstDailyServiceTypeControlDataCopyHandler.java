@@ -1,17 +1,15 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * The Class KshstDailyServiceTypeControlDataCopyHandler.
@@ -19,16 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 public class KshstDailyServiceTypeControlDataCopyHandler extends DataCopyHandler {
-
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_DAI_SER_TYPE_CTR(CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU) VALUES (?,?,?,?,?,?)";

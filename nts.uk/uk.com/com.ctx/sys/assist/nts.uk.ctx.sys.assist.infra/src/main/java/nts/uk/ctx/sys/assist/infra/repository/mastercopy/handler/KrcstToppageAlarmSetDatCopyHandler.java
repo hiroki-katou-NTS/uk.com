@@ -21,13 +21,6 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstToppageAlarmSetDatCopyHandler extends DataCopyHandler {
 
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRCST_TOPPAGE_ALARM_SET(CID ,ALARM_CATEGORY,USE_ATR) VALUES (?, ?, ?);";

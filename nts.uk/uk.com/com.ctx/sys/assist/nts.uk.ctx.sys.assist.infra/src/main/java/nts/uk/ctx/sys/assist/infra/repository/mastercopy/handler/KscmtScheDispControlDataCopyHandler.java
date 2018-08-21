@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 public class KscmtScheDispControlDataCopyHandler extends DataCopyHandler {
-
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_DISP_CONTROL(CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME) VALUES (?,?,?,?,?,?,?)";
