@@ -227,6 +227,10 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_205" });
                     return;
                 }
+                
+                if (self.dailyCreatedCheck() == true && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
+                    self.dScreenmodel.showPeriodTime(false);
+                }
 
                 if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 1 && self.selectedCreatDivisionCode() == 1 && self.calDivisionCheck() == false &&
                     self.dateDivisionCheck() == false &&
@@ -563,6 +567,7 @@ module nts.uk.at.view.kdw001.b {
 
 
                     $("#wizard").ntsWizard("next");
+                     $('#button113').focus();
                 }
 
             }

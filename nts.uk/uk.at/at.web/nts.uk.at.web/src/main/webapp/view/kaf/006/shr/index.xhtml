@@ -265,7 +265,7 @@
 			</div>
 			<!-- A7 - Reason -->
 			<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-				data-bind="css: { disappear: !typicalReasonDisplayFlg() }">
+				data-bind="if: typicalReasonDisplayFlg">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
