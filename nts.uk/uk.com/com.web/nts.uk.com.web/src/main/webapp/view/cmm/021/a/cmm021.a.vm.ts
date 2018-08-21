@@ -1180,7 +1180,7 @@ module nts.uk.com.view.cmm021.a {
                     /** Common properties */
                     systemType: 2, // employment
                     showEmployeeSelection: false,
-                    showQuickSearchTab: true,
+                    showQuickSearchTab: false,
                     showAdvancedSearchTab: true,
                     showBaseDate: true,
                     showClosure: false,
