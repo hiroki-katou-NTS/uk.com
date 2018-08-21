@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstTempWkUseManageDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstTempWkUseManageDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_TEMP_WK_USE_MANAGE(CID,USE_CLASSIFICATION) VALUES (?, ?);";

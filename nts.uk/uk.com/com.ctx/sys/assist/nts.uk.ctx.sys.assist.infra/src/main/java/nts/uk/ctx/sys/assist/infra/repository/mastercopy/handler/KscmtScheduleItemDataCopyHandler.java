@@ -19,17 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
+public class KscmtScheduleItemDataCopyHandler extends DataCopyHandler {
 
-public class KscmtScheduleItemDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_ITEM(CID, SCHEDULE_ITEM_ID, SCHEDULE_ITEM_NAME, SCHEDULE_ITEM_ATR) VALUES (?,?,?,?)";

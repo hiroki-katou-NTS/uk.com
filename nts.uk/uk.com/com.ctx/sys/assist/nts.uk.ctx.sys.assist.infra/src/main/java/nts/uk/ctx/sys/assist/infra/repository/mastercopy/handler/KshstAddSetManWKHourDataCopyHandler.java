@@ -17,16 +17,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstAddSetManWKHourDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstAddSetManWKHourDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_ADD_SET_MAN_WKHOUR(CID, ADD_SET_OT) VALUES (?,?)";

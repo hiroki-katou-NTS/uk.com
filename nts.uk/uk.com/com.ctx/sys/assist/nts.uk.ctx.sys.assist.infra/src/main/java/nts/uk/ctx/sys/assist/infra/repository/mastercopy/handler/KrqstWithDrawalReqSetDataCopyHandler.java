@@ -19,17 +19,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrqstWithDrawalReqSetDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KrqstWithDrawalReqSetDataCopyHandler extends DataCopyHandler {
 	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_WITHDRAWAL_REQ_SET(CID, PERMISSION_DIVISION, APPLI_DATE_CONTRAC, USE_ATR, CHECK_UPLIMIT_HALFDAY_HD, PICKUP_COMMENT, PICKUP_BOLD, "

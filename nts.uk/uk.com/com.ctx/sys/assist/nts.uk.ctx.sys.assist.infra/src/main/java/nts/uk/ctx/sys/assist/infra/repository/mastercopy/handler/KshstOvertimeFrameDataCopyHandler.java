@@ -19,17 +19,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstOvertimeFrameDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstOvertimeFrameDataCopyHandler extends DataCopyHandler {
 	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_OVERTIME_FRAME(CID ,OT_FR_NO ,USE_ATR ,OT_FR_NAME ,TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?);";

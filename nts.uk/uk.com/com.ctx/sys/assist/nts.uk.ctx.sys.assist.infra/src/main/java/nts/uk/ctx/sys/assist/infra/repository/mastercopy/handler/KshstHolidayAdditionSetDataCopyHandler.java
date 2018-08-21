@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstHolidayAdditionSetDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstHolidayAdditionSetDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_HOLIDAY_ADDTION_SET(CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "

@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstTotalTimesDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstTotalTimesDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_TOTAL_TIMES(CID ,TOTAL_TIMES_NO,USE_ATR,COUNT_ATR,TOTAL_TIMES_NAME,TOTAL_TIMES_ABNAME,SUMMARY_ATR) VALUES (?, ?, ?, ?, ?,?,?);";

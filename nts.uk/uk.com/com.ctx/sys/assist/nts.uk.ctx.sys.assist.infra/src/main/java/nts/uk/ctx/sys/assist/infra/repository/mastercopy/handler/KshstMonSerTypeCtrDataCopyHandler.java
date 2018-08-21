@@ -19,15 +19,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstMonSerTypeCtrDataCopyHandler implements DataCopyHandler {
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//@AllArgsConstructor
+public class KshstMonSerTypeCtrDataCopyHandler extends DataCopyHandler {
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_MON_SER_TYPE_CTR(CID, AUTHORITY_MON_ID, ITEM_MONTHLY_ID, USE_ATR, CHANGED_BY_YOU, CHANGED_BY_OTHERS) VALUES (?,?,?,?,?,?)";

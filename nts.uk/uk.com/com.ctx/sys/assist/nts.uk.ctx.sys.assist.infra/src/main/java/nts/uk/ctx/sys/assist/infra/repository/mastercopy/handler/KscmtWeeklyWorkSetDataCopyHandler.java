@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KscmtWeeklyWorkSetDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KscmtWeeklyWorkSetDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSCMT_WEEKLY_WORK_SET(CID, DAY_OF_WEEK, WORK_DAY_ATR) VALUES (?,?,?)";

@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class WwfstApprovalSettingDataCopyHandler extends DataCopyHandler {
 
 //	private EntityManager entityManager;

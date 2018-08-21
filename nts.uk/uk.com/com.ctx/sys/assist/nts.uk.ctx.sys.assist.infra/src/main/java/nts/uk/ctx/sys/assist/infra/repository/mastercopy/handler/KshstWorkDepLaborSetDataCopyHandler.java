@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstWorkDepLaborSetDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstWorkDepLaborSetDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_WORK_DEF_LABOR_SET(CID, PRE_CALC_ACTUAL_OPERATION, PRE_EXEMPT_TAX_TIME, PRE_INC_CHILD_NURSE_CARE, PRE_ADDITION_TIME, "

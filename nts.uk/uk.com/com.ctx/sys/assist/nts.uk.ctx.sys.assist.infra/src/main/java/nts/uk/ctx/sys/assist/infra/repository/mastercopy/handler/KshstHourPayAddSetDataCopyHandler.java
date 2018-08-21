@@ -18,43 +18,23 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class KshstHourPayAddSetDataCopyHandler.
  */
-
 @Getter
 @Setter
-
 @NoArgsConstructor
-
-/**
- * Instantiates a new kshst hour pay add set data copy handler.
- *
- * @param entityManager
- *            the entity manager
- * @param copyMethod
- *            the copy method
- * @param companyId
- *            the company id
- * @param INSERT_QUERY
- *            the insert query
- * @param SELECT_BY_CID_QUERY
- *            the select by cid query
- * @param DELETE_BY_CID_QUERY
- *            the delete by cid query
- */
-@AllArgsConstructor
-
-public class KshstHourPayAddSetDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstHourPayAddSetDataCopyHandler extends DataCopyHandler {
 
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 14;
 
-	/** The entity manager. */
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_HOUR_PAY_ADD_SET(CID ,CALC_PERMIUM_VACATION ,ADDITION1 ,DEFORMAT_EXEC_VALUE ,INC_CHILD_NURSE_CARE ,DEDUCT,CALC_INC_INTERVAL_EXEMP_TIME1,CALC_WORK_HOUR_VACATION,ADDITION2,CALC_INC_CARE_TIME,NOT_DEDUCT_LATE_LEAVE_EARLY,CALC_INC_INTERVAL_EXEMP_TIME2,ENABLE_SELECT_PER_WORK_HOUR1,ENABLE_SELECT_PER_WORK_HOUR2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";

@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstControlOfAttendanceItemsDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstControlOfAttendanceItemsDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_ATD_ITEM_CONTROL(CID, ITEM_DAILY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT) VALUES (?,?,?,?)";

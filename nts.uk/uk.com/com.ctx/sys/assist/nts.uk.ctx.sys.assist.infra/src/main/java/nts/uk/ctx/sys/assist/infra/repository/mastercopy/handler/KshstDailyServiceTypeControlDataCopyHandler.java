@@ -19,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstDailyServiceTypeControlDataCopyHandler implements DataCopyHandler {
+//@AllArgsConstructor
+public class KshstDailyServiceTypeControlDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSHST_DAI_SER_TYPE_CTR(CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU) VALUES (?,?,?,?,?,?)";

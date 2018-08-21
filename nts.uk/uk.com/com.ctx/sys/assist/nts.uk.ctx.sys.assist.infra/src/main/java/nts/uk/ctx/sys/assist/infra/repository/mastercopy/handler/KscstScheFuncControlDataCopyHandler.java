@@ -19,15 +19,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KscstScheFuncControlDataCopyHandler implements DataCopyHandler {
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//@AllArgsConstructor
+public class KscstScheFuncControlDataCopyHandler extends DataCopyHandler {
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KSCST_SCHE_FUNC_CONTROL(CID, ALARM_CHECK_USE_CLS, CONFIRMED_CLS, PUBLIC_CLS, OUTPUT_CLS, WORK_DORMITION_CLS, TEAM_CLS, RANK_CLS, "
