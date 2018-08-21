@@ -350,10 +350,12 @@ public class PeregCommandFacade {
 
 			for (ItemsByCategory input : inputs) {
 				DateRangeDto dateRange = null;
-				if(input.getCategoryCd().equals(category21)) {
-					input.setCategoryType(CategoryType.CONTINUOUSHISTORY.value);
+				CategoryType ctgType = null;
+				if (input.getCategoryCd().equals(category21)) {
+					ctgType = CategoryType.CONTINUOUSHISTORY;
+				} else {
+					ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 				}
-				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 				PeregQuery query = PeregQuery.createQueryCategory(input.getRecordId(), input.getCategoryCd(),sid, pid);
 				List<ItemValue> invisibles = this.getItemInvisibles(query, input, isAdd);
