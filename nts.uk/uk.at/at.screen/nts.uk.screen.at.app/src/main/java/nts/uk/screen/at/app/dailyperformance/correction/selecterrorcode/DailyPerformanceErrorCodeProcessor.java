@@ -50,6 +50,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -71,6 +73,9 @@ public class DailyPerformanceErrorCodeProcessor {
 	
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
+	
+	@Inject
+	private DPLock findLock;
 
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -145,9 +150,6 @@ public class DailyPerformanceErrorCodeProcessor {
 				.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getAttendanceItemId()), "|",
 						x.getEmployeeId(), "|", dailyProcessor.converDateToString(x.getProcessingYmd())),
 						x -> x.getEditState()));
-		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
-		Map<String, DatePeriod> employeeAndDateRange = dailyProcessor.extractEmpAndRange(dateRange, companyId,
-				employmentWithSidMap);
 		// No 19, 20 show/hide button
 		boolean showButton = true;
 		if (displayFormat == 0) {
@@ -226,15 +228,13 @@ public class DailyPerformanceErrorCodeProcessor {
 		// disable check box sign
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		Map<String, String> appMapDateSid = dailyProcessor.getApplication(listEmployeeId, dateRange, disableSignMap);
-
-		// get check box sign(Confirm day)
-		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		
 		screenDto.getLstFixedHeader().forEach(column -> {
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
 		
-		Map<String, ApproveRootStatusForEmpDto> approvalDayMap = dailyProcessor.getCheckApproval(approvalStatusAdapter, listEmployeeId,
-				dateRange, sId, mode);
+		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt, approvalUseSettingDtoOpt);
+		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -252,29 +252,35 @@ public class DailyPerformanceErrorCodeProcessor {
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION_LIST, "", "", ""));
 			// set checkbox sign
-			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
+			data.setSign(dpLock.getSignDayMap().containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			// state check box sign
 			if (disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate())
 					&& disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())) {
 				screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
 			}
-			ApproveRootStatusForEmpDto approveRootStatus = approvalDayMap
+			ApproveRootStatusForEmpDto approveRootStatus = dpLock.getLockCheckApprovalDay()
 					.get(data.getEmployeeId() + "|" + data.getDate());
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
+			
+			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 			DailyModifyResult resultOfOneRow = dailyProcessor.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null) {
-				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
-				boolean lock = dailyProcessor.checkLockAndSetState(employeeAndDateRange, data);
-				if (lock) {
-					dailyProcessor.lockCell(screenDto, data, true);
-				}
+				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
+
+				boolean lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+                boolean lockHist = dailyProcessor.lockHist(dpLock.getLockHist(), data);
+                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+                boolean lockConfirmMonth = dailyProcessor.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+                
+                lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);	
+                
 				if (resultOfOneRow != null) {
 					itemValueMap = resultOfOneRow.getItems().stream()
 							.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getItemId()),
 									"|", data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
 				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
-						mapGetName, codeNameReasonMap, itemValueMap, data, lock, dailyRecEditSetsMap, null);
+						mapGetName, codeNameReasonMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

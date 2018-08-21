@@ -11,6 +11,7 @@ import java.util.Set;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.pub.workrule.closure.DCClosureExport;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkplaceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChangedDto;
@@ -227,7 +228,11 @@ public interface DailyPerformanceScreenRepo {
 	
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
 	
-	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
+	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, DateRange rangeDate);
 
 	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
+	
+	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
+	
+	Map<String, DatePeriod> confirmationMonth(String companyId, List<DCClosureExport> dto);
 }

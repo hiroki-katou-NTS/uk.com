@@ -373,7 +373,7 @@ public class DailyPerformanceSelectItemProcessor {
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
-		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId,  new DateRange(GeneralDate.today(), GeneralDate.today()));
 		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
 		/// Confirmation Information Corresponding to Target Date"
