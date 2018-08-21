@@ -1281,13 +1281,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let state = stateWorkTypeCode.state;
                 if (state == 1 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-                }
-
-                if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                } else if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-                }
-
-                if (state == 0 || state == 3) {
+                } else {
+                    //                    if (state == 0 || state == 3) {
                     item.symbolName = symbolName;
                 }
             }
