@@ -21,13 +21,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
-
-/**
- * Instantiates a new krcst constralnt time cal data copy handler.
- */
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcstConstralntTimeCalDataCopyHandler implements DataCopyHandler {
+public class KrcstConstralntTimeCalDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
 

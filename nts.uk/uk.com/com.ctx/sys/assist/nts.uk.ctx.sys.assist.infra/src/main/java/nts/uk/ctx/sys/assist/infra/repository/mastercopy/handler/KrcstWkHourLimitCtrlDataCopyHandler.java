@@ -17,30 +17,25 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
-
-/**
- * Instantiates a new krcst wk hour limit ctrl data copy handler.
- */
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcstWkHourLimitCtrlDataCopyHandler implements DataCopyHandler {
+public class KrcstWkHourLimitCtrlDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
+//	/**
+//	 * The entity manager.
+//	 */
+//	private EntityManager entityManager;
+//
+//	/**
+//	 * The copy method.
+//	 */
+//	private CopyMethod copyMethod;
+//
+//	/**
+//	 * The company Id.
+//	 */
+//	private String companyId;
 
 	/**
 	 * The insert query.

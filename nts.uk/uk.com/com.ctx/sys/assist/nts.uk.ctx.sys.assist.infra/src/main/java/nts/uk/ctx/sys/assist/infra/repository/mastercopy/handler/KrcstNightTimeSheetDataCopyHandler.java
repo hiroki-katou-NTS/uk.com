@@ -20,31 +20,26 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krcst night time sheet data copy handler.
- */
 @NoArgsConstructor
-@AllArgsConstructor
 
-public class KrcstNightTimeSheetDataCopyHandler implements DataCopyHandler {
+public class KrcstNightTimeSheetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 3;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
+//	/**
+//	 * The entity manager.
+//	 */
+//	private EntityManager entityManager;
+//
+//	/**
+//	 * The copy method.
+//	 */
+//	private CopyMethod copyMethod;
+//
+//	/**
+//	 * The company Id.
+//	 */
+//	private String companyId;
 
 	/**
 	 * The insert query.

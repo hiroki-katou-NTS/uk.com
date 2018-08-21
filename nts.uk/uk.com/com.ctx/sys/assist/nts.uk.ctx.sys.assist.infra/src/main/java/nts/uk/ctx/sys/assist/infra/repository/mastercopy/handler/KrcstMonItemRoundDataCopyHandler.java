@@ -19,17 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcstMonItemRoundDataCopyHandler implements DataCopyHandler {
+public class KrcstMonItemRoundDataCopyHandler extends DataCopyHandler {
 	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+//	/** The entity manager. */
+//	private EntityManager entityManager;
+//	
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//	
+//	/** The company Id. */
+//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRCST_MON_ITEM_ROUND(CID, ATTENDANCE_ITEM_ID, ROUND_UNIT, ROUND_PROC) VALUES (?, ?, ?, ?);";
