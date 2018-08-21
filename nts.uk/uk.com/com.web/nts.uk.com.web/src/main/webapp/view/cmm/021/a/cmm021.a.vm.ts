@@ -113,7 +113,6 @@ module nts.uk.com.view.cmm021.a {
                 _self.selectedEmployeeId = ko.observable(null);
                 _self.selectedEmployeeId.subscribe((newValue) => {
                     $('.nts-input').ntsError('clear');
-                    nts.uk.ui.block.invisible();
                     //check if selected employee id empty
                     if (nts.uk.util.isNullOrEmpty(newValue)) {
                         _self.unSelectedUserId();
@@ -121,7 +120,6 @@ module nts.uk.com.view.cmm021.a {
                         _self.userId("");
                         _self.findUserDtoByEmployeeId(newValue);
                     }
-                    nts.uk.ui.block.clear();
                 });
 
                 _self.businessName = ko.observable("");
@@ -604,6 +602,7 @@ module nts.uk.com.view.cmm021.a {
                         }).always(() => nts.uk.ui.block.clear());
                     }).fail(function(res: any) {
                         nts.uk.ui.dialog.bundledErrors(res);
+                        nts.uk.ui.block.clear();
                         dfd.reject();
                     });
                 return dfd.promise();
@@ -753,68 +752,6 @@ module nts.uk.com.view.cmm021.a {
 
             }
 
-            private loadUserInfoAfterDeleteWinAcc(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-
-                service.findListUserInfo(_self.employeeIds(), false)
-                    .done((data: UserDto[]) => {
-                        _self.listUserDto = [];
-                        _self.listUserDto = data;
-                        if (_.isEmpty(_self.listUserDto)) {
-                            _self.findUserDtoByEmployeeId("");
-                            _self.unLoadListWinAcc();
-                        }
-                        _self.loadUserDto();
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
-
-            }
-
-
-            private loadUserInfoAfterSaveAndDelWinAcc(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-
-                service.findListUserInfo(_self.employeeIds(), false)
-                    .done((data: UserDto[]) => {
-                        _self.listUserDto = [];
-                        _self.listUserDto = data;
-                        if (_.isEmpty(_self.listUserDto)) {
-                            _self.findUserDtoByEmployeeId("");
-                            _self.unLoadListWinAcc();
-                        }
-                        _self.loadUserDto();
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
-
-            }
-
-            private loadUserInfoAfterSaveWinAcc(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-
-                service.findListUserInfo(_self.employeeIds(), false)
-                    .done((data: UserDto[]) => {
-                        _self.listUserDto = [];
-                        _self.listUserDto = data;
-
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
-            }
-
             private loadUserInfoForOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
@@ -843,45 +780,6 @@ module nts.uk.com.view.cmm021.a {
                     }).always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
             }
-
-            private loadUserInfoAfterSaveAndDelOtherAcc(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
- 
-                service.findListUserInfo(_self.employeeIds(), true)
-                    .done((data: UserDto[]) => {
-                        _self.listUserDtoScreenAC = [];
-                        _self.listUserDtoScreenAC = data;
-                        if (_.isEmpty(_self.listUserDtoScreenAC)) {
-                            _self.findUserDtoByEmployeeId("");
-                            _self.unLoadOtherAcc();
-                        }
-                        _self.loadUserDtoForScreenC();
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
-            }
-
-
-            private loadUserInfoAfterSaveOtherAcc(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-
-                service.findListUserInfo(_self.employeeIds(), true)
-                    .done((data: UserDto[]) => {
-                        _self.listUserDtoScreenAC = [];
-                        _self.listUserDtoScreenAC = data;
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        dfd.reject(res);
-                    });
-                return dfd.promise();
-            }
-
 
             // load new mode
             private loadNewWindowAccount() {
@@ -1292,6 +1190,7 @@ module nts.uk.com.view.cmm021.a {
                             }).always(() => nts.uk.ui.block.clear());
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.bundledErrors(res);
+                            nts.uk.ui.block.clear();
                             dfd.reject();
                         });
                     return dfd.promise();
