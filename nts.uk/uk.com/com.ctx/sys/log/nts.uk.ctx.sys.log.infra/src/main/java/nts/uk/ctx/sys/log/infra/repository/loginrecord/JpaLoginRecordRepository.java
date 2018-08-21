@@ -19,10 +19,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
 import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
