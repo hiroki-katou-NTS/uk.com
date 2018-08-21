@@ -299,4 +299,16 @@ public class ItemValue {
 		this.defText = defText;
 	}
 	
+	public void setItemId(String itemDfId) {
+		this.definitionId = itemDfId;
+	}
+	
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
+	}
+	
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+	
 }

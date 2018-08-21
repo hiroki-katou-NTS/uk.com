@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -15,10 +17,13 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheetPK;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaAuthorityFormatSheetRepository extends JpaRepository implements AuthorityFormatSheetRepository {
 
 	private static final String FIND;
+	
+	private static final String FIND_BY_CODE;
 
 	private static final String UPDATE_BY_KEY;
 
@@ -35,6 +40,13 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 				.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityFormSheetPK.sheetNo = :sheetNo ");
 		FIND = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KfnmtAuthorityFormSheet a ");
+		builderString.append("WHERE a.kfnmtAuthorityFormSheetPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		FIND_BY_CODE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KfnmtAuthorityFormSheet a ");
@@ -127,7 +139,8 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 			+ " WHERE c.kfnmtAuthorityDailyItemPK.companyId = :companyId "
 			+ " AND c.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode "
 			+ " AND c.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ";
-
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void deleteBySheetNo(String companyId, String dailyPerformanceFormatCode, BigDecimal sheetNo) {
 		this.commandProxy().remove(KfnmtAuthorityFormSheet.class,new KfnmtAuthorityFormSheetPK(
@@ -139,7 +152,12 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 				.setParameter("sheetNo", sheetNo)
 				.getList();
 		this.commandProxy().removeAll(listData);
-		
-		
+	}
+
+	@Override
+	public List<AuthorityFormatSheet> findByCode(String companyId, String dailyPerformanceFormatCode) {
+		return this.queryProxy().query(FIND_BY_CODE, KfnmtAuthorityFormSheet.class).setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.getList(f -> toDomain(f));
 	}
 }

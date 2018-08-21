@@ -317,7 +317,7 @@ module nts.uk.com.view.cps005.b {
         constructor(params: IItemData) {
             let self = this;
             if (params) {
-                self.personInfoItemList(_.orderBy(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }), 'itemName'));
+                self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
                     return [1, 2, 3, 4, 5, 6].indexOf(c.value) > -1;
@@ -472,20 +472,18 @@ module nts.uk.com.view.cps005.b {
                         service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                             __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 if (data.length > 0) {
-                                    self.selectionItem().selectionLst([]);
-                                    self.selectionItem().selectionLst(data);
-                                    self.selectionItem().selectionLst.valueHasMutated();
-
+                                    setTimeout(function(){
+                                        self.selectionItem().selectionLst([]);
+                                        self.selectionItem().selectionLst(data);
+                                        self.selectionItem().selectionLst.valueHasMutated();
+                                    }, 200);
                                 } else {
                                     self.selectionItem().selectionLst.removeAll();
                                     self.selectionItem().selectionLst([]);
                                     self.selectionItem().selectionLst.valueHasMutated();
-
                                 }
                                 block.clear();
-
                             });
-
                     }
 
                     self.selectionItem().selectionItemId.subscribe(function(value) {

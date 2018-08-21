@@ -607,11 +607,11 @@ public class LogBasicInformationAllFinder {
 								// itemNo 27
 								logBasicInfoDto.setItemName(logDataCorrectRecordRefeDto.getItemName());
 								// itemNo 28
-								logBasicInfoDto
+							/*	logBasicInfoDto
 										.setItemvalueBefor(logDataCorrectRecordRefeDto.getItemContentValueBefor());
 								// itemNo 29
 								logBasicInfoDto
-										.setItemvalueAppter(logDataCorrectRecordRefeDto.getItemContentValueAppter());
+										.setItemvalueAppter(logDataCorrectRecordRefeDto.getItemContentValueAppter());*/
 								// itemNo 30
 								logBasicInfoDto.setItemContentValueBefor(
 										logDataCorrectRecordRefeDto.getItemContentValueBefor());
