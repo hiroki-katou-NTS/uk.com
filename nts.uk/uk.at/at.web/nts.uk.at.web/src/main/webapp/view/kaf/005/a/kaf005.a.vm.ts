@@ -139,6 +139,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         uiType: KnockoutObservable<number> = ko.observable(0);
         preWorkContent: common.WorkContent;
+        targetDate: any = moment(new Date()).format(this.DATE_FORMAT); 
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -149,6 +150,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.employeeIDs(transferData.employeeIDs);
                 self.employeeID(transferData.employeeID); 
                 self.uiType(transferData.uiType); 
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = transferData.appDate;        
+                }
             }
                     
             //KAF000_A
@@ -157,7 +161,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.startPage().done(function() {
                 let url = $(location).attr('search');
                 let urlParam :string = url.split("=")[1];
-                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT), urlParam).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -236,9 +240,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         $('#kaf005-pre-post-select').ntsError('clear');
                         let dfd =$.Deferred();
                         if(value == 1){
+                           $('.overtimeHoursCheck').ntsError('clear');
                            $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 }); 
                         }else if(value == 0){
+                            $('.overtimeHoursCheckPre').ntsError('clear');
                             $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
                             $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                         }
@@ -309,6 +315,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             });
             return dfd.promise();
 
+        }
+        isShowReason(){
+            let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.displayAppReasonContentFlg() || self.typicalReasonDisplayFlg();
+            }
         }
 
         initData(data: any) {
@@ -540,6 +554,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
+            }
+            if (self.prePostSelected() == 1) {
+                $('.overtimeHoursCheck').ntsError('check');
+            } else if (self.prePostSelected() == 0) {
+                $('.overtimeHoursCheckPre').ntsError('check');
             }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}              

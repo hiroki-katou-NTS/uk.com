@@ -299,23 +299,23 @@ public class OptionalWidgetKtgFinder {
 					// get request list 197 
 					List<DailyLateAndLeaveEarlyTimeImport> dailyLateAndLeaveEarlyTime = optionalWidgetAdapter.getLateLeaveEarly(employeeId, datePeriod);
 					//get request list 446
-					List<DailyLateAndLeaveEarlyTimeImport> lateOrLeaveEarly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
+					List<DailyLateAndLeaveEarlyTimeImport> cancelLateorLeaveearly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
 					
 					int lateRetreat = 0;
 					int earlyRetreat = 0;
 					for (DailyLateAndLeaveEarlyTimeImport daily : dailyLateAndLeaveEarlyTime) {
-						for (DailyLateAndLeaveEarlyTimeImport approve : lateOrLeaveEarly) {
-							if(approve.getDate().equals(daily.getDate())) {
-								if(daily.isLate1()&& approve.isLate1()) {
+						for (DailyLateAndLeaveEarlyTimeImport cancel : cancelLateorLeaveearly) {
+							if(cancel.getDate().equals(daily.getDate())) {
+								if(cancel.isLate1()) {
 									daily.setLate1(false);
 								}
-								if(daily.isLate2()&&approve.isLate2()) {
+								if(cancel.isLate2()) {
 									daily.setLate2(false);
 								}
-								if(daily.isLeaveEarly1()&&approve.isLeaveEarly1() ) {
+								if(cancel.isLeaveEarly1() ) {
 									daily.setLeaveEarly1(false);
 								}
-								if(daily.isLeaveEarly2()&&approve.isLeaveEarly2() ) {
+								if(cancel.isLeaveEarly2() ) {
 									daily.setLeaveEarly2(false);
 								}
 							}
@@ -402,7 +402,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setCareLeaveNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208 
+					//requestList 208(期間内の特別休暇残を集計する) 
 					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 					for (SpecialHoliday specialHoliday : specialHolidays) {

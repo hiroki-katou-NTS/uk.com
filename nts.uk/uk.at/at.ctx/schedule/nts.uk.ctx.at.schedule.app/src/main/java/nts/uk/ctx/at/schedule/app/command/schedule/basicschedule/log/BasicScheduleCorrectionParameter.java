@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -64,17 +63,6 @@ public class BasicScheduleCorrectionParameter implements Serializable{
 				return value;
 			}
 		}
-		
-		private Object valueString(int valueType, String value) {
-			if (valueType == DataValueAttribute.TIME.value) {
-				return Integer.parseInt(value);
-			} else if (valueType == DataValueAttribute.MONEY.value) {
-				return Double.parseDouble(value);
-			} else {
-				return false;
-			}
-		}
-		
 	}
 
 }

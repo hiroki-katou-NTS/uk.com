@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
@@ -263,6 +264,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 										mapDateHistoryItem, periodInMasterList);
 								if (cStatus == ProcessState.INTERRUPTION) {
 									stateHolder.add(cStatus);
+									dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 									return ;
 								} 
 								
@@ -271,6 +273,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 								countDownLatch.countDown();
 							});
 					if(stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
+						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 						return ;
 					}
 					executorService.submit(task);

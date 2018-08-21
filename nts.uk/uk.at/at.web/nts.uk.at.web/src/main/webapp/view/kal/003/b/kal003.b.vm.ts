@@ -119,6 +119,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.mulMonCheckCondSet().typeCheckItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        //check typeCheckItem initialization times = 0 
+                        self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
                             self.initialMultiMonthScreen().then(function() {
                                 if ((self.checkItemTemp() || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) && self.checkItemTemp() != itemCheck) {
@@ -828,33 +830,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         
                     });
                     break;
-        }
+                    }
                     //MinhVV add
                  case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
-            let attdAtr = CONDITIONATR.TIMES;
+                    let attdAtr = CONDITIONATR.TIMES;
                     let mulMonCheckItem = self.mulMonCheckCondSet().typeCheckItem();
-                    if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) {
-                        //時間
-                        attdAtr = CONDITIONATR.TIME;
-                    } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
-                        //回数
-                        attdAtr = CONDITIONATR.TIMES;
-                    } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
-                        //金額
-                        attdAtr = CONDITIONATR.AMOUNT;
-                    }
-                    self.getListItemByAtr(attdAtr).done((lstItem) => {
+                    self.getListItemByAtrMultipleMonth(mulMonCheckItem,1).done((lstItem) => {
                         let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-
                         //Open dialog KDW007C
                         let param = {
                             lstAllItems: lstItemCode,
@@ -887,17 +869,21 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
 
 
-        getListItemByAtr(conditionAtr) {
-            let self = this;
-            return service.getAttendanceItemByAtr(conditionAtr);
-        }
-        //GET ALL MONTHLY
-        getListItemByAtrDailyAndMonthly( typeCheck: number,mode: number) {
+
+        getListItemByAtrMultipleMonth( mulMonCheckItem: number,mode: number) {
             let self = this;
             let dfd = $.Deferred<any>();
-            if (typeCheck == 6) { //combobox select
-                //With type 回数 - Times , Number  = 2
-                service.getAttendanceItemByAtrNew(2,mode).done((data) => {
+            if ((mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) ) {
+                        //時間
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
@@ -910,6 +896,86 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         }
                         dfd.resolve(data);
                     });
+                });
+            }else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
+                        //回数
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        dfd.resolve(data);
+                    });
+                });
+            } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
+                        //金額   
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                    });
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        dfd.resolve(data);
+                    });
+                });
+            }else{
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
+        
+        //GET ALL MONTHLY
+        getListItemByAtrDailyAndMonthly( typeCheck: number,mode: number) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == 6) { //combobox select
+                //With type 回数 - Times , Number  = 2
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
+                    });
+                    
 //                    service.getOptItemByAtrNew(2, mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
@@ -919,19 +985,25 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
             } else if (typeCheck == 4) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtrNew(1,mode).done((data) => {
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
                         }
-                        dfd.resolve(data);
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
                     });
+                    
 //                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
@@ -941,19 +1013,25 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 });
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtrNew(4,mode).done((data) => {
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
                         }
-                        dfd.resolve(data);
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
                     });
+                    
 //                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
 //                        for (let i = 0; i < lstOptItem.length; i++) {
 //                            lstAtdItem.push(lstOptItem[i]);
@@ -962,7 +1040,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
 //                    });
                 });
             } else if(typeCheck == 5) { // 日数
-                service.getAttendanceItemByAtrNew(3,mode).done((data) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS,mode).done((data) => {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
@@ -1275,21 +1353,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.TIME:          //時間
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME:
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME:{
                     conditionAtr = CONDITIONATR.TIME;
                     break;
+                    }
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES:      //回数
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES:
-                    conditionAtr = CONDITIONATR.TIME;
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES:{
+                    conditionAtr = CONDITIONATR.TIMES;
                     break;
+                    }
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT: //金額
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT:
                 case TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT:
+                case TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT:{
                     conditionAtr = CONDITIONATR.AMOUNT;
                     break;
+                    }
                 default:
                     return;
             }
@@ -1352,6 +1433,23 @@ module nts.uk.at.view.kal003.b.viewmodel {
         AMOUNT = 3
 
     }
+    export enum MONTHLYATTENDANCEITEMATR{
+        /** The time. */
+        TIME = 1,
+
+        /** The number. */
+        NUMBER = 2,
+
+        /** The days. */
+        DAYS = 3,
+
+        /** The amount. */
+        AMOUNT = 4
+
+    
+    }
+    
+    
     export enum COMPARETYPE {
         LESS_OR_EQUAL = 5 //(5, "Enum_SingleValueCompareType_LessOrEqual");
     }
