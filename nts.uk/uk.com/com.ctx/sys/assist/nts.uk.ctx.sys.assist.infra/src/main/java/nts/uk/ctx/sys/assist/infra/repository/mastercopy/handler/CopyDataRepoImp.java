@@ -20,6 +20,12 @@ public class CopyDataRepoImp implements CopyDataRepository {
 
     @Inject
     ErAlWorkRecordCopyAdapter erAlWorkRecordCopyAdapter;
+    
+    @Inject
+    PpemtNewLayoutCopyAdapter ppemtNewLayoutCopyAdapter;
+    
+    @Inject
+    PpemtPInfoItemGroupCopyAdapter ppemtPInfoItemGroupCopyAdapter;
 
     @Override
     public void copy(String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
@@ -46,10 +52,12 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_NEW_LAYOUT":
                     case "PPEMT_LAYOUT_ITEM_CLS":
                         //Event：新規レイアウトの初期値コピー
+                    	ppemtNewLayoutCopyAdapter.copy(companyId, copyMethod);
                         break;
                     case "PPEMT_PINFO_ITEM_GROUP":
                     case "PPEMT_PINFO_ITEM_DF_GROUP":
                         //Event：個人情報項目グループの初期値コピー
+                    	ppemtPInfoItemGroupCopyAdapter.copy(companyId, copyMethod);
                         break;
                 }
         }
