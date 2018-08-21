@@ -735,7 +735,7 @@ public class PeregCommandFacade {
 
 				int ctype = command.getCategoryType();
 				// save revise for continue, noduplicate history
-				if ((ctype == 3 || ctype == 4 || ctype == 6) && endDate.isPresent()) {
+				if ((ctype == 3 || ctype == 6) && endDate.isPresent()) {
 					ItemValue _endDate = endDate.get();
 					rInfo = startDate.map(m -> {
 						GeneralDate date = GeneralDate.fromString(m.valueBefore(), "yyyy/MM/dd").addDays(-1);
