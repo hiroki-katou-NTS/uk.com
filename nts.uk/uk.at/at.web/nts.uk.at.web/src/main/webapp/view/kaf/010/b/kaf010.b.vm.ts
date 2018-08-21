@@ -231,20 +231,16 @@ module nts.uk.at.view.kaf010.b {
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
-                    
                     let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                     self.reasonCombo(lstReasonCombo);
-                    
-                    self.multilContent(data.application.applicationReason);
                 }
-                
+                self.multilContent(data.application.applicationReason);
                 if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                     self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
                     let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
-                    self.multilContent2(data.divergenceReasonContent);
                 }
-                
+                self.multilContent2(data.divergenceReasonContent);
                 self.instructInforFlag(data.displayHolidayInstructInforFlg);
                 self.instructInfor(data.holidayInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
