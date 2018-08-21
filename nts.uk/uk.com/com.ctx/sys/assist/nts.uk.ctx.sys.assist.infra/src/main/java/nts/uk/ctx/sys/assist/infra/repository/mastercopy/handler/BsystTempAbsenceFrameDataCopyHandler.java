@@ -21,16 +21,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class BsystTempAbsenceFrameDataCopyHandler implements DataCopyHandler {
+public class BsystTempAbsenceFrameDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO BSYST_TEMP_ABSENCE_FRAME(CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME) VALUES (?, ?, ?, ?, ?);";

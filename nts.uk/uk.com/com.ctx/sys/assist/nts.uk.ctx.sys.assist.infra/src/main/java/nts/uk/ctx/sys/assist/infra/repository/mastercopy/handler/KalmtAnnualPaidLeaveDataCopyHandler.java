@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KalmtAnnualPaidLeaveDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KalmtAnnualPaidLeaveDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KALMT_ANNUAL_PAID_LEAVE(CID, PRIORITY_TYPE, MANAGE_ATR) VALUES (?,?,?)";
@@ -86,7 +77,7 @@ public class KalmtAnnualPaidLeaveDataCopyHandler implements DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

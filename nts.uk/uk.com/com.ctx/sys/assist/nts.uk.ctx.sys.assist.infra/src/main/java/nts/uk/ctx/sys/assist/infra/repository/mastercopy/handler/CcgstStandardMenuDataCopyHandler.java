@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class CcgstStandardMenuDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO CCGST_STANDARD_MENU(CID ,CODE,SYSTEM,MENU_CLS,TARGET_ITEMS,DISPLAY_NAME,DISPLAY_ORDER,MENU_ATR,URL,WEB_MENU_SETTING,AFTER_LOGIN_DISPLAY,LOG_SETTING_DISPLAY,PROGRAM_ID,SCREEN_ID,QUERY_STRING) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -95,7 +86,7 @@ public class CcgstStandardMenuDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * QUANTITY_PARAMETER + 15, dataArr[14]);
 			}
 			// Run insert query
-			insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr))insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

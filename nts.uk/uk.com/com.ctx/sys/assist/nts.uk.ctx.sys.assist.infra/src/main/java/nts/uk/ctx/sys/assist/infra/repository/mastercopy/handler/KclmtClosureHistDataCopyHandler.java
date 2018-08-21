@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KclmtClosureHistDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KclmtClosureHistDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KCLMT_CLOSURE_HIST(CID ,CLOSURE_ID,STR_YM,CLOSURE_NAME,END_YM,CLOSURE_DAY,IS_LAST_DAY) VALUES (?, ?, ?, ?, ?,?,?);";
@@ -87,7 +78,7 @@ public class KclmtClosureHistDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 7, dataArr[6]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

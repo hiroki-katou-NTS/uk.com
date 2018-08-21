@@ -12,8 +12,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
-public class ErAlWorkRecordCopyHandler implements DataCopyHandler {
+public class ErAlWorkRecordCopyHandler extends DataCopyHandler {
 //    private CopyMethod copyMethod;
 //    private String companyId;
 //    private ErAlWorkRecordCopyAdapter adapter;
