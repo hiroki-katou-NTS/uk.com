@@ -1,0 +1,8 @@
+#contents-area {
+	padding-left: 100px;
+	padding-right: 100px;
+}
+
+#contents-area > div {
+	margin-top: 20px;
+}
