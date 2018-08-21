@@ -38,7 +38,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         self.selectedReason(new ApplicationReason(reason));
                         self.isUpdate(true);
                     }
-                }
+                }else{
+                        self.createNew();
+                    }
             });
         }
         
