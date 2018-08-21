@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.l.viewmodel {
     import setShared =  nts.uk.ui.windows.setShared;
     import clear = nts.uk.ui.block.clear;
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
         //Screen mode
         screenMode: KnockoutObservable<ScreenMode> =  ko.observable(ScreenMode.INSERT);
@@ -36,7 +37,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             //Employment code change listener
             self.selectedCode.subscribe(value =>{
                 nts.uk.ui.errors.clearAll();
-                if(value){
+                if(!isNullOrEmpty(value) && value != "undefined" && value != undefined){
                     self.allowRegister(true);
                     //Get employment name  
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
