@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 public class AnnLeaEmpBasicInfo {
 	
