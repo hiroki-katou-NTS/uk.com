@@ -228,7 +228,7 @@ module nts.uk.at.view.kaf005.b {
                     self.selectedReason2(reasonID);
                     self.multilContent2(data.divergenceReasonContent);
                 }
-//                self.overtimeAtr(data.overtimeAtr);
+                self.overtimeAtr(data.overtimeAtr);
 //                if (data.overtimeAtr == 0) {
 //                    self.heightOvertimeHours(56);
 //                } else if (data.overtimeAtr == 1) {
