@@ -71,7 +71,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         
         sendData() {
-            error.clearAll();
+
             let self = this;
             if (!self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
                 $("#L3_1").trigger("validate");
@@ -157,7 +157,12 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedValueOperation() {
             let self = this;
-            return (self.timeDataFormatSetting().fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.timeDataFormatSetting().fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if(!enable){
+                $('#L7_3').ntsError('clear');
+                self.timeDataFormatSetting().fixedCalculationValue(null);
+            }
+            return enable;
         }
         //※L3
         enableFixedLengthOutputCls() {
@@ -166,16 +171,27 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedLengthOutput() {
             let self = this;
-            return (self.timeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.timeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if(!enable){
+                $('#L8_2_2').ntsError('clear');
+                self.timeDataFormatSetting().fixedLongIntegerDigit(null);
+            }
+            return enable;
         }
         //※L4
         enableNullValueReplaceCls() {
             let self = this;
-            return (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            let enable = (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return enable;
         }
         enableNullValueReplace() {
             let self = this;
-            return (self.timeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.timeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if(!enable){
+                $('#L9_2_2').ntsError('clear');
+                self.timeDataFormatSetting().valueOfNullValueSubs(null);
+            }
+            return enable;
         }
         //※L5
         enableSelectTimeCls() {
@@ -185,7 +201,12 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         //※L6
         decimalSelectionCls() {
             let self = this;
-            return (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if(enable) {
+                $('#L3_1').ntsError('clear');
+                self.timeDataFormatSetting().minuteFractionDigit(null);
+            }
+            return enable;
         }
 
         enableFixedValueCls() {
@@ -194,7 +215,13 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedValue() {
             let self = this;
-            return (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
+            let enable = (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
+            if(!enable) {
+                $('#L10_2').ntsError('clear');
+                self.timeDataFormatSetting().valueOfFixedValue(null);
+            } else{
+                error.clearAll();
+            }
         }
 
         start(): JQueryPromise<any> {

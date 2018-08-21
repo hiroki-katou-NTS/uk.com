@@ -61,7 +61,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
 
 
         sendData() {
-            error.clearAll();
+
             let self = this;
             if (self.decimalSelectionCls() ) {
                 $("#M3_1").trigger("validate");
@@ -134,14 +134,20 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M3
+        enableFixedLengthOutput() {
+            let self = this;
+            let enable = (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE);
+            if(!enable){
+                $('#M9_2_2').ntsError('clear');
+                self.inTimeDataFormatSetting().fixedLongIntegerDigit(null);
+            }
+            return enable;
+        }
         enableFixedLengthOutputCls() {
             let self = this;
             return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        enableFixedLengthOutput() {
-            let self = this;
-            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-        }
+
         //※M4
         enableNullValueReplaceCls() {
             let self = this;
@@ -149,17 +155,27 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         enableNullValueReplace() {
             let self = this;
-            return (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if(!enable) {
+                $('#M10_2').ntsError('clear');
+                self.inTimeDataFormatSetting().valueOfNullValueSubs(null);
+            }
+            return enable;
         }
         //※M5
-        enableSelectTimeCls() {
+        enableSelectTimeCls () {
             let self = this;
             return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M6
         decimalSelectionCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            let enable = (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            if (!enable) {
+                self.inTimeDataFormatSetting().minuteFractionDigit(null);
+                $('#M3_1').ntsError('clear');
+            }
+            return enable;
         }
 
 
@@ -169,7 +185,14 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         enableFixedValue() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
+            let enable =  (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
+            if(!enable){
+                self.inTimeDataFormatSetting().valueOfFixedValue(null);
+                $('#M11_2').ntsError('clear');
+            } else {
+                error.clearAll();
+            }
+            return enable;
         }
 
         start(): JQueryPromise<any> {

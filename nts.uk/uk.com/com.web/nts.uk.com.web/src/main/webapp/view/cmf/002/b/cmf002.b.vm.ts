@@ -303,7 +303,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     itemOutputName: ''
                                                     }));
             self.isNewMode(true);
-            $("#B4_3").focus();
+            $("#B5_1").focus();
         }
            
     

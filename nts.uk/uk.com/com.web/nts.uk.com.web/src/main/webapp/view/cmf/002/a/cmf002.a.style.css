@@ -14,6 +14,9 @@
 	float: left;
 	margin-right: 20px;
 }
+.clear {
+	clear: both;
+}
 
 .import-creation {
 	background-image: url("../resource/外部出力A1.jpg");
