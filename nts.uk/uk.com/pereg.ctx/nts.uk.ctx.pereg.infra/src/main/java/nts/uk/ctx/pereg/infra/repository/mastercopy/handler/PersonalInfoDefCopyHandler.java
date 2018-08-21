@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.infra.repository.handler;
+package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.command.CommandProxy;
@@ -21,12 +21,7 @@ import java.util.stream.Collectors;
  *
  *
  */
-public class PersonalInfoDefCopyHandler implements DataCopyHandler {
-
-    public static final int REPLACE_ALL = 0;
-    public static final int ADD_NEW = 2;
-    public static final int DO_NOTHING = 1;
-
+public class PersonalInfoDefCopyHandler extends DataCopyHandler {
     /**
      * The insert query.
      */
