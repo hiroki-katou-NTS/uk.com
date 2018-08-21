@@ -22,12 +22,6 @@ public class CopyDataRepoImp implements CopyDataRepository {
 
     @Inject
     ErAlWorkRecordCopyAdapter erAlWorkRecordCopyAdapter;
-    
-    @Inject
-    PpemtNewLayoutCopyAdapter ppemtNewLayoutCopyAdapter;
-    
-    @Inject
-    PpemtPInfoItemGroupCopyAdapter ppemtPInfoItemGroupCopyAdapter;
 
     @Override
     public void copy(String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
@@ -46,7 +40,7 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_PER_INFO_ITEM_CM":
                     case "PPEMT_PER_INFO_ITEM":
                     case "PPEMT_PER_INFO_ITEM_ORDER":
-                        personalInfoDataCopyAdapter.copy(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.copyA(companyId, copyMethod);
                         break;
                     case "PPEMT_SELECTION":
                     case "PPEMT_SEL_ITEM_ORDER":
@@ -54,12 +48,12 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_NEW_LAYOUT":
                     case "PPEMT_LAYOUT_ITEM_CLS":
                         //Event：新規レイアウトの初期値コピー
-                    	ppemtNewLayoutCopyAdapter.copy(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.copyB(companyId, copyMethod);
                         break;
                     case "PPEMT_PINFO_ITEM_GROUP":
                     case "PPEMT_PINFO_ITEM_DF_GROUP":
                         //Event：個人情報項目グループの初期値コピー
-                    	ppemtPInfoItemGroupCopyAdapter.copy(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.copyC(companyId, copyMethod);
                         break;
                 }
         }

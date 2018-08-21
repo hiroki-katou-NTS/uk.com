@@ -876,6 +876,7 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		compile project (':pereg.ctx:nts.uk.ctx.pereg.pub')
 	}
 }
 
@@ -1087,6 +1088,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.infra')
+		runtime project (':pereg.ctx:nts.uk.ctx.pereg.pub')
+		runtime project (':pereg.ctx:nts.uk.ctx.pereg.pubimp')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.ws')
 		
 		runtime project (':exio.ctx:nts.uk.ctx.exio.ac')
@@ -1321,6 +1324,19 @@ project (':pereg.ctx:nts.uk.ctx.pereg.dom') {
 project (':pereg.ctx:nts.uk.ctx.pereg.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
+	}
+}
+
+project (':pereg.ctx:nts.uk.ctx.pereg.pub') {
+	dependencies {
+
+	}
+}
+
+project (':pereg.ctx:nts.uk.ctx.pereg.pubimp') {
+	dependencies {
+		compile project(':pereg.ctx:nts.uk.ctx.pereg.pub')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
 }

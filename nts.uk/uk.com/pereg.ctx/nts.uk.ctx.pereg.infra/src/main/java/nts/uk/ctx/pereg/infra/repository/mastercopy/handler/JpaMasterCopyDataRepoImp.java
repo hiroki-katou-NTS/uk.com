@@ -11,9 +11,17 @@ import javax.ejb.Stateless;
 @Stateless
 public class JpaMasterCopyDataRepoImp extends JpaRepository implements MasterCopyDataRepository {
     @Override
-    public void doCopy(String companyId, int copyMethod) {
+    public void doCopyA(String companyId, int copyMethod) {
         new PersonalInfoDefCopyHandler(this, copyMethod, companyId).doCopy();
-//        new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
-//        new PersonalInfoDefCopyHandler(this, copyMethod, companyId).doCopy();
+    }
+
+    @Override
+    public void doCopyB(String companyId, int copyMethod) {
+        new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
+    }
+
+    @Override
+    public void doCopyC(String companyId, int copyMethod) {
+        new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
     }
 }
