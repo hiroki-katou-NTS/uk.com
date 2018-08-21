@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KmamtMngAnnualSetDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KmamtMngAnnualSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KMAMT_MNG_ANNUAL_SET(CID, HALF_MAX_GRANT_DAY, HALF_MAX_DAY_YEAR, HALF_MANAGE_ATR, HALF_MAX_REFERENCE, HALF_MAX_UNIFORM_COMP, "
@@ -98,7 +89,7 @@ public class KmamtMngAnnualSetDataCopyHandler implements DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

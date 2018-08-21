@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class CcgmtTopPagePartDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class CcgmtTopPagePartDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO CCGMT_TOPPAGE_PART(CID ,TOPPAGE_PART_ID ,CODE ,NAME ,TOPPAGE_PART_TYPE,WIDTH,HEIGHT) VALUES (?, ?, ?, ?, ?,?,?);";
@@ -87,7 +78,7 @@ public class CcgmtTopPagePartDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 7, dataArr[6]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

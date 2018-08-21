@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KmfmtRetentionYearlyDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KmfmtRetentionYearlyDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KMFMT_RETENTION_YEARLY(CID, NUMBER_OF_YEAR, MAX_NUMBER_OF_DAYS, LEAVE_AS_WORK_DAYS, MANAGEMENT_YEARLY_ATR) VALUES (?,?,?,?,?)";
@@ -88,7 +79,7 @@ public class KmfmtRetentionYearlyDataCopyHandler implements DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class CcgmtMyPageSetDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class CcgmtMyPageSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO CCGMT_MY_PAGE_SET(CID ,USE_MY_PAGE_ATR ,USE_STANDAR_WIDGET_ATR ,USE_OPTIONAL_WIDGET_ATR ,USE_DASH_BOARD_ATR,USE_FLOW_MENU_ATR,EXTERNAL_URL_PERMISSION_ATR) VALUES (?, ?, ?, ?, ?,?,?);";
@@ -85,7 +76,7 @@ public class CcgmtMyPageSetDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * 7 + 7, dataArr[6]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

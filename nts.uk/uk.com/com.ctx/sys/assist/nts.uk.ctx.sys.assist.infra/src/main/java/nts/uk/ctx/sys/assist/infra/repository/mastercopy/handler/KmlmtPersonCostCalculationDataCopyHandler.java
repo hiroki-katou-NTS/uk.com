@@ -21,16 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KmlmtPersonCostCalculationDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KmlmtPersonCostCalculationDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KMLMT_COST_CALC_SET(CID ,HIS_ID,START_DATE,END_DATE,UNITPRICE_ATR,MEMO) VALUES (?, ?, ?, ?, ?,?);";
@@ -90,7 +81,7 @@ public class KmlmtPersonCostCalculationDataCopyHandler implements DataCopyHandle
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 6, dataArr[5]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

@@ -23,25 +23,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 
 @NoArgsConstructor
-@AllArgsConstructor
-public class KshstZeroTimeSetDataCopyHandler implements DataCopyHandler {
+public class KshstZeroTimeSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 14;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
 
 	/**
 	 * The insert query.
