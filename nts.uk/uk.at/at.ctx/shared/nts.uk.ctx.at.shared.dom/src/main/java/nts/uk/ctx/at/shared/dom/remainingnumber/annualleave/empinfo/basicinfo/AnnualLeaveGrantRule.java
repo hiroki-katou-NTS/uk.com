@@ -38,7 +38,7 @@ public class AnnualLeaveGrantRule {
 	}
 	
 	public String nextTimeGrantDays() {
-		return this.nextTimeGrantDays()+"日";
+		return this.nextGrantDay +"日";
 	}
 	
 	public String nextTimeMaxTime() {
