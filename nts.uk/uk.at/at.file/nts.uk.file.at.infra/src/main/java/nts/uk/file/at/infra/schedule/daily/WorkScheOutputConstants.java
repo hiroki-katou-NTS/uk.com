@@ -89,7 +89,7 @@ public class WorkScheOutputConstants {
 	public static final String YEAR_OFF = "年休使用数";
 	
 	/** The Constant HEAVY. */
-	public static final String HEAVY = "所定日数";
+	public static final String HEAVY = "積立使用数";
 	
 	/** The Constant SPECIAL. */
 	public static final String SPECIAL = "特休日数";
