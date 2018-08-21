@@ -153,7 +153,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.isEnableInputHeight(false);
                 } else {
                     self.isEnableInputHeight(true);
-                    $('#input-heightExtable').focus();
+                    setTimeout(() =>{
+                        $('#input-heightExtable').focus();                        
+                    }, 1);
                 }
             });
 
