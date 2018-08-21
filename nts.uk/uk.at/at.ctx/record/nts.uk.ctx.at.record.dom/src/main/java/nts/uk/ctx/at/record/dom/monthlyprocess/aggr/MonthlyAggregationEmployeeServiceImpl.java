@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.procedure.ProcMonthlyData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -85,6 +86,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
+	/** 月別実績データストアドプロシージャ */
+	@Inject
+	private ProcMonthlyData procMonthlyData;
 	
 	/** 社員の月別実績を集計する */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -108,18 +112,30 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			return status;
 		}
 		
-		return this.aggregate(asyncContext, companyId, employeeId, criteriaDate,
+		val aggrStatus = this.aggregate(asyncContext, companyId, employeeId, criteriaDate,
 				empCalAndSumExecLogID, executionType, companySets);
+		
+		// 出力したデータに関連するキー値でストアドプロシージャを実行する
+		for (val aggrPeriod : aggrStatus.getOutAggrPeriod()){
+			this.procMonthlyData.execute(
+					companyId,
+					employeeId,
+					aggrPeriod.getYearMonth(),
+					aggrPeriod.getClosureId(),
+					aggrPeriod.getClosureDate());
+		}
+		
+		return aggrStatus.getState();
 	}
 	
 	/** 社員の月別実績を集計する */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
-	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
+	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
 			MonAggrCompanySettings companySets) {
 		
-		ProcessState status = ProcessState.SUCCESS;
+		MonthlyAggrEmpServiceValue status = new MonthlyAggrEmpServiceValue();
 		val dataSetter = asyncContext.getDataSetter();
 		
 		// 前回集計結果　（年休積立年休の集計結果）
@@ -174,7 +190,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
 				asyncContext.finishedAsCancelled();
-				return ProcessState.INTERRUPTION;
+				status.setState(ProcessState.INTERRUPTION);
+				return status;
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
@@ -196,7 +213,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				// 中断するエラーがある時、中断処理をする
 				if (value.isInterruption()){
 					asyncContext.finishedAsCancelled();
-					return ProcessState.INTERRUPTION;
+					status.setState(ProcessState.INTERRUPTION);
+					return status;
 				}
 			}
 			
@@ -271,6 +289,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			for (val monDayoffRemNum : value.getMonthlyDayoffRemainList()){
 				this.monDayoffRemRepo.persistAndUpdate(monDayoffRemNum);
 			}
+			
+			status.getOutAggrPeriod().add(aggrPeriod);
 			
 			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
