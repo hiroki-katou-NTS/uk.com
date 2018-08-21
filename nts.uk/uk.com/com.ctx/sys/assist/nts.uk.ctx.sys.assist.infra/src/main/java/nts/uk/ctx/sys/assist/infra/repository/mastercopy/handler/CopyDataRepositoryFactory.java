@@ -21,7 +21,7 @@ public class CopyDataRepositoryFactory {
 
 //        mapper.put("PPEMT_PER_INFO_ITEM_ORDER", new PersonalInfoDataCopyHandler());                 //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_DATE_RANGE_ITEM", new PersonalInfoDataCopyHandler());                     //Event：個人情報定義の初期値コピー
-//        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
+        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
 //        mapper.put("PPEMT_SELECTION", new CcgmtMyPageSetDataCopyHandler());
 //        mapper.put("PPEMT_SEL_ITEM_ORDER", new CcgmtMyPageSetDataCopyHandler());
 //        mapper.put("PPEMT_NEW_LAYOUT", new CcgmtMyPageSetDataCopyHandler());
