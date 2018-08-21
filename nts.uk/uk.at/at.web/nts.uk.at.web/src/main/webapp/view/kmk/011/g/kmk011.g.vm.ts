@@ -5,6 +5,8 @@ module nts.uk.at.view.kmk011.g {
 
     import CreateHistoryCommand = nts.uk.at.view.kmk011.g.model.CreateComHistoryCommand;
     import CreateWkTypeHistoryCommand = nts.uk.at.view.kmk011.g.model.CreateWkTypeHistoryCommand;
+    
+    import blockUI = nts.uk.ui.block;
 
     export module viewmodel {
         export class ScreenModel {
@@ -48,6 +50,7 @@ module nts.uk.at.view.kmk011.g {
             }
 
             public execution(): JQueryPromise<any> {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
@@ -69,6 +72,8 @@ module nts.uk.at.view.kmk011.g {
                             });
                         }).fail((res: any) => {
                             _self.showMessageError(res);
+                        }).always(() => {
+                            blockUI.clear();    
                         });
 
                         break;
@@ -84,6 +89,8 @@ module nts.uk.at.view.kmk011.g {
                             });
                         }).fail((res: any) => {
                             _self.showMessageError(res);
+                        }).always(() => {
+                            blockUI.clear();    
                         });
 
                         break;

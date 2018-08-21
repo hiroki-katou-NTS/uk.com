@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -10,7 +11,7 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 @Getter
-public class MonthlyActualResults extends DomainObject {
+public class MonthlyActualResults extends DomainObject   {
 	/**月次表示項目シート一覧*/
 	private List<SheetCorrectedMonthly> listSheetCorrectedMonthly;
 
@@ -19,5 +20,14 @@ public class MonthlyActualResults extends DomainObject {
 		this.listSheetCorrectedMonthly = listSheetCorrectedMonthly;
 	}
 
+	public void setListSheetCorrectedMonthly(List<SheetCorrectedMonthly> listSheetCorrectedMonthly) {
+		this.listSheetCorrectedMonthly = listSheetCorrectedMonthly;
+	}
+	
+	public MonthlyActualResults clone() {
+		return new MonthlyActualResults(listSheetCorrectedMonthly.stream().map(c->c.clone()).collect(Collectors.toList()));
+	}
+
+	
 
 }

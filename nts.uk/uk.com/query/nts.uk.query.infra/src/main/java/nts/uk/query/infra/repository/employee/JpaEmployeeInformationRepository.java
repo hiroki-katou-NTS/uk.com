@@ -46,7 +46,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
 
-	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
+	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
 			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
 			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
@@ -144,17 +144,19 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			List<Object[]> positions = this.getOptionalResult(param, POSITION_QUERY);
 			
 			employeeInfoList.keySet().forEach(empId -> {
-				Optional<Object[]> job = positions.stream().filter(wpl -> {
-					String id = (String) wpl[0];
+				Optional<Object[]> job = positions.stream().filter(pos -> {
+					String id = (String) pos[0];
 					return id.equals(empId);
 				}).findAny();
 				
 				if (job.isPresent()) {
 					String jobCode = (String) job.get()[1];
 					String jobName = (String) job.get()[2];
+					String jobId = (String) job.get()[3];
 					employeeInfoList.get(empId).setPosition(Optional.of(PositionModel.builder()
 							.positionCode(jobCode)
 							.positionName(jobName)
+							.positionId(jobId)
 							.build()));
 				}
 			});

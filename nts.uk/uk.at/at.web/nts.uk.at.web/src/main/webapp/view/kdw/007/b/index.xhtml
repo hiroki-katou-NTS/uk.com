@@ -41,7 +41,8 @@
 		      				width: '100px',
 						columns: [
 							{ prop: 'name', length: 5 },
-						]}"></div>
+						],
+						dropDownAttachedToBody: true}"></div>
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
                		<div data-bind="ntsRadioBoxGroup: {
 						options: enumConditionType,
@@ -72,7 +73,8 @@
 							dropDownAttachedToBody: true,
 							columns: [
 								{ prop: 'name', length: 10 },
-							]}"></div>
+							],
+						dropDownAttachedToBody: true}"></div>
 				 	</com:ko-if>
 				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 2">
 				 		<div id="inputCheck-cbb" data-bind="ntsComboBox: {

@@ -448,13 +448,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let recordType = Number(self.logTypeSelectedCode());
 
             // set param log
+             var format = 'YYYY/MM/DD HH:mm:ss';
             let paramLog = {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             // set param for get parent header name
@@ -1105,14 +1106,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
             // set param log for export file CSV
+            var format = 'YYYY/MM/DD HH:mm:ss';      
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             //fix itemNo

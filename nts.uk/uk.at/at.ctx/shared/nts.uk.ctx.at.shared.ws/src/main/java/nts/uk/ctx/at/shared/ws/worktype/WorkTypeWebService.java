@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.app.command.worktype.RemoveWorkTypeCommand;
 import nts.uk.ctx.at.shared.app.command.worktype.RemoveWorkTypeCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.UpdateWorkTypeCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.WorkTypeCommandBase;
+import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispInitializeOrderCommand;
+import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispInitializeOrderCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispOrderCommand;
 import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispOrderCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -60,6 +62,10 @@ public class WorkTypeWebService extends WebService {
 	/** The update work type command handler. */
 	@Inject
 	private UpdateWorkTypeCommandHandler updateWorkTypeCommandHandler;
+
+	/** The work type init disp order command handler. */
+	@Inject
+	private WorkTypeDispInitializeOrderCommandHandler workTypeDispInitializeOrderCommandHandler;
 
 	/** The Constant workstyleList. */
 	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_WORK.value,
@@ -228,5 +234,16 @@ public class WorkTypeWebService extends WebService {
 	@Path("order")
 	public void order(List<WorkTypeDispOrderCommand> command) {
 		this.workTypeDispOrderCommandHandler.handle(command);
+	}
+	
+	/**
+	 * initialize
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("initializeOrder")
+	public List<WorkTypeDto> initializeOrder(WorkTypeDispInitializeOrderCommand command) {
+		return this.workTypeDispInitializeOrderCommandHandler.handle(command);
 	}
 }

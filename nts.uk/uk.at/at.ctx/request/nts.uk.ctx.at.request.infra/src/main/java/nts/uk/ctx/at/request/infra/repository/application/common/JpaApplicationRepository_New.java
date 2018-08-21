@@ -46,11 +46,11 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	//hoatt
 	private static final String SELECT_BY_LIST_SID = SELECT_FROM_APPLICATION 
 			+ " AND ( a.employeeID IN :lstSID OR a.enteredPersonID IN :lstSID )"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+			+ " AND a.endDate >= :startDate AND a.startDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
 	//hoatt
 	private static final String SELECT_BY_LIST_APPLICANT = SELECT_FROM_APPLICATION 
 				+ " AND a.employeeID IN :lstSID"
-				+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+				+ " AND a.endDate >= :startDate AND a.startDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
 	//hoatt
 	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
@@ -58,8 +58,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appType IN (0,1,2,4,6,10)";
 	//hoatt
 	private static final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
-			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
-			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
+			+ " AND a.endDate >= :startDate and a.startDate <= :endDate"
 			+ " AND a.appType IN (0,1,2,4,6,10)";
 	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private static final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
@@ -182,7 +181,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	/**
 	 * @author hoatt
 	 * get List Application By Reflect
-	 * wait QA
+	 * phuc vu CMM045
 	 */
 	@Override
 	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate) {
