@@ -3005,6 +3005,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available3: KnockoutObservable<boolean> = ko.observable(false);
         available5: KnockoutObservable<boolean> = ko.observable(false);
         available8: KnockoutObservable<boolean> = ko.observable(false);
+        available9: KnockoutObservable<boolean> = ko.observable(false);
         available8Authority: KnockoutObservable<boolean> = ko.observable(false);
         available11: KnockoutObservable<boolean> = ko.observable(false);
         available22: KnockoutObservable<boolean> = ko.observable(false);
@@ -3026,6 +3027,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available3(self.checkAvailable(data, 3));
             this.available5(self.checkAvailable(data, 5));
             this.available8(self.checkAvailable(data, 8));
+            this.available9(self.checkAvailable(data, 9));
             this.available22(self.checkAvailable(data, 22));
             this.available24(self.checkAvailable(data, 24));
             this.available7(self.checkAvailable(data, 7));
