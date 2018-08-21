@@ -1513,7 +1513,7 @@ module nts.layout {
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
-                        standardDate: standardDate,
+                        standardDate:  moment.utc(standardDate).format('YYYY/MM/DD'),
                         grantTable: grantTable
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
