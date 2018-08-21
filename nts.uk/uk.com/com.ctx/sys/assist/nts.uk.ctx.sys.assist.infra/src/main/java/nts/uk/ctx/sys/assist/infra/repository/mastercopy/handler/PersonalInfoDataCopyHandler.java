@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class PersonalInfoDataCopyHandler implements DataCopyHandler {
 //    private CopyMethod copyMethod;
 //    private String companyId;
