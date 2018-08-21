@@ -11,11 +11,11 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.remainnumber.YearHolidayInfoResultDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformation;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformationFinder;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.YearHolidayInfoResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
@@ -99,6 +99,7 @@ public class LayoutWebService extends WebService {
 		return new Object[] {dayNumber};
 	}
 	/**
+	 * Category Special Holiday CS00025 ~
 	 * 次回特休情報を取得する
 	 * @param 社員ID sid
 	 * @param 特別休暇コード specialCD
@@ -118,6 +119,7 @@ public class LayoutWebService extends WebService {
 	}
 	
 	/**
+	 * Category: CS00024
 	 * アルゴリズム「次回年休情報を取得する」
 　	 * パラメータ＝社員ID：画面で選択している社員ID
 　	 * パラメータ＝年休付与基準日：IS00279の値
@@ -130,8 +132,8 @@ public class LayoutWebService extends WebService {
 	 */
 	@POST
 	@Path("getYearHolidayInfo")
-	public YearHolidayInfoResult getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
-		return annLeaEmpBasicInfoDomService.getYearHolidayInfo(annLea);
+	public YearHolidayInfoResultDto getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
+		return YearHolidayInfoResultDto.fromDomain(annLeaEmpBasicInfoDomService.getYearHolidayInfo(annLea));
 	}
 	
 }
