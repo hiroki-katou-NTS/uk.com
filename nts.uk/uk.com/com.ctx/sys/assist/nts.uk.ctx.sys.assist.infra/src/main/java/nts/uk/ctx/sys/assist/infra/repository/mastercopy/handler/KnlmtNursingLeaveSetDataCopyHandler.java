@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KnlmtNursingLeaveSetDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KnlmtNursingLeaveSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KNLMT_NURSING_LEAVE_SET(CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS) VALUES (?,?,?,?,?,?,?,?)";
@@ -91,7 +82,7 @@ public class KnlmtNursingLeaveSetDataCopyHandler implements DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

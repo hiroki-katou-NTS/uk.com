@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KctmtDigestTimeComDataCopyHandler implements DataCopyHandler {
-
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KctmtDigestTimeComDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KCTMT_DIGEST_TIME_COM(CID ,MANAGE_ATR,DIGESTIVE_UNIT) VALUES (?, ?, ?);";
@@ -83,7 +74,7 @@ public class KctmtDigestTimeComDataCopyHandler implements DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 3, dataArr[2]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:
