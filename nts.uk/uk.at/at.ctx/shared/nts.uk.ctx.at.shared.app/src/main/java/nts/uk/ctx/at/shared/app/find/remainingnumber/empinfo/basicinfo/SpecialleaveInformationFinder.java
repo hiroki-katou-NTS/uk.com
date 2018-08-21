@@ -31,7 +31,7 @@ public class SpecialleaveInformationFinder {
 		String grantDate = null;
 		if (spLeaBasicInfo.isPresent()){
 			
-			SpecialleaveInformationDto spLeaveInfo = new SpecialleaveInformationDto(query.getEmployeeId(), specialLeaveCD, 
+			SpecialleaveInformation spLeaveInfo = new SpecialleaveInformation(query.getEmployeeId(), specialLeaveCD, 
 					spLeaBasicInfo.get().getGrantSetting().getGrantDate(), 
 					spLeaBasicInfo.get().getApplicationSet().value,
 					spLeaBasicInfo.get().getGrantSetting().getGrantTable().map(i->i.v()).orElse(null),
@@ -223,7 +223,7 @@ public class SpecialleaveInformationFinder {
 	 * @param 年休付与基準日 year NULL
 	 * @return
 	 */
-	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformationDto spLeaveInfo) {
+	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation spLeaveInfo) {
 		return spLeaveInfo.getGrantDate();
 	}
 	

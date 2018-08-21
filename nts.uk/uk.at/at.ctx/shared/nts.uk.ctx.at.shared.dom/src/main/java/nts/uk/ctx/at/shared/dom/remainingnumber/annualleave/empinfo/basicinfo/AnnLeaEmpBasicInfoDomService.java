@@ -111,39 +111,11 @@ public class AnnLeaEmpBasicInfoDomService{
 	 * パラメータ＝契約時間：NULL
 	 * パラメータ＝入社年月日：NULL
 	 * パラメータ＝退職年月日：NULL
-	 * @return 次回年休付与日
+	 * @return 次回年休付与日, 次回年休付与日数, 次回時間年休付与上限
 	 */
-	public GeneralDate getNextHDGrantDate(AnnLeaEmpBasicInfo annLea){
-		return GeneralDate.today();
+	public YearHolidayInfoResult getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
+		YearHolidayInfoResult result = new YearHolidayInfoResult(GeneralDate.today(), 0.0, Optional.of(60));
+		return result;
 	}
 	
-	/**
-	 * 次回年休情報を取得する
-	 * パラメータ＝社員ID：画面で選択している社員ID
-	 * パラメータ＝年休付与基準日：IS00279の値
-	 * パラメータ＝年休付与テーブル：IS00280の値
-	 * パラメータ＝労働条件の期間：NULL
-	 * パラメータ＝契約時間：NULL
-	 * パラメータ＝入社年月日：NULL
-	 * パラメータ＝退職年月日：NULL
-	 * @return 次回年休付与日数
-	 */
-	public String getNextHolidayGrantDays(AnnLeaEmpBasicInfo annLea){
-		return null;
-	}
-	
-	/**
-	 * 次回年休情報を取得する
-	 * パラメータ＝社員ID：画面で選択している社員ID
-	 * パラメータ＝年休付与基準日：IS00279の値
-	 * パラメータ＝年休付与テーブル：IS00280の値
-	 * パラメータ＝労働条件の期間：NULL 
-	 * パラメータ＝契約時間：NULL
-	 * パラメータ＝入社年月日：NULL
-	 * パラメータ＝退職年月日：NULL
-	 * @return 次回時間年休付与上限
-	 */
-	public String getNextMaxHolidayGrant(AnnLeaEmpBasicInfo annLea){
-		return null;
-	}
 }

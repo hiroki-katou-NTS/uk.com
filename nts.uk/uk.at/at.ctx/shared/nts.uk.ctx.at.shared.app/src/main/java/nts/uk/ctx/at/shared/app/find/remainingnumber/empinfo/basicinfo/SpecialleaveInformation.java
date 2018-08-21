@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SpecialleaveInformationDto {
+public class SpecialleaveInformation {
 	
 	// 社員ID
 	private String sid;
@@ -37,7 +37,7 @@ public class SpecialleaveInformationDto {
 	// 年休付与基準日
 	private Integer year;
 
-	public SpecialleaveInformationDto(String sid, int spLeaveCD, GeneralDate grantDate, int appSet, String grantTable,
+	public SpecialleaveInformation(String sid, int spLeaveCD, GeneralDate grantDate, int appSet, String grantTable,
 			Integer grantDays, GeneralDate entryDate, GeneralDate retireDate, Integer year) {
 		super();
 		this.sid = sid;

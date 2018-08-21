@@ -11,9 +11,12 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformationDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformation;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformationFinder;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.YearHolidayInfoResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
@@ -45,6 +48,9 @@ public class LayoutWebService extends WebService {
 	
 	@Inject
 	private SpecialleaveInformationFinder specialleaveInformationFinder;
+	
+	@Inject 
+	private AnnLeaEmpBasicInfoDomService annLeaEmpBasicInfoDomService;
 	
 	@Path("getByCreateType")
 	@POST
@@ -107,7 +113,25 @@ public class LayoutWebService extends WebService {
 	 */
 	@POST
 	@Path("getSPHolidayGrantDate")
-	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformationDto specialLeaveInfo){
+	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation specialLeaveInfo){
 		return specialleaveInformationFinder.getSPHolidayGrantDate(specialLeaveInfo);
 	}
+	
+	/**
+	 * アルゴリズム「次回年休情報を取得する」
+　	 * パラメータ＝社員ID：画面で選択している社員ID
+　	 * パラメータ＝年休付与基準日：IS00279の値
+	 * パラメータ＝年休付与テーブル：IS00280の値
+	 * パラメータ＝労働条件の期間：NULL
+	 * パラメータ＝契約時間：NULL
+	 * パラメータ＝入社年月日：NULL
+	 * パラメータ＝退職年月日：NULL
+	 * @return 次回年休付与日, 次回年休付与日数, 次回時間年休付与上限
+	 */
+	@POST
+	@Path("getYearHolidayInfo")
+	public YearHolidayInfoResult getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
+		return annLeaEmpBasicInfoDomService.getYearHolidayInfo(annLea);
+	}
+	
 }
