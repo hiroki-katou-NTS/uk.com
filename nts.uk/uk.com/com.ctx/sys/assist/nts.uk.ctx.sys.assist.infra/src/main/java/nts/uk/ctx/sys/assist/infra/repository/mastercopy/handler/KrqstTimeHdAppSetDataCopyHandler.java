@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstTimeHdAppSetDataCopyHandler implements DataCopyHandler {
-	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstTimeHdAppSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_TIME_HD_APP_SET(CID, CHECK_DAY_OFF, USE_60H_HD, USE_ATTEND_BEFORE2, NAMES2_BEFORE_WORK, USE_BEFORE_GOTO_WORK, NAME_BEFORE_WORK, ACTUAL_DISPLAY_ATR, CHECK_OVER_DILIVER, USE_TIME_HD, "

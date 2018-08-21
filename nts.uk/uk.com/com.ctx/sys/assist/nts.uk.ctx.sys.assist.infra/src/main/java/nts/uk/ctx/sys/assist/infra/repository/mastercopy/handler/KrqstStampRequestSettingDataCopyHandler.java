@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstStampRequestSettingDataCopyHandler implements DataCopyHandler {
-
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstStampRequestSettingDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_STAMP_REQUEST_SET(CID, TOP_COMMENT_TEXT, TOP_COMMENT_FONT_COLOR, TOP_COMMENT_FONT_WEIGHT, BOTTOM_COMMENT_TEXT, BOTTOM_COMMENT_FONT_COLOR, "

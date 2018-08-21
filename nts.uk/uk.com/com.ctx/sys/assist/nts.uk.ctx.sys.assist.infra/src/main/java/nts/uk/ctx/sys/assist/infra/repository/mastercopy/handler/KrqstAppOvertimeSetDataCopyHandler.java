@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstAppOvertimeSetDataCopyHandler implements DataCopyHandler {
-	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstAppOvertimeSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_APP_OVERTIME_SET(CID, FLEX_EXCESS_USE_SET_ATR, PRE_TYPE_SIFT_REFLECT_FLG, PRE_OVERTIME_REFLECT_FLG, POST_TYPESIFT_REFLECT_FLG"

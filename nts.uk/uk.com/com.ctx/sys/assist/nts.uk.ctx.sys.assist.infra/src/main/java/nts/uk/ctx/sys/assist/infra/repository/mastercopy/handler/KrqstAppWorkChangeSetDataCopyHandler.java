@@ -21,16 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstAppWorkChangeSetDataCopyHandler implements DataCopyHandler {
-
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstAppWorkChangeSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_APP_WORK_CHANGE_SET(CID, EXCLUDE_HOLIDAY, WORK_CHANGE_TIME_ATR, DISPLAY_RESULT_ATR, INIT_DISPLAY_WORKTIME, COMMENT_CONTENT1, COMMENT_FONT_WEIGHT1, COMMENT_FONT_COLOR1, COMMENT_CONTENT2, COMMENT_FONT_WEIGHT2, COMMENT_FONT_COLOR2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";

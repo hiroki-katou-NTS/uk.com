@@ -21,15 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstApprovalSetDataCopyHandler implements DataCopyHandler{
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstApprovalSetDataCopyHandler extends DataCopyHandler{
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_APPROVAL_SET(CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "

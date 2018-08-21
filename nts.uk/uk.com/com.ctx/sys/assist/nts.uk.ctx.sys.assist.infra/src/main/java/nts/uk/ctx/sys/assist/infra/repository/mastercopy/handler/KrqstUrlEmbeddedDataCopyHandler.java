@@ -13,20 +13,15 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 
 /**
  * The Class KrqstUrlEmbeddedDataCopyHandler.
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krqst url embedded data copy handler.
- */
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstUrlEmbeddedDataCopyHandler implements DataCopyHandler {
+public class KrqstUrlEmbeddedDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 2;
 
