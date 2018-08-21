@@ -159,7 +159,11 @@ module a1 {
             });
             self.timeZoneModelTwo.useAtr.subscribe((v) => { 
                 self.mainSettingModel.updateStampValue(); 
-                self.mainSettingModel.updateInterlockDialogJ(); 
+                self.mainSettingModel.updateInterlockDialogJ();
+                if (!v) {
+                    $('#shiftTwoStart').ntsError('clear');
+                    $('#shiftTwoEnd').ntsError('clear');
+                } 
             });
         }
 

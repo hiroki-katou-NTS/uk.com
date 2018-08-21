@@ -453,13 +453,13 @@ module nts.uk.at.view.kmk003.a {
                 $('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
-                if (self.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
-                    //assign value avoid exception
-                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.startTime(0);
-                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.endTime(0);
-                    $('#coreTimeStart').ntsError('clear');
-                    $('#coreTimeEnd').ntsError('clear');
-                }
+                //validate disabled item tab 1
+                self.validatetab1();
+                
+                //validate disabled item tab 7
+                self.validatetab7();
+                
+                //validate disabled item tab 11
                 if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
                     self.validateTab11(commonDayoff,commonOvertime);
                 }
@@ -471,6 +471,35 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
             
+            private validatetab1() {
+                let self = this;
+                if (self.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
+                    //assign value avoid exception
+                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.startTime(0);
+                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.endTime(0);
+                    $('#coreTimeStart').ntsError('clear');
+                    $('#coreTimeEnd').ntsError('clear');
+                }
+                
+                if (!self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr())
+                {
+                    $('#shiftTwoStart').ntsError('clear');
+                    $('#shiftTwoEnd').ntsError('clear');
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start(0);
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.end(0);
+                }
+            }
+            
+            private validatetab7()
+            {
+                let self = this;
+                if (!self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet()) {
+                    $('#nts-fix-table-a7-flow-notuse-2').find('.nts-input').ntsError('clear');
+                }
+                if (!self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet()) {
+                    $('#nts-fix-table-a7-flex-notuse-2').find('.nts-input').ntsError('clear');
+                }
+            }
             private validateTab11(commonDayoff: SubHolTransferSetDto,commonOvertime: SubHolTransferSetDto) {
                 let self = this;
                 if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision()) {
