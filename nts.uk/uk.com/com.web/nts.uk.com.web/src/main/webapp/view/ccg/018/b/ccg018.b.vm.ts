@@ -252,6 +252,9 @@ module ccg018.b.viewmodel {
         removeData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            if (!self.currentCode()) {
+                return;
+            }
             if (!!!self.currentCode()) {
 //                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
             nts.uk.ui.dialog.info({ messageId: "Msg_85" }).then(function() {
