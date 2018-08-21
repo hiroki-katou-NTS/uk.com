@@ -347,7 +347,7 @@ public class PersonalInfoDefCopyHandler implements DataCopyHandler {
 
                 for (String itemCd: sourcePerInfoItems.keySet()){
                     PpemtPerInfoItem srcPerInfoItem = sourcePerInfoItems.get(itemCd);
-                    PpemtPerInfoItem desPerInfoItem = sourcePerInfoItems.get(itemCd);
+                    PpemtPerInfoItem desPerInfoItem = destPerInfoItems.get(itemCd);
                     desPerInfoItem.itemName = srcPerInfoItem.itemName;
                     desPerInfoItem.abolitionAtr = srcPerInfoItem.abolitionAtr;
                     desPerInfoItem.requiredAtr = srcPerInfoItem.requiredAtr;
