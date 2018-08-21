@@ -1401,7 +1401,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
                     .done(data => {
-                        self.returnDataFromCcg001(self.combineData(data));
+                        self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
