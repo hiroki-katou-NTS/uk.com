@@ -442,10 +442,9 @@ module nts.uk.at.view.ksm005.c {
                             setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true }; 
                             dataRes.push(setting);    
                         });
-                        self.optionalColumnDatasource(dataSource);
                         self.alreadySettingList(dataRes);
                     }
-                    
+                    self.optionalColumnDatasource(dataSource);
                     dfd.resolve(dataRes);
                 });
 
@@ -506,12 +505,8 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 let dataSource = self.employeeList();
-                let itemListSetting = [];
-                self.alreadySettingList().forEach(function (item: any){
-                    if(dataSource.filter(e => e.code == item.code).length > 0){
-                        dataSource.filter(e => e.code == item.code)[0].isAlreadySetting = true;
-                        itemListSetting.push(dataSource.filter(e => e.code == item.code)[0]);
-                    } 
+                let itemListSetting = _.map(self.alreadySettingList(), item => {
+                    return _.find(dataSource, i => i.code == item.code).id;
                 });
                 
                 let object: IObjectDuplication = {
@@ -533,6 +528,7 @@ module nts.uk.at.view.ksm005.c {
                         self.listDestSid(lstSelection);
                         self.copyMonthlyPatternSetting();
                     }
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
             
