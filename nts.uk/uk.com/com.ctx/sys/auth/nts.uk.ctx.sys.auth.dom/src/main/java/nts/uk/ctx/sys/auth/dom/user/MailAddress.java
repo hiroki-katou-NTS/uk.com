@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(80)
+@StringMaxLength(256)
 public class MailAddress extends StringPrimitiveValue<MailAddress> {
 	
 	/** The Constant serialVersionUID. */

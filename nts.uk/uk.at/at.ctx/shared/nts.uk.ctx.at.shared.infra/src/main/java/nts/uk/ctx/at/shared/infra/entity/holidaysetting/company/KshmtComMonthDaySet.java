@@ -33,10 +33,6 @@ public class KshmtComMonthDaySet extends UkJpaEntity implements Serializable {
     /** The kshmt com month day set PK. */
     @EmbeddedId
     protected KshmtComMonthDaySetPK kshmtComMonthDaySetPK;
-    
-    /** The exclus ver. */
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
 
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")

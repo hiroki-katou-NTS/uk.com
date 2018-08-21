@@ -2272,30 +2272,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         case 8:
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                              transfer.stampRequestMode = 1;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                              transfer.stampRequestMode = 2;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 11:
                             //KAF002-打刻申請（レコーダイメージ）
                              transfer.stampRequestMode = 3;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                          
                         case 12:
                             //KAF002-打刻申請（その他）
                              transfer.stampRequestMode = 4;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                             

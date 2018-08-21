@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -42,6 +43,26 @@ public class TimeLeavingWork extends DomainObject{
 		this.leaveStamp = Optional.ofNullable(leaveStamp);
 		
 		this.timespan = this.craeteTimeSpan();
+	}
+	
+	/**
+	 * PCログオンログオフを打刻へ入れこむ(大塚モード専用処理)
+	 * @param pcLogOnInfo
+	 */
+	public void setStampFromPCLogOn(Optional<LogOnInfo> pcLogOnInfo) {
+		if(pcLogOnInfo.isPresent()
+		   && pcLogOnInfo.get().getLogOn().isPresent()) {
+			if(this.attendanceStamp.isPresent()
+				&& this.attendanceStamp.get().getActualStamp().isPresent()) {
+				this.attendanceStamp.get().setStampFromPcLogOn(pcLogOnInfo.get().getLogOn().get());
+			}
+		}
+		if(pcLogOnInfo.isPresent()
+		   && pcLogOnInfo.get().getLogOff().isPresent()) {
+			if(this.leaveStamp.isPresent()) {
+				this.leaveStamp.get().setStampFromPcLogOn(pcLogOnInfo.get().getLogOff().get());
+			}
+		}
 	}
 
 	/**

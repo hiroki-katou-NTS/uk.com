@@ -1,0 +1,54 @@
+.flex-layout {
+	display: flex;
+}
+
+.flex-layout-row {
+    flex-direction: column;
+}
+
+.main-content {
+	margin-left: 90px;
+	padding-top: 10px;
+}
+
+.output-item-cond-panel {
+	margin-left: 10px;
+}
+
+.period-panel {
+	margin-bottom: 10px;
+}
+
+.output-item-cond-panel > div:nth-child(1) {
+	margin-top: 20px;
+}
+
+.output-item-cond-panel > div:nth-child(2) {
+	margin-top: 20px;
+	margin-left: 40px
+}
+
+.output-item-cond-panel > div:nth-child(3) {
+	margin-top: 20px;
+	margin-left: 40px
+}
+
+#btn-configure {
+	margin-left: 10px;
+	margin-right: 100px;
+}
+
+.layer-cover {
+	background-color: rgba(217, 217, 217, 0.4);
+	height: 479px;
+	z-index:  998;
+	position:  absolute;
+	width: 569px;
+	bottom: 10px;
+}
+
+.disable-cursor {
+	cursor: not-allowed;
+    pointer-events: none;
+    user-select: none;
+}

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
@@ -49,6 +50,24 @@ public class TimeDivergenceWithCalculationMinusExist {
 	 */
 	public TimeDivergenceWithCalculationMinusExist calcDiverGenceTime() {
 		return new TimeDivergenceWithCalculationMinusExist(this.time,this.calcTime);
+	}
+	
+	public void replaceTime(AttendanceTimeOfExistMinus time) {
+		this.time = time;
+	}
+	
+	public void replaceCalcTime(AttendanceTimeOfExistMinus calcTime) {
+		this.calcTime = calcTime;
+	}
+	
+	/**
+	 * 計算時間のみを入れ替える(乖離計算有)
+	 * @param calcTime
+	 * @return
+	 */
+	public void replaceTimeAndCalcDiv(AttendanceTimeOfExistMinus calcTime) {
+		this.calcTime = calcTime;
+		this.divergenceTime = this.time.minusMinutes(calcTime.valueAsMinutes());
 	}
 	
 }

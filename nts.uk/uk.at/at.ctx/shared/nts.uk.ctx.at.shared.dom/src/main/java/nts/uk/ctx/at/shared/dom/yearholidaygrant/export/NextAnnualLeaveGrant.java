@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant.export;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -49,7 +48,7 @@ public class NextAnnualLeaveGrant {
 	public NextAnnualLeaveGrant(){
 		
 		this.grantDate = GeneralDate.today();
-		this.grantDays = new GrantDays(BigDecimal.valueOf(0));
+		this.grantDays = new GrantDays(0.0);
 		this.times = new GrantNum(0);
 		this.timeAnnualLeaveMaxDays = Optional.empty();
 		this.timeAnnualLeaveMaxTime = Optional.empty();

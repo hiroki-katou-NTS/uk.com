@@ -51,6 +51,7 @@ module nts.uk.at.view.kmk003.a {
             workTimeSettingLoader: WorkTimeSettingLoader;
             
             settingEnum: WorkTimeSettingEnumDto;
+            backupOptions: EnumConstantDto[];
             
             screenMode: KnockoutObservable<number>;
             isNewMode: KnockoutComputed<boolean>;
@@ -107,6 +108,7 @@ module nts.uk.at.view.kmk003.a {
                         self.flexWorkManaging = vl.flexWorkManaging == 1 ? true : false;
 
                         self.getAllEnums().done(() => {
+                            self.backupOptions = self.settingEnum.workTimeMethodSet;
                             self.setFlexOptionVisibility();
                             self.loadListWorktime().done(() => dfd.resolve());
                         });
@@ -220,8 +222,12 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                     if (worktimeCode) {
                         self.loadWorktimeSetting(worktimeCode);
+                        self.settingEnum.workTimeMethodSet = self.backupOptions;
                         // focus worktime atr
                         $('#search-daily-atr').focus();
+                    }
+                    else {
+                        self.enterNewMode();
                     }
                 });
 
@@ -292,6 +298,7 @@ module nts.uk.at.view.kmk003.a {
                         if (selectedIndex) {
                             self.selectWorktimeByIndex(selectedIndex);
                         }
+                        self.settingEnum.workTimeMethodSet = self.backupOptions;
                     }
                     else {
                         // enter new mode
@@ -433,6 +440,10 @@ module nts.uk.at.view.kmk003.a {
                 $('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
+                if (this.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
+                    $('#coreTimeStart').ntsError('clear');
+                    $('#coreTimeEnd').ntsError('clear');
+                }
             }
 
             //save worktime data
@@ -540,7 +551,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // reset data
                 self.mainSettingModel.resetData();
-
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 

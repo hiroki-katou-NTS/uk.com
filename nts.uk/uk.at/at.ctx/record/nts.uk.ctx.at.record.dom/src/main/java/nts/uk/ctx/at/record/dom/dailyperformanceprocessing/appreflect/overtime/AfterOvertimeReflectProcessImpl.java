@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
@@ -27,27 +29,27 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Inject
 	private WorkUpdateService scheWorkUpdate;
 	@Override
-	public boolean checkScheReflect(OvertimeParameter overtimePara) {
+	public WorkInfoOfDailyPerformance checkScheReflect(OvertimeParameter overtimePara, WorkInfoOfDailyPerformance dailyInfor) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if((overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()
 				|| overtimePara.getOvertimePara().getWorkTypeCode().isEmpty())
 				//INPUT．勤種反映フラグをチェックする (勤種反映フラグ(実績))
 				|| !overtimePara.isActualReflectFlg()) {
-			return true;
+			return dailyInfor;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.NOTAUTO) {
-			return true;
+			return dailyInfor;
 		}
 		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
 			//INPUT．就業時間帯コードに値があるかチェックする
 			if(overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()) {
-				return true;
+				return dailyInfor;
 			}
 			//流動勤務かどうかの判断処理
 			boolean isWorktimeIsFluid = workTimeService.checkWorkTimeIsFluidWork(overtimePara.getOvertimePara().getWorkTimeCode());
 			if(!isWorktimeIsFluid) {
-				return false;
+				return dailyInfor;
 			}			
 		}
 		//INPUT．予定と実績を同じに変更する区分が「常に自動変更する」
@@ -57,20 +59,18 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				overtimePara.getDateInfo(),
 				overtimePara.getOvertimePara().getWorkTimeCode(), 
 				overtimePara.getOvertimePara().getWorkTypeCode());
-		scheWorkUpdateService.updateWorkTimeType(reflectPara, true);
-		
-		return false;
+		return scheWorkUpdateService.updateWorkTimeType(reflectPara, true, dailyInfor);
 	}
 
 	@Override
-	public void checkScheWorkStarEndReflect(OvertimeParameter overtimePara, 
-			boolean workReflect, WorkTimeTypeOutput workTimeType) {
+	public WorkInfoOfDailyPerformance checkScheWorkStarEndReflect(OvertimeParameter overtimePara, 
+			boolean workReflect, WorkTimeTypeOutput workTimeType, WorkInfoOfDailyPerformance dailyInfor) {
 		//設定による予定開始終了時刻を反映できるかチェックする
 		if(!this.checkReflectStartEndForSetting(overtimePara, workReflect)) {
-			return;
+			return dailyInfor;
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
-		scheStartEndTimeReflect.reflectScheStartEndTime(overtimePara, workTimeType);
+		return scheStartEndTimeReflect.reflectScheStartEndTime(overtimePara, workTimeType, dailyInfor);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	}
 
 	@Override
-	public void reflectOvertimeFrame(OvertimeParameter para) {
+	public AttendanceTimeOfDailyPerformance reflectOvertimeFrame(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
@@ -175,22 +175,23 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				tmp.put(entry.getKey(), entry.getValue());
 			}
 		}
-		scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, false);
+		return scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, false, attendanceTimeData);
 	}
 
 	@Override
-	public void reflectTimeShiftNight(String employeeId, GeneralDate baseDate, Integer timeNight) {
+	public AttendanceTimeOfDailyPerformance reflectTimeShiftNight(String employeeId, GeneralDate baseDate, Integer timeNight, 
+			AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		//INPUT．外深夜時間をチェックする
 		if(timeNight <= 0) {
-			return;
+			return attendanceTimeData;
 		}
 		//所定外深夜時間の反映
 		//所定外深夜時間を反映する + 所定外深夜時間の編集状態を更新する
-		scheWorkUpdate.updateTimeShiftNight(employeeId, baseDate, timeNight, false);
+		attendanceTimeData = scheWorkUpdate.updateTimeShiftNight(employeeId, baseDate, timeNight, false, attendanceTimeData);
 		//休出時間(深夜)(法内)の反映
 		//休出時間(深夜)(法外)の反映
 		//休出時間(深夜)(祝日)の反映
-		scheWorkUpdate.updateBreakNight(employeeId, baseDate);
+		return scheWorkUpdate.updateBreakNight(employeeId, baseDate, attendanceTimeData);
 		
 	}
 

@@ -11,8 +11,10 @@ import nts.arc.time.GeneralDate;
  */
 public interface AnnualLeaveTimeRemainHistRepository {
 
-	public void add(AnnualLeaveTimeRemainingHistory domain);
+	public void addOrUpdate(AnnualLeaveTimeRemainingHistory domain);
 	
 	public List<AnnualLeaveTimeRemainingHistory> findByCalcDateClosureDate(String employeeId, GeneralDate calculationStartDate, GeneralDate closureStartDate);
+	
+	public void deleteAfterDate(String employeeId, GeneralDate date);
 
 }

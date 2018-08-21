@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
- * @author HungTT
+ * @author HungTT - <<Work>> 年休残数計算
  *
  */
 
@@ -23,6 +23,7 @@ public class RemainAnnualLeaveCalculation {
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getRemainNum;
 
+	// 年休残数計算
 	public AggrResultOfAnnAndRsvLeave calculateRemainAnnualHoliday(AggrPeriodEachActualClosure period, String empId) {
 		String companyId = AppContexts.user().companyId();
 		return getRemainNum.algorithm(companyId, empId, period.getPeriod(), TempAnnualLeaveMngMode.MONTHLY,

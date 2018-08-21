@@ -29,6 +29,10 @@ td {
 	display: inline-block
 }
 
+.table_content{
+	width: 650px;
+}
+
 .method_info {
 	width: 650px;
 	margin-top: 50px;

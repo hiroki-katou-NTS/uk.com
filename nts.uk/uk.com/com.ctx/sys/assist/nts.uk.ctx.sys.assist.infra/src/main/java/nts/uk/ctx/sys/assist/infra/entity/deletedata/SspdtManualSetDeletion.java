@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.entity.deletedata;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -94,42 +95,42 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	
 	/** The start date of daily. */
 	/** 日次削除開始日 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_DATE_OF_DAILY")
 	public GeneralDate startDateOfDaily;
 	
 	/** The end date of daily. */
 	/** 日次削除終了日 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_DATE_OF_DAILY")
 	public GeneralDate endDateOfDaily;
 	
 	
 	/** The start month of monthly. */
 	/** 月次削除開始月  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_MONTH_OF_MONTHLY")
-	public GeneralDate startMonthOfMonthly;
+	public Integer startMonthOfMonthly;
 	
 	/** The end month of monthly. */
 	/** 月次削除終了月  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_MONTH_OF_MONTHLY")
-	public GeneralDate endMonthOfMonthly;
+	public Integer endMonthOfMonthly;
 	
 	
 	/** The start year of monthly. */
 	/** 年次開始年  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_YEAR_OF_MONTHLY")
-	public int startYearOfMonthly;
+	public Integer startYearOfMonthly;
 	
 	
 	/** The end year of monthly. */
 	/** 年次終了年  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_YEAR_OF_MONTHLY")
-	public int endYearOfMonthly;
+	public Integer endYearOfMonthly;
 	
 
 	@Override
@@ -152,13 +153,22 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 		int isSaveBeforeDeleteFlg = manualSetting.isSaveBeforeDeleteFlg() ? 1 : 0;
 		int isExistCompressPassFlg = manualSetting.isExistCompressPassFlg() ? 1 : 0;
 		int isHaveEmployeeSpecifiedFlg = manualSetting.isHaveEmployeeSpecifiedFlg() ? 1 : 0;
+		Optional<Integer> startMonthly = ManualSetDeletion.convertYearMonthToInt(manualSetting.getStartMonthOfMonthly());
+		Optional<Integer> endMonthly = ManualSetDeletion.convertYearMonthToInt(manualSetting.getEndMonthOfMonthly());
 		
 		return new SspdtManualSetDeletion(new SspdtManualSetDeletionPK(manualSetting.getDelId()),
 				manualSetting.getCompanyId(), manualSetting.getSystemType(), manualSetting.getDelName().v(), isSaveBeforeDeleteFlg,
-				isExistCompressPassFlg, manualSetting.getPasswordCompressFileEncrypt().v(), isHaveEmployeeSpecifiedFlg, 
-				manualSetting.getSId(), manualSetting.getSupplementExplanation().v(), manualSetting.getReferenceDate(), 
-				manualSetting.getExecutionDateTime(), manualSetting.getStartDateOfDaily(), manualSetting.getEndDateOfDaily(),
-				manualSetting.getStartMonthOfMonthly(), manualSetting.getEndMonthOfMonthly(), 
-				manualSetting.getStartYearOfMonthly(), manualSetting.getEndYearOfMonthly());
+				isExistCompressPassFlg, 
+				manualSetting.getPasswordCompressFileEncrypt().isPresent() ? manualSetting.getPasswordCompressFileEncrypt().get().v() : null, 
+				isHaveEmployeeSpecifiedFlg, manualSetting.getSId(), 
+				manualSetting.getSupplementExplanation().isPresent() ? manualSetting.getSupplementExplanation().get().v() : null, 
+				manualSetting.getReferenceDate().isPresent() ? manualSetting.getReferenceDate().get() : null, 
+				manualSetting.getExecutionDateTime(), 
+				manualSetting.getStartDateOfDaily().isPresent() ? manualSetting.getStartDateOfDaily().get() : null, 
+				manualSetting.getEndDateOfDaily().isPresent() ? manualSetting.getEndDateOfDaily().get() : null,
+				startMonthly.isPresent() ? startMonthly.get() : null, 
+				endMonthly.isPresent() ? endMonthly.get() : null, 
+				manualSetting.getStartYearOfMonthly().isPresent() ? manualSetting.getStartYearOfMonthly().get() : null, 
+				manualSetting.getEndYearOfMonthly().isPresent() ? manualSetting.getEndYearOfMonthly().get() : null);
 	}
 }

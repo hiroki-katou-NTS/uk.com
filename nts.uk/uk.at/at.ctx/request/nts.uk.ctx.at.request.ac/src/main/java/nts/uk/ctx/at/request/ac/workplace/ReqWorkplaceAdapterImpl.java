@@ -95,4 +95,9 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 		return wpkPub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
 	}
 
+	@Override
+	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
+		return wpkPub.findParentWpkIdsByWkpIdDesc(companyId, workplaceId, date);
+	}
+
 }

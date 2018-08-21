@@ -18,6 +18,72 @@ public class WorkTypeProcessor {
 	private WorkTypeQueryRepository workTypeQueryRepository;
 	
 	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findHdShipKaf022(int oneDayAtr, int morningAtr2, List<Integer> afternoon2, List<Integer> morningAtr3, int afternoon3, int morningAtr4, List<Integer> afternoon4, List<Integer> morningAtr5, int afternoon5){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findHdShipKaf022(companyId, oneDayAtr, morningAtr2, afternoon2, morningAtr3, afternoon3, morningAtr4, afternoon4, morningAtr5, afternoon5);
+	}
+	
+	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findHdTimeKaf022(){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findHdTimeKaf022(companyId);
+	}
+	
+	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findBounceKaf022(List<Integer> halfDay){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findBounceKaf022(companyId, halfDay);
+	}
+	
+	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findWkChangeKaf022(){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findWkChangeKaf022(companyId);
+	}
+	
+	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findAbsenceKaf022(Integer oneDayAtr, Integer morningAtr, Integer afternoonAtr){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findAbsenceKaf022(companyId, oneDayAtr, morningAtr, afternoonAtr);
+	}
+	
+	/**
+	 * Find work type by company for KAF022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	public List<WorkTypeDto> findOtKaf022(){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findOtKaf022(companyId);
+	}
+	
+	/**
 	 * Find work type by company 
 	 * @param companyId
 	 * @return

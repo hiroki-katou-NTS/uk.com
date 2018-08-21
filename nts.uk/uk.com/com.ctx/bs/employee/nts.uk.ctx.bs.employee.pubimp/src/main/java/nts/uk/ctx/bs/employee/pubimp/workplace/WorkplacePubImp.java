@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -484,6 +485,9 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		Optional<WorkplaceConfigInfo> wkpConfigInfo = workplaceConfigInfoRepo.findAllByParentWkpId(companyId, baseDate,
 				workplaceId);
 
+		if (!wkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
 		List<WorkplaceHierarchy> listWkpHierachy = wkpConfigInfo.get().getLstWkpHierarchy();
 
 		return listWkpHierachy.stream().map(wkpHierachy -> wkpHierachy.getWorkplaceId()).collect(Collectors.toList());
@@ -696,14 +700,26 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<WorkplaceInfo> wkpInfoLst = workplaceInfoRepo.findByWkpIds(companyID, wkpIDLst.entrySet().stream().map(x -> x.getValue()).collect(Collectors.toList()));
 		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
 		dateHistoryItemLst.forEach(x -> {
-			String wkpID = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny().get().getValue();
-			WorkplaceInfo wkpInfo = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny().get();
-			wkpInfoExportLst.add(
-					new WkpInfoExport(
+			Optional<Entry<String,String>> wkpIDItem = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny();
+			if(!wkpIDItem.isPresent()){
+				for(int i = 0; i< 10; i++){
+					System.out.println("lỗi dữ liệu WorkplacePubImp line 703");
+				}
+				return;
+			}
+			String wkpID = wkpIDItem.get().getValue();
+			WkpInfoExport wkpInfoExport = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny()
+					.map(k -> new WkpInfoExport(
 							x.span(), 
-							wkpInfo.getWorkplaceId(), 
-							wkpInfo.getWorkplaceCode().toString(), 
-							wkpInfo.getWorkplaceName().toString()));
+							k.getWorkplaceId(), 
+							k.getWorkplaceCode().toString(), 
+							k.getWorkplaceName().toString()))
+					.orElse(new WkpInfoExport(
+							x.span(), 
+							wkpID, 
+							"マスタ未登録", 
+							"マスタ未登録"));
+			wkpInfoExportLst.add(wkpInfoExport);
 		});
 		return new WkpByEmpExport(employeeID, wkpInfoExportLst);
 	}
@@ -744,6 +760,25 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getLstPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){
+		List<WorkplaceConfig> wkps = this.wkpConfigRepository.findByCompanyIdAndPeriod(companyId, period);
+		
+		List<DatePeriod> dateList = new ArrayList<>();
+		
+		wkps.stream().map(item -> { 
+			List<DatePeriod> dates = new ArrayList<>();
+			dates = item.getWkpConfigHistory().stream().map(hst -> {
+				return hst.span();
+			}).collect(Collectors.toList());
+			return dates;
+		}).collect(Collectors.toList());
+		
+		return dateList;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -767,5 +802,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return optWorkplaceConfigInfo.get().getLstWkpHierarchy().stream()
 				.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList());
 	}
-
+		
+	
 }

@@ -49,7 +49,7 @@ public class SaveSpecialHolidayEventCommand {
 	private int ageStandard;
 
 	/* 年齢基準 */
-	private String ageStandardBaseDate;
+	private Integer ageStandardBaseDate;
 
 	/* メモ */
 	private String memo;
@@ -84,11 +84,6 @@ public class SaveSpecialHolidayEventCommand {
 
 	public int getRestrictClassification() {
 		return this.restrictClassification == true ? 1 : 0;
-	}
-
-	public GeneralDate getAgeStandardBaseDate() {
-		return !StringUtils.isEmpty(this.ageStandardBaseDate)
-				? GeneralDate.fromString(this.ageStandardBaseDate, "yyyy/MM/dd") : null;
 	}
 
 }

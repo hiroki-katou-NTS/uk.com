@@ -221,37 +221,21 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
 		List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
 		//残業申請: get full info (0)
-//		for (Application_New app : lstOverTime) {
-//			AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
-//			lstAppOt.add(appOt);
-//		}
 		List<String> lstAppOtID = lstOverTime.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 		if(!lstAppOtID.isEmpty()){
 			lstAppOt = repoAppDetail.getListAppOverTimeInfo(companyId, lstAppOtID);
 		}
 		//直行直帰申請: get full info(4)
-//		for (Application_New app : lstGoBack) {
-//			AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
-//			lstAppGoBack.add(appGoBack);
-//		}
 		List<String> lstAppGoBackID = lstGoBack.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 		if(!lstAppGoBackID.isEmpty()){
 			lstAppGoBack = repoAppDetail.getListAppGoBackInfo(companyId, lstAppGoBackID);
 		}
 		//休日出勤時間申請: get full info(6);
-//		for (Application_New app : lstHdWork) {
-//			AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
-//			lstAppHdWork.add(appHdWork);
-//		}
 		List<String> lstAppHdID = lstHdWork.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 		if(!lstAppHdID.isEmpty()){
 			lstAppHdWork = repoAppDetail.getListAppHdWorkInfo(companyId, lstAppHdID);
 		}
 		//勤務変更申請: get full info(2);
-//		for (Application_New app : lstWkChange) {
-//			AppWorkChangeFull appwrkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
-//			lstAppWkChange.add(appwrkChange);
-//		}
 		List<String> lstAppWkChangeID = lstWkChange.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 		if(!lstAppWkChangeID.isEmpty()){
 			lstAppWkChange = repoAppDetail.getListAppWorkChangeInfo(companyId, lstAppWkChangeID);
@@ -1224,7 +1208,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		//取得できなかった場合
 		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParent(companyId, wkpId, date);
+		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
 		if(lstWpkIDPr.size() > 1){
 			for (int i=1;i < lstWpkIDPr.size(); i++) {
 				//ドメイン「職場別申請承認設定」を取得する

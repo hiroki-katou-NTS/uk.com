@@ -14,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,6 +32,9 @@ public class SpecialHolidayEventFinder {
 	@Inject
 	private SpecialHolidayEventRepository sHEventRepo;
 
+	@Inject
+	private NursingLeaveSettingRepository nurRepo;
+
 	public List<SpecialHolidayFrameWithSettingDto> getFrames() {
 
 		List<SpecialHolidayFrameWithSettingDto> result;
@@ -43,18 +48,14 @@ public class SpecialHolidayEventFinder {
 			throw new BusinessException("Msg_1337");
 
 		}
-
+		List<Integer> hasSettingNos = new ArrayList<Integer>();
 		/// ドメインモデル「特別休暇．対象項目．対象の特別休暇枠」を取得する(lấy domain 「特別休暇．対象項目．対象の特別休暇枠」)
-		List<SpecialHoliday> sHs = sHRepo.findByCompanyId(companyId);
+		addSpecialNos(companyId, hasSettingNos);
+		// ドメインモデル「介護看護休暇設定．特別休暇枠」「介護看護休暇設定．欠勤枠」を取得する
+		addNursingNos(companyId, hasSettingNos);
 
-		List<Integer> hasSettingSHsNos = new ArrayList<Integer>();
-		sHs.forEach(x -> {
-			if (x.getTargetItem() != null) {
-				hasSettingSHsNos.addAll(x.getTargetItem().getFrameNo());
-			}
-		});
 		// AからBを取り除く(Remove B khỏi A)
-		sHFrames = sHFrames.stream().filter(x -> !hasSettingSHsNos.contains(x.getSpecialHdFrameNo()))
+		sHFrames = sHFrames.stream().filter(x -> !hasSettingNos.contains(x.getSpecialHdFrameNo()))
 				.collect(Collectors.toList());
 
 		if (CollectionUtil.isEmpty(sHFrames)) {
@@ -80,6 +81,29 @@ public class SpecialHolidayEventFinder {
 			setSettingFrames(result, sHEvents);
 		}
 		return result;
+	}
+
+	private void addSpecialNos(String companyId, List<Integer> hasSettingNos) {
+		List<SpecialHoliday> sHs = sHRepo.findByCompanyId(companyId);
+		sHs.forEach(x -> {
+			if (x.getTargetItem() != null) {
+				hasSettingNos.addAll(x.getTargetItem().getFrameNo());
+			}
+		});
+
+	}
+
+	private void addNursingNos(String companyId, List<Integer> hasSettingNos) {
+		List<NursingLeaveSetting> nurSettings = this.nurRepo.findByCompanyId(companyId);
+		if (nurSettings != null) {
+			nurSettings.forEach(x -> {
+				if (x.getSpecialHolidayFrame() != null) {
+					x.getSpecialHolidayFrame().ifPresent(value -> {
+						hasSettingNos.add(value);
+					});
+				}
+			});
+		}
 	}
 
 	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,

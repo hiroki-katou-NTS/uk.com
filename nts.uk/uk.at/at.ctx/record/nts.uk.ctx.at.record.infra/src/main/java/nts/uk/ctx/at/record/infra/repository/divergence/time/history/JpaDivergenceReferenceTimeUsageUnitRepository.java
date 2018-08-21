@@ -66,4 +66,12 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 				entity);
 		return new DivergenceReferenceTimeUsageUnit(memento);
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository#add(nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnit)
+	 */
+	@Override
+	public void add(DivergenceReferenceTimeUsageUnit domain) {
+		this.commandProxy().insert(this.toEntity(domain));
+	}
 }

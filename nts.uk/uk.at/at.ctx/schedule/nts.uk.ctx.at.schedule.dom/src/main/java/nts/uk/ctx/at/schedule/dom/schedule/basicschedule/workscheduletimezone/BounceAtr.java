@@ -10,20 +10,20 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 public enum BounceAtr {
 	
 	/** The no direct bounce. */
-	// 直帰のみ
-	NO_DIRECT_BOUNCE(0, "Enum_BounceAtr_noDirectBounce", " 直帰のみ"),
+	// 直行直帰なし
+	NO_DIRECT_BOUNCE(0, "Enum_BounceAtr_noDirectBounce", " 直行直帰なし"),
 
 	/** The directly only. */
-	// 直行直帰
-	DIRECTLY_ONLY(1, "Enum_BounceAtr_directlyOnly", "直行直帰"),
+	// 直行のみ
+	DIRECTLY_ONLY(1, "Enum_BounceAtr_directlyOnly", "直行のみ"),
 
 	/** The bounce only. */
-	// 直行のみ
-	BOUNCE_ONLY(2, "Enum_BounceAtr_bounceOnly", "直行のみ"),
+	// 直帰のみ
+	BOUNCE_ONLY(2, "Enum_BounceAtr_bounceOnly", "直帰のみ"),
 	
 	/** The direct bounce. */
-	// 直行直帰なし
-	DIRECT_BOUNCE(3, "Enum_BounceAtr_directBounce", "直行直帰なし");
+	// 直行直帰
+	DIRECT_BOUNCE(3, "Enum_BounceAtr_directBounce", "直行直帰");
 
 	/** The value. */
 	public final int value;

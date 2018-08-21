@@ -7,10 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 845, height: 350 };</script>
+			<script>var dialogSize = { width: 860, height: 350 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
+				nts.uk.ctx.at.request.dom.setting.workplace.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.ja.main.css" />
@@ -43,7 +44,7 @@
 					<div id="name"
 						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">#{i18n.getText('KSU001_904')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName'}" />
+						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName', name: '#[KSU001_904]'}" />
 					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
 					<div class="cf"
 						data-bind="ntsSwitchButton: {
@@ -54,8 +55,8 @@
 							enable: true }"></div>
 				</div>
 				<div class="mt-10">
-					<div style="margin-right: 38px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
-					<input id="note" data-bind="ntsTextEditor: {value: note}" />
+					<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KSU001_906')}</div>
+					<input id="note" data-bind="ntsTextEditor: {value: note, constraint: 'Memo', name: '#[KSU001_906]'}" />
 				</div>
 				<div>
 					<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>
@@ -63,7 +64,7 @@
 						<span>#{i18n.getText('KSU001_1701')}</span>
 						<div>
 							<input
-								data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true}" />
+								data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true, name: '#[KSU001_1702]'}" />
 							<button class="proceed"
 								data-bind="enable: $root.errors.isEmpty, click: decision">#{i18n.getText('KSU001_1703')}</button>
 							<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>

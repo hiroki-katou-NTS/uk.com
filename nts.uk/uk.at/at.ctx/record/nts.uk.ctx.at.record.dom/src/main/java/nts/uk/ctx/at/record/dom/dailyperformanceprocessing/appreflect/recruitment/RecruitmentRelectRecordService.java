@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 /**
  * 事前申請の処理(振出申請)
  * @author do_dt
@@ -23,7 +21,7 @@ public interface RecruitmentRelectRecordService {
 	 * 予定勤種就時の反映
 	 * @param param
 	 */
-	public void reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre);
+	public WorkInfoOfDailyPerformance reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre, WorkInfoOfDailyPerformance dailyInfo);
 	/**
 	 * 開始終了時刻の反映
 	 * @param param

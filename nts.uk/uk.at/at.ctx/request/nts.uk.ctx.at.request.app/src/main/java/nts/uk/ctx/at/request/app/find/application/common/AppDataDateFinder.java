@@ -69,7 +69,7 @@ public class AppDataDateFinder {
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID){
+	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID, int overtimeAtr){
 		String companyID = AppContexts.user().companyId();
 		if(employeeID == null){
 			 employeeID = AppContexts.user().employeeId();
@@ -137,7 +137,7 @@ public class AppDataDateFinder {
 				} 
 			}
 		}
-		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
+		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate), overtimeAtr);
 		return new AppDateDataDto(
 				outputMessageDeadline, 
 				approvalRootContentImport == null ? null : 

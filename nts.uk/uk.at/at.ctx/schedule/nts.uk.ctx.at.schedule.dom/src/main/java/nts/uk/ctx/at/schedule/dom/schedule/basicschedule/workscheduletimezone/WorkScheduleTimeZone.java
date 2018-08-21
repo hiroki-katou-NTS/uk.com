@@ -118,19 +118,15 @@ public class WorkScheduleTimeZone extends DomainObject {
 		this.bounceAtr = bounceAtr;
 	}
 	
-	public boolean equalScheduleCnt(int scheCnt){
-		return scheduleCnt == scheCnt;
+	public boolean diffScheduleStartClock(TimeWithDayAttr scheStartClock){
+		return scheduleStartClock.v().intValue() != scheStartClock.v().intValue();
 	}
 	
-	public boolean equalScheduleStartClock(TimeWithDayAttr scheStartClock){
-		return scheduleStartClock.v() == scheStartClock.v();
+	public boolean diffScheduleEndClock(TimeWithDayAttr scheEndClock){
+		return scheduleEndClock.v().intValue() != scheEndClock.v().intValue();
 	}
 	
-	public boolean equalScheduleEndClock(TimeWithDayAttr scheEndClock){
-		return scheduleEndClock.v() == scheEndClock.v();
-	}
-	
-	public boolean equalBounceAtr(BounceAtr bAtr){
-		return bounceAtr.value == bAtr.value;
+	public boolean diffBounceAtr(BounceAtr bAtr){
+		return bounceAtr.value != bAtr.value;
 	}
 }

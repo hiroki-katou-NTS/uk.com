@@ -94,6 +94,11 @@ module nts.uk.at.view.kfp001.d {
                         presenceOfError: self.presenceOfError(),
                         executionStatus: self.executionStatus()
                     }
+                    let period = {
+                        startDate: self.startDate(),
+                        endDate: self.endDate()      
+                    }
+                    nts.uk.ui.windows.setShared("KFP001_PERIOD", period);
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);

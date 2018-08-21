@@ -9,4 +9,10 @@ public class AnyItemTime extends TimeAsMinutesPrimitiveValue<AnyItemTime>{
 	public AnyItemTime(Integer rawValue) {
 		super(rawValue);
 	}
+
+	@Override
+	protected String getPaddedMinutePart() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

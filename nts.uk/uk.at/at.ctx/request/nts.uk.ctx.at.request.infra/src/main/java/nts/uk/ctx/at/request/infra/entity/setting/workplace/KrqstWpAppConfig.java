@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
-import nts.uk.ctx.at.request.dom.setting.workplace.Memo500;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.SelectionFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
@@ -73,14 +72,14 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 							SettingFlg.toEnum(x.prerequisiteForpauseFlg), 
 							new InstructionUseSetting(
 									InstructionCategory.toEnum(x.instructionAtr), 
-									new Memo500(x.instructionMemo), 
+									new Memo(x.instructionMemo), 
 									UseAtr.toEnum(x.instructionUseAtr)), 
 							SettingFlg.toEnum(x.holidayTimeAppCalFlg), 
 							SettingFlg.toEnum(x.otAppSettingFlg), 
 							SettingFlg.toEnum(x.lateOrLeaveAppCancelFlg), 
 							SettingFlg.toEnum(x.lateOrLeaveAppSettingFlg), 
 							new ApplicationUseSetting(
-									new Memo500(x.memo), 
+									new Memo(x.memo), 
 									UseAtr.toEnum(x.useAtr), 
 									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
 							Optional.of(new ApplicationDetailSetting(

@@ -114,7 +114,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 				user.getMultiCompanyConcurrent().value,
 				user.getMailAddress().isPresent() ? user.getMailAddress().get().v():null,
 				user.getUserName().isPresent() ? user.getUserName().get().v() : null,
-				user.getAssociatedPersonID().get(),
+				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : null,
 				user.getPassStatus().value	);
 	}
 	

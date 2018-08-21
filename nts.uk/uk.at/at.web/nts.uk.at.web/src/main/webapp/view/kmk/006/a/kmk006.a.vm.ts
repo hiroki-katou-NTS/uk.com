@@ -20,8 +20,7 @@ module nts.uk.at.view.kmk006.a {
     import UnitAutoCalSettingDto = nts.uk.at.view.kmk006.e.service.model.UnitAutoCalSettingDto;
 
     export module viewmodel {
-
-        export class ScreenModel {
+        export class ScreenModel { 
             totalSelectedWorkplaceId: KnockoutObservable<string>;
             multiSelectedWorkplaceId: KnockoutObservable<string>;
             wkpAlreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -139,11 +138,11 @@ module nts.uk.at.view.kmk006.a {
                 self.initDataSource();
                 self.initNextTabFeature();
                 
-                self.autoCalcOfLeaveLate = ko.observable(true);
-                self.autoCalcOfLeaveEarly = ko.observable(true);
-                self.raisingSalaryCalcAtr = ko.observable(true);
-                self.specificRaisingSalaryCalcAtr = ko.observable(true);
-                self.divergenceTime = ko.observable(1);
+                self.autoCalcOfLeaveLate = ko.observable(false);
+                self.autoCalcOfLeaveEarly = ko.observable(false);
+                self.raisingSalaryCalcAtr = ko.observable(false);
+                self.specificRaisingSalaryCalcAtr = ko.observable(false);
+                self.divergenceTime = ko.observable(0);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
                 self.totalSelectedWorkplaceId = ko.observable('');
@@ -256,6 +255,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE) return;
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
                         self.loadWkpAutoCal(codeChanged);
@@ -290,6 +290,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;                    
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){
                         if(!nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
@@ -325,6 +326,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.totalSelectedCode.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;
                     self.selectedCurrentJob(codeChanged);
                     self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), codeChanged);
                     let data = $('#jobtitles').getDataList();
@@ -352,7 +354,8 @@ module nts.uk.at.view.kmk006.a {
                 });
 
                 //subscribe 
-                self.selectedCode.subscribe(function(codeChanged) {                 
+                self.selectedCode.subscribe(function(codeChanged) {    
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.JOBTITLE) return;         
                     self.selectedCurrentJob(codeChanged);
                     self.loadJobAutoCal(codeChanged);
                     let data = $('#component-items-list').getDataList();
@@ -1264,7 +1267,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1306,7 +1309,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1349,7 +1352,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1386,7 +1389,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
         //        AutoCalOvertimeSettingDto
@@ -1502,8 +1505,8 @@ module nts.uk.at.view.kmk006.a {
             specificRaisingSalaryCalcAtr: KnockoutObservable<boolean>;    
             
             constructor(){
-                this.raisingSalaryCalcAtr = ko.observable(true);
-                this.specificRaisingSalaryCalcAtr = ko.observable(true);
+                this.raisingSalaryCalcAtr = ko.observable(false);
+                this.specificRaisingSalaryCalcAtr = ko.observable(false);
             }
             
             updateData(dto: AutoCalRaisingSalarySettingDto) {
@@ -1519,8 +1522,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.raisingSalaryCalcAtr(true);
-                this.specificRaisingSalaryCalcAtr(true);
+                this.raisingSalaryCalcAtr(false);
+                this.specificRaisingSalaryCalcAtr(false);
             }
         }
         
@@ -1529,8 +1532,8 @@ module nts.uk.at.view.kmk006.a {
             autoCalcOfLeaveLate: KnockoutObservable<boolean>;
             autoCalcOfLeaveEarly: KnockoutObservable<boolean>;            
             constructor(){
-                this.autoCalcOfLeaveLate = ko.observable(true);
-                this.autoCalcOfLeaveEarly = ko.observable(true);    
+                this.autoCalcOfLeaveLate = ko.observable(false);
+                this.autoCalcOfLeaveEarly = ko.observable(false);    
             }
             
             updateData(dto: AutoCalcOfLeaveEarlySettingDto) {
@@ -1546,8 +1549,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.autoCalcOfLeaveLate(true);
-                this.autoCalcOfLeaveEarly(true);
+                this.autoCalcOfLeaveLate(false);
+                this.autoCalcOfLeaveEarly(false);
             }
         }
                
@@ -1621,6 +1624,11 @@ module nts.uk.at.view.kmk006.a {
             isAlreadySetting: boolean;
         }
 
+        export class SIDEBAR_TAB_INDEX {
+            static WORKPLACE = 1;
+            static JOBTITLE = 2;
+            static WORKPLACE_JOBTITLE = 3;
+        }
 
     }
 }

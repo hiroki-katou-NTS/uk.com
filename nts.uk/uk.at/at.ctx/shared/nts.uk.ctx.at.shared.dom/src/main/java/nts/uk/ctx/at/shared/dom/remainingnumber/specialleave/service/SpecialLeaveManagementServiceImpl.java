@@ -96,7 +96,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			DatePeriod complileDate) {
 		//ドメインモデル「特別休暇付与残数データ」を取得する
 		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
-				complileDate.end(), complileDate.start());
+				complileDate.start());
 		//社員の特別休暇情報を取得する
 		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = inforSpeLeaveEmpService.getInforSpecialLeaveOfEmployee(cid, sid, specialLeaveCode, complileDate);
 		if(getSpecialHolidayOfEmp.getStatus() != InforStatus.NOTGRANT
@@ -137,7 +137,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	 * @param lstMemoryData
 	 * @return
 	 */
-	private List<SpecialLeaveGrantRemainingData> adjustGrantData(List<SpecialLeaveGrantRemainingData> lstDatabase, List<SpecialLeaveGrantRemainingData> lstMemoryData){
+	private List<SpecialLeaveGrantRemainingData> adjustGrantData(List<SpecialLeaveGrantRemainingData> lstDatabase, 
+			List<SpecialLeaveGrantRemainingData> lstMemoryData){
 		//INPUT．「特別休暇付与残数データ」(old)をOUTPUT．「特別休暇付与残数データ」に追加する
 		List<SpecialLeaveGrantRemainingData> lstOutputData = new ArrayList<>(lstDatabase);
 		//INPUT．「特別休暇付与残数データ」(new)をループする
@@ -162,10 +163,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		List<InterimRemain> lstInterimMng = interimDataMng.getLstInterimMng();
 		List<UseDaysOfPeriodSpeHoliday> lstUseDays = new ArrayList<>();
 		//INPUT．特別休暇暫定データ一覧をループする
-		double beforeUseDays = offsetDays.getBeforeUseDays();
-		double afterUseDays = offsetDays.getAfterUseDays();
-		double beforeUseDaysRemain = beforeUseDays;
-		double afterUseDaysRemain = afterUseDays;
+		double beforeUseDaysRemain = offsetDays.getBeforeUseDays();
+		double afterUseDaysRemain = offsetDays.getAfterUseDays();
 		List<SpecialLeaveGrantRemainingData> specialLeaverDataTmp = new ArrayList<>(specialLeaverData);
 		List<InterimSpecialHolidayMng> tmpInterimSpeData = new ArrayList<>(interimSpeHolidayData);
 		int count = 0;
@@ -187,7 +186,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				//ループ中の「特別休暇暫定データ」を「特別休暇期間外の使用」に追加する
 				UseDaysOfPeriodSpeHoliday useDaysOPeriod = new UseDaysOfPeriodSpeHoliday(interimMng.getYmd(), 
 						speHolidayData.getUseDays().isPresent() ? Optional.of(speHolidayData.getUseDays().get().v()) : Optional.empty(), 
-								speHolidayData.getUseTimes() != null && speHolidayData.getUseTimes().isPresent() ? Optional.of(speHolidayData.getUseTimes().get().v()) : Optional.empty());
+								speHolidayData.getUseTimes() != null && speHolidayData.getUseTimes().isPresent() 
+								? Optional.of(speHolidayData.getUseTimes().get().v()) : Optional.empty());
 				lstUseDays.add(useDaysOPeriod);
 			}
 			if(!specialLeaverData.isEmpty()) {

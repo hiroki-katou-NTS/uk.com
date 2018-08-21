@@ -72,6 +72,7 @@ var nts;
                 var stringValue = uk.text.replaceAll(value.toString().trim(), groupSeperator, '');
                 var isMinus = stringValue.charAt(0) === '-';
                 var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+                isMinus = parseFloat(stringValue) < 0;
                 if (groupLength > 0) {
                     var x = values[0].split('').reverse().join('');
                     for (var i = 0; i < x.length;) {
@@ -2275,7 +2276,7 @@ var nts;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
             function parseMoment(datetime, outputFormat, inputFormat) {
-                var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
+                var inputFormats = (inputFormat) ? findSame(inputFormat) : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
                 if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
@@ -2299,6 +2300,43 @@ var nts;
                 return result;
             }
             time_1.parseMoment = parseMoment;
+            function findSame(format) {
+                var result = [], splited = format.split(" "), isHasYear = _.indexOf(splited[0], "Y") >= 0, isHasMonth = _.indexOf(splited[0], "M") >= 0, isHasDay = _.indexOf(splited[0], "D") >= 0, separator = splited[0].replace(/Y/g, "").replace(/M/g, "").replace(/D/g, "").charAt(0), years = isHasYear ? ["YYYY", ""] : [""], months = isHasMonth ? ["M", "MM"] : [""], days = isHasDay ? ["D", "DD"] : [""], separators = ["", separator], isTime = _.size(splited) > 1;
+                result.push(format);
+                _.forEach(years, function (y) {
+                    _.forEach(months, function (m) {
+                        _.forEach(days, function (d) {
+                            var r = [];
+                            if (!_.isEmpty(y)) {
+                                r.push(y);
+                            }
+                            if (!_.isEmpty(m)) {
+                                r.push(m);
+                            }
+                            if (!_.isEmpty(d)) {
+                                r.push(d);
+                            }
+                            if (!_.isEmpty(r)) {
+                                _.forEach(separators, function (s) {
+                                    if (isTime) {
+                                        result.push(_.join([_.join(r, s), splited[1]], ' '));
+                                    }
+                                    else {
+                                        result.push(_.join(r, s));
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+                //        result.push(format.replace(/\//g, ""));
+                //        result.push(format.replace("MM", "M"));
+                //        result.push(format.replace("DD", "D"));
+                //        result.push(format.replace("MM", "M").replace("DD", "D"));
+                //        result.push(format.replace(/:/g, ""));
+                //        result.push(format.replace(/\//g, "").replace(/:/g, ""));
+                return result;
+            }
             function findFormat(format) {
                 if (nts.uk.util.isNullOrEmpty(format)) {
                     return defaultInputFormat;
@@ -3775,7 +3813,8 @@ var nts;
                 }
                 var d = new Date();
                 d.setTime(d.getTime() + (10 * 60 * 1000));
-                $.cookie('startfrommenu', "true", { expires: d });
+                //        $.cookie('startfrommenu', "true", { expires: d });
+                document.cookie = "startfrommenu=true";
                 jump(appId, path.substr(end));
             }
             request.jumpToMenu = jumpToMenu;
@@ -3878,11 +3917,11 @@ var nts;
                     this.systemName = ko.observable("");
                     this.programName = ko.observable("");
                     this.title = ko.computed(function () {
-                        var pgName = _this.programName();
-                        if (pgName === "" || pgName === undefined || pgName === null) {
-                            return _this.systemName();
-                        }
-                        return _this.programName() + " - " + _this.systemName();
+                        //                let pgName = this.programName();
+                        //                if (pgName === "" || pgName === undefined || pgName === null) {
+                        return _this.systemName();
+                        //                }
+                        //                return this.programName() + " - " + this.systemName();
                     });
                     this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
                 }
@@ -3912,7 +3951,7 @@ var nts;
                     ko.applyBindings(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    $.cookie('startfrommenu', null, { expires: 0 });
+                    nts.uk.cookie.remove("startfrommenu", { path: "/" });
                     //avoid page content overlap header and function area
                     var content_height = 20;
                     if ($("#header").length != 0) {
@@ -5429,6 +5468,13 @@ var nts;
                 return textId;
             }
             ui.localize = localize;
+            function writeViewConstraint(constraint) {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)) {
+                    __viewContext.primitiveValueConstraints = {};
+                }
+                __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;
+            }
+            ui.writeViewConstraint = writeViewConstraint;
             ui.confirmSave = function (dirtyChecker) {
                 var frame = ui.windows.getSelf();
                 if (frame.$dialog === undefined || frame.$dialog === null) {
@@ -15252,6 +15298,7 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
+                var _ = window['_'], $ = window['$'], ko = window['ko'];
                 var count = nts.uk.text.countHalf;
                 var WoC = 9, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = /** @class */ (function () {
@@ -15273,18 +15320,13 @@ var nts;
                             // columns
                             columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
-                                'style': 'padding-left: 2px; color: #000; height: 29px',
-                                click: function (evt) {
-                                    if ($element.data(IGCOMB)) {
-                                        if ($element.igCombo(OPENED)) {
-                                            $element.igCombo(CLOSEDDL);
-                                            evt.stopPropagation();
-                                        }
-                                        else {
-                                            $element.igCombo(OPENDDL, function () { }, true, true);
-                                            evt.stopPropagation();
-                                        }
-                                    }
+                                'css': {
+                                    'color': '#000',
+                                    'height': '30px',
+                                    'padding-left': '3px',
+                                    'position': 'absolute',
+                                    'left': '0px',
+                                    'right': '0px'
                                 }
                             });
                             // filter valid options
@@ -15316,14 +15358,22 @@ var nts;
                                         $show.find("." + k.toLowerCase() + ":not(:last-child)")
                                             .css('width', cws[k] * WoC + "px");
                                         $show.find("." + k.toLowerCase())
-                                            .css('height', '31px')
-                                            .css('line-height', '27px')
-                                            .find('.nts-column:last-child').css('margin-right', 0);
-                                        ;
+                                            .css({
+                                            'height': '31px',
+                                            'line-height': '27px'
+                                        })
+                                            .find('.nts-column:last-child')
+                                            .css('margin-right', 0);
                                     });
                                 }
                                 else {
-                                    $show.empty();
+                                    // show text
+                                    if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
+                                        $show.html($('<div>', { 'class': 'nts-combo-column', text: ko.toJS(accessor.nullText), css: { 'line-height': '27px' } }));
+                                    }
+                                    else {
+                                        $show.empty();
+                                    }
                                 }
                             })
                                 // define event changed for save default data
@@ -15377,7 +15427,7 @@ var nts;
                                 placeHolder: '',
                                 textKey: 'nts_' + optionsText,
                                 valueKey: optionsValue,
-                                mode: editable ? EDITABLE : DROPDOWN,
+                                mode: EDITABLE,
                                 disabled: !ko.toJS(enable),
                                 enableClearButton: false,
                                 itemTemplate: template,
@@ -15388,13 +15438,43 @@ var nts;
                                 rendered: function (evt, ui) {
                                     $element
                                         .find('.ui-igcombo')
-                                        .css('background', '#f6f6f6')
+                                        .css('background', '#fff')
                                         .find('.ui-igcombo-fieldholder').hide();
                                     $element
                                         .find('.ui-igcombo-hidden-field')
                                         .parent()
-                                        .append($show)
-                                        .css('overflow', 'hidden');
+                                        .prepend($show)
+                                        .css({
+                                        'overflow': 'hidden',
+                                        'position': 'relative'
+                                    })
+                                        .find('.ui-igcombo-button')
+                                        .css({
+                                        'float': 'none',
+                                        'width': '100%',
+                                        'border': '0px',
+                                        'padding': '0px',
+                                        'position': 'absolute',
+                                        'box-sizing': 'border-box',
+                                        'background-color': 'transparent'
+                                    })
+                                        .find('.ui-igcombo-buttonicon')
+                                        .text('▼')
+                                        .css({
+                                        'right': '0px',
+                                        'font-size': '0.85rem',
+                                        'top': '0px',
+                                        'bottom': '0px',
+                                        'display': 'block',
+                                        'background-color': '#ececec',
+                                        'width': '30px',
+                                        'text-align': 'center',
+                                        'line-height': '30px',
+                                        'margin': '0px',
+                                        'border-left': '1px solid #ccc'
+                                    })
+                                        .removeClass('ui-icon')
+                                        .removeClass('ui-icon-triangle-1-s');
                                 },
                                 itemsRendered: function (evt, ui) {
                                     var data = $element.data(DATA) || {}, cws = data[CWIDTH] || [], ks = _.keys(cws);
@@ -15442,16 +15522,21 @@ var nts;
                                         .prependTo(ui.list);
                                     // show searchbox if editable
                                     var $input = ui.list
+                                        .attr('dropdown-for', $element.attr('id'))
                                         .find('.ui-igcombo-fieldholder')
-                                        .css('height', !!data[EDITABLE] ? '' : '0px')
-                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
-                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                                        .css({
+                                        'height': !!data[EDITABLE] ? '' : '0px',
+                                        'padding': !!data[EDITABLE] ? '3px' : '',
+                                        'background-color': !!data[EDITABLE] ? '#f6f6f6' : ''
+                                    })
                                         .show()
                                         .find('input')
-                                        .css('width', '0px')
-                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
-                                        .css('text-indent', !!data[EDITABLE] ? '0' : '-99999px')
-                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                                        .css({
+                                        'width': '0px',
+                                        'height': !!data[EDITABLE] ? '30px' : '0px',
+                                        'text-indent': !!data[EDITABLE] ? '0' : '-99999px',
+                                        'border': !!data[EDITABLE] ? '1px solid #ccc' : 'none'
+                                    });
                                     if (!$input.data('_nts_bind')) {
                                         $input
                                             .on(KEYDOWN, function (evt, ui) {
@@ -15478,7 +15563,9 @@ var nts;
                                         .find('.nts-column:last-child')
                                         .css('margin-right', 0);
                                     setTimeout(function () {
-                                        $input.css('width', ($(ui.list).width() - 6) + 'px');
+                                        $input.css({
+                                            'width': ($(ui.list).width() - 6) + 'px'
+                                        });
                                     }, 25);
                                 }
                             })
@@ -15488,8 +15575,10 @@ var nts;
                                 .on('blur', function () { $element.css('box-shadow', ''); })
                                 .on('focus', function () {
                                 $element
-                                    .css('outline', 'none')
-                                    .css('box-shadow', '0 0 1px 1px #0096f2');
+                                    .css({
+                                    'outline': 'none',
+                                    'box-shadow': '0 0 1px 1px #0096f2'
+                                });
                             });
                         };
                         this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -15561,6 +15650,10 @@ var nts;
                                 }
                                 else {
                                     value = undefined;
+                                    //save old value
+                                    if (!_.isNil(ko.toJS(accessor.value))) {
+                                        $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
+                                    }
                                 }
                                 accessor.value(value);
                             }
@@ -15764,6 +15857,7 @@ var nts;
                                 }
                                 //                    container.data("changed", true);
                                 value(result.parsedValue);
+                                value.valueWillMutate();
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -17096,7 +17190,7 @@ var nts;
                         });
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
-                            if (!$input.attr('readonly') && code.toString() !== '9') {
+                            if (!$input.attr('readonly') && _.toString(code) !== '9') {
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
@@ -17280,7 +17374,13 @@ var nts;
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
                                 // Remove separator (comma)
-                                $input.val(data.value());
+                                var numb = Number(data.value());
+                                if (_.isNumber(numb) && !_.isNaN(numb)) {
+                                    $input.val(numb);
+                                }
+                                else {
+                                    $input.val(data.value());
+                                }
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
                                 if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
@@ -18046,6 +18146,16 @@ var nts;
                                 disableRows(disables);
                             }
                         }
+                        var currentSources = sources.slice();
+                        var currentSelectedItems = $grid.ntsGridList('getSelected');
+                        var removed = _.differenceWith(currentSelectedItems, currentSources, function (c1, c2) { return _.isEqual(c1.id.toString(), c2[optionsValue].toString()); });
+                        if (!_.isEmpty(removed)) {
+                            _.forEach(removed, function (e) {
+                                $grid.igGridSelection("deselectRowById", e.id);
+                            });
+                            $grid.trigger("selectionchanged");
+                            currentSelectedItems = $grid.ntsGridList('getSelected');
+                        }
                         if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
                             _.forEach(gridSource, function (item) {
@@ -18062,7 +18172,6 @@ var nts;
                             }
                         }
                         else {
-                            var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
@@ -18080,7 +18189,6 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
                                 return true;
@@ -18861,8 +18969,12 @@ var nts;
                 }
                 ;
                 function drawRadio(selectedValue, option, radioName, optionValue, disableOption, optionText, booleanValue) {
-                    var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-                    var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option, optionValue)).on("change", function () {
+                    var radioBoxLabel = $("<label class='ntsRadioBox'></label>").on('click', function () {
+                        $(this).parent().focus();
+                    });
+                    var radioBox = $('<input type="radio">').data("option", option).addClass("unselectable").attr("name", radioName)
+                        .data("value", getOptionValue(option, optionValue)).attr("unselectable", "on")
+                        .on("change", function () {
                         var self = $(this);
                         if (self.is(":checked") && !booleanValue) {
                             selectedValue(self.data("value"));
@@ -20253,15 +20365,16 @@ var nts;
                             else {
                                 // Recreate
                                 var btn = $('<button>').text(text)
-                                    .addClass('nts-switch-button')
+                                    .addClass('nts-switch-button unselectable')
                                     .data('swbtn', value)
-                                    .attr('tabindex', "-1")
+                                    //                        .attr('tabindex', "-1")
+                                    .attr('unselectable', "on")
                                     .on('click', function () {
                                     var selectedValue = $(this).data('swbtn');
                                     data.value(selectedValue);
                                     $('button', container).removeClass(selectedCssClass);
                                     $(this).addClass(selectedCssClass);
-                                    //                            container.focus();
+                                    container.focus();
                                 });
                                 if (selectedValue == value) {
                                     btn.addClass(selectedCssClass);
@@ -31020,6 +31133,10 @@ var nts;
                                     self.timeValueBind("");
                                     return "";
                                 }
+                                if (format.indexOf("Y") < 0) {
+                                    var v = value.split(" ");
+                                    value = _.size(v) == 2 ? v[1] : v[0];
+                                }
                                 var timeVal = nts.uk.time.secondsBased.duration.parseString(moment(value, format).format(self.timeFormat)).toValue();
                                 self.timeValueBind(timeVal);
                                 return timeVal;
@@ -31201,10 +31318,9 @@ var nts;
                                 return value;
                             }, write: function (val) {
                                 var endVal = self.endValueBind();
-                                if (self.validate(val, endVal)) {
-                                    allBindData.value().start(val);
-                                    //                        allBindData.value.valueHasMutated();        
-                                }
+                                allBindData.value().start(val);
+                                self.validate(val, endVal);
+                                //                        allBindData.value.valueHasMutated();  
                             },
                             owner: this
                         });
@@ -31215,10 +31331,9 @@ var nts;
                                 return value;
                             }, write: function (val) {
                                 var startVal = self.startValueBind();
-                                if (self.validate(startVal, val)) {
-                                    allBindData.value().end(val);
-                                    //                        allBindData.value.valueHasMutated();        
-                                }
+                                self.validate(startVal, val);
+                                allBindData.value().end(val);
+                                //                        allBindData.value.valueHasMutated();        
                             },
                             owner: this
                         });
@@ -31537,6 +31652,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var $ = window["$"], _ = window["_"], ko = window["ko"], text = window["nts"]["uk"]["text"], util = window["nts"]["uk"]["util"], request = window["nts"]["uk"]["request"], resource = window["nts"]["uk"]["resource"];
                 /**
                  * HelpButton binding handler
                  */
@@ -31551,7 +31667,7 @@ var nts;
                         var textParams = ko.unwrap(data.textParams);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
-                        var isImage = !uk.util.isNullOrUndefined(image);
+                        var isImage = !util.isNullOrUndefined(image);
                         //Position
                         var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
                         var atPositions = position.split(" ");
@@ -31565,12 +31681,12 @@ var nts;
                         if (myPositions[0].search(/(left|right)/i) === -1) {
                             atPositions[0] = atPositions.splice(1, 1, atPositions[0])[0];
                             myPositions[0] = myPositions.splice(1, 1, myPositions[0])[0];
-                            caretDirection = myPositions[1] = uk.text.reverseDirection(myPositions[1]);
+                            caretDirection = myPositions[1] = text.reverseDirection(myPositions[1]);
                             caretPosition = "left";
                             marginDirection = "margin-top";
                         }
                         else {
-                            caretDirection = myPositions[0] = uk.text.reverseDirection(myPositions[0]);
+                            caretDirection = myPositions[0] = text.reverseDirection(myPositions[0]);
                             caretPosition = "top";
                             marginDirection = "margin-left";
                         }
@@ -31595,12 +31711,25 @@ var nts;
                         }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
                         var $container = $(element).closest(".ntsHelpButton");
                         var $content;
-                        if (isImage) {
-                            $content = $("<img src='" + uk.request.resolvePath(image) + "' />");
+                        if (_.has(data, 'image')) {
+                            $content = $("<img>");
+                            ko.computed({
+                                read: function () {
+                                    var _image = ko.toJS(data.image);
+                                    $content.attr('src', request.resolvePath(_image));
+                                }
+                            });
                         }
                         else {
-                            $content = $("<span>").text(uk.resource.getText(textId, textParams));
-                            $content.css('white-space', 'pre-line');
+                            $content = $("<span>", {
+                                style: { 'white-space': 'pre-line' }
+                            });
+                            ko.computed({
+                                read: function () {
+                                    var _textId = ko.toJS(data.textId), _textParams = ko.toJS(data.textParams);
+                                    $content.text(resource.getText(_textId, _textParams));
+                                }
+                            });
                         }
                         var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
                         var $popup = $("<div class='nts-help-button-image'></div>")
@@ -32152,7 +32281,8 @@ var nts;
                                 options: ko.observableArray(source),
                                 optionsValue: 'value',
                                 value: value,
-                                optionsText: 'text'
+                                optionsText: 'text',
+                                width: '60px'
                             });
                         }, getMonths = function () { return _.range(1, 13).map(function (m) { return ({ text: m, value: m }); }); }, getDaysInMonth = function (month) { return _.range(1, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m, value: m }); }); };
                         var value = ko.unwrap(data.value);

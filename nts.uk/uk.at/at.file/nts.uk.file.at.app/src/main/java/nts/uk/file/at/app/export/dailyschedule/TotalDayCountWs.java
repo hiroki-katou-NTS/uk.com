@@ -48,20 +48,20 @@ public class TotalDayCountWs {
 	private WorkInformationRepository workInformationRepo;
 	
 	/**
-	 * 所定日数を計算する
+	 * 所定日数を計算す�
 	 * @param employeeId
 	 * @param lstDate
 	 */
 	private TotalCountDay calculatePredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		// ドメインモデル「勤務種類」を取得する
+		// ドメインモッ�「勤務種類」を取得す�
 		List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(AppContexts.user().companyId()).stream().filter(x -> 
 			x.getDailyWork().getOneDay().isAttendance() || x.getDailyWork().getMorning().isAttendance() || x.getDailyWork().getAfternoon().isAttendance() 
 		).collect(Collectors.toList());
 		if (lstWorkType.size() > 0) {
-			// ドメインモデル「日別実績の勤務情報」を取得する
+			// ドメインモッ�「日別実績の勤務情報」を取得す�
 			List<String> empList = new ArrayList<>();
 			empList.add(employeeId);
-			// 予定勤務種類コードを取得する
+			// 予定勤務種類コードを取得す�
 			List<WorkInfoOfDailyPerformance> dailyPerformanceList = workInformationRepo.findByListEmployeeId(empList, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
 			
 			int dayCount = 0;
@@ -70,7 +70,7 @@ public class TotalDayCountWs {
 			}
 			//dayCount = lstWorkType.size();
 			
-			// 所定日数をカウントする
+			// 所定日数をカウントす�
 			totalCountDay.setPredeterminedDay(dayCount);
 		}
 		else {
@@ -80,17 +80,17 @@ public class TotalDayCountWs {
 	}
 	
 	/**
-	 * 所定外の日数を計算する
+	 * 所定外�日数を計算す�
 	 * @param employeeId
 	 * @param dateRange
 	 * @param dayType
 	 * @return
 	 */
 	private TotalCountDay calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		// ドメインモデル「日別実績の勤務情報」を取得する
+		// ドメインモッ�「日別実績の勤務情報」を取得す�
 		List<String> empList = new ArrayList<>();
 		empList.add(employeeId);
-		// 予定勤務種類コードを取得する
+		// 予定勤務種類コードを取得す�
 		//List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 		
 		List<WorkInfoOfDailyPerformance> dailyPerformanceList = workInformationRepo.findByListEmployeeId(empList, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
@@ -98,7 +98,7 @@ public class TotalDayCountWs {
 		String companyId = AppContexts.user().companyId();
 		
 		for (DayType dayType : DayType.values()) {
-			// ドメインモデル「勤務種類」を取得する
+			// ドメインモッ�「勤務種類」を取得す�
 			List<WorkType> lstWorkType = workTypeRepository.findByCompanyId(companyId).stream().filter(x -> 
 				x.getDailyWork().getOneDay().value == dayType.value || 
 				x.getDailyWork().getMorning().value == dayType.value || 
@@ -107,13 +107,13 @@ public class TotalDayCountWs {
 			if (lstWorkType.size() > 0) {
 				
 				for (WorkType workType: lstWorkType) {
-					// 日数をカウントする
+					// 日数をカウントす�
 					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getScheduleInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())
 							|| StringUtils.equals(x.getRecordInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
 					//int dayCount = lstWorkType.size();
 					switch (dayType) {
-					case ATTEND:
-						totalCountDay.setWorkingDay(totalCountDay.getWorkingDay() + dayCount);
+					case HOLIDAY:
+						totalCountDay.setHolidayDay(totalCountDay.getHolidayDay() + dayCount);
 						break;
 					case ABSENCE:
 						totalCountDay.setAbsenceDay(totalCountDay.getAbsenceDay() + dayCount);
@@ -139,13 +139,13 @@ public class TotalDayCountWs {
 	}
 	
 	/**
-	 * 回数を計算する
+	 * 回数を計算す�
 	 * @param employeeId
 	 * @param dateRange
 	 * @param totalCountDay
 	 */
 	private TotalCountDay calculateDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
-		// 勤怠項目ID = 592 or 598 or 604 or 610
+		// 勤�頛�ID = 592 or 598 or 604 or 610
 		List<Integer> lstAttendanceId = new ArrayList<>();
 		lstAttendanceId.add(592);
 		lstAttendanceId.add(598);
@@ -191,7 +191,7 @@ public class TotalDayCountWs {
 	}
 	
 	/**
-	 * 日数計を合算する
+	 * 日数計を合算す�
 	 * @param employeeId
 	 * @param dateRange
 	 * @param totalCountDay

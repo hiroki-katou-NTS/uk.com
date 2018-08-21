@@ -1,17 +1,13 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 
 @Getter
 @Setter
@@ -26,7 +22,7 @@ public class AnnLeaveOfThisMonth {
 	/**
 	 * 付与日数
 	 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/**
 	 * 月初残日数
@@ -58,7 +54,7 @@ public class AnnLeaveOfThisMonth {
 	 */
 	private Optional<Integer> remainMinutes;
 
-	public AnnLeaveOfThisMonth(GeneralDate grantDate, BigDecimal grantDays, Double firstMonthRemNumDays,
+	public AnnLeaveOfThisMonth(GeneralDate grantDate, Double grantDays, Double firstMonthRemNumDays,
 			int firstMonthRemNumMinutes, AnnualLeaveUsedDayNumber usedDays,
 			Optional<Integer> usedMinutes, AnnualLeaveRemainingDayNumber remainDays,
 			Optional<Integer> remainMinutes) {

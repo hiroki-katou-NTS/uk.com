@@ -101,6 +101,10 @@ module nts.uk.ui.koExtentions {
                         self.timeValueBind("");
                         return "";
                     }
+                    if(format.indexOf("Y") < 0){
+                        let v = value.split(" ");
+                        value = _.size(v) == 2 ? v[1] : v[0];
+                    }
                     let timeVal = nts.uk.time.secondsBased.duration.parseString(
                                             moment(value, format).format(self.timeFormat)).toValue();
                     self.timeValueBind(timeVal);

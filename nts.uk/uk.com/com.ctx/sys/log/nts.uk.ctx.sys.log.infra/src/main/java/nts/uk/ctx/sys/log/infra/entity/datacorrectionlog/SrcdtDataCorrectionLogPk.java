@@ -22,18 +22,18 @@ public class SrcdtDataCorrectionLogPk {
 
 	@Column(name = "OPERATION_ID")
 	@Basic(optional = false)
-	String operationId;
+	public String operationId;
 
 	@Column(name = "USER_ID")
 	@Basic(optional = false)
-	String userId;
+	public String userId;
 
 	@Column(name = "TARGET_DATA_TYPE")
 	@Basic(optional = false)
-	int targetDataType;
+	public int targetDataType;
 	
 	@Column(name = "ITEM_ID")
 	@Basic(optional = false)
-	String itemId;
+	public String itemId;
 
 }

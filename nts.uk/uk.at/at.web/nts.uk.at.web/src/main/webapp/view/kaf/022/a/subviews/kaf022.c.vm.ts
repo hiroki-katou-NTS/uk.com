@@ -322,7 +322,9 @@ ko.components.register('kaf022-c', {
             </thead>
             <tbody>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c18" data-bind = "text: text('KAF022_161')"></td>
+                    <td style="width: 270px" class="color-header" id="c18">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_161') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c41" tabindex="15" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -331,11 +333,13 @@ ko.components.register('kaf022-c', {
                             required: false,
                             enable: true,
                             readonly: false
-                        }" />
+                        }" />   
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c19" data-bind = "text: text('KAF022_162')"></td>
+                    <td style="width: 270px" class="color-header" id="c19">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_162') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c42" tabindex="16" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -348,7 +352,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c20" data-bind = "text: text('KAF022_163')"></td>
+                    <td style="width: 270px" class="color-header" id="c20">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_163') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c43" tabindex="17" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -361,7 +367,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c21" data-bind = "text: text('KAF022_164')"></td>
+                    <td style="width: 270px" class="color-header" id="c21">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_164') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c44" tabindex="18" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -374,7 +382,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c22" data-bind = "text: text('KAF022_165')"></td>
+                    <td style="width: 270px" class="color-header" id="c22">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_165') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c45" tabindex="19" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -387,7 +397,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c23" data-bind = "text: text('KAF022_166')"></td>
+                    <td style="width: 270px" class="color-header" id="c23">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_166') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c46" tabindex="20" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -400,7 +412,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c24" data-bind = "text: text('KAF022_167')"></td>
+                    <td style="width: 270px" class="color-header" id="c24">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_167') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c47" tabindex="21" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),
@@ -413,7 +427,9 @@ ko.components.register('kaf022-c', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c50" data-bind = "text: text('KAF022_364')"></td>
+                    <td style="width: 270px" class="color-header" id="c50">
+                        <div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: text('KAF022_364') }"></div>
+                    </td>
                     <td style="width: 650px">
                         <input id="c51" tabindex="22" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),

@@ -29,9 +29,13 @@ public final class AppContexts {
 	}
 
 	public static WindowsAccount windowsAccount() {
-		return SessionContextProvider.get().get(AppContextsConfig.WINS_ACCOUNT);
-	}
-	
+		WindowsAccount account = SessionContextProvider.get().get(AppContextsConfig.WINS_ACCOUNT);
+		if (account == null) {
+			return new WindowsAccount("", "");
+		} else {
+			return account;
+		}
+	}	
 	public static SystemConfiguration system() {
 		return CDI.current().select(SystemConfiguration.class).get();
 	}

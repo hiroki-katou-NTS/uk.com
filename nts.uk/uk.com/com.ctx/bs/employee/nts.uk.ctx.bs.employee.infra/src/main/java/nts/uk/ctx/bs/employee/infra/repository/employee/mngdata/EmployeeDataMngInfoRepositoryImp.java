@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -44,7 +45,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
-	
+
 	private static final String SELECT_BY_COM_ID_AND_BASEDATE = "SELECT e.companyId, e.employeeCode, e.bsymtEmployeeDataMngInfoPk.sId, e.bsymtEmployeeDataMngInfoPk.pId  , ps.businessName , ps.personName"
 			+ " FROM BsymtEmployeeDataMngInfo e "
 			+ " INNER JOIN BsymtAffCompanyHist h ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId "
@@ -92,7 +93,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	// duongtv end code
 
 	/** The select by list empId. */
-	public static final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
+	public static final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM
+			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	/** The select by cid and pid. */
 
@@ -107,6 +109,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public static final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
 	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+
+	private static final String FIND_BY_CID_PID_AND_DELSTATUS = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND "
+			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
+	
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -171,8 +177,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return queryProxy().query(SELECT_BY_COM_ID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", cId)
 				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
-	
-	
 
 	private EmployeeDataMngInfo toDomain(BsymtEmployeeDataMngInfo entity) {
 		return EmployeeDataMngInfo.createFromJavaType(entity.companyId, entity.bsymtEmployeeDataMngInfoPk.pId,
@@ -408,8 +412,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public Optional<String> findLastEml(String companyId, String startLetters, int length) {
 		List<String> lastEmployeeCode = this.queryProxy().query(GET_LAST_EMPLOYEE, String.class)
 				.setParameter("companyId", companyId)
-				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : startLetters)
-				.getList().stream()
+				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : startLetters).getList().stream()
 				.filter(emCode -> emCode.length() == length).collect(Collectors.toList());
 		if (!lastEmployeeCode.isEmpty()) {
 			return Optional.of(lastEmployeeCode.get(0));
@@ -452,12 +455,24 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public List<Object[]> findByCompanyIdAndBaseDate(String cid, GeneralDate baseDate) {
-		
-		return queryProxy().query(SELECT_BY_COM_ID_AND_BASEDATE, Object[].class)
-				.setParameter("companyId", cid)
-				.setParameter("baseDate", baseDate)
-				.getList();
+
+		return queryProxy().query(SELECT_BY_COM_ID_AND_BASEDATE, Object[].class).setParameter("companyId", cid)
+				.setParameter("baseDate", baseDate).getList();
 	}
+	@Override
+	public Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid,
+			EmployeeDeletionAttr deletedStatus) {
+		List<EmployeeDataMngInfo> listEmployeeDataMngInfo = this.queryProxy().query(FIND_BY_CID_PID_AND_DELSTATUS,BsymtEmployeeDataMngInfo.class)
+																.setParameter("cid", cid)
+																.setParameter("sid", pid)
+																.setParameter("delStatus", deletedStatus.value).getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
+		if(listEmployeeDataMngInfo!=null && listEmployeeDataMngInfo.size()!=0) {
+			return Optional.of(listEmployeeDataMngInfo.get(0));
+		}
+		return Optional.empty();
+	}
+
+	
 
 	// laitv code end
 }
