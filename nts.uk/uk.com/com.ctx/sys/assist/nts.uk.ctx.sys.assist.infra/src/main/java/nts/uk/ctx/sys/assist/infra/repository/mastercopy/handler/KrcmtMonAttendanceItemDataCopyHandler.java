@@ -19,16 +19,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcmtMonAttendanceItemDataCopyHandler implements DataCopyHandler {
+public class KrcmtMonAttendanceItemDataCopyHandler extends DataCopyHandler {
 
-	private EntityManager entityManager;
-
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRCMT_MON_ATTENDANCE_ITEM(CID, M_ATD_ITEM_ID, M_ATD_ITEM_NAME, M_ATD_ITEM_ATR, DISP_NO, IS_ALLOW_CHANGE, LINE_BREAK_POS_NAME, "

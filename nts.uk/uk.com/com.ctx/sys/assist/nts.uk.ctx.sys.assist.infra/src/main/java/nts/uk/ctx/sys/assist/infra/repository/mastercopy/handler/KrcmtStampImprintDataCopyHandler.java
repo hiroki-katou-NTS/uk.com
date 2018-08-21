@@ -20,27 +20,25 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcmtStampImprintDataCopyHandler implements DataCopyHandler {
+public class KrcmtStampImprintDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 7;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
+//	/**
+//	 * The entity manager.
+//	 */
+//	private EntityManager entityManager;
+//
+//	/**
+//	 * The copy method.
+//	 */
+//	private CopyMethod copyMethod;
+//
+//	/**
+//	 * The company Id.
+//	 */
+//	private String companyId;
 
 	/**
 	 * The insert query.

@@ -20,13 +20,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krcst mon exc out round data copy handler.
- */
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcstMonExcOutRoundDataCopyHandler implements DataCopyHandler {
+public class KrcstMonExcOutRoundDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 3;
 

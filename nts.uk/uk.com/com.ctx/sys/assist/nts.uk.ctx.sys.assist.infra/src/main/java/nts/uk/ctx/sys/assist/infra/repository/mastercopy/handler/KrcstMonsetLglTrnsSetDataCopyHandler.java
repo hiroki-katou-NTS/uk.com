@@ -20,30 +20,25 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krcst monset lgl trns set data copy handler.
- */
 @NoArgsConstructor
-@AllArgsConstructor
-public class KrcstMonsetLglTrnsSetDataCopyHandler implements DataCopyHandler {
+public class KrcstMonsetLglTrnsSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 17;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
+//	/**
+//	 * The entity manager.
+//	 */
+//	private EntityManager entityManager;
+//
+//	/**
+//	 * The copy method.
+//	 */
+//	private CopyMethod copyMethod;
+//
+//	/**
+//	 * The company Id.
+//	 */
+//	private String companyId;
 
 	/**
 	 * The insert query.
