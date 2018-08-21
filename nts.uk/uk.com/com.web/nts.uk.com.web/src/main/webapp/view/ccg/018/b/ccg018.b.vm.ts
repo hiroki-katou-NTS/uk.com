@@ -51,8 +51,9 @@ module ccg018.b.viewmodel {
             self.isEnable = ko.observable(false);
             self.isSelectedFirst = ko.observable(true);
 
-            self.currentCode.subscribe(function(codeChange: any) {
-                if (!!self.currentCode()) {
+            self.currentCode.subscribe(function(codeChange: string) {
+                if (codeChange && codeChange != "undefined") {
+                    self.currentCode(codeChange);
                     self.employeeCode(codeChange);
                     self.selectedItem(_.find(self.items(), ['code', codeChange]));
                     self.employeeName(self.selectedItem().name);
@@ -60,6 +61,7 @@ module ccg018.b.viewmodel {
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
                     self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
+                    self.currentCode(null);
                     self.employeeCode('');
                     self.employeeName('');
                     self.selectedItemAfterLogin('');
@@ -91,8 +93,6 @@ module ccg018.b.viewmodel {
             let dfd = $.Deferred();
 
             $.when(self.findTopPagePersonSet()).done(function() {
-                self.bindGrid();
-                self.initCCG001();
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject(error);
@@ -104,7 +104,7 @@ module ccg018.b.viewmodel {
             var self = this;
             // Component option
             self.ccgcomponent = {
-                /** Common properties */
+                /** Common properties */  
                 systemType: 1, // システム区分
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: false, // クイック検索
