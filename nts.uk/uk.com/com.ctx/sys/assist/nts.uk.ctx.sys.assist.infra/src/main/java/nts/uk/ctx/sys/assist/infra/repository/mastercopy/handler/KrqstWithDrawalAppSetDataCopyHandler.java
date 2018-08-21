@@ -13,17 +13,8 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class KrqstWithDrawalAppSetDataCopyHandler.
  */
-//@NoArgsConstructor
+@NoArgsConstructor
 public class KrqstWithDrawalAppSetDataCopyHandler extends DataCopyHandler {
-//
-//	/** The entity manager. */
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_WITHDRAWAL_APP_SET(CID, PRE_REFLECT_SET, BREAK_TIME, WORK_TIME, CHECK_NO_HD_TIME, TYPES_OF_PAID_LEAVE, WORK_CHANGE_SET, "

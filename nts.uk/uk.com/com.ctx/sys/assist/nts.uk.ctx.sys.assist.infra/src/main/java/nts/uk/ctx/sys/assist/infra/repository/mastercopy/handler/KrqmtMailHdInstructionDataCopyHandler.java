@@ -13,37 +13,17 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 
 /**
  * The Class KrqmtMailHdInstructionDataCopyHandler.
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krqmt mail hd instruction data copy handler.
- */
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqmtMailHdInstructionDataCopyHandler implements DataCopyHandler{
+public class KrqmtMailHdInstructionDataCopyHandler extends DataCopyHandler{
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 3;
-
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
 
 	/**
 	 * The insert query.

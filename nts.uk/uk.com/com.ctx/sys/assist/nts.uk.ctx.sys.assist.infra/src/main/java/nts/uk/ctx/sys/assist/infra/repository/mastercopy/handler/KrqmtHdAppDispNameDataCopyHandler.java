@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqmtHdAppDispNameDataCopyHandler implements DataCopyHandler {
-
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company Id. */
-	private String companyId;
+public class KrqmtHdAppDispNameDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQMT_HD_APP_DISP_NAME(CID ,HD_APP_TYPE ,DISP_NAME) VALUES (?, ?, ?);";

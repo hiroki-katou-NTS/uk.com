@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstTripRequestSetDataCopyHandler implements DataCopyHandler {
-	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstTripRequestSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_TRIP_REQUEST_SET(CID, COMMENT_1, TOP_COMMENT_FONT_COLOR, TOP_COMMENT_FONT_WEIGHT, COMMENT_2, BOTTOM_COMMENT_FONT_COLOR, "

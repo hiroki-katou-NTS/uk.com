@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstLateEarlyRequestDataCopyHandler implements DataCopyHandler {
-	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstLateEarlyRequestDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_LATE_EARLY_REQUESET(CID, SHOW_RESULT) VALUES (?, ?);";

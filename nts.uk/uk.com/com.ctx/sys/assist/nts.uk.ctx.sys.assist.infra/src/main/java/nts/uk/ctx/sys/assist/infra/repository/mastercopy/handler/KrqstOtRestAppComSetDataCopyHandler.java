@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstOtRestAppComSetDataCopyHandler implements DataCopyHandler {
-
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstOtRestAppComSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_OT_REST_APP_COM_SET(CID, APP_TYPE, DIVERGENCE_REASON_INPUT_ATR, DIVERGENCE_REASON_FORM_ATR, DIVERGENCE_REASON_REQUIRED, PRE_DISPLAY_ATR, PRE_EXCESS_DISPLAY_SETTING "

@@ -13,37 +13,16 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-
 /**
  * The Class KrqstAppDivergenReasonDataCopyHandler.
  */
 @Getter
 @Setter
-
-/**
- * Instantiates a new krqst app divergen reason data copy handler.
- */
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstAppDivergenReasonDataCopyHandler implements DataCopyHandler {
+public class KrqstAppDivergenReasonDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 6;
-
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
 
 	/**
 	 * The insert query.

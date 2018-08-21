@@ -20,16 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrqstGoBackDirectSetDataCopyHandler implements DataCopyHandler {
-	
-	/** The entity manager. */
-	private EntityManager entityManager;
-	
-	/** The copy method. */
-	private CopyMethod copyMethod;
-	
-	/** The company Id. */
-	private String companyId;
+public class KrqstGoBackDirectSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQST_GO_BACK_DIRECT_SET(CID, WORK_CHANGE_FLG, WORK_CHANGE_TIME_ATR, PERFORMANCE_DISPLAY_ATR, CONTRADITION_CHECK_ATR, WORK_TYPE, LATE_LEAVE_EARLY_SETTING_ATR, "
