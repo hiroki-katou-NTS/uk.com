@@ -21,22 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements DataCopyHandler {
+public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
-	/** The copy method. */
-	private CopyMethod copyMethod;
-
-	/** The company id. */
-	private String companyId;
-
-	/** The em. */
-	EntityManager em;
-
-	public PpemtPInfoItemGroupDataCopyHandler(CopyMethod copyMethod, String companyId, EntityManager em) {
+	public PpemtPInfoItemGroupDataCopyHandler(int copyMethod, String companyId, EntityManager em) {
 		super();
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
-		this.em = em;
+		this.entityManager = em;
 	}
 
 	private static final String QUERY_DATA_BY_COMPANYID = "SELECT p FROM PpemtPInfoItemGroup p WHERE p.companyId = :companyId";
@@ -49,13 +40,13 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 
 		// Get company zero id
 		String companyZeroId = AppContexts.user().zeroCompanyIdInContract();
-		
+
 		// Get company zero data
-		List<PpemtPInfoItemGroup> entityComZero = this.em
+		List<PpemtPInfoItemGroup> entityComZero = this.entityManager
 				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtPInfoItemGroup.class)
 				.setParameter("companyId", companyZeroId).getResultList();
 
-		List<PpemtPInfoItemGroup> entityCurrentCom = this.em
+		List<PpemtPInfoItemGroup> entityCurrentCom = this.entityManager
 				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtPInfoItemGroup.class).setParameter("companyId", companyId)
 				.getResultList();
 
@@ -68,20 +59,21 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 				String groupItemId = item.ppemtPinfoItemGroupPk.groupItemId;
 
 				// get data layout item cls of current company
-				List<PpemtPInfoItemGroupDf> itemList = this.em.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
+				List<PpemtPInfoItemGroupDf> itemList = this.entityManager
+						.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 						.setParameter("groupItemId", groupItemId).getResultList();
 
 				// remove all data layout item cls of current company
 				if (!itemList.isEmpty()) {
-					this.em.createQuery(DELETE_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
+					this.entityManager.createQuery(DELETE_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 							.setParameter("groupItemId", groupItemId).executeUpdate();
 				}
 
 				// remove data layout of current company
-				this.em.createQuery(DELETE_DATA, PpemtLayoutItemCls.class).setParameter("companyId", companyId)
-						.executeUpdate();
+				this.entityManager.createQuery(DELETE_DATA, PpemtLayoutItemCls.class)
+						.setParameter("companyId", companyId).executeUpdate();
 
-				this.em.flush();
+				this.entityManager.flush();
 			});
 
 			entityComZero.forEach(entity -> {
@@ -93,11 +85,12 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 						entity.dispOrder);
 
 				// get get data layout item cls of company Zero
-				List<PpemtPInfoItemGroupDf> itemList = this.em.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
+				List<PpemtPInfoItemGroupDf> itemList = this.entityManager
+						.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 						.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId).getResultList();
 
 				// Insert new data
-				this.em.persist(newEntity);
+				this.entityManager.persist(newEntity);
 
 				// set layoutID and insert
 				itemList.forEach(item -> {
@@ -107,7 +100,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 					PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
 							item.ppemtPInfoItemGroupDfPk.itemDefId);
 					PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
-					this.em.persist(itemEntity);
+					this.entityManager.persist(itemEntity);
 
 				});
 
@@ -128,24 +121,24 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 							entity.dispOrder);
 
 					// get get data layout item cls of company Zero
-					List<PpemtPInfoItemGroupDf> itemList = this.em
+					List<PpemtPInfoItemGroupDf> itemList = this.entityManager
 							.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 							.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId).getResultList();
 
 					// Insert new data
-					this.em.persist(newEntity);
+					this.entityManager.persist(newEntity);
 
 					// set layoutID and insert
 					itemList.forEach(item -> {
 						PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
 								item.ppemtPInfoItemGroupDfPk.itemDefId);
 						PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
-						this.em.persist(itemEntity);
+						this.entityManager.persist(itemEntity);
 					});
 				});
 
 			} else {
-				
+
 				entityComZero.forEach(e -> {
 					if (!this.checkContainGroupName(entityCurrentCom, e)) {
 						PpemtPInfoItemGroup entity = e;
@@ -157,19 +150,19 @@ public class PpemtPInfoItemGroupDataCopyHandler extends JpaRepository implements
 								entity.dispOrder);
 
 						// get get data layout item cls of company Zero
-						List<PpemtPInfoItemGroupDf> itemList = this.em
+						List<PpemtPInfoItemGroupDf> itemList = this.entityManager
 								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 								.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId).getResultList();
 
 						// Insert new data
-						this.em.persist(newEntity);
+						this.entityManager.persist(newEntity);
 
 						// set layoutID and insert
 						itemList.forEach(item -> {
 							PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(ItemId,
 									item.ppemtPInfoItemGroupDfPk.itemDefId);
 							PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
-							this.em.persist(itemEntity);
+							this.entityManager.persist(itemEntity);
 						});
 					}
 				});

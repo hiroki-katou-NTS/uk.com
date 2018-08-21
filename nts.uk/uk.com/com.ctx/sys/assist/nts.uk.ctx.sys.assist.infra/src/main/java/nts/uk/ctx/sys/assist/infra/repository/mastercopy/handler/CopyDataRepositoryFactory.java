@@ -87,7 +87,7 @@ public class CopyDataRepositoryFactory {
         mapper.put("KRCST_DVGC_TIME", new KrcstDvgcTimeDataCopyHandler());
         mapper.put("KRCST_DVGC_REASON", new KrcstDvgcReasonDataCopyHandler());
 
-        mapper.put("KMLMT_COST_CALC_SET ", new KmlmtPersonCostCalculationDataCopyHandler());
+        mapper.put("KMLMT_COST_CALC_SET", new KmlmtPersonCostCalculationDataCopyHandler());
         mapper.put("KSCMT_WEEKLY_WORK_SET", new KscmtWeeklyWorkSetDataCopyHandler());
         mapper.put("BSYST_TEMP_ABSENCE_FRAME", new BsystTempAbsenceFrameDataCopyHandler());
         mapper.put("KSHST_TOTAL_TIMES", new KshstTotalTimesDataCopyHandler());
