@@ -40,7 +40,7 @@ module nts.uk.at.view.kdw001.c {
             //close period
             periodStartDate: any;
 
-
+            closureId : KnockoutObservable<any> = ko.observable(1);
 
             constructor() {
 
@@ -64,7 +64,7 @@ module nts.uk.at.view.kdw001.c {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
-                self.isShowSelectAllButton = ko.observable(false);
+                self.isShowSelectAllButton = ko.observable(true);
 
                 this.employeeList = ko.observableArray<UnitModel>([]);
 
@@ -95,7 +95,8 @@ module nts.uk.at.view.kdw001.c {
 
 
                 //var closureID = __viewContext.transferred.value.closureID;
-                var closureID = '1';
+                //self.closureId = ko.observable(1);
+                let closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
                     self.periodStartDate = data.startDate.toString();
                     self.dateValue().startDate = data.startDate.toString();
@@ -115,6 +116,29 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue.valueHasMutated();
                     });
 
+                });
+                
+                self.closureId.subscribe(function(value){
+                       service.findPeriodById(Number(value)).done((data) => {
+                        self.periodStartDate = data.startDate.toString();
+                        self.dateValue().startDate = data.startDate.toString();
+                        self.dateValue().endDate = data.endDate.toString();
+                        self.dateValue.valueHasMutated();
+                    }).always(() => {
+                        self.startDateString = ko.observable("");
+                        self.endDateString = ko.observable("");
+    
+                        self.startDateString.subscribe(function(value) {
+                            self.dateValue().startDate = value;
+                            self.dateValue.valueHasMutated();
+                        });
+    
+                        self.endDateString.subscribe(function(value) {
+                            self.dateValue().endDate = value;
+                            self.dateValue.valueHasMutated();
+                        });
+    
+                    }); 
                 });
 
 
@@ -270,7 +294,8 @@ module nts.uk.at.view.kdw001.c {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(data.listEmployee);
-
+                        self.closureId(data.closureId);
+                        
                         //Convert list Object from server to view model list
                         let items = _.map(data.listEmployee, item => {
                             return new UnitModel(item);
@@ -291,10 +316,9 @@ module nts.uk.at.view.kdw001.c {
 
             opendScreenBorJ() {
                 let self = this;
-                //var closureID = __viewContext["viewmodel"].closureID;
                 var closureID = '1';
                 if (!nts.uk.ui.errors.hasError()) {
-                    service.findPeriodById(Number(closureID)).done((data) => {
+                    service.findPeriodById(Number(self.closureId())).done((data) => {
                         if (data) {
                             let listEmpSelected = self.listComponentOption.selectedCode();
                             if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
@@ -379,6 +403,7 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
