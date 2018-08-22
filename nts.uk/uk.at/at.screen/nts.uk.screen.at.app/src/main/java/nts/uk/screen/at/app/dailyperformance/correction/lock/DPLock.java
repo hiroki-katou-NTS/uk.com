@@ -182,7 +182,7 @@ public class DPLock {
 
 	public Map<String, ApproveRootStatusForEmpDto> lockCheckMonth(DateRange dateRange, List<String> employeeIds) {
 		List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter
-				.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
+				.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 2);
 		Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(
 				Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
 					return new ApproveRootStatusForEmpDto(null,
