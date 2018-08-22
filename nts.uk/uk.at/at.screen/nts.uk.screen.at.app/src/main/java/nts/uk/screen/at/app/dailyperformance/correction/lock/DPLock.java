@@ -215,7 +215,7 @@ public class DPLock {
 			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange));
 			if(approvalUseSettingDto.get().getUseDayApproverConfirm()) dto.setLockCheckApprovalDay(getCheckApproval(employeeIds, dateRange, employeeIdApproval, mode));
 		}
-		//dto.setLockHist(lockHistMap(companyId, employeeIds));
+		dto.setLockHist(lockHistMap(companyId, employeeIds));
 		return dto;
 	}
 	

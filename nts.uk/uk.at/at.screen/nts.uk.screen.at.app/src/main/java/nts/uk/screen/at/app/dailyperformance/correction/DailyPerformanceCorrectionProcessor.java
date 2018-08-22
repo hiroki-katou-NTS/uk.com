@@ -276,7 +276,7 @@ public class DailyPerformanceCorrectionProcessor {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
 		
-		if(changeEmployeeIds.isEmpty()) return screenDto;
+		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
@@ -391,6 +391,7 @@ public class DailyPerformanceCorrectionProcessor {
 									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
 											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 						if (emp.get(0).equals(sId)) {
+							//対象日の本人確認が済んでいるかチェックする
 							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, dateRangeTemp.toListDate()));
 						}
 						// screenDto.setFlexShortage(null);
@@ -592,42 +593,53 @@ public class DailyPerformanceCorrectionProcessor {
 			boolean lockApproval, boolean lockHist, boolean lockSign, boolean lockApprovalMonth, boolean lockConfirmMonth) {
 		
 		if (lockDaykWpl || lockApproval || lockHist || lockSign || lockApprovalMonth || lockConfirmMonth) {
-			if (lockDaykWpl)
-				lockCell(screenDto, data, true);
+			if (lockDaykWpl) {
+				//lockCell(screenDto, data, true);
+			}
 			
 			if (lockApprovalMonth) {
 				setStateLock(data, DPText.LOCK_CHECK_MONTH);
-				lockCell(screenDto, data, true);
+				//lockCell(screenDto, data, true);
 				lockDaykWpl = true;
 			}
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
-				lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lockDaykWpl = false;
-				else lockApproval = true;
+				//lockCell(screenDto, data, false);
+				lockDaykWpl = true;
+				
 			}
 			
-			if (data.isApproval()) {
+			if (lockApproval) {
 				setStateLock(data, DPText.LOCK_EDIT_APPROVAL);
-				lockCell(screenDto, data, false);
-				lockDaykWpl = true;
+				//lockCell(screenDto, data, false);
+				if(mode == ScreenMode.APPROVAL.value) {
+					lockDaykWpl = lockDaykWpl && false;
+				}else {
+					lockDaykWpl = true;
+				}
 			}
 
 			if (lockSign && mode == ScreenMode.NORMAL.value) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
-				lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lockDaykWpl = false;
-				else lockApproval = true;
+				//lockCell(screenDto, data, false);
+				if(mode == ScreenMode.APPROVAL.value) lockDaykWpl = lockDaykWpl && false;
+				else lockDaykWpl = true;
 			}
 			
 			if (lockHist) {
 				setStateLock(data, DPText.LOCK_HIST);
-				lockCell(screenDto, data, true);
+				//lockCell(screenDto, data, true);
 				lockDaykWpl = true;
 			}
+			
+			if (lockConfirmMonth || lockApproval || lockSign)
+				lockCell(screenDto, data, false);
+			else
+				lockCell(screenDto, data, true);
 		}
- 
+		
+		if (mode == ScreenMode.APPROVAL.value) screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 		return lockDaykWpl;
 	}
 	
@@ -780,9 +792,9 @@ public class DailyPerformanceCorrectionProcessor {
 		//screenDto.setCellSate(data.getId(), LOCK_ERROR, DPText.STATE_DISABLE);
 		if(lockSign) screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 		//screenDto.setCellSate(data.getId(), LOCK_PIC, DPText.STATE_DISABLE);
-		screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
-		screenDto.setCellSate(data.getId(), DPText.COLUMN_SUBMITTED, DPText.STATE_DISABLE);
-		screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION_LIST, DPText.STATE_DISABLE);
+//		screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
+//		screenDto.setCellSate(data.getId(), DPText.COLUMN_SUBMITTED, DPText.STATE_DISABLE);
+//		screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION_LIST, DPText.STATE_DISABLE);
 	}
     
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey, Integer cellEdit ){
