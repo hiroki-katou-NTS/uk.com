@@ -308,19 +308,17 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
+
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-                }, 25);
+
             }
         }
 
