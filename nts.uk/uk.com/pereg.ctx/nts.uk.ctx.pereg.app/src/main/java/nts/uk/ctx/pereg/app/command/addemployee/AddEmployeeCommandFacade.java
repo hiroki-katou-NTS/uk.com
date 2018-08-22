@@ -68,7 +68,7 @@ public class AddEmployeeCommandFacade {
 			return command.getInputs();
 		}
 
-		List<SettingItemDto> dataServer = this.layoutFinder.getSetItems(command);
+		List<SettingItemDto> dataServer = this.layoutFinder.getSetItems(command , true);
 
 		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
 		

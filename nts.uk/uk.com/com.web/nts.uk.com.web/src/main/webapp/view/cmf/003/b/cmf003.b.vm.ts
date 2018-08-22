@@ -472,7 +472,11 @@ module nts.uk.com.view.cmf003.b {
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee).done(() => {
+                            setTimeout(function() {
+                                $("#employeeSearch div[id *= 'scrollContainer']").scrollTop(0);
+                            }, 1000);
+                        });
                         self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
                     }
                 }
@@ -491,13 +495,14 @@ module nts.uk.com.view.cmf003.b {
             /**
             * apply ccg001 search data to kcp005
             */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): JQueryPromise<any> {
                 var self = this;
-            
+                var dfd = $.Deferred();
                 var employeeSearchs: TargetEmployee[] = [];
                 self.selectedEmployeeCode([]);
-                for (var employeeSearch of dataList) {
-                    var employee: TargetEmployee = {
+                for (var i = 0; i < dataList.length; i++) {
+                    let employeeSearch = dataList[i];
+                    let employee : UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName,
@@ -507,10 +512,13 @@ module nts.uk.com.view.cmf003.b {
                     };
                     employeeSearchs.push(employee);
                     self.selectedEmployeeCode.push(employee.code);
+                    
+                    if (i == (dataList.length - 1)) {
+                        dfd.resolve();
+                    }
                 }
                 self.employeeList(employeeSearchs);
-                
-                $("#nts-component-list button:nth-child(3)").trigger( "click" );
+                return dfd.promise();
             }
 
             /**

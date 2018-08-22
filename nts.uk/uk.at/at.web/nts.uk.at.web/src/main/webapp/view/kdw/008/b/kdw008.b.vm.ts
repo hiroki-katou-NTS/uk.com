@@ -524,7 +524,7 @@ module nts.uk.at.view.kdw008.b {
                 }
             }
 
-            register() {
+            register() { 
                 let self = this; $(".need-check").trigger("validate");
                 
                 if (!nts.uk.ui.errors.hasError()) {
