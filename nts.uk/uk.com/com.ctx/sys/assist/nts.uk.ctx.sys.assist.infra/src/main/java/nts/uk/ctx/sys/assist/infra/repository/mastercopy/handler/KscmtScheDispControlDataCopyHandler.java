@@ -76,7 +76,7 @@ public class KscmtScheDispControlDataCopyHandler extends DataCopyHandler {
 			}
 
 			// Run insert query
-			insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

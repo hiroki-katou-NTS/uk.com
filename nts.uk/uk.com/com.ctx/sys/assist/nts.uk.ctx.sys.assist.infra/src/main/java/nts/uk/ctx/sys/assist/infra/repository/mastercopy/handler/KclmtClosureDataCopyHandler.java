@@ -28,7 +28,7 @@ public class KclmtClosureDataCopyHandler extends DataCopyHandler {
 
 	/** The delete by cid query. */
 	private final String DELETE_BY_CID_QUERY = "DELETE FROM KCLMT_CLOSURE WHERE CID = ?";
-	
+
 	private final int PARAMETER_QUANTITY = 4;
 
 	/**
@@ -57,13 +57,21 @@ public class KclmtClosureDataCopyHandler extends DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-		if(zeroCompanyDatas.length == 0) return ;
+		if (zeroCompanyDatas.length == 0)
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
+			// check old data existed
+			Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+					this.companyId);
+			Object[] targetDatas = selectQueryTarget.getResultList().toArray();
+			if (targetDatas.length != 0)
+				return;
+			// copy data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
 			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
@@ -74,7 +82,8 @@ public class KclmtClosureDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 4, dataArr[3]);
 			}
 			// Run insert query
-			if (!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
+			if (!StringUtils.isEmpty(insertQueryStr))
+				insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

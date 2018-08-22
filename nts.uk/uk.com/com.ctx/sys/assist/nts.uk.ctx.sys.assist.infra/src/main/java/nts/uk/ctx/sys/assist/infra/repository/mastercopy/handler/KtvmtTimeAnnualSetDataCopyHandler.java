@@ -67,6 +67,12 @@ public class KtvmtTimeAnnualSetDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
+			//check old data existed
+			Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+								this.companyId);
+						Object[] targetDatas = selectQueryTarget.getResultList().toArray();
+						if(targetDatas.length!=0) return ;
+			//copy data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
 			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {

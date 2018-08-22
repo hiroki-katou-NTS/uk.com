@@ -92,9 +92,8 @@ public class KscstWorkTypeDisplayDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(i * PARAMATER_QUANTITY + 2, dataArr[1]);
 				insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
 			}
-
 			// Run insert query
-			insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

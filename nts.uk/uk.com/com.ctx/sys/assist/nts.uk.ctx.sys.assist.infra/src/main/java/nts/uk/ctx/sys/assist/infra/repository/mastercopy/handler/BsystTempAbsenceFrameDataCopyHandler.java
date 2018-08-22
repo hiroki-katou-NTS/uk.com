@@ -58,7 +58,7 @@ public class BsystTempAbsenceFrameDataCopyHandler extends DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		List<Object> sourceDatas = selectQuery.getResultList();
-
+		if(sourceDatas.isEmpty()) return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -106,6 +107,7 @@ public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(13, dataArr[12]);
 				insertQuery.setParameter(14, dataArr[13]);
 				insertQuery.setParameter(15, dataArr[14]);
+				if(!StringUtils.isEmpty(insertQuery.toString())) insertQuery.executeUpdate();
 			}
 		case DO_NOTHING:
 			// Do nothing

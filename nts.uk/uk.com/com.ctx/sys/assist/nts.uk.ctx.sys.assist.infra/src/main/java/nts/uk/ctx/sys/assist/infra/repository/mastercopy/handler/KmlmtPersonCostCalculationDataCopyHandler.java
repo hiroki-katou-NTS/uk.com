@@ -91,10 +91,9 @@ public class KmlmtPersonCostCalculationDataCopyHandler extends DataCopyHandler {
 			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 			for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
 				UUID hisId = UUID.randomUUID();
-				String hisIdValue = hisId.toString();
 				Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 1, this.companyId);
-				insertQuery.setParameter(i * PARAMETER_QUANTITY + 2, hisIdValue);
+				insertQuery.setParameter(i * PARAMETER_QUANTITY + 2, hisId.toString());
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 3, dataArr[2]);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 4, dataArr[3]);
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 5, dataArr[4]);

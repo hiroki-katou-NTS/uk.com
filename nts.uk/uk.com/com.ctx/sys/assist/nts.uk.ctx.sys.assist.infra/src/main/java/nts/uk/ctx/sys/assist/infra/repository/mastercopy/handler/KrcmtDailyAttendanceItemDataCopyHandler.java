@@ -60,7 +60,7 @@ public class KrcmtDailyAttendanceItemDataCopyHandler extends DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		List<Object> zeroCompanyDatas = selectQuery.getResultList();
-		if (zeroCompanyDatas.isEmpty()) 	return;
+		if (zeroCompanyDatas.isEmpty()) return;
 			switch (copyMethod) {
 			case REPLACE_ALL:
 				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
@@ -103,7 +103,7 @@ public class KrcmtDailyAttendanceItemDataCopyHandler extends DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

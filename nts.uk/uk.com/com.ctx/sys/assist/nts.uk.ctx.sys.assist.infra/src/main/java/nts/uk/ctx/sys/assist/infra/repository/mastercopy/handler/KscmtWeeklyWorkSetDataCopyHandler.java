@@ -92,7 +92,7 @@ public class KscmtWeeklyWorkSetDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
 			}
 			// Run insert query
-			insertQuery.executeUpdate();
+			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:
