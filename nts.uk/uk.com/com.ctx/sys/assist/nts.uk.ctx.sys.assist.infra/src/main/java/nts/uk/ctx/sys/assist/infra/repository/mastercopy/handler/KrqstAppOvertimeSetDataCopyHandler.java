@@ -55,13 +55,15 @@ public class KrqstAppOvertimeSetDataCopyHandler extends DataCopyHandler {
 					.setParameter(1, this.companyId);
 				deleteQuery.executeUpdate();
 			case ADD_NEW:
-				// get old data target by cid
-				Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
-						this.companyId);
-				List<Object> oldDatas = selectQueryTarget.getResultList();
-				
-				if (!oldDatas.isEmpty()) 
-					return;
+				if (copyMethod == CopyMethod.ADD_NEW) {
+					// get old data target by cid
+					Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+							this.companyId);
+					List<Object> oldDatas = selectQueryTarget.getResultList();
+					
+					if (!oldDatas.isEmpty()) 
+						return;
+				}
 				
 				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
