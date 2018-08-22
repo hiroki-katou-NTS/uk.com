@@ -247,7 +247,8 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             commands.push(overTimeSet);
              _.forEach(self.appSetData().absenceSet(), function(item: any) {
                  let noKo = ko.mapping.toJS(item);
-                 if(noKo.displayFlag === true && noKo.optionName === '【年次有休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 let error = noKo.displayFlag === true && noKo.holidayTypeUseFlg == false && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "") ? true : false;
+                 if(error == true && noKo.optionName === '【年次有休】'){
                      $('.lagre-input-code:eq(1)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【年次有休】']});
                      clear();
                  }
@@ -257,7 +258,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【代休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【代休】'){
                      $('.lagre-input-code:eq(2)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【代休】']});
                      clear();
                  }
@@ -267,7 +268,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【欠勤】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【欠勤】'){
                      $('.lagre-input-code:eq(3)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【欠勤】']});
                      clear();
                  }
@@ -277,7 +278,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【特別休暇】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【特別休暇】'){
                      $('.lagre-input-code:eq(4)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【特別休暇】']});
                      clear();
                  }
@@ -287,7 +288,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【積立年休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【積立年休】'){
                      $('.lagre-input-code:eq(5)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【積立年休】']});
                      clear();
                  }
@@ -297,7 +298,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【休日】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【休日】'){
                      $('.lagre-input-code:eq(6)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【休日】']});
                      clear();
                  }
@@ -307,7 +308,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【時間消化】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【時間消化】'){
                      $('.lagre-input-code:eq(7)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【時間消化】']});
                      clear();
                  }
