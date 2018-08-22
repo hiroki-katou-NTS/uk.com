@@ -664,6 +664,19 @@ public class PeregCommandFacade {
 		if (handler != null) {
 			handler.handlePeregCommand(command);
 		}
+		
+		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
+				command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
+
+		List<String> visibleItemCodes = command.getInputs().stream().map(ItemValue::itemCode)
+				.collect(Collectors.toList());
+
+		List<ItemValue> mergerItem = fullItems.stream().filter(i -> {
+			return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+		}).collect(Collectors.toList());
+		
+		mergerItem.addAll(command.getInputs());
+		
 
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
@@ -677,7 +690,7 @@ public class PeregCommandFacade {
 		Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
 		switch (command.getCategoryType()) {
 		case 2:
-			Optional<ItemValue> itemValue = command.getInputs().stream().findFirst();
+			Optional<ItemValue> itemValue = mergerItem.stream().findFirst();
 
 			if (itemValue.isPresent()) {
 				ItemValue _itemValue = itemValue.get();
@@ -704,9 +717,9 @@ public class PeregCommandFacade {
 					.findFirst();
 
 			if (ddto.isPresent()) {
-				Optional<ItemValue> startDate = command.getInputs().stream()
+				Optional<ItemValue> startDate = mergerItem.stream()
 						.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
-				Optional<ItemValue> endDate = command.getInputs().stream()
+				Optional<ItemValue> endDate = mergerItem.stream()
 						.filter(f -> f.itemCode().equals(ddto.get().getEndDateCode())).findFirst();
 
 				if (startDate.isPresent()) {
