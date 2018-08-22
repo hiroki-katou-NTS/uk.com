@@ -117,6 +117,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
+import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
@@ -183,6 +184,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
+	@Inject
+	private ShowDialogError showDialogError;
+	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	
@@ -221,7 +225,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, ObjectShare objectShare) {
+			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, ObjectShare objectShare) {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
@@ -475,6 +479,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// Force shut down executor services.
 			executorService.shutdown();
 		}
+		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
 		return screenDto;
 	}
 

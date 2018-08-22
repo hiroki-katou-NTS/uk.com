@@ -1103,6 +1103,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		dto.setComment(edFunc.isPresent() ? edFunc.get().comment : "");
 		dto.setSettingUnit(
 				EnumAdaptor.valueOf(format.isPresent() ? format.get().settingUnitType : 1, SettingUnitType.class));
+		dto.setShowError(edFunc.isPresent() ? edFunc.get().checkErrRefDisp == 1 : false);
 		return dto;
 	}
 

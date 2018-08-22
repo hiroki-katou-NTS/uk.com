@@ -404,7 +404,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 lstEmployee: [],
                 formatCodes: self.formatCodes(),
-                objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
+                objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(),
+                showError: _.isEmpty(self.shareObject()) ? null: self.shareObject().errorRefStartAtr
             };
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
@@ -421,22 +422,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }   
             }).fail(function(error) {
                 if (error.messageId != "KDW/003/a") {
-                    //                    if(error.messageId == "Msg_1342"){
-                    //                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                    //                             self.hasEmployee = false;
-                    //                             nts.uk.ui.block.clear();
-                    //                             self.initCcg001();
-                    //                             self.loadCcg001();
-                    //                             dfd.resolve({ bindDataMap: false, data: {} });
-                    //                        });
-                    //                    }else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
                     });
-                    //                   }
 
                 } else {
-                    //self.selectDisplayItem();
                     nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
                     nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                         var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
@@ -609,6 +599,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 }
                 //update
+            }
+            if(data.showErrorDialog){
+               self.showErrorDialog(); 
             }
             //alert("time load ALL: "+ (performance.now() - startTime));
         }
