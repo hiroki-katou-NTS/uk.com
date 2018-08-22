@@ -54,17 +54,10 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         $("#selectionItemName").focus();
                     });
+                    self.checkCreate(false);
                 } else {
-                    perInfoSelectionItem.selectionItemName('');
-                    perInfoSelectionItem.characterType(false);
-                    perInfoSelectionItem.codeLength('');
-                    perInfoSelectionItem.nameLength('');
-                    perInfoSelectionItem.extraCodeLength('');
-                    perInfoSelectionItem.shareChecked(false);
-                    perInfoSelectionItem.integrationCode('');
-                    perInfoSelectionItem.memo('');
+                    self.registerDataSelectioItem(true);
                 }
-                self.checkCreate(false);
             });
         }
 
@@ -124,18 +117,19 @@ module nts.uk.com.view.cps016.a.viewmodel {
         }
 
         //新規ボタン
-        registerDataSelectioItem() {
+        registerDataSelectioItem(unselected?:boolean) {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
             nts.uk.ui.errors.clearAll();
-
-            perInfoSelectionItem.selectionItemId('');
+            if (!unselected) {
+                perInfoSelectionItem.selectionItemId('');
+            }
             perInfoSelectionItem.selectionItemName('');
 
             perInfoSelectionItem.characterType(false);
-            perInfoSelectionItem.codeLength('');
-            perInfoSelectionItem.nameLength('');
-            perInfoSelectionItem.extraCodeLength('');
+            perInfoSelectionItem.codeLength(null);
+            perInfoSelectionItem.nameLength(null);
+            perInfoSelectionItem.extraCodeLength(null);
 
             perInfoSelectionItem.shareChecked(false);
 
@@ -174,7 +168,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let command = ko.toJS(self.perInfoSelectionItem());
             block.invisible();    
             //「個人情報の選択項目」を登録する
-            service.addDataSelectionItem(command).done(function(selectId) {
+            service.addDataSelectionItem(command).done(function(selectId:any) {
                 self.listItems.removeAll();
                 //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
                 self.getAllSelectionItems().done(() => {
@@ -302,12 +296,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
         selectionItemId: string;
         selectionItemName: string;
 
-        characterType: number;
-        codeLength: number;
-        nameLength: number;
-        extraCodeLength: number;
+        characterType?: number;
+        codeLength?: number;
+        nameLength?: number;
+        extraCodeLength?: number;
 
-        shareChecked: boolean;
+        shareChecked?: boolean;
 
         integrationCode?: string;
         memo?: string;
@@ -319,9 +313,9 @@ module nts.uk.com.view.cps016.a.viewmodel {
         selectionItemName: KnockoutObservable<string> = ko.observable('');
 
         characterType: KnockoutObservable<boolean> = ko.observable(false);
-        codeLength: KnockoutObservable<number> = ko.observable('');
-        nameLength: KnockoutObservable<number> = ko.observable('');
-        extraCodeLength: KnockoutObservable<number> = ko.observable('');
+        codeLength: KnockoutObservable<number> = ko.observable(null);
+        nameLength: KnockoutObservable<number> = ko.observable(null);
+        extraCodeLength: KnockoutObservable<number> = ko.observable(null);
 
         shareChecked: KnockoutObservable<boolean> = ko.observable(false);
 
