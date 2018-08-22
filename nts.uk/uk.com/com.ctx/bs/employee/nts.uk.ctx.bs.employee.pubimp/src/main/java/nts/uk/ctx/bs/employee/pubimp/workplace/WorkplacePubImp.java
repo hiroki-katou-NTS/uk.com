@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -802,6 +804,26 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return optWorkplaceConfigInfo.get().getLstWkpHierarchy().stream()
 				.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList());
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getWorkplaceMapCodeBaseDateName(java.lang.String, java.util.List, java.util.List)
+	 */
+	@Override
+	public Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+			List<String> wpkCodes, List<GeneralDate> baseDates) {
+		// Query infos
+		Map<GeneralDate, List<WorkplaceInfo>> mapJobTitleInfos = this.workplaceInfoRepo
+				.findByWkpCds(companyId, wpkCodes, baseDates);
+
+		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		mapJobTitleInfos.entrySet().forEach(item -> {
+			item.getValue().forEach(jobTitleInfo -> {
+				mapResult.put(Pair.of(jobTitleInfo.getWorkplaceCode().v(), item.getKey()),
+						jobTitleInfo.getWorkplaceName().v());
+			});
+		});
+
+		return mapResult;
+	}
 		
-	
 }
