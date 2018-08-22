@@ -457,8 +457,8 @@ module nts.uk.ui.koExtentions {
                     // Remove separator (comma)
                     let numb = Number(data.value());
 
-                    if(_.isNumber(numb) && !_.isNaN(numb)) {
-                        $input.val(numb);
+                    if(_.isNumber(numb) && !_.isNaN(numb) && String(data.value()).trim() != '') {
+                        $input.val(numb.toLocaleString(undefined, {useGrouping: false}));
                     } else {
                         $input.val(data.value());
                     }
