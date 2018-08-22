@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
@@ -71,7 +70,7 @@ public class KshstAddSetManWKHourDataCopyHandler extends DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if (!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -90,7 +89,7 @@ public class KshstWorkDepLaborSetDataCopyHandler extends DataCopyHandler {
 				}
 
 				// Run insert query
-				insertQuery.executeUpdate();
+				if (!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 			case DO_NOTHING:
 				// Do nothing
 			default:

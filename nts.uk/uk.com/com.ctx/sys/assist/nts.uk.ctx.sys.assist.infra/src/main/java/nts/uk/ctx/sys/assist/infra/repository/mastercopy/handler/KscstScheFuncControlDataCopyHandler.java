@@ -8,6 +8,8 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -52,67 +54,66 @@ public class KscstScheFuncControlDataCopyHandler extends DataCopyHandler {
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
 	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doCopy() {
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
-		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-		if (zeroCompanyDatas.length == 0) {
+		List<Object> zeroCompanyDatas = selectQuery.getResultList();
+		if (zeroCompanyDatas.isEmpty())
 			return;
-		} else {
-			switch (copyMethod) {
-			case REPLACE_ALL:
-				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
-						this.companyId);
-				deleteQuery.executeUpdate();
-			case ADD_NEW:
-				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 1, this.companyId);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 2, dataArr[1]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 4, dataArr[3]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 5, dataArr[4]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 6, dataArr[5]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 7, dataArr[6]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 8, dataArr[7]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 9, dataArr[8]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 10, dataArr[9]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 11, dataArr[10]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 12, dataArr[11]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 13, dataArr[12]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 14, dataArr[13]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 15, dataArr[14]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 16, dataArr[15]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 17, dataArr[16]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 18, dataArr[17]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 19, dataArr[18]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 20, dataArr[19]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 21, dataArr[20]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 22, dataArr[21]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 23, dataArr[22]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 24, dataArr[23]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 25, dataArr[24]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 26, dataArr[25]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 27, dataArr[26]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 28, dataArr[27]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 29, dataArr[28]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 30, dataArr[29]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 31, dataArr[30]);
-					insertQuery.setParameter(i * PARAMATER_QUANTITY + 32, dataArr[31]);
-				}
-
-				// Run insert query
-				insertQuery.executeUpdate();
-			case DO_NOTHING:
-				// Do nothing
-			default:
-				break;
+		switch (copyMethod) {
+		case REPLACE_ALL:
+			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
+					this.companyId);
+			deleteQuery.executeUpdate();
+		case ADD_NEW:
+			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
+			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+			for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
+				Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 1, this.companyId);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 2, dataArr[1]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 4, dataArr[3]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 5, dataArr[4]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 6, dataArr[5]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 7, dataArr[6]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 8, dataArr[7]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 9, dataArr[8]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 10, dataArr[9]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 11, dataArr[10]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 12, dataArr[11]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 13, dataArr[12]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 14, dataArr[13]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 15, dataArr[14]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 16, dataArr[15]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 17, dataArr[16]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 18, dataArr[17]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 19, dataArr[18]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 20, dataArr[19]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 21, dataArr[20]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 22, dataArr[21]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 23, dataArr[22]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 24, dataArr[23]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 25, dataArr[24]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 26, dataArr[25]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 27, dataArr[26]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 28, dataArr[27]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 29, dataArr[28]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 30, dataArr[29]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 31, dataArr[30]);
+				insertQuery.setParameter(i * PARAMATER_QUANTITY + 32, dataArr[31]);
 			}
+
+			// Run insert query
+			if (!StringUtils.isEmpty(insertQueryStr))
+				insertQuery.executeUpdate();
+		case DO_NOTHING:
+			// Do nothing
+		default:
+			break;
 		}
 
 	}
