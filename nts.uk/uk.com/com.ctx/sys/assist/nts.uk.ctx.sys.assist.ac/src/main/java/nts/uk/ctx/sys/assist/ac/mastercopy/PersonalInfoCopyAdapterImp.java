@@ -13,6 +13,7 @@ import javax.inject.Inject;
 public class PersonalInfoCopyAdapterImp implements PersonalInfoDataCopyAdapter {
     @Inject
     PerInfoCategoryPub perInfoCategoryPub;
+    
 
     @Override
     public void copyA(String companyId, int copyMethod) {

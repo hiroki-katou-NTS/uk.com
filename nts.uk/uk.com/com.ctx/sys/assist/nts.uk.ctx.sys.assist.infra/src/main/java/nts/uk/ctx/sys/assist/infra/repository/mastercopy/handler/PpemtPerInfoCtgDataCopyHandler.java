@@ -21,13 +21,13 @@ import java.util.UUID;
 public class PpemtPerInfoCtgDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO PPEMT_PER_INFO_CTG(CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR) VALUES (?, ?, ?, ?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO PPEMT_PER_INFO_CTG(CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR) VALUES (?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR FROM PPEMT_PER_INFO_CTG WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR FROM PPEMT_PER_INFO_CTG WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM PPEMT_PER_INFO_CTG WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM PPEMT_PER_INFO_CTG WHERE CID = ?";
 	
 	/**
 	 * Do copy.

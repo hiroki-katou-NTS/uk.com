@@ -25,14 +25,15 @@ public class CopyDataRepoImp implements CopyDataRepository {
 
     @Override
     public void copy(String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
+        String tableName = targetTableInfo.getTableName().v().trim();
         switch (targetTableInfo.getCopyAttribute()) {
             case COPY_WITH_COMPANY_ID:
             case COPY_MORE_COMPANY_ID:
-                repository.doCopy(targetTableInfo.getTableName().v(), CopyMethod.valueOf(copyMethod), companyId);
+                repository.doCopy(tableName, CopyMethod.valueOf(copyMethod), companyId);
                 break;
             case COPY_OTHER:
                 //using adapter
-                switch (targetTableInfo.getTableName().v()) {
+                switch (tableName) {
                     case "KRCMT_ERAL_SET":
                         erAlWorkRecordCopyAdapter.copy(companyId, copyMethod);
                         break;

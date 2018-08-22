@@ -1,6 +1,7 @@
-package nts.uk.ctx.pereg.pub.mastercopy;
+package nts.uk.ctx.pereg.pubimp.mastercopy;
 
 import nts.uk.ctx.pereg.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.pereg.pub.mastercopy.PerInfoCategoryPub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
