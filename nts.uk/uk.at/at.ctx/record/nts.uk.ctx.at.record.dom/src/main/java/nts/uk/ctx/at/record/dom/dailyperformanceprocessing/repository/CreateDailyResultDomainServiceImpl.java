@@ -54,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -115,7 +116,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
 	
 	@Inject
-	private InterimRemainDataMngRegister interimRemainDataMngRegister;
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -439,7 +440,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
 		
 		// 暫定データの登録
-		// TODO - Du san
+		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, periodTime.datesBetween());
 		
 		// ログ情報（実行内容の完了状態）を更新する
 		updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
