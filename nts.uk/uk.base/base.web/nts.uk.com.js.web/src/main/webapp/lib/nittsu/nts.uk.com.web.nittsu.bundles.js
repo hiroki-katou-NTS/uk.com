@@ -3909,6 +3909,8 @@ var nts;
             ui.documentReady = $.Callbacks();
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
+            /** Event to notify ViewModel applied bindings. */
+            ui.viewModelApplied = $.Callbacks();
             // Kiban ViewModel
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
@@ -3948,6 +3950,7 @@ var nts;
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
+                    ui.viewModelApplied.fire(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
                     nts.uk.cookie.remove("startfrommenu", { path: "/" });
@@ -14980,7 +14983,8 @@ var nts;
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
-                    var offsetContentsArea = window.parent.$("#header").height();
+                    //let offsetContentsArea = window.parent.$("#header").height();
+                    var offsetContentsArea = 0;
                     var offsetDialog = $container.offset();
                     if (offsetDialog.top < offsetContentsArea) {
                         offsetDialog.top = offsetContentsArea;
