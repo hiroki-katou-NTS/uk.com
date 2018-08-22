@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KrqmtHdAppDispNameDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQMT_HD_APP_DISP_NAME(CID ,HD_APP_TYPE ,DISP_NAME) VALUES (?, ?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRQMT_HD_APP_DISP_NAME(CID ,HD_APP_TYPE ,DISP_NAME) VALUES (?, ?, ?);";
 	
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, HD_APP_TYPE, DISP_NAME FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, HD_APP_TYPE, DISP_NAME FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
 	
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_HD_APP_DISP_NAME WHERE CID = ?";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()

@@ -43,17 +43,17 @@ public class KrcstComFlexMCalSetDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_COM_FLEX_M_CAL_SET(CID ,INSUFFIC_SET,INCLUDE_OT,AGGR_METHOD,LEGAL_AGGR_SET) VALUES (?,?,?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_COM_FLEX_M_CAL_SET(CID ,INSUFFIC_SET,INCLUDE_OT,AGGR_METHOD,LEGAL_AGGR_SET) VALUES (?,?,?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,INSUFFIC_SET,INCLUDE_OT,AGGR_METHOD,LEGAL_AGGR_SET FROM KRCST_COM_FLEX_M_CAL_SET WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,INSUFFIC_SET,INCLUDE_OT,AGGR_METHOD,LEGAL_AGGR_SET FROM KRCST_COM_FLEX_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_FLEX_M_CAL_SET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_FLEX_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst com flex M cal set data copy handler.

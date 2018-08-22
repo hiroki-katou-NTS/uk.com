@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstComDeforMCalSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 11;
+	private static final int CURRENT_COLUMN = 11;
 
 //	/**
 //	 * The entity manager.
@@ -44,17 +44,17 @@ public class KrcstComDeforMCalSetDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_COM_DEFOR_M_CAL_SET(CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR,IS_OT_IRG,PERIOD,REPEAT_ATR,STR_MONTH) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_COM_DEFOR_M_CAL_SET(CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR,IS_OT_IRG,PERIOD,REPEAT_ATR,STR_MONTH) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR,IS_OT_IRG,PERIOD,REPEAT_ATR,STR_MONTH FROM KRCST_COM_DEFOR_M_CAL_SET WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR,IS_OT_IRG,PERIOD,REPEAT_ATR,STR_MONTH FROM KRCST_COM_DEFOR_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_DEFOR_M_CAL_SET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_DEFOR_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst com defor M cal set data copy handler.

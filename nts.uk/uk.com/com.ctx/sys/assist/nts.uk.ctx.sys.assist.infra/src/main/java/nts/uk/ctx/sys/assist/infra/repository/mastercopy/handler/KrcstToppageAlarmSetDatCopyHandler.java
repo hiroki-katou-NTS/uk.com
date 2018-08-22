@@ -23,15 +23,15 @@ public class KrcstToppageAlarmSetDatCopyHandler extends DataCopyHandler {
 
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRCST_TOPPAGE_ALARM_SET(CID ,ALARM_CATEGORY,USE_ATR) VALUES (?, ?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_TOPPAGE_ALARM_SET(CID ,ALARM_CATEGORY,USE_ATR) VALUES (?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,ALARM_CATEGORY,USE_ATR FROM KRCST_TOPPAGE_ALARM_SET WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,ALARM_CATEGORY,USE_ATR FROM KRCST_TOPPAGE_ALARM_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_TOPPAGE_ALARM_SET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_TOPPAGE_ALARM_SET WHERE CID = ?";
 	
-	private final int PARAMETER_QUANTITY = 3;
+	private static final int PARAMETER_QUANTITY = 3;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

@@ -24,23 +24,23 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstVertMonMethodDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 2;
+	private static final int CURRENT_COLUMN = 2;
 
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_VERT_MON_METHOD(CID ,TRANS_ATTEND_DAY) VALUES (?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_VERT_MON_METHOD(CID ,TRANS_ATTEND_DAY) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,TRANS_ATTEND_DAY FROM KRCST_VERT_MON_METHOD WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,TRANS_ATTEND_DAY FROM KRCST_VERT_MON_METHOD WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_VERT_MON_METHOD WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_VERT_MON_METHOD WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst vert mon method data copy handler.

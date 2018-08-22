@@ -23,37 +23,23 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstMonExcOutRoundDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 3;
+	private static final int CURRENT_COLUMN = 3;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_MON_EXCOUT_ROUND(CID,ROUND_UNIT,ROUND_PROC) VALUES (?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_MON_EXCOUT_ROUND(CID,ROUND_UNIT,ROUND_PROC) VALUES (?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,ROUND_UNIT,ROUND_PROC FROM KRCST_MON_EXCOUT_ROUND WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID,ROUND_UNIT,ROUND_PROC FROM KRCST_MON_EXCOUT_ROUND WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_MON_EXCOUT_ROUND WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_MON_EXCOUT_ROUND WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst mon exc out round data copy handler.

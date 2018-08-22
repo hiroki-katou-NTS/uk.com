@@ -24,37 +24,23 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcstConstralntTimeCalDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 2;
+	private static final int CURRENT_COLUMN = 2;
 
-	/**
-	 * The entity manager.
-	 */
-	private EntityManager entityManager;
-
-	/**
-	 * The copy method.
-	 */
-	private CopyMethod copyMethod;
-
-	/**
-	 * The company Id.
-	 */
-	private String companyId;
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_CONSTRAINT_TIME_CAL(CID ,CAL_METHOD) VALUES (?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_CONSTRAINT_TIME_CAL(CID ,CAL_METHOD) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,CAL_METHOD FROM KRCST_CONSTRAINT_TIME_CAL WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,CAL_METHOD FROM KRCST_CONSTRAINT_TIME_CAL WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_CONSTRAINT_TIME_CAL WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_CONSTRAINT_TIME_CAL WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst constralnt time cal data copy handler.

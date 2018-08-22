@@ -21,22 +21,22 @@ import javax.persistence.Query;
 @NoArgsConstructor
 public class KrqmtApprovalTempDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 2;
+	private static final int CURRENT_COLUMN = 2;
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRQMT_APPROVAL_TEMPLATE(CID,CONTENT) VALUES (?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRQMT_APPROVAL_TEMPLATE(CID,CONTENT) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,CONTENT FROM KRQMT_APPROVAL_TEMPLATE WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID,CONTENT FROM KRQMT_APPROVAL_TEMPLATE WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_APPROVAL_TEMPLATE WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_APPROVAL_TEMPLATE WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krqmt approval temp data copy handler.

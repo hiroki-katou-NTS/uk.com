@@ -17,22 +17,22 @@ import javax.persistence.Query;
 @NoArgsConstructor
 public class KrcstWkHourLimitCtrlDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 2;
+	private static final int CURRENT_COLUMN = 2;
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_WK_HOUR_LIMIT_CTRL(CID ,WORK_LIMIT_CTRL) VALUES (?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_WK_HOUR_LIMIT_CTRL(CID ,WORK_LIMIT_CTRL) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, WORK_LIMIT_CTRL FROM KRCST_WK_HOUR_LIMIT_CTRL WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, WORK_LIMIT_CTRL FROM KRCST_WK_HOUR_LIMIT_CTRL WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_WK_HOUR_LIMIT_CTRL WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_WK_HOUR_LIMIT_CTRL WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst wk hour limit ctrl data copy handler.

@@ -19,19 +19,18 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KrcstDvgcReasonDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRCST_DVGC_REASON(CID ,NO,REASON_CD,REASON,REASON_REQUIRED) VALUES (?, ?, ?, ?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_DVGC_REASON(CID ,NO,REASON_CD,REASON,REASON_REQUIRED) VALUES (?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,NO,REASON_CD,REASON,REASON_REQUIRED FROM KRCST_DVGC_REASON WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,NO,REASON_CD,REASON,REASON_REQUIRED FROM KRCST_DVGC_REASON WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_DVGC_REASON WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_DVGC_REASON WHERE CID = ?";
 	
-	private final int PARAMETER_QUANTITY = 5;
+	private static final int PARAMETER_QUANTITY = 5;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

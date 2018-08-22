@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrcmtStampImprintDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 7;
+	private static final int CURRENT_COLUMN = 7;
 
 //	/**
 //	 * The entity manager.
@@ -43,17 +43,17 @@ public class KrcmtStampImprintDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCMT_STAMP_IMPRINT(CID ,BREAK_OF_SWITCH_ATR,AUTO_STAMP_REFLECT_ATR,ACTUAL_STAMP_PRIORITY_ATR,REFLECT_WORKING_TIME_ATR,GO_BACK_OUT_CORRECTION_ATR,AUTO_STAMP_FUTURE_DAY_ATR) VALUES (?,?,?,?,?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCMT_STAMP_IMPRINT(CID ,BREAK_OF_SWITCH_ATR,AUTO_STAMP_REFLECT_ATR,ACTUAL_STAMP_PRIORITY_ATR,REFLECT_WORKING_TIME_ATR,GO_BACK_OUT_CORRECTION_ATR,AUTO_STAMP_FUTURE_DAY_ATR) VALUES (?,?,?,?,?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,BREAK_OF_SWITCH_ATR,AUTO_STAMP_REFLECT_ATR,ACTUAL_STAMP_PRIORITY_ATR,REFLECT_WORKING_TIME_ATR,GO_BACK_OUT_CORRECTION_ATR,AUTO_STAMP_FUTURE_DAY_ATR FROM KRCMT_STAMP_IMPRINT WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,BREAK_OF_SWITCH_ATR,AUTO_STAMP_REFLECT_ATR,ACTUAL_STAMP_PRIORITY_ATR,REFLECT_WORKING_TIME_ATR,GO_BACK_OUT_CORRECTION_ATR,AUTO_STAMP_FUTURE_DAY_ATR FROM KRCMT_STAMP_IMPRINT WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_STAMP_IMPRINT WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_STAMP_IMPRINT WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcmt stamp imprint data copy handler.

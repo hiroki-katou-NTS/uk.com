@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KrcstMonItemRoundDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRCST_MON_ITEM_ROUND(CID, ATTENDANCE_ITEM_ID, ROUND_UNIT, ROUND_PROC) VALUES (?, ?, ?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_MON_ITEM_ROUND(CID, ATTENDANCE_ITEM_ID, ROUND_UNIT, ROUND_PROC) VALUES (?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, ATTENDANCE_ITEM_ID, ROUND_UNIT, ROUND_PROC FROM KRCST_MON_ITEM_ROUND WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, ATTENDANCE_ITEM_ID, ROUND_UNIT, ROUND_PROC FROM KRCST_MON_ITEM_ROUND WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_MON_ITEM_ROUND WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_MON_ITEM_ROUND WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()

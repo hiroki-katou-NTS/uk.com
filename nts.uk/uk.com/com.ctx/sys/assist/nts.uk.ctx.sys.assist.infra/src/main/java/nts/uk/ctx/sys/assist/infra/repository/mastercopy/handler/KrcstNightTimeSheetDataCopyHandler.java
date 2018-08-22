@@ -24,23 +24,23 @@ import nts.uk.shr.com.context.AppContexts;
 
 public class KrcstNightTimeSheetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 3;
+	private static final int CURRENT_COLUMN = 3;
 
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_NIGHT_TIMESHEET(CID ,START_TIME,END_TIME) VALUES (?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_NIGHT_TIMESHEET(CID ,START_TIME,END_TIME) VALUES (?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,START_TIME,END_TIME FROM KRCST_NIGHT_TIMESHEET WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,START_TIME,END_TIME FROM KRCST_NIGHT_TIMESHEET WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_NIGHT_TIMESHEET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_NIGHT_TIMESHEET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst night time sheet data copy handler.

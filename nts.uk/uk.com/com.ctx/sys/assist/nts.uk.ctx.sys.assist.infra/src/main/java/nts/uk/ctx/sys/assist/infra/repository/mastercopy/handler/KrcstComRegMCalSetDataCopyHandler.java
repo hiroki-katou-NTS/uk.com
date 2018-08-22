@@ -22,22 +22,22 @@ import javax.persistence.Query;
 @NoArgsConstructor
 public class KrcstComRegMCalSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private final int CURRENT_COLUMN = 7;
+	private static final int CURRENT_COLUMN = 7;
 
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRCST_COM_REG_M_CAL_SET(CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR) VALUES (?,?,?,?,?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KRCST_COM_REG_M_CAL_SET(CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR) VALUES (?,?,?,?,?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR FROM KRCST_COM_REG_M_CAL_SET WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,INCLUDE_LEGAL_OT,INCLUDE_HOLIDAY_OT,INCLUDE_EXTRA_OT,INCLUDE_LEGAL_AGGR,INCLUDE_HOLIDAY_AGGR,INCLUDE_EXTRA_AGGR FROM KRCST_COM_REG_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_REG_M_CAL_SET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_COM_REG_M_CAL_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krcst com reg M cal set data copy handler.

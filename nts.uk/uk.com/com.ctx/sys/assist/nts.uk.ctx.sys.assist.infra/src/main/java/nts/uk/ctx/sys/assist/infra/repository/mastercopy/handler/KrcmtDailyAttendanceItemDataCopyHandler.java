@@ -30,18 +30,18 @@ public class KrcmtDailyAttendanceItemDataCopyHandler extends DataCopyHandler {
 //	private String companyId;
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRCMT_DAI_ATTENDANCE_ITEM(CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
+	private static final String INSERT_QUERY = "INSERT INTO KRCMT_DAI_ATTENDANCE_ITEM(CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
 			+ "DAILY_ATTENDANCE_ATR, TYPE_OF_MASTER, PRIMITIVE_VALUE VALUES (?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, ATTENDANCE_ITEM_ID, ATTENDANCE_ITEM_NAME, DISPLAY_NUMBER, USER_CAN_SET, LINE_BREAK_POSITION, "
 			+ "DAILY_ATTENDANCE_ATR, TYPE_OF_MASTER, PRIMITIVE_VALUE FROM KRCMT_DAI_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_DAI_ATTENDANCE_ITEM WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCMT_DAI_ATTENDANCE_ITEM WHERE CID = ?";
 
 	/** The paramater quantity. */
-	private final int PARAMATER_QUANTITY = 9;
+	private static final int PARAMATER_QUANTITY = 9;
 
 	/**
 	 * Instantiates a new krcmt daily attendance item data copy handler.
