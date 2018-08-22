@@ -761,7 +761,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue = fileItemDataCreationResult.get(ITEM_VALUE);
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
-			if (useNullValue == USE_NULL_VALUE_ON) {
+			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -847,26 +847,27 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if (StringUtils.isEmpty(value)) {
 				if (isSetNull) {
 					value = nullValueReplace;
+					result.put(ITEM_VALUE, value);
+					result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
+					return result;
 				}
-				
-				result.put(ITEM_VALUE, value);
-				result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
-				return result;
 			}
 
-			if (i == 0) {
+			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
 				itemValue = value;
 				continue;
 			}
 
-			if (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
+			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
+					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
+					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
 				itemValue += value;
 				continue;
 			}
-
+			
 			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems()
 					.get(i).getOperationSymbol();
-			if (!operationSymbol.isPresent())
+			if (!operationSymbol.isPresent() || StringUtils.isEmpty(value))
 				continue;
 			if (operationSymbol.get() == OperationSymbol.PLUS) {
 				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
@@ -1487,13 +1488,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
 			case INCUMBENT:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getAtWorkOutput().map(item -> item.v()).orElse("");
 				break;
 			case LEAVE_OF_ABSENCE:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getAbsenceOutput().map(item -> item.v()).orElse("");
 				break;
 			case RETIREMENT:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getRetirementOutput().map(item -> item.v()).orElse("");
 				break;
 			case HOLIDAY:
 				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
