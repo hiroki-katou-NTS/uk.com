@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KrqstComAppConfigDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_COM_APP_CONFIG(CID, SELECT_OF_APPROVERS_FLG) VALUES (?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQST_COM_APP_CONFIG(CID, SELECT_OF_APPROVERS_FLG) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, SELECT_OF_APPROVERS_FLG FROM KRQST_COM_APP_CONFIG WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, SELECT_OF_APPROVERS_FLG FROM KRQST_COM_APP_CONFIG WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_COM_APP_CONFIG WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_COM_APP_CONFIG WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
