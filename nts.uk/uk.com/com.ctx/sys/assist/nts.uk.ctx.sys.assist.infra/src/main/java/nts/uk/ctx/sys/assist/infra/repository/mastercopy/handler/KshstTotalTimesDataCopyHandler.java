@@ -20,15 +20,15 @@ import javax.persistence.Query;
 public class KshstTotalTimesDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_TOTAL_TIMES(CID ,TOTAL_TIMES_NO,USE_ATR,COUNT_ATR,TOTAL_TIMES_NAME,TOTAL_TIMES_ABNAME,SUMMARY_ATR) VALUES (?, ?, ?, ?, ?,?,?);";
+	private static final String INSERT_QUERY = "INSERT INTO KSHST_TOTAL_TIMES(CID ,TOTAL_TIMES_NO,USE_ATR,COUNT_ATR,TOTAL_TIMES_NAME,TOTAL_TIMES_ABNAME,SUMMARY_ATR) VALUES (?, ?, ?, ?, ?,?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,TOTAL_TIMES_NO,USE_ATR,COUNT_ATR,TOTAL_TIMES_NAME,TOTAL_TIMES_ABNAME,SUMMARY_ATR FROM KSHST_TOTAL_TIMES WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,TOTAL_TIMES_NO,USE_ATR,COUNT_ATR,TOTAL_TIMES_NAME,TOTAL_TIMES_ABNAME,SUMMARY_ATR FROM KSHST_TOTAL_TIMES WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_TOTAL_TIMES WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_TOTAL_TIMES WHERE CID = ?";
 	
-	private final int PARAMETER_QUANTITY = 7;
+	private static final int PARAMETER_QUANTITY = 7;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

@@ -20,15 +20,15 @@ import javax.persistence.Query;
 public class KshstTempWkUseManageDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_TEMP_WK_USE_MANAGE(CID,USE_CLASSIFICATION) VALUES (?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KSHST_TEMP_WK_USE_MANAGE(CID,USE_CLASSIFICATION) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,USE_CLASSIFICATION FROM KSHST_TEMP_WK_USE_MANAGE WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID,USE_CLASSIFICATION FROM KSHST_TEMP_WK_USE_MANAGE WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_TEMP_WK_USE_MANAGE WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_TEMP_WK_USE_MANAGE WHERE CID = ?";
 	
-	private final int PARAMETER_QUANTITY = 2;
+	private static final int PARAMETER_QUANTITY = 2;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

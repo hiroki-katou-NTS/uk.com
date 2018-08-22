@@ -20,15 +20,15 @@ import javax.persistence.Query;
 public class KshstManageEntryExitDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_MANAGE_ENTRY_EXIT(CID ,USE_CLS) VALUES (?, ?);";
+	private static final String INSERT_QUERY = "INSERT INTO KSHST_MANAGE_ENTRY_EXIT(CID ,USE_CLS) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,USE_CLS FROM KSHST_MANAGE_ENTRY_EXIT WHERE CID = ?";
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,USE_CLS FROM KSHST_MANAGE_ENTRY_EXIT WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MANAGE_ENTRY_EXIT WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MANAGE_ENTRY_EXIT WHERE CID = ?";
 	
-	private final int PARAMETER_QUANTITY = 2;
+	private static final int PARAMETER_QUANTITY = 2;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

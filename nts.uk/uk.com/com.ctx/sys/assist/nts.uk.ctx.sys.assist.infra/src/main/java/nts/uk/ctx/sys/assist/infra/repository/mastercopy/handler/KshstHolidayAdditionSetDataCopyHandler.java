@@ -22,18 +22,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class KshstHolidayAdditionSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_HOLIDAY_ADDTION_SET(CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
+	private static final String INSERT_QUERY = "INSERT INTO KSHST_HOLIDAY_ADDTION_SET(CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
 			+ "ANNUAL_HOLIDAY, SPECIAL_HOLIDAY, YEARLY_RESERVED) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
+	private static final String SELECT_BY_CID_QUERY = "SELECT CID, REFER_COM_HOLIDAY_TIME, ONE_DAY, MORNING, AFTERNOON, REFER_ACTUAL_WORK_HOURS, NOT_REFERRING_ACH, "
 			+ "ANNUAL_HOLIDAY, SPECIAL_HOLIDAY, YEARLY_RESERVED FROM KSHST_HOLIDAY_ADDTION_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_HOLIDAY_ADDTION_SET WHERE CID = ?";
+	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_HOLIDAY_ADDTION_SET WHERE CID = ?";
 
 	/** The paramater quantity. */
-	private final int PARAMATER_QUANTITY = 10;
+	private static final int PARAMATER_QUANTITY = 10;
 
 	/**
 	 * Instantiates a new kshst holiday addition set data copy handler.
