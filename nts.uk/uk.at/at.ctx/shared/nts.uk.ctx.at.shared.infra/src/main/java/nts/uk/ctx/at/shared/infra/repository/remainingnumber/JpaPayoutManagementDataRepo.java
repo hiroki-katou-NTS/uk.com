@@ -12,7 +12,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
@@ -51,6 +55,23 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private static final String QUERY_BY_EACH_PERIOD = QUERY_SID_DATE_PERIOD
 			+ " AND (c.unUsedDays > :unUsedDays AND c.expiredDate >= :sDate AND c.expiredDate <= :eDate)"
 			+ " OR (c.stateAtr = :stateAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate) ";
+	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtPayoutManaData c"
+			+ " WHERE c.sID = :employeeId"
+			+ " AND c.unknownDate = :unknownDate"
+			+ " AND c.dayOff >= :startDate";
+	private static final String QUERY_BYSID_COND_DATE = QUERY_BYSID_WITH_COND + " AND p.dayOff < :dayOff";
+
+
+	@Override
+	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("state", state)
+				.setParameter("dayOff", ymd)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
@@ -128,7 +149,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	@Override
 	public Optional<PayoutManagementData> findByID(String ID) {
-		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(ID, KrcmtPayoutManaData.class);
+		String QUERY_BY_ID = "SELECT s FROM KrcmtPayoutManaData s WHERE s.payoutId = :payoutId";
+		Optional<KrcmtPayoutManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtPayoutManaData.class).setParameter("payoutId", ID).getSingle();
 		if (entity.isPresent()) {
 			return Optional.ofNullable(toDomain(entity.get()));
 		}
@@ -201,6 +223,20 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("stateAtr", stateAtr.value)
 				.getList(); 
 		return listpayout.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff) {
+		List<KrcmtPayoutManaData> listLeaveData = this.queryProxy()
+				.query(QUERY_BY_SID_HOLIDAY, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("unknownDate", unknownDate)
+				.setParameter("startDate", dayOff.start()).getList();
+		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+	}
+	@Override
+	public void deleteById(List<String> payoutId) {
+		this.commandProxy().removeAll(KrcmtPayoutManaData.class, payoutId);
 	}
 
 }

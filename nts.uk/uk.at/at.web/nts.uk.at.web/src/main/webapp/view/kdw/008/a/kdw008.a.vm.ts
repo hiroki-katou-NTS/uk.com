@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdw008.a {
     export module viewmodel {
         import getText = nts.uk.resource.getText;
+        import confirm = nts.uk.ui.dialog.confirm;
         export class ScreenModel {
 
             //isDaily
@@ -125,25 +126,25 @@ module nts.uk.at.view.kdw008.a {
                 this.selectedCode = ko.observable();
 
                 self.columns3 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
                 self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
                 ]);
 
                 self.columns5 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 }
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 , formatter: _.escape}
                 ]);
 
                 //swap list 2
@@ -210,7 +211,7 @@ module nts.uk.at.view.kdw008.a {
                                     var obj = {
                                         attendanceItemId: item.itemDaily,
                                         attendanceItemName: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemName,
-                                        attendanceItemDisplayNumber: item.displayOrder,
+                                        attendanceItemDisplayNumber: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemDisplayNumber,
                                         columnWidth: item.columnWidthTable
                                     };
                                     return new AttendanceItemModel(obj);
@@ -310,8 +311,8 @@ module nts.uk.at.view.kdw008.a {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
-                    self.listMonthlyAttdItem(data);
-                    self.listMonthlyAttdItemFullData(_.cloneDeep(data));
+                    self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
+                    self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -401,15 +402,20 @@ module nts.uk.at.view.kdw008.a {
                         sheetNo : self.selectedSheetNo()                            
                     };
                     nts.uk.ui.block.invisible();
-                    new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                           self.reloadData(self.currentDailyFormatCode());
-                        });
-                    }).always(function() {
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                               self.reloadData(self.currentDailyFormatCode());
+                            });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        }).fail(function(error) {
+                            $('#currentCode').ntsError('set', error);
+                        }); 
+                    }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                    }).fail(function(error) {
-                        $('#currentCode').ntsError('set', error);
                     });
+                    
                 } else {
                     //monthly
                     let listDisplayTimeItem = [];
@@ -424,17 +430,21 @@ module nts.uk.at.view.kdw008.a {
                         self.checked()
                     );
                     nts.uk.ui.block.invisible();
-                    new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                            self.getListMonPfmCorrectionFormat().done(function(data) {
-                                self.selectedSheetNo(1)
-                                self.selectedSheetNo.valueHasMutated();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                                self.getListMonPfmCorrectionFormat().done(function(data) {
+                                    self.selectedSheetNo(1)
+                                    self.selectedSheetNo.valueHasMutated();
+                                });
                             });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        }).fail(function(error) {
+                            $('#currentCode').ntsError('set', error);
                         });
-                    }).always(function() {
+                    }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                    }).fail(function(error) {
-                        $('#currentCode').ntsError('set', error);
                     });
 
                 }
@@ -450,6 +460,7 @@ module nts.uk.at.view.kdw008.a {
                     new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
 
                         if (data) {
+                            data.attendanceItemDtos = _.sortBy(data.attendanceItemDtos, ["attendanceItemDisplayNumber"]);
                             if (data.isDefaultInitial == 1) {
                                 self.isSetFormatToDefault(false);
                                 self.checked(true);

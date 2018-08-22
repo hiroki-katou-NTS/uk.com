@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pub.employment;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -62,5 +63,14 @@ public interface SyEmploymentPub {
 	// RequestList31-3
 	// 社員ID（List）と指定期間から社員の雇用履歴を取得
 	List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids , DatePeriod datePeriod);
+	
+	/**
+	 * Gets the employment map.
+	 *
+	 * @param companyId the company id
+	 * @param empCodes the emp codes
+	 * @return the employment map
+	 */
+	Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes);
 	
 }

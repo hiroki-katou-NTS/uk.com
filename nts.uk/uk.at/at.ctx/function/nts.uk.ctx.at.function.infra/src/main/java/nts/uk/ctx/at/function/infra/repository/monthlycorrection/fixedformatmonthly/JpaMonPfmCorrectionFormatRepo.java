@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonPfmCorrectionFormatPK;
 import nts.uk.shr.com.context.AppContexts;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonPfmCorrectionFormatRepository {
 
@@ -63,6 +66,7 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void updateMonPfmCorrectionFormat(MonPfmCorrectionFormat monPfmCorrectionFormat) {
 		KrcmtMonPfmCorrectionFormat newEntity = KrcmtMonPfmCorrectionFormat.toEntity(monPfmCorrectionFormat);
@@ -88,10 +92,9 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 				toInsertM.add(nE);
 			}
 		});
-
+		updateEntity.sheetName = newEntity.sheetName;
 		if (!toInsertM.isEmpty()) {
 			commandProxy().insertAll(toInsertM);
-			updateEntity.sheetName = newEntity.sheetName;
 			this.commandProxy().update(updateEntity);
 		}
 

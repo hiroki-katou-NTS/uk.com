@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdl029.a.screenModel {
-
+    import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
@@ -40,6 +40,8 @@ module nts.uk.at.view.kdl029.a.screenModel {
         totalRemain: KnockoutObservable<string> = ko.observable('0.0 日');
         displayKCP005: KnockoutObservable<boolean> = ko.observable(false);
         lstEmpFull: KnockoutObservableArray<any> = ko.observableArray([]);
+        //ver7
+        title2: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
             let param = nts.uk.ui.windows.getShared('KDL029_PARAM');
@@ -70,7 +72,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                     });
                 }
                 if(self.displayKCP005()){
-                    nts.uk.ui.windows.getSelf().setWidth(930);
+                    nts.uk.ui.windows.getSelf().setWidth(940);
                     nts.uk.ui.windows.getSelf().$dialog.dialogPositionControl();
                 }
             })
@@ -83,11 +85,12 @@ module nts.uk.at.view.kdl029.a.screenModel {
             var self = this,
             dfd = $.Deferred();
             service.findAllEmploymentSystem({
-                mode: self.multiSelect(),
                 inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                 listSID: self.employeeIDList(),
             }).done(function(data){
                 block.clear();
+                let yearRes = getText('KDL029_15') + data.yearResigName + getText('KDL029_23'); 
+                self.title2(yearRes);
                 self.employeeCode(data.employeeCode);
                 self.employeeName(data.employeeName);
                 //bind data -> 2 table

@@ -15,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
@@ -98,7 +97,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 			dataSource.add(row);
 			// check list child and generate row child
 			List<LogDataCorrectRecordRefeDto> lstDataCorrect = d.getLstLogDataCorrectRecordRefeDto();
-			
+			List<LogOutputItemDto> lstSubHeder = d.getLstLogOutputItemDto();
 			if (!CollectionUtil.isEmpty(lstDataCorrect)) {
 			
 				int count = 0;
@@ -106,26 +105,11 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 					Map<String, Object> rowSub ;
 					if (count == 0) {
 						rowSub = new HashMap<>();
-						if (dataCorrectLog.getTargetDataType() == TargetDataType.SCHEDULE.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.DAILY_RECORD.value) {
-							rowSub.put(headers.get(0), supHeaders.get(0));
-						}
-						if (dataCorrectLog.getTargetDataType() == TargetDataType.MONTHLY_RECORD.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.ANY_PERIOD_SUMMARY.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.SALARY_DETAIL.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.BONUS_DETAIL.value) {
-							rowSub.put(headers.get(0), supHeaders.get(1));
-						}
-						if (dataCorrectLog.getTargetDataType() == TargetDataType.YEAR_END_ADJUSTMENT.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.MONTHLY_CALCULATION.value
-								|| dataCorrectLog.getTargetDataType() == TargetDataType.RISING_SALARY_BACK.value) {
-							rowSub.put(headers.get(0), supHeaders.get(2));
-						}
-
-						rowSub.put(headers.get(1), supHeaders.get(3));
-						rowSub.put(headers.get(2), supHeaders.get(4));
-						rowSub.put(headers.get(3), supHeaders.get(5));
-						rowSub.put(headers.get(4), supHeaders.get(6));
+						rowSub.put(headers.get(0), lstSubHeder.get(0).getItemName());
+						rowSub.put(headers.get(1), lstSubHeder.get(1).getItemName());
+						rowSub.put(headers.get(2), lstSubHeder.get(2).getItemName());
+						rowSub.put(headers.get(3), lstSubHeder.get(3).getItemName());
+						rowSub.put(headers.get(4), lstSubHeder.get(4).getItemName());
 						dataSource.add(rowSub);
 						count++;
 					}
@@ -177,7 +161,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 					}
 					rowSub = new HashMap<>();
 					rowSub.put(headers.get(0), persionCorrectLog.getCategoryName());
-					rowSub.put(headers.get(1), persionCorrectLog.getTargetDate() !=null ? persionCorrectLog.getTargetDate().toString("yyyy/MM/dd") : "");
+					rowSub.put(headers.get(1), persionCorrectLog.getTargetDate());
 					rowSub.put(headers.get(2), persionCorrectLog.getItemName());
 					rowSub.put(headers.get(3), persionCorrectLog.getInfoOperateAttr());
 					rowSub.put(headers.get(4), persionCorrectLog.getValueBefore());

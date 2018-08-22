@@ -38,6 +38,11 @@ module nts.uk.com.view.cps005.b {
                 __viewContext['screenModelB'].currentItemData().currentItemSelected().timeItem().hintTimeItemMax('0:00');
             });
 
+            $(document).on("keydown", 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+                if (e.keyCode == 13) {
+                        $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").focus(); 
+                }
+            });
             ko.computed(function() {
                 __viewContext['screenModelB'].isEnableButtonProceed(nts.uk.ui._viewModel.errors.isEmpty() && __viewContext['screenModelB'].currentItemData().isEnableButtonProceed());
             });
@@ -46,33 +51,4 @@ module nts.uk.com.view.cps005.b {
         });
     });
 }
-
-
-//$(function() {
-//    $(document).on('click', '.search-btn', function(evt) {
-//        processFilter();
-//    });
-//
-//    $(document).on('click', '.clear-btn', function(evt) {
-//        processFilter();
-//    })
-//
-//})
-//function processFilter() {
-//    let dataSourceFilter: Array<any> = $("#item-info-list").igGrid("option", "dataSource");
-//
-//    if (dataSourceFilter.length > 0) {
-//        if (nts.uk.text.isNullOrEmpty(__viewContext['screenModelB'].currentItemData().perInfoItemSelectCode())) {
-//            __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(dataSourceFilter[0].id);
-//        }
-//    } else {
-//        __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode("");
-//        __viewContext['screenModelB'].currentItemData().currentItemSelected(new nts.uk.com.view.cps005.b.PersonInfoItem(null));
-//        __viewContext['screenModelB'].isUpdate = false;
-//        $("#item-name-control").focus();
-//        __viewContext['screenModelB'].currentItemData().isEnableButtonProceed(true);
-//        __viewContext['screenModelB'].currentItemData().isEnableButtonDelete(false);
-//    }
-//
-//}
 

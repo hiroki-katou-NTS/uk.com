@@ -10,12 +10,15 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 
 public class OvertimeHoursDto {
 	
+	int closureID;
+	
 	List<ClosureResultModel> listclosureID;
 	
 	private OvertimeHours overtimeHours;
 
-	public OvertimeHoursDto(List<ClosureResultModel> listclosureID, OvertimeHours overtimeHours) {
+	public OvertimeHoursDto(int closureID,List<ClosureResultModel> listclosureID, OvertimeHours overtimeHours) {
 		super();
+		this.closureID = closureID;
 		this.listclosureID = listclosureID;
 		this.overtimeHours = overtimeHours;
 	}

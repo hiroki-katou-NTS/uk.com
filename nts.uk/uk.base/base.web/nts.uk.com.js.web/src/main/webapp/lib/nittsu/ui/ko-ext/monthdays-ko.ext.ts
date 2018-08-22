@@ -18,7 +18,8 @@ module nts.uk.ui.koExtentions {
                         options: ko.observableArray(source),
                         optionsValue: 'value',
                         value: value,
-                        optionsText: 'text'
+                        optionsText: 'text',
+                        width: '60px'
                     });
                 },
                 getMonths = () => _.range(1, 13).map(m => ({ text: m, value: m })),

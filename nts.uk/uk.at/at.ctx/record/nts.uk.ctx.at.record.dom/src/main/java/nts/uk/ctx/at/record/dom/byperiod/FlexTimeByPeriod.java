@@ -106,4 +106,13 @@ public class FlexTimeByPeriod implements Cloneable {
 			this.beforeFlexTime = this.beforeFlexTime.addMinutes(beforeFlexMinutes);
 		}
 	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.flexExcessTime.v());
+	}
 }

@@ -71,4 +71,10 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 				.getList(item -> item.toDomain());
 	}
 
+	@Override
+	public void deleteAfterDate(String employeeId, GeneralDate date) {
+		String sql = "DELETE FROM KrcdtAnnLeaTimeRemainHist a WHERE a.sid = :employeeId and a.grantProcessDate > :startDate";
+		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("startDate", date);
+	}
+
 }

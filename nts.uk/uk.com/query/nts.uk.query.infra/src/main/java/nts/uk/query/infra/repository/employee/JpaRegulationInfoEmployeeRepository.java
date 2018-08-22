@@ -377,7 +377,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// sort by worktype code
 		if (systemType == CCG001SystemType.EMPLOYMENT.value) {
-			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
+			// Katou said: その資料の記載は現在未対応の「並び替え機能」で使用するものです。
+			// 現状は全システム区分で「社員コード（ASC）」でソートしてもらえませんでしょうか？
+			// => hien tai chua doi ung cai nay
+			// TODO: not covered
+			// orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		}
 
 		// always sort by employee code

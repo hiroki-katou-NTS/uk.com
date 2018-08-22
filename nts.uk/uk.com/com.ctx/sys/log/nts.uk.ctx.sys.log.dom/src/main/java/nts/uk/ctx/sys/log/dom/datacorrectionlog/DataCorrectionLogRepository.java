@@ -22,8 +22,8 @@ public interface DataCorrectionLogRepository {
 
 	List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, Year yearStart, Year yearEnd);
 	
-	List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId, DatePeriod period);
+	List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId, DatePeriod period, TargetDataType targetDataType);
 	
-	void save(List<DataCorrectionLog> dataCorrectionLog);
-
+	List<DataCorrectionLog> findByTargetAndDate(List<String> operationIds, List<String> listEmployeeId, DatePeriod period, TargetDataType targetDataType);
+	
 }

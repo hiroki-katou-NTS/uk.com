@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author yennth
  *
  */
-@StringMaxLength(100)
+@StringMaxLength(400)
 public class MessageDisp extends StringPrimitiveValue<MessageDisp>{
 
 	public MessageDisp(String rawValue) {

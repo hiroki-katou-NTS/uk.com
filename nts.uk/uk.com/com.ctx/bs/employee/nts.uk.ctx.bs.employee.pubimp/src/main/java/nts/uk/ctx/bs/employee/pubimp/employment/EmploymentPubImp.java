@@ -192,4 +192,14 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#getEmploymentMap(java.lang.String, java.util.List)
+	 */
+	@Override
+	public Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes) {
+		List<Employment> empList = this.employmentRepository.findByEmpCodes(companyId, empCodes);
+		return empList.stream().collect(Collectors.toMap(item -> item.getEmploymentCode().v(),
+				item -> item.getEmploymentName().v()));
+	}
+
 }

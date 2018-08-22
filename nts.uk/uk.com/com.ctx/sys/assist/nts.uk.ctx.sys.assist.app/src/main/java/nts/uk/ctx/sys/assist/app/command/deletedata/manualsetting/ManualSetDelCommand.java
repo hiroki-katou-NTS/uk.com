@@ -4,6 +4,7 @@
 package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -37,8 +38,8 @@ public class ManualSetDelCommand {
 	
 	private GeneralDate monthStartDate;
 	private GeneralDate monthEndDate;
-	private int startYear;
-	private int endYear;
+	private Integer startYear;
+	private Integer endYear;
 	
 	private int isSaveBeforeDeleteFlg;
 	private int isExistCompressPasswordFlg;
@@ -52,9 +53,13 @@ public class ManualSetDelCommand {
 		boolean isExistCompressPasswordFlg = this.isExistCompressPasswordFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
 		return new ManualSetDeletion(delId, cid, systemType, new DelName(delName), isSaveBeforeDeleteFlg, 
-				isExistCompressPasswordFlg, new PasswordCompressFileEncrypt(passwordForCompressFile), haveEmployeeSpecifiedFlg, 
-				sid, new SupplementExplanation(suppleExplanation),
-				referenceDate, executionDateAndTime, dayStartDate, dayEndDate, monthStartDate, monthEndDate, startYear, endYear);			
+				isExistCompressPasswordFlg, Optional.ofNullable(new PasswordCompressFileEncrypt(passwordForCompressFile)), 
+				haveEmployeeSpecifiedFlg, 
+				sid, Optional.ofNullable(new SupplementExplanation(suppleExplanation)),
+				Optional.ofNullable(referenceDate), executionDateAndTime, 
+				Optional.ofNullable(dayStartDate), Optional.ofNullable(dayEndDate), 
+				Optional.ofNullable(monthStartDate), Optional.ofNullable(monthEndDate), 
+				Optional.ofNullable(startYear), Optional.ofNullable(endYear));			
 	}
 	
 	public List<EmployeeDeletion> getEmployees(String delId) {

@@ -23,6 +23,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
+import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
@@ -83,11 +85,15 @@ public class AggregateMonthlyRecordServiceProc {
 	private BreakDayOffMngInPeriodQuery breakDayoffMng;
 	/** 出勤率計算用日数を取得する */
 	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 月別実績の編集状態 */
+	private EditStateOfMonthlyPerRepository editStateRepo;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
+	/** 編集状態リスト */
+	private List<EditStateOfMonthlyPerformance> editStates;
 
 	/** 会社ID */
 	private String companyId;
@@ -124,13 +130,15 @@ public class AggregateMonthlyRecordServiceProc {
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng,
 			BreakDayOffMngInPeriodQuery breakDayoffMng,
-			GetDaysForCalcAttdRate getDaysForCalcAttdRate){
+			GetDaysForCalcAttdRate getDaysForCalcAttdRate,
+			EditStateOfMonthlyPerRepository editStateRepo){
 
 		this.repositories = repositories;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
 		this.absenceRecruitMng = absenceRecruitMng;
 		this.breakDayoffMng = breakDayoffMng;
 		this.getDaysForCalcAttdRate = getDaysForCalcAttdRate;
+		this.editStateRepo = editStateRepo;
 	}
 	
 	/**
@@ -159,6 +167,7 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 		this.errorInfos = new HashMap<>();
+		this.editStates = new ArrayList<>();
 
 		this.companyId = companyId;
 		this.employeeId = employeeId;
@@ -256,12 +265,16 @@ public class AggregateMonthlyRecordServiceProc {
 
 			ConcurrentStopwatches.stop("12200:労働条件ごと：");
 		}
+
+		// 月別実績の編集状態　取得
+		this.editStates = this.editStateRepo.findByClosure(
+				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
 		
 		if (this.aggregateResult.getAttendanceTime().isPresent()){
 			AttendanceTimeOfMonthly attendanceTime = this.aggregateResult.getAttendanceTime().get();
 			
-			// 手修正された項目を元に戻す
-			attendanceTime = this.undoRetouchValues(attendanceTime, this.monthlyOldDatas);
+			// 手修正された項目を元に戻す　（勤怠時間用）
+			attendanceTime = this.undoRetouchValuesForAttendanceTime(attendanceTime, this.monthlyOldDatas);
 				
 			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch){
@@ -303,6 +316,9 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 月別実績の任意項目を集計
 		this.aggregateAnyItem(monthPeriod);
+		
+		// 手修正された項目を元に戻す　（任意項目用）
+		this.undoRetouchValuesForAnyItems(this.monthlyOldDatas);
 
 		ConcurrentStopwatches.stop("12500:任意項目：");
 		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
@@ -639,12 +655,12 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 	
 	/**
-	 * 手修正された項目を元に戻す
+	 * 手修正された項目を元に戻す　（勤怠時間用）
 	 * @param attendanceTime 月別実績の勤怠時間
 	 * @param monthlyOldDatas 集計前の月別実績データ
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly undoRetouchValues(
+	private AttendanceTimeOfMonthly undoRetouchValuesForAttendanceTime(
 			AttendanceTimeOfMonthly attendanceTime,
 			MonthlyOldDatas monthlyOldDatas){
 
@@ -653,22 +669,32 @@ public class AggregateMonthlyRecordServiceProc {
 		// 既存データを確認する
 		val oldDataOpt = monthlyOldDatas.getAttendanceTime();
 		if (!oldDataOpt.isPresent()) return attendanceTime;
-		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		val oldItemConvert = monthlyConverter.withAttendanceTime(oldDataOpt.get());
+		val oldConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldItemConvert = oldConverter.withAttendanceTime(oldDataOpt.get());
 
 		// 計算後データを確認
+		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
 		val convert = monthlyConverter.withAttendanceTime(attendanceTime);
 		
 		// 月別実績の編集状態を取得
-		
-		{
+		for (val editState : this.editStates){
 			
 			// 勤怠項目IDから項目を判断
+			val itemValueOpt = oldItemConvert.convert(editState.getAttendanceItemId());
+			if (!itemValueOpt.isPresent()) continue;
+			val itemValue = itemValueOpt.get();
+			if (itemValue.value() == null) continue;
 			
 			// 該当する勤怠項目IDの値を計算前に戻す
-			
+			convert.merge(itemValue);
+			this.isRetouch = true;
 		}
-		
+
+		// いずれかの手修正値を戻した時、戻した後の勤怠時間を返す
+		if (this.isRetouch){
+			val convertedOpt = convert.toAttendanceTime();
+			if (convertedOpt.isPresent()) attendanceTime = convertedOpt.get();
+		}
 		return attendanceTime;
 	}
 
@@ -694,6 +720,46 @@ public class AggregateMonthlyRecordServiceProc {
 		return attendanceTime;
 	}
 	
+	
+	/**
+	 * 手修正された項目を元に戻す　（任意項目用）
+	 * @param monthlyOldDatas 集計前の月別実績データ
+	 */
+	private void undoRetouchValuesForAnyItems(MonthlyOldDatas monthlyOldDatas){
+
+		this.isRetouch = false;
+		
+		// 既存データを確認する
+		val oldDataList = monthlyOldDatas.getAnyItemList();
+		if (oldDataList.size() == 0) return;
+		val oldConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldItemConvert = oldConverter.withAnyItem(oldDataList);
+
+		// 計算後データを確認
+		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val convert = monthlyConverter.withAnyItem(this.aggregateResult.getAnyItemList());
+		
+		// 月別実績の編集状態を取得
+		for (val editState : this.editStates){
+			
+			// 勤怠項目IDから項目を判断
+			val itemValueOpt = oldItemConvert.convert(editState.getAttendanceItemId());
+			if (!itemValueOpt.isPresent()) continue;
+			val itemValue = itemValueOpt.get();
+			if (itemValue.value() == null) continue;
+			
+			// 該当する勤怠項目IDの値を計算前に戻す
+			convert.merge(itemValue);
+			this.isRetouch = true;
+		}
+
+		// いずれかの手修正値を戻した時、戻した後の任意項目を返す
+		if (this.isRetouch){
+			val convertedList = convert.toAnyItems();
+			this.aggregateResult.setAnyItemList(convertedList);
+		}
+	}
+
 	/**
 	 * 残数処理
 	 * @param period 期間
@@ -999,19 +1065,27 @@ public class AggregateMonthlyRecordServiceProc {
 		val lastInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.end());
 		if (!lastInfoOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"004", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
-			return null;
+			//val errorInfo = new MonthlyAggregationErrorInfo(
+			//		"004", new ErrMessageContent(TextResource.localize("Msg_1157")));
+			//this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			//return null;
+			
+			// 月別実績の所属情報を返す　（エラーにせず、月末に月初の情報を入れる）
+			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					firstInfo, firstInfo);
 		}
 		val lastInfoOfDaily = lastInfoOfDailyOpt.get();
 		val lastWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.end());
 		if (!lastWorkTypeOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"004", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
-			return null;
+			//val errorInfo = new MonthlyAggregationErrorInfo(
+			//		"004", new ErrMessageContent(TextResource.localize("Msg_1157")));
+			//this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			//return null;
+			
+			// 月別実績の所属情報を返す　（エラーにせず、月末に月初の情報を入れる）
+			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					firstInfo, firstInfo);
 		}
 		val lastWorkTypeOfDaily = lastWorkTypeOfDailyOpt.get();
 

@@ -87,8 +87,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 

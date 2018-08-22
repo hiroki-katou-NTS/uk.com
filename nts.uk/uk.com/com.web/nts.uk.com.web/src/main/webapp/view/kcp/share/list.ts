@@ -160,6 +160,11 @@ module kcp.share.list {
         optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
 
         subscriptions?: Array<KnockoutSubscription>;
+        
+        /**
+         * in the select-all case, disableSelection is true. Else false
+         */
+        disableSelection?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -252,6 +257,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
+        disableSelection : boolean;
         componentOption: ComponentOption;
         
         constructor() {
@@ -269,6 +275,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            disableSelection = false;
         }
 
         /**
@@ -309,6 +316,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
+            self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -360,13 +368,10 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
-                self.initSelectedValue();
-                gridList.ntsGridList("setSelectedValue", []);
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
-                    gridList.ntsGridList("setSelectedValue", self.selectedCodes());
                 });
             }
         }
@@ -379,16 +384,35 @@ module kcp.share.list {
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
-                const options = {
-                    width: self.gridStyle.totalColumnSize,
-                    dataSource: self.itemList(),
-                    primaryKey: self.targetKey,
-                    columns: self.listComponentColumn,
-                    multiple: self.isMultipleSelect,
-                    value: self.selectedCodes(),
-                    name: self.getItemNameForList(),
-                    rows: self.maxRows
-                };
+                
+                const options;
+                
+                if (self.disableSelection) {
+                    let selectionDisables = _.map(self.itemList(), 'code');
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: true,
+                        value: selectionDisables,
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                        selectionDisables: selectionDisables
+                    };
+                } else {
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: self.isMultipleSelect,
+                        value: self.selectedCodes(),
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                    };
+                }
+                
                 const searchBoxOptions = {
                     searchMode: 'filter',
                     targetKey: self.targetKey,
@@ -571,11 +595,8 @@ module kcp.share.list {
             if (data.isShowWorkPlaceName) {
                 fields.push('workplaceName');
             }
-            var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
+            $input.html(LIST_COMPONENT_HTML);
             _.defer(() => {
-                $input.load(webserviceLocator, function() {
                     $input.find('table').attr('id', self.componentGridId);
                     ko.applyBindings(self, $input[0]);
                     $input.find('.base-date-editor').find('.nts-input').width(133);
@@ -597,7 +618,6 @@ module kcp.share.list {
                         });
                     }
                     dfd.resolve();
-                });
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
@@ -727,9 +747,6 @@ module kcp.share.list {
          */
         private initSelectedValue() {
             var self = this;
-            if (!_.isEmpty(self.selectedCodes()) && self.selectType != SelectType.SELECT_ALL) {
-                return;
-            }
             switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
                     if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {
@@ -1023,6 +1040,75 @@ module kcp.share.list {
         }
         
     }
+
+    export class ListComponentTextResource {
+        static KCP003_2 = nts.uk.resource.getText('KCP003_2');
+        static KCP003_3 = nts.uk.resource.getText('KCP003_3');
+        static KCP004_7 = nts.uk.resource.getText('KCP004_7');
+        static CCG001_28  = nts.uk.resource.getText('CCG001_28');
+    }
+
+var LIST_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <style type="text/css">
+#nts-component-list table tr td {
+    white-space: nowrap;
+}
+
+.float-left {
+    float: left;
+}
+</style>
+    <div style="border-radius: 5px;"
+        data-bind="style: {width: gridStyle.totalComponentSize + 'px',
+                height: gridStyle.totalHeight + 'px',
+                padding: hasPadding ? '20px' : '0px'},
+                css: {'caret-right caret-background bg-green': !isDialog},
+                attr: {id: componentWrapperId}">
+        <!-- ko if: !isDialog -->
+            <i class="icon icon-searchbox"></i>
+        <!-- /ko -->
+        <!-- ko if: hasBaseDate -->
+            <div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">`+ListComponentTextResource.KCP003_2+`</div>
+            <div class="base-date-editor" style="margin-left: 20px;"
+                data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
+            <button
+                data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload"
+                style="width: 100px">`+ListComponentTextResource.KCP003_3+`</button>
+        <!-- /ko -->
+        <!-- Upgrade: Search By closureId-->
+        <!-- ko if: isDisplayClosureSelection -->
+            <div style="margin-bottom: 10px">
+                <div data-bind="ntsFormLabel: {required: true}"
+                    style="float: left; margin-left: 10px; margin-right: 15px;">`+ListComponentTextResource.CCG001_28+`</div>
+                <div id="combo-box" style="min-width: 160px;"
+                    data-bind="ntsComboBox: {
+                                        options: closureList,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 5,
+                                        value: selectedClosureId,
+                                        optionsText: 'name',
+                                        enable: true,
+                                        columns: [
+                                            { prop: 'name', length: 4 },
+                                        ]}"></div>
+            </div>
+        <!-- /ko -->
+        <!-- End of Upgrade -->
+        <div id="com-kcp-searchbox" style="width: 100%">
+        <div data-bind="attr: {id: searchBoxId}" style="display: inline-block"></div>
+        <!-- ko if: isHasButtonSelectAll -->
+            <button
+                data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"
+                style="margin-left: 4px; display: inline-block">`+ListComponentTextResource.KCP004_7+`</button>
+        <!-- /ko -->
+        </div>
+        <table id="grid-list-all-kcp"></table>
+    </div>
+</ui:composition>`;
 }
 
 /**

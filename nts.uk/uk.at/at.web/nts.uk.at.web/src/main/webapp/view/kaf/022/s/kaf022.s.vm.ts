@@ -38,7 +38,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         self.selectedReason(new ApplicationReason(reason));
                         self.isUpdate(true);
                     }
-                }
+                }else{
+                        self.createNew();
+                    }
             });
         }
         
@@ -98,6 +100,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.grayout();
             let self = this,
                 dfd = $.Deferred();
             self.listReason.removeAll();
@@ -108,6 +111,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 }
                 dfd.resolve();
             });
+            nts.uk.ui.block.clear;
             return dfd.promise();
         }
 
@@ -299,7 +303,6 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         /** remove item from list **/
         remove() {
             let self = this;
-            
             let count = 0;
             let appTypeNow = self.selectedAppType();
             // tìm vị trí của item định xóa
@@ -350,9 +353,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 }
                             }
                             else {
-
                                 self.selectedOrder(undefined);
-
                             }
                             dialogInfo({ messageId: "Msg_16" });
                             self.selectedOrder(code);
@@ -365,11 +366,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     }).always(() => {
                             nts.uk.ui.block.clear();
                         });
-                    
-                    
                 });
             }).ifNo(() => {
-            });
+            })
        }
             
     }
