@@ -61,6 +61,10 @@ public class PerInfoInitValueSetItemDetail {
 		// thêm trường numberIntegerPart của bảng common
 		private Integer numberIntegerPart;
 
+		private Integer numberItemAmount;
+		
+		private Integer numberItemMinus;
+
 		private Integer timeItemMin;
 
 		private Integer timeItemMax;

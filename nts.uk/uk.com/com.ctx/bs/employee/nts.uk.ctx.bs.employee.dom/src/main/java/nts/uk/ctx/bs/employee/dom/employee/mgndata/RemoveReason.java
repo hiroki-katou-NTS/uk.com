@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /** 削除理由 */
-@StringMaxLength(500)
+@StringMaxLength(300)
 public class RemoveReason extends StringPrimitiveValue<RemoveReason> {
 
 	/**

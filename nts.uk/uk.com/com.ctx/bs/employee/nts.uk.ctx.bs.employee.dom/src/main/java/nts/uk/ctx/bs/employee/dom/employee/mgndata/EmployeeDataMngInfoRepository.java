@@ -117,6 +117,8 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getAllByCid(String cid);
 	
+	int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate);
+
 	/**
 	 * Find by cid employee code and deleted status.
 	 *
