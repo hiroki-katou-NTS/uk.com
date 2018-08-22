@@ -55,8 +55,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     categoryType: x.categoryType,
                                     isAbolition: x.isAbolition
                                 })));
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
                     } else {
@@ -102,6 +102,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     }
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
 
@@ -123,9 +124,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.canAbolition, data.isExistedItemLst);
-                    if (data.itemLst.length > 0) {
-                        self.currentCategory().currentItemId(data.itemLst[0].id);
-                    }
+//                    if (data.itemLst.length > 0) {
+//                        self.currentCategory().currentItemId(data.itemLst[0].id);
+//                    }
                 }
             });
         }
@@ -342,7 +343,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     isAbolition: cat.isAbolition
 
                 };
-
+            block.grayout();
             service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     let index = _.indexOf(_.map(self.categoryList(), function(obj) { return obj.id }), command.categoryId);
@@ -361,6 +362,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 } else {
                     dialog.alertError({ messageId: res.messageId });
                 }
+            }).always(() => {
+                block.clear();
             });
 
         }
