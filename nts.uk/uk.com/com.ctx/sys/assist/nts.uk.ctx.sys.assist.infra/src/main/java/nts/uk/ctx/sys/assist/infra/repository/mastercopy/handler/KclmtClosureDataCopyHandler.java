@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KclmtClosureDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KCLMT_CLOSURE(CID ,CLOSURE_ID,USE_ATR,CLOSURE_MONTH) VALUES (?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KCLMT_CLOSURE(CID ,CLOSURE_ID,USE_ATR,CLOSURE_MONTH) VALUES (?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,CLOSURE_ID,USE_ATR,CLOSURE_MONTH FROM KCLMT_CLOSURE WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,CLOSURE_ID,USE_ATR,CLOSURE_MONTH FROM KCLMT_CLOSURE WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KCLMT_CLOSURE WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KCLMT_CLOSURE WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 4;
 

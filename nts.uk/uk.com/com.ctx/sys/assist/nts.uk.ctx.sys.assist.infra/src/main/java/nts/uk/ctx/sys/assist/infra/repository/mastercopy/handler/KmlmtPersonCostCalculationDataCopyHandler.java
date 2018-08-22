@@ -24,13 +24,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KmlmtPersonCostCalculationDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KMLMT_COST_CALC_SET(CID ,HIS_ID,START_DATE,END_DATE,UNITPRICE_ATR,MEMO) VALUES (?, ?, ?, ?, ?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KMLMT_COST_CALC_SET(CID ,HIS_ID,START_DATE,END_DATE,UNITPRICE_ATR,MEMO) VALUES (?, ?, ?, ?, ?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,HIS_ID,START_DATE,END_DATE,UNITPRICE_ATR,MEMO FROM KMLMT_COST_CALC_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,HIS_ID,START_DATE,END_DATE,UNITPRICE_ATR,MEMO FROM KMLMT_COST_CALC_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KMLMT_COST_CALC_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KMLMT_COST_CALC_SET WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 6;
 

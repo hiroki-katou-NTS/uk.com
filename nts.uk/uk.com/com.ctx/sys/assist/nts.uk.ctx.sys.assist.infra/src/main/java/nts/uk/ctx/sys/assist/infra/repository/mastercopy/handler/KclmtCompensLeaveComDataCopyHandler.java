@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KclmtCompensLeaveComDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KCLMT_COMPENS_LEAVE_COM(CID ,MANAGE_ATR,DEADL_CHECK_MONTH) VALUES (?, ?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KCLMT_COMPENS_LEAVE_COM(CID ,MANAGE_ATR,DEADL_CHECK_MONTH) VALUES (?, ?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_ATR,DEADL_CHECK_MONTH FROM KCLMT_COMPENS_LEAVE_COM WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_ATR,DEADL_CHECK_MONTH FROM KCLMT_COMPENS_LEAVE_COM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KCLMT_COMPENS_LEAVE_COM WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KCLMT_COMPENS_LEAVE_COM WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 3;
 
