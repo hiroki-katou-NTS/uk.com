@@ -39,7 +39,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
         private validateSelectMonth(startMonth: number, endMonth: number):boolean {
             let self = this;
             const month7 = 7;
-            if (startMonth <= month7 && (endMonth > startMonth || endMonth > month7)) {
+            if (startMonth <= month7 && (endMonth < startMonth || endMonth > month7)) {
                 return true;
             } else if (startMonth >= month7 && endMonth > startMonth) {
                 return true;
