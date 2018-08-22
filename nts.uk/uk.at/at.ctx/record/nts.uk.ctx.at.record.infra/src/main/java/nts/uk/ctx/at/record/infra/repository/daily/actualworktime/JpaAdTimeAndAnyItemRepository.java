@@ -30,7 +30,7 @@ public class JpaAdTimeAndAnyItemRepository extends JpaRepository implements AdTi
 			   .registerStoredProcedureParameter("Ymd", Date.class, ParameterMode.IN)//第三引数
 			   .setParameter("CId", AppContexts.user().companyId().toString()).setParameter("SId", employeeId.toString()).setParameter("Ymd", ymd.date());
 //		//実行
-//		stQuery.execute();
+		stQuery.execute();
 		
 	}
 }

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<script>var dialogSize = { width: 300, height: 230 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -20,9 +20,10 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group">
+				<div class="valign-center control-group"
+					style="margin-top: 10px; margin-bottom: 15px;">
 					<label>#{i18n.getText('KTG027_3')}</label>
-					<div
+					<div id = "inputYM"
 						data-bind="ntsDatePicker: { name: '#[KTG027_3]', value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
 				</div>
 				<div class="valign-center control-group" style="min-width: 500px;">
@@ -43,18 +44,19 @@
 					<button style="margin-left: 100px;"
 						data-bind=" click : printData ,visible : check()  ">#{i18n.getText('KTG027_13')}
 					</button>
+					<div data-bind="visible : !displayEr()">
+						<button
+							data-bind="ntsHelpButton: {textId : 'KTG027_11',textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'left bottom'}">?</button>
+					</div>
 					<div data-bind="visible:!displayEr()">
-						<div class="btnHelp">
-							<button
-								data-bind="ntsHelpButton: {textId : 'KTG027_11',textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'left bottom' , visible : !displayEr}">?</button>
-						</div>
+
 						<table id="fixed-table">
 							<colgroup>
-								<col width="270px" />
-								<col width="70px" />
-								<col width="70px" />
-								<col width="70px" />
-								<col width="70px" />
+								<col width="250px" />
+								<col width="80px" />
+								<col width="120px" />
+								<!-- <col width="70px" />
+								<col width="70px" /> -->
 
 							</colgroup>
 							<thead>
@@ -67,23 +69,34 @@
 
 								<tr>
 									<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th>
+									<!-- <th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th> -->
 								</tr>
 							</thead>
+							
 							<tbody data-bind="foreach : inforOvertime">
 								<tr
-									data-bind="style : {backgroundColor : backgroundColor , color : color}">
+									data-bind="style: { backgroundColor: status !== 0 ? backgroundColor : '', color : status !== 0  ? color : ''}">
 									<td data-bind="text : employee"></td>
 									<td data-bind="text : timeLimit"></td>
 									<td data-bind="text : actualTime"></td>
-									<td data-bind="text : applicationTime"></td>
-									<td data-bind="text : totalTime"></td>
+									<!-- <td data-bind="text : applicationTime"></td>
+									<td data-bind="text : totalTime"></td> -->
 								</tr>
 							</tbody>
 						</table>
+						<!-- <div class="valign-center control-group" style = "display: inline-flex; margin-top : 2px;"
+						data-bind="style : {backgroundColor : backgroundColor , color : color}">
+						<div class = "row1" style = "width: 250px;">#{i18n.getText('KTG027_10')}</div>
+						<div class = "row2" style = "width: 69px;"></div>
+						<div class = "row3" style = "width: 69px;"  data-bind="text : total1()"></div>
+						<div class = "row4" style = "width: 69px;"	data-bind="text : total2()"></div>
+						<div class = "row5" style = "width: 86px;"	data-bind="text : total3()"></div>
+						 </div> -->
 					</div>
-					<div data-bind="text : msg , visible : displayEr()" class="color-daily-holiday" style = "padding-top : 10px;"></div>
+					
+					<div data-bind="text : msg , visible : displayEr()"
+						class="color-daily-holiday" style="padding-top: 10px;"></div>
 				</div>
 			</div>
 		</ui:define>

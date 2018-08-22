@@ -101,7 +101,7 @@ button.search-btn, button.clear-btn {
 }
 
 input.ntsSearchBox {
-	width: 150px !important;
+	width: 195px !important;
 }
 
 #sub-content-right {
@@ -125,20 +125,20 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px;
+	max-height: 495px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	width: 634px;
 }
 
 #search_his {
-	margin-top: 38px;
+	margin-top: 18px;
 	margin-bottom: 5px;
 }
 
 #history {
 	float: left;
-	margin-left: 200px;
+	margin-left: 375px;
 }
 
 .contents-header {
@@ -190,15 +190,11 @@ table tr td, table tr th {
 #A2_012 {
 	margin-left: 15px;
 	width: 97px;
-	height: 30px;
 	padding: 0px 0px !important;
 }
 
 #help {
-	width: 30px;
-	height: 30px;
 	margin-left: 5px;
-	padding: 0px 0px !important;
 }
 
 #combo-box {
@@ -232,20 +228,19 @@ table tr td, table tr th {
 	float: left;
 }
 
-span.caret-background.caret-right.direction-right {
+#sub-center > span.caret-background.caret-right.direction-right {
 	position: absolute;;
 	margin-top: 50px !important;
 	margin-left: 2px !important;
 }
 
 th>div {
-	top: 0;
-	padding: 3px;
+/* 	top: 0;
+	padding: 3px; */
 	color: #000;
-	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
-}
+} 
 
 th {
 	height: 0;
@@ -267,7 +262,8 @@ td {
 	border: 1px solid #ccc;
 }
 
-tbody tr:first-child td {
+
+.contents-header tbody tr:first-child td {
 	border-top: none;
 }
 
@@ -283,9 +279,7 @@ label[for] {
 }
 
 #A3_13 {
-	width: 22px !important;
 	margin-left: 5px !important;
-	height: 27px !important;
 }
 
 #A3_15 {
@@ -315,8 +309,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
-
-#sub-right>table>tbody{
-	height: 462px !important;
 }

@@ -26,6 +26,14 @@ public interface SpecialHolidayRepository {
 	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
 	
 	/**
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCodes
+	 * @return
+	 */
+	List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes);
+	
+	/**
 	 * Add Special Holiday
 	 * @param specialHoliday
 	 */
@@ -52,4 +60,10 @@ public interface SpecialHolidayRepository {
 	 * @return
 	 */
 	List<Integer> findByAbsframeNo(String cid, int absFrameNo);
+	/**
+	 * Find By CompanyId
+	 * @param companyId
+	 * @return
+	 */
+	List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId);
 }

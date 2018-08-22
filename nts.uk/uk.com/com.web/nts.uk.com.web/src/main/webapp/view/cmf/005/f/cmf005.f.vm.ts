@@ -52,7 +52,6 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.dataManagementDel = ko.observable({});
 
             self.delId(params.delId);
-//            self.delId = "9d15a7eb-731d-42d8-b59c-a4a12faa1589";
 
             //F3
             self.deleteSetName = params.deleteSetName;
@@ -61,12 +60,48 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             } else if (params.saveBeforDelete == model.SAVE_BEFOR_DELETE_ATR.NO) {
                 self.saveBeforDelete = getText('CMF005_36');
             }
-            self.dateStartValue = moment.utc(params.dateValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-            self.dateEndValue = moment.utc(params.dateValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-            self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
-            self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
-            self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
-            self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
+            
+            if (params.dateValue.startDate) {
+                self.dateStartValue = moment.utc(params.dateValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+            }
+            else {
+                self.dateStartValue = '';
+            }
+            
+            if (params.dateValue.endDate) {
+                self.dateEndValue = moment.utc(params.dateValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+            } 
+            else {
+                self.dateEndValue = '';
+            }
+            
+            if (params.monthValue.startDate) {
+                self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
+            }
+            else {
+                self.monthStartValue = '';
+            }
+            
+            if (params.monthValue.endDate) {
+                self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
+            }
+            else {
+                self.monthEndValue = '';
+            }
+            
+            if (params.yearValue.startDate) {
+                self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
+            }
+            else {
+                self.yearStartValue = '';
+            }
+            
+            if (params.yearValue.endDate) {
+                self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
+            }
+            else {
+                self.yearEndValue = '';
+            }
 
             // init F2_2_2, F2_2_3,F2_2_4
             self.status = ko.observable('');

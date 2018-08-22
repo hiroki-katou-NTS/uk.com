@@ -237,6 +237,7 @@ module nts.uk.at.view.kmk004.d {
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
+                    nts.uk.ui.block.grayout();
                     service.removeWorkplaceSetting(command).done((res) => {
 
                         // new mode.
@@ -264,6 +265,7 @@ module nts.uk.at.view.kmk004.d {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
                         self.clearError();
+                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
@@ -323,14 +325,14 @@ module nts.uk.at.view.kmk004.d {
                 
                 let saveCommand: WorkspaceWorktimeSettingDtoSaveCommand = new WorkspaceWorktimeSettingDtoSaveCommand();
                 saveCommand.updateData(self.selectedWorkplaceId(), self.worktimeVM.worktimeSetting);
-                
+                nts.uk.ui.block.grayout();
                 service.saveWorkplaceSetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     self.addAlreadySettingWorkplace(self.selectedWorkplaceId());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
-                });
+                }).always(() => nts.uk.ui.block.clear());
             }
             
             /**

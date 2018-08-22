@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.checkremainnumber;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -11,13 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraItemMon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysFixedMonPerEral;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -36,13 +31,13 @@ public class KrcmtCompareRange extends UkJpaEntity implements Serializable {
 	public int compareOperator;
 	
 	@Column(name = "START_VALUE_DAY")
-	public int startValueDay;
+	public BigDecimal startValueDay;
 	
 	@Column(name = "START_VALUE_TIME")
 	public Integer startValueTime;
 	
 	@Column(name = "END_VALUE_DAY")
-	public int endValueDay;
+	public BigDecimal endValueDay;
 	
 	@Column(name = "END_VALUE_TIME")
 	public Integer endValueTime;
@@ -56,7 +51,7 @@ public class KrcmtCompareRange extends UkJpaEntity implements Serializable {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCompareRange(String errorAlarmCheckID, int compareOperator, int startValueDay, Integer startValueTime, int endValueDay, Integer endValueTime) {
+	public KrcmtCompareRange(String errorAlarmCheckID, int compareOperator, BigDecimal startValueDay, Integer startValueTime, BigDecimal endValueDay, Integer endValueTime) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;

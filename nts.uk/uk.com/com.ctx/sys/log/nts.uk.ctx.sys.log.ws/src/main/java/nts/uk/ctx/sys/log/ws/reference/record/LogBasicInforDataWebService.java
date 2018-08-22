@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.log.ws.reference.record;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,6 +33,14 @@ public class LogBasicInforDataWebService extends WebService {
 		// get LogbasicInfor
 		List<LogBasicInfoAllDto> lstLoginBasicInfor = logBasicInformationAllFinder.findByOperatorsAndDate(logParams);
 		return lstLoginBasicInfor;
+	}
+	
+	@POST
+	@Path("filterLogData")
+	public List<Map<String, Object>> filterDataLog(LogParams logParams) {
+		
+		List<Map<String, Object>> lstData = logBasicInformationAllFinder.getDataLog(logParams);
+		return lstData;
 	}
 
 	@POST

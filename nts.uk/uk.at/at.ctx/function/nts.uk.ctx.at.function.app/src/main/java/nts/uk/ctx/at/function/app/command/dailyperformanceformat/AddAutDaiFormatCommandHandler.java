@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.dailyperformanceformat;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 		String companyId = login.companyId();
 
 		AddAuthorityDailyFormatCommand command = context.getCommand();
+		command.getAuthorityDailyCommand().setSheetNo(BigDecimal.valueOf(1));
 		
 		if (command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().isEmpty()) {
 			throw new BusinessException("Msg_920");
@@ -106,7 +108,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 
-		if (this.authorityFormatMonthlyRepository.checkExistCode(new DailyPerformanceFormatCode(command.getAuthorityMonthlyCommand().getDailyPerformanceFormatCode()))) {
+		if (this.authorityFormatMonthlyRepository.checkExistCode(companyId,new DailyPerformanceFormatCode(command.getAuthorityMonthlyCommand().getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("#Msg_3");
 		} else {
 			this.authorityFormatMonthlyRepository.add(authorityFomatMonthlies);

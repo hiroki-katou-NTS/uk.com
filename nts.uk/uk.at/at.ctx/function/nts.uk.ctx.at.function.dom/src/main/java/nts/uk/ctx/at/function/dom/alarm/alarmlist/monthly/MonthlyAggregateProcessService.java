@@ -187,6 +187,8 @@ public class MonthlyAggregateProcessService {
 		
 		
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
+			if(!extra.isUseAtr())
+				continue;
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
 					

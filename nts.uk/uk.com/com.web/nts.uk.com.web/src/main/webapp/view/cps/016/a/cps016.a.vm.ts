@@ -21,6 +21,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         constructor() {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
+            perInfoSelectionItem.selectionItemId.extend({notify:"always"});
             self.checkCreate = ko.observable(true);
             self.closeUp = ko.observable(false);
             if (self.param) {
@@ -53,6 +54,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         $("#selectionItemName").focus();
                     });
+                } else {
+                    perInfoSelectionItem.selectionItemName('');
+                    perInfoSelectionItem.characterType(false);
+                    perInfoSelectionItem.codeLength('');
+                    perInfoSelectionItem.nameLength('');
+                    perInfoSelectionItem.extraCodeLength('');
+                    perInfoSelectionItem.shareChecked(false);
+                    perInfoSelectionItem.integrationCode('');
+                    perInfoSelectionItem.memo('');
                 }
                 self.checkCreate(false);
             });
@@ -74,12 +84,22 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
                 // get selection items
                 self.getAllSelectionItems().done(() => {
-                    if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
-                        self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
+                    if (nts.uk.util.isNullOrUndefined(self.param)){
+                        if (self.listItems().length > 0){
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        } else {
+                            self.registerDataSelectioItem();
+                        }
                     } else {
-                        self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
+                            self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
+                        } else {
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        }   
+                        
+                        self.listItems.valueHasMutated();
                     }
-                    self.listItems.valueHasMutated();
+                    
                     $("#selectionItemName").focus();
                     dfd.resolve();
                 });
@@ -152,7 +172,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
-
+            block.invisible();    
             //「個人情報の選択項目」を登録する
             service.addDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();
@@ -187,13 +207,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            });
+            }).always(()=>block.clear());
         }
 
         //更新モード
         update() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
+            block.invisible();    
             //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
 
@@ -208,7 +229,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            });
+            }).always(()=> block.clear());
         }
 
         //削除ボタン
@@ -223,6 +244,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let command = ko.toJS(currentItem);
 
             confirm({ messageId: "Msg_551" }).ifYes(() => {
+              block.grayout();     
                 service.removeDataSelectionItem(command).done(function() {
                     
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -236,13 +258,16 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                 currentItem.selectionItemId(newItem.selectionItemId);
                             }
                             //                        self.listItems.valueHasMutated();
+                            else {
+                                self.registerDataSelectioItem();
+                            }
                         });
                     });
                     self.listItems.valueHasMutated();
 
                 }).fail(error => {
                     alertError({ messageId: "Msg_521" });
-                });
+                }).always(()=> block.clear());
 
             });
         }

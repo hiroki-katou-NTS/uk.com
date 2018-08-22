@@ -51,10 +51,9 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		String companyID = AppContexts.user().companyId();
-		String appReason = command.getAppCmd().getApplicationReason();
 		int comType = command.getComType();
 		// アルゴリズム「振休振出申請の更新登録」を実行する
-		updateApp(command, companyID, appReason, comType);
+		updateApp(command, companyID, comType);
 
 	}
 
@@ -161,9 +160,9 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		return false;
 	}
 
-	private void updateApp(SaveHolidayShipmentCommand command, String companyID, String appReason, int comType) {
+	private void updateApp(SaveHolidayShipmentCommand command, String companyID, int comType) {
 		// アルゴリズム「登録前エラーチェック（更新）」を実行する
-		errorCheckBeforeRegister(command, companyID, appReason, comType);
+		String appReason = errorCheckBeforeRegister(command, companyID, comType);
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -197,11 +196,10 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	}
 
-	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String appReason,
-			int comType) {
+	private String errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, int comType) {
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command, companyID, appType, comType);
+		return saveHanler.preconditionCheck(command, companyID, appType, comType);
 
 	}
 

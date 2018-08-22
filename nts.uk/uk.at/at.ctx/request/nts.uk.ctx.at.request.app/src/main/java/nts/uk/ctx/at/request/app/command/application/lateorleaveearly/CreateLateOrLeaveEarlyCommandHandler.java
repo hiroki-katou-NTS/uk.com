@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -18,12 +21,16 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
 
-public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResult<CreateLateOrLeaveEarlyCommand, ProcessResult> {
+public class CreateLateOrLeaveEarlyCommandHandler
+		extends CommandHandlerWithResult<CreateLateOrLeaveEarlyCommand, ProcessResult> {
 
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
@@ -38,33 +45,28 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 	private RegisterAtApproveReflectionInfoService_New registerService;
 
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;	
+	private NewBeforeRegister_New newBeforeRegister;
+
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeSetRepo;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		String appReason = "";
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
-		if (!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
-			appReason = !command.getReasonTemp().isEmpty()
-					? command.getReasonTemp() + System.lineSeparator() + command.getAppReason()
-					: command.getAppReason();
-		}
-		Application_New application = Application_New.firstCreate(
-				companyID, EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
-				command.getApplicationDate(), ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
-		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
-				application,
-				command.getActualCancel(),
-				command.getEarly1(), command.getEarlyTime1(), 
-				command.getLate1(), command.getLateTime1(), 
-				command.getEarly2(), command.getEarlyTime2(), 
-				command.getLate2(), command.getLateTime2());
-		
-		
+		// アルゴリズム「遅刻早退申請理由登録内容生成」を実行する
+		String appReason = genReason(command.getReasonTemp(), command.getAppReason(), companyID);
+		Application_New application = Application_New.firstCreate(companyID,
+				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getApplicationDate(),
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
+		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,
+				command.getActualCancel(), command.getEarly1(), command.getEarlyTime1(), command.getLate1(),
+				command.getLateTime1(), command.getEarly2(), command.getEarlyTime2(), command.getLate2(),
+				command.getLateTime2());
+
 		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication(),0);
+		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication(), 0);
 		// 事前制約をチェックする
 		// ドメインモデル「遅刻早退取消申請」の新規登録する
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
@@ -74,5 +76,29 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
 		return newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());
 
+	}
+
+	public String genReason(String fixedReason, String reasonText, String companyID) {
+		String appReason = "";
+		Optional<AppTypeDiscreteSetting> appTypeSetOpt = this.appTypeSetRepo
+				.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		if (!appTypeSetOpt.isPresent()) {
+			throw new BusinessException("申請種類別設定 == null");
+		}
+		AppTypeDiscreteSetting appTypeSet = appTypeSetOpt.get();
+
+		boolean isShowFixedHideText = appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)
+				&& appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
+
+		if (isShowFixedHideText) {
+
+			return appReason = fixedReason;
+
+		}
+
+		if (!fixedReason.isEmpty() || !reasonText.isEmpty()) {
+			appReason = !fixedReason.isEmpty() ? fixedReason + System.lineSeparator() + reasonText : reasonText;
+		}
+		return appReason;
 	}
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.audittrail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,10 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogParameter.DailyCorrectedItem;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogParameter.DailyCorrectionTarget;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordToAttendanceItemConverterImpl;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -48,8 +47,8 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 						x -> x.getAttendanceItemName()));
 		
 		val correctionLogParameter = new DailyCorrectionLogParameter(
-				mapToDailyCorrection(convertToItemValue(context.getCommand().getDomainNew()),
-						convertToItemValue(context.getCommand().getDomainOld()), new ArrayList<>(), itemNameMap));
+				mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
+						convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap));
 		DataCorrectionContext.setParameter(correctionLogParameter);
 		AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
 
@@ -61,30 +60,48 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 		DataCorrectionContext.transactionFinishing();
 	}
 	
-	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValue(List<IntegrationOfDaily> domains){
+//	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValue(List<IntegrationOfDaily> domains){
+//		Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> result = new HashMap<>();
+//		for (IntegrationOfDaily daily : domains) {
+//			List<ItemValue> values = DailyRecordToAttendanceItemConverterImpl.builder().setData(daily).convert(ITEM_ID_ALL);
+//			 Map<Integer, ItemValue> map = values.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+//			 result.put(Pair.of(daily.getWorkInformation().getEmployeeId(), daily.getWorkInformation().getYmd()), map);
+//		}
+//		return result;
+//	}
+	
+	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValueFtomItems(List<DailyItemValue> dailys){
 		Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> result = new HashMap<>();
-		for (IntegrationOfDaily daily : domains) {
-			List<ItemValue> values = DailyRecordToAttendanceItemConverterImpl.builder().setData(daily).convert(ITEM_ID_ALL);
-			 Map<Integer, ItemValue> map = values.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			 result.put(Pair.of(daily.getWorkInformation().getEmployeeId(), daily.getWorkInformation().getYmd()), map);
+		for (DailyItemValue daily : dailys) {
+			 Map<Integer, ItemValue> map = daily.getItems().stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+			 result.put(Pair.of(daily.getEmployeeId(), daily.getDate()), map);
 		}
 		return result;
 	}
 	
-	private List<DailyCorrectionTarget> mapToDailyCorrection(Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemNewMap, Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap, List<Integer> itemEdit, Map<Integer, String> itemNameMap){
+	private Map<Pair<String, GeneralDate>, List<Integer>> itemEditMap(List<DailyRecordWorkCommand> commands){
+		Map<Pair<String, GeneralDate>, List<Integer>> result = new HashMap<>();
+		commands.stream().forEach(x ->{
+			result.put(Pair.of(x.getEmployeeId(), x.getWorkDate()), x.itemValues().stream().map(y -> y.getItemId()).collect(Collectors.toList()));
+		});
+		return result;
+	}
+	
+	private List<DailyCorrectionTarget> mapToDailyCorrection(Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemNewMap, Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap, Map<Pair<String, GeneralDate>, List<Integer>> itemEditMap, Map<Integer, String> itemNameMap){
 		List<DailyCorrectionTarget> targets = new ArrayList<>();
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
 			val daiTarget = new DailyCorrectionTarget(key.getLeft(), key.getRight());
 			value.forEach((valueItemKey, valueItemNew) -> {
 				val itemOld = itemOldValueMap.get(valueItemKey);
+				List<Integer> itemEdits = itemEditMap.get(key);
 				if (valueItemNew.getValue() != null && itemOld.getValue() != null
 						&& !valueItemNew.getValue().equals(itemOld.getValue())
 						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
 						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
 					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey),
 							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-							convertType(valueItemNew.getValueType()), itemEdit.contains(valueItemNew.getItemId())
+							convertType(valueItemNew.getValueType()), itemEdits.contains(valueItemNew.getItemId())
 									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
 					daiTarget.getCorrectedItems().add(item);
 				}

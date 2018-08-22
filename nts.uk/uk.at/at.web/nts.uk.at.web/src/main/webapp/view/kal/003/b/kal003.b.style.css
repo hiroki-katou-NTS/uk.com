@@ -12,7 +12,7 @@
     width: 1260px;
 }
 
-.pad_left_5px {
+.pad_left_5px{
     padding-left: 5px;
 }
 
@@ -62,4 +62,27 @@ table#table-group2conditionmon tbody tr td:nth-child(3n), table#table-group1cond
 
 #checkCondition *{
 	vertical-align: middle;
+}
+#b1_55{
+	padding: 50px, 50px;
+}
+.btnSettingBA2_2{
+	padding-left: 5px;
+}
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+#functions-area-bottom-category9{
+	text-align: center!important;
+}
+#div_check_conditions_ba9 .nts-editor-wrapped.ntsControl.symbol.symbol-right{
+	line-height: 25px!important; 
+	width: auto !important;
+}
+.pad_left_678px{
+    padding-left: 5px;
+}
+.pad_left_678px .nts-editor-wrapped.ntsControl.symbol.symbol-right{
+	line-height: 25px!important; 
 }

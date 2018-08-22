@@ -28,7 +28,7 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 				
 				val correction = this.newCorrection(
 						target.getEmployeeId(),
-						CorrectionAttr.EDIT,
+						correctedItem.getAttr(),
 						correctedItem.toItemInfo(),
 						correctedItem.getRemark(),
 						target.getDate(),
