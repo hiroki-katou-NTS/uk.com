@@ -169,9 +169,13 @@ public class RegisterLayoutFinder {
 	private LayoutPersonInfoValueDto createLayoutItemByDef(Optional<SettingItemDto> dataServerItemOpt,
 			PerInfoItemDefDto itemDef, LayoutPersonInfoClsDto classItem, GeneralDate hireDate,
 			PersonInfoCategory perInfoCategory) {
+		
 		// initial basic info from definition item
 		LayoutPersonInfoValueDto item = LayoutPersonInfoValueDto.createFromDefItem(perInfoCategory, itemDef);
-
+		
+		item.setCategoryName(perInfoCategory.getCategoryName().toString());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		
 		// get value
 		if (dataServerItemOpt.isPresent()) {
 			item.setValue(dataServerItemOpt.get().getSaveData().getValue());

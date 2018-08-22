@@ -60,4 +60,10 @@ public interface SpecialHolidayRepository {
 	 * @return
 	 */
 	List<Integer> findByAbsframeNo(String cid, int absFrameNo);
+	/**
+	 * Find By CompanyId
+	 * @param companyId
+	 * @return
+	 */
+	List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId);
 }

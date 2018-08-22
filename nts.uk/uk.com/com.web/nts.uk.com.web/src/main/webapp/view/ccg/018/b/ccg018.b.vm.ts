@@ -234,10 +234,13 @@ module ccg018.b.viewmodel {
                     self.currentCode(oldCode);
                     self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
                     self.isEnable(true);
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    });
                 });
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+//                nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
+                    });
             }).always(function() {
                 blockUI.clear();
             });
@@ -250,9 +253,11 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             if (!!!self.currentCode()) {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
+//                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
+            nts.uk.ui.dialog.info({ messageId: "Msg_85" }).then(function() {
+                    });
             } else {
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
                     ccg018.b.service.remove(obj).done(function() {
                         self.isSelectedFirst(false);
@@ -260,7 +265,9 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+//                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            });
                         });
                     }).fail(function() {
                         dfd.reject();
