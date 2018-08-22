@@ -1075,6 +1075,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				inpEmpName = inpEmpInfo.getBusinessName();
 				mapEmpInfo.put(enteredPersonID, inpEmpInfo);
 			}
+			if(!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo != null){
+				inpEmpName = inpEmpInfo.getBusinessName();
+			}
 			//get work place info
 			List<WkpInfo> findExitWkp = this.findExitWkp(mapWpkInfo, applicantID);
 			if(findExitWkp == null){//chua co trong cache
