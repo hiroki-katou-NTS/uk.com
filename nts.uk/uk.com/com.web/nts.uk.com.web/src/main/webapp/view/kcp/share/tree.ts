@@ -313,20 +313,21 @@ module kcp.share.tree {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
                     dfd.resolve();
-                })
+                });
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
                     self.addIconToAlreadyCol();
                 });
-                // defined function focus
-                $.fn.focusTreeGridComponent = function() {
-                    if (self.hasBaseDate()) {
-                        $('.base-date-editor').first().focus();
-                    } else {
-                        $("#combo-box-tree-component").focus();
-                    }
-                }
             });
+
+            // defined function focus
+            $.fn.focusTreeGridComponent = function() {
+                if (self.hasBaseDate()) {
+                    $('.base-date-editor').first().focus();
+                } else {
+                    $("#combo-box-tree-component").focus();
+                }
+            }
 
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
@@ -604,8 +605,9 @@ module kcp.share.tree {
             let dfd = $.Deferred<void>();
             let self = this;
             self.addColToGrid(self.data, self.itemList());
-            self.$input.html(TREE_COMPONENT_HTML);
-            _.defer(() => {
+
+            const initComponent = () => {
+                self.$input.html(TREE_COMPONENT_HTML);
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
 
@@ -689,7 +691,14 @@ module kcp.share.tree {
                 }
                 
                 dfd.resolve();
-            });
+            };
+
+            if (_.isNil(ko.dataFor(document.body))) {
+                nts.uk.ui.viewModelApplied.add(initComponent);
+            } else {
+                initComponent();
+            }
+
             return dfd.promise();
         }
 
@@ -947,12 +956,7 @@ module kcp.share.tree {
         static KCP004_8 = nts.uk.resource.getText('KCP004_8');
     }
 
-var TREE_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:com="http://xmlns.jcp.org/jsf/component"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <style type="text/css">
+var TREE_COMPONENT_HTML = `<style type="text/css">
 #nts-component-list .nts-searchbbox-wrapper {
     float: left;
 }
@@ -1019,8 +1023,7 @@ var TREE_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
             <table id="multiple-tree-grid" class="cf">
             </table>
         <!-- /ko -->
-    </div>
-</ui:composition>`;
+    </div>`;
 }
 
 /**

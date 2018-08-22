@@ -285,7 +285,6 @@ module kcp.share.list {
             var dfd = $.Deferred<any>();
             var self = this;
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
-            ko.cleanNode($input[0]);
 
             // clear subscriptions
             if (data.subscriptions) {
@@ -385,7 +384,7 @@ module kcp.share.list {
                 // Set default value when init component.
                 self.initSelectedValue();
                 
-                const options;
+                let options;
                 
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
@@ -595,60 +594,68 @@ module kcp.share.list {
             if (data.isShowWorkPlaceName) {
                 fields.push('workplaceName');
             }
-            $input.html(LIST_COMPONENT_HTML);
-            _.defer(() => {
-                    $input.find('table').attr('id', self.componentGridId);
-                    ko.applyBindings(self, $input[0]);
-                    $input.find('.base-date-editor').find('.nts-input').width(133);
 
-                    self.loadNtsGridList();
+            const startComponent = () => {
+                $input.html(LIST_COMPONENT_HTML);
+                $input.find('table').attr('id', self.componentGridId);
+                ko.cleanNode($input[0]);
+                ko.applyBindings(self, $input[0]);
+                $input.find('.base-date-editor').find('.nts-input').width(133);
 
-                    // ReloadNtsGridList when itemList changed
-                    self.itemList.subscribe(newList => {
-                        self.setOptionalContent();
-                        self.initNoSelectRow();
-                        self.reloadNtsGridList();
-                        self.createGlobalVarDataList(newList, $input);
+                self.loadNtsGridList();
+
+                // ReloadNtsGridList when itemList changed
+                self.itemList.subscribe(newList => {
+                    self.setOptionalContent();
+                    self.initNoSelectRow();
+                    self.reloadNtsGridList();
+                    self.createGlobalVarDataList(newList, $input);
+                });
+
+                if (data.listType == ListType.EMPLOYMENT) {
+                    self.selectedClosureId.subscribe(id => {
+                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+                        self.reloadEmployment(id);
                     });
-
-                    if (data.listType == ListType.EMPLOYMENT) {
-                        self.selectedClosureId.subscribe(id => {
-                            self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
-                            self.reloadEmployment(id);
-                        });
-                    }
-                    dfd.resolve();
-            });
-            
-            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
-                self.addIconToAlreadyCol();
-            });
-            
-            // defined function get data list.
-            self.createGlobalVarDataList(dataList, $input);
-            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return window['dataList' + this.attr('id').replace(/-/gi, '')];
-            }
-            
-            // defined function focus
-            $.fn.focusComponent = function() {
-                if (self.hasBaseDate) {
-                    $input.find('.base-date-editor').first().focus();
-                } else {
-                    $input.find(".ntsSearchBox").focus();
                 }
-            }
-            $.fn.reloadJobtitleDataList = self.reload;
-            $.fn.isNoSelectRowSelected = function() {
-                if (self.isMultipleSelect) {
+                $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
+                    self.addIconToAlreadyCol();
+                });
+
+                // defined function get data list.
+                self.createGlobalVarDataList(dataList, $input);
+                $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                    return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                }
+
+                // defined function focus
+                $.fn.focusComponent = function() {
+                    if (self.hasBaseDate) {
+                        $input.find('.base-date-editor').first().focus();
+                    } else {
+                        $input.find(".ntsSearchBox").focus();
+                    }
+                }
+                $.fn.reloadJobtitleDataList = self.reload;
+                $.fn.isNoSelectRowSelected = function() {
+                    if (self.isMultipleSelect) {
+                        return false;
+                    }
+                    var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
+                    if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
+                        return true;
+                    }
                     return false;
                 }
-                var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
-                if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
-                    return true;
-                }
-                return false;
+                dfd.resolve();
+            };
+
+            if (_.isNil(ko.dataFor(document.body))) {
+                nts.uk.ui.viewModelApplied.add(startComponent);
+            } else {
+                startComponent();
             }
+            
             return dfd.promise();
         }
 
@@ -1048,12 +1055,7 @@ module kcp.share.list {
         static CCG001_28  = nts.uk.resource.getText('CCG001_28');
     }
 
-var LIST_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:com="http://xmlns.jcp.org/jsf/component"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <style type="text/css">
+var LIST_COMPONENT_HTML = `<style type="text/css">
 #nts-component-list table tr td {
     white-space: nowrap;
 }
@@ -1107,8 +1109,7 @@ var LIST_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
         <!-- /ko -->
         </div>
         <table id="grid-list-all-kcp"></table>
-    </div>
-</ui:composition>`;
+    </div>`;
 }
 
 /**
