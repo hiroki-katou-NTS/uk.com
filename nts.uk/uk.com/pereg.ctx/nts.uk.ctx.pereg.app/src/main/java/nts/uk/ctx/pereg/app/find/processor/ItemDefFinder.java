@@ -210,6 +210,7 @@ public class ItemDefFinder {
 			if(itemCodeValueMap.containsKey(itemDef.itemCode())) {
 				Object value = itemCodeValueMap.get(itemDef.itemCode());
 				itemDef.setValue(value);
+				itemDef.setValueBefore(value);
 			}
 		}
 	}
