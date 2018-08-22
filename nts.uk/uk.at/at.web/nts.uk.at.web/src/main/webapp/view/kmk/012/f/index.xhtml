@@ -35,7 +35,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- F4 -->
-				<button tabindex="2" data-bind="click: closeSaveDialog" class="proceed">#{i18n.getText('KMK012_55')}</button>
+				<button tabindex="2" data-bind="enable: $root.errors.isEmpty, click: closeSaveDialog" class="proceed">#{i18n.getText('KMK012_55')}</button>
 				<!-- F5 -->
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KMK012_56')}</button>
 			</div>
