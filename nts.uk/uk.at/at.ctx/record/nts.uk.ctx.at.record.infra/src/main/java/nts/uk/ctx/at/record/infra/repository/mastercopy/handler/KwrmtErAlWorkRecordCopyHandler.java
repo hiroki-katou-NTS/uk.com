@@ -19,7 +19,7 @@ public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
      * The select query.
      */
     public static final String FIND_ALL_ERAL_WORK_RECORD = "SELECT w FROM KwrmtErAlWorkRecord w " +
-            "WHERE w.kwrmtErAlWorkRecordPK.companyId =:cid;";
+            "WHERE w.kwrmtErAlWorkRecordPK.companyId = :cid";
 
 
     /**
