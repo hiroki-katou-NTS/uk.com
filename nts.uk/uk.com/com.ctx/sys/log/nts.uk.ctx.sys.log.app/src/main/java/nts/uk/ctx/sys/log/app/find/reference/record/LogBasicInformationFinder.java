@@ -203,22 +203,25 @@ public class LogBasicInformationFinder {
 									
 									// Setting tagetDate
 									String tagetDateStr = "";
-									GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
-									CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
-									if(calendarKeyType.value == CalendarKeyType.DATE.value){
-										tagetDateStr = tagetDate.toString("yyyy/MM/dd");
-									}
-									if (calendarKeyType.value == CalendarKeyType.YEARMONTH.value) {
-										tagetDateStr = tagetDate.toString("yyyy/MM");
-									}
-									if (calendarKeyType.value == CalendarKeyType.YEAR.value) {
-										tagetDateStr = tagetDate.toString("yyyy");
+									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
+										CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
+										if (calendarKeyType.value == CalendarKeyType.DATE.value) {
+											tagetDateStr = tagetDate.toString("yyyy/MM/dd");
+										}
+										if (calendarKeyType.value == CalendarKeyType.YEARMONTH.value) {
+											tagetDateStr = tagetDate.toString("yyyy/MM");
+										}
+										if (calendarKeyType.value == CalendarKeyType.YEAR.value) {
+											tagetDateStr = tagetDate.toString("yyyy");
 
+										}
 									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
 											String childrentKey = IdentifierUtil.randomUniqueId();
+											perObject.setParentKey(logBasicInfoDto.getParentKey());
 											perObject.setChildrentKey(childrentKey);
 											// Fist record
 											perObject.setOperationId(logBasicInfoDto.getOperationId());
@@ -239,6 +242,7 @@ public class LogBasicInformationFinder {
 										
 									}else{
 										LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
+										perObject.setParentKey(logBasicInfoDto.getParentKey());
 										String childrentKey = IdentifierUtil.randomUniqueId();
 										perObject.setChildrentKey(childrentKey);
 										perObject.setOperationId(personInfoCorrectionLog.getOperationId());
@@ -314,10 +318,12 @@ public class LogBasicInformationFinder {
 						// convert list data corect log to DTO
 						List<LogDataCorrectRecordRefeDto> lstLogDataCorecRecordRefeDto = new ArrayList<>();
 						for (DataCorrectionLog dataCorrectionLog : lstDataCorectLog) {
-							
+							String parentKey = IdentifierUtil.randomUniqueId();
+							logBasicInfoDto.setParentKey(parentKey);
 							LogDataCorrectRecordRefeDto logDataCorrectRecordRefeDto = LogDataCorrectRecordRefeDto
 									.fromDomain(dataCorrectionLog);
 							String keyEmploy = logBasicInfoDto.getOperationId() + logDataCorrectRecordRefeDto.getEmployeeIdtaget();
+							
 							// group employId
 							if(mapCheck.containsKey(keyEmploy)){
 								LogBasicInfoDto logBasicCheck= mapCheck.get(keyEmploy) ;
