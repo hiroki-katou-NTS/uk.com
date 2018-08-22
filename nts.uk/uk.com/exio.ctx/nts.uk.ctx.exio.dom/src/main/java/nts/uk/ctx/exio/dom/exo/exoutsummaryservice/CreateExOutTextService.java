@@ -164,7 +164,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String LINE_DATA_CSV = "lineDataCSV";
 	private final static String yyyy_MM_dd = "yyyy-MM-dd";
 	private final static String SELECT_COND = "select ";
-	private final static String FROM_COND = " from ";
+	private final static String FROM_COND = " ";
 	private final static String WHERE_COND = " where 1=1 ";
 	private final static String AND_COND = " and ";
 	private final static String ORDER_BY_COND = " order by ";
@@ -172,6 +172,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
 	private final static String SLASH = "/";
+	private final static String SPACE = " ";
 	private final static String CID= "cid";
 	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
@@ -556,11 +557,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				sql.append(item.getForm1().get().v());
 			}
 			
-			if (item.getForm1().isPresent() && item.getForm2().isPresent()
-					&& StringUtils.isNotBlank(item.getForm1().get().v())
-					&& StringUtils.isNotBlank(item.getForm2().get().v())) {
-				sql.append(COMMA);
-			}
+			sql.append(SPACE);
 			
 			if (item.getForm2().isPresent()) {
 				sql.append(item.getForm2().get().v());
@@ -1280,11 +1277,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (setting.getSelectHourMinute() == HourMinuteClassification.HOUR_AND_MINUTE) {
 			if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0));
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0), 2, RoundingMode.HALF_UP);
 			} else if (setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
-				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
 			}
 		}
 
@@ -1382,11 +1379,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE) {
 			if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.00));
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.00), 2, RoundingMode.HALF_UP);
 			} else if (setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
-				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
 			}
 		}
 
