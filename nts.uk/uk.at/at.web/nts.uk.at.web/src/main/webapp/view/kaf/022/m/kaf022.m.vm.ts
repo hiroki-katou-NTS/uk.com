@@ -136,6 +136,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     self.selectedSetting.update(exsistedSetting);
                 } else {
                     self.selectedSetting.update(null);
+                    self.selectedSetting.wkpName("");
                 }
 
                 self.selectedSetting.wkpId(val);

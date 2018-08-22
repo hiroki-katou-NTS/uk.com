@@ -72,6 +72,6 @@ public class AggregateGoOutDto implements ItemConst {
 					new AttendanceTimesMonth(times), 
 					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
 					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 
-					totalTime != null ? new TimeMonthWithCalculation() : totalTime.toDomain());
+					totalTime == null ? new TimeMonthWithCalculation() : totalTime.toDomain());
 	}
 }

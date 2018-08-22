@@ -125,7 +125,7 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px;
+	max-height: 495px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	width: 634px;
@@ -228,20 +228,19 @@ table tr td, table tr th {
 	float: left;
 }
 
-span.caret-background.caret-right.direction-right {
+#sub-center > span.caret-background.caret-right.direction-right {
 	position: absolute;;
 	margin-top: 50px !important;
 	margin-left: 2px !important;
 }
 
 th>div {
-	top: 0;
-	padding: 3px;
+/* 	top: 0;
+	padding: 3px; */
 	color: #000;
-	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
-}
+} 
 
 th {
 	height: 0;
@@ -310,7 +309,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
-#sub-right>table>tbody{
-	max-height: 495px !important;
 }

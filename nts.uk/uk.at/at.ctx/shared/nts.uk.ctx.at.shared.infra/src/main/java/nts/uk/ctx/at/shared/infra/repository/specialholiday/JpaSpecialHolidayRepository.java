@@ -529,4 +529,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 					return createSphdDomainFromEntity(c);
 				});
 	}
+
+	@Override
+	public List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId) {
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.getList(c -> {
+					 return createSphdDomainFromEntityWithTargetItem(c);
+				});
+	}
+	
+	private SpecialHoliday 	createSphdDomainFromEntityWithTargetItem(Object[] c){
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		 return this.findBySingleCD(companyId, specialHolidayCode).get();
+	}
 }

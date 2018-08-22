@@ -91,8 +91,11 @@ module cps002.f.vm {
                 } else {
                     alertError({ messageId: "Msg_352" });
                 }
-            })
-
+            }).fail((error) => {
+                    if (error.messageId == "Msg_352") {
+                       alertError({ messageId: "Msg_352" });     
+                    }
+                });
         }
 
         searchByName() {
