@@ -534,7 +534,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 				boolean lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
                 boolean lockHist = lockHist(dpLock.getLockHist(), data);
-                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
                 boolean lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
                 
                 lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);				
