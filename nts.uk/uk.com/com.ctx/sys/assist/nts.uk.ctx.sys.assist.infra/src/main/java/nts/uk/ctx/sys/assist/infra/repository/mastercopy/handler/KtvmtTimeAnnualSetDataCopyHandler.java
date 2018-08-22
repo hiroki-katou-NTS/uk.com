@@ -19,16 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KtvmtTimeAnnualSetDataCopyHandler extends DataCopyHandler {
-
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KTVMT_TIME_ANNUAL_SET(CID, TIME_MANAGE_ATR, TIME_UNIT, TIME_MAX_DAY_MANAGE_ATR, TIME_MAX_DAY_REFERENCE, TIME_MAX_DAY_UNIF_COMP, "

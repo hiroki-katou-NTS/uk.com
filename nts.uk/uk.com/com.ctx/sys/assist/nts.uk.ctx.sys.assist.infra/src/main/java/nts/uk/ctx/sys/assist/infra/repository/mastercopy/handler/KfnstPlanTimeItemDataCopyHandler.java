@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KfnstPlanTimeItemDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KFNST_PLAN_TIME_ITEM(CID, SCHEDULE_ID, ATD_ID) VALUES (?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KFNST_PLAN_TIME_ITEM(CID, SCHEDULE_ID, ATD_ID) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, SCHEDULE_ID, ATD_ID FROM KFNST_PLAN_TIME_ITEM WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, SCHEDULE_ID, ATD_ID FROM KFNST_PLAN_TIME_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KFNST_PLAN_TIME_ITEM WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KFNST_PLAN_TIME_ITEM WHERE CID = ?";
 
 	private final int PARAMATER_QUANTITY = 3;
 

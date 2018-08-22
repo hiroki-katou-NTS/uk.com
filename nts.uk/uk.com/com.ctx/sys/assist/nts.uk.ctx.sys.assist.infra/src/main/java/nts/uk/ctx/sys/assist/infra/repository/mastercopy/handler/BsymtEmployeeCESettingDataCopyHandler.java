@@ -21,13 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class BsymtEmployeeCESettingDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO BSYMT_EMPLOYEE_CE_SET(CID ,CODE_EDIT_METHOD_ATR ,DIGIT_NUM) VALUES (?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO BSYMT_EMPLOYEE_CE_SET(CID ,CODE_EDIT_METHOD_ATR ,DIGIT_NUM) VALUES (?, ?, ?);";
 	
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,CODE_EDIT_METHOD_ATR ,DIGIT_NUM FROM BSYMT_EMPLOYEE_CE_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,CODE_EDIT_METHOD_ATR ,DIGIT_NUM FROM BSYMT_EMPLOYEE_CE_SET WHERE CID = ?";
 	
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM BSYMT_EMPLOYEE_CE_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM BSYMT_EMPLOYEE_CE_SET WHERE CID = ?";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

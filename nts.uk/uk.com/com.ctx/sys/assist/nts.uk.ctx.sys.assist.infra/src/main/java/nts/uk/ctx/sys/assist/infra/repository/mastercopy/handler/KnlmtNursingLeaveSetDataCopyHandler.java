@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KnlmtNursingLeaveSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KNLMT_NURSING_LEAVE_SET(CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS) VALUES (?,?,?,?,?,?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KNLMT_NURSING_LEAVE_SET(CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS) VALUES (?,?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, NURSING_TYPE, MANAGE_ATR, STR_MD, NUM_LEAVE_DAY, NUM_PERSON, SPE_HOLIDAY, WORK_ABS FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KNLMT_NURSING_LEAVE_SET WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 8;

@@ -25,21 +25,6 @@ public class KrcstMonsetLglTrnsSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private final int CURRENT_COLUMN = 17;
 
-//	/**
-//	 * The entity manager.
-//	 */
-//	private EntityManager entityManager;
-//
-//	/**
-//	 * The copy method.
-//	 */
-//	private CopyMethod copyMethod;
-//
-//	/**
-//	 * The company Id.
-//	 */
-//	private String companyId;
-
 	/**
 	 * The insert query.
 	 */

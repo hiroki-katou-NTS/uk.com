@@ -1,19 +1,16 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
-import java.util.UUID;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.UUID;
 
 /**
  * The Class PpemtPerInfoCtgDataCopyHandler.
@@ -21,17 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 public class PpemtPerInfoCtgDataCopyHandler extends DataCopyHandler {
-	
-//	/** The entity manager. */
-//	private EntityManager entityManager;
-//
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 	
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO PPEMT_PER_INFO_CTG(CID, PER_INFO_CTG_ID, CATEGORY_CD, CATEGORY_NAME, ABOLITION_ATR) VALUES (?, ?, ?, ?, ?);";

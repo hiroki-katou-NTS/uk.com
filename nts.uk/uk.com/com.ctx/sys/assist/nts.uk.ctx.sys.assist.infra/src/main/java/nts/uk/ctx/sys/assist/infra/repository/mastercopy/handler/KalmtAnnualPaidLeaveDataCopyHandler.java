@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KalmtAnnualPaidLeaveDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KALMT_ANNUAL_PAID_LEAVE(CID, PRIORITY_TYPE, MANAGE_ATR) VALUES (?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KALMT_ANNUAL_PAID_LEAVE(CID, PRIORITY_TYPE, MANAGE_ATR) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PRIORITY_TYPE, MANAGE_ATR FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, PRIORITY_TYPE, MANAGE_ATR FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KALMT_ANNUAL_PAID_LEAVE WHERE CID = ?";
 
 	private final int PARAMATER_QUANTITY = 3;
 

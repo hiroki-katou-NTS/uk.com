@@ -109,6 +109,8 @@ include 'pereg.ctx:nts.uk.ctx.pereg.app'
 include 'pereg.ctx:nts.uk.ctx.pereg.dom'
 include 'pereg.ctx:nts.uk.ctx.pereg.infra'
 include 'pereg.ctx:nts.uk.ctx.pereg.ws'
+include 'pereg.ctx:nts.uk.ctx.pereg.pub'
+include 'pereg.ctx:nts.uk.ctx.pereg.pubimp'
 include 'pereg.ctx:nts.uk.ctx.pereg.ac'
 
 include 'exio.ctx:nts.uk.ctx.exio.app'

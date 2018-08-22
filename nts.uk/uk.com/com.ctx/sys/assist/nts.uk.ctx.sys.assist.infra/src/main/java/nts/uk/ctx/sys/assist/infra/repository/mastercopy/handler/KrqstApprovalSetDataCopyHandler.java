@@ -20,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KrqstApprovalSetDataCopyHandler extends DataCopyHandler{
 	
 	/** The insert query. */

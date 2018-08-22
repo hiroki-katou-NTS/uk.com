@@ -1,31 +1,20 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class KrqmtAppDispNameDataCopyHandler extends DataCopyHandler {
-
-//	/** The entity manager. */
-//	private EntityManager entityManager;
-//	
-//	/** The copy method. */
-//	private CopyMethod copyMethod;
-//
-//	/** The company Id. */
-//	private String companyId;
 
 	/** The insert query. */
 	private String INSERT_QUERY = "INSERT INTO KRQMT_APP_DISP_NAME(CID, APP_TYPE, DISP_NAME) VALUES (?, ?, ?);";

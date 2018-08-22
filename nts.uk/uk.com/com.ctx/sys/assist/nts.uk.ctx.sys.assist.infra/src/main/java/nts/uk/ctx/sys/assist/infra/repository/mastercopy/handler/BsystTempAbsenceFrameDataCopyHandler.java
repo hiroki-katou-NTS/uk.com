@@ -7,7 +7,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +24,13 @@ public class BsystTempAbsenceFrameDataCopyHandler extends DataCopyHandler {
 
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO BSYST_TEMP_ABSENCE_FRAME(CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME) VALUES (?, ?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO BSYST_TEMP_ABSENCE_FRAME(CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME) VALUES (?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,TEMP_ABSENCE_FR_NO ,EXCLUS_VER ,USE_ATR ,TEMP_ABSENCE_FR_NAME FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM BSYST_TEMP_ABSENCE_FRAME WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

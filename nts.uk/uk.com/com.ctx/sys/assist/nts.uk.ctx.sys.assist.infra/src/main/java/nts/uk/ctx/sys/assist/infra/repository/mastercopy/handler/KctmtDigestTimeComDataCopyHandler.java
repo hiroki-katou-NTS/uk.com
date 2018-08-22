@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KctmtDigestTimeComDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KCTMT_DIGEST_TIME_COM(CID ,MANAGE_ATR,DIGESTIVE_UNIT) VALUES (?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KCTMT_DIGEST_TIME_COM(CID ,MANAGE_ATR,DIGESTIVE_UNIT) VALUES (?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_ATR,DIGESTIVE_UNIT FROM KCTMT_DIGEST_TIME_COM WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_ATR,DIGESTIVE_UNIT FROM KCTMT_DIGEST_TIME_COM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KCTMT_DIGEST_TIME_COM WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KCTMT_DIGEST_TIME_COM WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 3;
 

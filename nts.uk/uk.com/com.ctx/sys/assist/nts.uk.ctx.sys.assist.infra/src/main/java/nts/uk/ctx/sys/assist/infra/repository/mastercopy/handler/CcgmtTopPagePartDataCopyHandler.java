@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class CcgmtTopPagePartDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO CCGMT_TOPPAGE_PART(CID ,TOPPAGE_PART_ID ,CODE ,NAME ,TOPPAGE_PART_TYPE,WIDTH,HEIGHT) VALUES (?, ?, ?, ?, ?,?,?);";
+	private final String INSERT_QUERY = "INSERT INTO CCGMT_TOPPAGE_PART(CID ,TOPPAGE_PART_ID ,CODE ,NAME ,TOPPAGE_PART_TYPE,WIDTH,HEIGHT) VALUES (?, ?, ?, ?, ?,?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,TOPPAGE_PART_ID ,CODE ,NAME ,TOPPAGE_PART_TYPE,WIDTH,HEIGHT FROM CCGMT_TOPPAGE_PART WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,TOPPAGE_PART_ID ,CODE ,NAME ,TOPPAGE_PART_TYPE,WIDTH,HEIGHT FROM CCGMT_TOPPAGE_PART WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM CCGMT_TOPPAGE_PART WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM CCGMT_TOPPAGE_PART WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 7;
 

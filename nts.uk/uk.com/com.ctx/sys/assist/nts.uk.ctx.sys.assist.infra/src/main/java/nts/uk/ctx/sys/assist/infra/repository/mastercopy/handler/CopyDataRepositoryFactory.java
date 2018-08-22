@@ -14,14 +14,14 @@ public class CopyDataRepositoryFactory {
     static HashMap<String, DataCopyHandler> mapper = new HashMap<>();
 
     static {
-        mapper.put("PPEMT_PER_INFO_CTG", new PersonalInfoDataCopyHandler());
+        mapper.put("PPEMT_PER_INFO_CTG", new PpemtPerInfoCtgDataCopyHandler());
 //        mapper.put("PPEMT_PER_INFO_CTG_ORDER", new PersonalInfoDataCopyHandler());                  //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_PER_INFO_ITEM_CM", new PersonalInfoDataCopyHandler());                    //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_PER_INFO_ITEM", new PersonalInfoDataCopyHandler());                       //Event：個人情報定義の初期値コピー
 
 //        mapper.put("PPEMT_PER_INFO_ITEM_ORDER", new PersonalInfoDataCopyHandler());                 //Event：個人情報定義の初期値コピー
 //        mapper.put("PPEMT_DATE_RANGE_ITEM", new PersonalInfoDataCopyHandler());                     //Event：個人情報定義の初期値コピー
-//        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
+        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
 //        mapper.put("PPEMT_SELECTION", new CcgmtMyPageSetDataCopyHandler());
 //        mapper.put("PPEMT_SEL_ITEM_ORDER", new CcgmtMyPageSetDataCopyHandler());
 //        mapper.put("PPEMT_NEW_LAYOUT", new CcgmtMyPageSetDataCopyHandler());
@@ -87,7 +87,7 @@ public class CopyDataRepositoryFactory {
         mapper.put("KRCST_DVGC_TIME", new KrcstDvgcTimeDataCopyHandler());
         mapper.put("KRCST_DVGC_REASON", new KrcstDvgcReasonDataCopyHandler());
 
-        mapper.put("KMLMT_COST_CALC_SET ", new KmlmtPersonCostCalculationDataCopyHandler());
+        mapper.put("KMLMT_COST_CALC_SET", new KmlmtPersonCostCalculationDataCopyHandler());
         mapper.put("KSCMT_WEEKLY_WORK_SET", new KscmtWeeklyWorkSetDataCopyHandler());
         mapper.put("BSYST_TEMP_ABSENCE_FRAME", new BsystTempAbsenceFrameDataCopyHandler());
         mapper.put("KSHST_TOTAL_TIMES", new KshstTotalTimesDataCopyHandler());

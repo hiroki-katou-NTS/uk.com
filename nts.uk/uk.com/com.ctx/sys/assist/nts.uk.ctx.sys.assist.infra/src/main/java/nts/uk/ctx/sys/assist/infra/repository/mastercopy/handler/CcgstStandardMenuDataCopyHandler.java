@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,15 +21,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO CCGST_STANDARD_MENU(CID ,CODE,SYSTEM,MENU_CLS,TARGET_ITEMS,DISPLAY_NAME,DISPLAY_ORDER,MENU_ATR,URL,WEB_MENU_SETTING,AFTER_LOGIN_DISPLAY,LOG_SETTING_DISPLAY,PROGRAM_ID,SCREEN_ID,QUERY_STRING) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO CCGST_STANDARD_MENU(CID ,CODE,SYSTEM,MENU_CLS,TARGET_ITEMS,DISPLAY_NAME,DISPLAY_ORDER,MENU_ATR,URL,WEB_MENU_SETTING,AFTER_LOGIN_DISPLAY,LOG_SETTING_DISPLAY,PROGRAM_ID,SCREEN_ID,QUERY_STRING) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,CODE,SYSTEM,MENU_CLS,TARGET_ITEMS,DISPLAY_NAME,DISPLAY_ORDER,MENU_ATR,URL,WEB_MENU_SETTING,AFTER_LOGIN_DISPLAY,LOG_SETTING_DISPLAY,PROGRAM_ID,SCREEN_ID,QUERY_STRING FROM CCGST_STANDARD_MENU WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,CODE,SYSTEM,MENU_CLS,TARGET_ITEMS,DISPLAY_NAME,DISPLAY_ORDER,MENU_ATR,URL,WEB_MENU_SETTING,AFTER_LOGIN_DISPLAY,LOG_SETTING_DISPLAY,PROGRAM_ID,SCREEN_ID,QUERY_STRING FROM CCGST_STANDARD_MENU WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM CCGST_STANDARD_MENU WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM CCGST_STANDARD_MENU WHERE CID = ?";
 	
 	private final int QUANTITY_PARAMETER = 15;
+	
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
@@ -65,28 +65,31 @@ public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+//			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+//			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+				Query insertQuery = this.entityManager.createNativeQuery(INSERT_QUERY);
 				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 1, this.companyId);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 2, dataArr[1]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 3, dataArr[2]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 4, dataArr[3]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 5, dataArr[4]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 6, dataArr[5]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 7, dataArr[6]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 8, dataArr[7]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 9, dataArr[8]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 10, dataArr[9]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 11, dataArr[10]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 12, dataArr[11]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 13, dataArr[12]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 14, dataArr[13]);
-				insertQuery.setParameter(i * QUANTITY_PARAMETER + 15, dataArr[14]);
+				insertQuery.setParameter(1, this.companyId);
+				insertQuery.setParameter(2, dataArr[1]);
+				insertQuery.setParameter(3, dataArr[2]);
+				insertQuery.setParameter(4, dataArr[3]);
+				insertQuery.setParameter(5, dataArr[4]);
+				insertQuery.setParameter(6, dataArr[5]);
+				insertQuery.setParameter(7, dataArr[6]);
+				insertQuery.setParameter(8, dataArr[7]);
+				insertQuery.setParameter(9, dataArr[8]);
+				insertQuery.setParameter(10, dataArr[9]);
+				insertQuery.setParameter(11, dataArr[10]);
+				insertQuery.setParameter(12, dataArr[11]);
+				insertQuery.setParameter(13, dataArr[12]);
+				insertQuery.setParameter(14, dataArr[13]);
+				insertQuery.setParameter(15, dataArr[14]);
+				if(!StringUtils.isEmpty(insertQuery.toString()))insertQuery.executeUpdate();
+				
 			}
 			// Run insert query
-			if(!StringUtils.isEmpty(insertQueryStr))insertQuery.executeUpdate();
+			
 		case DO_NOTHING:
 			// Do nothing
 		default:
