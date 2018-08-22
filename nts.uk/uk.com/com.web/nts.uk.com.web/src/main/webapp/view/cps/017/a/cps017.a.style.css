@@ -12,9 +12,9 @@ body {
 	margin-right: 30px;
 }
 
-#contents-area {
+/* #contents-area {
 	min-height: 800px;
-}
+} */
 
 .pull-left {
 	float: left;
@@ -81,8 +81,8 @@ body {
 
 /* ---------------------------------------- content-right -----------------------------------------------------------*/
 #content-right {
-	margin-left: 15px;
-	margin-top: 115px;
+/* 	margin-left: 15px;
+	margin-top: 115px; */
 	width: 425px !important;
 	height: 580px;
 }
