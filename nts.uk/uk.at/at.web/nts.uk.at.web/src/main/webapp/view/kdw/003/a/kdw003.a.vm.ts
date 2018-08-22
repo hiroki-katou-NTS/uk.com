@@ -120,7 +120,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday("0", "0", "0", "0", "0", "0"));
+        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(true, true, true, true, true, true, 0, 0, 0, 0, 0, 0));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -610,6 +610,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
+            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
+                self.dataHoliday(new DataHoliday(data.compensatoryLeave.displayCompensatoryDay, 
+                                                data.compensatoryLeave.displayCompensatoryTime,
+                                                data.substitutionLeave.displayRemainNumber, 
+                                                data.annualLeave.displayAnnualDay, 
+                                                data.annualLeave.displayAnnualTime,
+                                                data.reserveLeave.displayRemainNumber, 
+                                                data.compensatoryLeave.compensatoryDay, 
+                                                data.compensatoryLeave.compensatoryTime, 
+                                                data.substitutionLeave.remainNumber, 
+                                                data.annualLeave.annualDay, 
+                                                data.annualLeave.annualTime, 
+                                                data.reserveLeave.remainNumber));
+            });
             //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
@@ -3488,19 +3502,56 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     }
 
     class DataHoliday {
-        compensation: string;
+        dispCompensationDay: boolean;
+        dispCompensationTime: boolean;
+        dispSubstitute: boolean;
+        dispAnnualDay: boolean;
+        dispAnnualTime: boolean;
+        dispReserve: boolean;
+        compensationDay: string;
+        compensationTime: string;
         substitute: string;
-        paidYear: string;
-        paidHalf: string;
-        paidHours: string;
-        fundedPaid: string;
-        constructor(compensation: string, substitute: string, paidYear: string, paidHalf: string, paidHours: string, fundedPaid: string) {
-            this.compensation = nts.uk.resource.getText("KDW003_8", [compensation])
-            this.substitute = nts.uk.resource.getText("KDW003_8", [substitute])
-            this.paidYear = nts.uk.resource.getText("KDW003_8", [paidYear])
-            //            this.paidHalf = nts.uk.resource.getText("KDW003_10", paidHalf)
-            //            this.paidHours = nts.uk.resource.getText("KDW003_11", paidHours)
-            this.fundedPaid = nts.uk.resource.getText("KDW003_8", [fundedPaid])
+        annualDay: string;
+        annualTime: string;
+        reserve: string;
+        
+        constructor(
+                dispCompensationDay: boolean,
+                dispCompensationTime: boolean,
+                dispSubstitute: boolean,
+                dispAnnualDay: boolean,
+                dispAnnualTime: boolean,
+                dispReserve: boolean,
+                compensationDay: number,
+                compensationTime: number,
+                substitute: number,
+                annualDay: number,
+                annualTime: number,
+                reserve: number) {
+            if (dispCompensationDay)
+                this.compensationDay = nts.uk.resource.getText("KDW003_8", [compensationDay]);
+            else 
+                this.compensationDay = "";
+            if (dispCompensationTime)
+                this.compensationTime = nts.uk.resource.getText("KDW003_121", [compensationTime]);
+            else 
+                this.compensationTime = "";
+            if (dispSubstitute)
+                this.substitute = nts.uk.resource.getText("KDW003_8", [substitute]);
+            else 
+                this.substitute = "";
+            if (dispAnnualDay) 
+                this.annualDay = nts.uk.resource.getText("KDW003_8", [annualDay]);
+            else 
+                this.annualDay = "";
+            if (dispAnnualTime) 
+                this.annualTime = nts.uk.resource.getText("KDW003_122", [annualTime]);
+            else 
+                this.annualTime = "";
+            if (dispReserve)
+                this.reserve = nts.uk.resource.getText("KDW003_8", [reserve]);
+            else 
+                this.reserve = "";
         }
     }
 
