@@ -28,6 +28,9 @@ import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -67,6 +70,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ResetDailyPerforDomainService resetDailyPerforDomainService;
+	
+	@Inject
+	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -110,6 +116,13 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
 				employeeId, processingDate);
 		if (!employmentHisOptional.isPresent()) {
+			// #日別作成修正　2018/07/17　前川　隼大　
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+					employeeId, processingDate, new ErrorAlarmWorkRecordCode("S025"),
+					new ArrayList<>());			
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+			
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("010"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
 					new ErrMessageContent(TextResource.localize("Msg_426")));
