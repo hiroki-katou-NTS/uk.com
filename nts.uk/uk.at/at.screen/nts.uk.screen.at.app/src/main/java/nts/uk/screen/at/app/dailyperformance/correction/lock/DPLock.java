@@ -57,10 +57,10 @@ public class DPLock {
 	private FindClosureDateService findClosureDateService;
 
 	public Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
-			List<String> listEmployeeId) {
+			List<String> listEmployeeId, List<ClosureDto> closureDtos) {
 		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
-		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, new DateRange(GeneralDate.today(), GeneralDate.today()));
-		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
+		//Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, new DateRange(GeneralDate.today(), GeneralDate.today()));
+		//List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
 				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
@@ -191,9 +191,9 @@ public class DPLock {
 		return approvalRootMap;
 	}
 
-	public Map<String, DatePeriod> lockConfirmMonth(String companyId, List<String> employeeIds, DateRange dateRange) {
+	public Map<String, DatePeriod> lockConfirmMonth(String companyId, List<String> employeeIds, DateRange dateRange, List<ClosureDto> closureDtos) {
 		//Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, employeeIds, dateRange);
-		List<ClosureDto> closureDtos = repo.getAllClosureDto(companyId, employeeIds, dateRange);
+		//List<ClosureDto> closureDtos = repo.getAllClosureDto(companyId, employeeIds, dateRange);
 		List<DCClosureExport> dcClosureExport = shClosurePub.findAll(companyId,
 				closureDtos.stream()
 						.map(x -> new DCClosureExport(x.getClosureId(), x.getUseAtr(), x.getClosureMonth(), x.getSid(),
@@ -205,14 +205,15 @@ public class DPLock {
 			String employeeIdApproval, int mode, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto,
 			Optional<ApprovalUseSettingDto> approvalUseSettingDto) {
 		DPLockDto dto = new DPLockDto();
-		dto.setLockDayAndWpl(extractEmpAndRange(dateRange, companyId, employeeIds));
+		List<ClosureDto> closureDtos = repo.getAllClosureDto(companyId, employeeIds, dateRange);
+		dto.setLockDayAndWpl(extractEmpAndRange(dateRange, companyId, employeeIds, closureDtos));
 		if(identityProcessUseSetDto.isPresent()){
 			if(identityProcessUseSetDto.get().isUseConfirmByYourself()) dto.setSignDayMap(signDayMap(companyId, employeeIds, dateRange));
 			if(identityProcessUseSetDto.get().isUseIdentityOfMonth()) dto.setLockCheckMonth(lockCheckMonth(dateRange, employeeIds));
 		}
 		
 		if(approvalUseSettingDto.isPresent()){
-			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange));
+			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange, closureDtos));
 			if(approvalUseSettingDto.get().getUseDayApproverConfirm()) dto.setLockCheckApprovalDay(getCheckApproval(employeeIds, dateRange, employeeIdApproval, mode));
 		}
 		dto.setLockHist(lockHistMap(companyId, employeeIds));

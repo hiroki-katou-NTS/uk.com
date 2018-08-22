@@ -118,14 +118,17 @@ public class DPDisplayLockProcessor {
 
 			process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt,
 					approveRootStatus, mode, data.isApproval());
-			boolean lockDaykWpl  = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
-			if(param.isShowLock()){
-			lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
-			lockHist = process.lockHist(dpLock.getLockHist(), data);
-			lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
-			lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
-			lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist,
-					data.isSign(), lockApprovalMonth, lockConfirmMonth);
+			boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+			if (param.isShowLock()) {
+				lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+				lockHist = process.lockHist(dpLock.getLockHist(), data);
+				lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+				lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+				lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist,
+						data.isSign(), lockApprovalMonth, lockConfirmMonth);
+			} else {
+				lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, false, lockHist,
+						false, lockApprovalMonth, lockConfirmMonth);
 			}
 
 			DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();

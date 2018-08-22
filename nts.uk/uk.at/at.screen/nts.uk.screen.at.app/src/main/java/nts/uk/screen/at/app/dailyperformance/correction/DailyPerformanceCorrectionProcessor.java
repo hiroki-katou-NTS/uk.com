@@ -275,7 +275,7 @@ public class DailyPerformanceCorrectionProcessor {
 			val employeeIds = objectShare == null
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
-			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode);
+			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
@@ -1445,7 +1445,7 @@ public class DailyPerformanceCorrectionProcessor {
 		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode) {
+	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer) {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
@@ -1458,7 +1458,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}else{
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT
-				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
+				if(!isTranfer)lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
+				else lstEmployeeId =  employeeIds;
 			}
 			if(lstEmployeeId.isEmpty()){
 				//throw new BusinessException("Msg_1342");
