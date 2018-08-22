@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRe
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -145,9 +148,14 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	//ドメインサービス：計算用ストアド実行用
 	@Inject
 	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
-	
+	/*日別計算　マネージャークラス*/
 	@Inject
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+	
+	/*〆状態*/
+	@Inject
+	private ClosureStatusManagementRepository closureStatusManagementRepository;
+	
 	
 	/**
 	 * 社員の日別実績を計算
@@ -164,6 +172,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
 		
+		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
+		
 		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter));
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
@@ -179,6 +189,17 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		}
 	}
 	
+	/**
+	 * 全社員の〆状態リストの取得
+	 * @param employeeId 社員ID一覧
+	 * @param datePeriod　処理対象期間
+	 * @return　〆状態リスト
+	 */
+	private List<ClosureStatusManagement> getClosureList(List<String> employeeId, DatePeriod datePeriod) {
+		//closureStatusManagementRepository.get
+		return Collections.emptyList();
+	}
+
 	public ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter) {
 		List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),datePeriod);
 		

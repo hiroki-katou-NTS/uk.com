@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -74,7 +73,7 @@ public class ShortWorkTimeOfDaily {
 //																														  .filter(tc -> tc.getChildCareAttr().equals(careAtr))
 //																														  .collect(Collectors.toList())
 //																														  .size());
-			workTimes = calcWorkTimes(recordClass);
+			workTimes = calcWorkTimes(recordClass,careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care);
 			totalTime = calculationDedBreakTime(careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
 												DeductionAtr.Appropriate,
 												recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
@@ -93,20 +92,21 @@ public class ShortWorkTimeOfDaily {
 		
 	}
 	
-	public static WorkTimes calcWorkTimes(ManageReGetClass recordClass) {
+	public static WorkTimes calcWorkTimes(ManageReGetClass recordClass,ConditionAtr condition) {
 		
 		List<TimeSheetOfDeductionItem> list = new ArrayList<>();
+		DeductionAtr dedAtr = DeductionAtr.Appropriate;
 		//就業時間内時間帯
 		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
-			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(dedAtr, condition));
 			//遅刻
 			if(withinWorkTimeFrame.getLateTimeSheet().isPresent()&&withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
-				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(dedAtr, condition));
 			}
 			//早退
 			if(withinWorkTimeFrame.getLeaveEarlyTimeSheet().isPresent()&&withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
-				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(dedAtr, condition));
 			}
 		}
 		//就業時間外時間帯
@@ -114,13 +114,13 @@ public class ShortWorkTimeOfDaily {
 		//残業
 		if(outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()) {
 			for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets()) {
-				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
 			}
 		}
 		//休出
 		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
 			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
-				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
 			}
 		}
 		
@@ -172,8 +172,6 @@ public class ShortWorkTimeOfDaily {
 		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 		//所定外
 		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
-		//設定間休憩
-		
 		//合計計算&return 
 		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()),
 									  withinDedTime,
