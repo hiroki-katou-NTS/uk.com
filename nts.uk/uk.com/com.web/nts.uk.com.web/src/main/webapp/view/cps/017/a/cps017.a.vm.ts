@@ -62,7 +62,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             name: ko.observable(false)
         };
         
-        enableReflUnrComp : KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             let historySelection: HistorySelection = self.historySelection();
@@ -126,10 +125,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     self.createNewData();
                     perInfoSelectionItem.selectionItemName('');
                     self.listSelection.removeAll();
-                    self.historySelection().histId('');
-                    self.listHistorySelection.removeAll();
-                    self.enableAddUpdateHist(false);
-                    self.enableReflUnrComp(false);
                 }
 
             });
@@ -349,7 +344,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             self.enableAddUpdateHist(value);
             self.enableDelHist(value);
-            self.enableReflUnrComp(value);
         }
 
         //検証チェック 
