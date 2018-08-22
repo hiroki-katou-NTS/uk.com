@@ -99,7 +99,7 @@ public class KrcstComFlexMCalSetDataCopyHandler extends DataCopyHandler {
 			// Get all company zero data
 			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 					AppContexts.user().zeroCompanyIdInContract());
-			List<Object> curentCompanyDatas = selectQuery.getResultList();
+			List<Object> curentCompanyDatas = query.getResultList();
 
 			if (!curentCompanyDatas.isEmpty())
 				return;

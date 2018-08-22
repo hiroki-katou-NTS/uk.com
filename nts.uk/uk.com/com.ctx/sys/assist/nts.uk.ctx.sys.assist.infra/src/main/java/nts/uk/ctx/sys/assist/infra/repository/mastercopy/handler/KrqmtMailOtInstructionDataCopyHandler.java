@@ -8,6 +8,8 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -66,31 +68,40 @@ public class KrqmtMailOtInstructionDataCopyHandler extends DataCopyHandler {
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
 
+		if(zeroCompanyDatas.length == 0)
+			return;
+		
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
+			// get old data target by cid
+			Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+					this.companyId);
+			List<Object> oldDatas = selectQueryTarget.getResultList();
+			
+			if (!oldDatas.isEmpty()) 
+				return;
+			
 			// Create quuery string base on zero company data
+			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+			if (!StringUtils.isEmpty(insertQueryStr)) {
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 
-			if (zeroCompanyDatas.length > 0) {
-				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-				if (!StringUtils.isEmpty(insertQueryStr)) {
-					Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-
-					// Loop to set parameter to query
-					for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-						Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
-					}
-
-					// Run insert query
-					insertQuery.executeUpdate();
+				// Loop to set parameter to query
+				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
 				}
+
+				// Run insert query
+				insertQuery.executeUpdate();
 			}
+
 		case DO_NOTHING:
 			// Do nothing
 		default:
