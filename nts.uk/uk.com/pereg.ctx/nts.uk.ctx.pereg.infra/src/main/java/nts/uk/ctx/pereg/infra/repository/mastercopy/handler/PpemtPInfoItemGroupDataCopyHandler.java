@@ -50,6 +50,8 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtPInfoItemGroup.class).setParameter("companyId", companyId)
 				.getResultList();
 
+		if (entityComZero.isEmpty())
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 

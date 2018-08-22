@@ -39,12 +39,16 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 		// Get company zero id
 		String companyZeroId = AppContexts.user().zeroCompanyIdInContract();
 		// Get company zero data
-		List<PpemtNewLayout> entityComZero = this.entityManager.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class)
-				.setParameter("companyId", companyZeroId).getResultList();
+		List<PpemtNewLayout> entityComZero = this.entityManager
+				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class).setParameter("companyId", companyZeroId)
+				.getResultList();
 
-		List<PpemtNewLayout> entityCurrentCom = this.entityManager.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class)
-				.setParameter("companyId", companyId).getResultList();
+		List<PpemtNewLayout> entityCurrentCom = this.entityManager
+				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class).setParameter("companyId", companyId)
+				.getResultList();
 
+		if (entityComZero.isEmpty())
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			// Delete all old data
@@ -53,7 +57,8 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				String CurrentComlayoutId = item.ppemtNewLayoutPk.layoutId;
 
 				// get data layout item cls of current company
-				List<PpemtLayoutItemCls> itemList = this.entityManager.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
+				List<PpemtLayoutItemCls> itemList = this.entityManager
+						.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 						.setParameter("layoutId", CurrentComlayoutId).getResultList();
 
 				// remove all data layout item cls of current company
@@ -63,8 +68,8 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				}
 
 				// remove data layout of current company
-				this.entityManager.createQuery(DELETE_DATA, PpemtLayoutItemCls.class).setParameter("companyId", companyId)
-						.executeUpdate();
+				this.entityManager.createQuery(DELETE_DATA, PpemtLayoutItemCls.class)
+						.setParameter("companyId", companyId).executeUpdate();
 
 				this.entityManager.flush();
 			});
@@ -76,7 +81,8 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				PpemtNewLayout newEntity = new PpemtNewLayout(newPk, companyId, entity.layoutCode, entity.layoutName);
 
 				// get get data layout item cls of company Zero
-				List<PpemtLayoutItemCls> itemList = this.entityManager.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
+				List<PpemtLayoutItemCls> itemList = this.entityManager
+						.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 						.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
 				// Insert new data
@@ -106,7 +112,8 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							entity.layoutName);
 
 					// get get data layout item cls of company Zero
-					List<PpemtLayoutItemCls> itemList = this.entityManager.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
+					List<PpemtLayoutItemCls> itemList = this.entityManager
+							.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
 					// Insert new data
