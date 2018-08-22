@@ -1727,11 +1727,11 @@ module nts.uk.at.view.kmf022 {
 
             // open s dialog
             openSDialog(): void {
-                let self = this;
                 nts.uk.ui.block.grayout();
+                let self = this;
                 nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
             
             
@@ -1750,8 +1750,8 @@ module nts.uk.at.view.kmf022 {
                             }
                         });
                     self.textEditorA13_4(dataA13.join(" + "));
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
 
             loadData(): void {
