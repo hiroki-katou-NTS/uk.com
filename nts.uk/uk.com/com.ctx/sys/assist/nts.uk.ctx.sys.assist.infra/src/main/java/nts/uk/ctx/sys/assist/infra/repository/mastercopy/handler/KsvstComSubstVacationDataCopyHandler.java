@@ -22,15 +22,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class KsvstComSubstVacationDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private static final String INSERT_QUERY = "INSERT INTO KSVST_COM_SUBST_VACATION(CID ,IS_MANAGE ,EXPIRATION_DATE_SET ,ALLOW_PREPAID_LEAVE) VALUES (?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KSVST_COM_SUBST_VACATION(CID ,IS_MANAGE ,EXPIRATION_DATE_SET ,ALLOW_PREPAID_LEAVE) VALUES (?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,IS_MANAGE ,EXPIRATION_DATE_SET ,ALLOW_PREPAID_LEAVE FROM KSVST_COM_SUBST_VACATION WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,IS_MANAGE ,EXPIRATION_DATE_SET ,ALLOW_PREPAID_LEAVE FROM KSVST_COM_SUBST_VACATION WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSVST_COM_SUBST_VACATION WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSVST_COM_SUBST_VACATION WHERE CID = ?";
 	
-	private static final int PARAMETER_QUANTITY = 4;
+	private final int PARAMETER_QUANTITY = 4;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

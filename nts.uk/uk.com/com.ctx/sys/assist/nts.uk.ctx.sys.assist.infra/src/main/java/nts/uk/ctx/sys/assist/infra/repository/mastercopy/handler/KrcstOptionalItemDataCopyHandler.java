@@ -20,18 +20,25 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @NoArgsConstructor
 public class KrcstOptionalItemDataCopyHandler extends DataCopyHandler {
+//	private EntityManager entityManager;
+//
+//	/** The copy method. */
+//	private CopyMethod copyMethod;
+//
+//	/** The company Id. */
+//	private String companyId;
 
 	/** The insert query. */
-	private static final String INSERT_QUERY = "INSERT INTO KRCST_OPTIONAL_ITEM(CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR) VALUES (?,?,?,?,?,?,?)";
+	private String INSERT_QUERY = "INSERT INTO KRCST_OPTIONAL_ITEM(CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR) VALUES (?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private static final String SELECT_BY_CID_QUERY = "SELECT CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR KRCST_OPTIONAL_ITEM FROM KRCST_OPTIONAL_ITEM WHERE CID = ?";
+	private String SELECT_BY_CID_QUERY = "SELECT CID, OPTIONAL_ITEM_NO, OPTIONAL_ITEM_NAME, OPTIONAL_ITEM_ATR, USAGE_ATR, PERFORMANCE_ATR, EMP_CONDITION_ATR FROM KRCST_OPTIONAL_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_OPTIONAL_ITEM WHERE CID = ?";
+	private String DELETE_BY_CID_QUERY = "DELETE FROM KRCST_OPTIONAL_ITEM WHERE CID = ?";
 
 	/** The paramater quantity. */
-	private static final int PARAMATER_QUANTITY = 7;
+	private final int PARAMATER_QUANTITY = 7;
 
 	/**
 	 * Instantiates a new krcst optional item data copy handler.

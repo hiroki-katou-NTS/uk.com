@@ -20,16 +20,16 @@ import javax.persistence.Query;
 public class KshstMonItemControlDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private static final String INSERT_QUERY = "INSERT INTO KSHST_MON_ITEM_CONTROL(CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT) VALUES (?,?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_MON_ITEM_CONTROL(CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT) VALUES (?,?,?,?)";
 
 	/** The select by cid query. */
-	private static final String SELECT_BY_CID_QUERY = "SELECT CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, ITEM_MONTHLY_ID, HEADER_BACKGROUND_COLOR, TIME_INPUT_UNIT FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MON_ITEM_CONTROL WHERE CID = ?";
 
 	/** The paramater quantity. */
-	private static final int PARAMATER_QUANTITY = 4;
+	private final int PARAMATER_QUANTITY = 4;
 	
 	/**
 	 * Instantiates a new kshst mon item control data copy handler.

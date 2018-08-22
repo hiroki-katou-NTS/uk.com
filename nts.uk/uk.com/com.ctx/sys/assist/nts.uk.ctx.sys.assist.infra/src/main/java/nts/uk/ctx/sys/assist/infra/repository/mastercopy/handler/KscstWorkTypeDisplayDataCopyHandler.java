@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KscstWorkTypeDisplayDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISPLAY(CID, USE_ATR) VALUES (?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISPLAY(CID, USE_ATR) VALUES (?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, USE_ATR FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, USE_ATR FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 2;

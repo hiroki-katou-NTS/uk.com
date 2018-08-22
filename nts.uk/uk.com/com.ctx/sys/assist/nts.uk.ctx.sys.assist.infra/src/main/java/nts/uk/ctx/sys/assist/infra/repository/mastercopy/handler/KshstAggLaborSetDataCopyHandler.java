@@ -26,17 +26,17 @@ public class KshstAggLaborSetDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KSHST_AGG_LABOR_SET(CID ,USE_DEFORM_LABOR) VALUES (?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_AGG_LABOR_SET(CID ,USE_DEFORM_LABOR) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,USE_DEFORM_LABOR FROM KSHST_AGG_LABOR_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,USE_DEFORM_LABOR FROM KSHST_AGG_LABOR_SET WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_AGG_LABOR_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_AGG_LABOR_SET WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst agg labor set data copy handler.

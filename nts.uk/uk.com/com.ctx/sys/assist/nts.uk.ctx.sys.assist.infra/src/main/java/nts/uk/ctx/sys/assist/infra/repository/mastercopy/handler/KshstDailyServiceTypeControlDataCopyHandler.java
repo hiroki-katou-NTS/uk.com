@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KshstDailyServiceTypeControlDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_DAI_SER_TYPE_CTR(CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU) VALUES (?,?,?,?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_DAI_SER_TYPE_CTR(CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU) VALUES (?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, AUTHORITY_DAILY_ID, ITEM_DAILY_ID, USE_ATR, CHANGED_BY_OTHERS, CHANGED_BY_YOU FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_DAI_SER_TYPE_CTR WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 6;

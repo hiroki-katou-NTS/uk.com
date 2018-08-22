@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KscstWorkTypeDispSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISP_SET(CID, WORKTYPE_CD) VALUES (?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISP_SET(CID, WORKTYPE_CD) VALUES (?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, WORKTYPE_CD FROM KSCST_WORKTYPE_DISP_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, WORKTYPE_CD FROM KSCST_WORKTYPE_DISP_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCST_WORKTYPE_DISP_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCST_WORKTYPE_DISP_SET WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 2;

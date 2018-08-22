@@ -20,15 +20,15 @@ import javax.persistence.Query;
 public class WwfstApprovalSettingDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private static final String INSERT_QUERY = "INSERT INTO WWFST_APPROVAL_SETTING(CID ,PRINCIPAL_APPROVAL_FLG) VALUES (?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO WWFST_APPROVAL_SETTING(CID ,PRINCIPAL_APPROVAL_FLG) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,PRINCIPAL_APPROVAL_FLG FROM WWFST_APPROVAL_SETTING WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,PRINCIPAL_APPROVAL_FLG FROM WWFST_APPROVAL_SETTING WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private static final String DELETE_BY_CID_QUERY = "DELETE FROM WWFST_APPROVAL_SETTING WHERE CID = ?";
-
-	private static final int PARAMETER_QUANTITY = 2;
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM WWFST_APPROVAL_SETTING WHERE CID = ?";
+	
+	private final int PARAMETER_QUANTITY = 2;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

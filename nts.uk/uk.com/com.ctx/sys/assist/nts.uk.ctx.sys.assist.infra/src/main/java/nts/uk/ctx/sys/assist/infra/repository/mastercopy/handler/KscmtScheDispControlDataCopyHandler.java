@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,13 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KscmtScheDispControlDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_DISP_CONTROL(CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME) VALUES (?,?,?,?,?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_DISP_CONTROL(CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME) VALUES (?,?,?,?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, PERSON_SYQUALIFY, PUB_HD_SHORTAGE_ATR, PUB_HD_EXCESS_ATR, SYMBOL_ATR, SYMBOL_HALF_DAY_ATR, SYMBOL_HALF_DAY_NAME FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_DISP_CONTROL WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 7;

@@ -22,15 +22,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class KshstWorkManagementMultipleDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private static final String INSERT_QUERY = "INSERT INTO KSHST_WORK_MANAGEMENT(CID ,USE_ATR) VALUES (?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_WORK_MANAGEMENT(CID ,USE_ATR) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private static final String SELECT_BY_CID_QUERY = "SELECT CID ,USE_ATR FROM KSHST_WORK_MANAGEMENT WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,USE_ATR FROM KSHST_WORK_MANAGEMENT WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private static final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_WORK_MANAGEMENT WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_WORK_MANAGEMENT WHERE CID = ?";
 	
-	private static final int PARAMETER_QUANTITY = 2;
+	private final int PARAMETER_QUANTITY = 2;
 
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.
