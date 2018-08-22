@@ -41,7 +41,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	private static final int DEFAULT_VALUE = 0;
 
 	/** The Constant DATA_PREFIX. */
-//	private static final String DATA_PREFIX = "DATA_";
+	private static final String DATA_PREFIX = "DATA_";
 
 	/** The Constant MAX_ERROR_RECORD. */
 //	private static final int MAX_ERROR_RECORD = 5;
@@ -108,8 +108,19 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
 
 				}
+				countSuccess++;
+				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 			}
 		}
+
+
+		if (!errorList.isEmpty()) {
+			errorRecordCount++;
+			setter.setData(DATA_PREFIX + errorRecordCount, dto);
+		}
+
+		dto.setEndTime(GeneralDateTime.now());
+		dto.setExecutionState(ExecutionState.DONE);
 	}
 
     private ErrorContentDto createErrorReport(MasterCopyCategoryDto categoryDto) {
