@@ -335,7 +335,10 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00015": //
 			case "CS00037": // AnnualLeaveGrantRemainingData
 			case "CS00038": // ReserveLeaveGrantRemainingData
-				break;
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo,
+						new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());
+				
 			case "CS00069": // StampCard
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
 						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), Optional.empty());

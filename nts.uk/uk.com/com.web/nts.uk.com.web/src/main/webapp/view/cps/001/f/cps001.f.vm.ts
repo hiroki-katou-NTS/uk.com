@@ -142,25 +142,29 @@ module cps001.f.vm {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId)
                 .done(function(res) {
-                    self.fileInfo(res);})
-                .fail(function(res) {
-                    console.log(res);
-                });
-                
-                block();
-                let command = {
-                    sid: dataShare.sid,
-                    fileid: rowItem.fileId,
-                    itemName: nts.uk.resource.getText("CPS001_151"),
-                    fileName: self.fileInfo() == null ? "File does not exist on server" : self.fileInfo().originalName,
-                    categoryName: nts.uk.resource.getText("CPS001_152")
-                }; 
+                    self.fileInfo(res);
+                    block();
+                    let command = {
+                        sid: dataShare.sid,
+                        fileid: rowItem.fileId,
+                        itemName: nts.uk.resource.getText("CPS001_151"),
+                        fileName: self.fileInfo() == null ? "File does not exist on server" : self.fileInfo().originalName,
+                        categoryName: nts.uk.resource.getText("CPS001_152")
+                    }; 
                 service.deletedata(command).done(() => {
                     self.restart();
                     unblock();
                 }).fail((mes) => {
                     unblock();
                 });
+                
+                
+                })
+                .fail(function(res) {
+                    console.log(res);
+                });
+                
+                
             }).ifCancel(() => {
 
             });
