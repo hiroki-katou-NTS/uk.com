@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -58,7 +57,7 @@ public class KsvstComSubstVacationDataCopyHandler extends DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-
+		if(zeroCompanyDatas.length == 0) return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
@@ -75,7 +74,7 @@ public class KsvstComSubstVacationDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 4, dataArr[3]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+			if (!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

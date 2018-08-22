@@ -1,9 +1,10 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,25 +52,45 @@ public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 	 * 
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler#doCopy()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doCopy() {
-
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
-		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-
+		List<Object> zeroCompanyDatas = selectQuery.getResultList();
+		if(zeroCompanyDatas.isEmpty()) return ;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-//			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-//			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-			for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+			if (copyMethod == CopyMethod.ADD_NEW) {
+				// get old data target by cid
+				Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+						this.companyId);
+				List<Object> oldDatas = selectQueryTarget.getResultList();
+				// ignore data existed
+				for (int i = 0; i < zeroCompanyDatas.size(); i++) {
+					Object[] dataAttr = (Object[]) zeroCompanyDatas.get(i);
+					for (int j = 0; j < oldDatas.size(); j++) {
+						Object[] targetAttr = (Object[]) oldDatas.get(j);
+						// compare keys and remove
+						if (dataAttr[1].equals(targetAttr[1]) &&
+							dataAttr[2].equals(targetAttr[2])	
+							) {
+							zeroCompanyDatas.remove(i);
+							i -= 1;
+							break;
+						}
+					}
+				}
+			}
+			//copy data
+			for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
 				Query insertQuery = this.entityManager.createNativeQuery(INSERT_QUERY);
-				Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+				Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
 				insertQuery.setParameter(1, this.companyId);
 				insertQuery.setParameter(2, dataArr[1]);
 				insertQuery.setParameter(3, dataArr[2]);
@@ -85,11 +106,7 @@ public class CcgstStandardMenuDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(13, dataArr[12]);
 				insertQuery.setParameter(14, dataArr[13]);
 				insertQuery.setParameter(15, dataArr[14]);
-				if(!StringUtils.isEmpty(insertQuery.toString()))insertQuery.executeUpdate();
-				
 			}
-			// Run insert query
-			
 		case DO_NOTHING:
 			// Do nothing
 		default:

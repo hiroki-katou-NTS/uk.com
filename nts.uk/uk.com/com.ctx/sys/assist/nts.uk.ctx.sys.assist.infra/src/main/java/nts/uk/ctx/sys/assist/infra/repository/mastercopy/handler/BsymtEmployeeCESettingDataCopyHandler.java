@@ -46,12 +46,11 @@ public class BsymtEmployeeCESettingDataCopyHandler extends DataCopyHandler {
 	 */
 	@Override
 	public void doCopy() {
-		
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
 				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-		
+		if(zeroCompanyDatas.length==0) return;
 		switch (copyMethod) {
 			case REPLACE_ALL:
 				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)

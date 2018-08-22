@@ -27,7 +27,7 @@ public class KshstManageEntryExitDataCopyHandler extends DataCopyHandler {
 
 	/** The delete by cid query. */
 	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_MANAGE_ENTRY_EXIT WHERE CID = ?";
-	
+
 	private final int PARAMETER_QUANTITY = 2;
 
 	/**
@@ -56,7 +56,8 @@ public class KshstManageEntryExitDataCopyHandler extends DataCopyHandler {
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-
+		if (zeroCompanyDatas.length == 0)
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
@@ -71,7 +72,9 @@ public class KshstManageEntryExitDataCopyHandler extends DataCopyHandler {
 				insertQuery.setParameter(i * PARAMETER_QUANTITY + 2, dataArr[1]);
 			}
 			// Run insert query
-			if(!insertQueryStr.equals("")) insertQuery.executeUpdate();
+
+			if (!StringUtils.isEmpty(insertQueryStr))
+				insertQuery.executeUpdate();
 		case DO_NOTHING:
 			// Do nothing
 		default:

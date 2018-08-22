@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,12 +53,11 @@ public class KclmtAcquisitionComDataCopyHandler extends DataCopyHandler {
 	 */
 	@Override
 	public void doCopy() {
-
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-
+		if(zeroCompanyDatas.length == 0 ) return ;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,

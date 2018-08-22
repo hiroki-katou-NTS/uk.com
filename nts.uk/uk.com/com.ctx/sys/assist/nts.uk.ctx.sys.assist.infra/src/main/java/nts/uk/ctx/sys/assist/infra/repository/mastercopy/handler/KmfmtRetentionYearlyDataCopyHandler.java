@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
