@@ -4,7 +4,7 @@ package nts.uk.ctx.at.record.pub.mastercopy;
 /**
  * @author locph
  */
-public interface MasterCopyPub {
+public interface CopyRecordPub {
     /**
      * Do copy.
      */

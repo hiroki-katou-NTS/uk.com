@@ -1,7 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pereg.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.pereg.dom.mastercopy.CopyPerInfoRepository;
 
 import javax.ejb.Stateless;
 
@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
  * @author locph
  */
 @Stateless
-public class JpaMasterCopyDataRepoImp extends JpaRepository implements MasterCopyDataRepository {
+public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoRepository {
     @Override
     public void doCopyA(String companyId, int copyMethod) {
         new PersonalInfoDefCopyHandler(this, copyMethod, companyId).doCopy();

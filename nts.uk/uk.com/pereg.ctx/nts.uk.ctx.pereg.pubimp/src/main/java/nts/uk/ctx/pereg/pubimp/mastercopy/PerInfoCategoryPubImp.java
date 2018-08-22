@@ -1,6 +1,6 @@
 package nts.uk.ctx.pereg.pubimp.mastercopy;
 
-import nts.uk.ctx.pereg.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.pereg.dom.mastercopy.CopyPerInfoRepository;
 import nts.uk.ctx.pereg.pub.mastercopy.PerInfoCategoryPub;
 
 import javax.ejb.Stateless;
@@ -13,20 +13,20 @@ import javax.inject.Inject;
 public class PerInfoCategoryPubImp implements PerInfoCategoryPub {
 
     @Inject
-    MasterCopyDataRepository repoImp;
+    CopyPerInfoRepository repo;
 
     @Override
     public void doCopyA(String companyId, int copyMethod) {
-        repoImp.doCopyA(companyId,copyMethod);
+        repo.doCopyA(companyId,copyMethod);
     }
 
     @Override
     public void doCopyB(String companyId, int copyMethod) {
-        repoImp.doCopyB(companyId,copyMethod);
+        repo.doCopyB(companyId,copyMethod);
     }
 
     @Override
     public void doCopyC(String companyId, int copyMethod) {
-        repoImp.doCopyC(companyId,copyMethod);
+        repo.doCopyC(companyId,copyMethod);
     }
 }
