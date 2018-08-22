@@ -28,7 +28,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             categoryId: '',
             conditionOutputName: 0,
             autoExecution: 1,
-            delimiter: 4,
+            delimiter: 1,
             stringFormat: 0,
             itemOutputName: 0
         }));
@@ -135,6 +135,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 itemList[i].order = index;
             }
         }
+
         getListCategory(){
             let self = this;
             if (!self.roleAuthority) {
@@ -179,7 +180,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                         } else {
                             self.index(self.index() - 1);
                         }
-                        self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
+                        if (self.conditionSettingList().length != 1) {
+                            self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
+                        } else {
+                            self.initScreen(null);
+                        }
                     }); 
                 });
              });
@@ -237,6 +242,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if (params) {
                     self.conditionSetData().categoryId(params.categoryId);
                     self.categoryName(params.categoryId + "　" + params.categoryName);
+                    nts.uk.ui.errors.clearAll();
                 }
             });
            
@@ -292,12 +298,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     categoryId: '',
                                                     conditionOutputName: 0,
                                                     autoExecution: 1,
-                                                    delimiter: 4,
+                                                    delimiter: 1,
                                                     stringFormat: 0,
                                                     itemOutputName: ''
                                                     }));
             self.isNewMode(true);
-            $("#B4_3").focus();
+            $("#B5_1").focus();
         }
            
     
@@ -330,8 +336,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     self.isNewMode(false);
                     self.initScreen(data.conditionSetCd);
+                    if(self.outputItemList() && self.outputItemList().length > 0) {
+                        self.getOutItem(data.conditionSetCd);
+                    }
                 });
-                
             }).fail(function(res: any) {
                 if(res)
                     dialog.alertError(res);

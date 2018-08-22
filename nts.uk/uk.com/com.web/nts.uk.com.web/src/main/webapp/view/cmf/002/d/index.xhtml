@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1260,
-					height : 590
+					height : 600
 				};
 			</script>
 			<com:ValidatorScript>
@@ -33,7 +33,7 @@
 				<button id="D1_1"
 					data-bind="click: register, enable: $root.errors.isEmpty"
 					tabindex="1" class="proceed">#{i18n.getText('CMF002_98')}</button>
-				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('#CMF002_99')}</button>
+				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('CMF002_99')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="table title">
@@ -130,13 +130,15 @@
 					<div class="cell valign-top grid-list">
 						<table tabindex="5" id="fixed-table">
 							<colgroup>
-								<col width="125px" />
+								<col width="20px" />
+								<col width="105px" />
 								<col width="138px" />
 								<col width="214px" />
 								<col width="215px" />
 							</colgroup>
 							<thead>
 								<tr>
+									<th class="ui-widget-header"></th>
 									<th class="ui-widget-header">#{i18n.getText('CMF002_104')}</th>
 									<th class="ui-widget-header">#{i18n.getText('CMF002_105')}</th>
 									<th colspan="2" class="ui-widget-header">#{i18n.getText('CMF002_106')}</th>
@@ -145,6 +147,7 @@
 							<tbody data-bind="foreach: cndDetai().listOutCndDetailItem">
 								<tr
 									data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
+									<td><span data-bind="text: seriNum()"></span></td>
 									<td><span
 										data-bind="text: $vm.getItemName(categoryItemNo())"></span></td>
 									<td>
@@ -179,18 +182,20 @@
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
 
 										<!-- D6_C4_4 --> <input tabindex="8" class="D6_C4_4"
-										data-bind="ntsTextEditor: {
+										data-bind="ntsNumberEditor: {
 										name: '#[CMF002_106]',
 										constraint: 'OutCndNumVal', 
 										value: searchNum, 
+										option: $vm.optionNum,
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_NORMAL" />
 
 										<!-- D6_C4_5 --> <input tabindex="10" class="D6_C4_5"
-										data-bind="ntsTextEditor: {
+										data-bind="ntsNumberEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumStartVal, 
+										option: $vm.optionNum,
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
 
@@ -275,10 +280,11 @@
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
 
 										<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
-										data-bind="ntsTextEditor: {
+										data-bind="ntsNumberEditor: {
 										name: '#[CMF002_108]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumEndVal, 
+										option: $vm.optionNum,
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
 

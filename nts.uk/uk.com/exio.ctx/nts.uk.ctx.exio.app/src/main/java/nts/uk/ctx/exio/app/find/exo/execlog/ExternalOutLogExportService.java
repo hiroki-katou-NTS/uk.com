@@ -19,14 +19,13 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 	@Inject
 	private ExecLogReportCSVGenerator generator;
 
-	private static final String FILE_NAME = "エラー一覧.csv";
-
 	@Override
 	protected void handle(ExportServiceContext<ErrorContentDto> context) {
 		ErrorContentDto lstError = context.getQuery();
 		if (lstError == null) {
 			return;
 		}
+		String fileName = lstError.getNameSetting();
 		List<String> resultLog = new ArrayList<>();
 		List<String> dataSource = new ArrayList<>();
 
@@ -52,7 +51,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				+ data.getErrorEmployee() + ")");
 			}
 		}
-		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(FILE_NAME, resultLog, dataSource);
+		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(fileName, resultLog, dataSource);
 		this.generator.generate(context.getGeneratorContext(), dataExport);
 	}
 

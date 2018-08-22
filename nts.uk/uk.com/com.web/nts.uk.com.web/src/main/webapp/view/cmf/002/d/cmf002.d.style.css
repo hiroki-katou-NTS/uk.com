@@ -68,11 +68,11 @@
 	padding: 2px;
 }
 
-.fixed-table tr td:NTH-CHILD(3) {
+.fixed-table tr td:NTH-CHILD(4) {
 	border-right: none;
 }
 
-.fixed-table tr td:NTH-CHILD(4) {
+.fixed-table tr td:NTH-CHILD(5) {
 	border-left: none;
 }
 

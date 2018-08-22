@@ -126,7 +126,7 @@ public class ExterOutExecLogDto {
 				domain.getFileName().map(i -> i.v()).orElse(null), 
 				domain.getCategoryID().map(i -> i.v()).orElse(null), 
 				domain.getProcessUnit().orElse(null),
-				domain.getProcessEndDateTime().orElse(null).toString(), 
+				domain.getProcessEndDateTime().map(i -> i.toString()).orElse(null), 
 				domain.getProcessStartDateTime().toString(), 
 				domain.getStandardClass().value,
 				domain.getExecuteForm().value, 

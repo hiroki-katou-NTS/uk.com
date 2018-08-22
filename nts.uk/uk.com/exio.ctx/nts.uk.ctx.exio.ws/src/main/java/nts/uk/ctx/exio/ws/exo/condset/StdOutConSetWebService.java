@@ -22,6 +22,7 @@ import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondParam;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
@@ -85,11 +86,9 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getCondSet/{modeScreen}/{cndSetCd}")
-	public List<StdOutputCondSetDto> getCondSet(@PathParam("modeScreen") String modeScreen,
-			@PathParam("cndSetCd") String cndSetCd) {
-		cndSetCd ="";
-		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+	@Path("getCondSet")
+	public List<StdOutputCondSetDto> getCondSet(StdOutputCondParam param) {
+		return stdOutputCondSetFinder.getConditionSetting(param.getModeScreen(),param.getCndSetCd());
 		
 	}
 	@POST

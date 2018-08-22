@@ -28,7 +28,8 @@ public class OutputCodeConvertDTO {
 		return new OutputCodeConvertDTO(domain.getConvertCode().v(), domain.getConvertName().v(), domain.getCid(),
 				domain.getAcceptWithoutSetting().value, domain.getListCdConvertDetails().stream().map(itemDetails -> {
 					return new CdConvertDetailDTO(itemDetails.getCid(), itemDetails.getConvertCd().v(),
-							itemDetails.getOutputItem().orElse(null), itemDetails.getSystemCd(),
+							itemDetails.getOutputItem().isPresent() ? itemDetails.getOutputItem().get().v() : null,
+							itemDetails.getSystemCd().v(),
 							itemDetails.getLineNumber());
 				}).collect(Collectors.toList()));
 	}

@@ -31,13 +31,13 @@
 				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
 				<button id="B1_5" data-bind="click: openCopyScreen, enable: !isNewMode()" >#{i18n.getText('CMF002_32')}</button>
-				<!--B1_8 外部出力-->
-				<label id= "B1_8" class="title-left">#{i18n.getText('CMF002_25')}</label>
 				<!--B1_6 削除-->
 				<button id="B1_6" data-bind="click: deleteCnd, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_33')}</button>
+				<!--B1_8 外部出力-->
+				<label id= "B1_8" class="title-left">#{i18n.getText('CMF002_25')}</label>
 			</div>
 			<div id="contents-area">
-				<div style="text-align: center; width: 1250px; height: 45px">
+				<div style="text-align: center; width: 1270px; height: 40px; margin-bottom:5px">
 					<span id = "B4" class="label warning">#{i18n.getText('CMF002_39')}</span>
 				</div>
 				<div class="fixed-flex-layout" data-bind="with: conditionSetData">
@@ -68,8 +68,8 @@
 								<table id="B3_3"
 									data-bind="ntsGridList: {
 													name: '#[CMF002_345]',
-													height: 514,
-													rows: 15,
+													height: 490,
+													rows: 14,
 		                                            options: $parent.conditionSettingList,
 		                                            optionsValue: $parent.selectedConditionSetting,
 		                                            primaryKey: 'conditionSetCode',
@@ -85,7 +85,7 @@
 						</div>
 					</div>
 					<div class="fixed-flex-layout-right padding-item">
-						<div style="width: 810px">
+						<div style="width: 900px">
 							<div class="layout-right-column-1 pull-left">
 								<div class="div-line">
 									<!--B5 条件コード/名称-->

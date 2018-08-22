@@ -84,8 +84,8 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 				domain.getListCdConvertDetails().stream().map(itemDetail -> {
 					return new OiomtCdConvertDetail(
 							new OiomtCdConvertDetailPk(itemDetail.getConvertCd().v(), itemDetail.getLineNumber(), itemDetail.getCid()),
-							itemDetail.getOutputItem().orElse(null),
-							itemDetail.getSystemCd(), null);
+							itemDetail.getOutputItem().isPresent() ? itemDetail.getOutputItem().get().v() : null,
+							itemDetail.getSystemCd().v(),null);
 				}).collect(Collectors.toList()));
 	}
 }

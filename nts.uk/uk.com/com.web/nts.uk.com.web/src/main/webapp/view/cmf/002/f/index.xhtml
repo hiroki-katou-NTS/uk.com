@@ -103,7 +103,6 @@
 								<table id="F5_3"
 									data-bind="ntsGridList: {
 													dataSource: categoryItemList,
-													primaryKey: 'itemNo',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_89')}', key: 'itemNo', width: 50, formatter: _.escape},
 								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
@@ -136,7 +135,6 @@
 								<table id="F6_1"
 									data-bind="ntsGridList: {
 													dataSource: selectionItemList,
-													primaryKey: 'id',
 													optionsValue: 'id',
 													columns: [
 																{headerText: '', key: 'id', width: 50, formatter: _.escape, hidden: true},
