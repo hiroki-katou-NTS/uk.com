@@ -452,9 +452,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             nts.uk.ui.block.invisible();
                             nts.uk.ui.block.grayout();
                             service.startScreen(param).done((data) => {
-                                self.processMapData(data);
+                                //self.processMapData(data);
                                 nts.uk.ui.block.clear();
-                                dfd.resolve();
+                                dfd.resolve({ bindDataMap: true, data: data });
                             }).fail(function(error) {
                                 nts.uk.ui.dialog.alert(error.message);
                                 nts.uk.ui.block.clear();
