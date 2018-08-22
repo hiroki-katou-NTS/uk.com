@@ -25,17 +25,17 @@ public class KshstFlexWorkSettingDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KSHST_FLEX_WORK_SETTING(CID ,MANAGE_FLEX_WORK) VALUES (?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_FLEX_WORK_SETTING(CID ,MANAGE_FLEX_WORK) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_FLEX_WORK FROM KSHST_FLEX_WORK_SETTING WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,MANAGE_FLEX_WORK FROM KSHST_FLEX_WORK_SETTING WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_FLEX_WORK_SETTING WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_FLEX_WORK_SETTING WHERE CID = ?";
 
 	/**
 	 * Instantiates a new kshst flex work setting data copy handler.

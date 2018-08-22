@@ -21,13 +21,13 @@ import java.util.UUID;
 public class PpemtHistorySelectionDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO PPEMT_HISTORY_SELECTION(CID, HIST_ID, SELECTION_ITEM_ID, START_DATE, END_DATE) VALUES (?, ?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO PPEMT_HISTORY_SELECTION(CID, HIST_ID, SELECTION_ITEM_ID, START_DATE, END_DATE) VALUES (?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, HIST_ID, SELECTION_ITEM_ID, START_DATE, END_DATE FROM PPEMT_HISTORY_SELECTION WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, HIST_ID, SELECTION_ITEM_ID, START_DATE, END_DATE FROM PPEMT_HISTORY_SELECTION WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM PPEMT_HISTORY_SELECTION WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM PPEMT_HISTORY_SELECTION WHERE CID = ?";
 	
 	/**
 	 * Do copy.

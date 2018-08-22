@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KscmtScheduleItemDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_ITEM(CID, SCHEDULE_ITEM_ID, SCHEDULE_ITEM_NAME, SCHEDULE_ITEM_ATR) VALUES (?,?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_ITEM(CID, SCHEDULE_ITEM_ID, SCHEDULE_ITEM_NAME, SCHEDULE_ITEM_ATR) VALUES (?,?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, SCHEDULE_ITEM_ID, SCHEDULE_ITEM_NAME, SCHEDULE_ITEM_ATR FROM KSCMT_SCHE_ITEM WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, SCHEDULE_ITEM_ID, SCHEDULE_ITEM_NAME, SCHEDULE_ITEM_ATR FROM KSCMT_SCHE_ITEM WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_ITEM WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_ITEM WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 4;

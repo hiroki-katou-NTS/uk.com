@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KshstComRegLaborTimeDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_COM_REG_LABOR_TIME(CID,WEEKLY_TIME,WEEK_STR,DAILY_TIME) VALUES (?,?,?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_COM_REG_LABOR_TIME(CID,WEEKLY_TIME,WEEK_STR,DAILY_TIME) VALUES (?,?,?,?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,WEEKLY_TIME,WEEK_STR,DAILY_TIME  FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID,WEEKLY_TIME,WEEK_STR,DAILY_TIME  FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 4;
 

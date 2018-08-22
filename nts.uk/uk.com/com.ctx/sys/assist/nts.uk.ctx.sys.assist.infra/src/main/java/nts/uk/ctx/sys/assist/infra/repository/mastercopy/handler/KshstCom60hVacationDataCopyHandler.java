@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KshstCom60hVacationDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_COM_60H_VACATION(CID ,IS_MANAGE,SIXTY_HOUR_EXTRA,DIGESTIVE_UNIT) VALUES (?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_COM_60H_VACATION(CID ,IS_MANAGE,SIXTY_HOUR_EXTRA,DIGESTIVE_UNIT) VALUES (?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,IS_MANAGE,SIXTY_HOUR_EXTRA,DIGESTIVE_UNIT FROM KSHST_COM_60H_VACATION WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,IS_MANAGE,SIXTY_HOUR_EXTRA,DIGESTIVE_UNIT FROM KSHST_COM_60H_VACATION WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_COM_60H_VACATION WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_COM_60H_VACATION WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 4;
 

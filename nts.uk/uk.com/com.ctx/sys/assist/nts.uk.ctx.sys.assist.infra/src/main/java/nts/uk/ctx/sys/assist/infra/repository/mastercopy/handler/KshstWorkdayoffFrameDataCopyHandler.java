@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KshstWorkdayoffFrameDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_WORKDAYOFF_FRAME(CID, WDO_FR_NO, EXCLUS_VER, USE_ATR, WDO_FR_NAME, TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_WORKDAYOFF_FRAME(CID, WDO_FR_NO, EXCLUS_VER, USE_ATR, WDO_FR_NAME, TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, WDO_FR_NO, EXCLUS_VER, USE_ATR, WDO_FR_NAME, TRANS_FR_NAME FROM KSHST_WORKDAYOFF_FRAME WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, WDO_FR_NO, EXCLUS_VER, USE_ATR, WDO_FR_NAME, TRANS_FR_NAME FROM KSHST_WORKDAYOFF_FRAME WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_WORKDAYOFF_FRAME WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_WORKDAYOFF_FRAME WHERE CID = ?";
 
 	/*
 	 * (non-Javadoc)

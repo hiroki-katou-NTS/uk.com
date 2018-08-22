@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KscmtWeeklyWorkSetDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCMT_WEEKLY_WORK_SET(CID, DAY_OF_WEEK, WORK_DAY_ATR) VALUES (?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCMT_WEEKLY_WORK_SET(CID, DAY_OF_WEEK, WORK_DAY_ATR) VALUES (?,?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, DAY_OF_WEEK, WORK_DAY_ATR FROM KSCMT_WEEKLY_WORK_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, DAY_OF_WEEK, WORK_DAY_ATR FROM KSCMT_WEEKLY_WORK_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_WEEKLY_WORK_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_WEEKLY_WORK_SET WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 3;

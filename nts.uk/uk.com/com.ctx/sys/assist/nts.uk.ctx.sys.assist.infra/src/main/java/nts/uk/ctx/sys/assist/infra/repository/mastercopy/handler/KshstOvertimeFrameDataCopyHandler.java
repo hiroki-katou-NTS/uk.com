@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KshstOvertimeFrameDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSHST_OVERTIME_FRAME(CID ,OT_FR_NO ,USE_ATR ,OT_FR_NAME ,TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KSHST_OVERTIME_FRAME(CID ,OT_FR_NO ,USE_ATR ,OT_FR_NAME ,TRANS_FR_NAME) VALUES (?, ?, ?, ?, ?);";
 	
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, OT_FR_NO, USE_ATR, OT_FR_NAME, TRANS_FR_NAME FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, OT_FR_NO, USE_ATR, OT_FR_NAME, TRANS_FR_NAME FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
 	
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSHST_OVERTIME_FRAME WHERE CID = ?";
 	
 	/**
 	 * Instantiates a new kshst overtime frame data copy handler.

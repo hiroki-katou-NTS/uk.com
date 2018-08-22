@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KscmtSchePerInfoAtrDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_PER_INFO_ATR(CID, PERSON_INFO_ATR) VALUES (?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCMT_SCHE_PER_INFO_ATR(CID, PERSON_INFO_ATR) VALUES (?,?)";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, PERSON_INFO_ATR FROM KSCMT_SCHE_PER_INFO_ATR WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, PERSON_INFO_ATR FROM KSCMT_SCHE_PER_INFO_ATR WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_PER_INFO_ATR WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCMT_SCHE_PER_INFO_ATR WHERE CID = ?";
 
 	/** The paramater quantity. */
 	private final int PARAMATER_QUANTITY = 2;

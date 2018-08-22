@@ -22,13 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class WwfstJobAssignSettingDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO WWFST_JOB_ASSIGN_SET(CID ,IS_CONCURRENTLY) VALUES (?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO WWFST_JOB_ASSIGN_SET(CID ,IS_CONCURRENTLY) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID ,IS_CONCURRENTLY FROM WWFST_JOB_ASSIGN_SET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID ,IS_CONCURRENTLY FROM WWFST_JOB_ASSIGN_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM WWFST_JOB_ASSIGN_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM WWFST_JOB_ASSIGN_SET WHERE CID = ?";
 	
 	private final int PARAMETER_QUANTITY = 2;
 
