@@ -234,8 +234,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         }
             
         createExOutText() {
+            block.invisible();
+            
             let self = this;
-
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = self.periodDateValue().startDate;
@@ -246,6 +247,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let command = new CreateExOutTextCommand(conditionSetCd, userId, startDate,
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
+                block.clear();
+                
                 let params = {
                     processingId: res,
                     startDate: startDate,
@@ -259,6 +262,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     $(".goback").focus();
                 });
             }).fail(res => {
+                block.clear();
                 console.log("createExOutText fail");
             });
         }

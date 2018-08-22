@@ -1440,11 +1440,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
-		if (formatDate == DateOutputFormat.DAY_OF_WEEK) {
-			targetValue = date.toString("w");
-		} else if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
-				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
-			targetValue = date.toString(formatDate.nameId);
+		if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD
+				|| formatDate == DateOutputFormat.DAY_OF_WEEK) {
+			targetValue = date.toString(formatDate.format);
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
 			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
 			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
