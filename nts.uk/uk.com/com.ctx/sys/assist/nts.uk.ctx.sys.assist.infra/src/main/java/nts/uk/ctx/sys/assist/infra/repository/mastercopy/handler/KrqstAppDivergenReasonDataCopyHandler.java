@@ -24,17 +24,17 @@ public class KrqstAppDivergenReasonDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRQST_APP_DIVERGEN_REASON(CID,APP_TYPE,REASON_ID,DISPORDER,REASON_TEMP,DEFAULT_FLG) VALUES (?,?,?,?,?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQST_APP_DIVERGEN_REASON(CID,APP_TYPE,REASON_ID,DISPORDER,REASON_TEMP,DEFAULT_FLG) VALUES (?,?,?,?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,APP_TYPE,REASON_ID,DISPORDER,REASON_TEMP,DEFAULT_FLG FROM KRQST_APP_DIVERGEN_REASON WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID,APP_TYPE,REASON_ID,DISPORDER,REASON_TEMP,DEFAULT_FLG FROM KRQST_APP_DIVERGEN_REASON WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APP_DIVERGEN_REASON WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APP_DIVERGEN_REASON WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krqst app divergen reason data copy handler.

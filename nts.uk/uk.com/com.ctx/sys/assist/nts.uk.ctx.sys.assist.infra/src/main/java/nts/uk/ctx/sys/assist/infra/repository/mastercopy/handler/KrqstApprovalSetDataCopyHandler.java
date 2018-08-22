@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,16 +22,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class KrqstApprovalSetDataCopyHandler extends DataCopyHandler{
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_APPROVAL_SET(CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
+	private final String INSERT_QUERY = "INSERT INTO KRQST_APPROVAL_SET(CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
 			+ "HD_PERFORM_ATR, MSG_EXCEEDED_ATR, WARNING_DATE_DISP_ATR, SCHEDULE_CONFIRM_ATR, ACHIEVEMENT_CONFIRM_ATR) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, REASON_DISP_ATR, OVERTIME_PRE_ATR, HD_PRE_ATR, MSG_ADVANCE_ATR, OVERTIME_PERFOM_ATR, "
 			+ "HD_PERFORM_ATR, MSG_EXCEEDED_ATR, WARNING_DATE_DISP_ATR, SCHEDULE_CONFIRM_ATR, ACHIEVEMENT_CONFIRM_ATR "
 			+ "FROM KRQST_APPROVAL_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APPROVAL_SET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_APPROVAL_SET WHERE CID = ?";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()

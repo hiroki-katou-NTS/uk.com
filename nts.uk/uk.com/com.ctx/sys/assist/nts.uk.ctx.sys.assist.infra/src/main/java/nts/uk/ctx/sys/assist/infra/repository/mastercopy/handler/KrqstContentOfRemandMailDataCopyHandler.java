@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,13 +21,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class KrqstContentOfRemandMailDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_REMAND_MAIL(CID, MAIL_TITLE, MAIL_BODY) VALUES (?, ?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQST_REMAND_MAIL(CID, MAIL_TITLE, MAIL_BODY) VALUES (?, ?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, MAIL_TITLE, MAIL_BODY FROM KRQST_REMAND_MAIL WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, MAIL_TITLE, MAIL_BODY FROM KRQST_REMAND_MAIL WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_REMAND_MAIL WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_REMAND_MAIL WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()

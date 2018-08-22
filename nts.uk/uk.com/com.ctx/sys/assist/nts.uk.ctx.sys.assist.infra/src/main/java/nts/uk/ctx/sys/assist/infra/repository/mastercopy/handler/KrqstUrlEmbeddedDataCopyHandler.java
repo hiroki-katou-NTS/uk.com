@@ -5,7 +5,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,17 +26,17 @@ public class KrqstUrlEmbeddedDataCopyHandler extends DataCopyHandler {
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRQST_URL_EMBEDDED(CID,URL_EMBEDDED) VALUES (?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQST_URL_EMBEDDED(CID,URL_EMBEDDED) VALUES (?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,URL_EMBEDDED FROM KRQST_URL_EMBEDDED WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID,URL_EMBEDDED FROM KRQST_URL_EMBEDDED WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_URL_EMBEDDED WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_URL_EMBEDDED WHERE CID = ?";
 
 	/**
 	 * Instantiates a new krqst url embedded data copy handler.

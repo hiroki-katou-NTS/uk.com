@@ -25,17 +25,17 @@ public class KrqmtMailHdInstructionDataCopyHandler extends DataCopyHandler{
 	/**
 	 * The insert query.
 	 */
-	private String INSERT_QUERY = "INSERT INTO KRQMT_MAIL_HD_INSTRUCTION(CID,SUBJECT,CONTENT) VALUES (?,?,?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQMT_MAIL_HD_INSTRUCTION(CID,SUBJECT,CONTENT) VALUES (?,?,?);";
 
 	/**
 	 * The select by cid query.
 	 */
-	private String SELECT_BY_CID_QUERY = "SELECT CID,SUBJECT,CONTENT FROM KRQMT_MAIL_HD_INSTRUCTION WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID,SUBJECT,CONTENT FROM KRQMT_MAIL_HD_INSTRUCTION WHERE CID = ?";
 
 	/**
 	 * The delete by cid query.
 	 */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_MAIL_HD_INSTRUCTION WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQMT_MAIL_HD_INSTRUCTION WHERE CID = ?";
 	
 	/**
 	 * Instantiates a new krqmt mail hd instruction data copy handler.

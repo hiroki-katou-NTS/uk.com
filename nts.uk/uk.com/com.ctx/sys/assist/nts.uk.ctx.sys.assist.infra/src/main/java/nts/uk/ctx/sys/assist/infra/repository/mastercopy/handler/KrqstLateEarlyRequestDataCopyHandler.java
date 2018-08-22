@@ -20,13 +20,13 @@ import javax.persistence.Query;
 public class KrqstLateEarlyRequestDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
-	private String INSERT_QUERY = "INSERT INTO KRQST_LATE_EARLY_REQUESET(CID, SHOW_RESULT) VALUES (?, ?);";
+	private final String INSERT_QUERY = "INSERT INTO KRQST_LATE_EARLY_REQUESET(CID, SHOW_RESULT) VALUES (?, ?);";
 
 	/** The select by cid query. */
-	private String SELECT_BY_CID_QUERY = "SELECT CID, SHOW_RESULT FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, SHOW_RESULT FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
 
 	/** The delete by cid query. */
-	private String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
+	private final String DELETE_BY_CID_QUERY = "DELETE FROM KRQST_LATE_EARLY_REQUESET WHERE CID = ?";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.mastercopy.DataCopyHandler#doCopy()
