@@ -37,5 +37,6 @@ public class DPLockDto {
 		this.lockCheckApprovalDay = new HashMap<>();
 		this.signDayMap = new HashMap<>();
 		this.lockHist = new HashMap<>();
+		this.lockDayAndWpl = new HashMap<>();
 	}
 }

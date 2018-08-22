@@ -92,7 +92,7 @@ public class DPDisplayLockProcessor {
 
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		// get status check box
-		DPLockDto dpLock = param.isShowLock() ? new DPLockDto() : findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt,
+		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt,
 				approvalUseSettingDtoOpt);
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
@@ -118,13 +118,15 @@ public class DPDisplayLockProcessor {
 
 			process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt,
 					approveRootStatus, mode, data.isApproval());
-			boolean lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
-			boolean lockHist = process.lockHist(dpLock.getLockHist(), data);
-			boolean lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
-			boolean lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
-
+			boolean lockDaykWpl  = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+			if(param.isShowLock()){
+			lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+			lockHist = process.lockHist(dpLock.getLockHist(), data);
+			lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+			lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
 			lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist,
 					data.isSign(), lockApprovalMonth, lockConfirmMonth);
+			}
 
 			DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 			dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());

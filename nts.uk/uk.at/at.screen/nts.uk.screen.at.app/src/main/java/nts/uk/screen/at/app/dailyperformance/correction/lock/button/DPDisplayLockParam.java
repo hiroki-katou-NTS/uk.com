@@ -16,20 +16,20 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 @AllArgsConstructor
 public class DPDisplayLockParam {
 
-private List<DPAttendanceItem> lstAttendanceItem;
-	
+	private List<DPAttendanceItem> lstAttendanceItem;
+
 	private List<DailyPerformanceEmployeeDto> lstEmployee;
-	
+
 	private DateRange dateRange;
-	
+
 	private Integer mode;
-	
+
 	private Integer displayFormat;
-	
+
 	private List<DPDataDto> lstData;
-	
+
 	private List<DPHeaderDto> lstHeader;
-	
+
 	private boolean showLock;
-	
+
 }
