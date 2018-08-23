@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -67,42 +68,43 @@ public class KrqstAppReasonDataCopyHandler extends DataCopyHandler {
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
-		List<Object> sourceDatas = selectQuery.getResultList();
-		
-		if(sourceDatas.isEmpty())
-			return;
+		List<Object> zeroCompanyDatas = selectQuery.getResultList();
 
+		if (zeroCompanyDatas.isEmpty())
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			// get old data target by cid
-			Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
-					this.companyId);
-			List<Object> oldDatas = selectQueryTarget.getResultList();
-			// ignore data existed
-			for (int i = 0; i < sourceDatas.size(); i++) {
-				Object[] dataAttr = (Object[]) sourceDatas.get(i);
-				for (int j = 0; j < oldDatas.size(); j++) {
-					Object[] targetAttr = (Object[]) oldDatas.get(j);
-					// compare keys and remove
-					if (dataAttr[1].equals(targetAttr[1]) && dataAttr[2].equals(targetAttr[2])) {
-						sourceDatas.remove(i);
-						i -= 1;
-						break;
+			if (copyMethod == CopyMethod.ADD_NEW) {
+				// get old data target by cid
+				Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+						this.companyId);
+				List<Object> oldDatas = selectQueryTarget.getResultList();
+				// ignore data existed
+				for (int i = 0; i < zeroCompanyDatas.size(); i++) {
+					Object[] dataAttr = (Object[]) zeroCompanyDatas.get(i);
+					for (int j = 0; j < oldDatas.size(); j++) {
+						Object[] targetAttr = (Object[]) oldDatas.get(j);
+						// compare keys and remove
+						if (dataAttr[1].equals(targetAttr[1])) {
+							zeroCompanyDatas.remove(i);
+							i -= 1;
+							break;
+						}
 					}
 				}
 			}
 			// Create quuery string base on zero company data
-			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, sourceDatas.size());
+			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			if (!StringUtils.isEmpty(insertQueryStr)) {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 
 				// Loop to set parameter to query
-				for (int i = 0, j = sourceDatas.size(); i < j; i++) {
-					Object[] dataArr = (Object[]) sourceDatas.get(i);
+				for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
@@ -114,7 +116,6 @@ public class KrqstAppReasonDataCopyHandler extends DataCopyHandler {
 				// Run insert query
 				insertQuery.executeUpdate();
 			}
-			
 		case DO_NOTHING:
 			// Do nothing
 		default:

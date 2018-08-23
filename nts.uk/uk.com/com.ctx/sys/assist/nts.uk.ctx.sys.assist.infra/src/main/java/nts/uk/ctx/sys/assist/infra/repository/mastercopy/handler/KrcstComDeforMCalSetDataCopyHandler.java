@@ -1,11 +1,12 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,20 +27,20 @@ public class KrcstComDeforMCalSetDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
 	private static final int CURRENT_COLUMN = 11;
 
-//	/**
-//	 * The entity manager.
-//	 */
-//	private EntityManager entityManager;
-//
-//	/**
-//	 * The copy method.
-//	 */
-//	private CopyMethod copyMethod;
-//
-//	/**
-//	 * The company Id.
-//	 */
-//	private String companyId;
+	// /**
+	// * The entity manager.
+	// */
+	// private EntityManager entityManager;
+	//
+	// /**
+	// * The copy method.
+	// */
+	// private CopyMethod copyMethod;
+	//
+	// /**
+	// * The company Id.
+	// */
+	// private String companyId;
 
 	/**
 	 * The insert query.
@@ -84,39 +85,45 @@ public class KrcstComDeforMCalSetDataCopyHandler extends DataCopyHandler {
 		// Get all company zero data
 		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
 				AppContexts.user().zeroCompanyIdInContract());
-		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+		List<Object> zeroCompanyDatas = selectQuery.getResultList();
 
+		if (zeroCompanyDatas.isEmpty())
+			return;
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
+			// Get all company zero data
+			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
+			List<Object> curentCompanyDatas = query.getResultList();
+
+			if (!curentCompanyDatas.isEmpty())
+				return;
 			// Create quuery string base on zero company data
-			if (zeroCompanyDatas.length > 0) {
-				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-				if (!StringUtils.isEmpty(insertQueryStr)) {
-					Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
+			if (!StringUtils.isEmpty(insertQueryStr)) {
+				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 
-					// Loop to set parameter to query
-					for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-						Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 4, dataArr[3]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 5, dataArr[4]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 6, dataArr[5]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 7, dataArr[6]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 8, dataArr[7]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 9, dataArr[8]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 10, dataArr[9]);
-						insertQuery.setParameter(i * this.CURRENT_COLUMN + 11, dataArr[10]);
-					}
-
-					// Run insert query
-					insertQuery.executeUpdate();
+				// Loop to set parameter to query
+				for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 4, dataArr[3]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 5, dataArr[4]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 6, dataArr[5]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 7, dataArr[6]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 8, dataArr[7]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 9, dataArr[8]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 10, dataArr[9]);
+					insertQuery.setParameter(i * this.CURRENT_COLUMN + 11, dataArr[10]);
 				}
+
+				// Run insert query
+				insertQuery.executeUpdate();
 			}
 		case DO_NOTHING:
 			// Do nothing

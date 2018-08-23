@@ -7,7 +7,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -97,8 +96,7 @@ public class KrcstComFlexMCalSetDataCopyHandler extends DataCopyHandler {
 		case ADD_NEW:
 
 			// Get all company zero data
-			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
-					AppContexts.user().zeroCompanyIdInContract());
+			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
 			List<Object> curentCompanyDatas = query.getResultList();
 
 			if (!curentCompanyDatas.isEmpty())

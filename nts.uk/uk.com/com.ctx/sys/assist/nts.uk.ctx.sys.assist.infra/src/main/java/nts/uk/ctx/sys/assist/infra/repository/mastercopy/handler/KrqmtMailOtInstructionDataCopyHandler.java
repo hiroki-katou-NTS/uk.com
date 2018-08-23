@@ -1,17 +1,18 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 /**
  * The Class KrqmtMailOtInstructionDataCopyHandler.
@@ -68,31 +69,29 @@ public class KrqmtMailOtInstructionDataCopyHandler extends DataCopyHandler {
 				AppContexts.user().zeroCompanyIdInContract());
 		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
 
-		if(zeroCompanyDatas.length == 0)
+		if (zeroCompanyDatas.isEmpty())
 			return;
-		
 		switch (copyMethod) {
 		case REPLACE_ALL:
 			Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY).setParameter(1,
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			// get old data target by cid
-			Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
-					this.companyId);
-			List<Object> oldDatas = selectQueryTarget.getResultList();
-			
-			if (!oldDatas.isEmpty()) 
+			// Get all company zero data
+			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
+			List<Object> curentCompanyDatas = query.getResultList();
+
+			if (!curentCompanyDatas.isEmpty())
 				return;
-			
 			// Create quuery string base on zero company data
-			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+
+			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			if (!StringUtils.isEmpty(insertQueryStr)) {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 
 				// Loop to set parameter to query
-				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+				for (int i = 0, j = zeroCompanyDatas.size(); i < j; i++) {
+					Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 1, this.companyId);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 2, dataArr[1]);
 					insertQuery.setParameter(i * this.CURRENT_COLUMN + 3, dataArr[2]);
@@ -101,7 +100,6 @@ public class KrqmtMailOtInstructionDataCopyHandler extends DataCopyHandler {
 				// Run insert query
 				insertQuery.executeUpdate();
 			}
-
 		case DO_NOTHING:
 			// Do nothing
 		default:
