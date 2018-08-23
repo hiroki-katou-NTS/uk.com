@@ -110,26 +110,30 @@ module nts.uk.at.view.kbt002.b {
                     return;
                 }
 
-                // get JsObject
-                //                let command: any = ko.toJS(self.currentExecItem);
-                let command: any = self.toJsonObject();
-                //                command.refDate = command.refDate == '' ? null : command.refDate;
-                nts.uk.ui.block.grayout();
-
-                // insert or update process execution
-                service.saveProcExec(command).done(function(savedProcExecCd) {
-                    nts.uk.ui.block.clear();
-
-                    // notice success
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        // Get process execution list
-                        self.getProcExecList(savedProcExecCd);
-                        setTimeout(function() { self.focusInput(); }, 100);
+                if(self.currentExecItem().workplaceList().length > 0) {
+                    // get JsObject
+                    //                let command: any = ko.toJS(self.currentExecItem);
+                    let command: any = self.toJsonObject();
+                    //                command.refDate = command.refDate == '' ? null : command.refDate;
+                    nts.uk.ui.block.grayout();
+    
+                    // insert or update process execution
+                    service.saveProcExec(command).done(function(savedProcExecCd) {
+                        nts.uk.ui.block.clear();
+    
+                        // notice success
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            // Get process execution list
+                            self.getProcExecList(savedProcExecCd);
+                            setTimeout(function() { self.focusInput(); }, 100);
+                        });
+                    }).fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                        self.showMessageError(res);
                     });
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    self.showMessageError(res);
-                });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
+                }
             }
 
             // 削除 button
@@ -330,6 +334,7 @@ module nts.uk.at.view.kbt002.b {
                 //                $(".nts-input ").ntsEditor('validate');
                 $("#execItemCd").ntsEditor('validate');
                 $("#execItemName").ntsEditor('validate');
+                $(".ntsDatepicker").ntsEditor('validate');
                 if (self.currentExecItem().perScheduleCls()) {
                     $("#targetDate").ntsEditor('validate');
                     $("#creationPeriod").ntsEditor('validate');
