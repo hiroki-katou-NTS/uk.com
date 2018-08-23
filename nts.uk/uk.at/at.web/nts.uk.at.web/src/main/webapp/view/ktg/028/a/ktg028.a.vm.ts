@@ -85,7 +85,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     self.texteditorA4_2.value(currentItem.topPageName);
                     self.texteditorA5_4.value(currentItem.height());
                     self.currentCodeList_A7([]);
-                    self.currentCodeList_A7(currentItem.listType());
+                    let listType = _.map(currentItem.listType(), function(x){ return x.toString();});
+                    self.currentCodeList_A7(listType);
                     $("#name").focus();
                 } else {
                     self.isCreated(true);

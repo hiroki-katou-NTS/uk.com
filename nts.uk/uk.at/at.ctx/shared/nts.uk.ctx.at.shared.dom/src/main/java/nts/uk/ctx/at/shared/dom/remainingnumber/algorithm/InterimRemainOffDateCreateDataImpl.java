@@ -119,7 +119,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		WorkTypeRemainInfor dataDetail = this.createWorkTypeRemainInfor(cid, CreateAtr.RECORD, recordData.getWorkTypeCode());
 		if(dataDetail == null) {
-			return null;
+			return outputData;
 		}
 		outputData.setWorkTypeRemain(Optional.of(dataDetail));
 		//アルゴリズム「実績から代休振替情報を設定する」を実行する
@@ -148,8 +148,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			
 		}
 		outputData.setWorkTypeClass(workTypeClass);
-		if(!lstZansu().contains(workTypeClass)) {
-			return null;
+		if(!this.lstZansu().contains(workTypeClass)) {
+			return outputData;
 		}
 		
 		//勤務種類別残数情報を作成する
@@ -355,7 +355,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		outputData.setWorkTypeRemain(Optional.of(remainInfor));
 		//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
 		DayoffTranferInfor tranferData = this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, CreateAtr.SCHEDULE, null, dayOffTimeIsUse);
-		outputData.setDayOffTranfer(Optional.of(tranferData));
+		outputData.setDayOffTranfer(tranferData == null ? Optional.empty() : Optional.of(tranferData));
 		return outputData;
 	}
 
