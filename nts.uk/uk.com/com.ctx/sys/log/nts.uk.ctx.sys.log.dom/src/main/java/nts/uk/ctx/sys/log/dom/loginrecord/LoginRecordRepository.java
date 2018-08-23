@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.dom.loginrecord;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,4 +27,11 @@ public interface LoginRecordRepository {
 	 */
 	Optional<LoginRecord> loginRecordInfor(String operationId);
 	
+	/**
+	 * Log record infor.
+	 *
+	 * @param operationId the operation id
+	 * @return the list
+	 */
+	List<LoginRecord> logRecordInfor(List<String> operationIds);
 }

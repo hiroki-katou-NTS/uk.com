@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassi
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -103,7 +105,12 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 
 		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation,
 				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
-				this.execSetting.monthlyAggCls == 1 ? true : false);
+				this.execSetting.monthlyAggCls == 1 ? true : false,
+				new AppRouteUpdateDaily(
+						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class) ,
+						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
+				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
+				);
 
 		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
 				new ExecutionName(this.execItemName), execScope, execSetting);
@@ -144,7 +151,11 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getIndvAlarm().isIndvMailMng() ? 1 : 0,
 				domain.getExecSetting().getWkpAlarm().isWkpAlarmCls() ? 1 : 0,
 				domain.getExecSetting().getWkpAlarm().isWkpMailMng() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0);
+				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
+				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
+				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
+				domain.getExecSetting().getAppRouteUpdateMonthly().value
+				);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting);
 	}
 }

@@ -105,6 +105,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         /** update or insert data when click button register **/
         register() {
             let self = this;
+            nts.uk.ui.block.invisible();
             let code = "";
             $("#inpPattern").trigger("validate");
             let updateOption = new BusinessType(self.selectedCode(), self.selectedName());
@@ -119,6 +120,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                                 self.checkUpdateMode();
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
                     }
                     else {
@@ -134,8 +137,12 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             });
                         }).fail(function(res) {
                             $('#inpCode').ntsError('set', res);
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
                     }
+                }else {
+                    nts.uk.ui.block.clear();
                 }
             });
             $("#inpPattern").focus();
@@ -148,7 +155,9 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
-            $("#inpCode").focus();
+            _.defer(() => {
+                $("#inpCode").focus();
+            })            
             self.checkUpdateMode();
         }
 
