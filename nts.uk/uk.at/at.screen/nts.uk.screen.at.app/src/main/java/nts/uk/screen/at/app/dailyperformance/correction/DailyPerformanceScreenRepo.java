@@ -11,7 +11,6 @@ import java.util.Set;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.pub.workrule.closure.DCClosureExport;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkplaceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChangedDto;
@@ -50,6 +49,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.Re
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -234,5 +234,5 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
 	
-	Map<String, DatePeriod> confirmationMonth(String companyId, List<DCClosureExport> dto);
+	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
 }

@@ -84,6 +84,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<DailyRecordDto> domainOld;
 	
 	private boolean showTighProcess;
+	
+	private boolean showErrorDialog;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

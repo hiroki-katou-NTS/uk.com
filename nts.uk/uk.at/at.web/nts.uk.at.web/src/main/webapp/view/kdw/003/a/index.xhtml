@@ -70,6 +70,8 @@
 						data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
 					<button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
 					<!-- visible: showButton().available7 -->
+					<button data-bind="click : proceedUnLock, visible: showLock">#{i18n.getText('KDW003_84')}</button>
+					<button data-bind="click : proceedLock, visible: unLock">#{i18n.getText('KDW003_85')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -163,6 +165,7 @@
 					</div>
 					<div id="content-all-grid">
 						<div id="content-grid-not">
+						    <div class="label warning" style="width: 120px" data-bind="visible: unLock">#{i18n.getText('KDW003_86')}</div>
 							<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
 							<button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
 							<button id="btn-legend"

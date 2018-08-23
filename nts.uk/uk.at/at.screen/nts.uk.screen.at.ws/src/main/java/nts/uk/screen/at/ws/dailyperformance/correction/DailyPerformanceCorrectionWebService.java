@@ -49,6 +49,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErro
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -113,11 +115,14 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DisplayRemainingHolidayNumber remainNumberService;
+
+	@Inject
+	private DPDisplayLockProcessor dpDisplayLockProcessor;
 	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.objectShare);
 	}
 	
 	@POST
@@ -244,6 +249,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getRemainNum/{employeeId}")
 	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
 		return remainNumberService.getRemainingHolidayNumber(employeeId);
+	}
+
+	@POST
+	@Path("lock")
+	public DailyPerformanceCorrectionDto processLock(DPDisplayLockParam param) {
+		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
 }

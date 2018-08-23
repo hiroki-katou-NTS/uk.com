@@ -25,5 +25,6 @@ public class DPParams {
 	public List<String> errorCodes;
 	// only use when click button  A2_4
 	public List<String> formatCodes;
+	public Boolean showError;
     public ObjectShare objectShare;	
 }

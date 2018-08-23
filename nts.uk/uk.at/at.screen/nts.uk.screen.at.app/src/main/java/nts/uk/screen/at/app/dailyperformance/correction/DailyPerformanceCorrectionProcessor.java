@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -117,7 +118,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
+import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -183,6 +187,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
+	@Inject
+	private ShowDialogError showDialogError;
+	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	
@@ -221,7 +228,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, ObjectShare objectShare) {
+			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, ObjectShare objectShare) {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
@@ -271,7 +278,7 @@ public class DailyPerformanceCorrectionProcessor {
 			val employeeIds = objectShare == null
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
-			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode);
+			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
@@ -475,6 +482,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// Force shut down executor services.
 			executorService.shutdown();
 		}
+		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
 		return screenDto;
 	}
 
@@ -591,22 +599,23 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public boolean lockAndDisable(DailyPerformanceCorrectionDto screenDto, DPDataDto data, int mode, boolean lockDaykWpl,
 			boolean lockApproval, boolean lockHist, boolean lockSign, boolean lockApprovalMonth, boolean lockConfirmMonth) {
-		
+		boolean lock = false;
 		if (lockDaykWpl || lockApproval || lockHist || lockSign || lockApprovalMonth || lockConfirmMonth) {
 			if (lockDaykWpl) {
 				//lockCell(screenDto, data, true);
+				 lock = true;
 			}
 			
 			if (lockApprovalMonth) {
 				setStateLock(data, DPText.LOCK_CHECK_MONTH);
 				//lockCell(screenDto, data, true);
-				lockDaykWpl = true;
+				lock = true;
 			}
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
 				//lockCell(screenDto, data, false);
-				lockDaykWpl = true;
+				lock = true;
 				
 			}
 			
@@ -614,33 +623,33 @@ public class DailyPerformanceCorrectionProcessor {
 				setStateLock(data, DPText.LOCK_EDIT_APPROVAL);
 				//lockCell(screenDto, data, false);
 				if(mode == ScreenMode.APPROVAL.value) {
-					lockDaykWpl = lockDaykWpl && false;
+					lock = lock && false;
 				}else {
-					lockDaykWpl = true;
+					lock = true;
 				}
 			}
 
 			if (lockSign && mode == ScreenMode.NORMAL.value) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lockDaykWpl = lockDaykWpl && false;
-				else lockDaykWpl = true;
+				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;
+				else lock = true;
 			}
 			
 			if (lockHist) {
 				setStateLock(data, DPText.LOCK_HIST);
 				//lockCell(screenDto, data, true);
-				lockDaykWpl = true;
+				lock = true;
 			}
 			
-			if (lockConfirmMonth || lockApproval || lockSign)
+			if ((lockConfirmMonth || lockApproval || lockSign) && !(lockApprovalMonth || lockHist || lockDaykWpl))
 				lockCell(screenDto, data, false);
 			else
 				lockCell(screenDto, data, true);
 		}
 		
 		if (mode == ScreenMode.APPROVAL.value) screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-		return lockDaykWpl;
+		return lock;
 	}
 	
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
@@ -848,13 +857,29 @@ public class DailyPerformanceCorrectionProcessor {
            return true;
 	}
 	 
-	public boolean checkLockConfirmMonth(Map<String, DatePeriod> confirmMonthMonth, DPDataDto data){
-		val datePeriod = confirmMonthMonth.get(data.getEmployeeId()+"|"+ data.getDate().toString());
-		if (confirmMonthMonth.isEmpty() || datePeriod == null)
+	public boolean checkLockConfirmMonth(Pair<List<ClosureSidDto>, List<ConfirmationMonthDto>> pairClosureMonth, DPDataDto data){
+		if (pairClosureMonth == null)
 			return false;
-		if (inRange(data, datePeriod))
-			return true;
-		return false;
+
+		List<ClosureSidDto> lstClosure = pairClosureMonth.getLeft();
+
+		Optional<ClosureSidDto> closureSidDtoOpt = lstClosure.stream()
+				.filter(x -> x.getSid().equals(data.getEmployeeId())).findFirst();
+
+		if (!closureSidDtoOpt.isPresent())
+			return false;
+
+		Optional<ClosurePeriod> cPeriod = closureSidDtoOpt.get().getClosure().getClosurePeriodByYmd(data.getDate());
+
+		if (!cPeriod.isPresent())
+			return false;
+
+		Optional<ConfirmationMonthDto> monthOpt = pairClosureMonth.getRight().stream()
+				.filter(x -> x.getEmployeeId().equals(data.getEmployeeId())
+						  && x.getClosureId() == cPeriod.get().getClosureId().value
+						  && x.getProcessYM() == cPeriod.get().getYearMonth().v().intValue()
+						  && x.getClosureDay() == cPeriod.get().getClosureDate().getClosureDay().v().intValue()).findFirst();
+		return monthOpt.isPresent();
 	}
 	
     public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
@@ -1205,6 +1230,7 @@ public class DailyPerformanceCorrectionProcessor {
 							result.setAutBussCode(result.getFormatCode());
 							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+							if(authorityFomatDailys.isEmpty()) throw new BusinessException("Msg_1402");
 							List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 									.collect(Collectors.toList());
 							authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
@@ -1440,7 +1466,7 @@ public class DailyPerformanceCorrectionProcessor {
 		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode) {
+	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer) {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
@@ -1453,7 +1479,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}else{
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT
-				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
+				if(!isTranfer)lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
+				else lstEmployeeId =  employeeIds;
 			}
 			if(lstEmployeeId.isEmpty()){
 				//throw new BusinessException("Msg_1342");

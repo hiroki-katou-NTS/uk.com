@@ -116,7 +116,7 @@ public class DPLoadRowProcessor {
 						x -> x.getEditState()));
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
 		List<DPErrorDto> lstError = listEmployeeId.isEmpty() ? new ArrayList<>()
-				: repo.getListDPError(dateRange, listEmployeeId);;
+				: repo.getListDPError(dateRange, listEmployeeId);
 				
 		Map<String, String> listEmployeeError = lstError.stream()
 				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
@@ -218,13 +218,18 @@ public class DPLoadRowProcessor {
 			DailyModifyResult resultOfOneRow = process.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
-				boolean lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
-                boolean lockHist = process.lockHist(dpLock.getLockHist(), data);
-                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
-                boolean lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
-                
-                lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);		
+				boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+				if (param.isShowLock()) {
+					lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+					lockHist = process.lockHist(dpLock.getLockHist(), data);
+					lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+					lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist,
+							data.isSign(), lockApprovalMonth, lockConfirmMonth);
+				} else {
+					lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, false, lockHist,
+							false, lockApprovalMonth, lockConfirmMonth);
+				}
 				
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getItemId()), "|",
