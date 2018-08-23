@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
@@ -164,22 +167,27 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
 		// Create query
-		CriteriaQuery<KrcstOptionalItem> cq = builder.createQuery(KrcstOptionalItem.class);
+		CriteriaQuery<?> cq = builder.createQuery();
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
+				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(
+				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
-		predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo)
-				.in(optionalitemNos));
+		predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK)
+				.get(KrcstOptionalItemPK_.optionalItemNo).in(optionalitemNos));
+		cq.multiselect(root, joinRoot);
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results
-		List<KrcstOptionalItem> results = em.createQuery(cq).getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> results = (List<Object[]>) em.createQuery(cq).getResultList();
 
 		// Check empty
 		if (CollectionUtil.isEmpty(results)) {
@@ -187,7 +195,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		}
 
 		// Return
-		return results.stream().map(item -> new OptionalItem(new JpaOptionalItemGetMemento(item)))
+		return results.stream()
+				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
+						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
