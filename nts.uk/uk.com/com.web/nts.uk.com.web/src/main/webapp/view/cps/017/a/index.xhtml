@@ -50,8 +50,13 @@
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: enableOpenDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
+<<<<<<< HEAD
 				<button id="A1_007" tabindex="6"
 					data-bind="click: ReflUnrComp, visible : showRefecToAll">#{i18n.getText('CPS017_49')}</button>
+=======
+				<button id="A1_007" class="danger" tabindex="6"
+					data-bind="click: ReflUnrComp, visible : showRefecToAll , enable: enableReflUnrComp">#{i18n.getText('CPS017_49')}</button>
+>>>>>>> pj/at/dev/Team_B/Test_ReleaseUser
 
 				<com:ko-if bind="(isDialog() === true)">
 					<button id="A1_008" tabindex="5" style="display: none"
@@ -67,7 +72,6 @@
 					<div
 						data-bind="ntsPanel:{
 							width: '278px', 
-							height: '540px',
 							direction: 'right', 
 							showIcon: true, 
 							visible: true}">
@@ -90,15 +94,15 @@
 						<!-- kết quả tìm kiếm  -->
 						<table id="sel_item_grid"
 							data-bind="ntsGridList: {
-								height: 270,
 								options: listItems,
 								primaryKey: 'selectionItemId',
 								showNumbering: false,
 								columns: [
 					                { headerText: 'aa', key: 'selectionItemId', hidden: true},
-					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName'}
+					                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', formatter: _.escape}
 					            ],
 								multiple: false,
+								rows: 9,
 								value: perInfoSelectionItem().selectionItemId}">
 						</table>
 
@@ -121,14 +125,13 @@
 						<!-- khu vực history list -->
 						<div id="history_lst"
 							data-bind="ntsListBox: {
-							height: 116,
 							options: listHistorySelection,
 							optionsValue: 'histId',
 							optionsText: 'histId',
 							value: historySelection().histId,
 							enable: true,
 							multiple: false,
-							rows: 9,
+							rows: 5,
 							columns: [
 								{ key: 'displayDate', length: 17 }
 							]}">

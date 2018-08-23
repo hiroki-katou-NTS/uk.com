@@ -229,7 +229,7 @@ module nts.uk.com.view.cmm050.a {
                 _self.saveMailServerSetting(params).done(function(){
                     
                     dfd.resolve();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
                         $('#email_auth').focus();
                     });
