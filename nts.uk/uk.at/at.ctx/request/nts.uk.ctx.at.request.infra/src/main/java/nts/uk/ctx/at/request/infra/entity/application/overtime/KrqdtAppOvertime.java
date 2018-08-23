@@ -11,6 +11,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -75,6 +76,10 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL)
     @JoinTable(name = "KRQDT_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput> overtimeInputs;
+
+	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appOvertime", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
+	public KrqdtAppOvertimeDetail appOvertimeDetail;
 
 	@Override
 	protected Object getKey() {
