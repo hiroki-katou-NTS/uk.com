@@ -76,19 +76,25 @@ public class DaiPerformanceFun extends AggregateRoot
     */
     private int manualFixAutoSetAtr;
     
+    /**
+     * 抽出時にエラーがある場合はエラー参照ダイアログを表示する
+     * 
+     */
+    private int checkErrRefDisp;
+    
     public static DaiPerformanceFun createFromJavaType(String cid, String comment, 
     		int isCompleteConfirmOneMonth, int isDisplayAgreementThirtySix, 
     		int isFixClearedContent, int isDisplayFlexWorker, 
     		int isUpdateBreak, int isSettingTimeBreak, 
     		int isUpdateEarly, int isUpdateOvertime, 
-    		int isUpdateOvertimeWithinLegal, int isFixContentAuto)
+    		int isUpdateOvertimeWithinLegal, int isFixContentAuto,int checkErrRefDisp)
     {
         DaiPerformanceFun  daiPerformanceFun =  new DaiPerformanceFun(cid, new Comment(comment) , 
 														        		isCompleteConfirmOneMonth, isDisplayAgreementThirtySix, 
 														        		isFixClearedContent, isDisplayFlexWorker, isUpdateBreak, 
 														        		isSettingTimeBreak, 
 														        		isUpdateEarly, isUpdateOvertime, isUpdateOvertimeWithinLegal,  
-														        		isFixContentAuto);
+														        		isFixContentAuto,checkErrRefDisp);
         return daiPerformanceFun;
     }
     

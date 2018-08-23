@@ -3,6 +3,7 @@ module nts.uk.com.view.cmm050.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import blockUI = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
     
     export module viewmodel {
         export class ScreenModel {
@@ -94,6 +95,7 @@ module nts.uk.com.view.cmm050.a {
                 _self.popServerEnable = ko.observable(false);
                 
                 _self.computedText = ko.computed(function() {
+                    errors.clearAll();
                     if(_self.useAuth() == UseServer.USE){
                        return nts.uk.resource.getText("CMM050_13", [587]);
                     }else{
@@ -118,6 +120,7 @@ module nts.uk.com.view.cmm050.a {
                 
                 //handle when value have been changed
                 _self.authMethod.subscribe(function(authMethodChanged){
+                     errors.clearAll();
                     _self.fillUI(authMethodChanged);
                 });
                 
@@ -178,7 +181,11 @@ module nts.uk.com.view.cmm050.a {
             public registerMailSetting() {
                 blockUI.invisible();
                 let _self = this;
-                            
+
+                if (nts.uk.ui.errors.hasError()) {
+                    blockUI.clear();
+                    return;
+                }
                 // Validate
                 if (_self.hasError()) {
                     // validate input pop info
@@ -200,6 +207,7 @@ module nts.uk.com.view.cmm050.a {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_545" });
                         }
                     }
+                    blockUI.clear();
                     return;
                 }
                 
@@ -217,17 +225,18 @@ module nts.uk.com.view.cmm050.a {
                         new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
                         new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
                     );
-                
+                blockUI.grayout();
                 _self.saveMailServerSetting(params).done(function(){
+                    
                     dfd.resolve();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
                         $('#email_auth').focus();
                     });
                 }).fail(function(){
                     alert('error');    
-                });
-                blockUI.clear();
+                }).always(()=>blockUI.clear());
+              
                 return dfd.promise();
             }
             

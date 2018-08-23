@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import util = nts.uk.util;
+    
     export class ScreenModel {
         
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -187,6 +189,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID()
             }).done((data) => {
                 self.initData(data);
+                self.checkRequiredBreakTimes();
                 $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
@@ -225,7 +228,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     });
                    self.prePostSelected.subscribe(function(value){
                        $('#kaf010-pre-post-select').ntsError('clear');
-                      if(value == 0){
+                       nts.uk.ui.errors.clearAll();
+                       $("#inputdate").trigger("validate");
+                      if(value == 0){                           
                            $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                       }else if(value == 1){
                            $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
@@ -367,6 +372,46 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.enbAppDate(false);
             }
         }
+        
+        checkRequiredBreakTimes() {
+            let self = this;
+            _.each(self.breakTimes(), function(item) {
+                item.applicationTime.subscribe(function(value) {
+                    self.clearErrorA6_8();
+                    if (!self.hasAppTimeBreakTimes()) {
+                        self.setErrorA6_8();
+                    }
+                })
+            })
+        }
+        
+        hasAppTimeBreakTimes() {
+            let self = this,
+                hasData = false;
+            _.each(self.breakTimes(), function(item: common.OvertimeCaculation) {
+                let timeValidator = new nts.uk.ui.validation.TimeValidator(nts.uk.resource.getText("KAF010_56"), "OvertimeAppPrimitiveTime", { required: false, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+                if (!util.isNullOrEmpty(item.applicationTime())) {
+                    hasData = true;
+                }
+                if (item.applicationTime() == null) return;
+
+                let control = $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo());
+                let check = timeValidator.validate(control.val());
+                if (!check.isValid) {
+                    control.ntsError('set', { messageId: check.errorCode, message: check.errorMessage });
+                }
+            })
+            return hasData;
+        }
+
+        setErrorA6_8() {
+            $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+        }
+
+        clearErrorA6_8() {
+            $('.breakTimesCheck').ntsError('clear');
+        }
+        
         //登録処理
         registerClick() {
             let self = this;
@@ -376,6 +421,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
             }
+            if (!self.hasAppTimeBreakTimes()) {
+                self.setErrorA6_8();
+            }            
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
             
@@ -668,7 +716,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
-                nts.uk.ui.block.clear();
+                self.changeColor(2,res.parameterIds[3],res.parameterIds[4]);
+                dialog.alertError({messageId:"Msg_424", messageParams: [res.parameterIds[0],res.parameterIds[1],res.parameterIds[2]]}).then(function() { 
+                    nts.uk.ui.block.clear(); 
+                });
                 dfd.reject(res);
             });
             return dfd.promise();
