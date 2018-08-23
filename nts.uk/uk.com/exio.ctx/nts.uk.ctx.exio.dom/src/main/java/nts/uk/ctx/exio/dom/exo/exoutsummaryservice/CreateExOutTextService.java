@@ -273,7 +273,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDate specifiedStartDate = exOutSetting.getStartDate();
 		String codeSettingCondition = exOutSetting.getConditionSetCd();
 		Integer resultStatus = null;
-		String nameSetting = null;
+		String nameSetting = settingResult.getStdOutputCondSet() == null ? 
+				"" : settingResult.getStdOutputCondSet().getConditionSetName().v();
 		ExterOutExecLog exterOutExecLog = new ExterOutExecLog(companyId, processingId, userId, totalErrorCount,
 				totalCount, fileId, fileSize, deleteFile, fileName, categoryID, processUnit, processEndDateTime,
 				processStartDateTime, standardClass, executeForm, executeId, designatedReferenceDate, specifiedEndDate,
@@ -462,7 +463,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				} catch (Exception e) {
 					e.printStackTrace();
 					
-					createOutputLogError(exOutSetting.getProcessingId(), e.getMessage(), null, sid, null);
+					createOutputLogError(exOutSetting.getProcessingId(), "Sql Exception", null, sid, null);
 				}
 			}
 			// サーバ外部出力タイプマスター系
@@ -1229,7 +1230,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		} catch (Exception e) {
 			result = new HashMap<String, String>();
 			result.put(RESULT_STATE, RESULT_NG);
-			result.put(ERROR_MESS, e.getMessage());
+			result.put(ERROR_MESS, "Check output data exception");
 			result.put(RESULT_VALUE, itemValue);
 		}
 
