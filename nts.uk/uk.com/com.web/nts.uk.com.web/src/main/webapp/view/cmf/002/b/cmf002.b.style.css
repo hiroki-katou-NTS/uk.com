@@ -3,7 +3,7 @@
 }
 
 .layout-right-column-1 {
-	width: 450px;
+	width: 490px;
 }
 
 .panel.ntsPanel.direction-right {
@@ -17,10 +17,8 @@
 	width: 170px;
 }
 
-#B1_6{ float : right ;}
-#B1_8{ 
-	float : right ;
-	margin-right: 50px
+#B1_6{ }
+#B1_8{margin-left: 550px !important;
 	}
 	
 #B1_2{
@@ -35,4 +33,5 @@
 .title-left{
 	margin-left: 10px !important;
 }
+
 

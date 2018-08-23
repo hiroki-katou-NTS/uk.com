@@ -21,7 +21,7 @@ public class CdConvertDetailDTO {
 	public static CdConvertDetailDTO fromDomain(CdConvertDetail domain) {
 		return new CdConvertDetailDTO(domain.getCid(), domain.getConvertCd().v(),
 				domain.getOutputItem().isPresent() ? domain.getOutputItem().get().v() : null,
-				domain.getSystemCd(), domain.getLineNumber());
+				domain.getSystemCd().v(), domain.getLineNumber());
 
 	}
 

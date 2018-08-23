@@ -18,8 +18,8 @@
 					<div tabindex="4" class="title-right"><label>#{i18n.getText('CMF002_25')}</label></div>
 				</div>
 				<div id="contents-area">
-					<label class="title-left">#{i18n.getText('CMF002_26')}</label>
-					<div>
+					<label class="title-left" style="display: flex">#{i18n.getText('CMF002_26')}</label>
+					<div style="display: flex">
 						<div class="image-left">
 							<button id="buttonImport" class="import-creation" 
 							data-bind="click : importScreen" tabindex="1"></button>
@@ -32,7 +32,7 @@
 							<button class="history-reference" 
 							data-bind="click : referenceHistoryScreen"  tabindex="3"></button>
 						</div>
-						<div class="cf"></div>
+						<div class="clear"></div>
 					</div>
 				</div>
 			</ui:define>

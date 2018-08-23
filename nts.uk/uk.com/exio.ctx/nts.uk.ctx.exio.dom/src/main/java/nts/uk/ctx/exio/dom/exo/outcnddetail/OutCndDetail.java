@@ -1,11 +1,11 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+
+import java.util.List;
 
 /**
  * 出力条件詳細(定型)

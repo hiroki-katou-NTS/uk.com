@@ -45,8 +45,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
         dataCcg001: EmployeeSearchDto[] = [];
-        // value P4_1
-        valueItemFixedForm: KnockoutObservable<string>;
         // list data id employ
         dataEmployeeId: Array<string>;
         startDate: KnockoutObservable<string> = ko.observable('');
@@ -74,7 +72,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
-            self.multiSelectedCode = ko.observableArray([]);
+            self.multiSelectedCode = ko.observableArray(["1"]);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
                 { code: '1', isAlreadySetting: true },
@@ -91,7 +89,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
@@ -125,26 +123,23 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             }
             this.employeeList(employeeSearchs);
         }
-
+      
         selectStandardMode() {
             block.invisible();
-            let modeScreen = "a";
-            let cndSetCd = "002";
             let self = this;
-            self.valueItemFixedForm('定型');
-            service.getConditionSetting(modeScreen, cndSetCd).done(res => {
+            service.getConditionSetting(new ParamToScreenP("","")).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
-                    
                     self.loadListCondition(dataCndSetCd);
-                    block.clear();
                     $('#ex_output_wizard').ntsWizard("next");
+                    block.clear();
                 }
 
             }).fail(res => {
                 alertError(res);
-                block.clear();
+                 block.clear();
             });
+           
         }
 
         next() {
@@ -159,43 +154,42 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             error.clearAll();
             $(".nts-input").trigger("validate");
-            if (!nts.uk.ui.errors.hasError()) {
-                let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
-                let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
-                if (!isNextGetData) {
-                    service.getExOutCtgDto(catelogoryId).done(res => {
-                        {
-                            let data: ExOutCtgDto = res;
-                            if (data.categorySet == 6) {
-                                $('#ex_output_wizard').ntsWizard("goto", 2);
-                                self.isPNextToR(false);
-                                self.loadScreenQ();
-                            }
-                            else {
-                                $('#ex_output_wizard').ntsWizard("goto", 3);
-                                self.isPNextToR(true);
-                                self.initScreenR();
-                            }
-                        }
-
-                    }).fail(res => {
-                        alertError(res);
-                    });
-
-                }
-            }
-            else {
+            if (nts.uk.ui.errors.hasError()) {
                 alertError("Msg_662");
+                return;
             }
+
+            let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
+            let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
+            if (!isNextGetData) {
+                service.getExOutCtgDto(catelogoryId).done(res => {
+                    {
+                        let data: ExOutCtgDto = res;
+                        if (data.categorySet == model.CATEGORY_SETTING.DATA_TYPE) {
+                            $('#ex_output_wizard').ntsWizard("goto", 2);
+                            self.isPNextToR(false);
+                            self.loadScreenQ();
+                        }
+                        else {
+                            $('#ex_output_wizard').ntsWizard("goto", 3);
+                            self.isPNextToR(true);
+                            self.initScreenR();
+                        }
+                    }
+
+                }).fail(res => {
+                    alertError(res);
+                });
+
+            }
+
         }
 
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
-            let data: EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
+            return _.filter(this.dataCcg001, function(o) {
                 return _.includes(dataListCode, o.employeeCode);
-            });
-            let listId: Array<string> = _.map(data, 'employeeId').reverse();
-            return listId;
+            }).map(item => item.employeeId);
         }
 
         backFromR() {
@@ -223,25 +217,26 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 self.initScreenR();
             }
         }
-        
+
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
                 let ctgItemDataCustomList = _.sortBy(res.ctgItemDataCustomList, ["itemName"]);
-                
+
                 self.listOutputCondition(ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
-                
+
                 $(".createExOutText").focus();
             }).fail(res => {
                 console.log("getExOutSummarySetting fail");
             });
 
         }
-
-        createExOutText() {
-            let self = this;
             
+        createExOutText() {
+            block.invisible();
+            
+            let self = this;
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = self.periodDateValue().startDate;
@@ -252,6 +247,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let command = new CreateExOutTextCommand(conditionSetCd, userId, startDate,
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
+                block.clear();
+                
                 let params = {
                     processingId: res,
                     startDate: startDate,
@@ -265,6 +262,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     $(".goback").focus();
                 });
             }).fail(res => {
+                block.clear();
                 console.log("createExOutText fail");
             });
         }
@@ -275,7 +273,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             _.forEach(dataCndSetCd, function(item) {
                 listItemModel.push(new DisplayTableName(item.categoryId, item.conditionSetCd, item.conditionSetName));
             });
-            
+
             self.listCondition(listItemModel);
             self.selectedConditionCd(self.listCondition()[0].code);
             self.selectedConditionName(self.listCondition()[0].name);
@@ -285,7 +283,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             self.startDate(self.periodDateValue().startDate);
             self.endDate(self.periodDateValue().endDate);
-            self.conditionSettingName(self.selectedConditionCd().toString()+' ' + self.selectedConditionName().toString());
+            self.conditionSettingName(self.selectedConditionCd().toString() + ' ' + self.selectedConditionName().toString());
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分
@@ -361,6 +359,15 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             this.itemName = itemName;
             this.condition = condition;
         }
+    }
+    class ParamToScreenP {
+        modeScreen: string;
+        cndSetCd: string;
+        constructor(modeScreen: string, cndSetCd: string) {
+            this.modeScreen = modeScreen;
+            this.cndSetCd = cndSetCd;
+        }
+
     }
 
     class CreateExOutTextCommand {

@@ -16,6 +16,7 @@
 			<com:ValidatorScript>
                     nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode
                     nts.uk.ctx.exio.dom.exo.cdconvert.ConvertName
+                    nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -126,9 +127,9 @@
 									<td class="order-column"><span
 										data-bind="text: lineNumber"></span></td>
 									<td><input tabindex="9"
-										data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF002_127')}', option: {width: '93px'}}" /></td>
+										data-bind="ntsTextEditor: {value: outputItem,constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '93px'}}" /></td>
 									<td><input tabindex="10"
-										data-bind="ntsTextEditor: {value: systemCode, required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
+										data-bind="ntsTextEditor: {value: systemCode,constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>

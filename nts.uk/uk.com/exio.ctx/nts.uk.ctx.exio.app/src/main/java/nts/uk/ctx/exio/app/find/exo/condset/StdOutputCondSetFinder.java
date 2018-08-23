@@ -72,8 +72,7 @@ public class StdOutputCondSetFinder {
 	}
 
 	public List<StdOutputCondSetDto> getConditionSetting(String modeScreen, String cndSetCd) {
-		String cId = AppContexts.user().companyId();
-		return mStdOutputCondSetService.getListStandardOutputItem(cId, cndSetCd).stream()
+		return mStdOutputCondSetService.getListStandardOutputItem(cndSetCd).stream()
 				.map(item -> StdOutputCondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 

@@ -12,7 +12,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
     export class ScreenModel {
         roleAuthority: any;
-        
+
         exePeriod: KnockoutObservable<any>;
         exOutCtgIdList: Array<any>;
         cndSetList: KnockoutObservableArray<CndSet>;
@@ -48,8 +48,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_313"), template: '<div class="limited-label">${empName}</div>', dataType: 'string', key: 'empName', width: '150px' },
                 // X5_H1_6
                 { headerText: getText("CMF002_314"), template: '<div class="limited-label">${nameSetting}</div>', dataType: 'string', key: 'nameSetting', width: '100px' },
-                // X5_H1_7
-                //{ headerText: getText("CMF002_315"), dataType: 'string', key: 'standardClass', width: '70px' },
+                // X5_H1_7t
+                // { headerText: getText("CMF002_315"), dataType: 'string', key: 'standardClass', width: '70px' },
                 // X5_H1_8
                 { headerText: getText("CMF002_316"), template: '<div class="limited-label">${executeFormName}</div>', dataType: 'string', key: 'executeFormName', width: '70px' },
                 // X5_H1_9
@@ -228,7 +228,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 block.clear();
             })
         }
-        
+
         focusX5(){
             $('#execHistGrid').focus();
         }
@@ -251,7 +251,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
         static fromApp(app): CndSet {
             return new CndSet(app.standardAtr, app.conditionSetCode, app.conditionSetName);
         }
-        
+
         /**
          * 取得した一覧の先頭に「すべて」を追加
          */
