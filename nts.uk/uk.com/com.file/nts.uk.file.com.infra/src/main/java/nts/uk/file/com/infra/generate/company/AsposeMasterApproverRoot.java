@@ -27,12 +27,18 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterEmployeeOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterWkpOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
 import nts.uk.file.com.app.company.approval.MasterApproverRootOutputDataSource;
 import nts.uk.file.com.app.company.approval.MasterApproverRootOutputGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-
+/**
+ * print CMM018 - M
+ * @author hoatt
+ *
+ */
 @Stateless
 public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator implements MasterApproverRootOutputGenerator {
 	private static final String TEMPLATE_FILE = "report/マスタリストのEXCEL出力.xlsx";
@@ -61,23 +67,23 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			}
 			//print sheet WORKPLACE
 			if (dataSource.isCheckWorplace()) {
-				if (!dataSource.getMasterApproverRootOutput().getWorplaceRootInfor().isEmpty()) {
+				if (!dataSource.getMasterApproverRootOutput().getWkpRootOutput().getWorplaceRootInfor().isEmpty()) {
 
 					Worksheet workplaceSheet = worksheets.get(1);
 					this.printPage(workplaceSheet, dataSource);
-					this.printWorkplace(worksheets, dataSource);
+					this.printWorkplace(worksheets, dataSource.getMasterApproverRootOutput().getWkpRootOutput());
 				}
 			} else {
 				worksheets.get(1).setVisible(false);
 			}
 			//print sheet PERSON
 			if (dataSource.isCheckPerson()) {
-				if (!dataSource.getMasterApproverRootOutput().getPersonRootInfor().isEmpty()) {
+				if (!dataSource.getMasterApproverRootOutput().getEmpRootOutput().getPersonRootInfor().isEmpty()) {
 					Worksheet personSheet = worksheets.get(2);
 					//header
 					this.printPage(personSheet, dataSource);
 					//body
-					this.printPerson(worksheets, dataSource);
+					this.printPerson(worksheets, dataSource.getMasterApproverRootOutput().getEmpRootOutput());
 				}
 			} else {
 				worksheets.get(2).setVisible(false);
@@ -220,23 +226,20 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheets
 	 * @param dataSource
 	 */
-	private void printPerson(WorksheetCollection worksheets, MasterApproverRootOutputDataSource dataSource) {
+	private void printPerson(WorksheetCollection worksheets, MasterEmployeeOutput dataPer) {
 		Worksheet worksheet = worksheets.get(2);
 		Cells cells = worksheet.getCells();
-		Map<String, PersonApproverOutput> lstPerson = dataSource.getMasterApproverRootOutput().getPersonRootInfor();
+		List<EmployeeApproverOutput> lstEmployeeInfo = dataPer.getLstEmployeeInfo();
+		Map<String, PersonApproverOutput> lstPerson = dataPer.getPersonRootInfor();
 		if (lstPerson.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Person list is empty"));
-
 		}
-
 		int firstRow = 3;
-		for (Map.Entry m : lstPerson.entrySet()) {
-			PersonApproverOutput person = (PersonApproverOutput) m.getValue();
+		for (EmployeeApproverOutput emp : lstEmployeeInfo) {
+			PersonApproverOutput person = lstPerson.get(emp.getEmpId());
 			//print tung emp
 			firstRow = this.printEachPerson(worksheets, cells, firstRow, person);
-
 		}
-
 	}
 
 	/**
@@ -260,7 +263,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 		// set worplace Name, workplace Code
 		Cell workPlaceCode = cells.get(firstRow, COLUMN_INDEX[2]);
-		workPlaceCode.setValue(wpInfor.getEId() + " " + wpInfor.getEName());
+		workPlaceCode.setValue(wpInfor.getEmpCD() + " " + wpInfor.getEName());
 		//TH row ten nv o cuoi trang
 		int page = firstRow < 45 ? 1 : (firstRow-3)/42 + 1;
 		int page_end = page * 42 + 3;
@@ -354,17 +357,18 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheets
 	 * @param dataSource
 	 */
-	private void printWorkplace(WorksheetCollection worksheets, MasterApproverRootOutputDataSource dataSource) {
+	private void printWorkplace(WorksheetCollection worksheets, MasterWkpOutput dataWkp) {
 		Worksheet worksheet = worksheets.get(1);
 		Cells cells = worksheet.getCells();
-		Map<String, WorkplaceApproverOutput> lstWorkplace = dataSource.getMasterApproverRootOutput()
-				.getWorplaceRootInfor();
+		List<WorkplaceImport> lstWpInfor = dataWkp.getLstWpInfor();
+		Map<String, WorkplaceApproverOutput> lstWorkplace = dataWkp.getWorplaceRootInfor();
 		if (lstWorkplace.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Workplace list is empty"));
 		}
 		int firstRow = 3;
-		for (Map.Entry m : lstWorkplace.entrySet()) {
-			WorkplaceApproverOutput workplace = (WorkplaceApproverOutput) m.getValue();
+		//for by list work place sorted
+		for (WorkplaceImport wkp : lstWpInfor) {
+			WorkplaceApproverOutput workplace = lstWorkplace.get(wkp.getWkpId());
 			firstRow = this.printEachWorkplace(worksheets, cells, firstRow, workplace);
 		}
 	}

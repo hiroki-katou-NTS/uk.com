@@ -139,8 +139,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
-			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
+			MonthlyAggrEmpServiceValue aggrStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+			ProcessState coStatus = aggrStatus.getState();
 			stateHolder.add(coStatus);
 
 			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);

@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtDateRangeItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
@@ -17,6 +18,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -32,6 +34,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			 "AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
 			 "OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
 			 "ORDER BY po.disporder");
+	
+	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT DISTINCT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
+			"INNER JOIN PpemtPerInfoItem ii ON ii.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPK.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
+			"WHERE ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.endDateItemId",
+			"AND ctg.cid = :cid ORDER BY ctg.categoryCd");
 
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -604,4 +612,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	}
 
+	@Override
+	public List<DateRangeDto> dateRangeCode() {
+		String cid = AppContexts.user().companyId();
+		// Get startDate and endDate of category history
+		List<Object[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, Object[].class).setParameter("cid", cid).getList();
+		return query.stream().map(m -> m[0].toString()).distinct().map(m -> {
+			List<Object[]> record = query.stream().filter(f -> f[0].toString().equals(m)).collect(Collectors.toList());
+
+			if (record.size() == 2) {
+				return new DateRangeDto(m, record.get(0)[1].toString(), record.get(1)[1].toString());
+			}
+
+			return null;
+		}).filter(f -> f != null).collect(Collectors.toList());
+	}
 }

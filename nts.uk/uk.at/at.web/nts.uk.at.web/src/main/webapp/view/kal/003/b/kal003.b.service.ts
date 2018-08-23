@@ -32,7 +32,7 @@ module nts.uk.at.view.kal003.b.service {
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             
             //getname monthly
-            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
             
 
     }

@@ -30,8 +30,8 @@ public class JpaTripRequestSetRepository extends JpaRepository implements TripRe
 		entity.companyId = domain.getCompanyId();
 		entity.color1 = domain.getColor1().v();
 		entity.color2 = domain.getColor2().v();
-		entity.comment1 = domain.getComment1() == null ? null : domain.getComment1().v();
-		entity.comment2 = domain.getComment2() == null ? null : domain.getComment2().v();
+		entity.comment1 = domain.getComment1().isPresent() ? domain.getComment1().get().v() : null;
+		entity.comment2 = domain.getComment2().isPresent() ? domain.getComment2().get().v() : null;
 		entity.contractCheck = domain.getContractCheck().value;
 		entity.lateLeave = domain.getLateLeave().value;
 		entity.weight1 = domain.getWeight1().value;
