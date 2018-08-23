@@ -209,6 +209,7 @@ module a6 {
                     defaultValue: ko.observable(0),
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
+                            name: '#[KMK003_174]',
                             constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',

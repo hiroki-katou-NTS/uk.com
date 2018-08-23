@@ -106,6 +106,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
+        displayReasonLst: Array<common.DisplayReason> = []; 
         constructor(transferData :any) {
 
             let self = this;
@@ -180,7 +181,17 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((data) => {
                 $("#inputdate").focus();
                 self.initData(data);
+                //ver16
+                self.prePostEnable(data.prPostChange);
                 self.holidayTypeCode.subscribe(function(value) {
+                    let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==value);
+                    if(nts.uk.util.isNullOrUndefined(currentDisplay)){
+                        self.typicalReasonDisplayFlg(false);
+                        self.displayAppReasonContentFlg(false);        
+                    } else {
+                        self.typicalReasonDisplayFlg(currentDisplay.displayFixedReason);
+                        self.displayAppReasonContentFlg(currentDisplay.displayAppReason);     
+                    }
                     self.checkDisplayEndDate(self.displayEndDateFlg());
                     if (self.checkStartDate()) {
                         return;
@@ -519,6 +530,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         initData(data: any) {
             let self = this;
+            _.forEach(data.displayReasonDtoLst, (o) => {
+                self.displayReasonLst.push(new common.DisplayReason(o.typeOfLeaveApp, o.displayFixedReason==1?true:false, o.displayAppReason==1?true:false));     
+            });
             self.checkBoxValue(data.manualSendMailFlg);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.employeeName(data.employeeName);

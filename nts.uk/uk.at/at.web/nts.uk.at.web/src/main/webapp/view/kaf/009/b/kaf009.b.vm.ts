@@ -265,6 +265,16 @@ module nts.uk.at.view.kaf009.b {
                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
                         return;
                 }
+                // 勤務時間の大小チェック
+                if (self.timeStart1() > self.timeEnd1()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+                    return;
+                }
+                // 勤務時間2の大小チェック
+                if (self.timeStart2() > self.timeEnd2()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
+                    return;
+                }
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
