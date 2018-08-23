@@ -53,6 +53,7 @@ public class UpdateRegistrationUserCommandHandler
 	protected void handle(CommandHandlerContext<UpdateRegistrationUserCommand> context) {
 		UpdateRegistrationUserCommand command = context.getCommand();
 		String userId = command.getUserID();
+		String personalId = command.getAssociatedPersonID();
 		User updateUser = userRepo.getByUserID(userId).get();
 		String contractCode = updateUser.getContractCode().toString();
 		String password = command.getPassword();
@@ -69,6 +70,11 @@ public class UpdateRegistrationUserCommandHandler
 			}
 			updateUser.setLoginID(currentLoginID);
 		}
+		
+		if (personalId != null && !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
+			throw new BusinessException("Msg_716");
+		}
+		
 		// check for exitstence of system admin
 		if (!registrationUserService.checkSystemAdmin(command.getUserID(), validityPeriod))
 			throw new BusinessException("Msg_330");
