@@ -6,6 +6,10 @@
     
     <distributable/>
     
+    <session-config>
+        <session-timeout>1440</session-timeout>
+    </session-config>
+    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -38,4 +42,10 @@
     <servlet>
     	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>
     </servlet>
+    
+    <listener>
+    	<listener-class>
+    		nts.arc.layer.infra.servlet.context.listener.BundledServletContextListeners
+    	</listener-class>
+    </listener>
 </web-app>

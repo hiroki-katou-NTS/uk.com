@@ -8,7 +8,6 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        
         <com:stylefile set="BASIC" />
         
         <com:viewcontext />
@@ -22,15 +21,29 @@
     <h:body>
     
     	<div id="master-wrapper" data-bind="with: content">
-    		<ui:insert name="base-content" >
-	    		<div id="header">ゆーけー！</div>
-		        <div id="master-content">
-		        	<ui:insert name="content" />
-		        </div>
-	    	</ui:insert>
+			<com:ko tag="let" bind="{ $vm: $data }">
+				<ui:insert name="base-content" >
+					<div id="header">
+						<div id="menu-header">
+							<div id="logo-area" class="cf">
+								<div id="logo">勤次郎</div>
+								<div id="user-info" class="cf">
+									<div id="company" class="cf"></div>
+									<div id="user" class="cf"></div>
+								</div>
+							</div>
+							<div id="nav-area" class="cf" />
+							<div id="pg-area" class="cf" />
+						</div>
+					</div>
+					<div id="master-content">
+						<ui:insert name="content" />
+					</div>
+				</ui:insert>
+			</com:ko>
     	</div>
         <div data-bind="with: kiban.errorDialogViewModel">
-			<div data-bind="ntsErrorDialog: {title: title, errors: errors, option: option}"></div>
+			<div data-bind="ntsErrorDialog: {title: title, errors: displayErrors, option: option}"></div>
  			<div id="func-notifier-errors" data-bind="css: { shown: occurs }, click: open">エラーがあります</div>
         </div>
     </h:body>
