@@ -265,6 +265,7 @@
 										<input id="decimalPart" tabindex="15"
 											data-bind="ntsNumberEditor: {
 												name: '#[CPS005_21]',
+												nameid: 'decimalPart',
 												value: decimalPart,
 												constraint: 'DecimalPart',
 												option: new nts.uk.ui.option.NumberEditorOption({
@@ -479,7 +480,7 @@
 										 		mode: 'time', 
 										 		option: {
 								                    width: '80px',
-								                    placeholder: hintTimeItemMin
+								                    placeholder: '00:00'
 								                },
 												required: true,
 												enable: cItemNum.enable,
@@ -496,7 +497,7 @@
 										 		mode: 'time',
 										 		option: {
 								                    width: '80px',
-								                    placeholder: hintTimeItemMax
+								                    placeholder: '00:00'
 								                },
 												required: true,
 												enable: cItemNum.enable,
@@ -524,7 +525,7 @@
 												constraint: 'TimeWithDayAttr',
 										 		option: {
 								                    width: '65px',
-								                    placeholder: hintTimeMin,
+								                    placeholder: '00:00',
 								                    timeWithDay: true
 								                },
 												required: true,
@@ -540,7 +541,7 @@
 												constraint: 'TimeWithDayAttr',									
 										 		option: {
 								                    width: '65px',
-								                    placeholder: hintTimeMax,
+								                    placeholder: '00:00',
 								                    timeWithDay: true
 								                },
 												required: true,

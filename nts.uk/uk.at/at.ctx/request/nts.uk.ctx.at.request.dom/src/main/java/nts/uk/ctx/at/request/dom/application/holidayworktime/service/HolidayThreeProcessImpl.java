@@ -153,7 +153,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 				if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime){
 					Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyID), breakTime.getFrameNo());
-					throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "");
+					throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "",
+							String.valueOf(breakTime.getFrameNo()), String.valueOf(breakTime.getErrorCode()));
 				}else{
 					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
 				}

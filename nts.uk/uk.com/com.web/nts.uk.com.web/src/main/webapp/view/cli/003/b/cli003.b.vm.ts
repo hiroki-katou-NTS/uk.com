@@ -874,6 +874,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
+            
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -2282,7 +2283,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         ITEM_VALUE_BEFOR = "valueBefore",
         ITEM_VALUE_AFTER = "valueAfter",
         ITEM_CORRECT_ATTR = "correctionAttr",
-        ITEM_OPERATION_ID = "operationId"
+        ITEM_OPERATION_ID = "operationId",
+        ITEM_PARRENT_KEY = "parentKey"
     }
     /*C
     *the enum of EMPLOYEE_SPECIFIC

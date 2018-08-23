@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
     import text = nts.uk.resource.getText;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -63,8 +64,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         endDate: self.targetDate    
                     });
                 }
-                if(!nts.uk.util.isNullOrEmpty(data.employeeIDs)){
-                    self.employeeID = data.employeeIDs[0];
+                if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
+                    self.employeeID = data.employeeIds[0];
                 }
                 return null;
             });
@@ -152,7 +153,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
             let self = this,
                 dfd = $.Deferred(),
-                employeeIDs = [];
+                employeeIDs = isNullOrEmpty(self.employeeID)? []:[self.employeeID];
 
             //get Common Setting
             nts.uk.ui.block.invisible();
