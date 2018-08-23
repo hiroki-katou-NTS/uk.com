@@ -6,10 +6,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
+import nts.uk.ctx.sys.assist.dom.mastercopy.*;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -44,7 +41,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	private static final String DATA_PREFIX = "DATA_";
 
 	/** The Constant MAX_ERROR_RECORD. */
-//	private static final int MAX_ERROR_RECORD = 5;
+	private static final int MAX_ERROR_RECORD = 5;
 
 	/** Interrupt flag */
 	private static boolean isInterrupted = false;
@@ -104,15 +101,37 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 			for (MasterCopyData masterCopyData : masterCopyDataList) {
 				for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
 					if (isInterrupted) break;
-					copyDataRepository.copy(companyId, targetTableInfo,
-							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
+					try {
+						copyDataRepository.copy(companyId, targetTableInfo,
+								categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
+					} catch (Exception ex) {
+						MasterCopyCategory copyCategory = repository.findCatByCategoryNo(masterCopyData.getCategoryNo().v());
+						MasterCopyCategoryDto categoryDto = new MasterCopyCategoryDto();
+						categoryDto.setCategoryName(copyCategory.getCategoryName().v());
+						categoryDto.setOrder(copyCategory.getOrder().v());
+						categoryDto.setSystemType(copyCategory.getSystemType().nameId);
+						ErrorContentDto errorContentDto = createErrorReport(categoryDto);
+						errorList.add(errorContentDto);
 
+						//Add to error list (save to DB every 5 error records)
+						if (errorList.size() >= MAX_ERROR_RECORD) {
+							errorRecordCount++;
+							setter.setData(DATA_PREFIX + errorRecordCount, dto);
+							// Clear the list for the new batch of error record
+							errorList.clear();
+						}
+						countError += 1;
+						errorList.add(errorContentDto);
+						setter.updateData(NUMBER_OF_ERROR, countError); // update
+						if (errorList.size() == 1)
+							dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
+						ex.printStackTrace();
+					}
 				}
 				countSuccess++;
 				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 			}
 		}
-
 
 		if (!errorList.isEmpty()) {
 			errorRecordCount++;

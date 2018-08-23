@@ -5,9 +5,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.*;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.*;
 import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.CopyDataRepositoryFactory;
@@ -42,7 +40,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		}
 		return null;	
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository#doCopy(java.lang.String, nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod, java.lang.String)
 	 */
@@ -55,6 +53,21 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		copyHandler.setCopyMethod(copyMethod);
 		copyHandler.setEntityManager(getEntityManager());
 		copyHandler.doCopy();
+	}
+
+	@Override
+	public MasterCopyCategory findCatByCategoryNo(Integer categoryNo) {
+		MasterCopyCategory masterCopyCategory = new MasterCopyCategory();
+		Optional<SspmtMastercopyCategory> categoryEntity = this.queryProxy().find(categoryNo, SspmtMastercopyCategory.class);
+		if(categoryEntity.isPresent()) {
+			SspmtMastercopyCategory categoryEnt = categoryEntity.get();
+			masterCopyCategory.setCategoryName(new MasterCopyCategoryName(categoryEnt.getCategoryName()));
+			masterCopyCategory.setCategoryNo(new MasterCopyCategoryNo(categoryNo));
+			masterCopyCategory.setOrder(new MasterCopyCategoryOrder(categoryEnt.getCategoryOrder().intValue()));
+			masterCopyCategory.setSystemType(SystemType.valueOf(categoryEnt.getSystemType().intValue()));
+			return masterCopyCategory;
+		}
+		return null;
 	}
 
 	/**

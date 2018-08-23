@@ -8,8 +8,10 @@ import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtDateRangeItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -18,8 +20,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author locph
- *
- *
  */
 public class PersonalInfoDefCopyHandler extends DataCopyHandler {
     /**
@@ -124,7 +124,6 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
     }
 
     /**
-     *
      * @param cid
      * @param ccd
      * @return
@@ -157,7 +156,6 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
     }
 
     /**
-     *
      * @param cid
      * @param ccd
      * @return
@@ -314,12 +312,12 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             Map<String, PpemtPerInfoCtg> sgroupPersonalInfoCatByCatCd = new HashMap<>();
             if (!CollectionUtil.isEmpty(sPerInfoCtgEntities)) {
                 sgroupPersonalInfoCatByCatCd = sPerInfoCtgEntities.stream()
-                        .collect(Collectors.toMap(perInfoCtg->perInfoCtg.categoryCd,perInfoCtg->perInfoCtg));
+                        .collect(Collectors.toMap(perInfoCtg -> perInfoCtg.categoryCd, perInfoCtg -> perInfoCtg));
             }
             Map<String, PpemtPerInfoCtg> tgroupPersonalInfoCatByCatCd = new HashMap<>();
             if (!CollectionUtil.isEmpty(sPerInfoCtgEntities)) {
                 tgroupPersonalInfoCatByCatCd = tPerInfoCtgEntities.stream()
-                        .collect(Collectors.toMap(perInfoCtg->perInfoCtg.categoryCd,perInfoCtg->perInfoCtg));
+                        .collect(Collectors.toMap(perInfoCtg -> perInfoCtg.categoryCd, perInfoCtg -> perInfoCtg));
             }
 
             Set<String> sourcePersonalInfoCatCd = sPerInfoCtgEntities.stream()
@@ -330,32 +328,67 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 //1 update overwrite for PpemtPerInfoCtg
                 PpemtPerInfoCtg src = sgroupPersonalInfoCatByCatCd.get(catCd);
                 PpemtPerInfoCtg des = tgroupPersonalInfoCatByCatCd.get(catCd);
+                if (src == null) break;
+                boolean fl1 = false;
+                if (des == null) {
+                    des = new PpemtPerInfoCtg();
+                    des.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK();
+                    des.ppemtPerInfoCtgPK.perInfoCtgId = UUID.randomUUID().toString();
+                    fl1 = true;
+                }
                 des.categoryName = src.categoryName;
                 des.abolitionAtr = src.abolitionAtr;
-                this.commandProxy.update(des);
+                if (fl1)
+                    this.commandProxy.update(des);
+                else
+                    this.commandProxy.insert(des);
 
                 //2 update overwrite for PpemtPerInfoItem
                 Map<String, PpemtPerInfoItem> sourcePerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(sourceCid, catCd)
-                        .stream().collect(Collectors.toMap(o -> o.itemCd,o -> o));
+                        .stream().collect(Collectors.toMap(o -> o.itemCd, o -> o));
                 Map<String, PpemtPerInfoItem> destPerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(targetCid, catCd)
-                        .stream().collect(Collectors.toMap(o -> o.itemCd,o -> o));
+                        .stream().collect(Collectors.toMap(o -> o.itemCd, o -> o));
 
-                for (String itemCd: sourcePerInfoItems.keySet()){
+                for (String itemCd : sourcePerInfoItems.keySet()) {
                     PpemtPerInfoItem srcPerInfoItem = sourcePerInfoItems.get(itemCd);
                     PpemtPerInfoItem desPerInfoItem = destPerInfoItems.get(itemCd);
+                    if (srcPerInfoItem == null) break;
+                    boolean fl2 = false;
+                    if (desPerInfoItem == null) {
+                        desPerInfoItem = new PpemtPerInfoItem();
+                        desPerInfoItem.ppemtPerInfoItemPK = new PpemtPerInfoItemPK();
+                        desPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId = UUID.randomUUID().toString();
+                        fl2 = true;
+                    }
+                    desPerInfoItem.itemCd = itemCd;
+                    desPerInfoItem.perInfoCtgId = srcPerInfoItem.perInfoCtgId;
                     desPerInfoItem.itemName = srcPerInfoItem.itemName;
                     desPerInfoItem.abolitionAtr = srcPerInfoItem.abolitionAtr;
                     desPerInfoItem.requiredAtr = srcPerInfoItem.requiredAtr;
-                    this.commandProxy.update(desPerInfoItem);
+                    if (fl2)
+                        this.commandProxy.insert(desPerInfoItem);
+                    else
+                        this.commandProxy.update(desPerInfoItem);
                 }
 
                 //3
                 PpemtDateRangeItem sourceDateRangeItem = findAlldateRangeItemByCidAndCcd(sourceCid, catCd);
                 PpemtDateRangeItem destDateRangeItem = findAlldateRangeItemByCidAndCcd(targetCid, catCd);
+                if (sourceDateRangeItem == null) break;
+                boolean fl3 = false;
+                if (destDateRangeItem == null) {
+                    destDateRangeItem = new PpemtDateRangeItem();
+                    destDateRangeItem.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK();
+                    destDateRangeItem.ppemtPerInfoCtgPK.perInfoCtgId = UUID.randomUUID().toString();
+                    fl3 = true;
+                }
                 destDateRangeItem.startDateItemId = sourceDateRangeItem.startDateItemId;
                 destDateRangeItem.endDateItemId = sourceDateRangeItem.endDateItemId;
                 destDateRangeItem.dateRangeItemId = sourceDateRangeItem.dateRangeItemId;
-                this.commandProxy.update(destDateRangeItem);
+                if (fl3)
+                    this.commandProxy.insert(destDateRangeItem);
+                else
+                    this.commandProxy.update(destDateRangeItem);
             }
 
         }

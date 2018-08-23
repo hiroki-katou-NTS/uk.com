@@ -33,4 +33,11 @@ public interface MasterCopyDataRepository {
 	 * @param companyId the company id
 	 */
 	void doCopy(String tableName, CopyMethod copyMethod, String companyId);
+
+	/**
+	 *
+	 * @param categoryNo
+	 * @return
+	 */
+	MasterCopyCategory findCatByCategoryNo(Integer categoryNo);
 }

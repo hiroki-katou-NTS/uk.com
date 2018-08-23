@@ -50,7 +50,7 @@ public class CopyDataRepositoryFactory {
         mapper.put("KCLMT_CLOSURE", new KclmtClosureDataCopyHandler());
         mapper.put("KSCMT_SCHE_ITEM", new KscmtScheduleItemDataCopyHandler());
         mapper.put("KSCMT_SCHE_ITEM_ORDER", new KscmtScheItemOrderDataCopyHandler());
-        mapper.put("KFNST_PLAN_TIME_ITEM ", new KfnstPlanTimeItemDataCopyHandler());
+        mapper.put("KFNST_PLAN_TIME_ITEM", new KfnstPlanTimeItemDataCopyHandler());
         mapper.put("KCLMT_CLOSURE_HIST", new KclmtClosureHistDataCopyHandler());
         mapper.put("KNLMT_NURSING_LEAVE_SET", new KnlmtNursingLeaveSetDataCopyHandler());
         mapper.put("KSHST_OVERTIME_FRAME", new KshstOvertimeFrameDataCopyHandler());

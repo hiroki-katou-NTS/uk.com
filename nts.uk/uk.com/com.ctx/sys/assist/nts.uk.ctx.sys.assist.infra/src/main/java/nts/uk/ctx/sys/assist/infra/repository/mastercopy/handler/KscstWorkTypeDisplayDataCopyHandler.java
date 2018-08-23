@@ -22,16 +22,16 @@ import javax.persistence.Query;
 public class KscstWorkTypeDisplayDataCopyHandler extends DataCopyHandler {
 
 	/** The insert query. */
-	private final String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISPLAY(CID,WORKTYPE_CD, USE_ATR) VALUES (?,?,?)";
+	private final String INSERT_QUERY = "INSERT INTO KSCST_WORKTYPE_DISPLAY(CID, USE_ATR) VALUES (?,?)";
 
 	/** The select by cid query. */
-	private final String SELECT_BY_CID_QUERY = "SELECT CID,WORKTYPE_CD, USE_ATR FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
+	private final String SELECT_BY_CID_QUERY = "SELECT CID, USE_ATR FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
 
 	/** The delete by cid query. */
 	private final String DELETE_BY_CID_QUERY = "DELETE FROM KSCST_WORKTYPE_DISPLAY WHERE CID = ?";
 
 	/** The paramater quantity. */
-	private final int PARAMATER_QUANTITY = 3;
+	private final int PARAMATER_QUANTITY = 2;
 
 	/**
 	 * Instantiates a new kscst work type display data copy handler.
@@ -64,25 +64,11 @@ public class KscstWorkTypeDisplayDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			if (copyMethod == CopyMethod.ADD_NEW) {
-				// get old data target by cid
-				Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
-						this.companyId);
-				List<Object> oldDatas = selectQueryTarget.getResultList();
-				// ignore data existed
-				for (int i = 0; i < zeroCompanyDatas.size(); i++) {
-					Object[] dataAttr = (Object[]) zeroCompanyDatas.get(i);
-					for (int j = 0; j < oldDatas.size(); j++) {
-						Object[] targetAttr = (Object[]) oldDatas.get(j);
-						// compare keys and remove
-						if (dataAttr[1].equals(targetAttr[1])) {
-							zeroCompanyDatas.remove(i);
-							i -= 1;
-							break;
-						}
-					}
-				}
-			}
+			//query old data
+			Query selectQueryOldData = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+					this.companyId);
+			List<Object> oldDatas = selectQueryOldData.getResultList();
+			if(!oldDatas.isEmpty()) return;
 			//copy data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
@@ -90,7 +76,6 @@ public class KscstWorkTypeDisplayDataCopyHandler extends DataCopyHandler {
 				Object[] dataArr = (Object[]) zeroCompanyDatas.get(i);
 				insertQuery.setParameter(i * PARAMATER_QUANTITY + 1, this.companyId);
 				insertQuery.setParameter(i * PARAMATER_QUANTITY + 2, dataArr[1]);
-				insertQuery.setParameter(i * PARAMATER_QUANTITY + 3, dataArr[2]);
 			}
 			// Run insert query
 			if(!StringUtils.isEmpty(insertQueryStr)) insertQuery.executeUpdate();

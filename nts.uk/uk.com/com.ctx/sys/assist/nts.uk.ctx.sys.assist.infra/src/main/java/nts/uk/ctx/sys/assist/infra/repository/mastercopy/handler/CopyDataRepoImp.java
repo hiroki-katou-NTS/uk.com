@@ -37,9 +37,11 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "KRCMT_ERAL_SET":
                         erAlWorkRecordCopyAdapter.copy(companyId, copyMethod);
                         break;
+                    case "PPEMT_PER_INFO_CTG":
                     case "PPEMT_PER_INFO_CTG_ORDER":
                     case "PPEMT_PER_INFO_ITEM_CM":
                     case "PPEMT_PER_INFO_ITEM":
+                        break;
                     case "PPEMT_PER_INFO_ITEM_ORDER":
                         personalInfoDataCopyAdapter.copyA(companyId, copyMethod);
                         break;
@@ -47,11 +49,13 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_SEL_ITEM_ORDER":
                         break;
                     case "PPEMT_NEW_LAYOUT":
+                        break;
                     case "PPEMT_LAYOUT_ITEM_CLS":
                         //Event：新規レイアウトの初期値コピー
                         personalInfoDataCopyAdapter.copyB(companyId, copyMethod);
                         break;
                     case "PPEMT_PINFO_ITEM_GROUP":
+                        break;
                     case "PPEMT_PINFO_ITEM_DF_GROUP":
                         //Event：個人情報項目グループの初期値コピー
                         personalInfoDataCopyAdapter.copyC(companyId, copyMethod);

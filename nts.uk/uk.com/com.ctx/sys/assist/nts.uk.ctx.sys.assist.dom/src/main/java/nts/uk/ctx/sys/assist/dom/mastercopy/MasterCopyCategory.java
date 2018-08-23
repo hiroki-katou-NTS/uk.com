@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 // マスタコピーカテゴリ
 @Getter
 @Setter
+@NoArgsConstructor
 public class MasterCopyCategory extends AggregateRoot {
 	
 	/** The system type. */
