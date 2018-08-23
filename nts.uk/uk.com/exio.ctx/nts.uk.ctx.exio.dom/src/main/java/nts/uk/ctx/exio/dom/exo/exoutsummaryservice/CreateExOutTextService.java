@@ -177,10 +177,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
 	private final static String SID_PARAM = "?sid";
-	private final static String START_DATE = "startDate";
-	private final static String START_DATE_PARAM = "?startDate";
-	private final static String END_DATE = "endDate";
-	private final static String END_DATE_PARAM = "?endDate";
+	private final static String START_DATE = "STRDATE";
+	private final static String START_DATE_PARAM = "?STRDATE";
+	private final static String END_DATE = "ENDDATE";
+	private final static String END_DATE_PARAM = "?ENDDATE";
+	private final static String BASE_DATE = "BASEDATE";
+	private final static String SYSTEM_DATE = "SYSDATE";
 	private final static String SQL = "sql";
 	private final static String CSV = ".csv";
 
@@ -460,8 +462,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				} catch (Exception e) {
 					e.printStackTrace();
 					
-					//TODO Chờ QA
-					return ExIoOperationState.FAULT_FINISH;
+					createOutputLogError(exOutSetting.getProcessingId(), e.getMessage(), null, sid, null);
 				}
 			}
 			// サーバ外部出力タイプマスター系
@@ -531,7 +532,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
+		
 		Map<String, String> sqlAndParams = new HashMap<String, String>();
+		sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
+		sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
+		sqlAndParams.put(BASE_DATE, exOutSetting.getReferenceDate().toString(yyyy_MM_dd));
+		sqlAndParams.put(SYSTEM_DATE, GeneralDate.today().toString(yyyy_MM_dd));
+		sqlAndParams.put(CID, cid);
+		sqlAndParams.put(SID, sid);
+		
 		sql.append(SELECT_COND);
 
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
@@ -587,11 +596,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 				if (asssociation.get() == Association.CID) {
 					createWhereCondition(sql, itemName.get().v(), "=", CID_PARAM);
-					sqlAndParams.put(CID, cid);
 				} else if (asssociation.get() == Association.SID) {
 					sidAlias = itemName.get().v();
 					createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
-					sqlAndParams.put(SID, sid);
 				} else if (asssociation.get() == Association.DATE) {
 					if (!isDate) {
 						isDate = true;
@@ -606,13 +613,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if (isOutDate) {
 				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
 				createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
-				sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString());
-				sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString());
 			} else if (isDate) {
 				createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
 				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-				sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
-				sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
 			}
 
 			if (exOutLinkTable.get().getConditions().isPresent()
@@ -1194,29 +1197,40 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力ファイル型チェック
 	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType,
 			DataFormatSetting dataFormatSetting, String sid) {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result;
 
-		switch (itemType) {
-		case NUMERIC:
-			result = checkNumericType(itemValue, (NumberDataFmSet) dataFormatSetting);
-			break;
-		case TIME:
-			result = checkTimeType(itemValue, (TimeDataFmSet) dataFormatSetting);
-			break;
-		case CHARACTER:
-			result = checkCharType(itemValue, (ChacDataFmSet) dataFormatSetting);
-			break;
-		case INS_TIME:
-			result = checkTimeOfDayType(itemValue, (InTimeDataFmSet) dataFormatSetting);
-			break;
-		case DATE:
-			result = checkDateType(itemValue, (DateFormatSet) dataFormatSetting);
-			break;
-		case AT_WORK_CLS:
-			result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid);
-			break;
-		default:
-			break;
+		try {
+			switch (itemType) {
+			case NUMERIC:
+				result = checkNumericType(itemValue, (NumberDataFmSet) dataFormatSetting);
+				break;
+			case TIME:
+				result = checkTimeType(itemValue, (TimeDataFmSet) dataFormatSetting);
+				break;
+			case CHARACTER:
+				result = checkCharType(itemValue, (ChacDataFmSet) dataFormatSetting);
+				break;
+			case INS_TIME:
+				result = checkTimeOfDayType(itemValue, (InTimeDataFmSet) dataFormatSetting);
+				break;
+			case DATE:
+				result = checkDateType(itemValue, (DateFormatSet) dataFormatSetting);
+				break;
+			case AT_WORK_CLS:
+				result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid);
+				break;
+			default:
+				result = new HashMap<String, String>();
+				result.put(RESULT_STATE, RESULT_NG);
+				result.put(ERROR_MESS, "");
+				result.put(RESULT_VALUE, itemValue);
+				break;
+			}
+		} catch (Exception e) {
+			result = new HashMap<String, String>();
+			result.put(RESULT_STATE, RESULT_NG);
+			result.put(ERROR_MESS, e.getMessage());
+			result.put(RESULT_VALUE, itemValue);
 		}
 
 		return result;
