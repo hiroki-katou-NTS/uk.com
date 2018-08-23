@@ -318,6 +318,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
+                 else if(error == true && noKo.optionName === '【振休】'){
+                     $('.lagre-input-code:eq(8)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振休】']});
+                     clear();
+                 }
+                 else if (!noKo.displayFlag && noKo.optionName === '【振休】') {
+                     $('.lagre-input-code:eq(8)').ntsError('clear');
+                     noKo.holidayTypeUseFlg = false;
+                         noKo.lstWorkType = [];
+                     clear();
+                 }
                 commands.push(noKo);     
             });  
             let wSet = ko.mapping.toJS(self.appSetData().workChangeSet());
@@ -722,6 +732,19 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         dfd.resolve(); 
                     });
                 }
+                else if(itemSet.optionName() == "【振休】"){
+                    let absenceKAF022 = {
+                        oneDayAtr: 7,
+                        morningAtr: 7,
+                        afternoonAtr: 7,
+                    }
+                    self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
+                        workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
+                        setShared('KDL002_AllItemObj', workTypeCodes);  
+                        dfd.resolve(); 
+                    });
+                }
             }
             if(itemSet.appType == 2){
                 self.findWkChangeKaf022().done(() => {
@@ -925,7 +948,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         initDefaultAbsenceSet(employmentCode: string): KnockoutObservableArray<DataSetting>{
             let self = this,
             absenceSet: KnockoutObservableArray<DataSetting> = ko.observableArray([]);
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < 8; i++) {
                 let resId: number = 47 + i;
                 let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.ABSENCE_APPLICATION, i);
                 if (dataSetting.displayFlag) {
