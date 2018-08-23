@@ -151,7 +151,7 @@ public class AgreementTimeBreakdown {
 		for (val attendanceItemId : outsideOTSet.getAllAttendanceItemIds()){
 			
 			// 対象項目の時間を取得　と　丸め処理
-			val targetItemTime = weeklyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
+			val targetItemTime = weeklyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet, true);
 			
 			// 勤怠項目IDに対応する時間を加算する
 			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);

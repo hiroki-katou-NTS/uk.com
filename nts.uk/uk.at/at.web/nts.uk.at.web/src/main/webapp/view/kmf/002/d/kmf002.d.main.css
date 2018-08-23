@@ -37,3 +37,7 @@
 #scrD #tableCommonMonth table thead tr th:nth-child(1) {
 	width: 60px;
 }
+
+#scrD .caret-right.caret-background.bg-green{
+	width: 377px !important;
+}

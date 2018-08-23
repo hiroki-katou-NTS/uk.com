@@ -5,9 +5,13 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の月の計算
@@ -71,6 +75,31 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 			throw new RuntimeException("MonthlyCalculationByPeriod clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 期間別の月の計算
+	 * @param period 期間
+	 * @param workingSystem 労働制
+	 * @param calcDailys 月の計算中の日別実績データ
+	 * @param companySets 月別集計で必要な会社別設定
+	 */
+	public void calculation(
+			DatePeriod period,
+			WorkingSystem workingSystem,
+			MonthlyCalculatingDailys calcDailys,
+			MonAggrCompanySettings companySets){
+
+		// 総労働時間の集計
+		this.aggregateTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap(), companySets);
+
+		// フレックス時間の集計
+		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
+		
+		// 総労働時間を計算
+		int totalMinutes = this.aggregateTime.getTotalWorkingTargetTime().v() +
+				this.flexTime.getTotalWorkingTargetTime().v();
+		this.totalWorkingTime = new AttendanceTimeMonth(totalMinutes);
 	}
 	
 	/**

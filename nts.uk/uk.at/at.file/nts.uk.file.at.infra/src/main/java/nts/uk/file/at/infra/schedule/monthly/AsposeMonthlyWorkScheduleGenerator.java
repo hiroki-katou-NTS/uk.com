@@ -185,6 +185,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
+	
+	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
+	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
 
 	/*
 	 * (non-Javadoc)
@@ -568,6 +571,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param outputItem the output item
 	 */
 	public void collectData(MonthlyPerformanceReportData reportData, MonthlyWorkScheduleQuery query, MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputItem, TaskDataSetter setter) {
+		String companyId = AppContexts.user().companyId();
 		reportData.setHeaderData(new MonthlyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
 		collectDisplayMap(reportData.getHeaderData(), outputItem);
@@ -581,16 +585,50 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
+		List<String> lstEmployeeNoWorkplace = new ArrayList<>();
 		
 		GeneralDate finalDate = query.getBaseDate();
 		
 		for (String employeeId: query.getEmployeeId()) {
 			WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, finalDate);
+			if (workplaceImport == null) {
+				lstEmployeeNoWorkplace.add(employeeId);
+				continue;
+			}
 			lstWorkplaceId.add(workplaceImport.getWorkplaceId());
 			queryData.getLstWorkplaceImport().add(workplaceImport);
 		}
 		
-		String companyId = AppContexts.user().companyId();
+		if (!lstEmployeeNoWorkplace.isEmpty()) {
+			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int start, length;
+			List<EmployeeDto> lstSplitEmployeeDto;
+			for(int i = 0; i < numOfChunks; i++) {
+				start = i * CHUNK_SIZE;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+
+	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+	            
+	            // Convert to json array
+	            JsonArrayBuilder arr = Json.createArrayBuilder();
+	    		
+	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+	    			arr.add(employee.buildJsonObject());
+	    		}
+	            
+	            setter.setData(DATA_PREFIX_NO_WORKPLACE + i, arr.build().toString());
+			}
+			
+			// Remove all of these employees from original list
+			lstEmployeeNoWorkplace.stream().forEach(employee -> {
+				query.getEmployeeId().remove(employee);
+			});
+			
+			// Stop sequence if no employee left
+			if (query.getEmployeeId().isEmpty())
+				throw new BusinessException(new RawErrorMessage("Msg_1396"));
+		}
 		
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigRepository.findByWkpIdsAtTime(companyId, finalDate, lstWorkplaceId);
 		queryData.setLstWorkplaceConfigInfo(lstWorkplaceConfigInfo);
@@ -607,7 +645,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
 		}
 		
-		// TODO: Request list 436 with list employee id as input
 		Map<String, List<MonthlyRecordValuesExport>> mapMonthlyRecordValueExport = monthlyRecordAdapter.algorithm(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
 		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
 		mapMonthlyRecordValueExport.entrySet().forEach(values -> {

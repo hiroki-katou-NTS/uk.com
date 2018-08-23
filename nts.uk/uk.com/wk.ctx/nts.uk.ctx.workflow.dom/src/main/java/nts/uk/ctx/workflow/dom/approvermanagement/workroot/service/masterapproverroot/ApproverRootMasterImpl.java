@@ -38,6 +38,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Approv
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.CompanyApprovalInfor;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterEmployeeOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterWkpOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -68,8 +70,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			boolean isWorkplace,
 			boolean isPerson) {
 		CompanyApprovalInfor comMasterInfor = null;		
-		Map<String, WorkplaceApproverOutput> mapWpRootInfor = new HashMap<>();
-		Map<String, PersonApproverOutput> mapPsRootInfor = new HashMap<>();
+		MasterWkpOutput wkpRootOutput = new MasterWkpOutput(new HashMap<>(), new ArrayList<>());
+		MasterEmployeeOutput empRootOutput = new MasterEmployeeOutput(new HashMap<>(), new ArrayList<>());
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
 		if(isCompany) {
 			comMasterInfor = this.getComApprovalInfor(companyID, baseDate);
@@ -80,7 +82,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {				
-				mapWpRootInfor = getWpApproverInfor(lstWps, companyID, baseDate);				
+				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate);				
 			}
 		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
@@ -89,11 +91,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate);
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstPss)) {
-				mapPsRootInfor = getPsRootInfor(lstPss, companyID);
+				empRootOutput = this.getPsRootInfor(lstPss, companyID);
 			}
 		}
-		MasterApproverRootOutput masterInfor = new MasterApproverRootOutput(comMasterInfor,mapWpRootInfor,mapPsRootInfor);
-		return masterInfor;
+		return new MasterApproverRootOutput(comMasterInfor, wkpRootOutput, empRootOutput);
 	}
 	/**
 	 *  get all approval of employee
@@ -101,8 +102,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param companyID
 	 * @return
 	 */
-	private Map<String, PersonApproverOutput> getPsRootInfor(List<PersonApprovalRoot> lstPss, String companyID){
+	private MasterEmployeeOutput getPsRootInfor(List<PersonApprovalRoot> lstPss, String companyID){
 		Map<String, PersonApproverOutput> mapPsRootInfor = new HashMap<>();
+		List<EmployeeApproverOutput> lstEmployeeInfo = new ArrayList<>();
 		for(PersonApprovalRoot root: lstPss) {
 			List<ApprovalForApplication> psWootInfor = new ArrayList<>();
 			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
@@ -125,12 +127,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
 			PersonImport psInfos = psInfor.getPersonInfo(root.getEmployeeId());
-			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
+			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getSID(), psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
 			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
+			lstEmployeeInfo.add(empInfor);
 		}
-		return mapPsRootInfor;
+		Collections.sort(lstEmployeeInfo, Comparator.comparing(EmployeeApproverOutput:: getEmpCD));
+		return new MasterEmployeeOutput(mapPsRootInfor, lstEmployeeInfo);
 	}
 	
 	/**
@@ -140,9 +144,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param baseDate
 	 * @return
 	 */
-	private Map<String, WorkplaceApproverOutput> getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate){
+	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate){
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
-		for(WorkplaceApprovalRoot root: lstWps) {
+		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
+		for(WorkplaceApprovalRoot root: lstWps) {//loop theo wkp
 			List<ApprovalForApplication> wpRootInfor = new ArrayList<>();
 			ApprovalRootCommonOutput wpRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
 					root.getApprovalId(), 
@@ -160,7 +165,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
 				wpRootInfor = wpApp.getWpRootInfor();
-				wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
+				wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
 				continue;
 			}
 			
@@ -168,14 +173,15 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			WorkplaceImport wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
 			// fix data
 			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpId(),wpInfors.getWkpCode(), wpInfors.getWkpName());
-			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
+			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data
-			//WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
 			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
+			lstWpInfor.add(wpDto);
 		}
-		return mapWpRootInfor;
+		Collections.sort(lstWpInfor, Comparator.comparing(WorkplaceImport:: getWkpCode));
+		return new MasterWkpOutput(mapWpRootInfor, lstWpInfor);
 	}
 	
 	private List<ApprovalForApplication> getAppInfors(ApprovalRootCommonOutput root, List<ApprovalForApplication> wpRootInfor, String companyID){

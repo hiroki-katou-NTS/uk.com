@@ -12,11 +12,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
+import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -24,6 +27,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -46,6 +51,10 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	private EmployeeInfoPub emInfor;
 	@Inject
 	private RoleSetGrantedEmployeePub roleSetPub;
+	
+	@Inject
+	private StatusOfEmploymentPub statusOfEmploymentPub;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -137,5 +146,15 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Override
 	public boolean isEmployeeDelete(String sid) {
 		return employeePub.isEmployeeDelete(sid);
+	}
+
+	@Override
+	public StatusOfEmploymentImport getStatusOfEmployment(String employeeID, GeneralDate referenceDate) {
+		StatusOfEmploymentExport statusOfEmploymentExport = statusOfEmploymentPub.getStatusOfEmployment(employeeID, referenceDate);
+		return new StatusOfEmploymentImport(
+				statusOfEmploymentExport.getEmployeeId(), 
+				statusOfEmploymentExport.getRefereneDate(), 
+				EnumAdaptor.valueOf(statusOfEmploymentExport.getStatusOfEmployment(), StatusOfEmployment.class), 
+				statusOfEmploymentExport.getTempAbsenceFrNo());
 	}
 }

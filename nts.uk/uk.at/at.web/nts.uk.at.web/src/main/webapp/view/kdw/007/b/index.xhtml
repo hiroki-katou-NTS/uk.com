@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1050,
-					height : 315
+					width : 1030,
+					height : 300
 				};
 			</script>
 			<com:ValidatorScript>
@@ -28,9 +28,11 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group">
+				<div class="valign-center control-group mb-20">
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_93')}</div>
 					<div id="conditionAtr-cbb" data-bind="ntsComboBox: {
+						dropDownAttachedToBody: true,
+						visibleItemsCount: 4,
 						options: enumConditionAtr,
 						optionsValue: 'code',
 						value: currentAtdItemCondition.conditionAtr,
@@ -39,7 +41,8 @@
 		      				width: '100px',
 						columns: [
 							{ prop: 'name', length: 5 },
-						]}"></div>
+						],
+						dropDownAttachedToBody: true}"></div>
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
                		<div data-bind="ntsRadioBoxGroup: {
 						options: enumConditionType,
@@ -66,10 +69,12 @@
 							optionsText: 'name',
 							enable: true,
 							width: '265px',
-							visibleItemsCount: 4,
+							visibleItemsCount: 6,
+							dropDownAttachedToBody: true,
 							columns: [
 								{ prop: 'name', length: 10 },
-							]}"></div>
+							],
+						dropDownAttachedToBody: true}"></div>
 				 	</com:ko-if>
 				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 2">
 				 		<div id="inputCheck-cbb" data-bind="ntsComboBox: {
@@ -78,7 +83,8 @@
 							value: currentAtdItemCondition.inputCheckCondition,
 							optionsText: 'name',
 							enable: true,
-							visibleItemsCount: 4,
+							dropDownAttachedToBody: true,
+							visibleItemsCount: 6,
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>
@@ -138,7 +144,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex = "-1" class="proceed" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
+				<button tabindex = "-1" class="proceed x-large" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
 				<button tabindex = "-1" data-bind="click: closeDialog">#{i18n.getText('KDW007_98')}</button>
 			</div>
 			

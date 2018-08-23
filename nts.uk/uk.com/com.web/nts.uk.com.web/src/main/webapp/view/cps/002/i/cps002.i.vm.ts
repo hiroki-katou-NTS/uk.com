@@ -68,7 +68,12 @@ module cps002.i.vm {
                         $("#test").ntsImageEditor("uploadOriginal", { stereoType: "avatarfile" }).done(function(data2) {
                             self.imageId().defaultImgId = data2.id;
                             nts.uk.ui.block.clear();
-
+                            let dataShare = {
+                               imageCropedId : data.id,
+                               imageOriginalId : data2.id,
+                               fileName : data2.originalName,
+                            }
+                            setShared("imageId", dataShare);
                             self.close();
                         });
 
@@ -85,9 +90,6 @@ module cps002.i.vm {
         close() {
             let self = this;
             nts.uk.ui.block.clear();
-            let result = self.imageId().cropImgId ? self.imageId() : undefined;
-
-            setShared("imageId", result);
             close();
         }
 

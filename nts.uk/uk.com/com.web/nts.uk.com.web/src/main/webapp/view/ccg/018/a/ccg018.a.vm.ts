@@ -78,6 +78,10 @@ module ccg018.a.viewmodel {
                             viewmodelB.start().done(function() {
                                 ko.applyBindings(viewmodelB, resultArea.children().get(0));
                                 ko.applyBindings(viewmodelB, resultArea.children().get(1));
+                                _.defer(() => {
+                                    viewmodelB.bindGrid();
+                                    viewmodelB.initCCG001();
+                                });
 
                             });
                         });

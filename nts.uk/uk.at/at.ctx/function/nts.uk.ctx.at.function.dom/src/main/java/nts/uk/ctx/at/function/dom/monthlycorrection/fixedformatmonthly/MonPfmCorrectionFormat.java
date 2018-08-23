@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -24,5 +26,9 @@ public class MonPfmCorrectionFormat extends AggregateRoot {
 		this.monthlyPfmFormatCode = monthlyPfmFormatCode;
 		this.monPfmCorrectionFormatName = monPfmCorrectionFormatName;
 		this.displayItem = displayItem;
+	}
+	
+	public MonPfmCorrectionFormat clone() {
+		return new MonPfmCorrectionFormat(companyID,monthlyPfmFormatCode,monPfmCorrectionFormatName,displayItem.clone());
 	}
 }

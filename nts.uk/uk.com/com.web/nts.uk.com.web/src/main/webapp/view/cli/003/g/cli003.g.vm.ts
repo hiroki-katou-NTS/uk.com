@@ -96,27 +96,27 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.recordTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_RecordType_Login')),
                 new ItemTypeModel(1, getText('Enum_RecordType_StartUp')),
-                new ItemTypeModel(2, getText('Enum_RecordType_UpdateMaster')),
+//                new ItemTypeModel(2, getText('Enum_RecordType_UpdateMaster')),
                 new ItemTypeModel(3, getText('Enum_RecordType_UpdatePersionInfo')),
-                new ItemTypeModel(4, getText('Enum_RecordType_DataReference')),
-                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
+//                new ItemTypeModel(4, getText('Enum_RecordType_DataReference')),
+//                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
                 new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
-                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
-                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
+//                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
+//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
             ]);
 
             self.dataTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_DataType_Schedule')),
                 new ItemTypeModel(1, getText('Enum_DataType_DailyResults')),
                 new ItemTypeModel(2, getText('Enum_DataType_MonthlyResults')),
-                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
-                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
-                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
-                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
-                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
-                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
-                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
-                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
+//                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
+//                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
+//                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
+//                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
+//                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
+//                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
+//                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
+//                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
             ]);
         }
 
@@ -302,38 +302,42 @@ module nts.uk.com.view.cli003.g.viewmodel {
             block.grayout();
             service.getLogOutputItemByRecordType(recordType).done(function(logOutputItems: any) {
                 if (logOutputItems && logOutputItems.length > 0) {
-                    for (let i = 0; i < logOutputItems.length; i++) {
-                        var logOutputItem = logOutputItems[i];
-                        var id;
-                        if (self.currentLogDisplaySet()) {
-                            id = self.currentLogDisplaySet().id;
-                        }
-                        self.itemsSwap.push(
+                    var id;
+                    if (self.currentLogDisplaySet()) {
+                        id = self.currentLogDisplaySet().id;
+                    }
+                    
+                    var logItems = [];
+                    _.forEach(logOutputItems, function(logOutputItem) {
+                        logItems.push(
                             new ItemLogSetRecordTypeModel(logOutputItem.itemNo, logOutputItem.itemName, 0,
                                 self.createNewItemDetail(id, logOutputItem.itemNo)));
 
-                    }
+
+                    });
+                    self.itemsSwap(logItems);
 
                     //check selected code
                     if (self.currentLogDisplaySet() &&
                         self.currentLogDisplaySet().recordType == recordType) {
                         var logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
                         if (logSetOutputs) {
-                            var lengthItemSwap = self.itemsSwap().length;
-                            for (let j = 0; j < logSetOutputs.length; j++) {
-                                var logSetOutput = logSetOutputs[j];
+                            var lengthItemSwap = logItems.length;
+                            var logItemSetted = [];
+                            _.forEach(logSetOutputs, function(logSetOutput) {
                                 var itemNo = logSetOutput.itemNo;
                                 var itemName;
                                 for (var k = 0; k < lengthItemSwap; k++) {
-                                    if (self.itemsSwap()[k].code == itemNo) {
-                                        itemName = self.itemsSwap()[k].name;
-                                        self.selectedCodeList.push(
+                                    if (logItems[k].code == itemNo) {
+                                        itemName = logItems[k].name;
+                                        logItemSetted.push(
                                             new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
                                                 logSetOutput.logSetItemDetails));
                                         break;
                                     }
                                 }
-                            }
+                            });
+                            self.selectedCodeList(logItemSetted);
                         }
                     }
                 } else {

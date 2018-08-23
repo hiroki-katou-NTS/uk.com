@@ -42,8 +42,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// 16, 17
 			+ " CM.numericItemMin, CM.numericItemMax, "
 			// 18, 19
-			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType"
+			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType,"
 			// 20,21,22
+			+ " CM.numericItemAmountAtr, CM.numericItemMinusAtr"
+			// 23, 24
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " INNER JOIN  PpemtPerInfoItem ITEM"
 			+ " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
@@ -207,6 +209,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			domain.setStringItemDataType(Integer.valueOf(entity[22].toString()));
 		}
 
+		if (entity[23] != null) {
+			domain.setNumberItemAmount(Integer.valueOf(entity[23].toString()));
+		}
+		
+		if (entity[24] != null) {
+			domain.setNumberItemMinus(Integer.valueOf(entity[24].toString()));
+		}
 		return domain;
 
 	}

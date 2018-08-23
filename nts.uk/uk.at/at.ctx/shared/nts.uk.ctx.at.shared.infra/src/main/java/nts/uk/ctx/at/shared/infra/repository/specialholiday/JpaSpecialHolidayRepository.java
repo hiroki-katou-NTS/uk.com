@@ -149,9 +149,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	/**
 	 * For delete releated domain of KDR001 (team G)
 	 */
-	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
-			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
-			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD"; 
+//	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
+//			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
+//			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD"; 
 	
 	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
 			+ " WHERE c.pk.companyId = :companyId"
@@ -449,10 +449,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		/**
 		 * For delete releated domain of KDR001 (team G)
 		 */
-		this.getEntityManager().createQuery(DELETE_SPEC_HD)
-			.setParameter("companyID", companyId)
-			.setParameter("specialHolidayCD", specialHolidayCode)
-			.executeUpdate();
+//		this.getEntityManager().createQuery(DELETE_SPEC_HD)
+//			.setParameter("companyID", companyId)
+//			.setParameter("specialHolidayCD", specialHolidayCode)
+//			.executeUpdate();
 	}
 
 	/*@Override
@@ -528,5 +528,20 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				.getList(c -> {
 					return createSphdDomainFromEntity(c);
 				});
+	}
+
+	@Override
+	public List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId) {
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.getList(c -> {
+					 return createSphdDomainFromEntityWithTargetItem(c);
+				});
+	}
+	
+	private SpecialHoliday 	createSphdDomainFromEntityWithTargetItem(Object[] c){
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		 return this.findBySingleCD(companyId, specialHolidayCode).get();
 	}
 }

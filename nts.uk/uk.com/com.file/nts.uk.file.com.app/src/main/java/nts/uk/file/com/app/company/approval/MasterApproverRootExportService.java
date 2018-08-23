@@ -10,13 +10,17 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.ApproverRootMaster;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.file.com.app.HeaderEmployeeUnregisterOutput;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * CMM018 - M
+ * マスタリスト
+ * @author hoatt
+ *
+ */
 @Stateless
 public class MasterApproverRootExportService extends ExportService<MasterApproverRootQuery> {
 	@Inject
@@ -35,12 +39,12 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 		String companyID = AppContexts.user().companyId();
 		
 		// get data
-		MasterApproverRootOutput masterApp = this.masterRoot.masterInfors(companyID, query.getBaseDate(),
+		MasterApproverRootOutput masterApp = masterRoot.masterInfors(companyID, query.getBaseDate(),
 				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
 		
 		// check condition
-		if (masterApp.getComRootInfor() == null && masterApp.getWorplaceRootInfor().isEmpty()
-				&& masterApp.getPersonRootInfor().isEmpty()) {
+		if (masterApp.getComRootInfor() == null && masterApp.getWkpRootOutput().getWorplaceRootInfor().isEmpty()
+				&& masterApp.getEmpRootOutput().getPersonRootInfor().isEmpty()) {
 			throw new BusinessException("Msg_7");
 		}
 
@@ -48,7 +52,7 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 				query.isChkWorkplace());
 
 		// generate file
-		this.masterGenerator.generate(context.getGeneratorContext(), dataSource);
+		masterGenerator.generate(context.getGeneratorContext(), dataSource);
 
 	}
 	

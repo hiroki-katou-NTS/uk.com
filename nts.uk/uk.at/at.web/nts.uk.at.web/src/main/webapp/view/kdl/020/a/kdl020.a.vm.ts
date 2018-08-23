@@ -92,7 +92,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
             self.baseDate(data.baseDate);
             //edit param
             let startParam = {
-                selectMode: self.isMultiSelect() ? 1 : 0,
                 baseDate: self.baseDate(),
                 employeeIds: data.employeeIds
             }
@@ -110,13 +109,24 @@ module nts.uk.at.view.kdl020.a.screenModel {
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                if (self.employeeList().length > 1) {
+                    $('#component-items-list').ntsListComponent(self.listComponentOption);
+                }
                 block.clear();
                 dfd.resolve();
             });
 
             return dfd.promise();
 
+        }
+        isShowEmployeeList() {
+            let self = this;
+            if (self.employeeList().length > 1) {
+                return true;
+            } else {
+                nts.uk.ui.windows.getSelf().setSize(700, 720);
+                return false;
+            }
         }
         genDateText(data) {
             if (data == null) {

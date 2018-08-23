@@ -30,7 +30,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AggregatePeriodDomainService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -80,11 +79,13 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		val executionPeriod = executionPeriodOpt.get();
 
 		// 「任意集計期間」を取得
-		Optional<OptionalAggrPeriod> optionalPeriod = this.aggrPeriodRepo.find(
+		Optional<OptionalAggrPeriod> optionalPeriodOpt = this.aggrPeriodRepo.find(
 				companyId, executionPeriod.getAggrFrameCode().v());
+		if (!optionalPeriodOpt.isPresent()) return;
+		val optionalPeriod = optionalPeriodOpt.get();
 
 		// 期間の判断
-		DatePeriod period = new DatePeriod(optionalPeriod.get().getStartDate(), optionalPeriod.get().getEndDate());
+		DatePeriod period = new DatePeriod(optionalPeriod.getStartDate(), optionalPeriod.getEndDate());
 
 		// ログ情報（実行ログ）を更新する
 		this.executionRepo.updateExe(executionPeriod, ExecutionStatus.PROCESSING.value, GeneralDateTime.now());
@@ -121,12 +122,14 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		
 			// 社員1人分の処理　（社員の任意期間別実績を集計する）
 			ProcessState coStatus = this.aggregate(async,
-					companyId, target.getEmployeeId(), period, executeId, companySets);
+					companyId, target.getEmployeeId(), period, executeId, optionalPeriod, companySets);
 			stateHolder.add(coStatus);
 
 			if (coStatus == ProcessState.SUCCESS){
 				
-				dataSetter.setData("aggCreateCount", stateHolder.count());
+				// ログ情報（実行内容の完了状態）を更新する
+				this.targetRepo.updateExcution(target);
+				dataSetter.updateData("aggCreateCount", stateHolder.count());
 			}
 			if (coStatus == ProcessState.INTERRUPTION){
 				
@@ -152,8 +155,9 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	/** 社員の任意期間別実績を集計する */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
-	public ProcessState aggregate(AsyncCommandHandlerContext async, String companyId, String employeeId,
-			DatePeriod period, String executeId, MonAggrCompanySettings companySets) {
+	public ProcessState aggregate(
+			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,
+			String executeId, OptionalAggrPeriod optionalPeriod, MonAggrCompanySettings companySets) {
 		
 		val dataSetter = async.getDataSetter();
 		
@@ -177,7 +181,8 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		}
 		
 		// 集計処理を実行
-		val value = this.aggregateByPeriod.algorithm(companyId, employeeId, period, companySets, employeeSets);
+		val value = this.aggregateByPeriod.algorithm(
+				companyId, employeeId, period, optionalPeriod, companySets, employeeSets);
 		if (value.getErrorInfos().size() > 0) {
 
 			// エラー処理
