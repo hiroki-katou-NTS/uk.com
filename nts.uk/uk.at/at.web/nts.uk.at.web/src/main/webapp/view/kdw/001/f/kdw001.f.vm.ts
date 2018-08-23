@@ -72,7 +72,7 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: getText('KDW001_78'), key: 'executionStatusName', width: 160 },
                     {
                         headerText: getText('KDW001_79'), key: 'executionStatus', width: 100,
-                        template: '<button class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
+                        template: '<button tabindex = "0" class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
                         columnCssClass: "colStyleButton",
                     }
                 ];
@@ -158,6 +158,7 @@ module nts.uk.at.view.kdw001.f {
                         temp.push(item);
                     });
                     self.empCalAndSumExeLog(temp);
+                    $('#single-list_container').attr('tabindex', -1); 
                     self.getListPersonInforLog(self.listSid).done(function(){
                         dfd.resolve(); 
                         nts.uk.ui.block.clear();   
