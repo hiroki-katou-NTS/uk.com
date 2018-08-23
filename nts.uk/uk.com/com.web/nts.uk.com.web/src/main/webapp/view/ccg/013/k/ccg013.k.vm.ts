@@ -94,7 +94,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                  var data = {
                     name: '#[CCG013_53]',
                     value: item.displayName,
-                    required: true,
+                    required: true,  
                     constraint: 'MenuDisplayName'    
                 };
                 
@@ -109,6 +109,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             
             _.defer(() => {
                 if (!nts.uk.ui.errors.hasError() ) {
+                    nts.uk.ui.block.grayout();
                     service.updateStandardMenu(a).done(function() {
                         service.getAllStandardMenu().done(function(lst) {
                             self.listStandardMenu(lst);
@@ -129,6 +130,8 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
 //                        self.getListStandardMenu(self.selectedCode());
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 }
             });

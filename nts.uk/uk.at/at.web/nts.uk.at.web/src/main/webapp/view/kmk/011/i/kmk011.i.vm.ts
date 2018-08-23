@@ -56,7 +56,6 @@ module nts.uk.at.view.kmk011.i {
                     enable: ko.observable(true)
                 };
 
-
                 self.multilineeditorAlarm = {
                     alarmMessage: ko.observable(''),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
@@ -72,6 +71,7 @@ module nts.uk.at.view.kmk011.i {
 
                 //subscribe currentCode
                 self.currentCode.subscribe((codeChanged) => {
+                    nts.uk.ui.errors.clearAll();
                     if (codeChanged != 0) {
                         self.selectMode = true;
                         self.wkTypeCode = ko.observable(nts.uk.ui.windows.getShared('wkTypeCode'));
@@ -116,7 +116,19 @@ module nts.uk.at.view.kmk011.i {
                         self.wkTypeCode = ko.observable("");
                         self.wkTypeName = ko.observable("");
                     }
-                });
+                });       
+                
+                self.multilineeditorErr.errorMessage.subscribe((newValue) => {
+                    if (!_.isEmpty(newValue)) {
+                        nts.uk.ui.errors.clearAll();                        
+                    }
+                })
+                
+                self.multilineeditorAlarm.alarmMessage.subscribe((newValue) => {
+                    if (!_.isEmpty(newValue)) {
+                        nts.uk.ui.errors.clearAll();
+                    }
+                })
             }
 
             public start_page(): JQueryPromise<any> {
@@ -199,6 +211,7 @@ module nts.uk.at.view.kmk011.i {
 
             //Save button
             private registrationErrMsg(): JQueryPromise<any> {
+                blockUI.grayout();
                 let self = this;
                 var dfd = $.Deferred<any>();
 
@@ -207,15 +220,16 @@ module nts.uk.at.view.kmk011.i {
                 var errorMessage = self.multilineeditorErr.errorMessage();
 
                 if (nts.uk.text.isNullOrEmpty(alarmMessage) && nts.uk.text.isNullOrEmpty(errorMessage)) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_1056" }).then(function() {
-                        dfd.resolve();
-                    });
+                    blockUI.clear();
+                    $('#errorMessage').ntsError('set', {messageId:"Msg_1056"});
+                    dfd.resolve();
                 } else {
                     let mode: number = nts.uk.ui.windows.getShared('settingMode');
 
                     if (mode == SettingMode.WORKTYPE) {
                         var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, self.wkTypeCode(), "", alarmMessage, errorMessage);
                         service.saveWorkTypeDivTimeErrAlarmMsg(data).done(() => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
                             });
@@ -224,6 +238,7 @@ module nts.uk.at.view.kmk011.i {
                     } else {
                         var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, "", "", alarmMessage, errorMessage);
                         service.saveDivTimeErrAlarmMsg(data).done(() => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
                             });

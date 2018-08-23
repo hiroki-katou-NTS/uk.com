@@ -230,12 +230,13 @@
 										optionsValue: 'relationCd',
 										optionsText: 'relationName',
 										value: selectedRelation,
+										enable: relaEnable,
 										required: requiredRela,
 										columns: [{ prop: 'relationName',length: 10 }]}">
 						</div>
 						<!-- A10_3 喪主 -->
 						<div data-bind = "if: mournerDis()" style = "display: inline-block; margin-left: 10px;">
-							<div data-bind="ntsCheckBox: { checked: isCheck }">#{i18n.getText('KAF006_34')}</div>
+							<div data-bind="ntsCheckBox: { checked: isCheck, enable: relaMourner}">#{i18n.getText('KAF006_34')}</div>
 						</div>
 					</div>
 					<div class="valign-center-kaf006 control-group-kaf006">
@@ -249,6 +250,7 @@
 	                                         value: relaReason,
 	                                         constraint: 'RelationshipReasonPrimitive', 
 	                                         required: true,
+	                                         enable: relaRelaReason,
 	                                         option: {textalign: 'left',
 	                                         	width: '380px',
 	                                         	placeholder:'#{i18n.getText('KAF006_45')}'}
@@ -263,7 +265,7 @@
 			</div>
 			<!-- A7 - Reason -->
 			<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-				data-bind="css: { disappear: !typicalReasonDisplayFlg() }">
+				data-bind="if: typicalReasonDisplayFlg">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
