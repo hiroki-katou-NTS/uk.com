@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -38,8 +39,8 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 																	 lateTimeSheet);
 		
 		//控除時間帯を保持
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction);
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate);
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction,Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
 	}
@@ -67,8 +68,8 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 																	 EarlyTimeSheet);
 		
 		//控除時間帯を保持
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction);
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate);
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction,Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
 	}

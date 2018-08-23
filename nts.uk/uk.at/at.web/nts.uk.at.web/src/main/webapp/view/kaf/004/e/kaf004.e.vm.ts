@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     class AppComonSetting {
-        appTypeDiscreteSetting = ko.observable(null);
+        appTypeDiscreteSetting = ko.observable(new AppTypeDiscreteSetting());
         generalDate = ko.observable(null);
         constructor(data?) {
             if (data) {
@@ -203,7 +203,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     class AppTypeDiscreteSetting {
         displayReasonFlg = ko.observable(0);
         typicalReasonDisplayFlg = ko.observable(0);
-        constructor(data) {
+        constructor(data?) {
             if (data) {
                 this.displayReasonFlg(data.displayReasonFlg);
                 this.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -133,7 +134,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		LateTimeSheet latetimesheet = LateTimeSheet.createLateTimeSheet(
 				lateDesClock,
 				timeLeavingWork,
-				otherEmTimezoneLateEarlySet.getGraceTimeSet(),
+				otherEmTimezoneLateEarlySet,
 				duplicateTimeSheet,
 				deductionTimeSheet,
 				coreTimeSetting,
@@ -171,7 +172,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		LeaveEarlyTimeSheet leaveEarlytimesheet = LeaveEarlyTimeSheet.createLeaveEarlyTimeSheet(
 				leaveEarlyDesClock,
 				timeLeavingWork,
-				otherEmTimezoneLateEarlySet.getGraceTimeSet(),
+				otherEmTimezoneLateEarlySet,
 				duplicateTimeSheet,
 				deductionTimeSheet,
 				coreTimeSetting,
@@ -263,8 +264,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		//丸め処理
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
-		if(rounding != null)
-			workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
+		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
 						
 		return workTime;
 	}
@@ -459,7 +459,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																Optional<TimezoneUse> optional,
 																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
 																,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet,
-																Optional<WorkTimezoneCommonSet> commonSetting) {
+																Optional<WorkTimezoneCommonSet> commonSetting,
+																Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 		
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
@@ -482,7 +483,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	   			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(lateDeductTime,
   	   																													   workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet(),
   	   																													   commonSetting)) {
+  	   				
   	   				TimeWithDayAttr test1 = predetermineTimeForSet.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo).get().getStart();
+  	   				
   	   				if(coreTimeSetting.isPresent()&&coreTimeSetting.get().isUseTimeSheet()) {	   				
   	   					test1 = getDecisionCoreTimeSheet(predetermineTimeForSet,coreTimeSetting.get(),workType).getStartTime();
   	   					if(test1.greaterThan(dupTimeSheet.getTimezone().getStart())) {
@@ -536,15 +539,27 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			
 		//控除時間帯
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Deduction);
+		//計上用時間帯
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Appropriate);
 		
+		//遅刻早退時間帯が持っている休憩を就業時間枠時間帯へ入れる
+		if(lateTimeSheet.getForDeducationTimeSheet().isPresent())
+			dedTimeSheet.addAll(lateTimeSheet.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+		if(LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent())
+			dedTimeSheet.addAll(LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+		//遅刻早退時間帯が持っている休憩を就業時間枠時間帯へ入れる
+//		if(lateTimeSheet.getForRecordTimeSheet().isPresent())
+//			recordTimeSheet.addAll(lateTimeSheet.getForRecordTimeSheet().get().getRecordedTimeSheet().stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+//		if(LeaveEarlyTimeSheet.getForRecordTimeSheet().isPresent())
+//			recordTimeSheet.addAll(LeaveEarlyTimeSheet.getForRecordTimeSheet().get().getRecordedTimeSheet().stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+		
 		/*加給*/
-		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), dedTimeSheet, recordTimeSheet);
 		/*特定日*/
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), dedTimeSheet, recordTimeSheet,specificDateAttrSheets);
 
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet,commonSetting);
+		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, dupTimeSheet.getTimezone().getTimeSpan(), dedTimeSheet, recordTimeSheet,commonSetting);
 		return new WithinWorkTimeFrame(duplicateTimeSheet.getWorkingHoursTimeNo(),
 									   dupTimeSheet.getTimezone(),
 									   duplicateTimeSheet.getCalcrange(),

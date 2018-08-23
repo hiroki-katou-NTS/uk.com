@@ -1767,59 +1767,67 @@ module nts.custombinding {
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.min = first.value() + 1;
+                                                    clone.item.min = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.max = second.value() - 1;
+                                                    clone.item.max = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                         case ITEM_SINGLE_TYPE.TIMEPOINT:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.timePointItemMin = first.value() + 1;
+                                                    clone.item.timePointItemMin = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.timePointItemMax = second.value() - 1;
+                                                    clone.item.timePointItemMax = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                     }
                                 }

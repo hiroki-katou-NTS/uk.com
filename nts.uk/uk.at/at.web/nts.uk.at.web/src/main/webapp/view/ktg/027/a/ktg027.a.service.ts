@@ -11,7 +11,7 @@ module nts.uk.at.view.ktg027.a.service {
     export function getListClosure(): JQueryPromise<any> {
         return ajax("at", paths.getListClosure);
     }
-    /** Start page */
+    /** Start page */   
     export function getOvertimeHours(targetMonth : number): JQueryPromise<any> {
         return ajax("at", paths.getOvertimeHours + targetMonth);
     }
