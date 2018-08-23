@@ -73,22 +73,25 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			AppRemainCreateInfor outData = new AppRemainCreateInfor();
 			outData.setSid(sid);
 			outData.setAppDate(appData.getAppDate());
-			outData.setAppId(appData.getAppID());
+			outData.setAppId(appData.getAppID());			
 			outData.setAppType(EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class));
 			outData.setPrePosAtr(EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class));
+			outData.setInputDate(appData.getInputDate().toDate());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
-					outData.setWorkTimeCode(Optional.of(x.getWorkTimeCd()));
-					outData.setWorkTypeCode(Optional.of(x.getWorkTypeCd()));
+					outData.setWorkTimeCode(x.getWorkTimeCd() == null ? Optional.empty() : Optional.of(x.getWorkTimeCd()));
+					outData.setWorkTypeCode(x.getWorkTypeCd() == null ? Optional.empty() : Optional.of(x.getWorkTypeCd()));
 				});
+				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.findByApplicationID(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
 					outData.setWorkTimeCode(x.getSiftCD().isPresent() ? Optional.of(x.getSiftCD().get().v()) : Optional.empty());
 					outData.setWorkTypeCode(x.getWorkTypeCD().isPresent() ? Optional.of(x.getWorkTypeCD().get().v()) : Optional.empty());
 				});
+				break;
 			case ABSENCE_APPLICATION:
 				Optional<AppAbsence> absence = absenceRepo.getAbsenceByAppId(cid, appData.getAppID());
 				absence.ifPresent(x -> {
@@ -97,6 +100,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));
 					}
 				});
+				break;
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AppAbsence> absApp = absAppRepo.getAbsenceByAppId(cid, appData.getAppID());
 				absApp.ifPresent(x -> {
@@ -111,6 +115,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					outData.setWorkTimeCode(Optional.of(y.getWorkTimeCD().v()));
 					outData.setWorkTypeCode(Optional.of(y.getWorkTypeCD().v()));
 				});
+				break;
 			case OVER_TIME_APPLICATION:
 				Optional<AppOverTime> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
 				Integer appBreakTimeTotal = 0;
@@ -136,6 +141,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				}
 				outData.setAppBreakTimeTotal(Optional.of(appBreakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
+				break;
 			case BREAK_TIME_APPLICATION:
 				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.getAppHolidayWorkFrame(cid, appData.getAppID());
 				Integer breakTimeTotal = 0;
@@ -160,6 +166,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				}
 				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
+				break;
 			default:
 				break;
 			}

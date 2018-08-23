@@ -356,7 +356,7 @@ module nts.uk.at.view.kdw001.f {
                 }
 
                 this.executedMenuJapan = data.executedMenuJapan;
-                this.executionDate = data.executionDate;
+                this.executionDate = data.executionDate.toString().slice(0,10);
                 this.executionStatus = data.executionStatus;
                 this.executionStatusName = data.executionStatusName;
                 this.employeeID = data.employeeID;
@@ -551,8 +551,8 @@ module nts.uk.at.view.kdw001.f {
             startDate: string;
             endDate: string;
             constructor(startDate: string, endDate: string) {
-                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
-                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
+                this.startDate = moment.utc(startDate, "YYYY/MM/DD HH:mm:ss");
+                this.endDate = moment.utc(endDate, "YYYY/MM/DD HH:mm:ss");
             }
         }//end class InputEmpCalAndSumByDate
         

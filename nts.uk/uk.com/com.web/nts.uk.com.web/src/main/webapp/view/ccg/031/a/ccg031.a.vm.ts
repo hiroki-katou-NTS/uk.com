@@ -114,10 +114,6 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 if (!util.isNullOrUndefined(placementDto)) {
                     if (placementDto.placementPartDto.type != 4) {
                         service.findPlacementPart(placementDto.placementPartDto.topPagePartID).done((data) => {
-                            if(data.defClassAtr != null && data.fileID !=null){
-                                dialog.alertError("Database is not enough data to be save.");   
-                                return;
-                            }
                             placementDto.placementPartDto = data;
                             self.addPlacementToList(new model.Placement(placementDto));
                         });

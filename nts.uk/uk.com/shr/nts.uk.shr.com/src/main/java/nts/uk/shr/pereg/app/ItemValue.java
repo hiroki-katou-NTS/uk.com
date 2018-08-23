@@ -294,6 +294,26 @@ public class ItemValue {
 	public void setValueBefore(String defValue) {
 		this.defValue = defValue;
 	}
+	
+	public void setValueBefore(Object defValue) {
+		if (defValue == null){
+			this.defValue = null;
+			return;
+		}
+		switch (this.saveDataType()) {
+		case NUMERIC:
+			this.defValue = defValue.toString();
+			break;
+		case STRING:
+			this.defValue = defValue.toString();
+			break;
+		case DATE:
+			this.defValue = ((GeneralDate) defValue).toString("yyyy/MM/dd");
+			break;
+		default:
+			throw new RuntimeException("invalid type: " + this.type);
+		}
+	}
 
 	public void setContentBefore(String defText) {
 		this.defText = defText;
