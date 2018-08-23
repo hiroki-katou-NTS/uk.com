@@ -454,6 +454,17 @@ module nts.uk.at.view.kaf005.share {
                         overtimeWork1.textColor(common.Color.ERROR_TEXT);
                         break;
                     } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
                     case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
                         overtimeWork1.backgroundColor(common.Color.ALARM);
                         overtimeWork1.textColor(common.Color.ALARM_TEXT);
@@ -492,6 +503,17 @@ module nts.uk.at.view.kaf005.share {
                         overtimeWork2.textColor(common.Color.ERROR_TEXT);
                         break;
                     } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
                     case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
                         overtimeWork2.backgroundColor(common.Color.ALARM);
                         overtimeWork2.textColor(common.Color.ALARM_TEXT);
