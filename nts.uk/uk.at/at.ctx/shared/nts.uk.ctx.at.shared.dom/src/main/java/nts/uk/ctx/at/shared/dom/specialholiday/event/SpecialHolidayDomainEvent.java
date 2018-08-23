@@ -38,8 +38,8 @@ public class SpecialHolidayDomainEvent extends DomainEvent {
 		this.typeTime = EnumAdaptor.valueOf(typeTime, TypeTime.class);
 	}
 
-	public static SpecialHolidayDomainEvent createFromDomain(boolean isSave,SpecialHoliday domain) {
-		return new SpecialHolidayDomainEvent(isSave, domain.getSpecialHolidayCode().v(),
+	public static SpecialHolidayDomainEvent createFromDomain(boolean isEffective,SpecialHoliday domain) {
+		return new SpecialHolidayDomainEvent(isEffective, domain.getSpecialHolidayCode().v(),
 				domain.getSpecialHolidayName().v(), domain.getGrantRegular().getTypeTime().value);
 	}
 }

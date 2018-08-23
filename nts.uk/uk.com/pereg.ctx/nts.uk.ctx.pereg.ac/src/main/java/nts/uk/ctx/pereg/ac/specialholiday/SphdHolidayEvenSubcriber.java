@@ -67,7 +67,8 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		List<PersonInfoItemDefinition> updateItems = new ArrayList<>();
 		String contractCd = AppContexts.user().contractCode();
 
-		if (domainEvent.isEffective()) {
+//		if (domainEvent.isEffective()) {
+		if (true) {
 			/**
 			 * 【更新内容】 廃止区分 ＝ 廃止しない カテゴリ名称 ＝ パラメータ．特別休暇名称 + #CPS001_133（○○情報） or カテゴリ名称 ＝
 			 * パラメータ．特別休暇名称 + #CPS001_134（○○付与残数）
