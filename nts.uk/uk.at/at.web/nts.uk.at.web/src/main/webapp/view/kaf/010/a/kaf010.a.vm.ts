@@ -487,7 +487,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? 0 : overTimeShiftNightTmp),
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.checkBoxValue(),
