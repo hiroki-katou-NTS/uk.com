@@ -18,6 +18,8 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
@@ -70,12 +72,15 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ResetDailyPerforDomainService resetDailyPerforDomainService;
-	
+
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
+
+	@Inject
+	private EmployeeRecordAdapter employeeRecordAdapter;
 
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
@@ -100,29 +105,34 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			PeriodInMasterList periodInMasterList) {
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 
 		// 正常終了 : 0
 		// 中断 : 1
 		ProcessState status = ProcessState.SUCCESS;
 
-		GeneralDate processingDate = periodTime.start();
+		// 日別実績の作成入社前、退職後を期間から除く
+		DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
+		
+		if (newPeriod == null) {
+			return status;
+		}
 
 		// lits day between startDate and endDate
-		List<GeneralDate> listDayBetween = this.getDaysBetween(periodTime.start(), periodTime.end());
+		List<GeneralDate> listDayBetween = this.getDaysBetween(newPeriod.start(), newPeriod.end());
+
+		GeneralDate processingDate = newPeriod.start();
 
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
 				employeeId, processingDate);
 		if (!employmentHisOptional.isPresent()) {
-			// #日別作成修正　2018/07/17　前川　隼大　
+			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-					employeeId, processingDate, new ErrorAlarmWorkRecordCode("S025"),
-					new ArrayList<>());			
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+					processingDate, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-			
+
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("010"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
 					new ErrMessageContent(TextResource.localize("Msg_426")));
@@ -133,29 +143,32 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// Create task list and execute.
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
-		for (List<GeneralDate> listDay : exectedList){
-			ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext,
-					employeeId, listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType,
-					employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-					mapDateHistoryItem, employmentHisOptional , employmentCode, periodInMasterList);
+		for (List<GeneralDate> listDay : exectedList) {
+			ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext, employeeId, listDay,
+					companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType, employeeGeneralInfoImport,
+					stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, employmentHisOptional,
+					employmentCode, periodInMasterList);
 			if (processState == ProcessState.INTERRUPTION) {
 				stateList.add(processState);
 				return ProcessState.INTERRUPTION;
 			}
 			stateList.add(processState);
 		}
-		
-		
-//		exectedList.stream().map((dateList) -> {
-//			AsyncTask asyncTask = AsyncTask.builder().withContexts().keepsTrack(false).build(() -> {
-//				ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext, processingDate,
-//						employeeId, dateList, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType,
-//						employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-//						mapDateHistoryItem);
-//				stateList.add(processState);
-//			});
-//			return asyncTask;
-//		}).collect(Collectors.toList());
+
+		// exectedList.stream().map((dateList) -> {
+		// AsyncTask asyncTask =
+		// AsyncTask.builder().withContexts().keepsTrack(false).build(() -> {
+		// ProcessState processState =
+		// this.self.createDailyResultEmployeeNew(asyncContext, processingDate,
+		// employeeId, dateList, companyId, empCalAndSumExecLogID, executionLog,
+		// reCreateWorkType,
+		// employeeGeneralInfoImport, stampReflectionManagement,
+		// mapWorkingConditionItem,
+		// mapDateHistoryItem);
+		// stateList.add(processState);
+		// });
+		// return asyncTask;
+		// }).collect(Collectors.toList());
 
 		if (stateList.stream().allMatch(s -> s == ProcessState.SUCCESS)) {
 			return ProcessState.SUCCESS;
@@ -168,15 +181,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executedDate, String companyId,
-			String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
+			List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode,
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
 			PeriodInMasterList periodInMasterList) {
 
 		for (GeneralDate day : executedDate) {
@@ -216,12 +228,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-									stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
+									stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
+									periodInMasterList);
 						}
 					} else {
 						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 								empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
+								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
+								periodInMasterList);
 					}
 				}
 				if (asyncContext.hasBeenRequestedToCancel()) {
@@ -245,43 +259,59 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// 正常終了 : 0
 		// 中断 : 1
 		ProcessState status = ProcessState.SUCCESS;
+		
+		// 日別実績の作成入社前、退職後を期間から除く
+		DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
+		
+		if (newPeriod == null) {
+			return status;
+		}
 
 		GeneralDate processingDate = periodTime.start();
 
 		// lits day between startDate and endDate
-		List<GeneralDate> listDayBetween = this.getDaysBetween(periodTime.start(), periodTime.end());
+		List<GeneralDate> listDayBetween = this.getDaysBetween(newPeriod.start(), newPeriod.end());
 
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
 				employeeId, processingDate);
-		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 		if (!employmentHisOptional.isPresent()) {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+					processingDate, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+						
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("010"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
 					new ErrMessageContent(TextResource.localize("Msg_426")));
 			this.errMessageInfoRepository.add(employmentErrMes);
 			return ProcessState.SUCCESS;
 		}
+		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 
 		// Create task list and execute.
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
-		for(List<GeneralDate> listDay : exectedList){
-			ProcessState processState = this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext,
-					employeeId, listDay, companyId, empCalAndSumExecLogID, executionLog,
-					reCreateWorkType, stampReflectionManagement, employmentHisOptional, employmentCode);
+		for (List<GeneralDate> listDay : exectedList) {
+			ProcessState processState = this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext, employeeId,
+					listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType,
+					stampReflectionManagement, employmentHisOptional, employmentCode);
 			stateList.add(processState);
 		}
-		
-//		List<AsyncTask> taskList = exectedList.stream().map((dateList) -> {
-//			AsyncTask asyncTask = AsyncTask.builder().withContexts().keepsTrack(false).build(() -> {
-//				ProcessState processState = this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext,
-//						processingDate, employeeId, dateList, companyId, empCalAndSumExecLogID, executionLog,
-//						reCreateWorkType, stampReflectionManagement);
-//				stateList.add(processState);
-//			});
-//			return asyncTask;
-//		}).collect(Collectors.toList());
+
+		// List<AsyncTask> taskList = exectedList.stream().map((dateList) -> {
+		// AsyncTask asyncTask =
+		// AsyncTask.builder().withContexts().keepsTrack(false).build(() -> {
+		// ProcessState processState =
+		// this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext,
+		// processingDate, employeeId, dateList, companyId,
+		// empCalAndSumExecLogID, executionLog,
+		// reCreateWorkType, stampReflectionManagement);
+		// stateList.add(processState);
+		// });
+		// return asyncTask;
+		// }).collect(Collectors.toList());
 
 		if (stateList.stream().allMatch(s -> s == ProcessState.SUCCESS)) {
 			return ProcessState.SUCCESS;
@@ -295,12 +325,11 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executeDate, String companyId,
-			String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
 			Optional<StampReflectionManagement> stampReflectionManagement,
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode) {
-		
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode) {
+
 		for (GeneralDate day : executeDate) {
 
 			// 締めIDを取得する
@@ -335,7 +364,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
 							// 再設定
 							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr, null , null);
+									empCalAndSumExecLogID, reCreateAttr, null, null);
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
 									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
@@ -353,6 +382,41 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			}
 		}
 		return ProcessState.SUCCESS;
+	}
+
+	private DatePeriod checkPeriod(String companyId, String employeeId, DatePeriod periodTime,
+			String empCalAndSumExecLogID) {
+
+		DatePeriod datePeriodOutput = periodTime;
+
+		// RequestList1
+		EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(employeeId);
+
+		if (empInfo == null) {
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+					periodTime.start(), new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("020"), EnumAdaptor.valueOf(0, ExecutionContent.class), periodTime.start(),
+					new ErrMessageContent(TextResource.localize("Msg_1156")));
+			this.errMessageInfoRepository.add(employmentErrMes);
+			return null;
+		}
+
+		if (datePeriodOutput.start().before(empInfo.getEntryDate()) && datePeriodOutput.end().afterOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.end().beforeOrEquals(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(empInfo.getEntryDate(), datePeriodOutput.end());
+		} else if (datePeriodOutput.start().afterOrEquals(empInfo.getEntryDate()) && datePeriodOutput.start().beforeOrEquals(empInfo.getRetiredDate())
+				&& datePeriodOutput.end().after(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(datePeriodOutput.start(), empInfo.getRetiredDate());
+		} else if (datePeriodOutput.start().afterOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.end().beforeOrEquals(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(datePeriodOutput.start(), datePeriodOutput.end());
+		} else datePeriodOutput = null;
+
+		return datePeriodOutput;
 	}
 
 	/**
