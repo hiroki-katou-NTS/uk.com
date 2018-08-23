@@ -27,6 +27,7 @@ import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -39,6 +40,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.remainnumber.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
@@ -108,6 +110,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DailyCalculationCommandFacade dailyCalculationService;
+	
+	@Inject
+	private DisplayRemainingHolidayNumber remainNumberService;
 	
 	@POST
 	@Path("startScreen")
@@ -233,6 +238,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("calculation")
 	public DailyPerformanceCalculationDto calculation(DPItemParent dataParent) {
 		return dailyCalculationService.calculateCorrectedResults(dataParent);
+	}
+	
+	@POST
+	@Path("getRemainNum/{employeeId}")
+	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
+		return remainNumberService.getRemainingHolidayNumber(employeeId);
 	}
 
 }
