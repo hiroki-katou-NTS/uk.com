@@ -659,14 +659,11 @@ module kcp.share.tree {
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
-                // set selected workplaced
-                if (!_.isNil(self.selectedWorkplaceIds())) {
-                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
-                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
-                }
-
                 // init event selected changed
                 self.initEvent();
+
+                // set selected workplaced
+                self.selectedWorkplaceIds.valueHasMutated();
 
                 // fix bug scroll on tree
                 _.defer(() => {
@@ -718,6 +715,15 @@ module kcp.share.tree {
                 } else {
                     self.selectedWorkplaceIds(selecteds[0]);
                 }
+            });
+
+            self.selectedWorkplaceIds.subscribe(ids => {
+                const grid = $('#' + self.getComIdSearchBox());
+                if (_.isNil(grid.data("igGrid"))) {
+                    return;
+                }
+                grid.ntsTreeGrid('setSelected',
+                    self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
             });
         }
 
@@ -782,7 +788,6 @@ module kcp.share.tree {
         private selectAll() {
             let self = this;
             this.selectedWorkplaceIds(this.listWorkplaceId);
-            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
         }
 
         /**
@@ -796,7 +801,6 @@ module kcp.share.tree {
             self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
             if (listSubWorkplaceId.length > 0) {
                 self.selectedWorkplaceIds(listSubWorkplaceId);
-                $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
             }
         }
         /**

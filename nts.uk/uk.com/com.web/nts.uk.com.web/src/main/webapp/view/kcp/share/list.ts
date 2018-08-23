@@ -453,6 +453,14 @@ module kcp.share.list {
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                 self.selectedCodes(selectedIds);
             });
+
+            // update selected codes on ntsGrid
+            self.selectedCodes.subscribe(codes => {
+                if (_.isNil(gridList.data("igGrid"))) {
+                    return;
+                }
+                gridList.ntsGridList("setSelectedValue", codes);
+            });
         }
 
         private initEmployeeSubscription(data: ComponentOption): void {
@@ -924,7 +932,6 @@ module kcp.share.list {
             const gridList = $('#' + self.componentGridId);
             const allSelectedCodes = gridList.ntsGridList("getDataSource").map(item => item.code);
             self.selectedCodes(allSelectedCodes);
-            gridList.ntsGridList("setSelectedValue", allSelectedCodes);
         }
         
         /**
