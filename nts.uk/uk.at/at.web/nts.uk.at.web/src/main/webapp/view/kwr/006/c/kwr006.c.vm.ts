@@ -1,6 +1,8 @@
 module nts.uk.at.view.kwr006.c {
 
     import service = nts.uk.at.view.kwr006.c.service;
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         const DEFAULT_DATA_FIRST = 0;
         export class ScreenModel {
@@ -173,6 +175,7 @@ module nts.uk.at.view.kwr006.c {
                     return;
                 }
 
+                blockUI.grayout();
                 let dfd = $.Deferred();
                 let command: any = {};
                 command.itemCode = self.C3_2_value();
@@ -200,10 +203,12 @@ module nts.uk.at.view.kwr006.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             $('#C3_3').focus();
                         });
+                        blockUI.clear();
                         dfd.resolve();
                     })
 
                 }).fail(function(err) {
+                    blockUI.clear();
                     nts.uk.ui.dialog.alertError(err);
                     dfd.reject();
                 })
@@ -217,6 +222,7 @@ module nts.uk.at.view.kwr006.c {
             private removeData(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    blockUI.grayout();
                     service.remove(self.currentCodeList()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
                             return self.currentCodeList() == value.code;
@@ -235,6 +241,7 @@ module nts.uk.at.view.kwr006.c {
                             self.currentCodeList(self.outputItemList()[indexCurrentCode + 1].code);
                         }
                         self.getDataService().done(function() {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 if (_.isEmpty(self.currentCodeList())) {
                                     $('#C3_2').focus();
