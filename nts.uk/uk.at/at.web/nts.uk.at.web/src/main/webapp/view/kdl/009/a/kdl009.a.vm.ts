@@ -144,7 +144,7 @@ module nts.uk.at.view.kdl009.a {
                         var isHalfDay = false;
                         
                         if(item.recHisData != null) {
-                            if(item.recHisData.recDate.unknownDate) {
+                            if(!item.recHisData.recDate.unknownDate) {
                                 if(item.recHisData.dataAtr == 3) {
                                     issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
                                 } else {
