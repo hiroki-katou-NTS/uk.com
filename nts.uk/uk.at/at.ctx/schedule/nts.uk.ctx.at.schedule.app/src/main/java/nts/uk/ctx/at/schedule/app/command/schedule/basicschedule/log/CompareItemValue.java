@@ -30,7 +30,7 @@ public class CompareItemValue {
 		// 就業時間帯 - workTimeCode
 		itemValueWork = new ItemValue();
 		itemValueWork.itemId(2);
-		itemValueWork.value(basicSchedule.getWorkTimeCode() == null ? null : basicSchedule.getWorkTimeCode());
+		itemValueWork.value(basicSchedule.getWorkTimeCode());
 		itemValueWork.valueType(ValueType.TEXT);
 		itemValues.add(itemValueWork);
 

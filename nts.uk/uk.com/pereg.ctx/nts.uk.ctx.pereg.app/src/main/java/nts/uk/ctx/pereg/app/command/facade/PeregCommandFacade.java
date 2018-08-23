@@ -659,11 +659,6 @@ public class PeregCommandFacade {
 	@Transactional
 	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-
-		val handler = this.deleteHandlers.get(command.getCategoryCode());
-		if (handler != null) {
-			handler.handlePeregCommand(command);
-		}
 		
 		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
 				command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
@@ -676,10 +671,6 @@ public class PeregCommandFacade {
 		}).collect(Collectors.toList());
 		
 		mergerItem.addAll(command.getInputs());
-		
-
-		val commandForUserDef = new PeregUserDefDeleteCommand(command);
-		this.userDefDelete.handle(commandForUserDef);
 
 		/*
 		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
@@ -759,6 +750,14 @@ public class PeregCommandFacade {
 				itemInfo, dKey, rInfo);
 
 		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+
+		val handler = this.deleteHandlers.get(command.getCategoryCode());
+		if (handler != null) {
+			handler.handlePeregCommand(command);
+		}
+
+		val commandForUserDef = new PeregUserDefDeleteCommand(command);
+		this.userDefDelete.handle(commandForUserDef);
 
 		DataCorrectionContext.transactionFinishing();
 	}

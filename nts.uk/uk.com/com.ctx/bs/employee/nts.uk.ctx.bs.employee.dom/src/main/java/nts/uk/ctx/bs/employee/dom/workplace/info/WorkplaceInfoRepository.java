@@ -147,5 +147,5 @@ public interface WorkplaceInfoRepository {
 	 * @param baseDates the base dates
 	 * @return the map
 	 */
-	Map<GeneralDate, List<WorkplaceInfo>> findByWkpCds(String companyId, List<String> wpkCodes, List<GeneralDate> baseDates);
+	Map<GeneralDate, List<WorkplaceInfo>> findByWkpIds(String companyId, List<String> wpkIds, List<GeneralDate> baseDates);
 }
