@@ -148,7 +148,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     let isShowReasonText = self.appCommonSetting().appTypeDiscreteSetting().displayReasonFlg() != 0,
                         isShowReasonCombo = self.appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg() != 0,
                         appReason = self.getReason(),
-                        txtReasonTmp = _.find(self.ListTypeReason(), { 'reasonID': self.selectedCode() }).reasonTemp,
+                        txtReasonTmp = !nts.uk.util.isNullOrEmpty(self.selectedCode()) ? _.find(self.ListTypeReason(), { 'reasonID': self.selectedCode() }).reasonTemp : "",
                         appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, isShowReasonCombo, isShowReasonText, appReason);
 
 
