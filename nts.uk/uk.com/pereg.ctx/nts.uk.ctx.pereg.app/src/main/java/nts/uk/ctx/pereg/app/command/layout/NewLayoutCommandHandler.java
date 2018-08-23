@@ -56,6 +56,10 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 	
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
+	
+	private static final String PERSONNAME_CODE = "IS00003";
+	
+	private static final String HIREDATE_CODE = "IS00020";
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<NewLayoutCommand> context) {
@@ -142,6 +146,11 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 		}
 	}
 	
+	/**
+	 * Validate all required item
+	 * @param command
+	 * @return
+	 */
 	private List<String> validateRequiredItem(NewLayoutCommand command) {
 
 		List<String> result = new ArrayList<>();
@@ -160,7 +169,9 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 
 		itemByCtgId.forEach((k, value) -> {
 			value.stream().forEach(item -> {
-				if (item.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM) {
+				if (item.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM
+						|| PERSONNAME_CODE.equals(item.getItemCode().v())
+						|| HIREDATE_CODE.equals(item.getItemCode().v())) {
 					return;
 				}
 				SingleItem type = (SingleItem) item.getItemTypeState();
