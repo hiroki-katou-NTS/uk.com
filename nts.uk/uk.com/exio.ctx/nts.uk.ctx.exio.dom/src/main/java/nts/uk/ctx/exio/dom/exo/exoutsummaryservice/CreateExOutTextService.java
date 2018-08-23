@@ -164,7 +164,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String LINE_DATA_CSV = "lineDataCSV";
 	private final static String yyyy_MM_dd = "yyyy-MM-dd";
 	private final static String SELECT_COND = "select ";
-	private final static String FROM_COND = " from ";
+	private final static String FROM_COND = " ";
 	private final static String WHERE_COND = " where 1=1 ";
 	private final static String AND_COND = " and ";
 	private final static String ORDER_BY_COND = " order by ";
@@ -172,6 +172,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
 	private final static String SLASH = "/";
+	private final static String SPACE = " ";
 	private final static String CID= "cid";
 	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
@@ -556,11 +557,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				sql.append(item.getForm1().get().v());
 			}
 			
-			if (item.getForm1().isPresent() && item.getForm2().isPresent()
-					&& StringUtils.isNotBlank(item.getForm1().get().v())
-					&& StringUtils.isNotBlank(item.getForm2().get().v())) {
-				sql.append(COMMA);
-			}
+			sql.append(SPACE);
 			
 			if (item.getForm2().isPresent()) {
 				sql.append(item.getForm2().get().v());
@@ -764,7 +761,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue = fileItemDataCreationResult.get(ITEM_VALUE);
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
-			if (useNullValue == USE_NULL_VALUE_ON) {
+			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -850,26 +847,27 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if (StringUtils.isEmpty(value)) {
 				if (isSetNull) {
 					value = nullValueReplace;
+					result.put(ITEM_VALUE, value);
+					result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
+					return result;
 				}
-				
-				result.put(ITEM_VALUE, value);
-				result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
-				return result;
 			}
 
-			if (i == 0) {
+			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
 				itemValue = value;
 				continue;
 			}
 
-			if (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
+			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
+					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
+					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
 				itemValue += value;
 				continue;
 			}
-
+			
 			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems()
 					.get(i).getOperationSymbol();
-			if (!operationSymbol.isPresent())
+			if (!operationSymbol.isPresent() || StringUtils.isEmpty(value))
 				continue;
 			if (operationSymbol.get() == OperationSymbol.PLUS) {
 				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
@@ -1280,11 +1278,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (setting.getSelectHourMinute() == HourMinuteClassification.HOUR_AND_MINUTE) {
 			if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0));
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0), 2, RoundingMode.HALF_UP);
 			} else if (setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
-				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
 			}
 		}
 
@@ -1382,11 +1380,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE) {
 			if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.00));
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.00), 2, RoundingMode.HALF_UP);
 			} else if (setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
-				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
 			}
 		}
 
@@ -1443,11 +1441,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
-		if (formatDate == DateOutputFormat.DAY_OF_WEEK) {
-			targetValue = date.toString("w");
-		} else if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
-				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
-			targetValue = date.toString(formatDate.nameId);
+		if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD
+				|| formatDate == DateOutputFormat.DAY_OF_WEEK) {
+			targetValue = date.toString(formatDate.format);
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
 			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
 			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
@@ -1491,13 +1488,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
 			case INCUMBENT:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getAtWorkOutput().map(item -> item.v()).orElse("");
 				break;
 			case LEAVE_OF_ABSENCE:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getAbsenceOutput().map(item -> item.v()).orElse("");
 				break;
 			case RETIREMENT:
-				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
+				targetValue = setting.getRetirementOutput().map(item -> item.v()).orElse("");
 				break;
 			case HOLIDAY:
 				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
