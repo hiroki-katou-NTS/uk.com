@@ -1143,7 +1143,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: moment(self.dateRanger().startDate).toISOString(),
                     endDate: moment(self.dateRanger().endDate).toISOString()
                 },
-                identityProcess: self.dataAll().identityProcessDto
+                identityProcess: self.dataAll().identityProcessDto,
+                showLock: self.showLock()
             }
 
             let dfd = $.Deferred();

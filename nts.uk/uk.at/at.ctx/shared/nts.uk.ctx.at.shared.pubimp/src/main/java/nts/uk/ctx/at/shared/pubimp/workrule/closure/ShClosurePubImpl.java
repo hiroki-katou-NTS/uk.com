@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -114,31 +115,5 @@ public class ShClosurePubImpl implements ShClosurePub {
 
 		return resultExport;
 
-	}
-
-	@Override
-	public List<DCClosureExport> findAll(String cId, List<DCClosureExport> dcClosure) {
-		Map<Integer, PresentClosingPeriodExport> mapClosureIdAndPeriod = new HashMap<>();
-		List<Closure> optClosures = closureRepo.findByListId(cId,
-				dcClosure.stream().map(x -> x.getClosureId()).collect(Collectors.toList()));
-		optClosures = optClosures.stream()
-				.filter(x -> x.getUseClassification().value == UseClassification.UseClass_Use.value)
-				.collect(Collectors.toList());
-		if (optClosures.isEmpty()) {
-			return Collections.emptyList();
-		}
-		optClosures.stream().forEach(closure -> {
-			// Get Processing Ym 処理年月
-			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-
-			DatePeriod closurePeriod = closureService.getClosurePeriod(closure.getClosureId().value, processingYm);
-
-			// Return
-			mapClosureIdAndPeriod.put(closure.getClosureId().value, PresentClosingPeriodExport.builder().processingYm(processingYm)
-					.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
-					.build());
-		});
-		
-		return dcClosure.stream().filter(x -> mapClosureIdAndPeriod.containsKey(x.getClosureId())).map(x -> x.addPresentExport(mapClosureIdAndPeriod.get(x.getClosureId()))).collect(Collectors.toList());
 	}
 }

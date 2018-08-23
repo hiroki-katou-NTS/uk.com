@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -119,6 +120,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -596,22 +599,23 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public boolean lockAndDisable(DailyPerformanceCorrectionDto screenDto, DPDataDto data, int mode, boolean lockDaykWpl,
 			boolean lockApproval, boolean lockHist, boolean lockSign, boolean lockApprovalMonth, boolean lockConfirmMonth) {
-		
+		boolean lock = false;
 		if (lockDaykWpl || lockApproval || lockHist || lockSign || lockApprovalMonth || lockConfirmMonth) {
 			if (lockDaykWpl) {
 				//lockCell(screenDto, data, true);
+				 lock = true;
 			}
 			
 			if (lockApprovalMonth) {
 				setStateLock(data, DPText.LOCK_CHECK_MONTH);
 				//lockCell(screenDto, data, true);
-				lockDaykWpl = true;
+				lock = true;
 			}
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
 				//lockCell(screenDto, data, false);
-				lockDaykWpl = true;
+				lock = true;
 				
 			}
 			
@@ -619,23 +623,23 @@ public class DailyPerformanceCorrectionProcessor {
 				setStateLock(data, DPText.LOCK_EDIT_APPROVAL);
 				//lockCell(screenDto, data, false);
 				if(mode == ScreenMode.APPROVAL.value) {
-					lockDaykWpl = lockDaykWpl && false;
+					lock = lock && false;
 				}else {
-					lockDaykWpl = true;
+					lock = true;
 				}
 			}
 
 			if (lockSign && mode == ScreenMode.NORMAL.value) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lockDaykWpl = lockDaykWpl && false;
-				else lockDaykWpl = true;
+				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;
+				else lock = true;
 			}
 			
 			if (lockHist) {
 				setStateLock(data, DPText.LOCK_HIST);
 				//lockCell(screenDto, data, true);
-				lockDaykWpl = true;
+				lock = true;
 			}
 			
 			if ((lockConfirmMonth || lockApproval || lockSign) && !(lockApprovalMonth || lockHist || lockDaykWpl))
@@ -645,7 +649,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		
 		if (mode == ScreenMode.APPROVAL.value) screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
-		return lockDaykWpl;
+		return lock;
 	}
 	
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
@@ -853,13 +857,29 @@ public class DailyPerformanceCorrectionProcessor {
            return true;
 	}
 	 
-	public boolean checkLockConfirmMonth(Map<String, DatePeriod> confirmMonthMonth, DPDataDto data){
-		val datePeriod = confirmMonthMonth.get(data.getEmployeeId()+"|"+ data.getDate().toString());
-		if (confirmMonthMonth.isEmpty() || datePeriod == null)
+	public boolean checkLockConfirmMonth(Pair<List<ClosureSidDto>, List<ConfirmationMonthDto>> pairClosureMonth, DPDataDto data){
+		if (pairClosureMonth == null)
 			return false;
-		if (inRange(data, datePeriod))
-			return true;
-		return false;
+
+		List<ClosureSidDto> lstClosure = pairClosureMonth.getLeft();
+
+		Optional<ClosureSidDto> closureSidDtoOpt = lstClosure.stream()
+				.filter(x -> x.getSid().equals(data.getEmployeeId())).findFirst();
+
+		if (!closureSidDtoOpt.isPresent())
+			return false;
+
+		Optional<ClosurePeriod> cPeriod = closureSidDtoOpt.get().getClosure().getClosurePeriodByYmd(data.getDate());
+
+		if (!cPeriod.isPresent())
+			return false;
+
+		Optional<ConfirmationMonthDto> monthOpt = pairClosureMonth.getRight().stream()
+				.filter(x -> x.getEmployeeId().equals(data.getEmployeeId())
+						  && x.getClosureId() == cPeriod.get().getClosureId().value
+						  && x.getProcessYM() == cPeriod.get().getYearMonth().v().intValue()
+						  && x.getClosureDay() == cPeriod.get().getClosureDate().getClosureDay().v().intValue()).findFirst();
+		return monthOpt.isPresent();
 	}
 	
     public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
@@ -1210,6 +1230,7 @@ public class DailyPerformanceCorrectionProcessor {
 							result.setAutBussCode(result.getFormatCode());
 							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+							if(authorityFomatDailys.isEmpty()) throw new BusinessException("Msg_1402");
 							List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 									.collect(Collectors.toList());
 							authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()

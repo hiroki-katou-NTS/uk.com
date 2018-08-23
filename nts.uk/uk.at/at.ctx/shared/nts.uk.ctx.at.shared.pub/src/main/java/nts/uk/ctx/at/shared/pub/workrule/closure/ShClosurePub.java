@@ -31,5 +31,4 @@ public interface ShClosurePub {
 	
 	Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date);
 	
-	List<DCClosureExport> findAll(String cId, List<DCClosureExport> dcClosure);
 }

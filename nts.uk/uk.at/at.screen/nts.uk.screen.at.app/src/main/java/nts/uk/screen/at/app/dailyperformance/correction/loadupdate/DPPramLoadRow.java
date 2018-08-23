@@ -46,4 +46,6 @@ public class DPPramLoadRow {
 	
 	private IdentityProcessUseSetDto identityProcess;
 	
+	private boolean showLock;
+	
 }

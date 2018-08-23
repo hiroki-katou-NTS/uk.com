@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -131,6 +132,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -1553,25 +1555,23 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Map<String, DatePeriod> confirmationMonth(String companyId, List<DCClosureExport> dtos) {
+	public List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId) {
 		//KrcdtConfirmationMonth
 		//KRCDT_CONFIRMATION_MONTH
-		dtos = dtos.stream().filter(x -> x.getPeriodExport() != null).collect(Collectors.toList());
-		List<KrcdtConfirmationMonth> resultFind = new ArrayList<>();
+		List<ConfirmationMonthDto> resultFind = new ArrayList<>();
 		String textParam = "";
-		for (int i = 0; i < dtos.size(); i++) {
-			val dto = dtos.get(i);
-			textParam += "(" + "SID = '" + dto.getSid() + "' AND PROCESS_YM = " + dto.getPeriodExport().getProcessingYm()
-					+ " AND CLOSURE_ID = " + dto.getClosureId() + " AND CLOSURE_DAY = "
-					+ dto.getPeriodExport().getClosureEndDate().day() + " )";
-			if(i != dtos.size() -1){
+		int count = sidClosureId.size();
+		for (Entry<String, Integer> data : sidClosureId.entrySet()) {
+			textParam += "(" + "SID = '" + data.getKey() + "' AND CLOSURE_ID = " + data.getValue() + " )";
+			count--;
+			if (count > 0) {
 				textParam += " OR ";
 			}
 		}
-		
+
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND ("+ textParam + " )";
+			String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
 			PreparedStatement pstatement = con.prepareStatement(query);
 			pstatement.setString(1, companyId);
 			ResultSet rs = pstatement.executeQuery();
@@ -1580,27 +1580,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				int processYM = rs.getInt("PROCESS_YM");
 				String employeeId = rs.getString("SID");
 				int closureDay = rs.getInt("CLOSURE_DAY");
-				KrcdtConfirmationMonth month = new KrcdtConfirmationMonth(new KrcdtConfirmationMonthPK(companyId, employeeId, closureId, closureDay, processYM), null);
+				ConfirmationMonthDto month = new ConfirmationMonthDto(companyId, employeeId, closureId, closureDay,
+						processYM);
 				resultFind.add(month);
 			}
-			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		List<String> resultcheck = resultFind.stream().map(x -> mergeString(x.krcdtConfirmationMonthPK.employeeId,
-				x.krcdtConfirmationMonthPK.closureId, x.krcdtConfirmationMonthPK.processYM))
-				.collect(Collectors.toList());
-		 Map<String, DatePeriod> mapResult = new HashMap<>();
-		 dtos.stream().filter(x -> resultcheck.contains(mergeString(x.getSid(), x.getClosureId(), x.getPeriodExport().getProcessingYm().v()))).forEach(x ->{
-			 x.getDatePeriod().datesBetween().stream().forEach(date ->{
-				 mapResult.put(x.getSid() + "|"+ date.toString(), x.getDatePeriod());
-			 });
-		 });
-		return mapResult;
+		return resultFind;
 	}
 	
-	private String mergeString(String employeeId, int closureId, int processYM){
-		return employeeId+"|"+closureId+"|"+ processYM;
-	}
 }

@@ -1,7 +1,10 @@
 package nts.uk.screen.at.app.dailyperformance.correction.lock;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +23,7 @@ public class DPLockDto {
 	private Map<String, ApproveRootStatusForEmpDto> lockCheckMonth;
 	
 	//月別実績の確認
-	private Map<String, DatePeriod> lockConfirmMonth;
+	private Pair<List<ClosureSidDto>, List<ConfirmationMonthDto>> lockConfirmMonth;
 	
 	//日別実績の承認
 	private Map<String, ApproveRootStatusForEmpDto> lockCheckApprovalDay;
@@ -33,7 +36,6 @@ public class DPLockDto {
 	
 	public DPLockDto(){
 		this.lockCheckMonth = new HashMap<>();
-		this.lockConfirmMonth = new HashMap<>();
 		this.lockCheckApprovalDay = new HashMap<>();
 		this.signDayMap = new HashMap<>();
 		this.lockHist = new HashMap<>();

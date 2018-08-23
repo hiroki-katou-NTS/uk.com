@@ -1,16 +1,19 @@
 package nts.uk.screen.at.app.dailyperformance.correction.lock;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -20,6 +23,9 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmpl
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.DCClosureExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -55,6 +61,9 @@ public class DPLock {
 	
 	@Inject
 	private FindClosureDateService findClosureDateService;
+	
+	@Inject
+	private ClosureRepository closureRepository;
 
 	public Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
 			List<String> listEmployeeId, List<ClosureDto> closureDtos) {
@@ -191,14 +200,22 @@ public class DPLock {
 		return approvalRootMap;
 	}
 
-	public Map<String, DatePeriod> lockConfirmMonth(String companyId, List<String> employeeIds, DateRange dateRange, List<ClosureDto> closureDtos) {
-		//Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, employeeIds, dateRange);
-		//List<ClosureDto> closureDtos = repo.getAllClosureDto(companyId, employeeIds, dateRange);
-		List<DCClosureExport> dcClosureExport = shClosurePub.findAll(companyId,
-				closureDtos.stream()
-						.map(x -> new DCClosureExport(x.getClosureId(), x.getUseAtr(), x.getClosureMonth(), x.getSid(),
-								x.getEmploymentCode(), x.getDatePeriod())).collect(Collectors.toList()));
-		return repo.confirmationMonth(companyId, dcClosureExport);
+	public Pair<List<ClosureSidDto> , List<ConfirmationMonthDto>> lockConfirmMonth(String companyId, List<String> employeeIds, DateRange dateRange, List<ClosureDto> closureDtos) {
+		
+		Set<Integer> closureIds = closureDtos.stream().map(x -> x.getClosureId()).collect(Collectors.toSet());
+		
+		Map<Integer, Closure> closures = closureIds.isEmpty() ? Collections.emptyMap()
+				: closureRepository.findByListId(companyId, new ArrayList<>(closureIds)).stream()
+						.filter(x -> x.getUseClassification().equals(UseClassification.UseClass_NotUse))
+						.collect(Collectors.toMap(x -> x.getClosureId().value, x -> x));
+
+		List<ClosureSidDto> closureSid = closureDtos.stream().filter(x -> closures.containsKey(x.getClosureId())).map(x -> {
+			return new ClosureSidDto(x.getSid(), closures.get(x.getClosureId()));
+		}).collect(Collectors.toList());
+		
+		List<ConfirmationMonthDto> confirmMonths = closures.isEmpty() ? Collections.emptyList() : repo.confirmationMonth(companyId, closureDtos.stream().collect(Collectors.toMap(x -> x.getSid(), x -> x.getClosureId(), (x, y) -> x)));
+		
+		return Pair.of(closureSid, confirmMonths);
 	}
 	
 	public DPLockDto checkLockAll(String companyId, List<String> employeeIds, DateRange dateRange,
