@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk012.e {
 
             //View list data on grid.
             $("#gridData").ntsGrid({
-                width: '390px',
+                width: '350px',
                 height: '380px',
                 dataSource: model.items,
                 primaryKey: 'code',
@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk012.e {
                 columns: [
                     { headerText: 'ID', key: 'code', dataType: 'string', width: '50px' },
                     { headerText: getText('KMK012_38'), key: 'name', dataType: 'string', width: '150px' },
-                    { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '180px', ntsControl: 'Combobox' }
+                    { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '160px', ntsControl: 'Combobox' }
                 ],
                 features: [{ name: 'Sorting', type: 'local' }],
 

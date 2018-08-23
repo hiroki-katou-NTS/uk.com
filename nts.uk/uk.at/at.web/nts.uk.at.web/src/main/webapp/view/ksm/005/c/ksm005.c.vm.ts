@@ -442,10 +442,9 @@ module nts.uk.at.view.ksm005.c {
                             setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true }; 
                             dataRes.push(setting);    
                         });
-                        self.optionalColumnDatasource(dataSource);
                         self.alreadySettingList(dataRes);
                     }
-                    
+                    self.optionalColumnDatasource(dataSource);
                     dfd.resolve(dataRes);
                 });
 
@@ -529,6 +528,7 @@ module nts.uk.at.view.ksm005.c {
                         self.listDestSid(lstSelection);
                         self.copyMonthlyPatternSetting();
                     }
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
             
