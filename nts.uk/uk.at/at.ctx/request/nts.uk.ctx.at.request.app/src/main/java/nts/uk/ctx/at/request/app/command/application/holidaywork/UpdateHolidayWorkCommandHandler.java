@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,6 +34,8 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	private DetailAfterUpdate detailAfterUpdate;
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateHolidayWorkCommand> context) {
@@ -68,6 +72,13 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				appHolidayWork.getApplication().getPrePostAtr(), updateHolidayWorkCommand.getVersion());
 		appHolidayWorkRepository.update(appHolidayWork);
 		applicationRepository.updateWithVersion(appHolidayWork.getApplication());
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyID, 
+				updateHolidayWorkCommand.getApplicantSID(), 
+				Arrays.asList(updateHolidayWorkCommand.getApplicationDate()));
+		
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appHolidayWork.getApplication());
 	}
 

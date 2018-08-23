@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, ProcessResult> {
@@ -38,6 +40,9 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHolidayShipmentCommandHandler;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateHolidayWorkCommand> context) {
 		
@@ -84,6 +89,12 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 		}
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				command.getCompanyID(), 
+				command.getApplicantSID(), 
+				Arrays.asList(command.getApplicationDate()));
 
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);
