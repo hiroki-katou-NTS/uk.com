@@ -608,9 +608,8 @@ module nts.uk.com.view.cmm011.a {
 
                     if (res.messageId == 'Msg_373') {
                         nts.uk.ui.dialog.info({messageId: res.messageId}).then(() => {
-                            self.lstWorkplace([]);
                             // reset selected workplace when list empty
-                            self.parentModel.treeWorkplace().selectedWpkId(null);
+                            self.newMode();
                         });
                     } else {
                         self.parentModel.showMessageError(res);
@@ -618,7 +617,19 @@ module nts.uk.com.view.cmm011.a {
                 });
                 return dfd.promise();
             }
-
+            
+            public newMode(){
+                let self = this;
+                
+                self.parentModel.treeWorkplace().selectedWpkId(null);
+                self.lstWorkplace([]);
+                self.parentModel.workplaceCode(null);
+                self.parentModel.externalCode(null);
+                self.parentModel.workplaceName(null);
+                self.parentModel.wkpDisplayName(null);
+                self.parentModel.wkpFullName(null);
+            }
+            
             /**
              * selectFirst
              */
