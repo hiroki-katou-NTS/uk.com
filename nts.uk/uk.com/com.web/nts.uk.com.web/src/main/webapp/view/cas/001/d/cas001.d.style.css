@@ -14,7 +14,7 @@
 #category {
 	margin-left: 25px;
 	width: 480px;
-	height: 360px;
+	height: 390px;
 	position: relative;
 	margin-top: 20px;
 	padding-top: 25px;
@@ -72,10 +72,21 @@ button.search-btn, button.clear-btn {
 	border: 1px solid rgba(25, 24, 24, 0.26);
 }
 
-.ui-iggrid table tr td {
-	height: 20px !important;
-}
-
 #functions-area-bottom {
 	height: 57px !important;
+}
+
+ #grid_otherAuth > span > div > label > span.label{
+	margin-left: -30px;
+    margin-top: -20px;
+}
+#grid_otherAuth > span > div > label > span.box{
+	margin-top: 20px;
+}
+#grid_selfAuth > span > div > label > span.label{
+	margin-left: -30px;
+    margin-top: -20px;
+}
+#grid_selfAuth > span > div > label > span.box{
+	margin-top: 20px;
 }
