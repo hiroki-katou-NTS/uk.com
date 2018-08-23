@@ -21,9 +21,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             self.endMonth = ko.observable(self.getParam.endMonth);
         }
         Decide(): any {
-            var self = this;
-            
-            if (self.checkPeriod()) {
+            var self = this;               
                let dataSetShare = self.getDataShare();
             nts.uk.ui.windows.setShared("extractionMonthly", dataSetShare);
 
@@ -36,12 +34,12 @@ module nts.uk.com.view.kal004.d.viewmodel {
 
                 self.closeDialog();
             }
-        }
+        
             }
         private validateSelectMonth(startMonth: number, endMonth: number):boolean {
             let self = this;
             const month7 = 7;
-            if (startMonth <= month7 && (endMonth > startMonth || endMonth > month7)) {
+            if (startMonth <= month7 && (endMonth < startMonth || endMonth > month7)) {
                 return true;
             } else if (startMonth >= month7 && endMonth > startMonth) {
                 return true;

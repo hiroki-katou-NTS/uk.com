@@ -868,7 +868,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         }
 
-
+        getListItemByAtr(conditionAtr) {
+            let self = this;
+            return service.getAttendanceItemByAtr(conditionAtr);
+        }
 
         getListItemByAtrMultipleMonth( mulMonCheckItem: number,mode: number) {
             let self = this;
@@ -1251,18 +1254,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
         fillTextDisplayTargetMulMon(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
-            if (self.mulMonCheckCondSet().typeCheckItem() === TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT) {
-                if (currentAtdItemCondition.uncountableAtdItem()) {
-                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
-                        if (lstItems && lstItems.length > 0) {
-                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
-                            $("#display-target-item-category9").trigger("validate");
-                        }
-                    }, function(rejected) {
-                        defered.resolve();
-                    });
-                }
-            } else {
+//            if (self.mulMonCheckCondSet().typeCheckItem() === TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT) {
+//                if (currentAtdItemCondition.uncountableAtdItem()) {
+//                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
+//                        if (lstItems && lstItems.length > 0) {
+//                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
+//                            $("#display-target-item-category9").trigger("validate");
+//                        }
+//                    }, function(rejected) {
+//                        defered.resolve();
+//                    });
+//                }
+//            } else {
                 if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
                     service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
@@ -1302,7 +1305,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                 }
 
-            }
+//            }
             return defered.promise();
         }
 
