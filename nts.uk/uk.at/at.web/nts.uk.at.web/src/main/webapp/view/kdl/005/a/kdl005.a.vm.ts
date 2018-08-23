@@ -191,8 +191,8 @@ module nts.uk.at.view.kdl005.a {
                         
                         var temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
-                        if(temp.leaveDate !== "" && temp.dayOffDateTop !== "" && temp.dayOffDateBot !== "" && temp.duedateHoliday !== "" 
-                                && temp.occurrenceDays1 !== "" && temp.occurrenceDays2Top !== "" && temp.occurrenceDays2Bot !== "") {
+                        if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== "" 
+                                || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
                             self.dataItems.push(temp);
                         }
                     });                    
