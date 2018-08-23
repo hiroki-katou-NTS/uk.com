@@ -116,6 +116,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
         subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
         stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
+        numberRemain: KnockoutObservableArray<any> = ko.observableArray([]);
+        yearDis: KnockoutObservable<boolean> = ko.observable(false);
+        subHdDis: KnockoutObservable<boolean> = ko.observable(false);
+        subVacaDis: KnockoutObservable<boolean> = ko.observable(false);
+        stockDis: KnockoutObservable<boolean> = ko.observable(false);
+        //ver20
+        disAll: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
@@ -176,6 +183,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
             });
         }
+        
         /**
          * 
          */
@@ -193,6 +201,30 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if(data.setingNo65 != null){
                     self.settingNo65(new common.SettingNo65(data.setingNo65.hdType,data.setingNo65.screenMode, data.setingNo65.pridigCheck,
                         data.setingNo65.subVacaManage, data.setingNo65.subVacaTypeUseFlg, data.setingNo65.subHdManage, data.setingNo65.subHdTypeUseFlg));
+                }
+                //No.376
+                if(data.numberRemain != null){
+                    if(data.numberRemain.yearRemain != null){//年休残数
+                        self.yearRemain(data.numberRemain.yearRemain + '日');
+                        self.yearDis(true);
+                    }
+                    if(data.numberRemain.subHdRemain != null){//代休残数
+                        self.subHdRemain(data.numberRemain.subHdRemain + '日');
+                        self.numberSubHd(data.numberRemain.subHdRemain);
+                        self.subHdDis(true);
+                    }
+                    if(data.numberRemain.subVacaRemain != null){//振休残数
+                        self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.subVacaDis(true);
+                    }
+                    if(data.numberRemain.stockRemain != null){//ストック休暇残数
+                        self.stockRemain(data.numberRemain.stockRemain + '日');
+                        self.numberSubVaca(data.numberRemain.stockRemain);
+                        self.stockDis(true);
+                    }
+                }
+                if(self.yearDis() || self.subHdDis() || self.subVacaDis() || self.stockDis()){
+                    self.disAll(true);
                 }
                 self.initData(data);
                 //ver16
@@ -599,38 +631,38 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(self.holidayTypeCode() != 1){
                 self.registerApp();
             }else{
-                
-            let paramCheck = {
-                                hdType: self.holidayTypeCode(),
-                                screenMode: 0,//新規モード(new mode)
-                                pridigCheck: self.settingNo65() == null ? 0 : self.settingNo65().pridigCheck,
-                                subVacaManage: self.settingNo65() == null ? false : self.settingNo65().subVacaManage,
-                                subVacaTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subVacaTypeUseFlg,
-                                subHdManage: self.settingNo65() == null ? false : self.settingNo65().subHdManage,
-                                subHdTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subHdTypeUseFlg,
-                                numberSubHd: self.numberSubHd(),
-                                numberSubVaca: self.numberSubVaca()
-                            };
-            //アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
-            service.checkRegister(paramCheck).done(()=>{
-                self.registerApp();
-            }).fail((res)=>{
-                if (res.messageId == 'Msg_1392' || res.messageId == 'Msg_1394') {//エラーメッセージがある場合(t/h có error message)
-                    dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.ui.block.clear();
-                        return;
-                    });
-                } 
-                //確認メッセージがある場合(t/h có confirm message)
-                //確認メッセージを表示する (Hiển thị confirm message)
-                if(res.messageId == 'Msg_1393' || res.messageId == 'Msg_1395'){
-                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                        self.registerApp();
-                    }).ifCancel(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                let setNo65 = {
+                                    pridigCheck: self.settingNo65() == null ? 0 : self.settingNo65().pridigCheck,
+                                    subVacaManage: self.settingNo65() == null ? false : self.settingNo65().subVacaManage,
+                                    subVacaTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subVacaTypeUseFlg,
+                                    subHdManage: self.settingNo65() == null ? false : self.settingNo65().subHdManage,
+                                    subHdTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subHdTypeUseFlg,
                 }
-            });
+                let paramCheck = {
+                                    setNo65: setNo65,
+                                    numberSubHd: self.numberSubHd(),//代休残数
+                                    numberSubVaca: self.numberSubVaca()//振休残数
+                                };
+                //アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
+                service.checkRegister(paramCheck).done(()=>{
+                    self.registerApp();
+                }).fail((res)=>{
+                    if (res.messageId == 'Msg_1392' || res.messageId == 'Msg_1394') {//エラーメッセージがある場合(t/h có error message)
+                        dialog.alertError({ messageId: res.messageId }).then(function() {
+                            nts.uk.ui.block.clear();
+                            return;
+                        });
+                    } 
+                    //確認メッセージがある場合(t/h có confirm message)
+                    //確認メッセージを表示する (Hiển thị confirm message)
+                    if(res.messageId == 'Msg_1393' || res.messageId == 'Msg_1395'){
+                        dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                            self.registerApp();
+                        }).ifCancel(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }
+                });
             }
         }
         registerApp(){

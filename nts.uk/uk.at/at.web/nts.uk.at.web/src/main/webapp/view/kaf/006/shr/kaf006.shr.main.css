@@ -170,3 +170,6 @@ div.form-label.broken {
 #applicant{
 	vertical-align: top;
 }
+.display1{
+	display: none;
+}
