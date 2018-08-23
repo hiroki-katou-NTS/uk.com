@@ -703,14 +703,18 @@ public class PeregCommandFacade {
 	@Transactional
 	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+		
+		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
+				command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
 
-		val handler = this.deleteHandlers.get(command.getCategoryCode());
-		if (handler != null) {
-			handler.handlePeregCommand(command);
-		}
+		List<String> visibleItemCodes = command.getInputs().stream().map(ItemValue::itemCode)
+				.collect(Collectors.toList());
 
-		val commandForUserDef = new PeregUserDefDeleteCommand(command);
-		this.userDefDelete.handle(commandForUserDef);
+		List<ItemValue> mergerItem = fullItems.stream().filter(i -> {
+			return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+		}).collect(Collectors.toList());
+		
+		mergerItem.addAll(command.getInputs());
 
 		/*
 		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
@@ -721,7 +725,7 @@ public class PeregCommandFacade {
 		Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
 		switch (command.getCategoryType()) {
 		case 2:
-			Optional<ItemValue> itemValue = command.getInputs().stream().findFirst();
+			Optional<ItemValue> itemValue = mergerItem.stream().findFirst();
 
 			if (itemValue.isPresent()) {
 				ItemValue _itemValue = itemValue.get();
@@ -748,9 +752,9 @@ public class PeregCommandFacade {
 					.findFirst();
 
 			if (ddto.isPresent()) {
-				Optional<ItemValue> startDate = command.getInputs().stream()
+				Optional<ItemValue> startDate = mergerItem.stream()
 						.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
-				Optional<ItemValue> endDate = command.getInputs().stream()
+				Optional<ItemValue> endDate = mergerItem.stream()
 						.filter(f -> f.itemCode().equals(ddto.get().getEndDateCode())).findFirst();
 
 				if (startDate.isPresent()) {
@@ -790,6 +794,14 @@ public class PeregCommandFacade {
 				itemInfo, dKey, rInfo);
 
 		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+
+		val handler = this.deleteHandlers.get(command.getCategoryCode());
+		if (handler != null) {
+			handler.handlePeregCommand(command);
+		}
+
+		val commandForUserDef = new PeregUserDefDeleteCommand(command);
+		this.userDefDelete.handle(commandForUserDef);
 
 		DataCorrectionContext.transactionFinishing();
 	}

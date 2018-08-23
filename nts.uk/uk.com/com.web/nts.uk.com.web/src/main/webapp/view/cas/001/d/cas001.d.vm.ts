@@ -1,3 +1,15 @@
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
+
 module nts.uk.com.view.cas001.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import errors = nts.uk.ui.errors;
@@ -14,16 +26,16 @@ module nts.uk.com.view.cas001.d.viewmodel {
 
         constructor() {
             var self = this;
-
-            self.start();
+//            self.start();
         }
 
         start(): JQueryPromise<any> {
+            
             let self = this,
                 dfd = $.Deferred(),
                 role: IPersonRole = ko.toJS(self.currentRole);
+            block.grayout();
             self.categoryList.removeAll();
-            block.invisible();
             service.getAllCategory(role.roleId).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.categoryList(_.map(data, x => new CategoryAuth({
@@ -34,8 +46,9 @@ module nts.uk.com.view.cas001.d.viewmodel {
                         otherAuth: !!x.allowOtherRef
                     })));
                     dfd.resolve();
-                    block.clear();  
                 }
+            }).always(() => {
+                   block.clear(); 
             });
             return dfd.promise();
         }
@@ -44,6 +57,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
             let self = this,
                 role: IPersonRole = ko.toJS(self.currentRole);
             self.update(self.categoryList(), role.roleId);
+
         }
 
         closeDialog() {
@@ -68,7 +82,6 @@ module nts.uk.com.view.cas001.d.viewmodel {
                     .value();
             service.updateCategory({ lstCategory: datas }).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    close();
                 });
             }).fail(function(res) {
                 alert(res.message);
