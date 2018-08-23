@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         self.selectedCode(data.reasonID);
                     }
                 });
-                self.appCommonSetting(new AppComonSetting(data.appCommonSettingDto));
+                self.appCommonSetting().appTypeDiscreteSetting(new AppTypeDiscreteSetting(data.appCommonSettingDto.appTypeDiscreteSettingDtos[0]));
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
