@@ -37,7 +37,7 @@
 				<label id= "B1_8" class="title-left">#{i18n.getText('CMF002_25')}</label>
 			</div>
 			<div id="contents-area">
-				<div style="text-align: center; width: 1270px; height: 40px; margin-bottom:5px">
+				<div style="text-align: center; width: 1270px; height: 40px; margin-bottom:10px">
 					<span id = "B4" class="label warning">#{i18n.getText('CMF002_39')}</span>
 				</div>
 				<div class="fixed-flex-layout" data-bind="with: conditionSetData">
@@ -49,7 +49,7 @@
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--B3_2 絞り込み検索-->
-								<div style="width: 220px" id = "B3_2"
+								<div style="width: 240px" id = "B3_2"
 									data-bind="ntsSearchBox: {
 												searchMode: 'filter',
 												targetKey: 'conditionSetCode',
@@ -74,8 +74,8 @@
 		                                            optionsValue: $parent.selectedConditionSetting,
 		                                            primaryKey: 'conditionSetCode',
 		                                            columns: [
-																{headerText: '#{i18n.getText('CMF002_37')}', key: 'conditionSetCode', width: 80, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF002_38')}', key: 'conditionSetName', width: 200, formatter: _.escape}
+																{headerText: '#{i18n.getText('CMF002_37')}', key: 'conditionSetCode', width: 100, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_38')}', key: 'conditionSetName', width: 210, formatter: _.escape}
 								                			],
 		                                            multiple: false,
 		                                            value: $parent.selectedConditionSettingCode
