@@ -51,8 +51,8 @@ module nts.uk.com.view.cas004.a {
                         self.isMultiCom(currentUser.multiCompanyConcurrent);
                         self.isChangePass(false);
                         self.isDisplay(true);
-                        self.isDelete(true);
                     };
+                    self.isDelete(true);
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -193,6 +193,8 @@ module nts.uk.com.view.cas004.a {
                                 if (res.messageId != null || res.messageId != undefined) {
                                     if (res.messageId == "Msg_61") {
                                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
+                                    } else if (res.messageId == "Msg_716") {
+                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS004_13")] });
                                     } else {
                                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                                     }

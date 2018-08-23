@@ -71,7 +71,8 @@ public class UpdateRegistrationUserCommandHandler
 			updateUser.setLoginID(currentLoginID);
 		}
 		
-		if (personalId != null && !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
+		if (personalId != null && !updateUser.getAssociatedPersonID().equals(personalId)
+				&& !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
 			throw new BusinessException("Msg_716");
 		}
 		
