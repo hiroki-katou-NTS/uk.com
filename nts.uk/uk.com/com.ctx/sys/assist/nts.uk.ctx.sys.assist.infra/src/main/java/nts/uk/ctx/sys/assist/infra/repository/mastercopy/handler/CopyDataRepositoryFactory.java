@@ -69,7 +69,7 @@ public class CopyDataRepositoryFactory {
         mapper.put("KSHST_FLEX_WORK_SETTING", new KshstFlexWorkSettingDataCopyHandler());
         mapper.put("KSHST_AGG_LABOR_SET", new KshstAggLaborSetDataCopyHandler());
         mapper.put("KSHST_ZERO_TIME_SET", new KshstZeroTimeSetDataCopyHandler());
-        mapper.put("KRCST_CONSTRAINT_TIME_CAL", new KrcstConstralntTimeCalDataCopyHandler());
+        mapper.put("KRCST_CONSTRAINT_TIME_CAL", new KrcstConstraintTimeCalDataCopyHandler());
 
         mapper.put("KRCST_WK_HOUR_LIMIT_CTRL", new KrcstWkHourLimitCtrlDataCopyHandler());
         mapper.put("KSHST_FLEX_SET", new KshstFlexSetDataCopyHandler());
