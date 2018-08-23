@@ -65,10 +65,11 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
-                    if (!_.isNull(month)){
-                        if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
-                            self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
-                        }
+                    if(nts.uk.ui.errors.hasError()){
+                        return; 
+                    }
+                    if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
+                        self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
                     }
                 });
                 self.cssRangerYM = {
