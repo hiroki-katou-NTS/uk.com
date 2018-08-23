@@ -22,11 +22,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 public class SpecialHolidayDomainEvent extends DomainEvent {
 	
 	/** 有効とする */
-<<<<<<< HEAD
 	private boolean isUse;
-=======
-	private boolean isEffective;
->>>>>>> pj/at/dev/Team_B/Test_ReleaseUser
 	/** 特別休暇コード */
 	private SpecialHolidayCode specialHolidayCode;
 	/** 特別休暇名称 */
@@ -34,15 +30,9 @@ public class SpecialHolidayDomainEvent extends DomainEvent {
 	/** 付与するタイミングの種類 */
 	private TypeTime typeTime;
 
-<<<<<<< HEAD
 	public SpecialHolidayDomainEvent(boolean isUse, int specialHolidayCode, String specialHolidayName, int typeTime) {
 		super();
 		this.isUse = isUse;
-=======
-	public SpecialHolidayDomainEvent(boolean isEffective, int specialHolidayCode, String specialHolidayName, int typeTime) {
-		super();
-		this.isEffective = isEffective;
->>>>>>> pj/at/dev/Team_B/Test_ReleaseUser
 		this.specialHolidayCode = new SpecialHolidayCode(specialHolidayCode);
 		this.specialHolidayName = new SpecialHolidayName(specialHolidayName);
 		this.typeTime = EnumAdaptor.valueOf(typeTime, TypeTime.class);
