@@ -68,7 +68,7 @@ module cps007.a.vm {
             invisible();
             service.saveData(command).done((data) => {
                 self.start();
-                if (data) {
+                if (data.length > 0) {
                     let result = _.toString(data);
                     warning({ messageId: "Msg_1350", messageParams: [result] }).then(() => {
                         info({ messageId: "Msg_15" }).then(function() {
