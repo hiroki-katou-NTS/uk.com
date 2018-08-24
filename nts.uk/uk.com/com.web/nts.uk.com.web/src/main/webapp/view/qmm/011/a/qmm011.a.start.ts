@@ -1,8 +1,13 @@
-module nts.uk.com.view.cli003.g {
+module nts.uk.at.view.qmm011.a {
     __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-        });
-        __viewContext.bind(screenModel);
+        var viewmodelA = new nts.uk.at.view.qmm011.a.viewmodel.ScreenModel();
+        var viewmodelB = new nts.uk.at.view.qmm011.a.viewmodel.ScreenModel();
+        __viewContext.viewModel = {
+            viewmodelA: viewmodelA,
+            viewmodelB: viewmodelB
+        };
+        __viewContext.bind(__viewContext.viewModel);
+        
+        
     });
 }
