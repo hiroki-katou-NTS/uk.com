@@ -134,6 +134,8 @@ module nts.uk.at.view.kaf010.b {
             preWorkContent: common.WorkContent;
             inputDate: KnockoutObservable<string> = ko.observable('');
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable(true);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
