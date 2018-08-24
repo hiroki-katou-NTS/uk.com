@@ -74,8 +74,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
         permissionOfEmploymentForm : KnockoutObservable<PermissionOfEmploymentFormModel> 
-                                        = ko.observable(new PermissionOfEmploymentFormModel(
-                                            '', '', 1, true));
+                         = ko.observable(new PermissionOfEmploymentFormModel('', '', 1, true));
+        closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
 
@@ -213,13 +213,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
-                    self.applyKCP005ContentSearch(data.listEmployee).done(() => {
-                        setTimeout(function(){ 
-                            $("#employeeSearch div[id *= 'scrollContainer']").scrollTop(0);
-                        }, 1000);
-                    });
+                    self.applyKCP005ContentSearch(data.listEmployee);
                     self.startDateString(data.periodStart);
                     self.endDateString(data.periodEnd);
+                    self.closureId(data.closureId);
                 }
             }
         }
@@ -304,26 +301,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         /**
         * apply ccg001 search data to kcp005
         */
-        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): JQueryPromise<any> {
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
             var self = this;
-            var dfd = $.Deferred();
             self.employeeList([]);
             var employeeSearchs: UnitModel[] = [];
             self.selectedEmployeeCode([]);
-            for (var i = 0; i < dataList.length; i++) {
-                let employeeSearch = dataList[i];
-                let employee: UnitModel = {
+            for (var employeeSearch of dataList) {
+                var employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
                     workplaceName: employeeSearch.workplaceName
                 };
                 employeeSearchs.push(employee);
                 self.selectedEmployeeCode.push(employee.code);
-                
-                if(i == (dataList.length - 1)) {
-                    dfd.resolve();
-                }
-                
             }
             self.employeeList(employeeSearchs);
             self.lstPersonComponentOption = {
@@ -341,8 +331,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
-            
-            return dfd.promise();
         }
 
         /**
@@ -399,7 +387,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode(),
-                self.baseDate().format("YYYY/MM/DD")
+                self.baseDate().format("YYYY/MM/DD"),
+                self.closureId()
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -604,12 +593,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         outputItemSettingCode: string;
         pageBreak: string;
         baseDate: string;
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, baseDate: string) {
+        closureId: number
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, 
+                baseDate: string, closureId: number) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
+            this.closureId = closureId;
         }
     }
 

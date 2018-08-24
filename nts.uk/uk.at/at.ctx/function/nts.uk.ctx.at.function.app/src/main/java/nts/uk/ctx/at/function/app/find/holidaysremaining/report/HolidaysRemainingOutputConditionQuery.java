@@ -9,4 +9,5 @@ public class HolidaysRemainingOutputConditionQuery {
 	private String outputItemSettingCode;
 	private int pageBreak;
 	private String baseDate;
+	private int closureId;
 }

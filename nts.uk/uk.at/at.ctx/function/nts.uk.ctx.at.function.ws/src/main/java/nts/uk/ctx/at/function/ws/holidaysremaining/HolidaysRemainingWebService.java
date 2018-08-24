@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.app.find.holidaysremaining.DateHolidayRemainingDto
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.PermissionOfEmploymentFormDto;
+import nts.uk.ctx.at.function.app.find.holidaysremaining.VariousVacationControlDto;
 import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -88,5 +89,11 @@ public class HolidaysRemainingWebService extends WebService {
 	@Path("getBreakSelection")
 	public List<EnumConstant> getEnumValueOutputFormat(){
 		return EnumAdaptor.convertToValueNameList(BreakSelection.class, i18n);
+	}
+	
+	@POST
+	@Path("getVariousVacationControl")
+	public VariousVacationControlDto getVariousVacationControl() {
+		return this.hdRemainManageFinder.getVariousVacationControl();
 	}
 }
