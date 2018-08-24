@@ -93,7 +93,7 @@
 												<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('Com_Workplace')}</span>
 											</label>
 											<span style="vertical-align: middle;margin-left: 15px;">#{i18n.getText('KBT002_119')}</span>
-											<div tabindex="10" data-bind="ntsDatePicker: {name : '#[KBT002_17]',value: refDate, dateFormat: 'YYYY/MM/DD'}"></div>
+											<div tabindex="10" data-bind="ntsDatePicker: {name : '#[KBT002_17]',value: refDate, dateFormat: 'YYYY/MM/DD', required: (execScopeCls() == 1)}"></div>
 											<button tabindex="11" data-bind = "click: function() { $parent.openDialogCDL008() } ">#{i18n.getText('KBT002_15')}</button>
 											<span data-bind = "text: $parent.wkpListText"></span>
 										</div>
