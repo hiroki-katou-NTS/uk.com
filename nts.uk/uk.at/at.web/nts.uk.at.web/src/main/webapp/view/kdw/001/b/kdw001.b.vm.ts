@@ -227,10 +227,6 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_205" });
                     return;
                 }
-                
-                if (self.dailyCreatedCheck() == true && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
-                    self.dScreenmodel.showPeriodTime(false);
-                }
 
                 if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 1 && self.selectedCreatDivisionCode() == 1 && self.calDivisionCheck() == false &&
                     self.dateDivisionCheck() == false &&
@@ -279,6 +275,12 @@ module nts.uk.at.view.kdw001.b {
                             //view Init value screen D
                             self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
                             self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
+                            
+                            if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == true) {
+                                self.dScreenmodel.showPeriodTime(false);
+                            } else {
+                                self.dScreenmodel.showPeriodTime(true);
+                            }
     
                             if (self.dailyCreatedCheck()) {
                                 var dailyCreatedText = getText('KDW001_9');
@@ -384,6 +386,12 @@ module nts.uk.at.view.kdw001.b {
                             //view Init value screen D
                             self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
                             self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
+                   
+                            if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == true) {
+                                self.dScreenmodel.showPeriodTime(false);
+                            } else {
+                                self.dScreenmodel.showPeriodTime(true);   
+                            }
     
                             if (self.dailyCreatedCheck()) {
                                 var dailyCreatedText = getText('KDW001_9');
@@ -488,7 +496,13 @@ module nts.uk.at.view.kdw001.b {
                     //view Init value screen D
                     self.dScreenmodel.periodDate(getText('KDW001_34', [self.params.periodStartDate, self.params.periodEndDate]));
                     self.dScreenmodel.numberEmployee(getText('KDW001_21', [self.params.lstEmployeeID.length]));
-
+                             
+                    if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == true) {
+                        self.dScreenmodel.showPeriodTime(false);
+                    } else {
+                       self.dScreenmodel.showPeriodTime(true); 
+                    }
+                    
                     if (self.dailyCreatedCheck()) {
                         var dailyCreatedText = getText('KDW001_9');
                         self.dScreenmodel.dailyCreated(dailyCreatedText);
