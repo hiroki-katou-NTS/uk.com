@@ -34,6 +34,8 @@ public class PerInfoInitValueSettingItemDto {
 	private String constraint;
 	private Integer numberDecimalPart;
 	private Integer numberIntegerPart;
+	private Integer numberItemAmount;
+	private Integer numberItemMinus;
 	private Integer timeItemMin;
 	private Integer timeItemMax;
 	private String selectionItemId;
@@ -68,6 +70,8 @@ public class PerInfoInitValueSettingItemDto {
                 domain.getConstraint(),
                 domain.getNumberDecimalPart(),
                 domain.getNumberIntegerPart(),
+                domain.getNumberItemAmount(),
+                domain.getNumberItemMinus(),
                 domain.getTimeItemMin(),
                 domain.getTimeItemMax(),
                 domain.getSelectionItemId(),

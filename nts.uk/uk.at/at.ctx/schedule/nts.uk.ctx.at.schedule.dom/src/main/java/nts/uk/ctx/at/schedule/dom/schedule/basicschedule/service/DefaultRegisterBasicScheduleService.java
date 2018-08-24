@@ -118,9 +118,23 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	
 	@Override
-	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode) {
+	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList,
+			List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode, RegistrationListDateSchedule registrationListDateSchedule) {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> errList = new ArrayList<>();
+		
+		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
+
+		List<Integer> startClock = new ArrayList<>();
+		List<Integer> endClock = new ArrayList<>();
+		List<Integer> breakStartTime = new ArrayList<>();
+		List<Integer> breakEndTime = new ArrayList<>();
+		List<Integer> childCareStartTime = new ArrayList<>();
+		List<Integer> childCareEndTime = new ArrayList<>();
+		
+		List<DateRegistedEmpSche> listDateRegistedEmpSche = new ArrayList<>();
 
 		List<String> listWorkTypeCode = basicScheduleList.stream().map(x -> {
 			return x.getWorkTypeCode();
@@ -141,17 +155,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		Map<String, WorkTimeSetting> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
 			return x.getWorktimeCode().v();
 		}, x -> x));
-
-		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
-		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
-		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
-
-		List<Integer> startClock = new ArrayList<>();
-		List<Integer> endClock = new ArrayList<>();
-		List<Integer> breakStartTime = new ArrayList<>();
-		List<Integer> breakEndTime = new ArrayList<>();
-		List<Integer> childCareStartTime = new ArrayList<>();
-		List<Integer> childCareEndTime = new ArrayList<>();
 
 		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
 				mapDiffTimeWorkSetting);
@@ -313,10 +316,25 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
 
-				basicScheduleRepo.insert(bSchedule);
+				basicScheduleRepo.insert(bSchedule); 
 			}
-
+			
+			// 修正ログ情報を作成する (Tạo thông tin log chỉnh sửa)
+			// Lam ben ngoai vong lap, phần (đăng ký record chỉnh sử data)
+			
+			// 登録対象日を保持しておく（暫定データ作成用） 
+			Optional<DateRegistedEmpSche> optDateRegistedEmpSche = listDateRegistedEmpSche.stream().filter(s -> s.getEmployeeId().equals(employeeId)).findFirst();
+			if(optDateRegistedEmpSche.isPresent()){
+				optDateRegistedEmpSche.get().getListDate().add(date); 
+			} else {
+				List<GeneralDate> listDate = new ArrayList<>();
+				listDate.add(date);
+				listDateRegistedEmpSche.add(new DateRegistedEmpSche(employeeId, listDate));
+			}
+			
 		}
+		
+		registrationListDateSchedule.setRegistrationListDateSchedule(listDateRegistedEmpSche);
 		
 		return errList;
 	}

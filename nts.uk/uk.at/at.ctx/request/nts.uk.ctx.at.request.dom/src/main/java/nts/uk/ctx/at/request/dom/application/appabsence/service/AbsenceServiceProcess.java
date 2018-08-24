@@ -75,5 +75,6 @@ public interface AbsenceServiceProcess {
 	 * @param baseDate - 基準日
 	 * @return 年休残数-代休残数-振休残数-ストック休暇残数
 	 */
-	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate, List<AppEmploymentSetting> appEmpSetAs);
+	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate, 
+			List<AppEmploymentSetting> appEmpSetAs);
 }

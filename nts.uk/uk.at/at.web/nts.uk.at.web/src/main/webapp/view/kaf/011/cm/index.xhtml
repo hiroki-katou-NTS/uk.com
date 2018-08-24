@@ -48,8 +48,9 @@
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<div id="swb_pre_post_type" class="cf"
-					data-bind="ntsSwitchButton: {
+				<div data-bind="if:screenModeNew()==true">
+					<div id="swb_pre_post_type" class="cf"
+						data-bind="ntsSwitchButton: {
 							name: '#{i18n.getText('KAF011_13')}',
 							options: prePostTypes ,
 							optionsValue: 'code',
@@ -57,8 +58,12 @@
 							value: prePostSelectedCode ,
 							enable: enablePrepost(),
 							required:displayPrePostFlg()!=0
-							 }"></div>
-
+							 }
+							 "></div>
+				</div>
+				<div data-bind="if:screenModeNew()==false">
+					<label class="text_line" data-bind="text:prePostText"></label>
+				</div>
 			</div>
 
 		</div>

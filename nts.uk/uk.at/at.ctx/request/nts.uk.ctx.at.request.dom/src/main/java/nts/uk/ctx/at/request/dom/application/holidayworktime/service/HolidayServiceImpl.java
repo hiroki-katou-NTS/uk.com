@@ -186,18 +186,19 @@ public class HolidayServiceImpl implements HolidayService {
 					workTypeCodes.add(x.getWorkTypeCode());
 					});
 				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+				return workTypeHolidayWorks;
 			}
-		}else{
-			////休出
-			int breakDay = 11;
-			// ドメインモデル「勤務種類」を取得
-			List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
-			if(!CollectionUtil.isEmpty(workrTypes)){
-				workrTypes.forEach(x -> {
-					workTypeCodes.add(x.getWorkTypeCode().toString());
-				});
-				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
-			}
+		}
+		////休出
+		int breakDay = 11;
+		// ドメインモデル「勤務種類」を取得
+		List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
+		if(!CollectionUtil.isEmpty(workrTypes)){
+			workrTypes.forEach(x -> {
+				workTypeCodes.add(x.getWorkTypeCode().toString());
+			});
+			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+			return workTypeHolidayWorks;
 		}
 		return workTypeHolidayWorks;
 	}

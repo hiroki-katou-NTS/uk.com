@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
@@ -27,7 +27,6 @@ import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerform
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
@@ -42,6 +41,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRe
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -99,7 +99,13 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
 
 		ProcessExecutionSetting execSetting = 
-				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls());
+				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
+						new AppRouteUpdateDaily(
+								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
+								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
+								),
+						EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class)
+						);
 		
 		ProcessExecution procExec =
 				new ProcessExecution(companyId,

@@ -129,27 +129,27 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
-				boolean checkErrorFixed = false;
-				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-					if(fixedExtraMonFun.isUseAtr()) {
-						checkErrorFixed = true;
-						break;
-					}
-				}
-				boolean checkArbExtraCon = false;
-				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
-					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
-						if(dto.isUseAtr()) {
-							checkArbExtraCon = true;
-							break;
-						}
-					}
-				}
-				
-				
-				if(checkErrorFixed == false && checkArbExtraCon == false) {
-					throw new BusinessException("Msg_832"); 
-				}
+//				boolean checkErrorFixed = false;
+//				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+//					if(fixedExtraMonFun.isUseAtr()) {
+//						checkErrorFixed = true;
+//						break;
+//					}
+//				}
+//				boolean checkArbExtraCon = false;
+//				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+//					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+//						if(dto.isUseAtr()) {
+//							checkArbExtraCon = true;
+//							break;
+//						}
+//					}
+//				}
+//				
+//				
+//				if(checkErrorFixed == false && checkArbExtraCon == false) {
+//					throw new BusinessException("Msg_832"); 
+//				}
 				
 				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
@@ -183,22 +183,22 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case MULTIPLE_MONTH:
 				MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition() ;
 				
-				boolean checkMulMonConds = false;
+//				boolean checkMulMonConds = false;
 				 List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
 					      command.getMulMonCheckCond().getListMulMonCheckConds();
-				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
-					for(MulMonCheckCondDomainEventDto dto : listMulMonCheckConds) {
-						if(dto.isUseAtr()) {
-							checkMulMonConds = true;
-							break;
-						}
-					}
-				}
-				
-				
-				if(checkMulMonConds == false) {
-					throw new BusinessException("Msg_832"); 
-				}
+//				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
+//					for(MulMonCheckCondDomainEventDto dto : listMulMonCheckConds) {
+//						if(dto.isUseAtr()) {
+//							checkMulMonConds = true;
+//							break;
+//						}
+//					}
+//				}
+//				
+//				
+//				if(checkMulMonConds == false) {
+//					throw new BusinessException("Msg_832"); 
+//				}
 				
 				//update list multiple month
 				List<String> listEralCheckMulIDOld = alarmCheckConByCategoryFinder
@@ -320,26 +320,26 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				break;
 			case MONTHLY:
-				boolean checkErrorFixed = false;
-				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-					if(fixedExtraMonFun.isUseAtr()) {
-						checkErrorFixed = true;
-						break;
-					}
-				}
-				
-				boolean checkArbExtraCon = false;
-				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
-					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
-						if(dto.isUseAtr()) {
-							checkArbExtraCon = true;
-							break;
-						}
-					}
-				}
-				if(checkErrorFixed == false && checkArbExtraCon == false) {
-					throw new BusinessException("Msg_832"); 
-				}
+//				boolean checkErrorFixed = false;
+//				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+//					if(fixedExtraMonFun.isUseAtr()) {
+//						checkErrorFixed = true;
+//						break;
+//					}
+//				}
+//				
+//				boolean checkArbExtraCon = false;
+//				if(command.getMonAlarmCheckCon().getArbExtraCon().size() >0) {
+//					for(ExtraResultMonthlyDomainEventDto dto : command.getMonAlarmCheckCon().getArbExtraCon() ) {
+//						if(dto.isUseAtr()) {
+//							checkArbExtraCon = true;
+//							break;
+//						}
+//					}
+//				}
+//				if(checkErrorFixed == false && checkArbExtraCon == false) {
+//					throw new BusinessException("Msg_832"); 
+//				}
 				
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
@@ -362,20 +362,20 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 				
 			case MULTIPLE_MONTH:
-				boolean checkMulMonConds = false;
+//				boolean checkMulMonConds = false;
 				 List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
 					      command.getMulMonCheckCond().getListMulMonCheckConds();
-				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
-					for(MulMonCheckCondDomainEventDto item : listMulMonCheckConds) {
-						if(item.isUseAtr()) {
-							checkMulMonConds = true;
-							break;
-						}
-					}
-				}
-				if(checkMulMonConds == false) {
-					throw new BusinessException("Msg_832"); 
-				}
+//				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
+//					for(MulMonCheckCondDomainEventDto item : listMulMonCheckConds) {
+//						if(item.isUseAtr()) {
+//							checkMulMonConds = true;
+//							break;
+//						}
+//					}
+//				}
+//				if(checkMulMonConds == false) {
+//					throw new BusinessException("Msg_832"); 
+//				}
 				
 				
 				String mulMonAlarmCondID = IdentifierUtil.randomUniqueId();

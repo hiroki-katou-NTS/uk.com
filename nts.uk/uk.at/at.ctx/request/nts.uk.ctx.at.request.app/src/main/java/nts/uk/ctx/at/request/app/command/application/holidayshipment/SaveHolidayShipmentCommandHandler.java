@@ -515,7 +515,7 @@ public class SaveHolidayShipmentCommandHandler
 
 			if (isBothDayNotZero && isTwoDateNotSame) {
 
-				throw new BusinessException("Msg_698", "");
+				throw new BusinessException("Msg_698");
 
 			}
 		}

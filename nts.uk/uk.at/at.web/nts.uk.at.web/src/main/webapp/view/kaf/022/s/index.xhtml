@@ -83,7 +83,7 @@
 						
 					<div id="right-content" style="float: left;" data-bind="with: selectedReason">
 						<!-- S2_10 -->
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_443')}</div>
+						<div data-bind="ntsFormLabel: {required: true, constraint: 'ReasonTempPrimitive'}">#{i18n.getText('KAF022_443')}</div>
 						<!-- S2_11 -->
 						<div>
 							<textarea id="reason-temp" tabindex="9" data-bind="ntsMultilineEditor: {

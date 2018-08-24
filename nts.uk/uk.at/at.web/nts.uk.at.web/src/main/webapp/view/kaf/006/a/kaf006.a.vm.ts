@@ -716,6 +716,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 specHd: specHd
                 
             };
+            if(paramInsert.workTypeCode == null){
+                 $("#workTypes").trigger('validate');
+                return;
+            }
             service.createAbsence(paramInsert).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){

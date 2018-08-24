@@ -155,7 +155,9 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
-            $("#inpCode").focus();
+            _.defer(() => {
+                $("#inpCode").focus();
+            })            
             self.checkUpdateMode();
         }
 

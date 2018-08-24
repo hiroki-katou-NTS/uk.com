@@ -101,6 +101,38 @@ module a11 {
             _self.model.isChangeItemTable.subscribe(newValue => {
                 _self.bindingData();
             });
+            _self.workdayOffTimeSubHolTransferSetAtr.subscribe((v) => {
+                if (v == 0) {//一定時間
+                    $('#certainDayTimeHol').ntsError('clear');
+                }
+                else {//指定時間
+                    $('#oneDayTimeHol').ntsError('clear');
+                    $('#haflDayTimeHol').ntsError('clear');
+                }
+            });
+            _self.fromOverTimeSubHolTransferSetAtr.subscribe((v) => {
+                if (v == 0) {//一定時間
+                    $('#certainDayTimeOT').ntsError('clear');
+                }
+                else {//指定時間
+                    $('#haflDayTimeOT').ntsError('clear');
+                    $('#oneDayTimeOT').ntsError('clear');
+                }
+            });
+            _self.workdayOffTimeUseDivision.subscribe((v) => {
+                if (!v) {
+                    $('#certainDayTimeHol').ntsError('clear');
+                    $('#oneDayTimeHol').ntsError('clear');
+                    $('#haflDayTimeHol').ntsError('clear');
+                }
+            });
+            _self.fromOverTimeUseDivision.subscribe((v) => {
+                if (!v) {
+                    $('#certainDayTimeOT').ntsError('clear');
+                    $('#haflDayTimeOT').ntsError('clear');
+                    $('#oneDayTimeOT').ntsError('clear');
+                }
+            })
         }
 
         /**

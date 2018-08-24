@@ -24,6 +24,10 @@ module cps001.a.service {
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
             permision: 'ctx/pereg/functions/auth/find-all',
         },
+        licenseChecks: {
+            start: 'ctx/pereg/license/checkDipslayStart',
+            getInfo: 'ctx/pereg/license/checkLicense'    
+        },
         file: '/shr/infra/file/storage/infor/{0}',
         lstcardno:'at/record/stamp/stampcard/getListCardNo'
     };
@@ -90,5 +94,13 @@ module cps001.a.service {
     
     export function getLstCardNoByContractCd() {
         return ajax('at', paths.lstcardno);
+    }
+    
+    export function licenseCheckStart() {
+        return ajax(paths.licenseChecks.start);
+    }
+    
+    export function licenseCheck() {
+        return ajax(paths.licenseChecks.getInfo);
     }
 }
