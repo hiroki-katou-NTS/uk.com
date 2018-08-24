@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAt
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.CheckPairDeviationReason;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
@@ -62,6 +63,7 @@ import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
@@ -316,7 +318,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 	
 	// fix response
-	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+	public RCDailyCorrectionResult handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode) {
 		return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month, mode);
 	}
@@ -391,7 +393,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return items;
 	}
 	
-	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
+	private <T extends DailyWorkCommonCommand> RCDailyCorrectionResult handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
 		long time = System.currentTimeMillis();
 		//remove  domain error
@@ -408,22 +410,22 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		//caculator
 		domainDailyNew = calcService.calculate(domainDailyNew);
-		//get error after caculator
-        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
-		if(!items.isEmpty()){
-			return items;
-		}
 		//TODO update data
 		registerNotCalcDomain(commandNew, isUpdate);
 		updateDomainAfterCalc(domainDailyNew);
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
+		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
 		if (mode == 0) {
-			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
 					month == null ? Optional.empty() : month.getDomainMonth(), month);
 		}
-		
+		//get error after caculator
+//        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
+//		if(!items.isEmpty()){
+//			return items;
+//		}
 		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
@@ -441,7 +443,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				});
 		executorService.submit(task);
 		
-		return items;
+		return new RCDailyCorrectionResult(domainDailyNew, lstMonthDomain);
 	}
 	
 	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew,

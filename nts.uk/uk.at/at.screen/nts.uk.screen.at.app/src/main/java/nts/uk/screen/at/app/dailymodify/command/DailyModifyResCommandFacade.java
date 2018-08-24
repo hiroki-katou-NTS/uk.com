@@ -23,7 +23,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
@@ -53,6 +53,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
@@ -93,7 +94,7 @@ public class DailyModifyResCommandFacade {
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
-	public List<DPItemValueRC> handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
+	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode, boolean flagCalculation) {
 		String sid = AppContexts.user().employeeId();
 
@@ -104,7 +105,7 @@ public class DailyModifyResCommandFacade {
 			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
 		}else{
 			this.handler.handlerNoCalc(commandNew, commandOld, dailyItems, true, month, mode);
-			return Collections.emptyList();
+			return null;
 		}
 	}
 
@@ -259,9 +260,9 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam, dataParent.getMode(), dataParent.isFlagCalculation());
-			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
-					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
+			RCDailyCorrectionResult resultUpdate = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam, dataParent.getMode(), dataParent.isFlagCalculation());
+//			itemInputDeviation = resultUpdate.getLstDivergence().stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
+//					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
 			resultError.put(TypeError.COUPLE.value, itemInputErors);
@@ -289,8 +290,9 @@ public class DailyModifyResCommandFacade {
 		return resultError;
 	}
 
-	public Map<Integer, List<DPItemValue>> insertItemDomain(DPItemParent dataParent) {
+	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
@@ -367,9 +369,15 @@ public class DailyModifyResCommandFacade {
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
 			if(querys.isEmpty() ? dataParent.isFlagCalculation() : true){
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode(), dataParent.isFlagCalculation());
-			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
-					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
+				RCDailyCorrectionResult resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam,
+						dataParent.getMode(), dataParent.isFlagCalculation());
+				val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
+						resultIU.getLstMonthDomain());
+				if (!errorDivergence.isEmpty())
+					resultError.putAll(errorDivergence);
+				if (dataParent.getMode() == 0)
+					dataResultAfterIU.setFlexShortage(
+							validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(), monthParam));
 			}
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
@@ -377,10 +385,7 @@ public class DailyModifyResCommandFacade {
 			resultError.put(TypeError.ITEM28.value, itemInputError28);
 			// return resultError;
 		}
-
-		if (!itemInputDeviation.isEmpty()) {
-			resultError.put(TypeError.DEVIATION_REASON.value, itemInputDeviation);
-		}
+		
 		// insert sign
 		insertSign(dataParent.getDataCheckSign());
 
@@ -394,8 +399,8 @@ public class DailyModifyResCommandFacade {
 				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}
 		}
-
-		return resultError;
+		dataResultAfterIU.setErrorMap(resultError);
+		return dataResultAfterIU;
 	}
 
 	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
