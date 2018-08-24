@@ -145,6 +145,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         leaverAppID: KnockoutObservable<string> = ko.observable(null);
         payoutType: KnockoutObservable<number> = ko.observable(null);
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -485,7 +487,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? 0 : overTimeShiftNightTmp),
                 flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.checkBoxValue(),
