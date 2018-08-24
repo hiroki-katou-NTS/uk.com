@@ -21,6 +21,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import formatDate = nts.uk.time.formatDate;
+    import validation = validationcps009;
 
     import primitiveConst = CPS009Constraint.primitiveConst;
 
@@ -70,8 +71,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.getItemList(self.initSettingId(), value);
 
             });
-            
-            
             
         }
         
@@ -419,28 +418,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                itemDateList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
-                    return item.dataType == 3 && item.selectedRuleCode == 2 && _.isNil(item.dateValue);
-                }),
-                itemButton: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
-                    return item.dataType == 8  && item.selectedRuleCode == 2 && (_.isNil(item.selectionId));
+                itemListSetting: Array<any> = _.filter(self.currentCategory().itemList(), function(item) {
+                    return item.selectedRuleCode() == 2;
                 });
             
-            $(".sub-input-units:enabled").trigger('validate');
-            
-            _.each(itemDateList, c =>{
-                let x = "#" + c.perInfoItemDefId;
-                $(x).addClass("error");
-                $(x).find('.nts-input').attr('nameid', c.itemName);
-            });
-            
-            _.each(itemButton, c => {
-                let x = "#" + c.perInfoItemDefId;
-                $(x).ntsError('set', {
-                    messageId: "Msg_824",
-                    messageParams: [c.itemName]
-                });
-            });
+            validation.initCheckError(itemListSetting);
+            validation.checkError(itemListSetting);
             
             if(nts.uk.ui.errors.hasError()){ return;}
 
@@ -1278,13 +1261,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                             itemWorkTime, itemWorkType, false);
                                     }
                                 }
-
-
                             });
-
-
-
-
                         }
 
                     }
