@@ -2176,7 +2176,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
                 totalWidthColumn += id.columnWidth;
             });
             
