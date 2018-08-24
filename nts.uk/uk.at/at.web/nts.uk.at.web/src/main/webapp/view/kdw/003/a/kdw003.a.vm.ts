@@ -848,7 +848,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.clickFromExtract = false;
                         self.showTextStyle = false;
                         dataChange = {};
-                        if (_.isEmpty(dataAfter)) {
+                        if (_.isEmpty(dataAfter.errorMap)) {
                             if (checkDailyChange) {
                                 // self.reloadScreen();
                                 self.loadRowScreen(false);
@@ -858,25 +858,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         } else {
                             nts.uk.ui.block.clear();
-                            if (dataAfter[0] != undefined) {
-                                self.listCareError(dataAfter[0])
+                            if (dataAfter.errorMap[0] != undefined) {
+                                self.listCareError(dataAfter.errorMap[0])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
                             }
-                            if (dataAfter[1] != undefined) {
-                                self.listCareInputError(dataAfter[1])
+                            if (dataAfter.errorMap[1] != undefined) {
+                                self.listCareInputError(dataAfter.errorMap[1])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
                             if (dataAfter[2] != undefined) {
-                                self.listCheckHolidays(dataAfter[2]);
+                                self.listCheckHolidays(dataAfter.errorMap[2]);
                                 self.loadRowScreen(false);
                             }
 
                             if (dataAfter[3] != undefined) {
-                                self.listCheck28(dataAfter[3]);
+                                self.listCheck28(dataAfter.errorMap[3]);
                             }
 
                             if (dataAfter[4] != undefined) {
-                                self.listCheckDeviation = dataAfter[4];
+                                self.listCheckDeviation = dataAfter.errorMap[4];
                             }
                             self.showErrorDialog();
                         }
@@ -1387,7 +1387,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: lstEmployee,
                     formatCodes: self.formatCodes(),
-                    objectShare: null
+                    objectShare: null,
+                    showLock: self.showLock()
                 };
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
@@ -1409,8 +1410,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.showSupervisor(data.showSupervisor);
                     self.showTighProcess(data.showTighProcess);
                     self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
-                    self.showLock(self.showButton().available12());
-                    self.unLock(false);
+                    //self.showLock(self.showButton().available12());
+                    //self.unLock(false);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
