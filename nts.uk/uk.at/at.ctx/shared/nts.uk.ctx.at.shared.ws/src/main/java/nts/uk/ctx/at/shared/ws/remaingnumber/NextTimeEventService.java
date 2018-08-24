@@ -34,6 +34,9 @@ public class NextTimeEventService extends WebService{
 	@POST
 	@Path("nextTime")
 	public NextTimeEventDto getNextTimeData(NextTimeEventParam param) {
+		if (param.getStandardDate() == null){
+			return new NextTimeEventDto();
+		}
 		AnnLeaEmpBasicInfo annLea = new AnnLeaEmpBasicInfo(param.getEmployeeId(),
 				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(), null, null, null,
 				null);

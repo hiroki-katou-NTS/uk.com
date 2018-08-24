@@ -60,6 +60,8 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 	private static final String PERSONNAME_CODE = "IS00003";
 	
 	private static final String HIREDATE_CODE = "IS00020";
+	
+	private static final String EMPLOYEE_CODE = "IS00001";
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<NewLayoutCommand> context) {
@@ -171,7 +173,8 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 			value.stream().forEach(item -> {
 				if (item.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM
 						|| PERSONNAME_CODE.equals(item.getItemCode().v())
-						|| HIREDATE_CODE.equals(item.getItemCode().v())) {
+						|| HIREDATE_CODE.equals(item.getItemCode().v())
+						|| EMPLOYEE_CODE.equals(item.getItemCode().v())) {
 					return;
 				}
 				SingleItem type = (SingleItem) item.getItemTypeState();

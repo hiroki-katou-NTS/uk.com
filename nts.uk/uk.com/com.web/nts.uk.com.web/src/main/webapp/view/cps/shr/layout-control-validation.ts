@@ -1508,7 +1508,7 @@ module nts.layout {
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value);
 
-                    if (!employeeId) {
+                    if (!employeeId || !x) {
                         return;
                     }
 
