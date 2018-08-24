@@ -13,6 +13,7 @@ public class PeregCorrectionLogProcessorContext {
 	@Getter
 	private final String operationId;
 	
+	@Getter
 	private final HashMap<String, Serializable> parameters;
 	
 	@Getter

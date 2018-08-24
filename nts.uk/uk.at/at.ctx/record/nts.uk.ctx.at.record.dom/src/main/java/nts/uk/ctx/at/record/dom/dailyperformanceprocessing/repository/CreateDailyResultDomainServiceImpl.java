@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
@@ -52,6 +53,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -111,6 +114,9 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -263,6 +269,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 										mapDateHistoryItem, periodInMasterList);
 								if (cStatus == ProcessState.INTERRUPTION) {
 									stateHolder.add(cStatus);
+									dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 									return ;
 								} 
 								
@@ -271,6 +278,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 								countDownLatch.countDown();
 							});
 					if(stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
+						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 						return ;
 					}
 					executorService.submit(task);
@@ -430,9 +438,15 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext,
 				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false,
 				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
+		
+		// 暫定データの登録
+		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, periodTime.datesBetween());
+		
+		// ログ情報（実行内容の完了状態）を更新する
+		updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
+		
 		// 状態確認
 		if (cStatus == ProcessState.SUCCESS) {
-			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
 			dataSetter.updateData("dailyCreateCount", stateHolder.count() + 1);
 		} else {
 			return ProcessState.INTERRUPTION;

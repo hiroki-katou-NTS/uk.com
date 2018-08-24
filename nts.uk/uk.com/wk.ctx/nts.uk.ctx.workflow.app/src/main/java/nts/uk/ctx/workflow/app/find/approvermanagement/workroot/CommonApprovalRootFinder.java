@@ -584,4 +584,12 @@ public class CommonApprovalRootFinder {
 		}).collect(Collectors.toList());
 		return itemModel;
 	}
+	/**
+	 * get work place info (id, code, name)
+	 * @param workplaceId
+	 * @return
+	 */
+	public WorkplaceImport getWpInfoLogin(){
+		return adapterWp.findBySid(AppContexts.user().employeeId(), GeneralDate.today());
+	}
 }

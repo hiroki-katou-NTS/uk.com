@@ -62,6 +62,7 @@ module nts.uk.at.view.kmk008.f {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
                 } else {
@@ -95,7 +96,7 @@ module nts.uk.at.view.kmk008.f {
                 let self = this;
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
-
+                nts.uk.ui.block.invisible();
                 if (self.selectedCode() != "") {
                     if (indexCodealreadySetting != -1) {
                         new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
@@ -108,6 +109,7 @@ module nts.uk.at.view.kmk008.f {
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.getDetail(self.selectedCode());
+                            nts.uk.ui.block.clear();
 
                         });
                         return;
@@ -123,6 +125,7 @@ module nts.uk.at.view.kmk008.f {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.getalreadySettingList();
                         self.getDetail(self.selectedCode());
+                        nts.uk.ui.block.clear();
                     });
                 }
             }

@@ -67,7 +67,7 @@ module nts.uk.at.view.kwr006.c {
                 });
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180 }
+                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape}
                 ]);
                 self.itemListConditionSet = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
@@ -102,6 +102,16 @@ module nts.uk.at.view.kwr006.c {
                 self.items(lstSwapLeft);
                 // refresh data for C7_8
                 self.currentCodeListSwap(lstSwapRight);
+            }
+
+            public sortItems(): void {
+                let self = nts.uk.ui._viewModel.content;
+                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
+            }
+
+            public sortCurrentCodeListSwap(): void {
+                let self = nts.uk.ui._viewModel.content;
+                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
             }
 
             /*
@@ -251,6 +261,8 @@ module nts.uk.at.view.kwr006.c {
 
                 $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function() {
                     self.currentCodeList(nts.uk.ui.windows.getShared('selectedCode'));
+                    if (_.isNil(self.currentCodeList()))
+                        self.newMode();
                     dfd.resolve();
                 })
                 return dfd.promise();

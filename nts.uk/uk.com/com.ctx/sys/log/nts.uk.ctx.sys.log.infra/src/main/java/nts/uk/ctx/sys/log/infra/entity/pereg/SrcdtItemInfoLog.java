@@ -29,6 +29,10 @@ public class SrcdtItemInfoLog extends UkJpaEntity {
 	@Basic(optional = false)
 	public String ctgCorrectionLogID;
 
+	@Column(name = "ITEM_ID")
+	@Basic(optional = true)
+	public String itemID;
+
 	@Column(name = "ITEM_NAME")
 	@Basic(optional = false)
 	public String itemName;

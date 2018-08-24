@@ -65,7 +65,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let self = this,
                 dataSource : Array<any> = $("#grid0").ntsGrid("updatedCells"),
                 itemList: Array<any>,
-                id: Array[any] = [],
+                id: Array<any> = [],
                 obj: any;
             
             itemList = _.map(dataSource, function(x) { return x.rowId });

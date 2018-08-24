@@ -272,6 +272,11 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
+            // validate baseDate
+            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+                return;
+            }
+
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
@@ -597,10 +602,8 @@ module kcp.share.tree {
             let dfd = $.Deferred<void>();
             let self = this;
             self.addColToGrid(self.data, self.itemList());
-            let webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
-            self.$input.load(webserviceLocator, function() {
+            self.$input.html(TREE_COMPONENT_HTML);
+            _.defer(() => {
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
 
@@ -929,6 +932,89 @@ module kcp.share.tree {
             restrictionOfReferenceRange: boolean;
         }
     }
+
+    export class TreeComponentTextResource {
+        static KCP004_2 = nts.uk.resource.getText('KCP004_2');
+        static KCP004_3 = nts.uk.resource.getText('KCP004_3');
+        static KCP004_4 = nts.uk.resource.getText('KCP004_4');
+        static KCP004_7 = nts.uk.resource.getText('KCP004_7');
+        static KCP004_8 = nts.uk.resource.getText('KCP004_8');
+    }
+
+var TREE_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <style type="text/css">
+#nts-component-list .nts-searchbbox-wrapper {
+    float: left;
+}
+
+/* fix bug show unexpected selector column on page with sidebar on IE */
+#single-tree-grid_container .ui-iggrid-rowselector-header {
+    border: 0px;
+}
+#single-tree-grid_container .ui-iggrid-rowselector-class {
+    border: 0px;
+}
+
+</style>
+    <div id="nts-component-tree" style="border-radius: 5px;" tabindex="-1"
+        data-bind="css: {'caret-right caret-background bg-green' : !isDialog},
+            style: {padding: hasPadding ? '20px' : '0px'}">
+        <!-- ko if: !isDialog -->
+            <i class="icon icon-searchbox"></i>
+        <!-- /ko -->
+        <div data-bind="visible: !isMultipleUse">
+            <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
+            <div class="base-date-editor" id="work-place-base-date"
+                style="margin-left: 17px; margin-right: 5px;"
+                data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 1},
+                ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
+            <button
+                data-bind="click: reload, attr: {tabindex: isSetTabindex() ? tabindex : 2}"
+                style="width: 100px">`+TreeComponentTextResource.KCP004_3+`</button>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <div data-bind="ntsFormLabel: {}" style="float: left;">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div id="combo-box-tree-component"
+                style="width: 107px; margin-left: 35px;"
+                data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 3}, ntsComboBox: {
+                    options: levelList,
+                    optionsValue: 'level',
+                    value: levelSelected,
+                    optionsText: 'name',
+                    editable: false,
+                    enable: true,
+                    columns: [
+                        { prop: 'name', length: 4 },
+                    ]}"></div>
+        </div>
+
+        <div style="width: 420px">
+            <div tabindex="4" style="width: 264px; display: inline-block;" data-bind="attr: {id: searchBoxId}">
+            </div>
+            <div style="display: inline-block; margin-left: 2px;">
+                <!-- ko if: isShowSelectButton -->
+                    <button
+                        data-bind="click: selectAll, attr: {tabindex: isSetTabindex() ? tabindex : 5}">`+TreeComponentTextResource.KCP004_7+`</button>
+                    <button
+                        data-bind="click: selectSubParent, attr: {tabindex: isSetTabindex() ? tabindex : 6}">`+TreeComponentTextResource.KCP004_8+`</button>
+                <!-- /ko -->
+            </div>
+        </div>
+        <div class="cf"></div>
+        <!-- ko if: !isMultiSelect -->
+            <table id="single-tree-grid" class="cf">
+            </table>
+        <!-- /ko -->
+        <!-- ko if: isMultiSelect -->
+            <table id="multiple-tree-grid" class="cf">
+            </table>
+        <!-- /ko -->
+    </div>
+</ui:composition>`;
 }
 
 /**

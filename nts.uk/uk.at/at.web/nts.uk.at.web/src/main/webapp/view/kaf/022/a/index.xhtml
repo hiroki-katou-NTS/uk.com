@@ -75,7 +75,7 @@
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
                         <button  id="btn_001" class="button proceed separate-button fix-button"
-                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}, enable: $parent.viewmodelL.allowRegister()">#{i18n.getText('KAF022_1')}</button>
                         <button  id="btn_002" class="button separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
@@ -87,7 +87,7 @@
 				<com:ko-if bind="currentTab()==='m'">
 					<div class="center-content-kaf022l">
 						<button id="btn_001" class="button proceed separate-button fix-button"
-								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM)">#{i18n.getText('KAF022_1')}</button>
+								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM), enable: $vm.viewmodelM.allowRegister()">#{i18n.getText('KAF022_1')}</button>
 						<button id="btn_002" class="button separate-button fix-button"
 								data-bind="click: $vm.viewmodelM.openDialogCopy.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()">#{i18n.getText('KAF022_274')}</button>
 						<button id="btn_004" class="button danger separate-button fix-button"
@@ -580,8 +580,9 @@
 									<tr>
 									</tr>
 								</thead>
-								<tbody data-bind="foreach: listDataA8">
-									<tr data-bind="if: (appType() == 0 &#124; appType() == 1) &amp; flg() != 1">
+								<tbody>
+									<com:ko tag="foreach" bind="listDataA8">
+									<tr data-bind="if: (appType() == 0 &#124;&#124; appType() == 1) &amp; flg() != 1">
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
 										<td><div
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
@@ -602,6 +603,7 @@
 										<td>
 											<div  class ="a4_7"
 												data-bind="ntsComboBox: {
+													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
 													visibleItemsCount: 2,
@@ -610,26 +612,19 @@
 													editable: $parent.isEditable,
 													enable: $parent.isEnable,
 													columns: [
-														{ prop: 'name', length: 7 }
+														{ prop: 'name', length: 7}
 													]},attr:{
 														tabindex:91 + $index()*6
 													}">
 											</div>
 										</td>
 										<td><div
-												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
+												data-bind="ntsCheckBox: { checked: canClassificationChange, enable: disableA8},attr:{
 														tabindex:92 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
-								</tbody>
-							</table>
-							<table class="viewmodel-a" id="fixed-table-a9">
-								<colgroup>
-									<col width="165px" />
-									<col width="120px" />
-									<col width="120px" />
-								</colgroup>
-								<tbody data-bind="foreach: listDataA8">
+									</com:ko>
+									<com:ko tag="foreach" bind="listDataA8">
 									<tr data-bind="if: flg() == 1">
 										<td class="color-header"><span class = "hdtype" id="a8_8"  data-bind="text:appTypeName"></span></td>
 										<td><div
@@ -641,21 +636,9 @@
 														tabindex:94 + $index()*6
 													}">#{i18n.getText('KAF022_61')}</div></td>
 									</tr>
-
-								</tbody>
-							</table>
-							<table class="viewmodel-a" id="fixed-table-a10">
-								<colgroup>
-									<col width="165px" />
-									<col width="120px" />
-									<col width="120px" />
-									<col width="130px" />
-									<col width="130px" />
-									<col width="130px" />
-									<col width="120px" />
-								</colgroup>
-								<tbody data-bind="foreach: listDataA8">
-									<tr data-bind="if: (appType() == 2 &#124; appType() == 4 &#124; appType() == 6 &#124; appType() == 7 &#124; appType() == 9 &#124; appType() == 10) &amp; flg() == 0">
+									</com:ko>
+									<com:ko tag="foreach" bind="listDataA8">
+									<tr data-bind="if: (appType() == 2 &#124;&#124; appType() == 4 &#124;&#124; appType() == 6 &#124;&#124; appType() == 7 &#124;&#124; appType() == 9 &#124;&#124; appType() == 10) &amp; flg() == 0">
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
 										<td><div
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
@@ -676,6 +659,7 @@
 										<td>
 											<div  class ="a4_7"
 												data-bind="ntsComboBox: {
+													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
 													visibleItemsCount: 2,
@@ -691,10 +675,11 @@
 											</div>
 										</td>
 										<td><div
-												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
+												data-bind="ntsCheckBox: { checked: canClassificationChange, enable: disableA8 },attr:{
 														tabindex:100 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
+									</com:ko>
 								</tbody>
 							</table>
 							<!-- A9 update ver29 di chuyen-->

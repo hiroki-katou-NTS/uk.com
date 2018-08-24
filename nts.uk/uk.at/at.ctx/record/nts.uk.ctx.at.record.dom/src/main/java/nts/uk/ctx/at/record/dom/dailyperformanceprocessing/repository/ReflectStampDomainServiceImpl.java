@@ -169,6 +169,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode.v());
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			newReflectStampOutput.setReflectStampOutput(reflectStamp);
 			return newReflectStampOutput;
 		}
 
@@ -412,8 +414,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		if (!workTypeOpt.isPresent()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
-					new ErrMessageResource("016"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
-					new ErrMessageContent(TextResource.localize("Msg_591")));
+					new ErrMessageResource("015"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
+					new ErrMessageContent(TextResource.localize("Msg_590")));
 			errMesInfos.add(employmentErrMes);
 			outPut.setErrMesInfos(errMesInfos);
 			return outPut;
