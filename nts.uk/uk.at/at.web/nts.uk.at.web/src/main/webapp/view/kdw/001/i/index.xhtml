@@ -154,11 +154,11 @@
 										
 									</td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink"
+									<td style="text-align: center;"><span class="hyperlink" tabindex = "1"
 										data-bind="click: $parent.openDialogG.bind($parent, $data) "><span
 											data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink"
+									<td style="text-align: center;"><span class="hyperlink" tabindex = "2"
 										data-bind="click: $parent.openDialogH.bind($parent, $data) "><span
 											data-bind=" text: $data.numberPersonErr"></span>人</span></td>
 								</tr>
@@ -169,7 +169,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- I3_2 -->
-				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+				<button class="large" tabindex = "3" id="close-dialog" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 
 		</ui:define>
