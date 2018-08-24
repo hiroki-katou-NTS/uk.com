@@ -74,6 +74,17 @@ public class CreateEmployeeDailyPerError {
 		return employeeDailyPerErrorRepository.checkExistRecordErrorListDate(companyID, employeeID,
 				getDaysBetween(durationDate.start(), durationDate.end()));
 	}
+	
+	/**
+	 * 社員の日別実績のエラーを解除する - KIF 001 update
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param errorCode
+	 */
+	public void removeByCidSidDateAndErrorCode(String companyID, String employeeID, GeneralDate date, String errorCode){
+		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
+	}
 
 	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
 		List<GeneralDate> daysBetween = new ArrayList<>();

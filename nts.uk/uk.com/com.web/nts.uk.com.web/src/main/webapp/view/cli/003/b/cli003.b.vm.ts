@@ -448,13 +448,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let recordType = Number(self.logTypeSelectedCode());
 
             // set param log
+             var format = 'YYYY/MM/DD HH:mm:ss';
             let paramLog = {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             // set param for get parent header name
@@ -495,6 +496,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
 
                             if (data.length > 0) {
+                                // order by list
+                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
+                                 }
+                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
+                                 }
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
@@ -513,6 +521,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             self.listLogBasicInforModel.push(logtemp);
                                         }
                                         if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
                                             self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                         countLog++;
@@ -553,6 +562,39 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
         }
 
+        getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
+            let tempList = logBasicInfoModel.lstLogOutputItemDto;
+            var subColumHeaderTemp: IgGridColumnModel[] = [];
+            _.forEach(logBasicInfoModel.lstLogOutputItemDto, function(logOutputItemDto) {
+                // generate columns header chidrent
+                switch (logOutputItemDto.itemNo) {
+                    case ITEM_NO.ITEM_NO22:
+                    case ITEM_NO.ITEM_NO23:
+                    case ITEM_NO.ITEM_NO24: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_TAGET_DATE, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO26: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_CORRECT_ATTR, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO27: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_NAME, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO30: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_BEFOR, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                    case ITEM_NO.ITEM_NO31: {
+                        subColumHeaderTemp.push(new IgGridColumnModel(logOutputItemDto.itemName, ITEM_PROPERTY.ITEM_VALUE_AFTER, ITEM_PROPERTY.STR, false));
+                        break;
+                    }
+                }
+            });
+            logBasicInfoModel.subColumnsHeaders = subColumHeaderTemp;
+            return logBasicInfoModel;
+        }
         getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) {
             let tempList = logBasicInfoModel.lstLogOutputItemDto;
             var subColumHeaderTemp: IgGridColumnModel[] = [];
@@ -832,6 +874,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
+            
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -1064,14 +1107,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
             // set param log for export file CSV
+            var format = 'YYYY/MM/DD HH:mm:ss';      
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             //fix itemNo
@@ -2239,7 +2283,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         ITEM_VALUE_BEFOR = "valueBefore",
         ITEM_VALUE_AFTER = "valueAfter",
         ITEM_CORRECT_ATTR = "correctionAttr",
-        ITEM_OPERATION_ID = "operationId"
+        ITEM_OPERATION_ID = "operationId",
+        ITEM_PARRENT_KEY = "parentKey"
     }
     /*C
     *the enum of EMPLOYEE_SPECIFIC

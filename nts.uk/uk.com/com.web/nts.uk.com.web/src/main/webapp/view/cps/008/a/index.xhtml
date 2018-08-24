@@ -24,7 +24,7 @@
 			<div id="functions-area">
 				<button id="A_BTN_NEW" data-bind="click : createNewLayout">#{i18n.getText('CPS008_3')}</button>
 				<button id="A_BTN_REGISTER" class="proceed"
-					data-bind="click: saveDataLayout">#{i18n.getText('CPS008_4')}</button>
+					data-bind="click: saveDataLayout, enable: (createNewLayout)||(layout().id() != undefined)">#{i18n.getText('CPS008_4')}</button>
 				<button id="A_BTN_COPPY"
 					data-bind="click: copyDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_5')}</button>
 				<button id="A_BTN_DELETE" class="danger"

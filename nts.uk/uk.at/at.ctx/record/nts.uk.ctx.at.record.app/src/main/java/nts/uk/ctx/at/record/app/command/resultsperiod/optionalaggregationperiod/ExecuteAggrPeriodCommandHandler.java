@@ -7,15 +7,15 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionAtr;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodDomainService;
+import nts.uk.ctx.at.record.dom.monthlyprocess.byperiod.ByPeriodAggregationService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExecuteAggrPeriodCommandHandler extends AsyncCommandHandler<String>{
 
 	@Inject
-	private ExecuteAggrPeriodDomainService periodDomainService;
+	private ByPeriodAggregationService byPeriodAggregationService;
+	//private ExecuteAggrPeriodDomainService periodDomainService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
@@ -24,9 +24,9 @@ public class ExecuteAggrPeriodCommandHandler extends AsyncCommandHandler<String>
 		String companyId = AppContexts.user().companyId();
 		String excuteId = context.getCommand();
 		//任意期間集計Mgrクラス
-		periodDomainService.excuteOptionalPeriod(companyId, excuteId, asyncContext);
+		//periodDomainService.excuteOptionalPeriod(companyId, excuteId, asyncContext);
+		this.byPeriodAggregationService.manager(companyId, excuteId, asyncContext);
 		dataSetter.setData("endTime", GeneralDateTime.now().toString());
-		
 	}
 
 }

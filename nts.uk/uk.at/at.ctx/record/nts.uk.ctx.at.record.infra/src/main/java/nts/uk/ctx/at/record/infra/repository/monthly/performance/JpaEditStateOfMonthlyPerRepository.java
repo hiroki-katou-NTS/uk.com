@@ -21,9 +21,9 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 
 	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtEditStateOfMothlyPer a "
 			+ "WHERE a.krcdtEditStateOfMothlyPerPK.employeeID = :employeeId "
-			+ "AND a.processDate = :yearMonth "
-			+ "AND a.closureID = :closureId "
-			+ "AND a.closeDay = :closureDay "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.processDate = :yearMonth "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.closureID = :closureId "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.closeDay = :closureDay "
 			+ "AND a.isLastDay = :isLastDay ";
 
 	/** 検索　（締め） */

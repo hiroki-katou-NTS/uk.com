@@ -106,9 +106,15 @@ public class EmploymentSystemFinder {
 		
 		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
 			for (BreakDayOffHistory item : data.get().getLstHistory()) {
+				if(item == null) {
+					continue;
+				}
+				
 				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), 
 						item.getHisDate().getDayoffDate().isPresent() ? item.getHisDate().getDayoffDate().get() : null);
-				
+				if(item.getBreakHis() == null) {
+					continue;
+				}
 				BreakHistoryData breakHist = item.getBreakHis().isPresent() ? item.getBreakHis().get() : null;
 				
 				ComDayoffDateDto breakDate = new ComDayoffDateDto(breakHist != null ? breakHist.getBreakDate().isUnknownDate() : true, 
@@ -201,6 +207,10 @@ public class EmploymentSystemFinder {
 		
 		if(data.isPresent() && data.get().getGreneraGigesHis().size() > 0) {
 			for (RecAbsHistoryOutputPara item : data.get().getGreneraGigesHis()) {
+				if(item == null) {
+					continue;
+				}
+				
 				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), 
 						item.getYmdData().getDayoffDate().isPresent() ? item.getYmdData().getDayoffDate().get() : null);
 				

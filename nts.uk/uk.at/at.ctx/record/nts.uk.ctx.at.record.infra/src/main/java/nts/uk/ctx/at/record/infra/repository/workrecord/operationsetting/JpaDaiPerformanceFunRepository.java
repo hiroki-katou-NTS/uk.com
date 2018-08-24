@@ -54,6 +54,7 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
         updateDaiPerformanceFun.overtimeCalcUpdAtr = newDaiPerformanceFun.overtimeCalcUpdAtr;
         updateDaiPerformanceFun.lawOverCalcUpdAtr = newDaiPerformanceFun.lawOverCalcUpdAtr;
         updateDaiPerformanceFun.manualFixAutoSetAtr = newDaiPerformanceFun.manualFixAutoSetAtr;
+        updateDaiPerformanceFun.checkErrRefDisp = newDaiPerformanceFun.checkErrRefDisp;
         this.commandProxy().update(updateDaiPerformanceFun);
     }
 

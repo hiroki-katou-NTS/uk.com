@@ -24,10 +24,10 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
 public class RegulationInfoEmpQueryDto implements Serializable {
 
 	/** The Constant TIME_DAY_START. */
-	private final static String TIME_DAY_START = " 00:00:00";
+	public static final String TIME_DAY_START = " 00:00:00";
 
 	/** The Constant DATE_TIME_FORMAT. */
-	private final static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
