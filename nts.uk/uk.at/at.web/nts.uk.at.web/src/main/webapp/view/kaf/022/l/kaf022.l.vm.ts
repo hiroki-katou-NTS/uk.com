@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.l.viewmodel {
     import setShared =  nts.uk.ui.windows.setShared;
     import clear = nts.uk.ui.block.clear;
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
         //Screen mode
         screenMode: KnockoutObservable<ScreenMode> =  ko.observable(ScreenMode.INSERT);
@@ -14,6 +15,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         alreadySettingData: Array<any>;
         codeStart: string = '';
         listWTShareKDL002: KnockoutObservableArray<any> = ko.observableArray([]);
+        allowRegister: KnockoutObservableArray<boolean> = ko.observable(true);
         //previewData: any = null;
         //previewCode: string = "";
         //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
@@ -35,16 +37,23 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             //Employment code change listener
             self.selectedCode.subscribe(value =>{
                 nts.uk.ui.errors.clearAll();
-                //Get employment name  
-                let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
-                let selectedEmp = _.find(employmentList, { 'code': value });
-                if(!nts.uk.util.isNullOrUndefined(selectedEmp)){
-                    self.employmentName(selectedEmp.name);
+                if(!isNullOrEmpty(value) && value != "undefined" && value != undefined){
+                    self.allowRegister(true);
+                    //Get employment name  
+                    let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
+                    let selectedEmp = _.find(employmentList, { 'code': value });
+                    if(!nts.uk.util.isNullOrUndefined(selectedEmp)){
+                        self.employmentName(selectedEmp.name);
+                    }else{
+                        self.employmentName('');
+                    }
+                    //Get data setting            
+                    self.changeEmploymentCode(value); 
                 }else{
+                    self.allowRegister(false);
                     self.employmentName('');
+                    self.changeEmploymentCode(value);
                 }
-                //Get data setting            
-                self.changeEmploymentCode(value);   
             });
         }
         start(): JQueryPromise<any> {
@@ -137,7 +146,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
 //                });   
 //             } 
             //return if no selected employment code
-            if(nts.uk.util.isNullOrEmpty(empCode)) return;
+            if(nts.uk.util.isNullOrEmpty(empCode)){
+                self.appSetData(new PreBeforeAppSetData(empCode));
+                return;
+            } 
             nts.uk.ui.block.invisible();
             self.screenMode(ScreenMode.INSERT);
             self.appSetData(new PreBeforeAppSetData(empCode));
@@ -215,11 +227,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          * 登録処理
          */
         registerEmploymentSet(parent:any){
-            nts.uk.ui.block.invisible();
-            let self = parent;
+            nts.uk.ui.errors.clearAll();
+            nts.uk.ui.block.grayout();
+            let self = parent;      
             var dfd = $.Deferred(); 
             let code = self.selectedCode();
             let commands = [];
+            if(!self.allowRegister()){
+                clear();
+                return;    
+            }
             var overTimeSet = ko.mapping.toJS(self.appSetData().overTimeSet());
             // nếu chọn L6 mà không chọn L37 về thì báo error, nếu ko chọn L6 thì reset L37 về []
             if(overTimeSet.displayFlag === true && overTimeSet.displayWorkTypes === ""){
@@ -230,7 +247,8 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             commands.push(overTimeSet);
              _.forEach(self.appSetData().absenceSet(), function(item: any) {
                  let noKo = ko.mapping.toJS(item);
-                 if(noKo.displayFlag === true && noKo.optionName === '【年次有休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 let error = noKo.displayFlag === true && noKo.holidayTypeUseFlg == false && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "") ? true : false;
+                 if(error == true && noKo.optionName === '【年次有休】'){
                      $('.lagre-input-code:eq(1)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【年次有休】']});
                      clear();
                  }
@@ -240,7 +258,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【代休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【代休】'){
                      $('.lagre-input-code:eq(2)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【代休】']});
                      clear();
                  }
@@ -250,7 +268,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【欠勤】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【欠勤】'){
                      $('.lagre-input-code:eq(3)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【欠勤】']});
                      clear();
                  }
@@ -260,7 +278,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【特別休暇】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【特別休暇】'){
                      $('.lagre-input-code:eq(4)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【特別休暇】']});
                      clear();
                  }
@@ -270,7 +288,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                          clear();
                      }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【積立年休】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【積立年休】'){
                      $('.lagre-input-code:eq(5)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【積立年休】']});
                      clear();
                  }
@@ -280,7 +298,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【休日】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【休日】'){
                      $('.lagre-input-code:eq(6)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【休日】']});
                      clear();
                  }
@@ -290,12 +308,22 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-                 else if(noKo.displayFlag === true && noKo.optionName === '【時間消化】' && (!_.size(noKo.lstWorkType) || noKo.lstWorkType[0].workTypeCode == "")){
+                 else if(error == true && noKo.optionName === '【時間消化】'){
                      $('.lagre-input-code:eq(7)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【時間消化】']});
                      clear();
                  }
                  else if (!noKo.displayFlag && noKo.optionName === '【時間消化】') {
                      $('.lagre-input-code:eq(7)').ntsError('clear');
+                     noKo.holidayTypeUseFlg = false;
+                         noKo.lstWorkType = [];
+                     clear();
+                 }
+                 else if(error == true && noKo.optionName === '【振休】'){
+                     $('.lagre-input-code:eq(8)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振休】']});
+                     clear();
+                 }
+                 else if (!noKo.displayFlag && noKo.optionName === '【振休】') {
+                     $('.lagre-input-code:eq(8)').ntsError('clear');
                      noKo.holidayTypeUseFlg = false;
                          noKo.lstWorkType = [];
                      clear();
@@ -308,6 +336,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 $('#l46').ntsError('set', {messageId:"Msg_1377", messageParams:['勤務変更申請']});
                 clear();
             }
+            else if(wSet.displayFlag === false){
+                wSet.lstWorkType = [];
+            }
             commands.push(ko.mapping.toJS(self.appSetData().businessTripSet()));
             
             let returnDirect = ko.mapping.toJS(self.appSetData().goReturndirectSet());
@@ -316,13 +347,19 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 $('#l48').ntsError('set', {messageId:"Msg_1377", messageParams:['直行直帰申請']});
                 clear();
             }
+            else if(returnDirect.displayFlag === false){
+                returnDirect.lstWorkType = [];
+            }
             
             let breakTime = ko.mapping.toJS(self.appSetData().breakTimeSet());
             commands.push(breakTime);
-            if(returnDirect.displayFlag === true && returnDirect.displayWorkTypes === ""){
+            if(breakTime.displayFlag === true && breakTime.displayWorkTypes === ""){
                 $('#l49').ntsError('set', {messageId:"Msg_1377", messageParams:['休出時間申請']});
                 clear();
             }
+            else if(breakTime.displayFlag === false){
+                breakTime.lstWorkType = [];
+            }            
             
             commands.push(ko.mapping.toJS(self.appSetData().stampSet()));
             commands.push(ko.mapping.toJS(self.appSetData().annualHolidaySet()));
@@ -334,10 +371,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                      $('.lagre-input-code:eq(11)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振出】']});
                      clear();
                  }
+                else if (leave.displayFlag === false && leave.optionName === '【振出】') {
+                    leave.lstWorkType = [];
+                }  
                 if(leave.displayFlag === true && leave.optionName === '【振休】' && (!_.size(leave.lstWorkType) || leave.lstWorkType[0].workTypeCode == "")){
                      $('.lagre-input-code:eq(12)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振休】']});
                      clear();
                  }
+                else if (leave.displayFlag === false && leave.optionName === '【振休】') {
+                    leave.lstWorkType = [];
+                }
             });            
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
@@ -383,7 +426,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             }
         }
         /**
-         * 申請の前準備の削除処理
+         * 申請の前準備の削除処理  
          */
         deleteEmploymentSet(parent:any){
             nts.uk.ui.block.invisible();
@@ -498,6 +541,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 if(_.size(data)){
                     self.listWTShareKDL002(data);
                     dfd.resolve();
+                }else{
+                    self.listWTShareKDL002([]);
+                    dfd.resolve();
                 }
             }).fail((res) => {
                 dfd.reject();
@@ -578,13 +624,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          * KDL002-勤務種類選択（ダイアログ）を起動する
          */
         openKDL002Dialog(itemSet: DataSetting) {
+            nts.uk.ui.block.grayout();
             let self = this;
             var dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
-            nts.uk.ui.block.invisible();
-            let workTypeCodes = _.map(self.workTypeList, function(item: any) { return item.workTypeCode; });
-            let selectedWorkTypes = _.map(itemSet.lstWorkType(), function(item: any) { return item.workTypeCode; });
+            let workTypeCodes = [];
+            let selectedWorkTypes = [];
+//            workTypeCodes = _.map(self.workTypeList, function(item: any) { return item.workTypeCode; });
+            selectedWorkTypes = _.map(itemSet.lstWorkType(), function(item: any) { return item.workTypeCode; });
             setShared('KDL002_Multiple', true);
+            setShared('KDL002_SelectedItemId', selectedWorkTypes);
             if(itemSet.appType == 0){
                 self.findOtKaf022().done(() => {
                     workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
@@ -605,7 +654,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         dfd.resolve(); 
                     });
                 }
-                if(itemSet.optionName() == "【代休】"){
+                else if(itemSet.optionName() == "【代休】"){
                     let absenceKAF022 = {
                         oneDayAtr: 6,
                         morningAtr: 6,
@@ -615,9 +664,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
-                    });
+                    })
                 }
-                if(itemSet.optionName() == "【欠勤】"){
+                else if(itemSet.optionName() == "【欠勤】"){
                     let absenceKAF022 = {
                         oneDayAtr: 5,
                         morningAtr: 5,
@@ -627,51 +676,70 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
+                    }).fail(() => {
+                        return;    
                     });
                 }
-                if(itemSet.optionName() == "【特別休暇】"){
+                else if(itemSet.optionName() == "【特別休暇】"){
                     let absenceKAF022 = {
                         oneDayAtr: 4,
                         morningAtr: 4,
                         afternoonAtr: 4,
                     }
                     self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
                     });
                 }
-                if(itemSet.optionName() == "【積立年休】"){
+                else if(itemSet.optionName() == "【積立年休】"){
                     let absenceKAF022 = {
                         oneDayAtr: 3,
                         morningAtr: 3,
                         afternoonAtr: 3,
                     }
                     self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
                     });
                 }
-                if(itemSet.optionName() == "【休日】"){
+                else if(itemSet.optionName() == "【休日】"){
                     let absenceKAF022 = {
                         oneDayAtr: 1,
                         morningAtr: 1,
                         afternoonAtr: 1,
                     }
                     self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
                     });
                 }
-                if(itemSet.optionName() == "【時間消化】"){
+                else if(itemSet.optionName() == "【時間消化】"){
                     let absenceKAF022 = {
                         oneDayAtr: 9,
                         morningAtr: 9,
                         afternoonAtr: 9,
                     }
                     self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
+                        workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
+                        setShared('KDL002_AllItemObj', workTypeCodes);  
+                        dfd.resolve(); 
+                    });
+                }
+                else if(itemSet.optionName() == "【振休】"){
+                    let absenceKAF022 = {
+                        oneDayAtr: 7,
+                        morningAtr: 7,
+                        afternoonAtr: 7,
+                    }
+                    self.findAbsenceKaf022(absenceKAF022).done(() => {
+                        workTypeCodes = [];
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
@@ -738,8 +806,6 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     });
                 }
             }
-//            setShared('KDL002_AllItemObj', workTypeCodes);
-            setShared('KDL002_SelectedItemId', selectedWorkTypes);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {                
                 let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
@@ -751,9 +817,8 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     });
                     itemSet.lstWorkType(newSelectedCodes);
                 }
-                clear();
+                clear();  
             });
-            clear();
         }
 //        checkSaveChanged() : boolean{
 //            let self = this;
@@ -883,7 +948,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         initDefaultAbsenceSet(employmentCode: string): KnockoutObservableArray<DataSetting>{
             let self = this,
             absenceSet: KnockoutObservableArray<DataSetting> = ko.observableArray([]);
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < 8; i++) {
                 let resId: number = 47 + i;
                 let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.ABSENCE_APPLICATION, i);
                 if (dataSetting.displayFlag) {
@@ -917,8 +982,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         lstWorkType: KnockoutObservableArray<any> = ko.observableArray();
         displayWorkTypes: KnockoutObservable<string> = ko.observable('');
         optionName: KnockoutObservable<string> = ko.observable('');
+        enableButton: KnockoutObservable<boolean>;
         constructor(companyId: string, employmentCode: string, appType: number,holidayOrPauseType: number, displayFlag: boolean, holidayTypeUseFlg: boolean, lstWorkType: Array<any>){
             let self = this;
+            this.enableButton = ko.observable((displayFlag == true && holidayTypeUseFlg == false) ? true : false);
             this.companyId = companyId;
             this.employmentCode = employmentCode;
             this.appType = appType;
@@ -932,6 +999,16 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                                                     }).join(" + "));
             this.lstWorkType.subscribe(value =>{
                     this.displayWorkTypes(_.map(this.lstWorkType(), item =>{return item.workTypeName;}).join(" + "));
+            });
+            this.holidayTypeUseFlg.subscribe(value => {
+                if(value == false && this.displayFlag() == true){
+                    this.enableButton(true);    
+                }else{
+                    this.enableButton(false);
+                }
+            });
+            this.displayFlag.subscribe(obj => {
+                this.holidayTypeUseFlg.valueHasMutated();    
             });
         }        
     }

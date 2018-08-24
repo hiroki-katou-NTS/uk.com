@@ -24,9 +24,14 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Setter
 public class ItemsByCategory {
 
+	private String categoryId;
 
 	/** category code */
 	private String categoryCd;
+	
+	private String categoryName;
+	
+	private int categoryType;
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
@@ -37,14 +42,15 @@ public class ItemsByCategory {
 	/** input items */
 	private List<ItemValue> items;
 	
-	public ItemsByCategory(String categoryCd, String recordId, List<ItemValue> items) {
+	public ItemsByCategory(String categoryCd,String categoryName, String recordId, List<ItemValue> items) {
 		super();
 		this.categoryCd = categoryCd;
+		this.categoryName = categoryName;
 		this.recordId = recordId;
 		this.items = items;
 		this.delete = false;
 	}
-
+	
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
 
 		val command = ReflectionUtil.newInstance(commandClass);

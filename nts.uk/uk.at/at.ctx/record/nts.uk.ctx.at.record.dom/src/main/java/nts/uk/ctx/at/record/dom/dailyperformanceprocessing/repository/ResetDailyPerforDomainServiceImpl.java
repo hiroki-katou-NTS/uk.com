@@ -209,6 +209,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							if (outPut.getErrMesInfos() == null
 									|| (outPut.getErrMesInfos() != null && outPut.getErrMesInfos().isEmpty())) {
 								shortTimeOfDailyPerformance = outPut.getShortTimeOfDailyPerformance();
+								ReflectStampOutput output2 = new ReflectStampOutput();
+								output2.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+								stampOutput.setReflectStampOutput(output2);
 							} else {
 								errMesInfos.addAll(outPut.getErrMesInfos());
 							}
@@ -408,36 +411,36 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 								converter2.merge(valueList);
 								// set data stampOutPut
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter.toDomain().getAttendanceLeave().get());
+										converter.toDomain().getAttendanceLeave().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter.toDomain().getOutingTime().get());
+										.setOutingTimeOfDailyPerformance(converter.toDomain().getOutingTime().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter.toDomain().getTempTime().get());
+										.setTemporaryTimeOfDailyPerformance(converter.toDomain().getTempTime().orElse(null));
 								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter.toDomain().getAttendanceLeavingGate().get());
+										converter.toDomain().getAttendanceLeavingGate().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter.toDomain().getPcLogOnInfo().get());
+										.setPcLogOnInfoOfDaily(converter.toDomain().getPcLogOnInfo().orElse(null));
 							} else {
 								// set data stampOutPut
 								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter2.toDomain().getAttendanceLeave().get());
+										converter2.toDomain().getAttendanceLeave().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter2.toDomain().getOutingTime().get());
+										.setOutingTimeOfDailyPerformance(converter2.toDomain().getOutingTime().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter2.toDomain().getTempTime().get());
+										.setTemporaryTimeOfDailyPerformance(converter2.toDomain().getTempTime().orElse(null));
 								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter2.toDomain().getAttendanceLeavingGate().get());
+										converter2.toDomain().getAttendanceLeavingGate().orElse(null));
 								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().get());
+										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().orElse(null));
 							}
 
-						}
-						stampOutput.getReflectStampOutput().setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+						}						
 					}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && stampOutput.getErrMesInfos().isEmpty()) {
+			if (errMesInfos.isEmpty() && ((stampOutput.getErrMesInfos()!= null && stampOutput.getErrMesInfos().isEmpty())
+					|| stampOutput.getErrMesInfos() == null)) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput.getReflectStampOutput(), affiliationInfor, dailyPerformance,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, null, breakTimeOfDailyPerformance);
@@ -445,9 +448,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 				errMesInfos.forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
-				stampOutput.getErrMesInfos().forEach(item -> {
-					this.errMessageInfoRepository.add(item);
-				});
+				if(stampOutput.getErrMesInfos() != null){
+					stampOutput.getErrMesInfos().forEach(item -> {
+						this.errMessageInfoRepository.add(item);
+					});
+				}
 			}
 		}
 	}

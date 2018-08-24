@@ -1727,11 +1727,11 @@ module nts.uk.at.view.kmf022 {
 
             // open s dialog
             openSDialog(): void {
-                let self = this;
                 nts.uk.ui.block.grayout();
+                let self = this;
                 nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
             
             
@@ -1750,8 +1750,8 @@ module nts.uk.at.view.kmf022 {
                             }
                         });
                     self.textEditorA13_4(dataA13.join(" + "));
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
 
             loadData(): void {
@@ -2276,6 +2276,8 @@ module nts.uk.at.view.kmf022 {
                 $('#a16_14').trigger("validate");
                 $('#a16_15').trigger("validate");
                 $('#a7_23').trigger("validate");
+                $('#a7_23_2').trigger("validate");
+                $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this,
@@ -2677,7 +2679,7 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             preOtTime: KnockoutObservable<number>;
             normalOtTime: KnockoutObservable<number>;
-            requiredA7_23: KnockoutObservable<boolean> = ko.observable(false);
+            requiredA7_23: KnockoutObservable<boolean>;
             constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
                 retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number, preOtTime: number, normalOtTime: number) {
                 this.companyId = ko.observable(companyId);
@@ -2690,6 +2692,7 @@ module nts.uk.at.view.kmf022 {
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
                 this.preOtTime = ko.observable(preOtTime);
                 this.normalOtTime = ko.observable(normalOtTime);
+                this.requiredA7_23 = ko.observable(retrictPreMethodFlg ? false : true);
                 this.retrictPreMethodFlg.subscribe((value) => {
                     if (value == 1) {
                         nts.uk.ui.errors.clearAll();
@@ -2699,7 +2702,7 @@ module nts.uk.at.view.kmf022 {
                         this.requiredA7_23(true);
                         $('#a7_23').trigger("validate");
                         $('#a7_23_2').trigger("validate");
-                        $('#a7_23_3').trigger("validate");
+                        $('#a7_23_3').trigger("validate");  
                     }
                 });
                 this.preOtTime.subscribe((value) => {
@@ -2722,6 +2725,8 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             // 1: is domain DisplayReason            
             flg: KnockoutObservable<number>;
+            // disable or enable 
+            disableA8: KnockoutObservable<boolean> = ko.observable(true);
             constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
                 sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
                 canClassificationChange: number, appTypeName: string, flg: number) {
@@ -2735,6 +2740,18 @@ module nts.uk.at.view.kmf022 {
                 this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
                 this.appTypeName = ko.observable(appTypeName);
                 this.flg = ko.observable(flg);
+                if(this.displayInitialSegment() == 2){
+                    this.disableA8(false);
+                    this.canClassificationChange(true); 
+                }
+                this.displayInitialSegment.subscribe((value) => {
+                    if(value == 2){
+                        this.disableA8(false); 
+                        this.canClassificationChange(true); 
+                    }else{
+                        this.disableA8(true);    
+                    }
+                })
             }
         }
         class ItemA15 {

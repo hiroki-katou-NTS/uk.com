@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.checkdata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,18 +12,23 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -290,4 +296,55 @@ public class ValidatorDataDailyRes {
 		return result;
 	}
 	
+	/**
+	 * 計算後エラーチェック
+	 */
+	public Map<Integer, List<DPItemValue>> errorCheckDivergence(List<IntegrationOfDaily> dailyResults,
+			List<IntegrationOfMonthly> monthlyResults) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		
+		// 乖離エラーのチェック
+		List<DPItemValue> divergenceErrors = new ArrayList<>();
+		for (IntegrationOfDaily d : dailyResults) {
+			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
+			for (EmployeeDailyPerError err : employeeError) {
+				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D")) {
+					divergenceErrors.addAll(err.getAttendanceItemList().stream()
+							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+							.collect(Collectors.toList()));
+				}
+			}
+		}
+		if(!divergenceErrors.isEmpty())
+		resultError.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
+		return resultError;
+	}
+	
+	/**
+	 * フレックス繰越時間が正しい範囲で入力されているかチェックする
+	 */
+	public FlexShortageRCDto errorCheckFlex(List<IntegrationOfMonthly> lstMonthDomain, UpdateMonthDailyParam monthParam){
+		Optional<EmployeeMonthlyPerError> monthDomainOpt = getDataErrorMonth(lstMonthDomain, monthParam);
+		FlexShortageRCDto result = new FlexShortageRCDto();
+		if(!monthDomainOpt.isPresent()) return result.createError(false);
+		return result.createError(monthDomainOpt);	
+	}
+	
+	private Optional<EmployeeMonthlyPerError> getDataErrorMonth(List<IntegrationOfMonthly> lstDomain,
+			UpdateMonthDailyParam monthParam) {
+		for (IntegrationOfMonthly month : lstDomain) {
+			Optional<EmployeeMonthlyPerError> result = month.getEmployeeMonthlyPerErrorList().stream()
+					.filter(x -> x.getErrorType().value == ErrorType.FLEX.value
+							&& x.getClosureId().value == monthParam.getClosureId()
+							&& x.getEmployeeID().equals(monthParam.getEmployeeId())
+							&& x.getClosureDate().getClosureDay().v().intValue() == monthParam.getClosureDate()
+									.getClosureDay().intValue()
+							&& x.getClosureDate().getLastDayOfMonth() == monthParam.getClosureDate().getLastDayOfMonth()
+									.booleanValue())
+					.findFirst();
+			if (result.isPresent())
+				return result;
+		}
+		return Optional.empty();
+	}
 }

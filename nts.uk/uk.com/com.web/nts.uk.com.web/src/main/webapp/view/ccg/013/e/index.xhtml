@@ -55,7 +55,7 @@
 									data-bind="ntsFormLabel: {required: true, constraint: ['WebMenuCode', 'WebMenuName']}">#{i18n.getText('CCG013_59')}</div></td>
 							<td width="30"></td>
 							<td><input id="web-code" class="web-code"
-								data-bind="ntsTextEditor: {name:'#[CCG013_49]', value: code, required: true, constraint: 'WebMenuCode'}, hasfocus: true" /></td>
+								data-bind="ntsTextEditor: {name:'#[CCG013_49]', value: code, required: true, constraint: 'WebMenuCode', immediate: true ,option: {autofill:true, filldirection:'left'}}, hasfocus: true" /></td>
 							<td width="10"></td>
 							<td><input id="web-name" class="web-name"
 								data-bind="ntsTextEditor: {name:'#[CCG013_50]', value: name, required: true, constraint: 'WebMenuName'}" /></td>

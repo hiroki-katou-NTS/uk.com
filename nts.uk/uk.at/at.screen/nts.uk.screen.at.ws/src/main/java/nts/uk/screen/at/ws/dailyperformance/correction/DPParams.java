@@ -27,4 +27,5 @@ public class DPParams {
 	public List<String> formatCodes;
 	public Boolean showError;
     public ObjectShare objectShare;	
+    public Boolean showLock;
 }

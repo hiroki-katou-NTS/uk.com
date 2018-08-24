@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -44,13 +45,14 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void add(ReserveLeaveGrantRemainingData data, String cId) {
-		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
-		e.cid = cId;
-		e.rvsLeaId = data.getRsvLeaID();
-		updateDetail(e, data);
-		this.commandProxy().insert(e);
+		if (checkData(data)) {
+			KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
+			e.cid = cId;
+			e.rvsLeaId = data.getRsvLeaID();
+			updateDetail(e, data);
+			this.commandProxy().insert(e);
+		}
 	}
-
 	private void updateDetail(KrcmtReverseLeaRemain e, ReserveLeaveGrantRemainingData data) {
 		e.sid = data.getEmployeeId();
 		e.grantDate = data.getGrantDate();
@@ -67,12 +69,14 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void update(ReserveLeaveGrantRemainingData data) {
-		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getRsvLeaID(),
-				KrcmtReverseLeaRemain.class);
-		if (entityOpt.isPresent()) {
-			KrcmtReverseLeaRemain entity = entityOpt.get();
-			updateDetail(entity, data);
-			this.commandProxy().update(entity);
+		if (checkData(data)) {
+			Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getRsvLeaID(),
+					KrcmtReverseLeaRemain.class);
+			if (entityOpt.isPresent()) {
+				KrcmtReverseLeaRemain entity = entityOpt.get();
+				updateDetail(entity, data);
+				this.commandProxy().update(entity);
+			}
 		}
 	}
 
@@ -108,5 +112,29 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		this.getEntityManager().createQuery(DELETE_AFTER_QUERY).setParameter("employeeId", employeeId)
 				.setParameter("startDate", date);
 	}
-
+	
+	private boolean checkData(ReserveLeaveGrantRemainingData data) {
+		if(data.getDetails().getGrantNumber() != null
+				|| data.getDetails().getRemainingNumber() != null
+				|| data.getDetails().getUsedNumber().getDays() != null 
+				|| (data.getDetails().getUsedNumber().getOverLimitDays().isPresent() && data.getDetails().getUsedNumber().getOverLimitDays()!= null)) {
+			if(data.getGrantDate() == null || data.getDeadline() == null) {
+				if (data.getGrantDate() == null) {
+					throw new BusinessException("Msg_925", "付与日");
+				}
+				if (data.getDeadline() == null) {
+					throw new BusinessException("Msg_925", "期限日");
+				}
+				return false;
+			}
+		}
+		
+		if (data.getGrantDate() != null && data.getDeadline() != null) {
+			// 付与日＞使用期限の場合はエラー #Msg_1023
+			if (data.getGrantDate().compareTo(data.getDeadline()) > 0) {
+				throw new BusinessException("Msg_1023");
+			}
+		}
+		return true;
+	}
 }

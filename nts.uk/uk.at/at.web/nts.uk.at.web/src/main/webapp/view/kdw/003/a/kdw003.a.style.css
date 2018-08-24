@@ -247,10 +247,10 @@
 
 .image-icon{
 	background: url('../a/image/icon.png');
-	display: block;
-    float: left;
-    margin: 3px 9px;
-    padding: 10px 10px;
+/* 	display: block;
+    float: left; */
+    margin: 3px -3px;
+    padding: 9px 19px;
 }
 #short-time{
 	background-color: #CCC;

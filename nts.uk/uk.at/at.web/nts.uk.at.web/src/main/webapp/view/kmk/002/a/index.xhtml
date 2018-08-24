@@ -13,6 +13,7 @@
                nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
                nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
                nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
+               nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kmk002.a.style.css" />
@@ -212,6 +213,18 @@
                                     optionsText: 'name',
                                     value: performanceAtr,
                                     enable: isUsed }"></div>
+                              </td>
+                              <td>
+                              	<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_75')}</div>
+                              </td>
+                              <td>
+                              	<input tabindex="15" id="inp-unit" style="margin-left: 5px;"
+                                    data-bind="ntsTextEditor: {
+                                    name: '#[KMK002_75]',
+                                    value: unit,
+                                    enable: enableUnit() &amp;&amp; isUsed(),
+                                    constraint: 'UnitOfOptionalItem',
+                                    required: false}"/>
                               </td>
                            </tr>
                            <tr>

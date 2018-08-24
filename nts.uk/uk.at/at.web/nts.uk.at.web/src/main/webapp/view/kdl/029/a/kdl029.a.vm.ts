@@ -85,7 +85,6 @@ module nts.uk.at.view.kdl029.a.screenModel {
             var self = this,
             dfd = $.Deferred();
             service.findAllEmploymentSystem({
-                mode: self.multiSelect(),
                 inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                 listSID: self.employeeIDList(),
             }).done(function(data){

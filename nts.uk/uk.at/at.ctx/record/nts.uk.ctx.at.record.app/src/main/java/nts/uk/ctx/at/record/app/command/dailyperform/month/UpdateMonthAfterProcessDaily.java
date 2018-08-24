@@ -75,6 +75,7 @@ public class UpdateMonthAfterProcessDaily {
 			Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId, month.getEmployeeId(),
 					new YearMonth(month.getYearMonth()), ClosureId.valueOf(month.getClosureId()), month.getClosureDate().toDomain(), month.getDatePeriod(), Optional.empty(), domainDailyGroupEmp,
 					monthlyWork);
+			result.add(monthDomainOpt.get());
 			updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
 		}
 		

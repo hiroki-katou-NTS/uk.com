@@ -20,7 +20,8 @@ module nts.uk.at.view.kal003.c.service {
 
     export function getAttendanceItemByAtr(atr, mode) {
         if (mode == 1) //monthly
-            return nts.uk.request.ajax("at", paths.getListMonthlyByAtrPrimitive + atr);
+            //return nts.uk.request.ajax("at", paths.getListMonthlyByAtrPrimitive + atr);
+            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
         else //daily
             return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }

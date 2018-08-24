@@ -60,6 +60,7 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 					.build() : null;
 
 			PositionExport pos = item.getPosition().isPresent() ? PositionExport.builder()
+					.positionId(item.getPosition().get().getPositionId())
 					.positionCode(item.getPosition().get().getPositionCode())
 					.positionName(item.getPosition().get().getPositionName())
 					.build(): null;

@@ -228,7 +228,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, ObjectShare objectShare) {
+			CorrectionOfDailyPerformance correct, List<String> formatCodes, Boolean showError, Boolean showLock, ObjectShare objectShare) {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
@@ -464,7 +464,7 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		DPLockDto dpLockDto = findLock.checkLockAll(companyId, listEmployeeId, dateRangeTemp, sId, mode, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 		
-		mapDataIntoGrid(screenDto, sId, appMapDateSid, listEmployeeId, resultDailyMap, mode, displayFormat,
+		mapDataIntoGrid(screenDto, sId, appMapDateSid, listEmployeeId, resultDailyMap, mode, displayFormat, showLock,
 				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, objectShare,
 				companyId, disItem, dPControlDisplayItem, dailyRecEditSetsMap,
 				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, dpLockDto);
@@ -487,7 +487,7 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public void mapDataIntoGrid(DailyPerformanceCorrectionDto screenDto, String sId, Map<String, String> appMapDateSid, List<String> listEmployeeId, 
-			Map<String, DailyModifyResult> resultDailyMap, Integer mode, Integer displayFormat,
+			Map<String, DailyModifyResult> resultDailyMap, Integer mode, Integer displayFormat, Boolean showLock,
 			Optional<IdentityProcessUseSetDto> identityProcessDtoOpt, Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt,
 			DateRange dateRange, ObjectShare objectShare, String companyId,
 			DisplayItem disItem, DPControlDisplayItem dPControlDisplayItem,
@@ -539,13 +539,19 @@ public class DailyPerformanceCorrectionProcessor {
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
-
-				boolean lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
-                boolean lockHist = lockHist(dpLock.getLockHist(), data);
-                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
-                boolean lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+				boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+				if (showLock == null || showLock) {
+					lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+					lockHist = lockHist(dpLock.getLockHist(), data);
+					lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist,
+							data.isSign(), lockApprovalMonth, lockConfirmMonth);
+				} else {
+					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, false, lockHist,
+							false, lockApprovalMonth, lockConfirmMonth);
+				}
                 
-                lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);				
 				if(displayFormat == 0 && objectShare != null && objectShare.getInitClock() != null && data.getDate().equals(objectShare.getEndDate())){
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);

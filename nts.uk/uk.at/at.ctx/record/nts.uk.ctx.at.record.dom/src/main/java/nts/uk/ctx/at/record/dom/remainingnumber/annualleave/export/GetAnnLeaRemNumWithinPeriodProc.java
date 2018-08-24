@@ -399,6 +399,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				Optional<ClosureStatusManagement> sttMng = this.closureSttMngRepo.getLatestByEmpId(this.employeeId);
 				if (sttMng.isPresent()){
 					closureStart = sttMng.get().getPeriod().end().addDays(1);
+					closureStartOpt = Optional.of(closureStart);
 				}
 				else {
 					

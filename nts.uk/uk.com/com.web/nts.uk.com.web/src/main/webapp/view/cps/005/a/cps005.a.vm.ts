@@ -223,8 +223,9 @@ module nts.uk.com.view.cps005.a {
                     }
                     let ctrl = $("#category-name-control"),
                         str = ctrl.val();
-
-                    ctrl.focus().val('').val(str);
+                    if($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0){
+                         ctrl.focus().val('').val(str);
+                    }
                 });
             });
         }
