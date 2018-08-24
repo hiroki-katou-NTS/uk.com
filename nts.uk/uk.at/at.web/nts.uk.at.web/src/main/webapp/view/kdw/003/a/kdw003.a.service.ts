@@ -15,6 +15,7 @@ module nts.uk.at.view.kdw003.a.service {
         searchEmployee: 'screen/at/correctionofdailyperformance/get-info',
         calcTime: 'screen/at/correctionofdailyperformance/calcTime',
         calculation: 'screen/at/correctionofdailyperformance/calculation',
+        getRemainNum: 'screen/at/correctionofdailyperformance/getRemainNum',
         lock: 'screen/at/correctionofdailyperformance/lock'
     }
 
@@ -78,7 +79,11 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.calculation, param);
     }
     
+    export function getRemainNum(employeeId: string) {
+        return nts.uk.request.ajax(paths.getRemainNum + "/" + employeeId);
+
     export function lock(param: any) {
         return nts.uk.request.ajax(paths.lock, param);
+
     }
 }
