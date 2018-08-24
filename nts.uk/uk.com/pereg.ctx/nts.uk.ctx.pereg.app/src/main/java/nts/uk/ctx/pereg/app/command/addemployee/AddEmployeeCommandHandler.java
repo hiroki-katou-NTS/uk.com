@@ -540,7 +540,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		});
 		// kiểm tra list lỗi để trả về thông báo
 		if (!CollectionUtil.isEmpty(nodataItems)) {
-			throw new BusinessException("Msg_925", String.join(",", nodataItems));
+			throw new BusinessException("Msg_361", String.join(",", nodataItems));
 
 		}
 
