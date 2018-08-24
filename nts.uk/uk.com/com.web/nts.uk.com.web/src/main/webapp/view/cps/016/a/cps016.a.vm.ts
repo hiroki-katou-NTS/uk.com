@@ -21,6 +21,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         constructor() {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
+            perInfoSelectionItem.selectionItemId.extend({notify:"always"});
             self.checkCreate = ko.observable(true);
             self.closeUp = ko.observable(false);
             if (self.param) {
@@ -53,6 +54,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         $("#selectionItemName").focus();
                     });
+                } else {
+                    perInfoSelectionItem.selectionItemName('');
+                    perInfoSelectionItem.characterType(false);
+                    perInfoSelectionItem.codeLength('');
+                    perInfoSelectionItem.nameLength('');
+                    perInfoSelectionItem.extraCodeLength('');
+                    perInfoSelectionItem.shareChecked(false);
+                    perInfoSelectionItem.integrationCode('');
+                    perInfoSelectionItem.memo('');
                 }
                 self.checkCreate(false);
             });

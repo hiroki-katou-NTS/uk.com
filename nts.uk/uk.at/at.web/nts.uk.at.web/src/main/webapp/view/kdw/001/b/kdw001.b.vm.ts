@@ -106,7 +106,7 @@ module nts.uk.at.view.kdw001.b {
                     new RecreateDevisionModel(0, getText('KDW001_56')),
                     new RecreateDevisionModel(1, getText('KDW001_57'))
                 ]);
-                self.selectedRecreateDevision = ko.observable(0);
+                self.selectedRecreateDevision = ko.observable(1);
 
 
 
@@ -226,6 +226,10 @@ module nts.uk.at.view.kdw001.b {
                 if (self.dailyCreatedCheck() == false && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_205" });
                     return;
+                }
+                
+                if (self.dailyCreatedCheck() == true && self.dailyCalCheck() == false && self.approvalResultCheck() == false && self.monthCountCheck() == false) {
+                    self.dScreenmodel.showPeriodTime(false);
                 }
 
                 if (self.dailyCreatedCheck() == true && self.selectedRecreateDevision() == 1 && self.selectedCreatDivisionCode() == 1 && self.calDivisionCheck() == false &&
@@ -563,6 +567,7 @@ module nts.uk.at.view.kdw001.b {
 
 
                     $("#wizard").ntsWizard("next");
+                     $('#button113').focus();
                 }
 
             }

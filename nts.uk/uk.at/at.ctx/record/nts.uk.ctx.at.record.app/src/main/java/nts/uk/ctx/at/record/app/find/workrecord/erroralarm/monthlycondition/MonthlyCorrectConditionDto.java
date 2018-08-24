@@ -130,7 +130,7 @@ public class MonthlyCorrectConditionDto {
 		MonthlyCorrectConditionDto dto = new MonthlyCorrectConditionDto();
 		if (monthlyCorrectExtractCondition != null) {
 			dto.companyId = monthlyCorrectExtractCondition.getCompanyId();
-			dto.code = monthlyCorrectExtractCondition.getCode().v();
+			dto.code = monthlyCorrectExtractCondition.getCode().v().substring(1);
 			dto.name = monthlyCorrectExtractCondition.getName().v();
 			dto.useAtr = monthlyCorrectExtractCondition.getUseAtr() ? 1 : 0;
 			dto.errorAlarmCheckID = monthlyCorrectExtractCondition.getErrorAlarmCheckID();

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 
@@ -44,7 +45,7 @@ public class EmpCalAndSumExeLogDto {
 	 * 実行日
 	 */
 
-	private GeneralDate executionDate;
+	private GeneralDateTime executionDate;
 	
 	/**
 	 * 実行状況
