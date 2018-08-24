@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -220,9 +221,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.OVER_TIME_APPLICATION,
-				overTimeInput.stream().map(x -> x.getApplicationTime().v()).collect(Collectors.toList()));
+				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
 			// エラーメッセージを表示する（Msg_329）
@@ -248,9 +251,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(appOvertimeDetailOpt, employeeId,
-				ApplicationType.OVER_TIME_APPLICATION,
-				overTimeInput.stream().map(x -> x.getApplicationTime().v()).collect(Collectors.toList()));
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
+				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
 			// エラーメッセージを表示する（Msg_329）
@@ -276,9 +281,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
+		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.BREAK_TIME_APPLICATION,
-				holidayWorkInputs.stream().map(x -> x.getApplicationTime().v()).collect(Collectors.toList()));
+				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
 			// エラーメッセージを表示する（Msg_329）
@@ -304,9 +311,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
-		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(appOvertimeDetailOpt, employeeId,
-				ApplicationType.BREAK_TIME_APPLICATION,
-				holidayWorkInputs.stream().map(x -> x.getApplicationTime().v()).collect(Collectors.toList()));
+		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
+				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
 			// エラーメッセージを表示する（Msg_329）

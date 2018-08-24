@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,9 +17,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.ExcessTimesYearAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.outsideot.service.MonthlyItems;
+import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
+import nts.uk.ctx.at.shared.dom.outsideot.service.Time36AgreementTargetItem;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -44,10 +49,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
 	@Inject
 	private ExcessTimesYearAdapter excessTimesYearAdapter;
+	
+	@Inject 
+	private OutsideOTSettingService outsideOTSettingService;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyId, String employeeId,
-			GeneralDate appDate, ApplicationType appType, List<Integer> appTimeList) {
+			GeneralDate appDate, ApplicationType appType, List<AppTimeItem> appTimeItems) {
 		boolean errorFlg = false;
 		String employmentCD = StringUtils.EMPTY;
 		List<AgreementTimeImport> agreementTimeList = Collections.emptyList();
@@ -89,14 +97,14 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			}
 		}
 		// 36協定対象項目一覧を取得
-		// TODO
+		Time36AgreementTargetItem targetItem = outsideOTSettingService.getTime36AgreementTargetItem(companyId);
 		// INPUT．残業休出区分をチェックする
 		if (ApplicationType.OVER_TIME_APPLICATION.equals(appType)) {
 			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
-			// TODO
+			appOvertimeDetail.setApplicationTime(this.calcOvertimeAppTime(appTimeItems, targetItem));
 		} else if (ApplicationType.BREAK_TIME_APPLICATION.equals(appType)) {
-			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
-			// TODO
+			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する			
+			appOvertimeDetail.setApplicationTime(this.calcBreakAppTime(appTimeItems, targetItem));
 		}
 		// 超過回数を取得する
 		Year year = new Year(appOvertimeDetail.getYearMonth().year());
@@ -115,33 +123,32 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				// 「時間外時間の詳細」．36年間超過月.Add(「時間外時間の詳細」．年月)
 				appOvertimeDetail.addOverMonth(appOvertimeDetail.getYearMonth());
 			}
-			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 		}
-		return new Time36UpperLimitCheckResult(errorFlg, Optional.empty());
+		return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 	}
 
 	@Override
-	public Time36UpperLimitCheckResult checkUpdate(Optional<AppOvertimeDetail> appOvertimeDetailOpt, String employeeId,
-			ApplicationType appType, List<Integer> appTimeList) {
+	public Time36UpperLimitCheckResult checkUpdate(String companyId, Optional<AppOvertimeDetail> appOvertimeDetailOpt, String employeeId,
+			ApplicationType appType, List<AppTimeItem> appTimeItems) {
 		boolean errorFlg = false;
 
 		if (!appOvertimeDetailOpt.isPresent()) {
-			return new Time36UpperLimitCheckResult(errorFlg, Optional.empty());
+			return new Time36UpperLimitCheckResult(errorFlg, appOvertimeDetailOpt);
 		}
 		AppOvertimeDetail appOvertimeDetail = appOvertimeDetailOpt.get();
 		// 「時間外時間の詳細」．36時間をチェックする
 		if (appOvertimeDetail.getTime36().v() <= 0) {
-			return new Time36UpperLimitCheckResult(errorFlg, Optional.empty());
+			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 		}
 		// 36協定対象項目一覧を取得
-		// TODO
+		Time36AgreementTargetItem targetItem = outsideOTSettingService.getTime36AgreementTargetItem(companyId);
 		// INPUT．残業休出区分をチェックする
 		if (ApplicationType.OVER_TIME_APPLICATION.equals(appType)) {
 			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
-			// TODO
+			appOvertimeDetail.setApplicationTime(this.calcOvertimeAppTime(appTimeItems, targetItem));
 		} else if (ApplicationType.BREAK_TIME_APPLICATION.equals(appType)) {
-			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
-			// TODO
+			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する			
+			appOvertimeDetail.setApplicationTime(this.calcBreakAppTime(appTimeItems, targetItem));
 		}
 		// ３６上限チェック
 		if (appOvertimeDetail.check36UpperLimit()) {
@@ -151,9 +158,39 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				// 「時間外時間の詳細」．36年間超過回数 += 1、「時間外時間の詳細」．36年間超過月.Add(「時間外時間の詳細」．年月)
 				appOvertimeDetail.addOverMonth(appOvertimeDetail.getYearMonth());
 			}
-			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 		}
-		return new Time36UpperLimitCheckResult(errorFlg, Optional.empty());
+		return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
 	}
 
+	private int calcOvertimeAppTime(List<AppTimeItem> appTimeItems, Time36AgreementTargetItem targetItem){
+		int sumAppTime = 0;
+		List<AppTimeItem> appItemFrame = appTimeItems.stream()
+				.filter(x -> x.getFrameNo() <= MonthlyItems.OVERTIME_10.frameNo).collect(Collectors.toList());
+		for (AppTimeItem appTime : appItemFrame) {
+			Optional<Integer> frameOtp = targetItem.getOvertimeFrNo().stream()
+					.filter(x -> x == appTime.getFrameNo()).findFirst();
+			if(frameOtp.isPresent()){
+				sumAppTime += appTime.getAppTime();
+			}
+		}
+		if (targetItem.isTargetFlex()) {
+			sumAppTime += appTimeItems.stream().filter(x -> x.getFrameNo() > MonthlyItems.OVERTIME_10.frameNo)
+					.mapToInt(x -> x.getAppTime()).sum();
+		}
+		return sumAppTime;
+	}
+	
+	private int calcBreakAppTime(List<AppTimeItem> appTimeItems, Time36AgreementTargetItem targetItem){
+		int sumAppTime = 0;
+		List<AppTimeItem> appItemFrame = appTimeItems.stream()
+				.filter(x -> x.getFrameNo() <= MonthlyItems.OVERTIME_10.frameNo).collect(Collectors.toList());
+		for (AppTimeItem appTime : appItemFrame) {
+			Optional<Integer> frameOtp = targetItem.getBreakFrNo().stream()
+					.filter(x -> x == appTime.getFrameNo()).findFirst();
+			if (frameOtp.isPresent()) {
+				sumAppTime += appTime.getAppTime();
+			}
+		}
+		return sumAppTime;
+	}
 }

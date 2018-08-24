@@ -492,6 +492,7 @@ module nts.uk.at.view.kaf010.b {
                 
                 service.checkBeforeUpdate(command).done((data) => {                
                     if (data.errorCode == 0) {
+                        command.appOvertimeDetail = data.appOvertimeDetail;
                         if (data.confirm) {
                             //メッセージNO：829
                             dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {

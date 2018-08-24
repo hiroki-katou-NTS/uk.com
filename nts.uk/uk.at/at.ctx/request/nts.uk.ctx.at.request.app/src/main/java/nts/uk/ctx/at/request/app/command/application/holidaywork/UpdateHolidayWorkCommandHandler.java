@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -51,10 +51,13 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		holidayWorkInputs.addAll(updateHolidayWorkCommand.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		holidayWorkInputs.addAll(updateHolidayWorkCommand.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		holidayWorkInputs.addAll(updateHolidayWorkCommand.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = updateHolidayWorkCommand.getAppOvertimeDetail() == null ? Optional.empty()
+				: Optional.ofNullable(updateHolidayWorkCommand.getAppOvertimeDetail().toDomain(companyID, appHolidayWork.getAppID()));
 		String divergenceReason = updateHolidayWorkCommand.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
 		String applicationReason = updateHolidayWorkCommand.getApplicationReason().replaceFirst(":", System.lineSeparator());
 		appHolidayWork.setDivergenceReason(divergenceReason);
 		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
+		appHolidayWork.setAppOvertimeDetail(appOvertimeDetailOtp);
 		appHolidayWork.setHolidayShiftNight(updateHolidayWorkCommand.getHolidayWorkShiftNight());
 		appHolidayWork.setWorkTimeCode(new WorkTimeCode(updateHolidayWorkCommand.getSiftTypeCode()));
 		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart1(), updateHolidayWorkCommand.getWorkClockEnd1(), updateHolidayWorkCommand.getGoAtr1(), updateHolidayWorkCommand.getBackAtr1()));

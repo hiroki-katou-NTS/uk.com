@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.Year36OverMonth;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -84,6 +85,13 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 		@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") 
 	})
 	public KrqdtAppOvertime appOvertime;
+	
+	@OneToOne
+	@PrimaryKeyJoinColumns({ 
+		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+		@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") 
+	})
+	public KrqdtAppHolidayWork appHolidayWork;
 
 	@Override
 	protected Object getKey() {
