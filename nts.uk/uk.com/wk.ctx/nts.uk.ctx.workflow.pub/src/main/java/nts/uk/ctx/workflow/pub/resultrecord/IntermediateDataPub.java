@@ -15,7 +15,7 @@ public interface IntermediateDataPub {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(String employeeID, DatePeriod period, Integer rootType);
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType);
 	
 	/**
 	 * [No.155](中間データ版)承認対象者リストと日付リストから承認状況を取得する
@@ -24,7 +24,7 @@ public interface IntermediateDataPub {
 	 * @param rootType
 	 * @return
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType);
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsDates(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType);
 	
 	/**
 	 * [No.229](中間データ版)承認対象者（複数）と期間から承認状況を取得する

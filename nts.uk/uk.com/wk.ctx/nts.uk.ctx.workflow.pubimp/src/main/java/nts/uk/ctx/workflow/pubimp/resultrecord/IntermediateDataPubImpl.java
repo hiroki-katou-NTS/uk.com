@@ -49,7 +49,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	private AppRootConfirmService appRootConfirmService;
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(String employeeID, DatePeriod period,
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
 			Integer rootType) {
 		List<String> employeeIDLst = Arrays.asList(employeeID);
 		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
@@ -57,7 +57,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst,
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsDates(List<String> employeeIDLst,
 			List<GeneralDate> dateLst, Integer rootType) {
 		List<AppRootStateStatusSprExport> result = new ArrayList<>();
 		dateLst.forEach(date -> {
