@@ -136,10 +136,12 @@ module nts.uk.ui.koExtentions {
             
             var data = ko.unwrap(valueAccessor());
             var fields = ko.unwrap(data.fields);
-            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+            
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+            var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : defaultSearchText;
             var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
             var enable = ko.unwrap(data.enable);
             var selectedKey = null;
