@@ -107,12 +107,12 @@ module nts.uk.com.view.cmf002.f.viewmodel {
 
         register() {
             let self = this;
-            if (self.selectedSelectionItemList().length) {
+            if (self.selectionItemList().length) {
                 block.invisible();
                 self.selectedAddOutputItem.removeAll();
                 let _listOutputItemCode = _.map(self.outputItemList(), function(o) { return parseInt(o.outputItemCode) });
-                for (let item of self.selectedSelectionItemList()) {
-                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item });
+                for (let item of self.selectionItemList()) {
+                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item.id });
                     self.selectedAddOutputItem.push(ko.toJS(new AddOutputItem(parseInt(_.max(_listOutputItemCode)), self.condSetCd(), _selectedItem.itemName, _selectedItem.itemType, _selectedItem.itemNo, _selectedItem.categoryId)));
                 }
                 service.addOutputItem(self.selectedAddOutputItem()).done(function() {
