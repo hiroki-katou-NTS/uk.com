@@ -35,33 +35,22 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 			return;
 		}
 		List<String> header = this.getTextHeader(listNameIdHead);
-		String fileName = lstError.getNameSetting();
-		List<String> resultLog = new ArrayList<>();
+		String fileName = "エラーログ" + lstError.getNameSetting();
+		List<List<String>> resultLogs = new ArrayList<>();
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 
-		resultLog.add("出力条件設定");
-		resultLog.add(lstError.getResultLog().getNameSetting().toString());
-		resultLog.add(TextResource.localize("CMF002_223"));
-		resultLog.add(lstError.getResultLog().getSpecifiedStartDate().toString());
-		resultLog.add(lstError.getResultLog().getSpecifiedEndDate().toString());
-		resultLog.add(TextResource.localize("CMF002_329"));
-		resultLog.add(lstError.getResultLog().getProcessStartDateTime().toString());
-		resultLog.add(TextResource.localize("CMF002_331"));
-		resultLog.add(lstError.getResultLog().getTotalCount() + "");
-		resultLog.add(TextResource.localize("CMF002_332"));
-		resultLog.add(lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount() + "");
-		resultLog.add(TextResource.localize("CMF002_333"));
-		resultLog.add(lstError.getResultLog().getTotalErrorCount() + "");
+		resultLogs.add(new ArrayList<>(Arrays.asList("出力条件設定", lstError.getResultLog().getNameSetting().toString())));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_223"),
+				lstError.getResultLog().getSpecifiedStartDate().toString(),
+				lstError.getResultLog().getSpecifiedEndDate().toString())));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_329"),
+				lstError.getResultLog().getProcessStartDateTime().toString())));
+		resultLogs.add(new ArrayList<>(
+				Arrays.asList(TextResource.localize("CMF002_331"), lstError.getResultLog().getTotalCount() + "")));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_332"),
+				lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount() + "")));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), lstError.getResultLog().getTotalErrorCount() + "")));
 
-//		if (lstError.getErrorLog() != null) {
-//			for (ExternalOutLogDto data : lstError.getErrorLog()) {
-//				dataSource.add(data.getErrorItem().toString());
-//				dataSource.add(data.getErrorTargetValue().toString());
-//				dataSource.add(data.getErrorContent().toString() + "(" + TextResource.localize("CMF002_356")
-//						+ data.getErrorEmployee() + ")");
-//			}
-//		}
-		
 		if (lstError.getErrorLog() != null) { 
 			for (int i=0; i< lstError.getErrorLog().length; i++) {
 				ExternalOutLogDto errorContentList = lstError.getErrorLog()[i];
@@ -74,7 +63,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				dataSource.add(errorItem);
 			}
 		}
-		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(fileName, resultLog, header, dataSource);
+		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(fileName, resultLogs, header, dataSource);
 		this.generator.generate(context.getGeneratorContext(), dataExport);
 	}
 	

@@ -104,7 +104,7 @@ module nts.uk.com.view.cmf002.s {
                         self.totalProCnt(res.totalProCnt);
                         self.proUnit(res.proUnit);
                         self.errCnt(res.errCnt);
-                        if (self.errCnt != 0) {
+                        if (self.errCnt() == 0) {
                             self.isToNext(false);
                         }
                         self.opCond = res.opCond;
@@ -178,6 +178,8 @@ module nts.uk.com.view.cmf002.s {
                         // stop auto request to server
                         clearInterval(self.interval);
                         $('#S10_2').focus();
+                        // don't nextTo ScreenY
+                        self.isToNext(false);
 
                         //delete dataStorageMng of process when interrupt
                         let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);

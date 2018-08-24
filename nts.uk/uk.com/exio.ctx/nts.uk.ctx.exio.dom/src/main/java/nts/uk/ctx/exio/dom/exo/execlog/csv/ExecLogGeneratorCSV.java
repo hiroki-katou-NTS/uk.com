@@ -22,10 +22,10 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 	private static final int ERROR_LOG = 1;
 
 	private static final int CSV_START_COLUMN = 0;
-	
-	private static final int CSV_HEADER_START_ROW = 5;
-	
-	private static final int CSV_DATA_START_ROW = 6;
+
+	private static final int CSV_HEADER_START_ROW = 6;
+
+	private static final int CSV_DATA_START_ROW = 7;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ExecLogFileDataCSV dataSource) {
@@ -37,12 +37,12 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 		// get data
 		List<String> headers = dataSource.getHeaders();
-		List<String> resultLog = dataSource.getResultLog();
+		List<List<String>> resultLogs = dataSource.getResultLogs();
 		List<Map<String, Object>> datas = dataSource.getDataSource();
 
 		// information error
-		this.drawInfoError(cells, resultLog, datas);
-		
+		this.drawInfoError(cells, resultLogs);
+
 		// list error
 		if (!headers.isEmpty()) {
 			this.drawHeader(cells, headers);
@@ -55,27 +55,27 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 		reportContext.saveAsCSV(this.createNewFile(generatorContext, dataSource.getFileName()));
 	}
-	
+
 	/**
 	 * @param cells
 	 * @param headers
 	 */
-	private void drawHeader (Cells cells, List<String> headers) {
-		
+	private void drawHeader(Cells cells, List<String> headers) {
+
 		for (int j = 0; j < headers.size(); j++) {
 			Cell header = cells.get(CSV_HEADER_START_ROW, CSV_START_COLUMN + j);
 			header.setValue(headers.get(j));
 		}
 	}
-	
+
 	/**
 	 * @param cells
 	 * @param headers
 	 * @param datas
 	 */
-	private void drawTableBody (Cells cells, List<String> headers, List<Map<String, Object>> datas) {
-		
-		for(int i = 0; i < datas.size(); i++){
+	private void drawTableBody(Cells cells, List<String> headers, List<Map<String, Object>> datas) {
+
+		for (int i = 0; i < datas.size(); i++) {
 			Map<String, Object> data = datas.get(i);
 			for (int j = 0; j < headers.size(); j++) {
 				Cell dataCell = cells.get(CSV_DATA_START_ROW + i, CSV_START_COLUMN + j);
@@ -87,18 +87,15 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 	/**
 	 * @param cells
 	 * @param resultLog
-	 * @param errorLog
 	 */
-	private void drawInfoError(Cells cells, List<String> resultLog, List<Map<String, Object>> datas) {
-
-		for (int i = 0; i < resultLog.size(); i++) {
-			Cell resultLogCells = cells.get(RESULT_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(resultLog.get(i) +  "");
+	private void drawInfoError(Cells cells, List<List<String>> resultLogs) {
+		for (int i = 0; i < resultLogs.size(); i++) {
+			List<String> resultLog = resultLogs.get(i);
+			for (int j = 0; j < resultLog.size(); j++) {
+				Cell resultLogCells = cells.get(RESULT_LOG + i, CSV_START_COLUMN + j);
+				resultLogCells.setValue(resultLog.get(j));
+			}
 		}
 
-		for (int i = 0; i < datas.size(); i++) {
-			Cell resultLogCells = cells.get(ERROR_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(datas.get(i));
-		}
 	}
 }

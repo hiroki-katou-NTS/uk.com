@@ -9,14 +9,14 @@ import lombok.Data;
 public class ExecLogFileDataCSV {
 
 	private String fileName;
-	private List<String> resultLog;
+	private List<List<String>> resultLogs;
 	private List<String> headers;
 	private List<Map<String, Object>> dataSource;
 	
-	public ExecLogFileDataCSV(String fileName, List<String> resultLog, List<String> headers,
+	public ExecLogFileDataCSV(String fileName, List<List<String>> resultLogs, List<String> headers,
 			List<Map<String, Object>> dataSource) {
 		this.fileName = fileName;
-		this.resultLog = resultLog;
+		this.resultLogs = resultLogs;
 		this.headers = headers;
 		this.dataSource = dataSource;
 	}

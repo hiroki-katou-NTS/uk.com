@@ -55,20 +55,25 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 service.getExternalOutLog(self.storeProcessingId).done(function(res: Array<ExternalOutLog>) {
-                    let sortByExternalOutLog = _.orderBy(res, ["logRegisterDateTime"]);
-                    if (sortByExternalOutLog && sortByExternalOutLog.length) {
-                        _.forOwn(sortByExternalOutLog, function(index) {
-                            self.externalOutLog.push(new ExternalOutLog(
-                                index.errorContent,
-                                index.errorEmployee,
-                                index.errorTargetValue,
-                                index.errorItem
-                            ));
-                            self.iErrorContentCSV(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
-                        });
+                    nts.uk.ui.block.invisible();
+                    if (res) {
+                        let sortByExternalOutLog = _.orderBy(res, ["logRegisterDateTime"]);
+                        if (sortByExternalOutLog && sortByExternalOutLog.length) {
+                            _.forOwn(sortByExternalOutLog, function(index) {
+                                self.externalOutLog.push(new ExternalOutLog(
+                                    index.errorContent,
+                                    index.errorEmployee,
+                                    index.errorTargetValue,
+                                    index.errorItem
+                                ));
+                                self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+                            });
+                        }
                     }
                 }).fail(function(res: any) {
                     console.log("FindgetExternalOutLog fail");
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
