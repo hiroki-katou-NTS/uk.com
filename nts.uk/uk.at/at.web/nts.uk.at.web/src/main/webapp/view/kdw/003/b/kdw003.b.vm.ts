@@ -288,12 +288,16 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeCode = model.employeeCode;
                 self.employeeName = model.employeeName;
                 self.submitedName = model.submitedName;
-                if (moment(model.date, "YYYY/MM/DD").day() == 6) {
-                    self.date = '<span style="color: #4F81BD">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
-                } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
-                    self.date = '<span style="color: #e51010">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
-                } else {
-                    self.date = '<span>' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                if (model.date != "") {
+                    if (moment(model.date, "YYYY/MM/DD").day() == 6) {
+                        self.date = '<span style="color: #4F81BD">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
+                        self.date = '<span style="color: #e51010">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    } else {
+                        self.date = '<span>' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    }
+                }else{
+                     self.date = "";
                 }
                 self.errorCode = model.errorCode;
                 self.message = model.boldAtr ? '<span style="font-weight: bold;color: ' + model.messageColor + ';">' + model.message + '</span>' : '<span style="color: ' + model.messageColor + ';">' + model.message + '</span>';
@@ -322,12 +326,16 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeCode = model.employeeCode;
                 self.employeeName = model.employeeName;
                 self.submitedName = model.submitedName;
-                if (moment(model.date, "YYYY/MM/DD").day() == 6) {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
-                } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                if (model.date != "") {
+                    if (moment(model.date, "YYYY/MM/DD").day() == 6) {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    } else {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    }
                 } else {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    self.date = "";
                 }
                 self.errorCode = model.errorCode;
                 self.message = model.message;
