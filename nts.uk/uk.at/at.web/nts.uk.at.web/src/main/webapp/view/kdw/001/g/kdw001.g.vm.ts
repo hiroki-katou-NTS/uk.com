@@ -41,6 +41,7 @@ module nts.uk.at.view.kdw001.g {
                                 return state.executionContent == self.executionContent; }).statusName 
                          
                          });
+                        self.listTargetPerson(_.orderBy(self.listPeson, ['personCode'], ['asc']))
                     }
                 }
                 
@@ -56,6 +57,7 @@ module nts.uk.at.view.kdw001.g {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                $(".large").focus();
                 dfd.resolve();
                 return dfd.promise();
             }//end start page
