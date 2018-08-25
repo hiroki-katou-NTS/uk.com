@@ -30,7 +30,6 @@ module nts.uk.at.view.kdw003.b {
                 let self = this,
                     dfd = $.Deferred();
                 service.getErrorRefer(param).done((data) => {
-
                     let arrErrorCode: string[] = [];
                     let i: number = data.length;
                     _.each(errorValidate, value => {
@@ -43,7 +42,7 @@ module nts.uk.at.view.kdw003.b {
                             itemName: value.itemName, 
                             errorCode: "" });
                     });
-                    let arr: any[] = _.orderBy(data, ['employeeCode', 'date'], ['asc', 'asc']);
+                    let arr: any[] = _.orderBy(data, ['employeeCode', 'date', 'errorCode'], ['asc', 'asc', 'asc']);
 
                     _.each(data, (dt: any) => {
                         arrErrorCode.push(dt.errorCode);

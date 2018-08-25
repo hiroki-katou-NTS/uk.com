@@ -144,20 +144,27 @@ public class MonthlyPerformanceDisplay {
 		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
 		screenDto.setAuthDto(monthlyItemAuthDto);
 		Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
+		List<PSheet> listSheet = new ArrayList<>();
 		if (monthlyItemAuthDto != null) {
 			for (PSheet sheet : param.getSheets()) {
 				sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
-				if (sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
+				if (sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0) {
+					listSheet.add(sheet);
 					lstAtdItemUnique.putAll(sheet.getDisplayItems().stream()
 							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+				}
 			}
-		} else {
-			for (PSheet sheet2 : param.getSheets()) {
-				if (sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
-					lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream()
-							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
-			}
-		}
+		} 
+//		else {
+//			for (PSheet sheet2 : param.getSheets()) {
+//				if (sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
+//					lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream()
+//							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+//			}
+//		}
+		
+		// set lai sheet
+		param.setSheets(listSheet);
 
 		// 絞り込んだ勤怠項目の件数をチェックする
 		if (lstAtdItemUnique.size() > 0) {

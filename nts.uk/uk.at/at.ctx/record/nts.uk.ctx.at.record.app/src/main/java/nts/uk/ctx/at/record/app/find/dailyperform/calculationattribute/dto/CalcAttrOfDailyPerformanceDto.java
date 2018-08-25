@@ -150,8 +150,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
 		return this.rasingSalarySetting == null ? null : new AutoCalRaisingSalarySetting(
-						this.rasingSalarySetting.getSalaryCalSetting() == 1 ? true : false,
-						this.rasingSalarySetting.getSpecificSalaryCalSetting() == 1 ? true: false);
+						this.rasingSalarySetting.getSpecificSalaryCalSetting() == 1 ? true: false,
+						this.rasingSalarySetting.getSalaryCalSetting() == 1 ? true : false);
 	}
 
 	private AutoCalRestTimeSetting createAutoCalcHolidaySetting() {

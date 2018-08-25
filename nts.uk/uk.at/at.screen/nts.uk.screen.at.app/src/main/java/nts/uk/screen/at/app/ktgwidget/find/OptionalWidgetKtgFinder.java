@@ -178,7 +178,7 @@ public class OptionalWidgetKtgFinder {
 		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
 		//get requestList 193
 		List<DailyExcessTotalTimeImport> dailyExcessTotalTimeImport = optionalWidgetAdapter.getExcessTotalTime(employeeId,datePeriod);
-		
+		GeneralDate systemDate = GeneralDate.today();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
 			if(item.getNotUseAtr()==1) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
@@ -299,23 +299,23 @@ public class OptionalWidgetKtgFinder {
 					// get request list 197 
 					List<DailyLateAndLeaveEarlyTimeImport> dailyLateAndLeaveEarlyTime = optionalWidgetAdapter.getLateLeaveEarly(employeeId, datePeriod);
 					//get request list 446
-					List<DailyLateAndLeaveEarlyTimeImport> lateOrLeaveEarly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
+					List<DailyLateAndLeaveEarlyTimeImport> cancelLateorLeaveearly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
 					
 					int lateRetreat = 0;
 					int earlyRetreat = 0;
 					for (DailyLateAndLeaveEarlyTimeImport daily : dailyLateAndLeaveEarlyTime) {
-						for (DailyLateAndLeaveEarlyTimeImport approve : lateOrLeaveEarly) {
-							if(approve.getDate().equals(daily.getDate())) {
-								if(daily.isLate1()&& approve.isLate1()) {
+						for (DailyLateAndLeaveEarlyTimeImport cancel : cancelLateorLeaveearly) {
+							if(cancel.getDate().equals(daily.getDate())) {
+								if(cancel.isLate1()) {
 									daily.setLate1(false);
 								}
-								if(daily.isLate2()&&approve.isLate2()) {
+								if(cancel.isLate2()) {
 									daily.setLate2(false);
 								}
-								if(daily.isLeaveEarly1()&&approve.isLeaveEarly1() ) {
+								if(cancel.isLeaveEarly1() ) {
 									daily.setLeaveEarly1(false);
 								}
-								if(daily.isLeaveEarly2()&&approve.isLeaveEarly2() ) {
+								if(cancel.isLeaveEarly2() ) {
 									daily.setLeaveEarly2(false);
 								}
 							}
@@ -337,7 +337,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setEarlyRetreat(earlyRetreat);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
 					//sử lý 15
-					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, startDate));
+					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
@@ -345,7 +345,7 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					//sử lý 16
 					//RequestList201
-					KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, datePeriod);
+					KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, systemDate);
 					boolean showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) ;
 					dto.setReservedYearsRemainNo(new RemainingNumber(KTGRsvLeaveInfoImport.getBefRemainDay(), KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
@@ -353,14 +353,14 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
 					//sử lý 18
 					//requestList 203 team B
-					BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, employeeId, datePeriod, false, startDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, employeeId, datePeriod, false, systemDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
 					dto.setRemainAlternationNoDay(time.getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 Dudt
-					AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, startDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					dto.setRemainsLeft(time.getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
@@ -402,7 +402,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setCareLeaveNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208 
+					//requestList 208(期間内の特別休暇残を集計する) 
 					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 					for (SpecialHoliday specialHoliday : specialHolidays) {

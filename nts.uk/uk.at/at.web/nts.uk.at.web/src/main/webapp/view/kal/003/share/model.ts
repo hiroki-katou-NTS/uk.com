@@ -531,6 +531,8 @@ module nts.uk.at.view.kal003.share.model {
                                             nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
                                             $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });      
                                         }, 50);  
+                                    }else{
+                                        nts.uk.ui.errors.clearAll();    
                                     }
                                         
                                     // set error;    

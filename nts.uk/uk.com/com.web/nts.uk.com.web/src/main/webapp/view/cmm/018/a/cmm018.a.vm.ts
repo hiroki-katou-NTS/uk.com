@@ -313,7 +313,7 @@ module nts.uk.com.view.cmm018.a {
                                             //can lay thong tin work place name
                                             servicebase.getWpName().done(function(wpName){
                                                 self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
                                             });
                                             
                                         });
@@ -483,7 +483,7 @@ module nts.uk.com.view.cmm018.a {
                         //can lay thong tin work place name
                         servicebase.getWpName().done(function(wpName){
                             self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                            employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                            employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
                         });
                     });
                 }

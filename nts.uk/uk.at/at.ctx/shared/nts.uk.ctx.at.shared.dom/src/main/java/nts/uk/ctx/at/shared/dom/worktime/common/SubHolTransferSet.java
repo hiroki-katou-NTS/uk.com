@@ -88,6 +88,7 @@ public class SubHolTransferSet extends WorkTimeDomainObject {
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = oldDomain.getCertainTime();
+			this.designatedTime = oldDomain.getDesignatedTime();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
 			} else {
@@ -132,6 +133,7 @@ public class SubHolTransferSet extends WorkTimeDomainObject {
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = new OneDayTime(0);
+			this.designatedTime.restoreDefaultData();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
 			} else {

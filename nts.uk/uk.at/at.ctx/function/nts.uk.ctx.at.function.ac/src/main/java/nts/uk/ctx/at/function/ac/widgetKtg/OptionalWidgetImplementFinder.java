@@ -238,10 +238,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
 				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
-																c.getEarly1()==1?true:false, 
 																c.getLate1()==1?true:false, 
-																c.getEarly2()==1?true:false, 
-																c.getLate2()==1?true:false)).collect(Collectors.toList());
+																c.getEarly1()==1?true:false, 
+																c.getLate2()==1?true:false, 
+																c.getEarly2()==1?true:false)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -251,8 +251,8 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, DatePeriod datePeriod) {
-		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, datePeriod.end());
+	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date) {
+		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, date);
 		 
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();

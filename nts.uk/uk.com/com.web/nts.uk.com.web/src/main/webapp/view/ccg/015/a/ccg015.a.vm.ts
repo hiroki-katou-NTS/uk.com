@@ -3,6 +3,7 @@ module nts.uk.com.view.ccg015.a {
         import commonModel = ccg.model;
         import TopPageItemDto = ccg015.a.service.model.TopPageItemDto;
         import TopPageDto = ccg015.a.service.model.TopPageDto;
+        import block = nts.uk.ui.block;
         export class ScreenModel {
             listTopPage: KnockoutObservableArray<Node>;
             toppageSelectedCode: KnockoutObservable<string>;
@@ -48,7 +49,7 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.languageSelectedCode = ko.observable("0");
                 self.listLinkScreen = ko.observableArray([
-                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) {/*TODO go to ccg011*/ } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/011/a/index.xhtml"); } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/018/a/index.xhtml"); } },
                 ]);
@@ -123,6 +124,7 @@ module nts.uk.com.view.ccg015.a {
                 if (!$('.nts-input').ntsError('hasError')) {
                     //check update or create
                     self.isProcess(true);
+                    block.invisible();
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -135,6 +137,8 @@ module nts.uk.com.view.ccg015.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
                                 self.isProcess(false);
                             });
+                        }).always(()=>{
+                            block.clear();
                         });
                     }
                     else {
@@ -145,6 +149,8 @@ module nts.uk.com.view.ccg015.a {
                             self.loadTopPageList().done(function() {
                                 self.toppageSelectedCode(self.collectData().topPageCode);
                             });
+                        }).always(function(){
+                            block.clear();    
                         });
                     }
                 }

@@ -50,3 +50,18 @@ button.search-btn, button.clear-btn {
 	margin-right: 5px;
 	margin-top: 8px;
 }
+#grid0_displayContainer.ui-iggrid-scrolldiv.ui-widget-content.ui-iggrid-virtualscrolldiv.igscroll-touchscrollable{
+    height: 291px !important;
+}
+#grid0_scrollContainer{
+	height: 291px !important;	
+}
+div#grid0_container.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggrid{
+	height: 305px !important;
+}
+div.ui-id-6.ui-dialog-content.ui-widget-content{	
+	height: 500px !important;
+}
+div.ui-id-8.ui-dialog-content.ui-widget-content{
+	height: 505px !important;
+}

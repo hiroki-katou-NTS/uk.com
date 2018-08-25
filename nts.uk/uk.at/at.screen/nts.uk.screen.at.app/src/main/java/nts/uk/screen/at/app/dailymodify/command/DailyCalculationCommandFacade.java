@@ -24,9 +24,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
@@ -73,9 +71,6 @@ public class DailyCalculationCommandFacade {
 	private CalculateDailyRecordServiceCenter calcService;
 
 	@Inject
-	private CommonCompanySettingForCalc commonCompanySettingForCalc;
-
-	@Inject
 	private ValidatorDataDailyRes validatorDataDaily;
 
 	@Inject
@@ -108,9 +103,7 @@ public class DailyCalculationCommandFacade {
 		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues());
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
-			ManagePerCompanySet manageComanySet = commonCompanySettingForCalc.getCompanySetting();
-			editedDomains = calcService.calculatePassCompanySetting(editedDomains,
-					Optional.ofNullable(manageComanySet));
+			editedDomains = calcService.calculate(editedDomains);
 
 			List<IntegrationOfMonthly> monthlyResults = new ArrayList<>();
 			// check format display = individual

@@ -444,6 +444,44 @@ public class OverTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
+	 * 残業時間の集計
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param roleOverTimeFrameMap 残業枠の役割
+	 */
+	public void aggregateForByPeriod(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap){
+		
+		// 残業時間を縦計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(ymd)) continue;
+			
+			// 「残業枠時間」を取得する
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			val excessPrescibedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+			val overTimeOfDailyOpt = excessPrescibedTimeOfDaily.getOverTimeWork();
+			if (!overTimeOfDailyOpt.isPresent()) continue;
+			val overTimeFrames = overTimeOfDailyOpt.get().getOverTimeWorkFrameTime();
+			
+			// 取得した「残業枠時間」を「集計残業時間」に入れる
+			for (val overTimeFrame : overTimeFrames){
+				int frameNo = overTimeFrame.getOverWorkFrameNo().v();
+				val target = this.getTargetAggregateOverTime(new OverTimeFrameNo(frameNo));
+				target.addOverTimeInTimeSeriesWork(ymd, overTimeFrame);
+			}
+		}
+		
+		// 残業合計時間を集計する
+		this.aggregateTotal(datePeriod);
+	}
+	
+	/**
 	 * 法定内残業時間を取得する
 	 * @param datePeriod 期間
 	 * @return 法定内残業時間

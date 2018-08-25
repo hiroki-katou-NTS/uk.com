@@ -2,7 +2,7 @@
 	width: 1200px;
 }
 
-#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
+.dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
 	#btnExtraction {
 	vertical-align: text-bottom;
 }
@@ -14,7 +14,7 @@
 	margin-left: 50px;
 }
 
-#dislayFormatLbl {
+.dislayFormatLbl {
 	margin-left: 20px;
 }
 

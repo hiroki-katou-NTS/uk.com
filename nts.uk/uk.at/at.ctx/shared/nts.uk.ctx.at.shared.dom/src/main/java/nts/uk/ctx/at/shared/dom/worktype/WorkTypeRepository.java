@@ -5,12 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * The Interface WorkTypeRepository.
  */
 public interface WorkTypeRepository {
+	
+	Map<String , String> getCodeNameWorkType(String companyId, List<String> listWorktypeCode);
 
 	/**
 	 * Gets the possible work type.

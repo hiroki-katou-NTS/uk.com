@@ -28,7 +28,7 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 					scheData.getDate(),
 					scheData.getWorkTypeCode(),
 					Optional.of(TreatmentOfVacation.AFTERNOONPICKUP),//TODO xac nhan lai vi domain duoc sua nhung chua code
-					Optional.of(scheData.getWorkTimeCode()),
+					scheData.getWorkTimeCode() == null ? Optional.empty() : Optional.of(scheData.getWorkTimeCode()),
 					false,
 					scheData.getConfirmedAtr() == ConfirmedAtr.CONFIRMED ? true : false); //TODO xac nhna lai
 			lstOutputData.add(outData);
