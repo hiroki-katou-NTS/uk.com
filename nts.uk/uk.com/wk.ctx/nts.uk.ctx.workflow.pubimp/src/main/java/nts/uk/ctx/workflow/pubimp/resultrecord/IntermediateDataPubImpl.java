@@ -15,6 +15,8 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
+import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
@@ -27,6 +29,10 @@ import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppFrameInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppPhaseInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,6 +53,9 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private AppRootConfirmService appRootConfirmService;
+	
+	@Inject
+	private CreateDailyApprover createDailyApprover;
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
@@ -195,6 +204,31 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				approverEmployee.getEmployeeID(), 
 				approverEmployee.getEmployeeCD(), 
 				approverEmployee.getEmployeeName());
+	}
+
+	@Override
+	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate) {
+		AppRootInstanceContent appRootInstanceContent = createDailyApprover.createDailyApprover(employeeID, EnumAdaptor.valueOf(rootType, RecordRootType.class), recordDate);
+		return new AppRootInsContentExport(
+				new AppRootInsExport(
+						appRootInstanceContent.getAppRootInstance().getRootID(), 
+						appRootInstanceContent.getAppRootInstance().getCompanyID(), 
+						employeeID, 
+						appRootInstanceContent.getAppRootInstance().getDatePeriod(), 
+						rootType, 
+						appRootInstanceContent.getAppRootInstance().getListAppPhase()
+							.stream().map(x -> new AppPhaseInsExport(
+									x.getPhaseOrder(), 
+									x.getApprovalForm().value, 
+									x.getListAppFrame()
+										.stream().map(y -> new AppFrameInsExport(
+											y.getFrameOrder(), 
+											y.isConfirmAtr(), 
+											y.getListApprover()))
+										.collect(Collectors.toList())))
+							.collect(Collectors.toList())), 
+				appRootInstanceContent.getErrorFlag().value, 
+				appRootInstanceContent.getErrorMsgID());
 	}
 	
 }
