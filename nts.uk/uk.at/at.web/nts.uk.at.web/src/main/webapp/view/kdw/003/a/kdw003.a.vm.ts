@@ -468,7 +468,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 nts.uk.ui.block.clear();
                                 dfd.resolve({ bindDataMap: true, data: data });
                             }).fail(function(error) {
-                                nts.uk.ui.dialog.alert(error.message);
+                                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                                    nts.uk.request.jumpToTopPage();
+                                });
+                                //nts.uk.ui.dialog.alert(error.message);
                                 nts.uk.ui.block.clear();
                             });
                         }
