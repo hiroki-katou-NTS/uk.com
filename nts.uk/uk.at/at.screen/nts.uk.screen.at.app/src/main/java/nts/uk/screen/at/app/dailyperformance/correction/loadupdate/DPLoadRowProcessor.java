@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -49,6 +50,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexPro
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DPLoadRowProcessor {
@@ -73,6 +75,9 @@ public class DPLoadRowProcessor {
     
     @Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+    
+    @Inject
+	private ClosureService closureService;
     
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -102,8 +107,9 @@ public class DPLoadRowProcessor {
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId)) {
+				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
 				result.checkShowTighProcess(displayFormat, true,
-						checkIndentityDayConfirm.checkIndentityDay(sId, param.getDateExtract().toListDate()));
+						checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
 			}
 		}
 		if(param.getOnlyLoadMonth()){

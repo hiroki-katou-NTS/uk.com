@@ -399,8 +399,10 @@ public class DailyPerformanceCorrectionProcessor {
 									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
 											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 						if (emp.get(0).equals(sId)) {
+							//社員に対応する締め期間を取得する
+							DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
 							//対象日の本人確認が済んでいるかチェックする
-							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, dateRangeTemp.toListDate()));
+							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
 						}
 						// screenDto.setFlexShortage(null);
 					}
