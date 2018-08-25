@@ -899,7 +899,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (dataAfter.errorMap[5] != undefined) {
                                 self.listErrorMonth = dataAfter.errorMap[5];
                             }
-                            self.showErrorDialog();
                         } else {
                             nts.uk.ui.block.clear();
                             if (dataAfter.errorMap[0] != undefined) {
@@ -922,6 +921,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (dataAfter.errorMap[4] != undefined) {
                                 self.listCheckDeviation = dataAfter.errorMap[4];
                             }
+                            self.showErrorDialog();
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -1883,6 +1883,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         proceedLock(){
             let self = this;
+            //Msg_984
+            nts.uk.ui.dialog.info({ messageId: "Msg_984" });
             if(!self.hasEmployee) return;
             self.showLock(true);
             self.unLock(false);
@@ -1891,10 +1893,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         proceedUnLock(){
             let self = this;
-            if(!self.hasEmployee) return;
-            self.showLock(false);
-            self.unLock(true);
-            self.processLockButton(false);
+            //Msg_982
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_982" }).ifYes(() => {
+                if (!self.hasEmployee) return;
+                self.showLock(false);
+                self.unLock(true);
+                self.processLockButton(false);
+            });
+            //nts.uk.ui.dialog.info({ messageId: "Msg_982" });
         }
         
         processLockButton(showLock: boolean){
