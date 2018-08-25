@@ -29,6 +29,8 @@ module nts.uk.at.view.kdw001.c {
             dateValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
+            // startDate for validate
+            startDateValidate : KnockoutObservable<string>;
 
             //Declare employee filter component
             ccg001ComponentOption: any;
@@ -92,12 +94,14 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue = ko.observable({});
                 self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
+                self.startDateValidate = ko.observable("");
 
 
                 //var closureID = __viewContext.transferred.value.closureID;
                 //self.closureId = ko.observable(1);
                 let closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
+                    self.startDateValidate = data.startDate;
                     self.periodStartDate = data.startDate.toString();
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
@@ -120,6 +124,7 @@ module nts.uk.at.view.kdw001.c {
                 
                 self.closureId.subscribe(function(value){
                        service.findPeriodById(Number(value)).done((data) => {
+                        self.startDateValidate = data.startDate;
                         self.periodStartDate = data.startDate.toString();
                         self.dateValue().startDate = data.startDate.toString();
                         self.dateValue().endDate = data.endDate.toString();
@@ -140,6 +145,14 @@ module nts.uk.at.view.kdw001.c {
     
                     }); 
                 });
+                
+//                self.dateValue.subscribe(function(value){
+//                    if(self.startDateValidate() != "" && (value.startDate < self.startDateValidate())) {
+//                        $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
+//                    } else {
+//                        $('#daterangepicker').ntsError('clear');   
+//                    }
+//                });
 
 
                 //Init employee filter component
@@ -288,7 +301,7 @@ module nts.uk.at.view.kdw001.c {
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: true, // 勤種条件
-                    isMutipleCheck: false, // 選択モード
+                    isMutipleCheck: true, // 選択モード
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
@@ -317,6 +330,13 @@ module nts.uk.at.view.kdw001.c {
             opendScreenBorJ() {
                 let self = this;
                 var closureID = '1';
+                if(self.dateValue().startDate < self.startDateValidate) {
+//                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
+                    $('#daterangepicker').ntsError('clear');
+                    $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
+                } else {
+                    $('#daterangepicker').ntsError('clear');
+                }
                 if (!nts.uk.ui.errors.hasError()) {
                     service.findPeriodById(Number(self.closureId())).done((data) => {
                         if (data) {
@@ -403,6 +423,7 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }

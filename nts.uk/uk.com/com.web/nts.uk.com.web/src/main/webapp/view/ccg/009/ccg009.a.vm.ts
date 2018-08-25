@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg009.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<any>;
         currentAlarm: KnockoutObservable<TopPageAlarmSet>;
-        textSearch: string = nts.uk.resource.getText('CCG009_4');
+        textSearch: string = nts.uk.resource.getText('CCG009_4') + nts.uk.resource.getText('で検索…');
 
         constructor() {
             let self = this;

@@ -55,9 +55,12 @@ module nts.uk.at.view.kdw006.d.viewmodel {
 
         saveData() {
             let self = this;
+            nts.uk.ui.block.invisible();
             service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) {
+                
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
+            nts.uk.ui.block.clear();
         }
         
         jumpTo(sidebar) {

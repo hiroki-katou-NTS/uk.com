@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pub.classification;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -35,4 +36,13 @@ public interface SyClassificationPub {
 	 */
 	// RequestList32-3
 	List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds, DatePeriod datePeriod);
+	
+	/**
+	 * Gets the classification map.
+	 *
+	 * @param companyId the company id
+	 * @param clsCds the cls cds
+	 * @return the classification map
+	 */
+	Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds);
 }

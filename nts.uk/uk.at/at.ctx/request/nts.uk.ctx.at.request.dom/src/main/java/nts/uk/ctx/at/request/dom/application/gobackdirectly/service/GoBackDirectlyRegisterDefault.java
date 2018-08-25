@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -41,7 +44,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	NewAfterRegister_New newAfterRegister;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
-	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	/**
 	 * 
@@ -54,6 +58,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		appRepo.insert(application);
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				application.getCompanyID(), 
+				employeeID, 
+				Arrays.asList(application.getAppDate()));
+		
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
 		return newAfterRegister.processAfterRegister(application);
 		
