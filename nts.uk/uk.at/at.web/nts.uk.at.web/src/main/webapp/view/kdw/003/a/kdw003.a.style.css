@@ -12,6 +12,8 @@
 
 #dislayFormatLbl {
 	margin-left: 20px;
+	top: -12px;
+    position: relative;
 }
 
 #right-content {
@@ -20,7 +22,7 @@
 }
 
 #cbListDate {
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 #cbListDate {
@@ -91,12 +93,10 @@
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: -50px;
-	margin-top: 34px;
+    margin-left: 816px;
+    margin-top: 45px;
 	padding: 15px;
 	visibility: hidden;
-	top: -9999px;
-	left: -9999px;
 }
 
 #vacationRemaining-content button {
@@ -157,7 +157,7 @@
 	height: 80px;
 	margin-top: 4px; */
 	float: right;
-	margin-left: 120px;
+	/* margin-left: 120px; */
 	}
 #emp-component{
 	margin-top: -33px;
@@ -299,7 +299,7 @@
 	width: 100%; /*Optional*/
 	table-layout: fixed; /*Optional*/
 	border-spacing: 10px; /*Optional*/
-	margin-left: -10px;
+	margin: -10px;
 }
 
 .Column {
@@ -313,6 +313,11 @@
 .mgrid-sunday{
 	color: #e51010;
 }
+
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 29px;
+}
+
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

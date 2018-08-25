@@ -17,6 +17,7 @@ public class FlexShortageRCDto {
 
 	private boolean error;
 	private String redConditionMessage;
+	private String flexHoliday;
 	private List<RCMessageErrorDaily> messageError = new ArrayList<>();
 	
 	public FlexShortageRCDto createError(boolean error) {
@@ -24,8 +25,9 @@ public class FlexShortageRCDto {
 		return this;
 	}
 	
-	public FlexShortageRCDto createMessage(String redConditionMessage) {
+	public FlexShortageRCDto createMessage(String redConditionMessage, String flexHoliday) {
 		this.redConditionMessage = redConditionMessage;
+		this.flexHoliday = flexHoliday;
 		return this;
 	}
 	
@@ -40,7 +42,7 @@ public class FlexShortageRCDto {
 			}
 
 			if (errorFlex.get().getAnnualHoliday().isPresent()) {
-				this.messageError.add(new RCMessageErrorDaily(TextResource.localize("Msg_1292", redConditionMessage),"Msg_1292"));
+				this.messageError.add(new RCMessageErrorDaily(TextResource.localize("Msg_1292", flexHoliday),"Msg_1292"));
 			}
 			return this;
 		}
@@ -53,7 +55,7 @@ public class FlexShortageRCDto {
 		case 1:
 			return new RCMessageErrorDaily(TextResource.localize("Msg_1175", redConditionMessage), "Msg_1175");
 		case 2:
-			return new RCMessageErrorDaily(TextResource.localize("Msg_1291", redConditionMessage), "Msg_1291");
+			return new RCMessageErrorDaily(TextResource.localize("Msg_1291", flexHoliday), "Msg_1291");
 		default:
 			return null;
 		}

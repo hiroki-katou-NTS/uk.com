@@ -419,7 +419,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
 		if (mode == 0) {
 			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
-					month == null ? Optional.empty() : month.getDomainMonth(), month);
+					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(), month);
 		}
 		//get error after caculator
 //        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		

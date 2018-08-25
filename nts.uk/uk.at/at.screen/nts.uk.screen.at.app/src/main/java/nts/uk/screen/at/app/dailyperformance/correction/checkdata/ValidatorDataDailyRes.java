@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
@@ -19,9 +20,14 @@ import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -29,6 +35,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShorta
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -40,6 +47,9 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private InsufficientFlexHolidayMntRepository flexHolidayMntRepository;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -327,6 +337,8 @@ public class ValidatorDataDailyRes {
 		Optional<EmployeeMonthlyPerError> monthDomainOpt = getDataErrorMonth(lstMonthDomain, monthParam);
 		FlexShortageRCDto result = new FlexShortageRCDto();
 		if(!monthDomainOpt.isPresent()) return result.createError(false);
+		Optional<InsufficientFlexHolidayMnt> flexHoliday = flexHolidayMntRepository.findByCId(AppContexts.user().companyId());
+		result.createMessage(monthParam.getMessageRed(), flexHoliday.isPresent() ? String.valueOf(flexHoliday.get().getSupplementableDays().v()) : "");
 		return result.createError(monthDomainOpt);	
 	}
 	
@@ -347,4 +359,51 @@ public class ValidatorDataDailyRes {
 		}
 		return Optional.empty();
 	}
+	
+	//残数系のエラーチェック
+	public Map<Integer, List<DPItemValue>> errorMonth(List<IntegrationOfMonthly> lstMonthDomain, UpdateMonthDailyParam monthParam){
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		List<DPItemValue> items = new ArrayList<>();
+		for (IntegrationOfMonthly month : lstMonthDomain) {
+			val lstEmpError = month.getEmployeeMonthlyPerErrorList().stream()
+					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+			lstEmpError.stream().forEach(error ->{
+				createMessageError(error).stream().forEach(message ->{
+					items.add(new DPItemValue(error.getEmployeeID(), message));
+				});
+			});
+			
+		}
+		if(!items.isEmpty()){
+		  resultError.put(TypeError.ERROR_MONTH.value, items);
+		  return resultError;
+		}
+		return resultError;
+	}
+	
+	private List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth){
+		List<String> messageIds = new ArrayList<>();
+		ErrorType errroType = errorEmployeeMonth.getErrorType();
+			 //年休: 年休エラー
+			Optional<AnnualLeaveError> annualHoliday = errorEmployeeMonth.getAnnualHoliday();
+            if(annualHoliday.isPresent()){
+            	messageIds.add("Msg_"+ (1174 + annualHoliday.get().value));
+            }
+        	Optional<ReserveLeaveError> yearlyReserved = errorEmployeeMonth.getYearlyReserved();
+            if(yearlyReserved.isPresent()){
+            	messageIds.add("Msg_"+ (1384 + yearlyReserved.get().value));
+            }
+            if(errroType.value == ErrorType.REMAINING_ALTERNATION_NUMBER.value){
+            	messageIds.add("Msg_1387");
+            }else if(errroType.value == ErrorType.REMAIN_LEFT.value){
+            	messageIds.add("Msg_1388");
+            }else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
+            	messageIds.add("Msg_1389");
+            }else if(errroType.value == ErrorType.H60_SUPER_HOLIDAY.value){
+            	messageIds.add("Msg_1390");
+            }
+            
+		return null;
+	}
+	
 }

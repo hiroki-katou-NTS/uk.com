@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -25,6 +24,8 @@ public class DPItemValue {
 	private GeneralDate date;
 	
 	private Integer typeGroup;
+	
+	private String message;
 	
 	public DPItemValue(String rowId, String employeeId, GeneralDate date, int itemId){
 		this.rowId = rowId;
@@ -56,5 +57,8 @@ public class DPItemValue {
 		this.typeGroup = typeGroup;
 	}
 	
-	
+	public DPItemValue(String employeeId, String message){
+		this.employeeId = employeeId;
+		this.message = message;
+	}
 }

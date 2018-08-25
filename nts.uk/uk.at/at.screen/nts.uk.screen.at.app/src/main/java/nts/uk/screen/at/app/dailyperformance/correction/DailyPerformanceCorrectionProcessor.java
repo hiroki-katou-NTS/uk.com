@@ -1371,7 +1371,7 @@ public class DailyPerformanceCorrectionProcessor {
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
 					mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-					String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP));
+					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP));
 		}
 		
 		lstHeader.add(DPHeaderDto.addHeaderSubmitted());

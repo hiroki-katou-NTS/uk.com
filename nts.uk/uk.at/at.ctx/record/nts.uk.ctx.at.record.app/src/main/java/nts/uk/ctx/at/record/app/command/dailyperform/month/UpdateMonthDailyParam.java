@@ -29,5 +29,7 @@ public class UpdateMonthDailyParam {
 	private Optional<IntegrationOfMonthly> domainMonth;
 	
 	private DatePeriod datePeriod;
+	
+	private String messageRed;
 
 }

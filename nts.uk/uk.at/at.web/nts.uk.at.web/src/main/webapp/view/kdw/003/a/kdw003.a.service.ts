@@ -81,6 +81,7 @@ module nts.uk.at.view.kdw003.a.service {
     
     export function getRemainNum(employeeId: string) {
         return nts.uk.request.ajax(paths.getRemainNum + "/" + employeeId);
+        }
 
     export function lock(param: any) {
         return nts.uk.request.ajax(paths.lock, param);
