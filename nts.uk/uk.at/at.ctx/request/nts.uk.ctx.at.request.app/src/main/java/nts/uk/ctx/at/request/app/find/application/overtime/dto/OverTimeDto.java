@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReferen
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 
 @Data
 @AllArgsConstructor

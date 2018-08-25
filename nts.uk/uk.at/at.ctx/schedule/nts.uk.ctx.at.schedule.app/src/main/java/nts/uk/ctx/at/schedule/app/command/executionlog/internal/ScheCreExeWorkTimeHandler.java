@@ -753,7 +753,7 @@ public class ScheCreExeWorkTimeHandler {
 		// 就業時間帯一覧から変換した就業時間帯コードと一致する情報を取得する
 		final String workTimeCode = worktimeCode;
 		//if worktimeCode = null, it mean day off, haven't error
-		if (worktimeCode == null) {
+		if (StringUtil.isNullOrEmpty(worktimeCode, true)) {
 			return Optional.empty();
 		}
 		Optional<WorkTimeSetting> workTimeSetting = listWorkTimeSetting.stream()

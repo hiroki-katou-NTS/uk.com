@@ -62,4 +62,13 @@ public interface ErrorAlarmWorkRecordRepository {
 	 * Key ("ErrorAlarmCondition"), Type (ErrorAlarmCondition);
 	*/
     List<Map<String, Object>> getErAlByComID(String companyId);
+    
+    /**
+     * 
+     * @param companyId
+     * @param fixed = 0: user setting, fixed = 1: system setting
+     * @return
+     */
+    List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId, int fixed);
+    
 }

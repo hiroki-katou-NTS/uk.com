@@ -85,7 +85,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     self.texteditorA4_2.value(currentItem.topPageName);
                     self.texteditorA5_4.value(currentItem.height());
                     self.currentCodeList_A7([]);
-                    self.currentCodeList_A7(currentItem.listType());
+                    let listType = _.map(currentItem.listType(), function(x){ return x.toString();});
+                    self.currentCodeList_A7(listType);
                     $("#name").focus();
                 } else {
                     self.isCreated(true);
@@ -103,13 +104,16 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.initData();
+            let a = 0;
             dfd.resolve();
             return dfd.promise();
         }
         initData(): void {
             let self = this;
-            let listWidgets = __viewContext.enums.WidgetDisplayItemType;
-            self.items_A7(listWidgets);
+            var listWidgets = __viewContext.enums.WidgetDisplayItemType;
+            listWidgets.forEach(function (value) {
+              self.items_A7.push(new ItemEnum(value.value.toString(),value.name));
+            }); 
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
@@ -158,7 +162,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                 let displayItemTypes: Array<any> = [];
                 let values = _.map(self.items_A7(), 'value');
                 _.forEach(values, (x => {
-                    let selectedList = _.map(self.currentCodeList_A7(), x => parseInt(x));
+                    let selectedList = self.currentCodeList_A7();
                     if (_.includes(selectedList, x)) {
                         displayItemTypes.push({
                             'displayItemType': x,
@@ -263,6 +267,14 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             this.width = ko.observable(width);
             this.height = ko.observable(height);
             this.listType = ko.observableArray(listType);
+        }
+    }
+    class ItemEnum {
+        value: string;
+        name: string;
+        constructor(value: string, name: string) {
+            this.value = value;
+            this.name = name;
         }
     }
 }

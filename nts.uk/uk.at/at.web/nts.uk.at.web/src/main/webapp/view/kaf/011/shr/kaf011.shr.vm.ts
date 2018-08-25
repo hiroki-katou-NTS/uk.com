@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf011.shr {
             absApp: any;
             application: any;
             recApp: any;
-            transferDate:any;
+            transferDate: any;
         }
 
         export interface IAppTypeSet {
@@ -224,27 +224,24 @@ module nts.uk.at.view.kaf011.shr {
                         }).always(() => {
                             self.updateWorkingText();
                             block.clear();
-                        });;
-
+                        });
                     }
 
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    let changeWkTypeParam = {
-                        wkTypeCD: newWkType,
-                        wkTimeCD: self.wkTimeCD()
-                    };
-                    if (vm.screenModeNew()) {
+                    if (!_.isEmpty(newWkType)) {
+                        let changeWkTypeParam = {
+                            wkTypeCD: newWkType,
+                            wkTimeCD: self.wkTimeCD()
+                        };
                         block.invisible();
                         service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                             self.setDataFromWkDto(data);
-
-                        }).always(() => {
-                            block.clear();
-                        });
+                        }).always(() => { block.clear(); });
                     }
                 });
+
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
@@ -277,7 +274,7 @@ module nts.uk.at.view.kaf011.shr {
             }
             setDataFromWkDto(data) {
                 let self = this,
-                    vm : nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                    vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
 
                 if (data) {
                     if (vm.screenModeNew()) {
@@ -296,9 +293,11 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkTime2().clearData();
                         }
                     }
-                    self.wkType().workAtr(data.wkType.workAtr);
-                    self.wkType().morningCls(data.wkType.morningCls);
-                    self.wkType().afternoonCls(data.wkType.afternoonCls);
+                    if (data.wkType) {
+                        self.wkType().workAtr(data.wkType.workAtr);
+                        self.wkType().morningCls(data.wkType.morningCls);
+                        self.wkType().afternoonCls(data.wkType.afternoonCls);
+                    }
                 }
             }
             setWkTypes(wkTypeDtos: Array<any>) {
@@ -404,17 +403,10 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateWorkingText() {
                 let self = this,
-                    wkTimeCDText = self.wkTimeCD() ? self.wkTimeCD() : "",
-                    wkTimeNameText = self.wkTimeName() ? self.wkTimeName() : "",
-                    text = wkTimeCDText + ' ' + wkTimeNameText;
-                if (self.wkTime1().startTimeDisplay()) {
-                    let startTimeText = self.parseTime(self.wkTime1().startTimeDisplay()),
-                        endTimeText = self.parseTime(self.wkTime1().endTimeDisplay());
-
-                    text += ' ' + startTimeText + '~' + endTimeText;
-                }
-                self.wkText(text);
-
+                    wkTimeCDText = self.wkTimeCD() || "",
+                    wkTimeNameText = self.wkTimeName() || text('KAF011_68'),
+                    wkText = self.wkTimeName() ? text('KAF011_70', [wkTimeCDText, wkTimeNameText, '', '', '']) : text('KAF011_68', [wkTimeCDText]);
+                self.wkText(wkText);
             }
 
             changeAbsDateToHoliday() {

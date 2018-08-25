@@ -262,7 +262,7 @@ module nts.uk.ui.koExtentions {
             
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
-                if (!$input.attr('readonly') && code.toString() !== '9') {
+                if (!$input.attr('readonly') && _.toString(code) !== '9') {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
@@ -455,7 +455,13 @@ module nts.uk.ui.koExtentions {
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
                     // Remove separator (comma)
-                    $input.val(data.value());
+                    let numb = Number(data.value());
+
+                    if(_.isNumber(numb) && !_.isNaN(numb)) {
+                        $input.val(numb);
+                    } else {
+                        $input.val(data.value());
+                    }
                     // If focusing is caused by Tab key, select text
                     // this code is needed because removing separator deselects.
                     if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {

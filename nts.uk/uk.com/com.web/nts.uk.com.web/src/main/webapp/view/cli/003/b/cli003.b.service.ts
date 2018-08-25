@@ -12,6 +12,7 @@ module nts.uk.com.view.cli003.b {
             logSettingExportCsvScreenI: "ctx/sys/log/record-reference/export-csv-screeni",
             getLogBasicInfoDataByModifyDate: "ctx/sys/log/record-reference/get-log-basic-info-data-by-date",
             getLogOutputItemsByRecordTypeItemNosAll: "ctx/sys/log/app/get-log-output-item-by-record-type-item-no-list-all",
+            filterLogDataExport: "ctx/sys/log/record-reference/filterLogData"
         }
 
         export function getLogOutputItemsByRecordTypeItemNos(paramOutputItem): JQueryPromise<any> {
@@ -39,6 +40,9 @@ module nts.uk.com.view.cli003.b {
         };
         export function getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem): JQueryPromise<any> {
             return ajax('com', paths.getLogOutputItemsByRecordTypeItemNosAll, paramOutputItem);
+        };
+          export function filterLogDataExport(params): JQueryPromise<any> {
+            return ajax('com', paths.filterLogDataExport, params);
         };
     }
 }

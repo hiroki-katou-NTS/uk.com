@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -48,24 +47,24 @@ public class BasicScheduleCorrectionParameter implements Serializable{
 		private final String remark;
 		private final CorrectionAttr attr; 
 
-		public ItemInfo toItemInfo() {
-			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
-					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.before)),
-					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.after)));
+		public ItemInfo toItemInfo(String viewValueBef, String viewValueAft) {
+			return ItemInfo.createWithViewValue(String.valueOf(this.itemNo), this.itemName,
+					DataValueAttribute.of(valueType), valueTimeMoney(valueType, before),
+					valueTimeMoney(valueType, after), valueTimeMoney(valueType, viewValueBef),
+					valueTimeMoney(valueType, viewValueAft));
 		}
 		
-		private Object valueString(int valueType, String value) {
-			if (valueType == DataValueAttribute.TIME.value) {
+		private Object valueTimeMoney(int valueType, String value) {
+			if(value == null){
+				return null;
+			} else if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
 				return Integer.parseInt(value);
 			} else if (valueType == DataValueAttribute.MONEY.value) {
 				return Double.parseDouble(value);
 			} else {
-				return false;
+				return value;
 			}
 		}
-		
 	}
 
 }

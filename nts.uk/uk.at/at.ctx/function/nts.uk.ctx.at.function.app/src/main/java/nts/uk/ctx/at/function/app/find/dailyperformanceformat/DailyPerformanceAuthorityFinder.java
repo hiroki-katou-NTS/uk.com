@@ -69,7 +69,8 @@ public class DailyPerformanceAuthorityFinder {
 				}).collect(Collectors.toList());
 		
 		Integer isDefaultInitial = 0;
-		if(this.authorityFormatInitialDisplayRepository.checkExistData(new DailyPerformanceFormatCode(dailyPerformanceFormatCode))){
+		boolean check = this.authorityFormatInitialDisplayRepository.checkExistData(companyId,new DailyPerformanceFormatCode(dailyPerformanceFormatCode)); 
+		if(check){
 			isDefaultInitial = 1;
 		} else isDefaultInitial = 0;
 

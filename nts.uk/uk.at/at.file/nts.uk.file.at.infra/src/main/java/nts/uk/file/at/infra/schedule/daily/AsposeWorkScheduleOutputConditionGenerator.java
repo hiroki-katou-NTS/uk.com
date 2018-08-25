@@ -218,8 +218,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
 	
+	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
+	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
+	
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 16;
+	
+	/** The Constant LIMIT_DATA_PACK. */
+	private static final int LIMIT_DATA_PACK = 5;
 	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
@@ -427,6 +433,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
+		List<String> lstEmployeeNoWorkplace = new ArrayList<>();
 		
 		// Get all workplace of selected employees within given period
 		for (String employeeId: query.getEmployeeId()) {
@@ -435,8 +442,43 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //			workplaceImport.getLstWkpInfo().forEach(x -> {
 //				lstWorkplaceId.add(x.getWpkID());
 //			});
+			if (workplaceHist == null) {
+				lstEmployeeNoWorkplace.add(employeeId);
+				continue;
+			}
 			lstWorkplaceId.add(workplaceHist.getWorkplaceId());
 			queryData.getLstWorkplaceImport().add(workplaceHist);
+		}
+		
+		if (!lstEmployeeNoWorkplace.isEmpty()) {
+			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
+			int start, length;
+			List<EmployeeDto> lstSplitEmployeeDto;
+			for(int i = 0; i < numOfChunks; i++) {
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
+
+	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+	            
+	            // Convert to json array
+	            JsonArrayBuilder arr = Json.createArrayBuilder();
+	    		
+	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+	    			arr.add(employee.buildJsonObject());
+	    		}
+	            
+	            setter.setData(DATA_PREFIX_NO_WORKPLACE + i, arr.build().toString());
+			}
+			
+			// Remove all of these employees from original list
+			lstEmployeeNoWorkplace.stream().forEach(employee -> {
+				query.getEmployeeId().remove(employee);
+			});
+			
+			// Stop sequence if no employee left
+			if (query.getEmployeeId().isEmpty())
+				throw new BusinessException(new RawErrorMessage("Msg_1396"));
 		}
 		
 		String companyId = AppContexts.user().companyId();
@@ -496,12 +538,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
 		if (!lstEmployeeIdNoData.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
@@ -797,7 +839,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
 							else {
-								personalPerformanceDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+								personalPerformanceDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 							}
 						});
 					});
@@ -991,7 +1033,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 				}
 				else {
-					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 			});
 		});
@@ -1115,7 +1157,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
 						TotalValue totalVal = optTotalVal.get();
-						int valueType = totalVal.getValueType();
+						int valueType = item.getValueType();
+						totalVal.setValueType(valueType);
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
@@ -2093,7 +2136,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
-				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) {
+				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) { /* Trick to not page break between detailed data and total data */
 			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         	rowPageTracker.resetRemainingRow();
@@ -2107,7 +2150,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
-					&& it.hasNext() && entry.getValue().getParent().level != 0) {
+					&& it.hasNext()/* && entry.getValue().getParent().level != 0*/) {
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}

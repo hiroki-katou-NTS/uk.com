@@ -228,16 +228,22 @@ public class BasicSchedule extends AggregateRoot {
 		return true;
 	}
 	
-	public boolean equalWorkTypeCode(String workTypeCd){
-		return workTypeCode.equals(workTypeCd);
+	public boolean diffWorkTypeCode(String workTypeCd){
+		return !workTypeCode.equals(workTypeCd);
 	}
 	
-	public boolean equalWorkTimeCode(String workTimeCd){
-		return workTimeCode == workTimeCd;
+	public boolean diffWorkTimeCode(String workTimeCd){
+		if(workTimeCode == null && workTimeCd == null){
+			return false;
+		}
+		if(workTimeCode == null && workTimeCd != null){
+			return true;
+		}
+		return !workTimeCode.equals(workTimeCd);
 	}
 	
-	public boolean equalConfirmedAtr(ConfirmedAtr cfAtr){
-		return confirmedAtr == cfAtr;
+	public boolean diffConfirmedAtr(ConfirmedAtr cfAtr){
+		return confirmedAtr.value != cfAtr.value;
 	}
 
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {

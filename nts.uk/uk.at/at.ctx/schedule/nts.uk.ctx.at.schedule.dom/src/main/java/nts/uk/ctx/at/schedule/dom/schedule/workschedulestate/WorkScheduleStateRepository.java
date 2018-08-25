@@ -33,4 +33,10 @@ public interface WorkScheduleStateRepository {
 	 * @return
 	 */
 	public List<WorkScheduleState> findByDateAndEmpId(String sId, GeneralDate date);
+	
+	/**
+	 * データがある場合更新する、データがない場合追加する
+	 * @param domain
+	 */
+	void updateOrInsert(WorkScheduleState domain);
 }

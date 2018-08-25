@@ -81,6 +81,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
 
+            $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
                 if (params.dailyCreation == false) {
@@ -127,7 +128,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         cancelTask(): void {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
-            nts.uk.ui.windows.close();
+            self.enableCancelTask(false);
+            self.elapseTime.end();
         }
 
         closeDialog(): void {
@@ -149,6 +151,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         private repeatCheckAsyncResult(): void {
             var self = this;
+            
+                        self.enableCancelTask(true);
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
@@ -162,6 +166,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         // monthly aggregation 
                         self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);                        
 
+                        self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                        self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                        self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
                             self.executionContents(self.contents);
@@ -185,13 +192,14 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
                             
                             // monthly aggregation
-                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             
                             // Get Log data
                             self.getLogData();
+                            
+                            self.enableCancelTask(false);
                         }
-                        self.enableCancelTask(false);
                     });
                 })
                 .while(info => info.pending || info.running)

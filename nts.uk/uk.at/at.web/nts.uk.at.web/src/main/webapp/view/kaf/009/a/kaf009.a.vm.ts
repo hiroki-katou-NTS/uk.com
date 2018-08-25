@@ -314,6 +314,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         registry() {
             let self = this;
             nts.uk.ui.block.invisible();
+            if(self.prePostDisp()){
+                $('#pre_post').trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
@@ -345,6 +352,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             if (errorFlag != 0) {
                 nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function() { nts.uk.ui.block.clear(); });
             } else {
+                // 勤務時間の大小チェック
+                if (self.timeStart1() > self.timeEnd1()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+                    return;
+                }
+                // 勤務時間2の大小チェック
+                if (self.timeStart2() > self.timeEnd2()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
+                    return;
+                }
                 self.checkUse();
             }
             return dfd.promise();

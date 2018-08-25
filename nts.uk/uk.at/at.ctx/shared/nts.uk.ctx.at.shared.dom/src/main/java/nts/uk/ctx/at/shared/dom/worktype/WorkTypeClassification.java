@@ -20,27 +20,27 @@ public enum WorkTypeClassification {
 	/**
 	 * 休日
 	 */
-	Holiday(1, "Enum_WorkTypeClassification_Holiday"),//1
+	Holiday(1, "Enum_WorkTypeClassification_Holiday"),
 	/**
 	 * 年休
 	 */
-	AnnualHoliday(2, "Enum_WorkTypeClassification_AnnualHoliday"), //2
+	AnnualHoliday(2, "Enum_WorkTypeClassification_AnnualHoliday"), 
 	/**
 	 * 積立年休
 	 */
-	YearlyReserved(3, "Enum_WorkTypeClassification_YearlyReserved"), //3
+	YearlyReserved(3, "Enum_WorkTypeClassification_YearlyReserved"), 
 	/**
 	 * 特別休暇
 	 */
-	SpecialHoliday(4, "Enum_WorkTypeClassification_SpecialHoliday"), //4
+	SpecialHoliday(4, "Enum_WorkTypeClassification_SpecialHoliday"), 
 	/**
 	 * 欠勤
 	 */
-	Absence(5, "Enum_WorkTypeClassification_Absence"), //5
+	Absence(5, "Enum_WorkTypeClassification_Absence"), 
 	/**
 	 * 代休
 	 */
-	SubstituteHoliday(6, "Enum_WorkTypeClassification_SubstituteHoliday"), //6
+	SubstituteHoliday(6, "Enum_WorkTypeClassification_SubstituteHoliday"), 
 	/**
 	 * 振出
 	 */
@@ -48,11 +48,11 @@ public enum WorkTypeClassification {
 	/**
 	 * 振休
 	 */
-	Pause(8, "Enum_WorkTypeClassification_Pause"), //7
+	Pause(8, "Enum_WorkTypeClassification_Pause"),
 	/**
 	 * 時間消化休暇
 	 */
-	TimeDigestVacation(9, "Enum_WorkTypeClassification_TimeDigestVacation"), //8
+	TimeDigestVacation(9, "Enum_WorkTypeClassification_TimeDigestVacation"),
 	/**
 	 * 連続勤務
 	 */
@@ -74,7 +74,10 @@ public enum WorkTypeClassification {
 	public final int value;
 	public final String nameId;
 	
-	
+//	WorkTypeClassification(int arg1, String arg0) {
+//		this.value = arg1;
+//		this.nameId = arg0;
+//	}
 
 	
 	/**
@@ -206,6 +209,7 @@ public enum WorkTypeClassification {
 		case Absence:
 		case SubstituteHoliday:
 		case TimeDigestVacation:
+		case YearlyReserved:
 			return true;
 		case Closure:
 		case Holiday:
@@ -214,7 +218,6 @@ public enum WorkTypeClassification {
 		case HolidayWork:
 		case Attendance:
 		case Shooting:
-		case YearlyReserved:
 		case ContinuousWork:
 			return false;
 		default:
@@ -222,6 +225,33 @@ public enum WorkTypeClassification {
 		}
 	}
 	
+	/**
+	 * 休日系か判定する
+	 * 所定時間取得時に休日系として判断する為の処理
+	 * @return
+	 */
+	public boolean judgeHolidayType() {
+		switch (this) {
+		case Holiday:
+		case Pause:
+		case Closure:
+		case LeaveOfAbsence:
+		case ContinuousWork:
+			return true;			
+		case HolidayWork:
+		case Attendance:
+		case Shooting:
+		case Absence:
+		case AnnualHoliday:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+		case YearlyReserved:
+			return false;			
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
 
 	
 }

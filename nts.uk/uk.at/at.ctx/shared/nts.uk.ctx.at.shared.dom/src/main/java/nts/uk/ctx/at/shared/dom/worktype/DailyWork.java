@@ -264,28 +264,50 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 	}
 	
-	public WorkTypeRangeForPred decisionWorkTypeRange() {
-		if(oneDay.isWeekDayAttendance()) {
+//	public WorkTypeRangeForPred decisionWorkTypeRange() {
+//		if(oneDay.isWeekDayAttendance()) {
+//			return WorkTypeRangeForPred.ONEDAY;
+//		}
+//		else if(morning.isWeekDayAttendance() &&(afternoon.isHoliday() || afternoon.isShooting())) {
+//			return WorkTypeRangeForPred.MORNING;
+//		}
+//		else if((morning.isHoliday() || morning.isShooting()) && afternoon.isWeekDayAttendance()) {
+//			return WorkTypeRangeForPred.AFTERNOON;
+//		}
+//		else if(oneDay.isVacation()) {
+//			return WorkTypeRangeForPred.ONEDAY;
+//		}
+//		else if(morning.isVacation() && afternoon.isVacation()) {
+//			return WorkTypeRangeForPred.ONEDAY; 
+//		} 
+//		else if(morning.isVacation() &&(afternoon.isHoliday()||afternoon.isShooting())) {
+//			return WorkTypeRangeForPred.MORNING;
+//		}
+//		else if((morning.isHoliday()||morning.isShooting()) && morning.isVacation()) {
+//			return WorkTypeRangeForPred.AFTERNOON;
+//		}
+//		return WorkTypeRangeForPred.NOTHING;
+//	}
+	
+	public WorkTypeRangeForPred decisionWorkTypeRange() {	
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			//1日かつ出勤系or休暇系の場合
+			if(oneDay.isWeekDayAttendance()||oneDay.isVacation()) {
+				return WorkTypeRangeForPred.ONEDAY;
+			}
+		}	
+		//午前（出勤系or休暇系）+午後（出勤系or休暇系）
+		if((morning.isWeekDayAttendance()||morning.isVacation()) && (afternoon.isWeekDayAttendance()||afternoon.isVacation())){
 			return WorkTypeRangeForPred.ONEDAY;
 		}
-		else if(morning.isWeekDayAttendance() &&(afternoon.isHoliday() || afternoon.isShooting())) {
+		//午前（出勤系or休暇系）+午後（休日系）
+		else if((morning.isWeekDayAttendance()||morning.isVacation()) && afternoon.judgeHolidayType()) {
 			return WorkTypeRangeForPred.MORNING;
 		}
-		else if((morning.isHoliday() || morning.isShooting()) && afternoon.isWeekDayAttendance()) {
+		//午前（休日系）+午後（出勤系or休暇系）
+		else if(morning.judgeHolidayType() && (afternoon.isWeekDayAttendance()||afternoon.isVacation())) {
 			return WorkTypeRangeForPred.AFTERNOON;
-		}
-		else if(oneDay.isVacation()) {
-			return WorkTypeRangeForPred.ONEDAY;
-		}
-		else if(morning.isVacation() && afternoon.isVacation()) {
-			return WorkTypeRangeForPred.ONEDAY; 
 		} 
-		else if(morning.isVacation() &&(afternoon.isHoliday()||afternoon.isShooting())) {
-			return WorkTypeRangeForPred.MORNING;
-		}
-		else if((morning.isHoliday()||morning.isShooting()) && morning.isVacation()) {
-			return WorkTypeRangeForPred.AFTERNOON;
-		}
 		return WorkTypeRangeForPred.NOTHING;
 	}
 	

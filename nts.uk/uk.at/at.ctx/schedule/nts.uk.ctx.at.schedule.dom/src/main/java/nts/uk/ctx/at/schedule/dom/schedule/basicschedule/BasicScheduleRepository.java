@@ -77,6 +77,8 @@ public interface BasicScheduleRepository {
 	void updateScheBreak(BasicSchedule listBSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
+	
+	void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
 
 
 	/**
@@ -158,8 +160,4 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
-	
-	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
-	
-	public void updateStartEndTimeZone();
 }

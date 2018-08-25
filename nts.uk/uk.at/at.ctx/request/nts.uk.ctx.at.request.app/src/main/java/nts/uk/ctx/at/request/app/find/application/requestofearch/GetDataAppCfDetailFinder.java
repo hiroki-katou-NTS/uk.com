@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.requestofearch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -20,6 +22,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -59,7 +65,10 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	
-	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
+	
+	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto, int overtimeAtr) {
 		String message = "";
 		String deadline = "";
 		boolean chkShow = false;
@@ -122,21 +131,41 @@ public class GetDataAppCfDetailFinder {
 			}
 			//「事前の受付制限」．チェック方法が時刻
 			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {		
-				RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
 				ApplicationType appType = EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class);
-				int minuteData = 0;
-				if(retrictPreTimeDay.v()==null){
-					strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
-				} else {
-					if(appType==ApplicationType.ABSENCE_APPLICATION||
-						appType==ApplicationType.WORK_CHANGE_APPLICATION||
-						appType==ApplicationType.BREAK_TIME_APPLICATION||
-						appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
+				if(appType!=ApplicationType.OVER_TIME_APPLICATION){
+					RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
+					int minuteData = 0;
+					if(retrictPreTimeDay.v()==null){
 						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
 					} else {
-						minuteData = retrictPreTimeDay.v();
-						//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
-						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+						if(appType==ApplicationType.ABSENCE_APPLICATION||
+							appType==ApplicationType.WORK_CHANGE_APPLICATION||
+							appType==ApplicationType.BREAK_TIME_APPLICATION||
+							appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
+							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+						} else {
+							minuteData = retrictPreTimeDay.v();
+							//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
+							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+						}
+					}
+				} else {
+					Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+					List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+					if(requestSetting.isPresent()){
+						receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+					}
+					if(!CollectionUtil.isEmpty(receptionRestrictionSetting)){
+						if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){
+							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v();
+							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+						} else if(overtimeAtr == OverTimeAtr.REGULAROVERTIME.value){
+							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v();
+							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+						} else {
+							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v();
+							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+						}
 					}
 				}
 			}

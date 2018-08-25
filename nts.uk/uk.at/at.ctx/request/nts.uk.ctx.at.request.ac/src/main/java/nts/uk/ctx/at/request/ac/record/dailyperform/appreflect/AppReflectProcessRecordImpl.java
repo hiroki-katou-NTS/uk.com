@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ac.record.dailyperform.appreflect;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -8,12 +10,12 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.DegreeReflectionPubAtr;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ExecutionPubType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorktimeAppPubPara;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.PrePostRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectDailyPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordSameChangePubFlg;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ChangeAppGobackPubAtr;
@@ -25,25 +27,61 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OverTimeRecordP
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectInfor;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	@Inject
 	private AppReflectProcessRecordPub recordPub;
-	
+	@Inject
+	private RequestSettingRepository requestSetting;
 	@Override
-	public boolean appReflectProcessRecord(AppReflectInfor info) {
-		AppCommonPara para = new AppCommonPara(EnumAdaptor.valueOf(info.getDegressAtr().value, DegreeReflectionPubAtr.class),
-				EnumAdaptor.valueOf(info.getExecutiontype().value, ExecutionPubType.class),
-				EnumAdaptor.valueOf(info.getStateReflection().value, ReflectedStatePubRecord.class),
-				info.getStateReflectionReal() == null ? null : EnumAdaptor.valueOf(info.getStateReflectionReal().value, ReflectedStatePubRecord.class)); 
-		return recordPub.appReflectProcess(para);
+	public boolean appReflectProcessRecord(Application_New appInfor, boolean chkRecord) {
+		Optional<RequestSetting> settingData = requestSetting.findByCompany(appInfor.getCompanyID());
+		if(appInfor.getStartDate().isPresent() && appInfor.getEndDate().isPresent()) {
+			for(int i = 0; appInfor.getStartDate().get().daysTo(appInfor.getEndDate().get()) - i >= 0; i++){
+				GeneralDate loopDate = appInfor.getStartDate().get().addDays(i);
+				AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
+						appInfor.getEmployeeID(),
+						loopDate, 
+						settingData.isPresent() ? EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
+								: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF,
+						appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
+						EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
+						EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflection().value,  ReflectedStatePubRecord.class),
+						EnumAdaptor.valueOf(appInfor.getPrePostAtr().value, PrePostRecordAtr.class),
+						EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
+						appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false,
+								chkRecord);
+				if(!recordPub.appReflectProcess(para)) {
+					return false;
+				}
+			}	
+		} else {
+			AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
+					appInfor.getEmployeeID(),
+					appInfor.getAppDate(), 
+					settingData.isPresent() ? EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
+							: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF,
+					appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
+					EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
+					EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflection().value,  ReflectedStatePubRecord.class),
+					EnumAdaptor.valueOf(appInfor.getPrePostAtr().value, PrePostRecordAtr.class),
+					EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
+					appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false,
+							chkRecord);
+			return recordPub.appReflectProcess(para);
+		}
+		return true;
 	}
 
 	@Override

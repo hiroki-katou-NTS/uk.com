@@ -63,6 +63,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
         newModeEnable: KnockoutObservable<boolean>;
+        ageBaseDateReq: KnockoutObservable<boolean>;
+        ageBaseDateDefaultValue: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -90,7 +92,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
-                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150 }
+                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
             ]);
             
             self.currentCode = ko.observable();
@@ -170,7 +172,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                         
                         let text = "";
-                        _.forEach(temp, function(item) {
+                        _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
                             text += item.name + " + " ;                    
                         });
                         
@@ -254,10 +256,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.yearReq(false);
                     self.dayReq(false);
                     
-                    if(self.specialHolidayCode() !== "") {
-                        self.dialogDEnable(true);
-                    } else {
+                    if(!self.newModeEnable()) {
                         self.dialogDEnable(false);
+                    } else {
+                        self.dialogDEnable(true);
                     }
                 }
             });
@@ -361,14 +363,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.ageCriteriaCls = ko.observableArray([
                 new Items('0', nts.uk.resource.getText('Enum_ReferenceYear_THIS_YEAR')),
-                new Items('1', nts.uk.resource.getText('Enum_ReferenceYear_NEXT_YEAR'))
+                new Items('1', nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
             ]);
     
             self.selectedAgeCriteria = ko.observable('0');
             self.ageCriteriaClsEnable = ko.observable(false);
             
-            self.ageBaseDate = ko.observable('101');
+            self.ageBaseDate = ko.observable('');
             self.ageBaseDateEnable = ko.observable(false);
+            
+            self.ageBaseDateReq = ko.observable(false);
+            self.ageBaseDateDefaultValue = ko.observable(true);
             
             self.genderSelected.subscribe(function(value) {
                 if(value) {
@@ -403,15 +408,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.endAgeEnable(true);
                     self.ageCriteriaClsEnable(true);
                     self.ageBaseDateEnable(true);
+                    self.ageBaseDateReq(true);
+                    self.ageBaseDateDefaultValue(false);
                 } else {
                     self.startAgeEnable(false);
                     self.endAgeEnable(false);
                     self.ageCriteriaClsEnable(false);
                     self.ageBaseDateEnable(false);
-                    self.startAge("");
-                    self.endAge("");
-                    self.selectedAgeCriteria('0');
-                    self.ageBaseDate('101');
+                    self.ageBaseDateReq(false);
+                    self.ageBaseDateDefaultValue(true);
                 }
             });
         }
@@ -420,16 +425,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData(), self.getAbsenceFrame(), self.getSpecialHolidayFrame()).done(function() {
-                           
-                if(self.listAbsenceFrame().length > 0) {
-                    _.forEach(self.listAbsenceFrame(), function(item) {
+            $.when(self.getSphdData(), self.getSpecialHolidayFrame(), self.getAbsenceFrame()).done(function() {
+                       
+                if(self.listSpecialHlFrame().length > 0) {
+                    _.forEach(self.listSpecialHlFrame(), function(item) {
                         self.targetItems.push(item);
                     });
                 }
                 
-                if(self.listSpecialHlFrame().length > 0) {
-                    _.forEach(self.listSpecialHlFrame(), function(item) {
+                if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.listAbsenceFrame(), function(item) {
                         self.targetItems.push(item);
                     });
                 }
@@ -493,7 +498,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listAbsenceFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1);
+                            var absenceFrame = new ItemData("b" + item.absenceFrameNo, item.absenceFrameName, 2);
                             self.listAbsenceFrame.push(ko.toJS(absenceFrame));
                         }
                     });
@@ -514,7 +519,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listSpecialHlFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2);
+                            var specialHlFrame = new ItemData("a" + item.specialHdFrameNo, item.specialHdFrameName, 1);
                             self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
                         }
                     });
@@ -546,7 +551,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 
                 let text = "";
-                _.forEach(temp, function(item) {
+                _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
                     text += item.name + " + " ;                    
                 });
                 
@@ -757,6 +762,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             if(!self.editMode()) {
                 service.add(dataItem).done(function(errors) {
+                    _.forEach(errors, function(err) {
+                        if(err === "Msg_3") {
+                            $("#input-code").ntsError("set", {messageId:"Msg_3"});
+                        }
+                    });
+                        
                     if (errors && errors.length > 0) {
                         self.addListError(errors);    
                     } else {  
@@ -770,7 +781,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                     }
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_3") {
+                            $('#input-code').focus();
+                        }
+                    }); 
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -899,6 +914,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.endAge("");
             self.selectedAgeCriteria(0);
             self.ageBaseDate("");
+            self.ageBaseDateReq(false);
+            self.ageBaseDateDefaultValue(true);
             
             self.yearReq(true);
             self.dayReq(true);
@@ -916,8 +933,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             _.forEach(errorsRequest, function(err) {
                 errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
-
-            nts.uk.ui.dialog.bundledErrors({ errors: errors });
+            
+            nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
+//                _.forEach(errors, function(err) {
+//                    if(err.messageId === "Msg_3") {
+//                        $("#input-code").ntsError("set", {messageId:"Msg_3"});
+//                    }
+//                });
+            });
         }
     }
     

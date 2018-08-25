@@ -16,7 +16,7 @@
 					<div id="C1_4" tabindex="1" >
 							<div id="daterangepicker" class="validate_form"
 							 data-bind="ntsDateRangePicker: { required: required, enable: enable,
-							  showNextPrevious: false, value: dateValue, maxRange: 'oneYear'}">
+							  showNextPrevious: false, value: dateValue,startName: startDateNameOperator, endName:endDateNameOperator, maxRange: 'oneYear'}">
 							</div>
 					</div>
 				</div>
@@ -47,8 +47,8 @@
 				</table>
 			</div>
 			<div style="height: 80px;">
-				<button id="C3_1" class="small" tabindex="5" data-bind="click: backScreenCtoB">#{i18n.getText('CLI003_20')}</button>
-				<button id="C3_2" class="large proceed" tabindex="6" data-bind="click: nextScreenCtoD">#{i18n.getText('CLI003_13')}</button>
+				<button id="C3_1" class="large" tabindex="5" data-bind="click: backScreenCtoB">#{i18n.getText('CLI003_20')}</button>
+				<button id="C3_2" class="x-large proceed" tabindex="6" data-bind="click: nextScreenCtoD">#{i18n.getText('CLI003_13')}</button>
 			</div>
 		</div>
 	</ui:composition>

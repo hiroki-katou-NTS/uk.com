@@ -9,5 +9,13 @@ public enum ActualWorkTimeSheetAtr {
 	OverTimeWork,
 	EarlyWork,
 	StatutoryOverTimeWork,
-	HolidayWork
+	HolidayWork;
+	
+	/**
+	 * 就内時間であるか判定する
+	 * @return　就業時間である
+	 */
+	public boolean isWithinWorkTime() {
+		return this.equals(WithinWorkTime);
+	}
 }

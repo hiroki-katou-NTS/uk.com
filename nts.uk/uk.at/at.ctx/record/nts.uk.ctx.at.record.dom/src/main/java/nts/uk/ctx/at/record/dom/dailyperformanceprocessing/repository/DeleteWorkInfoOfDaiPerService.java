@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
  * @author nampt
  *
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class DeleteWorkInfoOfDaiPerService {
 
@@ -91,6 +94,7 @@ public class DeleteWorkInfoOfDaiPerService {
 	@Inject
 	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
 		this.workInformationRepository.delete(employeeId, day);
 		this.deleteApprovalStaOfDailyPerforService.deleteApprovalStaOfDailyPerforService(employeeId, day);

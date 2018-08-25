@@ -171,7 +171,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
-		this.updateScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+		
+		this.removeScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 	
 	private void updateScheBasic(BasicSchedule bSchedule) {
@@ -190,7 +192,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	public void updateScheBasicState(BasicSchedule bSchedule) {
 		this.updateScheBasic(bSchedule);
-		this.updateScheState(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleStates());
+		this.removeScheState(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleStates());
+		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
 	public void updateScheTime(BasicSchedule bSchedule) {
@@ -268,7 +271,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod) {
 		List<BasicSchedule> listNewBasicSchedule = new ArrayList<>();
@@ -397,11 +400,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 					x.getBreakTimeStart(), x.getBreakTimeEnd())).filter(distinctByKey(x -> x.getScheduleBreakCnt())).collect(Collectors.toList()));
 			// theo nghiep vu thi thang scheTime luon tra ra gia tri (do no duoc tinh toan ra) nen k ton tai truong hop null
 			// chi can 1 column null la thang scheTime k ton tai
-			// hien tai dang loc scheTime theo column FeeTimeNo # null
-			// co ve khong dung ve nghiep vu lam nhung ke me
-			List<PersonFeeTime> listPersonFeeTime = value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
-					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList());
-			basic.setWorkScheduleTime(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
+			// hien tai dang loc scheTime theo breakTime # null
+			// co ve khong dung lam nhung ke me
+			List<PersonFeeTime> listPersonFeeTime = new ArrayList<>();
+			listPersonFeeTime.addAll(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
+					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList()));
+			basic.setWorkScheduleTime(value.stream().filter(x -> x.getBreakTime() != null).map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
 					x.getBreakTime(), x.getWorkingTime(), x.getWeekdayTime(), x.getPrescribedTime(),
 					x.getTotalLaborTime(), x.getChildCareTime())).findFirst().orElse(null));
 			
@@ -1010,7 +1014,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			}
 		}
 	}
-
+	
 	private void updateScheState(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleState> listWorkScheduleState) {
 		if (CollectionUtil.isEmpty(listWorkScheduleState)) {
@@ -1029,6 +1033,25 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private void removeScheState(String employeeId, GeneralDate baseDate,
+			List<WorkScheduleState> listWorkScheduleState) {
+		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
+		String listItemIdString = "(";
+		for(int i = 0; i < listItemId.size(); i++){
+			listItemIdString += "'"+ listItemId.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+				+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1182,7 +1205,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.getList(x -> toDomain(x));
 		return result;
 	}
-
+	
 	@Override
 	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
@@ -1197,11 +1220,5 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public void updateStartEndTimeZone() {
-		// TODO Auto-generated method stub
-
 	}
 }

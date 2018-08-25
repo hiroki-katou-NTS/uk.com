@@ -318,7 +318,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
 		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
 		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
-		if (appLimitSetting.getCanAppAchievementConfirm()) {
+		if (!appLimitSetting.getCanAppAchievementConfirm()) {
 			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
 			if(CollectionUtil.isEmpty(approveRootStatus)){
 				return;
@@ -367,7 +367,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
 		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする(check domain
 		// 「申請制限設定」．月別実績が確認済なら申請できない)
-		if (appLimitSetting.getCanAppAchievementMonthConfirm()) {
+		if (!appLimitSetting.getCanAppAchievementMonthConfirm()) {
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
 			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
@@ -387,7 +387,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする(check domain
 		// 「申請制限設定」．就業確定済の場合申請できない)
-		if (appLimitSetting.getCanAppFinishWork()) {
+		if (!appLimitSetting.getCanAppFinishWork()) {
 			GeneralDate systemDate = GeneralDate.today();
 			WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
 			if(wkpHistImport == null){
@@ -405,7 +405,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする(check domain
 		// 「申請制限設定」．実績修正がロック状態なら申請できない)
-		if (appLimitSetting.getCanAppAchievementLock()) {
+		if (!appLimitSetting.getCanAppAchievementLock()) {
 			// 4.社員の当月の期間を算出する
 			PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithmService
 					.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);

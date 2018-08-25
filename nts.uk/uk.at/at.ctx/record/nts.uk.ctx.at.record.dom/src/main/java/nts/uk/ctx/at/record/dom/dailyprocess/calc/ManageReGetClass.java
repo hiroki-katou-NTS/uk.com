@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -99,7 +101,11 @@ public class ManageReGetClass {
 	//法て内残業枠ＮＯリスト
 	private List<OverTimeFrameNo> statutoryFrameNoList;	
 	
+	//フレックス計算設定
+	private Optional<FlexCalcSetting> flexCalcSetting;
 	
+	//
+	private Optional<DeductLeaveEarly> leaveLateSet;
 	
 	
 	
@@ -149,7 +155,9 @@ public class ManageReGetClass {
 			HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
 			WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet, 
 			Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet> workTimezoneCommonSet,
-			List<OverTimeFrameNo> statutoryFrameNoList) {
+			List<OverTimeFrameNo> statutoryFrameNoList,
+			Optional<FlexCalcSetting> flexCalcSetting,
+			Optional<DeductLeaveEarly> leaveLateSet) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -170,6 +178,8 @@ public class ManageReGetClass {
 		this.workDeformedLaborAdditionSet = workDeformedLaborAdditionSet;
 		this.WorkTimezoneCommonSet = workTimezoneCommonSet;
 		this.statutoryFrameNoList = statutoryFrameNoList;
+		this.flexCalcSetting = flexCalcSetting;
+		this.leaveLateSet = leaveLateSet;
 	}
 	/**
 	 * 計算処理に入ることができないと判断できた時Factory Method
@@ -192,7 +202,8 @@ public class ManageReGetClass {
 																 integration.getAttendanceLeave().orElse(null), 
 																 null, 
 																 Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))), 
-																 integration.getWorkInformation()), 
+																 integration.getWorkInformation(),
+																 Optional.empty()), 
 									integration,
 									Optional.empty(),
 									workType, 
@@ -210,7 +221,9 @@ public class ManageReGetClass {
 									null,
 									null,
 									Optional.empty(),
-									Collections.emptyList());
+									Collections.emptyList(),
+									Optional.empty(),
+									Optional.empty());
 				
 	}
 	
@@ -225,7 +238,8 @@ public class ManageReGetClass {
 											 WorkRegularAdditionSet workRegularAdditionSet,
 											 WorkFlexAdditionSet workFlexAdditionSet, 
 											 HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
-											 WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet
+											 WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
+											 Optional<DeductLeaveEarly> lateLeave
 			) {
 		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
 																																			  new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
@@ -243,7 +257,8 @@ public class ManageReGetClass {
 																 integration.getAttendanceLeave().orElse(null), 
 																 null, 
 																 Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))), 
-																 integration.getWorkInformation()), 
+																 integration.getWorkInformation(),
+																 Optional.empty()), 
 									integration,
 									Optional.empty(),
 									workType, 
@@ -261,7 +276,9 @@ public class ManageReGetClass {
 									hourlyPaymentAdditionSet,
 									workDeformedLaborAdditionSet,
 									Optional.empty(),
-									Collections.emptyList());
+									Collections.emptyList(),
+									Optional.empty(),
+									lateLeave);
 				
 	}
 	
@@ -283,10 +300,9 @@ public class ManageReGetClass {
 											HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
 											WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
 											Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet> workTimezoneCommonSet,
-											List<OverTimeFrameNo> statutoryFrameNoList) {
-		
-		
-		
+											List<OverTimeFrameNo> statutoryFrameNoList,
+											Optional<FlexCalcSetting> flexCalcSetting,
+											Optional<DeductLeaveEarly> lateLeave) {
 		
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
@@ -306,7 +322,9 @@ public class ManageReGetClass {
 									hourlyPaymentAdditionSet,
 									workDeformedLaborAdditionSet,
 									workTimezoneCommonSet,
-									statutoryFrameNoList);
+									statutoryFrameNoList,
+									flexCalcSetting,
+									lateLeave);
 	
 	}
 	

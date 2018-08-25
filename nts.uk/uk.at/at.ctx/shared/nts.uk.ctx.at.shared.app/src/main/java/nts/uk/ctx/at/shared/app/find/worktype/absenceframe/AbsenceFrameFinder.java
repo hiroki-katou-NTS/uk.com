@@ -76,7 +76,8 @@ public class AbsenceFrameFinder {
 		lstSpecialHoliday.stream().forEach(x -> {
 			Optional<SpecialHoliday> optSpecialHoliday = specialHolidayRepository.findBySingleCD(companyId, x.getSpecialHolidayCode().v());
 			optSpecialHoliday.ifPresent(specialHoliday -> {
-				lstSpecialHolidayFrameNo.addAll(specialHoliday.getTargetItem().getAbsenceFrameNo());
+				if (specialHoliday.getTargetItem().getAbsenceFrameNo() != null)
+					lstSpecialHolidayFrameNo.addAll(specialHoliday.getTargetItem().getAbsenceFrameNo());
 			});
 		});
 		

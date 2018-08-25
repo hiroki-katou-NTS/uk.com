@@ -15,7 +15,7 @@ module nts.uk.at.view.kmk003.a {
                 afternoon: KnockoutObservable<number>;
 
                 constructor() {
-                    this.oneDay = ko.observable(0);
+                    this.oneDay = ko.observable(null);
                     this.morning = ko.observable(0);
                     this.afternoon = ko.observable(0);
                 }
@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData(){
-                    this.oneDay(0);
+                    this.oneDay(null);
                     this.morning(0);
                     this.afternoon(0);
                 }
@@ -142,6 +142,11 @@ module nts.uk.at.view.kmk003.a {
                     this.shiftTwo = TimezoneModel.createShiftTwo();
                 }
 
+                getShiftTwo(): TimezoneModel {
+                    let self = this;
+                    return self.shiftTwo;
+                }
+                
                 updateData(data: PrescribedTimezoneSettingDto) {
                     this.morningEndTime(data.morningEndTime);
                     this.afternoonStartTime(data.afternoonStartTime);

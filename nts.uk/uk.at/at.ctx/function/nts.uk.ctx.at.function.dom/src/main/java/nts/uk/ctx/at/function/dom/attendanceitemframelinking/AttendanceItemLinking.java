@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.attendanceitemframelinking;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
@@ -25,6 +27,9 @@ public class AttendanceItemLinking {
 
 	/* 枠カテゴリ */
 	private FrameCategory frameCategory;
+	
+	/* 枠NO */
+	private Optional<FrameNo> preliminaryFrameNO;
 
 	public AttendanceItemLinking(int attendanceItemId, FrameNo frameNo, TypeOfItem typeOfAttendanceItem,
 			FrameCategory frameCategory) {
@@ -40,5 +45,15 @@ public class AttendanceItemLinking {
 		return new AttendanceItemLinking(attendanceItemId, new FrameNo(frameNo),
 				EnumAdaptor.valueOf(typeOfAttendanceItem, TypeOfItem.class),
 				EnumAdaptor.valueOf(frameCategory, FrameCategory.class));
+	}
+
+	public AttendanceItemLinking(int attendanceItemId, FrameNo frameNo, TypeOfItem typeOfAttendanceItem,
+			FrameCategory frameCategory, FrameNo preliminaryFrameNO) {
+		super();
+		this.attendanceItemId = attendanceItemId;
+		this.frameNo = frameNo;
+		this.typeOfAttendanceItem = typeOfAttendanceItem;
+		this.frameCategory = frameCategory;
+		this.preliminaryFrameNO = Optional.ofNullable(preliminaryFrameNO);
 	}
 }

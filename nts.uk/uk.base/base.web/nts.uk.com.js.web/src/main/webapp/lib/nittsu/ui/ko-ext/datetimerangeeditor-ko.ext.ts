@@ -98,28 +98,35 @@ module nts.uk.ui.koExtentions {
             self.startValue = ko.computed({
                 read: function() {
                     let value = allBindData.value().start();
+                    
                     self.startValueBind(value);
+                    
                     return value;
                 }, write: function(val) {
                     let endVal = self.endValueBind();
-                    if(self.validate(val, endVal)){
-                        allBindData.value().start(val);
-//                        allBindData.value.valueHasMutated();        
-                    }
+                    
+                    allBindData.value().start(val);
+                    
+                    self.validate(val, endVal);
+//                        allBindData.value.valueHasMutated();  
                 },
                 owner: this  
             });
             self.endValue = ko.computed({
                 read: function() {
                     let value = allBindData.value().end();
+                    
                     self.endValueBind(value);
+                    
                     return value;
                 }, write: function(val) {
                     let startVal = self.startValueBind();
-                    if(self.validate(startVal, val)){
-                        allBindData.value().end(val);
+                    
+                    self.validate(startVal, val);
+                    
+                    allBindData.value().end(val);
 //                        allBindData.value.valueHasMutated();        
-                    }
+                    
                 },
                 owner: this  
             });  

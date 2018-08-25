@@ -1,7 +1,6 @@
 #contents-area {
 	width: 1290px;
 	height: 100%;
-	/* overflow-y: hidden !important; */
 	overflow-y: inherit !important;
 }
 
@@ -28,46 +27,21 @@
 	width: 209px !important;
 }
 
-.sub-input-units {
-	width: 150px !important;
-	border: 0px solid #999999 !important;
+.sub-input-units  {
+	width: 218px !important;
 	text-align: right !important;
-
 }
 
-.nts-datepicker-wrapper .ntsDatepicker {
-	width: 161px !important;
+input.sub-input-units  {
+	border: 1px solid transparent !important;
+}
+.ntsControl.error input{
+	border-color: #ff6666 !important;
 }
 
-#datey.nts-input {
-	padding: 3px 10px !important;
-}
-
-#date {
-	border: 0px solid #999999 !important;
-	width: 205px !important;
-}
-
-#datey {
-	border: 0px solid #999999 !important;
-	width: 192px !important;
-	padding-left: 2px;
-}
-
-#timeItem {
-	width: 205px !important;
-}
-
-#timePoint {
-	width: 205px !important;
-}
-
-#number {
-	width: 205px !important;
-}
-
-#string {
-	width: 205px !important;
+.input.sub-input-units:focus{
+	 border: 1px solid #0096f2;
+     box-shadow: none;
 }
 
 #content-right {
@@ -101,7 +75,7 @@ button.search-btn, button.clear-btn {
 }
 
 input.ntsSearchBox {
-	width: 150px !important;
+	width: 195px !important;
 }
 
 #sub-content-right {
@@ -125,28 +99,40 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px;
+	max-height: 495px;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	width: 634px;
+}
+
+#sub-center {
+	width: 25px !important;
+	float: left;
+}
+
+#sub-center > span.caret-background.caret-right.direction-right {
+	position: absolute;;
+	margin-top: 50px !important;
+	margin-left: 2px !important;
 }
 
 #search_his {
-	margin-top: 38px;
+	margin-top: 18px;
 	margin-bottom: 5px;
 }
 
 #history {
 	float: left;
-	margin-left: 200px;
+	margin-left: 375px;
 }
 
-.contents-header {
-	width: 100%;
+#A2_012 {
+	margin-left: 15px;
+	width: 97px;
+	padding: 0px 0px !important;
 }
 
-thead {
-	background-color: #CFF1A5;
+#help {
+	margin-left: 5px;
 }
 
 table tr td, table tr th {
@@ -160,45 +146,34 @@ table tr td, table tr th {
 	width: auto;
 }
 
-.value {
-	width: 200px !important;
+.contents-header {
+	width: 100%;
+	border: 1px solid #ccc;
 }
 
-.contents-header thead td {
-	border: 1px solid #CCC;
-	text-align: left;
-	padding: 0px 0px;
-	font-weight: bold;
+.contents-header tbody tr:first-child td {
+	border-top: none;
 }
 
-.contents-header thead {
-	width: 634px;
+thead {
+	background-color: #CFF1A5;
 }
 
 #COL_1 {
-	width: 200px !important;
+	min-width: 200px !important;
+	border-left: none;
+    border-top: none;
 }
 
 #COL_2 {
-	width: 190px !important;
+	min-width: 190px !important;
+	border-top: none;
 }
 
 #COL_3 {
-	width: 240px !important;
-}
-
-#A2_012 {
-	margin-left: 15px;
-	width: 97px;
-	height: 30px;
-	padding: 0px 0px !important;
-}
-
-#help {
-	width: 30px;
-	height: 30px;
-	margin-left: 5px;
-	padding: 0px 0px !important;
+	min-width: 240px !important;
+	border-right: none;
+	border-top: none;
 }
 
 #combo-box {
@@ -219,7 +194,7 @@ table tr td, table tr th {
 }
 
 .input-units-3 {
-	width: 240px !important;
+	min-width: 240px !important;
 }
 
 #notdata {
@@ -227,25 +202,13 @@ table tr td, table tr th {
 	max-width: 240px !important;
 }
 
-#sub-center {
-	width: 25px !important;
-	float: left;
-}
 
-span.caret-background.caret-right.direction-right {
-	position: absolute;;
-	margin-top: 50px !important;
-	margin-left: 2px !important;
-}
 
 th>div {
-	top: 0;
-	padding: 3px;
 	color: #000;
-	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
-}
+} 
 
 th {
 	height: 0;
@@ -267,34 +230,18 @@ td {
 	border: 1px solid #ccc;
 }
 
-tbody tr:first-child td {
-	border-top: none;
-}
-
 label[for] {
 	line-height: 20px !important;
 	right: -3px !important;
 	margin-top: 1.5px;
 }
 
-#date1 {
-	width: 85px !important;
-	margin-left: 5px !important;
-}
-
 #A3_13 {
-	width: 22px !important;
 	margin-left: 5px !important;
-	height: 27px !important;
 }
 
 #A3_15 {
 	margin-left: 5px !important;
-}
-
-.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable
-	{
-	top: 578.5px !important;
 }
 
 .caret-background caret-right direction-right {
@@ -315,8 +262,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
-
-#sub-right>table>tbody{
-	height: 462px !important;
 }
