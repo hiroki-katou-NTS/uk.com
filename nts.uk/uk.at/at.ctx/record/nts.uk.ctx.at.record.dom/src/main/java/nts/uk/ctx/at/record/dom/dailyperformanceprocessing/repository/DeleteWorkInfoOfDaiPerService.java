@@ -117,7 +117,7 @@ public class DeleteWorkInfoOfDaiPerService {
 		this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
 		// remove approval State from workflow
-		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
+//		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
 	}
 
 }

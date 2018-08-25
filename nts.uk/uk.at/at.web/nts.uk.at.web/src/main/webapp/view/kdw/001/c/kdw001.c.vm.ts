@@ -378,6 +378,7 @@ module nts.uk.at.view.kdw001.c {
 
 
                                     __viewContext["viewmodel"].params.setParamsScreenC({
+                                        closureID : self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
                                         periodStartDate: self.dateValue().startDate,
                                         periodEndDate: self.dateValue().endDate
@@ -404,6 +405,7 @@ module nts.uk.at.view.kdw001.c {
                                 });
 
                                 __viewContext["viewmodel"].params.setParamsScreenC({
+                                    closureID : self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate

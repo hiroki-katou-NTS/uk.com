@@ -67,7 +67,7 @@ module nts.uk.at.view.kdw001.b {
             constructor() {
                 var self = this;
                // self.params.setParamsScreenA({ closure: self.closureID });
-                self.params.setParamsScreenA({ closure: 1 });
+                self.params.setParamsScreenA({ closureID: 1 });
                 //import cScreenModel, dScreenModel
                 self.cScreenmodel = new nts.uk.at.view.kdw001.c.viewmodel.ScreenModel();
                 self.dScreenmodel = new nts.uk.at.view.kdw001.d.viewmodel.ScreenModel();
