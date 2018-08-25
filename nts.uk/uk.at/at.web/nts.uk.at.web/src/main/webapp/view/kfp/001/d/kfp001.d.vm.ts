@@ -40,7 +40,7 @@ module nts.uk.at.view.kfp001.d {
 
                 let self = this;
                 nts.uk.ui.block.invisible();
-                $("#button-2D").on('dblclick', (evt) => { evt.preventDefault() })
+                
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
                     return item.employeeId;
                 });
@@ -104,15 +104,19 @@ module nts.uk.at.view.kfp001.d {
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
-                    nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
-                    nts.uk.ui.block.clear();
-            });
+                    setTimeout(function() {
+                        nts.uk.ui.block.invisible();
+                        $("#button-2D").on('dblclick', (evt) => { evt.preventDefault() })
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }, 500);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })
-                
+
 
             }
 
