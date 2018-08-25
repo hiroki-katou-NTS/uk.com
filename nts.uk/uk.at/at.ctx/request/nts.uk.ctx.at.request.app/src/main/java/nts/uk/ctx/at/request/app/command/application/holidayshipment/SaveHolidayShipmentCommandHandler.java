@@ -121,11 +121,8 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private NewAfterRegister_New newAfterReg;
 	@Inject
-<<<<<<< HEAD
 	private HolidayShipmentScreenAFinder afinder;
-=======
 	private UseDateDeadlineFromDatePeriod dateDeadline;
->>>>>>> pj/at/dev/Team_D/UpdatePG
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
