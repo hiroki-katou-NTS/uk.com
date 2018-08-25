@@ -49,7 +49,7 @@ module nts.uk.at.view.kdw001.g {
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'employeeCode', width: 1, hidden: true},
                     { headerText: getText('KDW001_33'), key: 'personCode', width: 100 },
-                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 200 },
                     { headerText: getText('KDW001_51'), key: 'status', width: 100 }
                 ]);
             }

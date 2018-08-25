@@ -88,6 +88,9 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.wkpMailMng = update.wkpMailMng;
 		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
 		old.recreateTransfers = update.recreateTransfers;
+		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
+		old.createNewEmp = update.createNewEmp;
+		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
 		return old;
 	}
 }
