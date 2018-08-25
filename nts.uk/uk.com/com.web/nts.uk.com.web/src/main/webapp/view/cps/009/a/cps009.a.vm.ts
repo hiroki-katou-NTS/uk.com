@@ -52,15 +52,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
             
             self.initSettingId.subscribe(function(value: string) {
-               nts.uk.ui.errors.clearAll();
+              
                self.currentCategory().itemList.removeAll();
                 self.currentCategory().setData({
                     settingCode: "",
                     settingName: "",
                     ctgList: []
                 });
+                nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return;
-                self.getDetail(value);           
+                self.getDetail(value); 
+        
 
             });
 
@@ -170,7 +172,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         self.currentCategory().itemList(itemConvert);
                         self.lstItemFilter = itemConvert;
                         _.defer(() => {
-                            $('#ctgName').focus();
+                             let ctrl = $("#ctgName"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
+                             $("#ctgName").trigger("validate"); 
                         });
                     });
                 } else {
@@ -178,7 +184,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         self.currentCategory().itemList.removeAll();
                         self.currentCategory().itemList([]);
                         _.defer(() => {
-                            $('#ctgName').focus();
+                             let ctrl = $("#ctgName"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
+                           $("#ctgName").trigger("validate"); 
                         });
                     });
                 }
@@ -967,7 +977,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
-                nts.uk.ui.errors.clearAll();
             });
 
         }

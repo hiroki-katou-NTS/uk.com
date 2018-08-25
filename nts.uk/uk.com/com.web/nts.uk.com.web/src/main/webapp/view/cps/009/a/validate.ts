@@ -11,17 +11,48 @@ module validationcps009 {
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
    export function initCheckError(items: Array<any>)  {
+       
        _.each(items, item => {
            // validate button, radio button
            let v: any = ko.toJS(item),
                id = v.perInfoItemDefId,
                element = document.getElementById(id),
                $element = $(element);
-           if(v.dataType == 8){
-               item.selectionName.subscribe(d => {
-                   !nou(d) && rmError($element, "Msg_824");
-               });
-           }
+           
+           switch (item.dataType()) {
+               case ITEM_SINGLE_TYPE.STRING:
+                item.stringValue.subscribe(d => {
+                       !nou(d) && rmError($element, "Msg_824");
+                   });
+                break;
+               case ITEM_SINGLE_TYPE.NUMERIC:
+                   item.numbereditor.value.subscribe(d => {
+                       !nou(d) && rmError($element, "Msg_824");
+                   });
+                   break;
+               case ITEM_SINGLE_TYPE.TIME:
+                   item.dateWithDay.subscribe(d => {
+                       !nou(d) && rmError($element, "Msg_824");
+                   });
+                   break;
+               case ITEM_SINGLE_TYPE.TIMEPOINT:
+                   item.dateWithDay.subscribe(d => {
+                       !nou(d) && (rmError($element, "Msg_824") || rmError($element, "FND_E_TIME") );
+                   });
+                   break;
+               case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                   item.selectionName.subscribe(d => {
+                       !nou(d) && rmError($element, "Msg_824");
+                   });
+                   break;
+               case ITEM_SINGLE_TYPE.DATE:
+                   item.dateValue.subscribe(d => {
+                       !nou(d) && (rmError($element.find('.nts-input'), "Msg_824") || rmError($element.find('.nts-input'), "FND_E_DATE_YMD"));
+                   });
+                   break;
+                default: break;
+
+            }
 
        });
  
@@ -87,14 +118,6 @@ module validationcps009 {
                        messageParams: [item.itemName()]
                    });
                }
-           } else if($element.hasClass('radio-wrapper')){
-               if (_.isNil(item.selectionId)) {
-                   $element.ntsError('set', {
-                       messageId: "Msg_824",
-                       messageParams: [item.itemName()]
-                   });
-               }  
-           
            } else {
                if(item.dataType() == 3){
                    if (_.isNil(item.dateValue())) {
