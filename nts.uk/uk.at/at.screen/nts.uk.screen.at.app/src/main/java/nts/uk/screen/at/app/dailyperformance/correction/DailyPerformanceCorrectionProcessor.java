@@ -1293,11 +1293,13 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
+				if(lstBusinessTypeCode.isEmpty()) throw new BusinessException("Msg_1403");
 				result.setAutBussCode(new HashSet<>(lstBusinessTypeCode));
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {
                     // List item hide 
 					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode).stream().collect(Collectors.toList()); // 10s
+					if(lstFormat.isEmpty()) throw new BusinessException("Msg_1402");
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());//.filter(x -> !itemHide.containsKey(x))
 					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
@@ -1654,9 +1656,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
 		     // Sunday
-		if(date.dayOfWeek() == 1){
+		if(date.dayOfWeek() == 7){
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUN);
-		}else if(date.dayOfWeek() == 7){
+		}else if(date.dayOfWeek() == 6){
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}
