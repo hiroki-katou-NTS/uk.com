@@ -353,6 +353,7 @@ public class DailyPerformanceCorrectionProcessor {
 				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 		if (displayFormat == 2) {
 			// only filter data error
+			if(listEmployeeError.isEmpty()) throw new BusinessException("Msg_672");
 			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
 					.collect(Collectors.toList());
 			screenDto.setLstData(screenDto.getLstData().stream()

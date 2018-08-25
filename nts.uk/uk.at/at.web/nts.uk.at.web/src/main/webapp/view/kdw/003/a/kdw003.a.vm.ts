@@ -435,7 +435,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve({ bindDataMap: true, data: data });
                 }   
             }).fail(function(error) {
-                if (error.messageId != "KDW/003/a") {
+                if (error.messageId == "Msg_672") {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_672" });
+                } else if (error.messageId != "KDW/003/a") {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
                     });
@@ -1478,9 +1480,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                     nts.uk.ui.block.clear();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                        nts.uk.request.jumpToTopPage();
-                    });
+                    if (error.messageId == "Msg_672") {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_672" })
+                    } else {
+                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.request.jumpToTopPage();
+                        });
+                    }
                     nts.uk.ui.block.clear();
                 });
             });
