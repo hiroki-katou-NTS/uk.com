@@ -93,7 +93,7 @@
 												<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('Com_Workplace')}</span>
 											</label>
 											<span style="vertical-align: middle;margin-left: 15px;">#{i18n.getText('KBT002_119')}</span>
-											<div tabindex="10" data-bind="ntsDatePicker: {value: refDate, dateFormat: 'YYYY/MM/DD'}"></div>
+											<div tabindex="10" data-bind="ntsDatePicker: {name : '#[KBT002_17]',value: refDate, dateFormat: 'YYYY/MM/DD', required: (execScopeCls() == 1)}"></div>
 											<button tabindex="11" data-bind = "click: function() { $parent.openDialogCDL008() } ">#{i18n.getText('KBT002_15')}</button>
 											<span data-bind = "text: $parent.wkpListText"></span>
 										</div>
@@ -110,7 +110,7 @@
 	                        	<td colspan="2">
 	                        		<div style="border-top : 1px solid black; padding : 10px; margin-top:10px">
 	                        		
-		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;">
+		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;height: 500px">
 		                        			<!-- 個人スケジュール作成 -->
 			                         		<div class="execSetting">
 			                       				<!-- B7-1 Title 実行設定.個人スケジュール作成.個人スケジュール作成区分-->
@@ -246,6 +246,20 @@
 			                         			<div style="width: 170px;">
 				                         			<div tabindex="31" data-bind="ntsCheckBox: { checked: wkpAlarmCls }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_43')}</div>
 				                         			<div tabindex="32" class="subExecSetting" data-bind="ntsCheckBox: { checked: wkpMailMng, enable: wkpAlarmCls() }">#{i18n.getText('KBT002_44')}</div>
+			                         			</div>
+		                         			</div>
+		                         			<div  class="execSetting" style="display:flex">
+			                         			<div style="width: 250px;margin-right: 80px;">
+			                         				<!-- B12-1 -->
+			                         				<div tabindex="33" data-bind="ntsCheckBox: { checked: appRouteUpdateAtr }" style="width : 100%; border-bottom: 1px solid black;">#{i18n.getText('KBT002_188')}</div>
+			                         				<!-- B12-2 -->
+			                         				<div tabindex="34" class="subExecSetting" data-bind="ntsCheckBox: { checked: createNewEmp, enable: checkCreateNewEmp() }">#{i18n.getText('KBT002_33')}</div>
+			                         			</div>
+			                         		</div>
+			                         		<div  class="execSetting" style="display:flex">	
+			                         			<div style="width: 250px;margin-right: 80px;">
+			                         				<!-- B12-3 -->
+			                         				<div tabindex="35" data-bind="ntsCheckBox: { checked: appRouteUpdateMonthly }" style="width : 100%; ">#{i18n.getText('KBT002_189')}</div>
 			                         			</div>
 			                         		</div>
 		                        		</div>

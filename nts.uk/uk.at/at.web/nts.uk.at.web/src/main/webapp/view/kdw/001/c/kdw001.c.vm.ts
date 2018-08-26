@@ -332,11 +332,9 @@ module nts.uk.at.view.kdw001.c {
                 var closureID = '1';
                 if(self.dateValue().startDate < self.startDateValidate) {
 //                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
-                    $('#daterangepicker').ntsError('clear');
-                    $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
-                } else {
-                    $('#daterangepicker').ntsError('clear');
-                }
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1349" });
+                    return;
+                } 
                 if (!nts.uk.ui.errors.hasError()) {
                     service.findPeriodById(Number(self.closureId())).done((data) => {
                         if (data) {
@@ -380,6 +378,7 @@ module nts.uk.at.view.kdw001.c {
 
 
                                     __viewContext["viewmodel"].params.setParamsScreenC({
+                                        closureID : self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
                                         periodStartDate: self.dateValue().startDate,
                                         periodEndDate: self.dateValue().endDate
@@ -406,6 +405,7 @@ module nts.uk.at.view.kdw001.c {
                                 });
 
                                 __viewContext["viewmodel"].params.setParamsScreenC({
+                                    closureID : self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate

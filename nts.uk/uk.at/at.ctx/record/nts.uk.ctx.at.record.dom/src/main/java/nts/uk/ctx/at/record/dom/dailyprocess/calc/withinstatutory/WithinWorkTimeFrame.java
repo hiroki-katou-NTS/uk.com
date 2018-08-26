@@ -264,7 +264,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		//丸め処理
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
-		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
+		if(rounding != null)
+			workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
 						
 		return workTime;
 	}
