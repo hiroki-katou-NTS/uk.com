@@ -53,12 +53,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         visibleDailiCalculation: KnockoutObservable<boolean> = ko.observable(false);
         visibleApproval: KnockoutObservable<boolean> = ko.observable(false);
         visibleMonthly: KnockoutObservable<boolean> = ko.observable(false);
+        
+        closureId : KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             var self = this;
             self.elapseTime.start();
             
             self.numberEmployee(0);
+            
+            self.closureId(1);
 
             self.columns = ko.observableArray([
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
@@ -80,7 +84,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
-
+            self.closureId(params.closureID);
+            
             $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);

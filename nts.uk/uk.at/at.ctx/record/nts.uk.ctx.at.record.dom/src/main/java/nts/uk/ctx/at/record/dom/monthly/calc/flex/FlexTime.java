@@ -156,14 +156,32 @@ public class FlexTime {
 	 */
 	public AttendanceTimeMonthWithMinus getTimeSeriesTotalFlexTime(DatePeriod datePeriod, boolean exceptMinus){
 		
-		AttendanceTimeMonthWithMinus returnTime = new AttendanceTimeMonthWithMinus(0);
+		int returnMinutes = 0;
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			val flexTime = timeSeriesWork.getFlexTime().getFlexTime().getTime();
-			if (exceptMinus && flexTime.lessThanOrEqualTo(0)) continue;
-			returnTime = returnTime.addMinutes(flexTime.v());
+			val flexMinutes = timeSeriesWork.getFlexTime().getFlexTime().getTime().v();
+			if (exceptMinus && flexMinutes <= 0) continue;
+			returnMinutes += flexMinutes;
 		}
-		return returnTime;
+		return new AttendanceTimeMonthWithMinus(returnMinutes);
+	}
+	
+	/**
+	 * 時系列合計計算フレックス時間を取得する
+	 * @param datePeriod 期間
+	 * @param exceptMinus マイナス値を除く
+	 * @return 時系列合計計算フレックス時間
+	 */
+	public AttendanceTimeMonthWithMinus getTimeSeriesTotalCalcFlexTime(DatePeriod datePeriod, boolean exceptMinus){
+		
+		int returnMinutes = 0;
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val calcFlexMinutes = timeSeriesWork.getFlexTime().getFlexTime().getCalcTime().v();
+			if (exceptMinus && calcFlexMinutes <= 0) continue;
+			returnMinutes += calcFlexMinutes;
+		}
+		return new AttendanceTimeMonthWithMinus(returnMinutes);
 	}
 	
 	/**
