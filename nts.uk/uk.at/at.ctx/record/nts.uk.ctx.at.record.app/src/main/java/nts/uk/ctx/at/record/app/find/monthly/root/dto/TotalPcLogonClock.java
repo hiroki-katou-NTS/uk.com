@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class TotalPcLogonClock implements ItemConst {
 
 	/** 合計時刻: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)
 	private int totalTime;
 
@@ -28,7 +28,7 @@ public class TotalPcLogonClock implements ItemConst {
 	private double totalDays;
 
 	/** 平均時刻: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = AVERAGE, layout = LAYOUT_C)
 	private int averageTime;
 	
