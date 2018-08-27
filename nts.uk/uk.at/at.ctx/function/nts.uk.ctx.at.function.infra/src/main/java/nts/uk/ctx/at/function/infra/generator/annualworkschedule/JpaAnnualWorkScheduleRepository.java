@@ -95,7 +95,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 
 		// 帳表出力前チェックをする
-		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc);
+		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc, printFormat);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client
 
 		final int numMonth = (int) startYm.until(endYm, ChronoUnit.MONTHS) + 1;
@@ -178,7 +178,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * 帳表出力前チェックをする
 	 */
 	private void checkBeforOutput(YearMonth startYm, YearMonth endYm, List<Employee> employees,
-			SetOutItemsWoSc setOutItemsWoSc) {
+			SetOutItemsWoSc setOutItemsWoSc, PrintFormat printFormat) {
 		// 対象期間をチェックする
 		if (startYm.until(endYm, ChronoUnit.MONTHS) + 1 > 12)
 			throw new BusinessException("Msg_883");
@@ -187,7 +187,12 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			throw new BusinessException("Msg_884");
 		// 出力項目をチェックする
 		List<ItemOutTblBook> listItemOutTblBook = setOutItemsWoSc.getListItemOutTblBook().stream()
-				.filter(x -> !x.isItem36AgreementTime() && x.isUseClassification()).collect(Collectors.toList());
+				.filter(x -> x.isUseClassification()).collect(Collectors.toList());
+		if (PrintFormat.ATTENDANCE.equals(printFormat)) {
+			// 印刷形式="勤怠チェックリスト"の場合
+			listItemOutTblBook = listItemOutTblBook.stream().filter(x -> !x.isItem36AgreementTime())
+					.collect(Collectors.toList());
+		}
 		if (listItemOutTblBook.size() == 0) {
 			throw new BusinessException("Msg_880");
 		}
