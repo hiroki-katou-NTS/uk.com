@@ -139,7 +139,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 		if (!StringUtils.isEmpty(dto.getHostName().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
 			Optional<WindowsAccount> opWindowAccount = windowAccountRepository
-					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
+					.findbyUserNameAndHostNameAndIsUsed(dto.getUserName().v(), dto.getHostName().v());
 
 			// Check condition
 			if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().equals(dto.getUserId())) {
