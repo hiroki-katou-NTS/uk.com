@@ -1,27 +1,25 @@
-package nts.uk.ctx.workflow.pub.spr.export;
+package nts.uk.ctx.workflow.pub.resultrecord;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 /**
- * 
+ * 対象社員
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
 @Getter
-public class AppRootStateStatusSprExport {
+public class EmployeePerformParam {
+	
 	/**
-	 * 年月日
+	 * 対象日
 	 */
 	private GeneralDate date;
+	
 	/**
-	 * 承認対象者
+	 * 社員ID
 	 */
 	private String employeeID;
-	/**
-	 * 承認状況
-	 */
-	private Integer dailyConfirmAtr;
 	
 }
