@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -50,7 +51,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		updateDetail(e, data);
 		this.commandProxy().insert(e);
 	}
-
+	
 	private void updateDetail(KrcmtReverseLeaRemain e, ReserveLeaveGrantRemainingData data) {
 		e.sid = data.getEmployeeId();
 		e.grantDate = data.getGrantDate();
@@ -108,5 +109,4 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		this.getEntityManager().createQuery(DELETE_AFTER_QUERY).setParameter("employeeId", employeeId)
 				.setParameter("startDate", date);
 	}
-
 }

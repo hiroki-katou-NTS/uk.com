@@ -200,8 +200,10 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 		return new CalAttrOfDailyPerformance(calc.krcstDaiCalculationSetPK.sid, calc.krcstDaiCalculationSetPK.ymd,
 				new AutoCalFlexOvertimeSetting(flex),
-				new AutoCalRaisingSalarySetting(calc.bonusPayNormalCalSet == 1 ? true : false,
-						calc.bonusPaySpeCalSet == 1 ? true : false),
+				new AutoCalRaisingSalarySetting(
+						calc.bonusPaySpeCalSet == 1 ? true : false,
+						calc.bonusPayNormalCalSet == 1 ? true : false
+						),
 				holiday, overtime,
 				new AutoCalcOfLeaveEarlySetting(calc.leaveEarlySet == 1 ? true : false,
 						calc.leaveLateSet  == 1 ? true : false),

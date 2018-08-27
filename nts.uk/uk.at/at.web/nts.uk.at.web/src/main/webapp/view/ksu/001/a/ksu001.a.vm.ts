@@ -90,8 +90,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
-            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' }
+//            { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -671,7 +671,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     },
                 })
                     .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
                     .DetailHeader(detailHeader).DetailContent(detailContent)
                     //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
                     //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
@@ -835,7 +835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").find(".ex-body-detail").data("stick-history", null);
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
                 //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
                 //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);

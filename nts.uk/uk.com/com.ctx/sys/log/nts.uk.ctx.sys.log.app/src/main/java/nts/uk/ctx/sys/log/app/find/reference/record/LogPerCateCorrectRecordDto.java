@@ -16,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogPerCateCorrectRecordDto {
+	private String parentKey;
 	private String childrentKey;
 	private String operationId;
 	private String categoryName; //23

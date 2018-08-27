@@ -193,10 +193,11 @@ textarea {
 
 .tab-content-1, .tab-content-3, .tab-content-7, .tab-content-14 {
 	overflow-y: scroll;
+	-ms-overflow-style: auto;
 }
 
 .contents-area-kaf022 {
-	height: 620px;
+	height: 650px;
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
