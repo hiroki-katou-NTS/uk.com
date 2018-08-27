@@ -68,10 +68,4 @@ public class MasterCopyDataWs extends WebService{
 	public ExportServiceResult exportErrorCsv(List<ErrorContentDto> command) {
 		return this.exportService.start(command);
 	}
-	
-	@GET
-	@Path("copy")
-	public void docopy() {
-		this.repo.doCopy("", CopyMethod.REPLACE_ALL, "000000000000-0005");
-	}
 }
