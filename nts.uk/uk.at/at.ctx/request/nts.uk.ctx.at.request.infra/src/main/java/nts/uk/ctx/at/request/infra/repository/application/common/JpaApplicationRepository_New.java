@@ -80,7 +80,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.appDate >= :startDate"
 			+ " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals"
-			+ " AND c.appType IN appTypes";
+			+ " AND c.appType IN :appTypes";
 	//hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT c FROM KrqdtApplication_New c"
 			+ " WHERE c.krqdpApplicationPK.companyID = :companyID"

@@ -75,10 +75,10 @@ module kaf001.a.viewmodel {
                 }
             };
 
-            $('#ccg001component').ntsGroupComponent(self.ccg001ComponentOption);
+//            $('#ccg001component').ntsGroupComponent(self.ccg001ComponentOption);
 
-            self.applyKCP005ContentSearch([]);
-            $('#kcp005component').ntsListComponent(self.kcp005ComponentOption);
+//            self.applyKCP005ContentSearch([]);
+//            $('#kcp005component').ntsListComponent(self.kcp005ComponentOption);
         }
 
         /**

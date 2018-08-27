@@ -15,6 +15,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.At
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave.KrcdtMonSubOfHdRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.absenceleave.KrcdtMonSubOfHdRemainPK;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Stateless
 public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implements AbsenceLeaveRemainDataRepository{
@@ -25,6 +27,11 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 			+ " AND c.closureStatus = :status"
 			+ " ORDER BY c.endDate ASC";
 	
+	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonSubOfHdRemain a "
+			+ "WHERE a.pk.sId = :employeeId "
+			+ "AND a.pk.ym = :yearMonth "
+			+ "ORDER BY a.startDate ";
+	
 	@Override
 	public List<AbsenceLeaveRemainData> getDataBySidYmClosureStatus(String employeeId, YearMonth ym,
 			ClosureStatus status) {
@@ -32,6 +39,15 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 				.setParameter("employeeId", employeeId)
 				.setParameter("ym", ym.v())
 				.setParameter("status", status.value)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<AbsenceLeaveRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+		
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonSubOfHdRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
 	}
 
@@ -91,5 +107,17 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 			entity.carryForWardDays = domain.getCarryforwardDays().v();
 			entity.unUsedDays = domain.getUnUsedDays().v();
 		}
+	}
+	
+	@Override
+	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		
+		this.commandProxy().remove(KrcdtMonSubOfHdRemain.class,
+				new KrcdtMonSubOfHdRemainPK(
+						employeeId,
+						yearMonth.v(),
+						closureId.value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0)));
 	}
 }

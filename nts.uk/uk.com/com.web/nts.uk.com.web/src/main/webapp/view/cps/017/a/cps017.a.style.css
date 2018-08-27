@@ -2,6 +2,10 @@
 /* 	width: 1405px; */
 /* } */
 
+#contents-area{
+	height: calc(100vh - 21px) !important;
+}
+
 body {
 	overflow: hidden;
 /* 	width: 1405px; */
@@ -72,7 +76,7 @@ body {
 
 #itemRegisterLst {
 	margin-top: 20px;
-	width: 415px;
+	width: 405px;
 }
 
 .caret-background.caret-right:after {
@@ -114,7 +118,7 @@ body {
 }
 
 #memoSelection {
-	width: 300px;
+	width: 200px;
 	height: 75px;
 	margin-top: 5px;
 }

@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw009.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if(screenModel.lstBusinessType().length == 0){
-                $("#inpCode").focus();
+                // $("#inpCode").focus();
             }else{
                 setTimeout(function(){ $("#inpPattern").focus();}, 500);
             }

@@ -345,6 +345,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             // clear all error
             nts.uk.ui.errors.clearAll();
             
+            nts.uk.ui.block.invisible();
+            
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
@@ -476,29 +478,37 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         if(self.A7_4SelectedRuleCode() == 0) {
                             if(item.conditionNo == 2) {
                                 $('#cond02').ntsError('set', {messageId:"Msg_262"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 3) {
                                 $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 4) {
                                 $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 5) {
                                 $('#cond05').ntsError('set', {messageId:"Msg_262"});
+                                nts.uk.ui.block.clear();
                                 return;
                             }
                         } else {
                             if(item.conditionNo == 2) {
                                 $('#cond02').ntsError('set', {messageId:"Msg_263"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 3) {
                                 $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 4) {
                                 $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                                nts.uk.ui.block.clear();
                                 return;
                             } else if(item.conditionNo == 5) {
                                 $('#cond05').ntsError('set', {messageId:"Msg_263"});
+                                nts.uk.ui.block.clear();
                                 return;
                             }
                         }
@@ -521,6 +531,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                             } else {
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_264" });
                                 flag = false;
+                                nts.uk.ui.block.clear();
                                 return;
                             }
                         }
@@ -528,14 +539,17 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     
                     if(flag) {
                         self.updateMode(data);
+                        nts.uk.ui.block.clear();
                     }
                 } else {
                     if(flag) {
                         self.updateMode(data);
+                        nts.uk.ui.block.clear();
                     }
                 }
             } else {
                 self.addMode(data);
+                nts.uk.ui.block.clear();
             }
         }
         
