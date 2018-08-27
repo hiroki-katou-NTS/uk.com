@@ -19,6 +19,9 @@ public class AddAnnLeaGrantRemnNumPeregCommand {
 	 */
 	@PeregItem("IS00385")
 	private GeneralDate grantDate;
+	
+	public String grantDateItemName;
+	public String deadlineDateItemName;
 
 	/**
 	 * 年休期限日
