@@ -115,7 +115,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
 			"INNER JOIN BsymtAffCompanyHist ach",
 			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
-			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 1",
+			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 0",
 			"AND (:baseDate BETWEEN ach.startDate AND ach.endDate)");
 
 	private static final String FIND_BY_CID_PID_AND_DELSTATUS = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND "

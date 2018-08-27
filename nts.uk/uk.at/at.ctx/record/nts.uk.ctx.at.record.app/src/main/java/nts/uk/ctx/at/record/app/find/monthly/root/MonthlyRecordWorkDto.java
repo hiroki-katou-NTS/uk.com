@@ -144,6 +144,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.annLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.empty(),
+				Optional.empty(),
 				Optional.empty());
 	}
 }
