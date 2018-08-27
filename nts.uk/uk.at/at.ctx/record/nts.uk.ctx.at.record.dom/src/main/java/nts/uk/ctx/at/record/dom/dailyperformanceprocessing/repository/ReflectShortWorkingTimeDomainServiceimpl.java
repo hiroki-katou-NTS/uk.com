@@ -204,6 +204,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 			outPut.setErrMesInfos(errMesInfos);
 			return outPut;
 		}
+		outPut.setReflect(true);
 		return outPut;
 	}
 

@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf022.u.viewmodel {
 
         // close dialog
         closeDialog() {
+            nts.uk.ui.windows.setShared('shareApptypeToKAF022A', nts.uk.ui.windows.getShared('shareApptypeToUDialog'));
             nts.uk.ui.windows.close();
         }
 

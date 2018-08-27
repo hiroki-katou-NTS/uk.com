@@ -5,7 +5,10 @@
 package nts.uk.ctx.bs.employee.pub.jobtitle;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 
@@ -94,5 +97,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList 297
 	Optional<AffJobTitleBasicExport> getBySidAndBaseDate(String sid, GeneralDate baseDate);
+	
+	/**
+	 * Gets the job title map.
+	 *
+	 * @param companyId the company id
+	 * @param jobIds the job ids
+	 * @param baseDate the base date
+	 * @return the job title map
+	 */
+	Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId,List<String> jobIds, List<GeneralDate> baseDates);
 
 }

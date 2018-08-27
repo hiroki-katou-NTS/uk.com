@@ -451,9 +451,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
                             //kiểm tra list người xác nhận, nếu khác null thì show info 392
                             if (data.autoSendMail) {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                                });
+                                appcommon.CommonProcess.displayMailDeleteRs(data);
                             } else {
                                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                             }

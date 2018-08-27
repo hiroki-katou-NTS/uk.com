@@ -6,7 +6,9 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
@@ -33,6 +36,7 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleInfoRepository.
@@ -417,5 +421,71 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		// Return
 		return result.stream().map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#findByIds(java.lang.String, java.util.List, java.util.List)
+	 */
+	@Override
+	public Map<GeneralDate, List<JobTitleInfo>> findByIds(String companyId, List<String> jobIds,
+			List<GeneralDate> baseDates) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<?> cq = criteriaBuilder.createQuery();
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster,
+				JoinType.LEFT);
+		Join<BsymtJobInfo, BsymtJobHist> joinHistRoot = root.join(BsymtJobInfo_.bsymtJobHist,
+				JoinType.LEFT);
+
+		// Build query
+		cq.multiselect(root, joinHistRoot);
+
+		// add where
+		List<Predicate> listPredicate = new ArrayList<>();
+		listPredicate.add(criteriaBuilder
+				.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+		listPredicate
+				.add(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId).in(jobIds));
+
+		List<Predicate> listPredicateBaseDate = new ArrayList<>();
+		baseDates.forEach(baseDate -> {
+			listPredicateBaseDate
+					.add(criteriaBuilder.and(
+							criteriaBuilder.lessThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist)
+									.get(BsymtJobHist_.startDate), baseDate),
+							criteriaBuilder.greaterThanOrEqualTo(
+									root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate),
+									baseDate)));
+		});
+
+		listPredicate.add(criteriaBuilder.or(listPredicateBaseDate.toArray(new Predicate[] {})));
+
+		cq.where(listPredicate.toArray(new Predicate[] {}));
+
+		// Sort by disporder
+		Expression<Object> queryCase = criteriaBuilder.selectCase()
+				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+						Integer.MAX_VALUE)
+				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+		cq.orderBy(criteriaBuilder.asc(queryCase),
+				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
+
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = (List<Object[]>) em.createQuery(cq).getResultList();
+
+		Map<GeneralDate, List<JobTitleInfo>> mapItem = new HashMap<>();
+				
+		baseDates.forEach(baseDate -> {
+			mapItem.putAll(result.stream().collect(Collectors.groupingBy(item -> {
+				BsymtJobHist jobHist = (BsymtJobHist)item[1];
+				return (new DatePeriod(jobHist.getStartDate(), jobHist.getEndDate())).contains(baseDate) ? baseDate : null;
+			},Collectors.mapping(x ->   new JobTitleInfo(new JpaJobTitleInfoGetMemento((BsymtJobInfo)x[0])), Collectors.toList()))));
+		});
+		
+		
+		// Return
+		return mapItem;
 	}
 }

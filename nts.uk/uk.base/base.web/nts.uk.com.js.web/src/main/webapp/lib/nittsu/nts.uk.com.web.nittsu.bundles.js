@@ -321,7 +321,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -615,9 +615,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
+                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
-                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -15299,6 +15299,7 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
+                var _ = window['_'], $ = window['$'], ko = window['ko'];
                 var count = nts.uk.text.countHalf;
                 var WoC = 9, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
                 var ComboBoxBindingHandler = (function () {
@@ -15320,18 +15321,13 @@ var nts;
                             // columns
                             columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
-                                'style': 'padding-left: 2px; color: #000; height: 29px',
-                                click: function (evt) {
-                                    if ($element.data(IGCOMB)) {
-                                        if ($element.igCombo(OPENED)) {
-                                            $element.igCombo(CLOSEDDL);
-                                            evt.stopPropagation();
-                                        }
-                                        else {
-                                            $element.igCombo(OPENDDL, function () { }, true, true);
-                                            evt.stopPropagation();
-                                        }
-                                    }
+                                'css': {
+                                    'color': '#000',
+                                    'height': '30px',
+                                    'padding-left': '3px',
+                                    'position': 'absolute',
+                                    'left': '0px',
+                                    'right': '0px'
                                 }
                             });
                             // filter valid options
@@ -15362,14 +15358,22 @@ var nts;
                                         $show.find("." + k.toLowerCase() + ":not(:last-child)")
                                             .css('width', cws[k] * WoC + "px");
                                         $show.find("." + k.toLowerCase())
-                                            .css('height', '31px')
-                                            .css('line-height', '27px')
-                                            .find('.nts-column:last-child').css('margin-right', 0);
-                                        ;
+                                            .css({
+                                            'height': '31px',
+                                            'line-height': '27px'
+                                        })
+                                            .find('.nts-column:last-child')
+                                            .css('margin-right', 0);
                                     });
                                 }
                                 else {
-                                    $show.empty();
+                                    // show text
+                                    if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
+                                        $show.html($('<div>', { 'class': 'nts-combo-column', text: ko.toJS(accessor.nullText), css: { 'line-height': '27px' } }));
+                                    }
+                                    else {
+                                        $show.empty();
+                                    }
                                 }
                             })
                                 .on(CHANGED, function (evt, key, value) {
@@ -15420,7 +15424,7 @@ var nts;
                                 placeHolder: '',
                                 textKey: 'nts_' + optionsText,
                                 valueKey: optionsValue,
-                                mode: editable ? EDITABLE : DROPDOWN,
+                                mode: EDITABLE,
                                 disabled: !ko.toJS(enable),
                                 enableClearButton: false,
                                 itemTemplate: template,
@@ -15436,8 +15440,38 @@ var nts;
                                     $element
                                         .find('.ui-igcombo-hidden-field')
                                         .parent()
-                                        .append($show)
-                                        .css('overflow', 'hidden');
+                                        .prepend($show)
+                                        .css({
+                                        'overflow': 'hidden',
+                                        'position': 'relative'
+                                    })
+                                        .find('.ui-igcombo-button')
+                                        .css({
+                                        'float': 'none',
+                                        'width': '100%',
+                                        'border': '0px',
+                                        'padding': '0px',
+                                        'position': 'absolute',
+                                        'box-sizing': 'border-box',
+                                        'background-color': 'transparent'
+                                    })
+                                        .find('.ui-igcombo-buttonicon')
+                                        .text('▼')
+                                        .css({
+                                        'right': '0px',
+                                        'font-size': '0.85rem',
+                                        'top': '0px',
+                                        'bottom': '0px',
+                                        'display': 'block',
+                                        'background-color': '#ececec',
+                                        'width': '30px',
+                                        'text-align': 'center',
+                                        'line-height': '30px',
+                                        'margin': '0px',
+                                        'border-left': '1px solid #ccc'
+                                    })
+                                        .removeClass('ui-icon')
+                                        .removeClass('ui-icon-triangle-1-s');
                                 },
                                 itemsRendered: function (evt, ui) {
                                     var data = $element.data(DATA) || {}, cws = data[CWIDTH] || [], ks = _.keys(cws);
@@ -15485,16 +15519,21 @@ var nts;
                                         .prependTo(ui.list);
                                     // show searchbox if editable
                                     var $input = ui.list
+                                        .attr('dropdown-for', $element.attr('id'))
                                         .find('.ui-igcombo-fieldholder')
-                                        .css('height', !!data[EDITABLE] ? '' : '0px')
-                                        .css('padding', !!data[EDITABLE] ? '3px' : '')
-                                        .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                                        .css({
+                                        'height': !!data[EDITABLE] ? '' : '0px',
+                                        'padding': !!data[EDITABLE] ? '3px' : '',
+                                        'background-color': !!data[EDITABLE] ? '#f6f6f6' : ''
+                                    })
                                         .show()
                                         .find('input')
-                                        .css('width', '0px')
-                                        .css('height', !!data[EDITABLE] ? '29px' : '0px')
-                                        .css('text-indent', !!data[EDITABLE] ? '0' : '-99999px')
-                                        .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                                        .css({
+                                        'width': '0px',
+                                        'height': !!data[EDITABLE] ? '30px' : '0px',
+                                        'text-indent': !!data[EDITABLE] ? '0' : '-99999px',
+                                        'border': !!data[EDITABLE] ? '1px solid #ccc' : 'none'
+                                    });
                                     if (!$input.data('_nts_bind')) {
                                         $input
                                             .on(KEYDOWN, function (evt, ui) {
@@ -15521,7 +15560,9 @@ var nts;
                                         .find('.nts-column:last-child')
                                         .css('margin-right', 0);
                                     setTimeout(function () {
-                                        $input.css('width', ($(ui.list).width() - 6) + 'px');
+                                        $input.css({
+                                            'width': ($(ui.list).width() - 6) + 'px'
+                                        });
                                     }, 25);
                                 }
                             })
@@ -15531,8 +15572,10 @@ var nts;
                                 .on('blur', function () { $element.css('box-shadow', ''); })
                                 .on('focus', function () {
                                 $element
-                                    .css('outline', 'none')
-                                    .css('box-shadow', '0 0 1px 1px #0096f2');
+                                    .css({
+                                    'outline': 'none',
+                                    'box-shadow': '0 0 1px 1px #0096f2'
+                                });
                             });
                         };
                         this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -15604,6 +15647,10 @@ var nts;
                                 }
                                 else {
                                     value = undefined;
+                                    //save old value
+                                    if (!_.isNil(ko.toJS(accessor.value))) {
+                                        $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
+                                    }
                                 }
                                 accessor.value(value);
                             }
@@ -27042,22 +27089,22 @@ var nts;
                                 });
                                 return this;
                             };
+                            Handler.KEY_DOWN = "keydown";
+                            Handler.KEY_UP = "keyup";
+                            Handler.FOCUS_IN = "focusin";
+                            Handler.BLUR = "blur";
+                            Handler.CLICK = "click";
+                            Handler.MOUSE_DOWN = "mousedown";
+                            Handler.SCROLL = "scroll";
+                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                            Handler.RECORDS = "iggridvirtualrecordsrender";
+                            Handler.CELL_CLICK = "iggridcellclick";
+                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
-                        Handler.KEY_DOWN = "keydown";
-                        Handler.KEY_UP = "keyup";
-                        Handler.FOCUS_IN = "focusin";
-                        Handler.BLUR = "blur";
-                        Handler.CLICK = "click";
-                        Handler.MOUSE_DOWN = "mousedown";
-                        Handler.SCROLL = "scroll";
-                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                        Handler.RECORDS = "iggridvirtualrecordsrender";
-                        Handler.CELL_CLICK = "iggridcellclick";
-                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
