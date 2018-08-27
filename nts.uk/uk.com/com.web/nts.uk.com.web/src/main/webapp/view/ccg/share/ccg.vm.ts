@@ -537,40 +537,48 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component properties
                 self.setProperties(data);
-
-                // start component
-                nts.uk.ui.block.invisible(); // block ui
-                self.startComponent().done(() => {
-                    self.setShowHideByReferenceRange();
-
-                    // Initial tab panel
-                    self.tabs(self.updateTabs());
-                    self.selectedTab(self.updateSelectedTab());
-
-                    // init view
-                    $input.html(CCG001_HTML);
-                    _.defer(() => {
-                        ko.cleanNode($input[0]);
-                        ko.applyBindings(self, $input[0]);
-                        // Set tabindex
-                        self.initNextTabFeature();
-                        let tabindex = $input.attr('tabindex');
-                        $input.attr('tabindex', -1);
-                        $input.find('.btn_showhide').attr('tabindex', tabindex);
-
-                        // init ccg show/hide event
-                        self.initCcgEvent();
-                        // set component height
-                        self.setComponentHeight();
-
-                        if (data.showOnStart) {
-                            self.showComponent().done(() => dfd.resolve());
-                        } else {
-                            dfd.resolve();
-                        }
-
+                
+                const initComponent = () => {
+                    // start component
+                    nts.uk.ui.block.invisible(); // block ui
+                    self.startComponent().done(() => {
+                        self.setShowHideByReferenceRange();
+    
+                        // Initial tab panel
+                        self.tabs(self.updateTabs());
+                        self.selectedTab(self.updateSelectedTab());
+    
+                        // init view
+                        $input.html(CCG001_HTML);
+                        _.defer(() => {
+                            ko.cleanNode($input[0]);
+                            ko.applyBindings(self, $input[0]);
+                            // Set tabindex
+                            self.initNextTabFeature();
+                            let tabindex = $input.attr('tabindex');
+                            $input.attr('tabindex', -1);
+                            $input.find('.btn_showhide').attr('tabindex', tabindex);
+    
+                            // init ccg show/hide event
+                            self.initCcgEvent();
+                            // set component height
+                            self.setComponentHeight();
+    
+                            if (data.showOnStart) {
+                                self.showComponent().done(() => dfd.resolve());
+                            } else {
+                                dfd.resolve();
+                            }
+    
+                        });
                     });
-                });
+                };
+
+                if (_.isNil(ko.dataFor(document.body))) {
+                    nts.uk.ui.viewModelApplied.add(initComponent);
+                } else {
+                    initComponent();
+                }
 
                 return dfd.promise();
             }
@@ -2010,12 +2018,7 @@ module nts.uk.com.view.ccg.share.ccg {
             static Com_Jobtitle = nts.uk.resource.getText('Com_Jobtitle');
         }
 
-var CCG001_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:com="http://xmlns.jcp.org/jsf/component"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
+var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
         <div class="pull-left ccg001-content">
             <div id="ccg001-header" class="ccg001-table">
                 <div class="ccg001-cell">
@@ -2384,8 +2387,7 @@ var CCG001_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
             <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
             </div>
         </div>
-    </div>
-</ui:composition>`;
+    </div>`;
     }
 }
 /**
