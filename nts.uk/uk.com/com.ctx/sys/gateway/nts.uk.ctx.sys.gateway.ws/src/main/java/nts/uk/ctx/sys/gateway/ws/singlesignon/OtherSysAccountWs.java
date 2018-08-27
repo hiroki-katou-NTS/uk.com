@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ws.singlesignon;
 
-import javax.ejb.Stateless;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -70,6 +71,18 @@ public class OtherSysAccountWs extends WebService{
 	@POST
 	public OtherSysAccFinderDto findOtherSysAccByUserID(OtherSysAccFinderDto otherSysAcc) {
 		return this.otherSysAccFinder.findByUserId(otherSysAcc.getUserId());
+	}
+
+	/**
+	 * Find already setting.
+	 *
+	 * @param userIds the user ids
+	 * @return the list
+	 */
+	@POST
+	@Path("find/otheracc/alreadysetting")
+	public List<String> findAlreadySetting(List<String> userIds) {
+		return this.otherSysAccFinder.findAlreadySetting(userIds);
 	}
 	
 }
