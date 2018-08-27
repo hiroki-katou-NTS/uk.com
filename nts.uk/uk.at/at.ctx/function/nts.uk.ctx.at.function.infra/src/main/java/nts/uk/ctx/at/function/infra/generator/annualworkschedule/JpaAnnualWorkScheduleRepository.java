@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SortingConditionOrderImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
@@ -43,9 +44,11 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleDa
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeInfo;
+import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExcludeEmp;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
+import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -86,7 +89,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 	@Override
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
-			YearMonth endYm, List<Employee> employees, int printFormat, int breakPage) {
+			YearMonth endYm, List<Employee> employees, PrintFormat printFormat, int breakPage, ExcludeEmp excludeEmp,
+			Integer monthLimit) {
 		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
 
@@ -103,8 +107,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// init map employees data
 		// <<Public>> 社員の情報を取得する
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
-		exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		HeaderData header = new HeaderData();
+		header.setPrintFormat(printFormat);
 		header.setOutputAgreementTime(setOutItemsWoSc.getDisplayFormat());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
 		// B1_1 + B1_2
@@ -116,13 +120,15 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		List<ItemOutTblBook> listItemOut = setOutItemsWoSc.getListItemOutTblBook().stream()
 				.filter(item -> item.isUseClassification()) // ドメインモデル「帳表に出力する項目．使用区分」をチェックする
 				.sorted((i1, i2) -> Integer.compare(i1.getSortBy(), i2.getSortBy())).collect(Collectors.toList());
-		if (printFormat == 1) {
+		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
 			// A1_2
 			header.setReportName(TextResource.localize("KWR008_58"));
+			exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		} else {
 			// A1_2
 			header.setReportName(TextResource.localize("KWR008_57"));
 			listItemOut = listItemOut.stream().filter(x -> !x.isItem36AgreementTime()).collect(Collectors.toList());
+			exportData.setOutNumExceedTime36Agr(false);
 		}
 		exportData.setExportItems(listItemOut.stream().map(m -> new ExportItem(m.getCd().v(), m.getHeadingName().v()))
 				.collect(Collectors.toList()));
@@ -148,11 +154,13 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		exportData.setHeader(header);
 
 		// 「年間勤務表（36チェックリスト）の出力項目設定」を取得する
-		if (printFormat == 1) {
+		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
+			// 36協定対象外者のチェック
+			this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 			// アルゴリズム「年間勤務表の作成」を実行する
 			this.createAnnualWorkSchedule36Agreement(cid, exportData, yearMonthPeriod, employeeIds, listItemOut,
-					fiscalYear, startYm, numMonth, setOutItemsWoSc.getDisplayFormat());
-		} else if (printFormat == 0) {
+					fiscalYear, startYm, numMonth, setOutItemsWoSc.getDisplayFormat(), monthLimit);
+		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
 			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, startYm,
 					numMonth, setOutItemsWoSc.getDisplayFormat());
@@ -247,11 +255,39 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	}
 
 	/**
+	 * 36協定対象外者のチェック
+	 */
+	private void checkExcludeEmp36Agreement(ExcludeEmp excludeEmp, List<String> employeeIds, LocalDate endYmd) {
+		List<String> empId = new ArrayList<>();
+		// 年間勤務表（36チェックリスト）の出力条件.印字区分をチェック
+		if (ExcludeEmp.NOT_PRINT.equals(excludeEmp)) {
+			// <<Public>> 社員の情報を取得する
+			List<EmployeeInformationImport> empInfoList = employeeInformationAdapter
+					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, GeneralDate.localDate(endYmd),
+							false, false, true, false, false, false));
+			for (EmployeeInformationImport emp : empInfoList) {
+				// 取得した社員の「職位情報.管理とする」をチェック
+				// TODO
+				// パラメータ.対象社員ID（List）へ追加する
+				empId.add(emp.getEmployeeId());
+			}
+		} else {
+			// 選択している社員すべて パラメータ.対象社員ID(List) へ追加する
+			empId = employeeIds;
+		}
+		// パラメータ.対象社員ID（List）の件数をチェックする
+		if (empId.isEmpty()) {
+			// エラーメッセージ(#Msg_1367#)を表示
+			throw new BusinessException("Msg_1367");
+		}
+	}
+
+	/**
 	 * 年間勤務表の作成
 	 */
 	private void createAnnualWorkSchedule36Agreement(String cid, ExportData exportData, YearMonthPeriod yearMonthPeriod,
 			List<String> employeeIds, List<ItemOutTblBook> listItemOut, Year fiscalYear, YearMonth startYm,
-			int numMonth, OutputAgreementTime displayFormat) {
+			int numMonth, OutputAgreementTime displayFormat, Integer monthLimit) {
 		Optional<ItemOutTblBook> outputAgreementTime36 = listItemOut.stream().filter(m -> m.isItem36AgreementTime())
 				.findFirst();
 		employeeIds.forEach(empId -> {
@@ -261,7 +297,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			if (outputAgreementTime36.isPresent()) {
 				// アルゴリズム「36協定時間の作成」を実行する
 				annualWorkScheduleData.putAll(this.create36AgreementTime(cid, yearMonthPeriod, empId,
-						outputAgreementTime36.get(), fiscalYear, startYm, numMonth, displayFormat));
+						outputAgreementTime36.get(), fiscalYear, startYm, numMonth, displayFormat, monthLimit));
 			}
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
 		});
@@ -287,7 +323,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private Map<String, AnnualWorkScheduleData> create36AgreementTime(String cid, YearMonthPeriod yearMonthPeriod,
 			String employeeId, ItemOutTblBook outputAgreementTime36, Year fiscalYear, YearMonth startYm, int numMonth,
-			OutputAgreementTime displayFormat) {
+			OutputAgreementTime displayFormat, Integer monthLimit) {
 		// RequestList421
 		// 36協定時間を取得する
 		List<AgreementTimeOfManagePeriodImport> listAgreementTime = agreementTimeAdapter.findByYear(employeeId,
@@ -313,7 +349,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 		// アルゴリズム「月平均の算出」を実行する
 		data.put(outputAgreementTime36.getCd().v(), AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36,
-				listAgreementTime, listExcesMonths, startYm, numMonth, monthsExceeded).calc());
+				listAgreementTime, listExcesMonths, startYm, numMonth, monthsExceeded, monthLimit).calc());
 		return data;
 	}
 

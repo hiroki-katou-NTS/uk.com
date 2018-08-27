@@ -1,3 +1,14 @@
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
 module nts.uk.com.view.cps009.a.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
@@ -41,7 +52,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             
             self.initSettingId.subscribe(function(value: string) {
                nts.uk.ui.errors.clearAll();
-               self.errorList.removeAll();
                self.currentCategory().itemList.removeAll();
                 self.currentCategory().setData({
                     settingCode: "",
@@ -55,7 +65,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
-                self.errorList.removeAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return; 
                 
                 self.getItemList(self.initSettingId(), value);
@@ -410,25 +419,30 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $('tr').find('#date'),
-                dateInputListOfYear = $('tr').find('#datey'),
-                itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
-                    return item.dataType == 3 && item.selectedRuleCode == 2;
+                itemDateList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
+                    return item.dataType == 3 && item.selectedRuleCode == 2 && _.isNil(item.dateValue);
+                }),
+                itemButton: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
+                    return item.dataType == 8  && item.selectedRuleCode == 2 && (_.isNil(item.selectionId));
                 });
-            if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
-                let i: number = 0;
-                _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = dateInputList[i],
-                        $input2 = dateInputListOfYear[i];
-                    if ($input1 != undefined) {
-                        $input1.setAttribute("nameid", item.itemName);
-                    }
-                    else if ($input2 != undefined) {
-                        $input2.setAttribute("nameid", item.itemName);
-                    }
-                    i++;
+            
+            $(".sub-input-units:enabled").trigger('validate');
+            
+            _.each(itemDateList, c =>{
+                let x = "#" + c.perInfoItemDefId;
+                $(x).addClass("error");
+                $(x).find('.nts-input').attr('nameid', c.itemName);
+            });
+            
+            _.each(itemButton, c => {
+                let x = "#" + c.perInfoItemDefId;
+                $(x).ntsError('set', {
+                    messageId: "Msg_824",
+                    messageParams: [c.itemName]
                 });
-            }
+            });
+            
+            if(nts.uk.ui.errors.hasError()){ return;}
 
             block.invisible();
             service.update(updateObj).done(function(data) {
