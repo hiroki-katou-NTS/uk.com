@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,10 +22,14 @@ public class PerInfoHistorySelectionFinder {
 	private SelectionHistoryRepository historySelectionRepo;
 
 	public List<PerInfoHistorySelectionDto> historySelection(String selectedId) {
-		String roleID = AppContexts.user().roles().forGroupCompaniesAdmin();
-		String companyId = roleID != null ? AppContexts.user().zeroCompanyIdInContract()
-				: AppContexts.user().companyId();
-		SelectionHistory history = this.historySelectionRepo.get(selectedId, companyId).get();
+		String companyId = AppContexts.user().companyId();
+		Optional<SelectionHistory> historyOptional = this.historySelectionRepo.get(selectedId, companyId);
+		
+		if(!historyOptional.isPresent()) {
+			return new ArrayList<PerInfoHistorySelectionDto>();
+		}
+		
+		SelectionHistory history = historyOptional.get();
 		List<DateHistoryItem> reversedDateHistoryItems = Lists.reverse(history.getDateHistoryItems());
 		
 		return reversedDateHistoryItems.stream().map(x -> PerInfoHistorySelectionDto.createDto(x))

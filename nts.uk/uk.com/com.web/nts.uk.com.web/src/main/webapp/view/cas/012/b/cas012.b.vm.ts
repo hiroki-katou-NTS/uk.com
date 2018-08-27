@@ -30,7 +30,10 @@ module nts.uk.com.view.cas012.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_438" , messageParams: [nts.uk.resource.getText("CAS012_20")]});
                 return;
             }
-            service.searchUser(self.searchValue()).done(function(data) {
+            if(self.searchValue().trim().length>3000){
+                return;
+            }
+            service.searchUser(self.searchValue().trim()).done(function(data) {
                 self.dataSource(data);
             });
         }

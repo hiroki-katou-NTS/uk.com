@@ -21,6 +21,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         constructor() {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
+            perInfoSelectionItem.selectionItemId.extend({notify:"always"});
             self.checkCreate = ko.observable(true);
             self.closeUp = ko.observable(false);
             if (self.param) {
@@ -46,13 +47,20 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.nameLength(_perInfoSelectionItem.nameLength);
                             perInfoSelectionItem.extraCodeLength(_perInfoSelectionItem.extraCodeLength);
 
-                            perInfoSelectionItem.shareChecked(_perInfoSelectionItem.shareChecked);
-
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
                         }
                         $("#selectionItemName").focus();
                     });
+                } else {
+                    perInfoSelectionItem.selectionItemName('');
+                    perInfoSelectionItem.characterType(false);
+                    perInfoSelectionItem.codeLength('');
+                    perInfoSelectionItem.nameLength('');
+                    perInfoSelectionItem.extraCodeLength('');
+                    perInfoSelectionItem.shareChecked(false);
+                    perInfoSelectionItem.integrationCode('');
+                    perInfoSelectionItem.memo('');
                 }
                 self.checkCreate(false);
             });
@@ -62,6 +70,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            
             if (groupCompanyAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
@@ -126,8 +135,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
             perInfoSelectionItem.codeLength('');
             perInfoSelectionItem.nameLength('');
             perInfoSelectionItem.extraCodeLength('');
-
-            perInfoSelectionItem.shareChecked(false);
 
             perInfoSelectionItem.integrationCode('');
             perInfoSelectionItem.memo('');
@@ -233,33 +240,33 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             let command = ko.toJS(currentItem);
 
-            confirm({ messageId: "Msg_551" }).ifYes(() => {
-              block.grayout();     
-                service.removeDataSelectionItem(command).done(function() {
+            service.removeDataSelectionItem(command).done(function() {
+				confirm({ messageId: "Msg_551" }).ifYes(() => {
+					block.grayout();     
+					service.removeDataSelectionItem(command).done(function() {
                     
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.listItems.removeAll();
-                        self.getAllSelectionItems().done(() => {
-                            if (self.listItems().length > 0) {
-                                if (oldIndex == lastIndex) {
-                                    oldIndex--;
-                                }
-                                let newItem = self.listItems()[oldIndex];
-                                currentItem.selectionItemId(newItem.selectionItemId);
-                            }
-                            //                        self.listItems.valueHasMutated();
-                            else {
-                                self.registerDataSelectioItem();
-                            }
-                        });
-                    });
-                    self.listItems.valueHasMutated();
-
-                }).fail(error => {
-                    alertError({ messageId: "Msg_521" });
-                }).always(()=> block.clear());
-
-            });
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+							self.listItems.removeAll();
+							self.getAllSelectionItems().done(() => {
+								if (self.listItems().length > 0) {
+									if (oldIndex == lastIndex) {
+										oldIndex--;
+									}
+									let newItem = self.listItems()[oldIndex];
+									currentItem.selectionItemId(newItem.selectionItemId);
+								}
+								//                        self.listItems.valueHasMutated();
+								else {
+									self.registerDataSelectioItem();
+								}
+							});
+						});
+						self.listItems.valueHasMutated();
+					}).fail(error => {
+							alertError({ messageId: "Msg_521" });
+					}).always(()=> block.clear());
+				});
+			});
         }
 
         // 選択肢の登録ボタン
@@ -297,8 +304,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
         nameLength: number;
         extraCodeLength: number;
 
-        shareChecked: boolean;
-
         integrationCode?: string;
         memo?: string;
 
@@ -313,8 +318,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
         nameLength: KnockoutObservable<number> = ko.observable('');
         extraCodeLength: KnockoutObservable<number> = ko.observable('');
 
-        shareChecked: KnockoutObservable<boolean> = ko.observable(false);
-
         integrationCode: KnockoutObservable<string> = ko.observable('');
         memo: KnockoutObservable<string> = ko.observable('');
 
@@ -327,8 +330,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.codeLength(param.codeLength || '');
             self.nameLength(param.nameLength || '');
             self.extraCodeLength(param.extraCodeLength || '');
-
-            self.shareChecked(param.shareChecked);
 
             self.integrationCode(param.integrationCode || '');
             self.memo(param.memo || '');

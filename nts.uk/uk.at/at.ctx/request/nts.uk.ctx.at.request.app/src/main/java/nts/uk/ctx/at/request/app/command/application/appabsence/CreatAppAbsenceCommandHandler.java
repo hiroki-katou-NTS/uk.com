@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -12,6 +16,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
@@ -25,6 +30,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
@@ -52,6 +64,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private SpecialHolidayEventAlgorithm specHdEventAlg;
 	@Inject
 	private GetHdDayInPeriodService getHdDayInPeriodSv;
+	@Inject
+	private DisplayReasonRepository displayRep;
+	@Inject
+	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
@@ -63,8 +79,46 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// Create Application
 		GeneralDate startDate = command.getStartDate() == null ? null : GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate endDate = command.getEndDate() == null ? null : GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
+		List<DisplayReasonDto> displayReasonDtoLst = 
+				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
+		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == command.getHolidayAppType())
+				.findAny().orElse(null);
+		String appReason = "";
+		if(displayReasonSet!=null){
+			boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
+			boolean displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
+			String typicalReason = Strings.EMPTY;
+			String displayReason = Strings.EMPTY;
+			if(displayFixedReason){
+				if(Strings.isBlank(command.getAppReasonID())){
+					typicalReason += "";
+				} else {
+					typicalReason += command.getAppReasonID();
+				}
+			}
+			if(displayAppReason){
+				if(Strings.isNotBlank(typicalReason)){
+					displayReason += System.lineSeparator();
+				}
+				if(Strings.isBlank(command.getApplicationReason())){
+					displayReason += "";
+				} else {
+					displayReason += command.getApplicationReason();
+				}
+			}
+			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+					.getApplicationSettingByComID(companyID);
+			ApplicationSetting applicationSetting = applicationSettingOp.get();
+			if(displayFixedReason||displayAppReason){
+				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+						&& Strings.isBlank(typicalReason+displayReason)) {
+					throw new BusinessException("Msg_115");
+				}
+			}
+			appReason = typicalReason + displayReason;
+		}
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),
+				command.getPrePostAtr(), appReason, appReason.replaceFirst(":", System.lineSeparator()),
 				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, command.getEmployeeID());
 		AppForSpecLeave specHd = null;
 		SpecHolidayCommand specHdCm = command.getSpecHd();

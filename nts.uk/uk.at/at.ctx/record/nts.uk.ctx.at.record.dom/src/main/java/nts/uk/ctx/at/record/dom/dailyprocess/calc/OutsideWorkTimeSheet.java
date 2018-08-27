@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -99,7 +100,7 @@ public class OutsideWorkTimeSheet {
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
     		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,
-    		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo) {
+    		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -111,14 +112,14 @@ public class OutsideWorkTimeSheet {
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
 					predetermineTimeSet, siftCode, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,
-					predetermineTimeSetByPersonInfo,coreTimeSetting);
+					predetermineTimeSetByPersonInfo,coreTimeSetting, specificDateAttrSheets);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd overTimeDayEnd = OverDayEnd.forOverTime(overDayEndSet.isZeroHStraddCalculateSet(), overTimeWorkFrameTimeSheet, beforeDay, afterDay,beforeInfo,afterInfo);
 			overTimeWorkFrameTimeSheet = overTimeDayEnd.getOverTimeList();
 			holidayWorkFrameTimeSheetForCalc = overTimeDayEnd.getHolList();
 		} else {
-			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting, specificDateAttrSheets);
 
 			/* 0時跨ぎ */
 			OverDayEnd holidayWorkDayEnd = OverDayEnd.forHolidayWorkTime(overDayEndSet.isZeroHStraddCalculateSet(), holidayWorkFrameTimeSheetForCalc, beforeDay, afterDay,beforeInfo,afterInfo);

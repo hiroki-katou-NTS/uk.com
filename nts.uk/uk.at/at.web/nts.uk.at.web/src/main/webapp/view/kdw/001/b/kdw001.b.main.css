@@ -50,6 +50,12 @@
 	margin-bottom: 7px;
 }
 
+#area2 #checkBoxArea .checkbox_container{
+	width: 250px;
+	height: 25px;
+	display:inline-block;
+}
+
 #cbArea2 {
 	margin-top: 12px;
 	margin-left: 28px;
@@ -62,6 +68,14 @@
 	display: inline-block;
 	float: left;
 }
+
+.cbArea {
+	margin-left: 34px;
+	margin-top: 12px;
+	display: inline-block;
+	float: left;
+}
+
 
 #area2 {
 	width: 543px;

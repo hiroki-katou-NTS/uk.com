@@ -24,9 +24,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed btnLeft"
-					data-bind="click: register">#{i18n.getText('CPS002_64')}</button>
+					data-bind="click: register" tabindex ="1">#{i18n.getText('CPS002_64')}</button>
 				<button type="button" class="btnRight" data-bind="click: close"
-					style="float: right">#{i18n.getText('CPS002_65')}</button>
+					style="float: right" tabindex ="2">#{i18n.getText('CPS002_65')}</button>
 				<div style="clear: both"></div>
 			</div>
 			<div id="contents-area" class="cf coverBlock">
@@ -40,7 +40,7 @@
 
 									<div style="width: 210px" id="searchCtg"
 										data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'id', comId: 'singleList', 
-	items: lstCategory, selected: selectedCtgId , selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid',placeHolder:'名称で検索…'}" />
+	items: lstCategory, selected: selectedCtgId , selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid',placeHolder:'名称で検索…'}" tabindex ="3"/>
 									<!-- <div>
 										<input type="text" placeholder="名称で検索…" data-bind="value: txtSearch" class="txtSearch"/>
 										<button type="button" class="caret-bottom caret-inline" data-bind="click: searchByName">検索</button>
@@ -54,7 +54,7 @@
 											columns: columns,
 											multiple: false,
 											value: selectedCtgId
-										}">
+										}" tabindex="4">
 										</table>
 									</div>
 								</div>
@@ -71,7 +71,7 @@
 									primaryKey: 'id',
 									multiple: true,
 									value: checkedIds
-								}">
+								}" tabindex="5">
 								</table>
 							</div>
 						</td>
