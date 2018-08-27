@@ -1,6 +1,7 @@
 module nts.uk.com.view.csa005.b {
     import getText = nts.uk.resource.getText;
     import cas005aViewModel = nts.uk.com.view.cas005.a.model;
+    import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
             newRoleCode : any;
@@ -70,6 +71,7 @@ module nts.uk.com.view.csa005.b {
             copyRoleCas005(copyRoleCas005Command : model.CopyRoleCas005Command){
                 let self = this;
                 let dfd = $.Deferred();
+                block.invisible();
                 service.copyRoleCas005(copyRoleCas005Command).done(function(data){
                     nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function(){
                         nts.uk.ui.windows.setShared("closeB", self.newRoleCode()); 
@@ -79,6 +81,8 @@ module nts.uk.com.view.csa005.b {
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }).always(()=>{
+                    block.clear();    
                 });
                 dfd.resolve(); 
                 

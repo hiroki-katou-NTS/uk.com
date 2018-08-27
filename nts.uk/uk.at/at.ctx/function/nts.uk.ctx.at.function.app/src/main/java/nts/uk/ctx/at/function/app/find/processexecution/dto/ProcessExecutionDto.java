@@ -92,6 +92,15 @@ public class ProcessExecutionDto {
 	/* 更新処理の日別処理対象者区分.異動者を再作成する */
 	public boolean recreateTransfers;
 	
+	/** 承認ルート更新区分 */
+	private boolean appRouteUpdateAtr;
+	
+	/** 新入社員を作成する */
+	private Boolean createNewEmp;
+	
+	/* 承認ルート更新（月次） */
+	private boolean appRouteUpdateMonthly;
+	
 	public ProcessExecutionDto() {
 		super();
 	}
@@ -124,6 +133,10 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getWkpAlarm().isWkpMailMng(),
 				domain.getExecScope().getExecScopeCls().value,
 				domain.getExecScope().getRefDate(),
-				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer());
+				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer(),
+				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value==1?true:false,
+				!domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent()?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value==1?true:false,
+				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false
+				);
 	}
 }

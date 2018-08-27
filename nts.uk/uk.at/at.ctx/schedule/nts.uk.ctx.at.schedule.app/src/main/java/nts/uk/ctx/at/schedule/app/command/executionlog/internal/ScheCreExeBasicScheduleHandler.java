@@ -42,6 +42,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.PersonFeeTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
@@ -149,9 +150,10 @@ public class ScheCreExeBasicScheduleHandler {
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			String employeeId, WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<BasicSchedule> listBasicSchedule) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto,
+			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
 
 		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
 		// EA修正履歴：No2135
@@ -252,7 +254,7 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert());
+		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert(), dateRegistedEmpSche);
 	}
 
 	/**
@@ -297,7 +299,11 @@ public class ScheCreExeBasicScheduleHandler {
 	}
 	
 	// 勤務予定情報を登録する-for KSC001
-	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule, boolean isDeleteBeforeInsert) {
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule,
+			boolean isDeleteBeforeInsert, DateRegistedEmpSche dateRegistedEmpSche) {
+		// 登録対象日を保持しておく（暫定データ作成用）
+		dateRegistedEmpSche.getListDate().add(command.getYmd());
+		
 		// if delete before, it always insert
 		if(isDeleteBeforeInsert){
 			this.basicScheduleRepository.insert(command.toDomain());
@@ -316,6 +322,7 @@ public class ScheCreExeBasicScheduleHandler {
 		} else {
 			this.basicScheduleRepository.insert(command.toDomain());
 		}
+		
 	}
 
 	/**
@@ -354,7 +361,8 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> listBasicSchedule) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
 		String employeeId = command.getEmployeeId();
 		String workTypeCode = command.getWorkTypeCode();
 		String workTimeCode = command.getWorkingCode();
@@ -404,7 +412,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		boolean isDeleteBeforeInsert = false;
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert);
+		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert, dateRegistedEmpSche);
 	}
 
 	/**
