@@ -282,17 +282,16 @@ public class AnnualWorkScheduleData {
 			return null;
 		switch (item.getStatus()) {
 		case EXCESS_LIMIT_ERROR:
-		case EXCESS_EXCEPTION_LIMIT_ERROR:
 		case EXCESS_LIMIT_ERROR_SP:
-			// #FD4D4D = 16600397
+		case EXCESS_EXCEPTION_LIMIT_ALARM:
+		case EXCESS_EXCEPTION_LIMIT_ERROR:
+			// No56: #FD4D4D = 16600397
 			return 16600397;
 		case EXCESS_LIMIT_ALARM:
-		case EXCESS_EXCEPTION_LIMIT_ALARM:
-		case EXCESS_LIMIT_ALARM_SP:
-			// #F6F636 = 16184886
+			// No57: #F6F636 = 16184886
 			return 16184886;
-		case NORMAL_SPECIAL:
-			// #EB9152 = 15438162
+		case EXCESS_LIMIT_ALARM_SP:
+			// No58: #EB9152 = 15438162
 			return 15438162;
 		default:
 			return null;
