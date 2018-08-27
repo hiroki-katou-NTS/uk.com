@@ -83,9 +83,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let selectedObject: ISelectionItem1 = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == id;
                     });
-                    console.log(selectedObject);
                     if (selectedObject != undefined) {
-                        console.log("-------------" + selectedObject.characterType);
                         //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
