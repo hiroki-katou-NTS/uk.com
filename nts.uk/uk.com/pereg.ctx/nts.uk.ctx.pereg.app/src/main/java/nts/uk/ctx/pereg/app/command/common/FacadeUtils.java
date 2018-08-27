@@ -176,7 +176,7 @@ public class FacadeUtils {
 	public List<ItemValue> getListDefaultCS00035() {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		String[][] cs00035Item = { { "IS00371", numberType, String.valueOf(NotUseAtr.NOT_USE.value) },
-				{ "IS00372", numberType, String.valueOf(PaymentMethod.AMOUNT_PAYMENT.value) } };
+				{ "IS00372", numberType, String.valueOf(PaymentMethod.VACATION_OCCURRED.value) } };
 		return FacadeUtils.createListItems(cs00035Item);
 	}
 	
