@@ -247,8 +247,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 												
 				// TimeLeavingWork - attendanceStamp - stamp							
@@ -271,8 +271,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
 				Integer attNumberReflec = timeLeavingWork.getAttendanceStamp().isPresent()
@@ -299,8 +299,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;			
 												
 				// TimeLeavingWork - leaveStamp - stamp							
@@ -323,8 +323,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getLeaveStamp().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getLeaveStamp().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 												
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
@@ -340,21 +340,21 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ timeLeavingOfDailyPerformance.getYmd() + "', "
 						+ 0 + ", "
 						+ attActualRoundingTime + ", "
-						+ attActualTime + ", '"
-						+ attActualStampLocationCode + "' , "
+						+ attActualTime + ", "
+						+ attActualStampLocationCode + " , "
 						+ attActualStampSource + ", "
 						+ attStampRoundingTime + ", "
-						+ attStampTime + ", '"
-						+ attStampLocationCode + "' , "
+						+ attStampTime + ", "
+						+ attStampLocationCode + " , "
 						+ attStampSource + ", "
 						+ attNumberReflec + ", "
 						+ leaveActualRoundingTime + ", "
-						+ leaveActualTime + ", '"
-						+ leaveActualStampLocationCode + "' , "
+						+ leaveActualTime + ", "
+						+ leaveActualStampLocationCode + " , "
 						+ leaveActualStampSource + " , "
 						+ leaveStampRoundingTime + ", "
-						+ leaveStampTime + ", '"
-						+ leaveStampLocationCode + "' , "
+						+ leaveStampTime + ", "
+						+ leaveStampLocationCode + " , "
 						+ leaveStampSource + ", "
 						+ leaveNumberReflec + " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
