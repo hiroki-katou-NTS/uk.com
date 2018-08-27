@@ -76,7 +76,11 @@ module nts.uk.at.view.kdw001.h {
                     self.listErrMessageInfo = ko.observableArray([]);
                     self.listTargetPerson = ko.observableArray([]);
                     
-
+                    if(param.executionContent == 3){
+                        self.feriodEnable = false;
+                    } else {
+                        self.feriodEnable = true;
+                    }
 
                 }
                 //list
