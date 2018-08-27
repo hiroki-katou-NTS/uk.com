@@ -191,7 +191,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
 				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
 				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), Optional.empty()));
+				Collections.emptyList(), Optional.empty(), new ArrayList<>()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,
