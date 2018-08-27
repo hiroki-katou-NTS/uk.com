@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
@@ -223,7 +224,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_LEAVING_WORK ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
 					+ timeLeavingOfDailyPerformance.getEmployeeId() + "' , '" + timeLeavingOfDailyPerformance.getYmd()
 					+ "' , " + timeLeavingOfDailyPerformance.getWorkTimes().v() + " )";
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
 				// TimeLeavingWork - attendanceStamp - actualStamp
@@ -356,7 +357,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ leaveStampLocationCode + "' , "
 						+ leaveStampSource + ", "
 						+ leaveNumberReflec + " )";
-				statementI.executeUpdate(insertTimeLeaving);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
 		} catch (Exception e) {
 			
