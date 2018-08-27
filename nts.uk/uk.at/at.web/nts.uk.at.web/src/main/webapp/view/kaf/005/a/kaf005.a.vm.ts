@@ -142,6 +142,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         uiType: KnockoutObservable<number> = ko.observable(0);
         preWorkContent: common.WorkContent;
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT); 
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -718,7 +720,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }else{
                       //Change background color
                         self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
-                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                        nts.uk.ui.dialog.confirmProceed({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}).ifYes(() => {
+                            self.registerData(overtime);    
+                        }).ifNo(() => {
+                            nts.uk.ui.block.clear(); 
+                        });
                     }                    
                 }
             }).fail((res) => {

@@ -17,17 +17,17 @@ module nts.uk.at.view.kdw002.a {
             timeInputEnable: KnockoutObservable<boolean>;
             //
             isDaily: boolean;
-            isSave : KnockoutObservable<boolean>;
-            sideBar :  KnockoutObservable<number>;
+            isSave: KnockoutObservable<boolean>;
+            sideBar: KnockoutObservable<number>;
             constructor(dataShare: any) {
                 var self = this;
                 //
                 self.isSave = ko.observable(true);
                 self.isDaily = dataShare.ShareObject;
-                self.sideBar =  ko.observable(1);
-                if(!self.isDaily){
+                self.sideBar = ko.observable(1);
+                if (!self.isDaily) {
                     self.sideBar(2);
-                }                
+                }
                 self.headerColorValue = ko.observable('');
                 self.linebreak = ko.observable(0);
                 self.unitRoundings = ko.observableArray([]);
@@ -38,8 +38,8 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
-                self.aICurrentCode.subscribe(attendanceItemId => {  
-                    if(attendanceItemId){
+                self.aICurrentCode.subscribe(attendanceItemId => {
+                    if (attendanceItemId) {
                         self.isSave(true);
                         var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
                         self.txtItemName(attendanceItem.attendanceItemName);
@@ -63,7 +63,7 @@ module nts.uk.at.view.kdw002.a {
                                 self.timeInputEnable(false);
                             }
                         }
-    
+
                         self.linebreak(attendanceItem.nameLineFeedPosition);
                         if (self.isDaily) {
                             service.getControlOfDailyItem(attendanceItemId).done(cAttendanceItem => {
@@ -88,15 +88,15 @@ module nts.uk.at.view.kdw002.a {
                                 }
                             });
                         }
-                    }else{
+                    } else {
                         let item = $("#gridList").igGrid("option", "dataSource")[0].attendanceItemId;
                         self.aICurrentCode(item);
                         self.aICurrentCode.valueHasMutated();
-//                        self.isSave(false);
-//                        self.txtItemName("");
-//                        self.txtItemId(attendanceItemId);
-//                        self.headerColorValue(null);
-//                        self.timeInputCurrentCode(0);
+                        //                        self.isSave(false);
+                        //                        self.txtItemName("");
+                        //                        self.txtItemId(attendanceItemId);
+                        //                        self.headerColorValue(null);
+                        //                        self.timeInputCurrentCode(0);
                     }
                 });
 
@@ -112,48 +112,49 @@ module nts.uk.at.view.kdw002.a {
                 if (self.isDaily) {
                     service.getListDailyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            let listAttdID = _.map(atItems, item => { return item.attendanceItemId; });
                             service.getNameDaily(listAttdID).done(function(dataNew) {
-                                for(let i =0;i<atItems.length;i++){
-                                    for(let j = 0;j<=dataNew.length; j++){
-                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                for (let i = 0; i < atItems.length; i++) {
+                                    for (let j = 0; j <= dataNew.length; j++) {
+                                        if (atItems[i].attendanceItemId == dataNew[j].attendanceItemId) {
                                             atItems[i].attendanceName = dataNew[j].attendanceItemName;
                                             break;
-                                        }  
-                                    }    
+                                        }
+                                    }
                                 }
-                                
+
                                 atItems.forEach(attendanceItem => {
-                                    attendanceItems.push({ 
+                                    attendanceItems.push({
                                         attendanceItemId: attendanceItem.attendanceItemId,
                                         attendanceItemName: attendanceItem.attendanceName,
-                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, 
+                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr,
                                         nameLineFeedPosition: attendanceItem.nameLineFeedPosition,
-                                        displayNumber : attendanceItem.displayNumber });
+                                        displayNumber: attendanceItem.displayNumber
+                                    });
                                 });
                                 self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
                                 self.aICurrentCode(atItems[0].attendanceItemId);
                                 $("#colorID").focus();
                             });
-                            
+
                         }
                     });
                 } else {
                     service.getListMonthlyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            let listAttdID = _.map(atItems, item => { return item.attendanceItemId; });
                             service.getNameMonthly(listAttdID).done(function(dataNew) {
-                                for(let i =0;i<atItems.length;i++){
-                                    for(let j = 0;j<=dataNew.length; j++){
-                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                for (let i = 0; i < atItems.length; i++) {
+                                    for (let j = 0; j <= dataNew.length; j++) {
+                                        if (atItems[i].attendanceItemId == dataNew[j].attendanceItemId) {
                                             atItems[i].attendanceName = dataNew[j].attendanceItemName;
                                             break;
-                                        }  
-                                    }    
+                                        }
+                                    }
                                 }
-                                
+
                                 atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition,displayNumber :attendanceItem.attendanceItemDisplayNumber });
+                                    attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition, displayNumber: attendanceItem.attendanceItemDisplayNumber });
                                 });
                                 self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
                                 self.aICurrentCode(atItems[0].attendanceItemId);
@@ -166,20 +167,21 @@ module nts.uk.at.view.kdw002.a {
             }
 
             navigateView(): void {
-                var self = this; 
+                var self = this;
                 var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
             }
-            
+
             jumpToHome(sidebar): void {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
             }
 
             submitData(): void {
-                var self = this;
-                var AtItems = {};
-                AtItems.companyID = "";
+                let self = this,
+                    AtItems = {
+                        companyID: ""
+                    };
 
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
@@ -194,7 +196,7 @@ module nts.uk.at.view.kdw002.a {
                     }
                     service.updateDaily(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
-                         $("#colorID").focus();
+                        $("#colorID").focus();
                     });
                 } else {
                     AtItems.itemMonthlyID = self.aICurrentCode();
@@ -202,26 +204,27 @@ module nts.uk.at.view.kdw002.a {
                         AtItems.headerBgColorOfMonthlyPer = self.headerColorValue();
                     }
                     service.updateMonthly(AtItems).done(x => {
+                        
                         infor(nts.uk.resource.getMessage("Msg_15", []));
                         $("#colorID").focus();
                     });
                 }
             }
 
-//            interface IAttendanceItem {
-//                attendanceItemId: number;
-//                attendanceItemName: string;
-//            }
-//            class AttendanceItem {
-//                attendanceItemId: number;
-//                attendanceItemName: string;
-//    
-//                constructor(params: IAttendanceItem) {
-//                    var self = this;
-//                    self.attendanceItemId = params.attendanceItemId;
-//                    self.attendanceItemName = params.attendanceItemName;
-//                }
-//            }
+            //            interface IAttendanceItem {
+            //                attendanceItemId: number;
+            //                attendanceItemName: string;
+            //            }
+            //            class AttendanceItem {
+            //                attendanceItemId: number;
+            //                attendanceItemName: string;
+            //    
+            //                constructor(params: IAttendanceItem) {
+            //                    var self = this;
+            //                    self.attendanceItemId = params.attendanceItemId;
+            //                    self.attendanceItemName = params.attendanceItemName;
+            //                }
+            //            }
         }
     }
 }
