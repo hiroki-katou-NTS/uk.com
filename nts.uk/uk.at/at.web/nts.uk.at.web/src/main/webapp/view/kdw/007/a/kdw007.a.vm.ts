@@ -1290,8 +1290,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     // Compare with a range
                     let rawStartValue = self.compareStartValue();
                     let rawEndValue = self.compareEndValue();
-                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
-                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
+                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
+                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
                     self.displayLeftCompare(textDisplayLeftCompare);
                     self.displayRightCompare(textDisplayRightCompare);
                 } else {
@@ -1299,7 +1299,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.conditionType() === 0) {
                         // If is compare with a fixed value
                         let rawValue = self.compareStartValue();
-                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                         self.displayRightCompare("");
                     } else {
