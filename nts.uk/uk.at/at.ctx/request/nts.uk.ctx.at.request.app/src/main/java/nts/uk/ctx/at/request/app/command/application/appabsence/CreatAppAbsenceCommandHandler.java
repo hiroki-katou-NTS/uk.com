@@ -217,21 +217,28 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 			//ドメインモデル「休暇申請種類表示名」を取得する
 			List<HdAppDispName> lstHdName = repoHdAppDispName.getAllHdApp();
 			String name = "";
+			String nametmp = "";
 			if(checkResult.isChkSubHoliday()){
-				name = name + this.findHdNameErr(lstHdName, HdAppType.TEMP_HD) + " ";
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkPause()){
-				name = name + this.findHdNameErr(lstHdName, HdAppType.TEMP_HD) + " ";
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkAnnual()){
-				name = name + this.findHdNameErr(lstHdName, HdAppType.TEMP_HD) + " ";
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkFundingAnnual()){
-				name = name + this.findHdNameErr(lstHdName, HdAppType.TEMP_HD) + " ";
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkSpecial()){
-				name = name + this.findHdNameErr(lstHdName, HdAppType.TEMP_HD) + " ";
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
+			
 			//エラーメッセージ（Msg_1409）
 			throw new BusinessException("Msg_1409", name);
 		}
