@@ -6,6 +6,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -211,6 +212,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EDIT_APPROVAL = "A";
 	private static final String LOCK_HIST = "H";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	private static final String LOCK_APPLICATION_LIST = "ApplicationList";
@@ -256,8 +258,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return data.replace("-", "_");
 	}
 	public String converDateToString(GeneralDate genDate) {
-		Format formatter = new SimpleDateFormat(DATE_FORMAT);
-		return formatter.format(genDate.date());
+		return DATE_FORMATTER.format(genDate.toLocalDate());
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,

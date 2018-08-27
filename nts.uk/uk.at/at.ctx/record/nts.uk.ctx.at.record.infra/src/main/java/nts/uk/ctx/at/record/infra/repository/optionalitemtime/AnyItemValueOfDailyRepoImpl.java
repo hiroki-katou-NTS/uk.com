@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.optionalitemtime;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +11,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValue;
+import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValuePK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -174,13 +179,33 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	}
 
 	private List<KrcdtDayAnyItemValue> findP(String employeeId, GeneralDate baseDate) {
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate = :date");
-		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
-										.setParameter("empId", employeeId)
-										.setParameter("date", baseDate).getList();
-		return result;
+		try {
+			val statement = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_ANYITEMVALUE WHERE SID = ? AND YMD = ?");
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			val result = new NtsResultSet(statement.executeQuery());
+			return result.getList(rec -> {
+				val entity = new KrcdtDayAnyItemValue();
+				entity.krcdtDayAnyItemValuePK = new KrcdtDayAnyItemValuePK();
+				entity.krcdtDayAnyItemValuePK.employeeID = rec.getString("SID");
+				entity.krcdtDayAnyItemValuePK.generalDate = rec.getGeneralDate("YMD");
+				entity.krcdtDayAnyItemValuePK.itemNo = rec.getInt("ITEM_NO");
+				entity.countValue = rec.getBigDecimal("COUNT_VALUE");
+				entity.moneyValue = rec.getInt("MONEY_VALUE");
+				entity.timeValue = rec.getInt("TIME_VALUE");
+				return entity;
+			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+//		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
+//		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
+//		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate = :date");
+//		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
+//										.setParameter("empId", employeeId)
+//										.setParameter("date", baseDate).getList();
+//		return result;
 	}
 
 	@Override

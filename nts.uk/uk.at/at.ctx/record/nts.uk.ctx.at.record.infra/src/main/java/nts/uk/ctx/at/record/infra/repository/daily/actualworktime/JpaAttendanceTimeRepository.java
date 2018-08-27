@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +12,12 @@ import javax.ejb.Stateless;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -172,7 +176,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
-	public void update(AttendanceTimeOfDailyPerformance attendanceTime) {
+	public void update(AttendanceTimeOfDailyPerformance attendanceTime) {//
 				
 		Optional<KrcdtDayTime> entity = this.queryProxy()
 				  .find(new KrcdtDayTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),KrcdtDayTime.class);
@@ -181,91 +185,79 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			/* 勤怠時間 */
 			entity.get().setData(attendanceTime);
 			this.commandProxy().update(entity.get());
+			
 			if (attendanceTime.getActualWorkingTimeOfDaily() != null) {
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 
 					/* 早退時間 */
-						String letQuery = "SELECT le FROM KrcdtDayLeaveEarlyTime le WHERE le.krcdtDayLeaveEarlyTimePK.employeeID = :employeeId AND le.krcdtDayLeaveEarlyTimePK.generalDate = :date";
-						List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTimeList = this.queryProxy().query(letQuery, KrcdtDayLeaveEarlyTime.class)
-								.setParameter("employeeId", attendanceTime.getEmployeeId()).setParameter("date", attendanceTime.getYmd()).getList();
-						List<KrcdtDayLeaveEarlyTime> toKrcdtDayLeaveEarlyTimeDel = krcdtDayLeaveEarlyTimeList.stream().filter(c -> 
-							 !attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily().stream().filter(t -> t.getWorkNo().v()==c.krcdtDayLeaveEarlyTimePK.workNo).findFirst().isPresent()
-						).collect(Collectors.toList());
-						if(!toKrcdtDayLeaveEarlyTimeDel.isEmpty()) {
-							this.commandProxy().removeAll(toKrcdtDayLeaveEarlyTimeDel);
-						}	
-						for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
-								.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
-							KrcdtDayLeaveEarlyTime krcdtDayLeaveEarlyTime = krcdtDayLeaveEarlyTimeList.stream().filter(c -> leaveEarlyTime.getWorkNo().v()==c.krcdtDayLeaveEarlyTimePK.workNo).findFirst().orElse(null);
-							
-							if (krcdtDayLeaveEarlyTime == null) {
-								this.commandProxy().insert(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
-										attendanceTime.getYmd(), leaveEarlyTime));
-							} else {
-								krcdtDayLeaveEarlyTime.setData(leaveEarlyTime);
-								this.commandProxy().update(krcdtDayLeaveEarlyTime);
-							}
-						}
-						
-						/* 遅刻時間 */
-						String latQuery = "SELECT le FROM KrcdtDayLateTime le WHERE le.krcdtDayLateTimePK.employeeID = :employeeId AND le.krcdtDayLateTimePK.generalDate = :date";
-						List<KrcdtDayLateTime> KrcdtDayLateTimeList = this.queryProxy().query(latQuery, KrcdtDayLateTime.class)
-								.setParameter("employeeId", attendanceTime.getEmployeeId()).setParameter("date", attendanceTime.getYmd()).getList();
-						List<KrcdtDayLateTime> toKrcdtDayLateTimeDel = KrcdtDayLateTimeList.stream().filter(c -> 
-							 !attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily().stream().filter(t -> t.getWorkNo().v()==c.krcdtDayLateTimePK.workNo).findFirst().isPresent()
-						).collect(Collectors.toList());
-						if(!toKrcdtDayLateTimeDel.isEmpty()) {
-							this.commandProxy().removeAll(toKrcdtDayLateTimeDel);
-						}	
-						for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getLateTimeOfDaily()) {
-							KrcdtDayLateTime krcdtDayLateTime = KrcdtDayLateTimeList.stream().filter(c -> lateTime.getWorkNo().v()==c.krcdtDayLateTimePK.workNo).findFirst().orElse(null);
-							
-							if (krcdtDayLateTime == null) {
-								this.commandProxy().insert(KrcdtDayLateTime.create(attendanceTime.getEmployeeId(),
-										attendanceTime.getYmd(), lateTime));
-							} else {
-								krcdtDayLateTime.setData(lateTime);
-								this.commandProxy().update(krcdtDayLateTime);
-							}
-						}
-						//短時間
-						KrcdtDayShorttime krcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
-																													   attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value),
-																							   KrcdtDayShorttime.class).orElse(null);
-						if(krcdtDayShorttime != null) {
-							krcdtDayShorttime.setData(attendanceTime);
-							this.commandProxy().update(krcdtDayShorttime);
-						}
-						else {
-							this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(),
-									attendanceTime.getYmd(), attendanceTime));
-						}
-						KrcdtDayShorttime otherAtrkrcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
-																													   attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value == 0?1:0),
-																							   KrcdtDayShorttime.class).orElse(null);
-						if(otherAtrkrcdtDayShorttime != null) {
-							this.commandProxy().remove(otherAtrkrcdtDayShorttime);
-						}
-						
-						
+					try {
+						val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?");
+						statement.setString(1, attendanceTime.getEmployeeId());
+						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
+						statement.execute();
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
 					}
-				}
-				if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
-					/* 割増時間  */
-					Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
-							.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
-									KrcdtDayPremiumTime.class);
-					if(krcdtDayPremiumTime.isPresent()) {
-						//更新
-						krcdtDayPremiumTime.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
-						this.commandProxy().update(krcdtDayPremiumTime.get());
-					}else {
-						//追加
-						this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
-																				  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
+					for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
+							.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
+						this.commandProxy().insert(KrcdtDayLeaveEarlyTime.create(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), leaveEarlyTime));
 					}
+						
+					/* 遅刻時間 */
+					try {
+						val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LATETIME where SID = ? and YMD = ?");
+						statement.setString(1, attendanceTime.getEmployeeId());
+						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
+						statement.execute();
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+					for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+							.getLateTimeOfDaily()) {
+							this.commandProxy().insert(KrcdtDayLateTime.create(attendanceTime.getEmployeeId(),
+									attendanceTime.getYmd(), lateTime));
+					}
+					
+					//短時間
+					KrcdtDayShorttime krcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+																												   attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value),
+																						   KrcdtDayShorttime.class).orElse(null);
+					if(krcdtDayShorttime != null) {
+						krcdtDayShorttime.setData(attendanceTime);
+						this.commandProxy().update(krcdtDayShorttime);
+					}
+					else {
+						this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), attendanceTime));
+					}
+					KrcdtDayShorttime otherAtrkrcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+																												   attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value == 0?1:0),
+																						   KrcdtDayShorttime.class).orElse(null);
+					if(otherAtrkrcdtDayShorttime != null) {
+						this.commandProxy().remove(otherAtrkrcdtDayShorttime);
+					}
+					
+					
 				}
+			}
+			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
+				/* 割増時間  */
+				Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
+						.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+								KrcdtDayPremiumTime.class);
+				if(krcdtDayPremiumTime.isPresent()) {
+					//更新
+					krcdtDayPremiumTime.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+					this.commandProxy().update(krcdtDayPremiumTime.get());
+				}else {
+					//追加
+					this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
+																			  attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
+				}
+			}
 		}
 		else {
 			add(attendanceTime);
