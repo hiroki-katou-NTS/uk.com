@@ -176,6 +176,7 @@ module nts.uk.at.view.kdw006.b {
             overtimeCalcUpdAtr: number;
             lawOverCalcUpdAtr: number;
             manualFixAutoSetAtr: number;
+            checkErrRefDisp : number;
         }
 
         class DaiPerformanceFunDto {
@@ -199,6 +200,9 @@ module nts.uk.at.view.kdw006.b {
             lawOverCalcUpdAtr: KnockoutObservable<number>;
 
             manualFixAutoSetAtr: KnockoutObservable<number>;
+            
+            checkErrRefDisp : KnockoutObservable<number>;
+            
 
             constructor(param: IDaiPerformanceFunDto) {
                 let self = this;
@@ -216,6 +220,7 @@ module nts.uk.at.view.kdw006.b {
                 self.overtimeCalcUpdAtr = ko.observable(param.overtimeCalcUpdAtr);
                 self.lawOverCalcUpdAtr = ko.observable(param.lawOverCalcUpdAtr);
                 self.manualFixAutoSetAtr = ko.observable(param.manualFixAutoSetAtr);
+                self.checkErrRefDisp = ko.observable(param.checkErrRefDisp);
             }
         }
 

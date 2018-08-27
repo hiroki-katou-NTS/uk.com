@@ -40,11 +40,11 @@ module nts.uk.at.view.kal001.c {
                 let dfd = $.Deferred(); 
                 self.columns = ko.observableArray([
                     { headerText: '',  dataType: 'string', key: 'GUID' },
-                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: "20%", ntsControl: 'isSendToMe' },
-                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: "20%", ntsControl: 'isSendToManager' },
-                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: "20%" },
-                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: "20%" },
-                    { headerText: getText('KAL001_26'), key: 'employeeName', width: "20%" }
+                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: "100", ntsControl: 'isSendToMe' },
+                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: "100", ntsControl: 'isSendToManager' },
+                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: "138" },
+                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: "138" },
+                    { headerText: getText('KAL001_26'), key: 'employeeName', width: "204" }
                 ]);
                 
                 service.getEmployeeSendEmail(self.shareEmployees()).done((listEmployeeDto: Array<modeldto.EmployeeDto>) => {
@@ -62,7 +62,6 @@ module nts.uk.at.view.kal001.c {
                         virtualization: true,
                         rowVirtualization: true,
                         virtualizationMode: 'continuous',
-                        avgRowHeight: "30px",
                         columns: self.columns(),
                         features:
                         [],

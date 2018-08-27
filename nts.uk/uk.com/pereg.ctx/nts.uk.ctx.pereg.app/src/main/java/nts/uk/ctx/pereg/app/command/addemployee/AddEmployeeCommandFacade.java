@@ -9,12 +9,24 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.SaveDataType;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -25,9 +37,16 @@ public class AddEmployeeCommandFacade {
 
 	@Inject
 	private PeregCommandFacade commandFacade;
-
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
+	@Inject
+	private PerInfoCategoryRepositoty cateRepo;
+	@Inject
+	private ComboBoxRetrieveFactory comboboxFactory;
+	@Inject
+	private PerInfoItemDefRepositoty perInfoItemRepo;
+	
+	
 
 	public void addNewFromInputs(String personId, String employeeId, String comHistId, List<ItemsByCategory> inputs) {
 
@@ -49,11 +68,15 @@ public class AddEmployeeCommandFacade {
 			return command.getInputs();
 		}
 
-		List<SettingItemDto> dataServer = this.layoutFinder.getSetItems(command);
+		List<SettingItemDto> dataServer = this.layoutFinder.getSetItems(command , true);
 
 		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
 		
 		dataServer.forEach(settingItem -> {
+			if(settingItem.getCategoryCode().equals("CS00001") && settingItem.getItemCode().equals("IS00001")) {
+				settingItem.getSaveData().setValue(command.getEmployeeCode());
+				
+			}
 			if (!categoryCodeList.contains(settingItem.getCategoryCode())) {
 				categoryCodeList.add(settingItem.getCategoryCode());
 			}
@@ -72,13 +95,36 @@ public class AddEmployeeCommandFacade {
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
 		if (!cardNo.equals("")) {
-			ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
-			return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
+			Optional<PersonInfoItemDefinition> itemdfOpt = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00069", "IS00779", AppContexts.user().companyId(), AppContexts.user().contractCode());
+			ItemValue itemCardNo = null;
+			if(itemdfOpt.isPresent()) {
+				PersonInfoItemDefinition itemDf = itemdfOpt.get();
+				itemCardNo = new ItemValue(itemDf.getPerInfoItemDefId(), itemDf.getItemCode().toString(), itemDf.getItemName().toString(), cardNo, cardNo, null, null, ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}else {
+				itemCardNo = new ItemValue(null, "IS00779","カードNo", cardNo, cardNo ,"","",ItemValueType.STRING.value, ItemValueType.STRING.value);
+			}
+			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD("CS00069" , AppContexts.user().companyId());
+			if(ctgFromServer.isPresent()) {
+				return new ItemsByCategory(ctgFromServer.get().getPersonInfoCategoryId(),
+						ctgFromServer.get().getCategoryCode().v(),
+						ctgFromServer.get().getCategoryName().v(),
+						0, 
+						null,
+						false,
+						Arrays.asList(itemCardNo));
+			} else {
+				return new ItemsByCategory(ctgFromServer.get().getPersonInfoCategoryId(),
+						"CS00069",
+						"",
+						0, 
+						null,
+						false,
+						Arrays.asList(itemCardNo));
+			}
 		}
 		return null;
 	}
 		
-
 	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
 
 		List<ItemsByCategory> basicCategories = inputs.stream()
@@ -126,7 +172,7 @@ public class AddEmployeeCommandFacade {
 
 			if (!CollectionUtil.isEmpty(fixedItems)) {
 
-				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(),
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), category.getRecordId(),
 						fixedItems);
 				updateInputs.add(newItemCtg);
 			}
@@ -135,7 +181,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
-		this.commandFacade.update(updateContainer);
+		this.commandFacade.updateForCPS002(updateContainer);
 
 	}
 
@@ -148,7 +194,7 @@ public class AddEmployeeCommandFacade {
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 	}
 	
 	
@@ -162,10 +208,10 @@ public class AddEmployeeCommandFacade {
 					.collect(Collectors.toList());
 
 			if (!CollectionUtil.isEmpty(optionalItems)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), null, optionalItems);
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), null, optionalItems);
 				addInputs.add(newItemCtg);
 				// add item for get recordId in commandFacade.add
-				ItemsByCategory itemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(), null);
+				ItemsByCategory itemCtg = new ItemsByCategory(category.getCategoryCd(),category.getCategoryName(), category.getRecordId(), null);
 				addInputs.add(itemCtg);
 
 			}
@@ -174,7 +220,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 
 	}
 
@@ -202,23 +248,54 @@ public class AddEmployeeCommandFacade {
 			List<ItemValue> items = filterDataServer.stream()
 					.map(settingItem -> convertSettingItemToItemValue(settingItem))
 					.collect(Collectors.toList());
-			return new ItemsByCategory(categoryCode, null, items);
+			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD(categoryCode , AppContexts.user().companyId());
+			if(ctgFromServer.isPresent()) {
+				PersonInfoCategory ctg = ctgFromServer.get();
+				 return new ItemsByCategory(ctg.getPersonInfoCategoryId(), ctg.getCategoryCode().v(), ctg.getCategoryName().v(), 0, null, false, items);
+			}else {
+				return new ItemsByCategory("", categoryCode, "", 0, null, false, items);
+			}
 		}
-
 	}
 	
 	private ItemValue convertSettingItemToItemValue(SettingItemDto settingItem) {
 		String value = settingItem.getSaveData().getValue() == null ? ""
 				: settingItem.getSaveData().getValue().toString();
+		String text = "";
 		switch (settingItem.getDataType()) {
 		case SELECTION:
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			
+			SelectionItemDto selectionItemDto = null;
+			ReferenceTypes refenceType = EnumAdaptor.valueOf(settingItem.getSelectionItemRefType().value, ReferenceTypes.class);
+			switch (refenceType) {
+			case ENUM:
+				selectionItemDto = SelectionItemDto.createEnumRefDto(settingItem.getSelectionItemRefCd(),
+						settingItem.getSelectionItemRefType().value);
+				break;
+			case CODE_NAME:
+				selectionItemDto = SelectionItemDto.createCodeNameRefDto(settingItem.getSelectionItemRefCd(),
+						settingItem.getSelectionItemRefType().value);
+				break;
+			case DESIGNATED_MASTER:
+				selectionItemDto = SelectionItemDto.createMasterRefDto(settingItem.getSelectionItemRefCd(),
+						settingItem.getSelectionItemRefType().value);
+				break;
+			}
+			List<ComboBoxObject> comboboxs =  this.comboboxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
+					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode());
+			
+			if(!comboboxs.isEmpty()) {
+				Optional<ComboBoxObject> opt = comboboxs.stream().filter(i -> i.getOptionValue().equals(value)).findFirst();
+				if(opt.isPresent()) text = opt.get().getOptionText(); 
+			}
+			
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,text,
 					settingItem.getDataType().value, settingItem.getSelectionItemRefType().value,
 					settingItem.getSelectionItemRefCd());
 		default:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,text,
 					settingItem.getDataType().value, null, null);
 		}
 

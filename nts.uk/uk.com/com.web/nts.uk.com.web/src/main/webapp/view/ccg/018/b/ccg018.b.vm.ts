@@ -51,8 +51,9 @@ module ccg018.b.viewmodel {
             self.isEnable = ko.observable(false);
             self.isSelectedFirst = ko.observable(true);
 
-            self.currentCode.subscribe(function(codeChange: any) {
-                if (!!self.currentCode()) {
+            self.currentCode.subscribe(function(codeChange: string) {
+                if (codeChange && codeChange != "undefined") {
+                    self.currentCode(codeChange);
                     self.employeeCode(codeChange);
                     self.selectedItem(_.find(self.items(), ['code', codeChange]));
                     self.employeeName(self.selectedItem().name);
@@ -60,6 +61,7 @@ module ccg018.b.viewmodel {
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
                     self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
+                    self.currentCode(null);
                     self.employeeCode('');
                     self.employeeName('');
                     self.selectedItemAfterLogin('');
@@ -91,8 +93,6 @@ module ccg018.b.viewmodel {
             let dfd = $.Deferred();
 
             $.when(self.findTopPagePersonSet()).done(function() {
-                self.bindGrid();
-                self.initCCG001();
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject(error);
@@ -104,7 +104,7 @@ module ccg018.b.viewmodel {
             var self = this;
             // Component option
             self.ccgcomponent = {
-                /** Common properties */
+                /** Common properties */  
                 systemType: 1, // システム区分
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: false, // クイック検索
@@ -234,10 +234,13 @@ module ccg018.b.viewmodel {
                     self.currentCode(oldCode);
                     self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
                     self.isEnable(true);
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    });
                 });
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+//                nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
+                    });
             }).always(function() {
                 blockUI.clear();
             });
@@ -249,10 +252,15 @@ module ccg018.b.viewmodel {
         removeData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            if (!self.currentCode()) {
+                return;
+            }
             if (!!!self.currentCode()) {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
+//                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
+            nts.uk.ui.dialog.info({ messageId: "Msg_85" }).then(function() {
+                    });
             } else {
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
                     ccg018.b.service.remove(obj).done(function() {
                         self.isSelectedFirst(false);
@@ -260,7 +268,9 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+//                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            });
                         });
                     }).fail(function() {
                         dfd.reject();

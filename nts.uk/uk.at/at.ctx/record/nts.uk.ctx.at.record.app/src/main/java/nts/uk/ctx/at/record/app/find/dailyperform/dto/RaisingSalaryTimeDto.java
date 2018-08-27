@@ -34,16 +34,16 @@ public class RaisingSalaryTimeDto implements ItemConst {
 	public static RaisingSalaryTimeDto toDto(BonusPayTime time){
 		return time == null ? null : new RaisingSalaryTimeDto(
 										time.getBonusPayTime() == null ? null : new CalcAttachTimeDto(null, time.getBonusPayTime().valueAsMinutes()), 
-										CalcAttachTimeDto.toTimeWithCal(time.getWithinBonusPay()),
 										CalcAttachTimeDto.toTimeWithCal(time.getExcessBonusPayTime()),
+										CalcAttachTimeDto.toTimeWithCal(time.getWithinBonusPay()),
 										time.getBonusPayTimeItemNo());
 	}
 	
 	public BonusPayTime toDomain(){
 		return new BonusPayTime(no,
 						rasingSalaryTime == null ? null : new AttendanceTime(rasingSalaryTime.getTime()),
-						inLegalRasingSalaryTime == null ? null : inLegalRasingSalaryTime.createTimeWithCalc(),
-						outOfLegalRasingSalaryTime == null ? null : outOfLegalRasingSalaryTime.createTimeWithCalc() 
+						outOfLegalRasingSalaryTime == null ? null : outOfLegalRasingSalaryTime.createTimeWithCalc(), 
+						inLegalRasingSalaryTime == null ? null : inLegalRasingSalaryTime.createTimeWithCalc()
 						);
 	}
 }
