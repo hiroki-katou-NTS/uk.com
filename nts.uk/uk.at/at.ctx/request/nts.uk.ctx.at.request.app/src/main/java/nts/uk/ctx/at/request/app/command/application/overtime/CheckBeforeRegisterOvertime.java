@@ -167,8 +167,10 @@ public class CheckBeforeRegisterOvertime {
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(appRoot.getCompanyID(), appRoot.getAppDate(), appRoot.getPrePostAtr());
 		// ３６上限チェック(詳細)
-		beforeCheck.updateOvertimeCheck36TimeLimit(appRoot.getCompanyID(), command.getAppID(),
-				appRoot.getEnteredPersonID(), employeeId, appRoot.getAppDate(), overtimeInputs);
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = beforeCheck.updateOvertimeCheck36TimeLimit(
+				appRoot.getCompanyID(), command.getAppID(), appRoot.getEnteredPersonID(), employeeId,
+				appRoot.getAppDate(), overtimeInputs);
+		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック

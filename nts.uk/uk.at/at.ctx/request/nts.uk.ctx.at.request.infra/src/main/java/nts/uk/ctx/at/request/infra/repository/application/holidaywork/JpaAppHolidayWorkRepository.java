@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolida
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHolidayWork e";
@@ -78,7 +79,8 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				domain.getWorkClock2().getGoAtr().value,
 				domain.getWorkClock2().getBackAtr().value,
 				domain.getDivergenceReason(),
-				domain.getHolidayShiftNight(), overtimeInputs);
+				domain.getHolidayShiftNight(), overtimeInputs,
+				KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail()));
 	}
 	@Override
 	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {

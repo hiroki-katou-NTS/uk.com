@@ -124,6 +124,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 				return null;
 			});
 		}
+		this.appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(appOverTime.getAppOvertimeDetail());
 		return this;
 	}
 	

@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -43,6 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -63,12 +66,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySetting;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -118,6 +121,7 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private NewAfterRegister_New newAfterReg;
 	@Inject
+	private HolidayShipmentScreenAFinder afinder;
 	private UseDateDeadlineFromDatePeriod dateDeadline;
 
 	@Override
@@ -200,7 +204,7 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する
 		BigDecimal holidayBrkDownDay = getByWorkType(wkTypeCD, WorkTypeClassification.Shooting);
 		// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
-		HolidaySetting holidaySet = getHolidaySetByWkType(wkTypeCD, companyID);
+		HolidayAtr holidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
 		// アルゴリズム「振休有効期限の決定」を実行する
 		GeneralDate expDate = DemOfexpDate(recDate, companyID, sID);
 		// アルゴリズム「暫定振出管理データの登録と自動相殺」を実行する
@@ -282,8 +286,6 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 
-		// アルゴリズム「新規画面登録後の処理」を実行する
-		newAfterReg.processAfterRegister(commonApp);
 
 		return commonApp;
 
@@ -358,15 +360,15 @@ public class SaveHolidayShipmentCommandHandler
 			// アルゴリズム「振休有効期限の決定」を実行する
 			GeneralDate expDate = DemOfexpDate(recDate, companyID, sID);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
-			HolidaySetting holidaySet = getHolidaySetByWkType(command.getAbsCmd().getWkTypeCD(), companyID);
+			HolidayAtr holidayType = getHolidayTypeByWkType(command.getAbsCmd().getWkTypeCD(), companyID);
 			// アルゴリズム「暫定振出・暫定振休管理データの同時登録」を実行する
-			registerData(command, expDate, holidaySet);
+			registerData(command, expDate, holidayType);
 
 		}
 
 	}
 
-	private void registerData(SaveHolidayShipmentCommand command, GeneralDate expDate, HolidaySetting holidaySet) {
+	private void registerData(SaveHolidayShipmentCommand command, GeneralDate expDate, HolidayAtr holidaySet) {
 		// アルゴリズム「暫定振出管理データの登録」を実行する
 		registerAbsData();
 
@@ -378,14 +380,14 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private HolidaySetting getHolidaySetByWkType(String wkTypeCD, String companyID) {
+	private HolidayAtr getHolidayTypeByWkType(String wkTypeCD, String companyID) {
 		// ドメインモデル「勤務種類」を取得する
-		HolidaySetting result = null;
+		HolidayAtr result = null;
 		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (wkTypeOpt.isPresent()) {
 			WorkType wkType = wkTypeOpt.get();
 			if (wkType.getDailyWork().isHolidayWork()) {
-				result = holidayRepo.findBy(companyID).get();
+				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
 
 			}
 
@@ -498,6 +500,32 @@ public class SaveHolidayShipmentCommandHandler
 		checkWorkTypeConflict(command, withDrawReqSet.get());
 		// アルゴリズム「終日半日矛盾チェック」を実行する
 		checkDayConflict(command, comType);
+		// アルゴリズム「法内法外矛盾チェック」を実行する
+		checkSetting(companyID, withDrawReqSet.get(), command, sID);
+	}
+
+	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
+			String sID) {
+		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
+		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
+		if (absCmd != null && isCheck) {
+			String wkTypeCD = absCmd.getWkTypeCD();
+			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
+			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
+			GeneralDate appDate = absCmd.getAppDate();
+			// アルゴリズム「実績の取得」を実行する
+			AchievementOutput achievement = afinder.getAchievement(companyID, sID, appDate);
+			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
+			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
+					companyID);
+			if (absHolidayType == null || achievementHolidayType == null) {
+				return;
+			}
+			if (!absHolidayType.equals(achievementHolidayType)) {
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), absHolidayType.nameId);
+			}
+		}
+
 	}
 
 	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
