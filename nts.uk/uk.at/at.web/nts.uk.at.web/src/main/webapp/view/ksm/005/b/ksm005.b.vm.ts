@@ -66,6 +66,9 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+                    if(nts.uk.ui.errors.hasError()){
+                        return; 
+                    }
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
                     }
@@ -468,6 +471,10 @@ module nts.uk.at.view.ksm005.b {
                 var self = this;
                 if(self.validateClient()){
                     return;    
+                }
+                
+                if (_.isNull(self.yearMonthPicked())){
+                    return;
                 }
                 blockUI.grayout();
                 service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(), self.modeMonthlyPattern()).done(function() {
