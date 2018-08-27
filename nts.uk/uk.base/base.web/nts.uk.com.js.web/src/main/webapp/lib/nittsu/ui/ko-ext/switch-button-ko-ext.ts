@@ -127,15 +127,16 @@ module nts.uk.ui.koExtentions {
                 } else {
                     // Recreate
                     var btn = $('<button>').text(text)
-                        .addClass('nts-switch-button')
+                        .addClass('nts-switch-button unselectable')
                         .data('swbtn', value)
-                        .attr('tabindex', "-1")
+//                        .attr('tabindex', "-1")
+                        .attr('unselectable', "on")
                         .on('click', function() {
                             var selectedValue = $(this).data('swbtn');
                             data.value(selectedValue); 
                             $('button', container).removeClass(selectedCssClass); 
                             $(this).addClass(selectedCssClass);
-//                            container.focus();
+                            container.focus();
                         })
                     if (selectedValue == value) {
                         btn.addClass(selectedCssClass);

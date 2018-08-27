@@ -34,7 +34,7 @@ public class BreakHistoryData {
 	/**
 	 *  管理データ状態区分
 	 */
-	private MngDataAtr mngAtr;
+	private MngHistDataAtr mngAtr;
 	/**
 	 * 発生日数
 	 */

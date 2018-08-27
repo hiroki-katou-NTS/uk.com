@@ -33,7 +33,7 @@
 				
 				<div id="contents-area" data-bind="with: outsideOTSettingModel, visible: true" style="display: none" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
-						<div style="width: 1200px">
+						<div style="width: 102%">
 						<div class="lableDetail">
 							<div class="lableData" data-bind="ntsFormLabel: {required: true}">
 								<label>#{i18n.getText('KMK010_8')}</label>
@@ -137,8 +137,8 @@
 												<com:ko tag="foreach" bind="rateBRDItems">
 													<td class="tdbreakdown">
 														<div>
-															<input class="rate" tabindex="11"
-																data-bind="ntsNumberEditor: {name: '#[KMK010_21]',
+															<input class="rate" data-bind="attr: {  'data-tab': tabIndex }, 
+																ntsNumberEditor: {name: '#[KMK010_21]',
 																value: premiumRate,
 																constraint: 'PremiumRate',
 																option: { defaultValue: 0},
@@ -171,7 +171,7 @@
 											class="labelTwoRate">#{i18n.getText('KMK010_28')}</label>
 									</div>
 									<div class="lableFourRate">
-										<div tabindex="12" class="selectUnit"
+										<div  class="selectUnit"
 											data-bind="ntsComboBox: {
 											options: $parent.lstUnit,
 											optionsValue: 'value',
@@ -185,7 +185,7 @@
 												{ prop: 'localizedName', length: 2 },
 											]}"></div>
 	
-										<div tabindex="13" class="selectRounding"
+										<div  class="selectRounding"
 											data-bind="ntsComboBox: {
 											options: $parent.lstRoundingSet,
 											optionsValue: 'value',
@@ -208,7 +208,7 @@
 								<div class="overtimeRate60H3">
 									<div class="labelOneRate">
 										<label>#{i18n.getText('KMK010_30')}</label> <input
-											class="overtimeSelect" tabindex="14"
+											class="overtimeSelect"
 											data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
 											value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
 											constraint: 'SuperHDOccUnit',

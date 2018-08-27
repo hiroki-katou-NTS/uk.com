@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
@@ -173,28 +173,28 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 			
 			
 			this.toRecoredTotalTime = outingTimeOfDaily.getRecordTotalTime().getTotalTime().getTime().valueAsMinutes();
-//			this.toRecoredOutTime = outingTimeOfDaily.getRecordTotalTime().getExcessTotalTime().getTime().valueAsMinutes() ;
-//			this.toRecoredInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getTotalTime().getTime().valueAsMinutes() ;
-//			this.toRecoredCoreInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getWithinCoreTime().getTime().valueAsMinutes() ;
-//			this.toRecoredCoreOutTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getExcessCoreTime().getTime().valueAsMinutes() ;
+			this.toRecoredOutTime = outingTimeOfDaily.getRecordTotalTime().getExcessTotalTime().getTime().valueAsMinutes() ;
+			this.toRecoredInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getTotalTime().getTime().valueAsMinutes() ;
+			this.toRecoredCoreInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getWithinCoreTime().getTime().valueAsMinutes() ;
+			this.toRecoredCoreOutTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getExcessCoreTime().getTime().valueAsMinutes() ;
 			
 			this.calToRecoredTotalTime =  outingTimeOfDaily.getRecordTotalTime().getTotalTime().getCalcTime().valueAsMinutes();
-//			this.calToRecoredOutTime =  outingTimeOfDaily.getRecordTotalTime().getExcessTotalTime().getCalcTime().valueAsMinutes();
-//			this.calToRecoredInTime =  outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getTotalTime().getCalcTime().valueAsMinutes();
-//			this.calToRecoredCoreInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getWithinCoreTime().getCalcTime().valueAsMinutes() ;
-//			this.calToRecoredCoreOutTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getExcessCoreTime().getCalcTime().valueAsMinutes() ;
+			this.calToRecoredOutTime =  outingTimeOfDaily.getRecordTotalTime().getExcessTotalTime().getCalcTime().valueAsMinutes();
+			this.calToRecoredInTime =  outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getTotalTime().getCalcTime().valueAsMinutes();
+			this.calToRecoredCoreInTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getWithinCoreTime().getCalcTime().valueAsMinutes() ;
+			this.calToRecoredCoreOutTime = outingTimeOfDaily.getRecordTotalTime().getWithinTotalTime().getExcessCoreTime().getCalcTime().valueAsMinutes() ;
 			
 			this.deductionTotalTime = outingTimeOfDaily.getDeductionTotalTime().getTotalTime().getTime().valueAsMinutes() ;
-//			this.deductionOutTime = outingTimeOfDaily.getDeductionTotalTime().getExcessTotalTime().getTime().valueAsMinutes() ;
-//			this.deductionInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getTotalTime().getTime().valueAsMinutes() ;
-//			this.deductionCoreInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getWithinCoreTime().getTime().valueAsMinutes() ;
-//			this.deductionCoreOutTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getExcessCoreTime().getTime().valueAsMinutes() ;
+			this.deductionOutTime = outingTimeOfDaily.getDeductionTotalTime().getExcessTotalTime().getTime().valueAsMinutes() ;
+			this.deductionInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getTotalTime().getTime().valueAsMinutes() ;
+			this.deductionCoreInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getWithinCoreTime().getTime().valueAsMinutes() ;
+			this.deductionCoreOutTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getExcessCoreTime().getTime().valueAsMinutes() ;
 			
 			this.calDeductionTotalTime = outingTimeOfDaily.getDeductionTotalTime().getTotalTime().getCalcTime().valueAsMinutes();
-//			this.calDeductionOutTime = outingTimeOfDaily.getDeductionTotalTime().getExcessTotalTime().getCalcTime().valueAsMinutes() ;
-//			this.calDeductionInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getTotalTime().getCalcTime().valueAsMinutes() ;
-//			this.calDeductionCoreInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getWithinCoreTime().getCalcTime().valueAsMinutes() ;
-//			this.calDeductionCoreOutTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getExcessCoreTime().getCalcTime().valueAsMinutes() ;
+			this.calDeductionOutTime = outingTimeOfDaily.getDeductionTotalTime().getExcessTotalTime().getCalcTime().valueAsMinutes() ;
+			this.calDeductionInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getTotalTime().getCalcTime().valueAsMinutes() ;
+			this.calDeductionCoreInTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getWithinCoreTime().getCalcTime().valueAsMinutes() ;
+			this.calDeductionCoreOutTime = outingTimeOfDaily.getDeductionTotalTime().getWithinTotalTime().getExcessCoreTime().getCalcTime().valueAsMinutes() ;
 			
 			this.anuuualLeaveUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().valueAsMinutes() ;
 			this.compensLeaveUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes() ;

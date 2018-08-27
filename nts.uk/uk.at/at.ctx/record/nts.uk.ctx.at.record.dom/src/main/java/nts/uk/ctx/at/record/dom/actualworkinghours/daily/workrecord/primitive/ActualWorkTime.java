@@ -10,4 +10,10 @@ public class ActualWorkTime extends TimeDurationPrimitiveValue<ActualWorkTime>{
 		super(rawValue);
 	}
 
+	@Override
+	protected String getPaddedMinutePart() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

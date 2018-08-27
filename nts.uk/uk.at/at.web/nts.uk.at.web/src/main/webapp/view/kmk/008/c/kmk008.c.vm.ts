@@ -16,6 +16,7 @@ module nts.uk.at.view.kmk008.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
                 } else {
@@ -39,12 +40,13 @@ module nts.uk.at.view.kmk008.c {
             addUpdateData() {
                 let self = this;
                 let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
+                nts.uk.ui.block.invisible();
                 if (self.isUpdate) {
                     new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
                             let periodName = nts.uk.resource.getText(errorCode[1]);
-                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                            let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
@@ -52,20 +54,23 @@ module nts.uk.at.view.kmk008.c {
                             self.startPage();
                         });
                     });
+                     nts.uk.ui.block.clear();
                     return;
                 }
                 new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
                         let periodName = nts.uk.resource.getText(errorCode[1]);
-                        let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                        let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                         return;
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(data) {
                         self.startPage();
                     });
+                     nts.uk.ui.block.clear();
                 });
+                nts.uk.ui.block.clear();
             }
 
         }

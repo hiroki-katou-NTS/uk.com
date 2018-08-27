@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface AffWorkplaceAdapter.
@@ -52,4 +53,12 @@ public interface AffWorkplaceAdapter {
 	 * @return
 	 */
 	List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate);
+	
+	/**
+	 * KIF 001 - update response reqList 485
+	 * @param companyId
+	 * @param period
+	 * @return
+	 */
+	List<DatePeriod> getLstPeriod(String companyId, DatePeriod period);
 }

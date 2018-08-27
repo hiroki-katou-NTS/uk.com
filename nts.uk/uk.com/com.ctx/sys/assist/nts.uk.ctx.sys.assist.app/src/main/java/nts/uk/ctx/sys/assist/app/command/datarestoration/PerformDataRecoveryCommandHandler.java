@@ -74,7 +74,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		// 抽出した非対象カテゴリをドメインモデル「テーブル一覧」の「復旧対象選択」を0（；復旧しない）に更新
 		List<String> listCheckCate = performDataCommand.getRecoveryCategoryList().stream().map(x -> x.categoryId)
 				.collect(Collectors.toList());
-		int selectionTarget = 1;
+		int selectionTarget = 0;
 		repoPerformDataRecovery.updateCategorySelect(selectionTarget, dataRecoveryProcessId, listCheckCate);
 
 		// 「復旧方法」の判別

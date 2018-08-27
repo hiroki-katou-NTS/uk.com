@@ -45,8 +45,8 @@ module nts.uk.at.view.kal004.a.model {
             self.selectedTab = ko.observable('tab-1');
 
             self.alarmHeader = ko.observableArray([
-                { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 40 },
-                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175 },
+                { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 50 },
+                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175,formatter: _.escape },
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');
@@ -59,10 +59,10 @@ module nts.uk.at.view.kal004.a.model {
                 { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
                 { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
                 { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
-                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
+                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 50, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
                 { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
-
+            
             self.currentCodeListSwap = ko.observableArray([]);
             self.currentCode = ko.observable(null);
             self.currentAlarm = null;

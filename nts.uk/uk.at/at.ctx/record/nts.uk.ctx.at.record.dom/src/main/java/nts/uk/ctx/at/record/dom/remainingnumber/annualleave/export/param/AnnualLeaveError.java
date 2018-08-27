@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * 年休エラー
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @AllArgsConstructor
 public enum AnnualLeaveError {

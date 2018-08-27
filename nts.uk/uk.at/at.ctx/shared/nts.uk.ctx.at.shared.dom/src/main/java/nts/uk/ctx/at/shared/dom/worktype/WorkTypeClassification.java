@@ -48,17 +48,17 @@ public enum WorkTypeClassification {
 	/**
 	 * 振休
 	 */
-	Pause(8, "Enum_WorkTypeClassification_Pause"), 
+	Pause(8, "Enum_WorkTypeClassification_Pause"),
 	/**
 	 * 時間消化休暇
 	 */
-	TimeDigestVacation(9, "Enum_WorkTypeClassification_TimeDigestVacation"), 
+	TimeDigestVacation(9, "Enum_WorkTypeClassification_TimeDigestVacation"),
 	/**
 	 * 連続勤務
 	 */
 	ContinuousWork(10, "Enum_WorkTypeClassification_ContinuousWork"),
 	/**
-	 * 休日出勤
+	 * 休日出勤       休出
 	 */
 	HolidayWork(11, "Enum_WorkTypeClassification_HolidayWork"),
 	/**
@@ -74,7 +74,10 @@ public enum WorkTypeClassification {
 	public final int value;
 	public final String nameId;
 	
-	
+//	WorkTypeClassification(int arg1, String arg0) {
+//		this.value = arg1;
+//		this.nameId = arg0;
+//	}
 
 	
 	/**

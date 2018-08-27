@@ -19,9 +19,9 @@ module cps002.e.vm {
 
 
             if (self.cardNoMode) {
-                $("#txtCardNo").focus();
+                $("#cardNumber").focus();
             } else {
-                $("#txtEmployeeCode").focus();
+                $("#employeeCode").focus();
             }
             if (textValue) {
                 self.generateEmCode(textValue);
@@ -55,7 +55,6 @@ module cps002.e.vm {
             let self = this;
             service.getCardNo(self.txtCardNo()).done(function(emCode) {
                 self.generateEmCode(emCode);
-
             }).fail(function() {
                 alertError({ messageId: "Msg_505" });
             });

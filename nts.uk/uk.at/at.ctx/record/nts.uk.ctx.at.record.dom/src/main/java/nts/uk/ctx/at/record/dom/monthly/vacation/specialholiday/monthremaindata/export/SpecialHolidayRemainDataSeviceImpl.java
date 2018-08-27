@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
@@ -38,12 +39,22 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					dataOut.setUseDays(remainData.getSpecialLeave().getRemain().getDays().v());
 					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getBeforeRemainGrant().getDays().v());
 					dataOut.setAfterUseDays(remainData.getSpecialLeave().getAfterRemainGrant().isPresent() ? remainData.getSpecialLeave().getAfterRemainGrant().get().getDays().v() : 0);
-					dataOut.setUseTimes(remainData.getSpecialLeave().getUseNumber().getUseTimes().getUseTimes().v());
-					dataOut.setBeforeUseTimes(remainData.getSpecialLeave().getUseNumber().getUseTimes().getBeforeUseGrantTimes().v());
-					dataOut.setAfterUseTimes(remainData.getSpecialLeave().getUseNumber().getUseTimes().getAfterUseGrantTimes().isPresent() ? remainData.getSpecialLeave().getUseNumber().getUseTimes().getAfterUseGrantTimes().get().v() : 0 );
-					dataOut.setUseNumber(remainData.getSpecialLeave().getUseNumber().getUseTimes().getUseNumber().v());
+					if (remainData.getSpecialLeave().getUseNumber().getUseTimes().isPresent()){
+						val useTimes = remainData.getSpecialLeave().getUseNumber().getUseTimes().get();
+						dataOut.setUseTimes(useTimes.getUseTimes().v());
+						dataOut.setBeforeUseTimes(useTimes.getBeforeUseGrantTimes().v());
+						dataOut.setAfterUseTimes(useTimes.getAfterUseGrantTimes().isPresent() ? useTimes.getAfterUseGrantTimes().get().v() : 0 );
+						dataOut.setUseNumber(useTimes.getUseNumber().v());
+						dataOut.setFactUseNumber(useTimes.getUseNumber().v());
+					}
+					else {
+						dataOut.setUseTimes(0);
+						dataOut.setBeforeUseTimes(0);
+						dataOut.setAfterUseTimes(0);
+						dataOut.setUseNumber(0);
+						dataOut.setFactUseNumber(0);
+					}
 					dataOut.setFactUseDays(remainData.getActualSpecial().getUseNumber().getUseDays().getUseDays().v());
-					dataOut.setFactUseNumber(remainData.getActualSpecial().getUseNumber().getUseTimes().getUseNumber().v());
 					dataOut.setRemainDays(remainData.getSpecialLeave().getRemain().getDays().v());
 					dataOut.setRemainTimes(remainData.getSpecialLeave().getRemain().getTime().isPresent() ? remainData.getSpecialLeave().getRemain().getTime().get().v() : 0);
 					dataOut.setFactRemainDays(remainData.getActualSpecial().getRemain().getDays().v());
@@ -66,12 +77,22 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getRemain().getDays().v());
 					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getBeforeRemainGrant().getDays().v());
 					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getAfterRemainGrant().isPresent() ? remainData.getSpecialLeave().getAfterRemainGrant().get().getDays().v() : 0));
-					tmp.setUseTimes(tmp.getUseTimes() + remainData.getSpecialLeave().getUseNumber().getUseTimes().getUseTimes().v());
-					tmp.setBeforeUseTimes(tmp.getBeforeUseTimes() + remainData.getSpecialLeave().getUseNumber().getUseTimes().getBeforeUseGrantTimes().v());
-					tmp.setAfterUseTimes(tmp.getAfterUseTimes() + (remainData.getSpecialLeave().getUseNumber().getUseTimes().getAfterUseGrantTimes().isPresent() ? remainData.getSpecialLeave().getUseNumber().getUseTimes().getAfterUseGrantTimes().get().v() : 0 ));
-					tmp.setUseNumber(tmp.getUseNumber() + remainData.getSpecialLeave().getUseNumber().getUseTimes().getUseNumber().v());
+					if (remainData.getSpecialLeave().getUseNumber().getUseTimes().isPresent()){
+						val useTimes = remainData.getSpecialLeave().getUseNumber().getUseTimes().get();
+						tmp.setUseTimes(tmp.getUseTimes() + useTimes.getUseTimes().v());
+						tmp.setBeforeUseTimes(tmp.getBeforeUseTimes() + useTimes.getBeforeUseGrantTimes().v());
+						tmp.setAfterUseTimes(tmp.getAfterUseTimes() + (useTimes.getAfterUseGrantTimes().isPresent() ? useTimes.getAfterUseGrantTimes().get().v() : 0 ));
+						tmp.setUseNumber(tmp.getUseNumber() + useTimes.getUseNumber().v());
+						tmp.setFactUseNumber(tmp.getFactUseNumber() + useTimes.getUseNumber().v());
+					}
+					else {
+						tmp.setUseTimes(tmp.getUseTimes());
+						tmp.setBeforeUseTimes(tmp.getBeforeUseTimes());
+						tmp.setAfterUseTimes(tmp.getAfterUseTimes());
+						tmp.setUseNumber(tmp.getUseNumber());
+						tmp.setFactUseNumber(tmp.getFactUseNumber());
+					}
 					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUseNumber().getUseDays().getUseDays().v());
-					tmp.setFactUseNumber(tmp.getFactUseNumber() + remainData.getActualSpecial().getUseNumber().getUseTimes().getUseNumber().v());
 					tmp.setRemainDays(tmp.getRemainDays() + remainData.getSpecialLeave().getRemain().getDays().v());
 					tmp.setRemainTimes(tmp.getRemainTimes() + (remainData.getSpecialLeave().getRemain().getTime().isPresent() ? remainData.getSpecialLeave().getRemain().getTime().get().v() : 0));
 					tmp.setFactRemainDays(tmp.getFactRemainDays() + remainData.getActualSpecial().getRemain().getDays().v());

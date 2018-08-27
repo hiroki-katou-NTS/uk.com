@@ -43,14 +43,9 @@ module nts.uk.com.view.cas001.c.viewmodel {
 
         createCategory() {
             let self = this,
-                data = (__viewContext["viewModel"].roleList()),
+                data: Array<any> = $("#grid0").ntsGrid("updatedCells"),
                 objSet: any = { isCancel: true, id: null };
-            self.roleCodeArray = [];
-            _.find(data, function(role: PersonRole) {
-                if (role.selected === true) {
-                    self.roleCodeArray.push(role.roleId);
-                }
-            });
+            self.roleCodeArray = _.map(data, (x) => { return x.rowId;});
             if (self.roleCodeArray.length > 0) {
                 dialog.confirm({ messageId: "Msg_64" }).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().personRole.roleId, roleIds: self.roleCodeArray };
@@ -80,9 +75,10 @@ module nts.uk.com.view.cas001.c.viewmodel {
         }
 
         closeDialog() {
-            let self = this;
-            self.isCanceled = true;
-            setShared('isCanceled', self.isCanceled);
+            let self = this,
+                objSet: any = {};
+            objSet.isCancel = true;
+            setShared('isCanceled', objSet);
             close();
         }
     }

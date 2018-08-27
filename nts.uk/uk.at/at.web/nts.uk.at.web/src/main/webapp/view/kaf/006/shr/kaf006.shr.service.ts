@@ -16,7 +16,8 @@ module nts.uk.at.view.kaf006.shr.service {
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
-        getRecordWork: "at/request/application/overtime/getRecordWork"
+        getRecordWork: "at/request/application/overtime/getRecordWork",
+        changeRelaCD: "at/request/application/appforleave/changeRela/{0}/{1}"
     }
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
@@ -25,7 +26,9 @@ module nts.uk.at.view.kaf006.shr.service {
     export function getAllAppForLeave(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAllAppForLeave, param);
     }
-    
+    /**
+     * Khi thay doi appDate
+     */
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByChangeAppDate, param);
     }
@@ -60,8 +63,8 @@ module nts.uk.at.view.kaf006.shr.service {
         return nts.uk.request.ajax("at", paths.deleteOvertime,appID);
     }
     
-     export function updateAbsence(overtime:any): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.updateAbsence ,overtime);
+     export function updateAbsence(absence: any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.updateAbsence ,absence);
     }
     
     export function checkBeforeRegister(overtime:any): JQueryPromise<any> {
@@ -78,5 +81,11 @@ module nts.uk.at.view.kaf006.shr.service {
     
      export function checkBeforeUpdate(overtime:any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkBeforeUpdate ,overtime);
+    }
+    /**
+     * when change relation ship
+     */
+    export function changeRelaCD(workTypeCD: string, relationCD: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.changeRelaCD, workTypeCD, relationCD));
     }
 }

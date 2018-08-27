@@ -1,5 +1,10 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +46,7 @@ public class ManualSetDeletion extends AggregateRoot {
 
 	// 手動保存の圧縮パスワード
 	/** The password encrypt for compress file. */
-	private PasswordCompressFileEncrypt passwordCompressFileEncrypt;
+	private Optional<PasswordCompressFileEncrypt> passwordCompressFileEncrypt;
 
 	// 社員指定の有無
 	/** The having employee specified flag. */
@@ -53,11 +58,11 @@ public class ManualSetDeletion extends AggregateRoot {
 
 	// 補足説明
 	/** The supplement explanation. */
-	private SupplementExplanation supplementExplanation;
+	private Optional<SupplementExplanation> supplementExplanation;
 
 	// 基準日
 	/** The reference date. */
-	private GeneralDate referenceDate;
+	private Optional<GeneralDate> referenceDate;
 
 	// 実行日時
 	/** The execution date time. */
@@ -65,38 +70,77 @@ public class ManualSetDeletion extends AggregateRoot {
 
 	// 日次削除開始日
 	/** The start date of daily. */
-	private GeneralDate startDateOfDaily;
+	private Optional<GeneralDate> startDateOfDaily;
 
 	// 日次削除終了日
 	/** The end date of daily. */
-	private GeneralDate endDateOfDaily;
+	private Optional<GeneralDate> endDateOfDaily;
 
 	// 月次削除開始月
 	/** The start month of monthly. */
-	private GeneralDate startMonthOfMonthly;
+	private Optional<GeneralDate> startMonthOfMonthly;
 
 	// 月次削除終了月
 	/** The end month of monthly. */
-	private GeneralDate endMonthOfMonthly;
+	private Optional<GeneralDate> endMonthOfMonthly;
 
 	// 年次開始年
 	/** The start year of monthly. */
-	private int startYearOfMonthly;
+	private Optional<Integer> startYearOfMonthly;
 
 	// 年次終了年
 	/** The end year of monthly. */
-	private int endYearOfMonthly;
+	private Optional<Integer> endYearOfMonthly;
 	
 
 	public static ManualSetDeletion createFromJavatype(String delId, String companyId, int systemType, String delName,
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg, String passwordCompressFileEncrypt,
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
-			GeneralDate startMonthOfMonthly, GeneralDate endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
+			Integer startMonthOfMonthly, Integer endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly) {
 		return new ManualSetDeletion(delId, companyId, systemType, new DelName(delName), isSaveBeforeDeleteFlg,
-				isExistCompressPassFlg, new PasswordCompressFileEncrypt(passwordCompressFileEncrypt),
-				haveEmployeeSpecifiedFlg, sId, new SupplementExplanation(supplementExplanation), referenceDate,
-				executionDateTime, startDateOfDaily, endDateOfDaily, startMonthOfMonthly, endMonthOfMonthly,
-				startYearOfMonthly, endYearOfMonthly);
+				isExistCompressPassFlg, 
+				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)),
+				haveEmployeeSpecifiedFlg, sId, Optional.ofNullable(new  SupplementExplanation(supplementExplanation)), 
+				Optional.ofNullable(referenceDate),
+				executionDateTime, 
+				Optional.ofNullable(startDateOfDaily), Optional.ofNullable(endDateOfDaily), 
+				convertIntToYearStartMonth(Optional.ofNullable(startMonthOfMonthly)), 
+				convertIntToYearStartMonth(Optional.ofNullable(endMonthOfMonthly)), 
+				Optional.ofNullable(startYearOfMonthly), Optional.ofNullable(endYearOfMonthly));
+	}
+	public static Optional<Integer> convertYearMonthToInt(Optional<GeneralDate> yearMonth) {
+		if (yearMonth.isPresent()) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+			String formattedString = yearMonth.get().localDate().format(formatter);
+			Integer formattedInt = Integer.valueOf(formattedString);
+			return Optional.ofNullable(formattedInt);
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public static Optional<GeneralDate> convertIntToYearStartMonth(Optional<Integer> yearMonth) {
+		if (yearMonth.isPresent()) {
+			String date = String.valueOf(yearMonth.get());
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+			YearMonth yearMonthTime = YearMonth.parse(date, formatter);
+			LocalDate localDate = yearMonthTime.atDay(1);
+			return Optional.ofNullable(GeneralDate.localDate(localDate));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public static Optional<GeneralDate> convertIntToYearEndMonth(Optional<Integer> yearMonth) {
+		if (yearMonth.isPresent()) {
+			String date = String.valueOf(yearMonth.get());
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+			YearMonth yearMonthTime = YearMonth.parse(date, formatter);
+			LocalDate localDate = yearMonthTime.atEndOfMonth();
+			return Optional.ofNullable(GeneralDate.localDate(localDate));
+		} else {
+			return Optional.empty();
+		}
 	}
 }

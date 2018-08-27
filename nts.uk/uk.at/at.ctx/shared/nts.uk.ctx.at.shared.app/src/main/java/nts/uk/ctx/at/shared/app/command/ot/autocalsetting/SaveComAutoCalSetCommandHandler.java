@@ -39,11 +39,6 @@ public class SaveComAutoCalSetCommandHandler extends CommandHandler<ComAutoCalSe
         // Find details
         Optional<ComAutoCalSetting> result = this.comAutoCalSettingRepo.getAllComAutoCalSetting(companyId);
 
-        // Check exist
-        if (!result.isPresent()) {
-            throw new BusinessException("Msg_3");
-        }
-        
         // Get command
         ComAutoCalSetCommand command = this.getCommandBySaveCondition(result.get(), context.getCommand());            
         

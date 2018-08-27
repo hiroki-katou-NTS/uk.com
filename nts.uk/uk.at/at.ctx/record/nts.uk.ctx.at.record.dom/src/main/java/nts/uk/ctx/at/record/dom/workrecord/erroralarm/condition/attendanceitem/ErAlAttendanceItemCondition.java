@@ -71,7 +71,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.targetNO = targetNO;
 		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
-		this.type = ErrorAlarmConditionType.of(type);
+		this.type = ErrorAlarmConditionType.of(type);	
 	}
 
 	/**
@@ -136,7 +136,12 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		}
 		Integer targetValue = calculateTargetValue(getItemValue);
 
-		if (this.compareRange != null) {
+		if(this.inputCheck != null){
+			if(this.inputCheck.getInputCheckCondition() == InputCheckCondition.INPUT_DONE){
+				return targetValue == null;
+			}
+			return targetValue != null;
+		} else if (this.compareRange != null) {
 			return this.compareRange.checkRange(targetValue, c -> getVValue(c));
 		} else {
 			return this.compareSingleValue.check(targetValue, getItemValue, c -> getVValue(c));
@@ -177,6 +182,14 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		}
 	}
 
+	public void setTargetNO(int targetNO) {
+		this.targetNO = targetNO;
+	}
+
+	public void setUseAtr(boolean useAtr) {
+		this.useAtr = useAtr;
+	}
+
 	// @SuppressWarnings("unchecked")
 	// private V toCheckValue(Integer target) {
 	// switch (this.conditionAtr) {
@@ -192,4 +205,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 	// }
 	// }
+	
+	
+	
 }

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -31,7 +32,7 @@ public interface ReflectWorkInforDomainService {
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem);
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
 
 	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
@@ -50,7 +51,7 @@ public interface ReflectWorkInforDomainService {
 	 * @return
 	 */
 	SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
-			String workPlaceID);
+			String workPlaceID, PeriodInMasterList periodInMasterList);
 
 	/**
 	 * 休業を日別実績に反映する
@@ -69,7 +70,7 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	WorkTypeOfDailyPerformance reflectWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID);
+	WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
 
 	/**
 	 * 計算区分を日別実績に反映する
@@ -80,10 +81,22 @@ public interface ReflectWorkInforDomainService {
 	 * @return
 	 */
 	CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList);
 
 	TimeLeavingOfDailyPerformance createStamp(String companyId,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
 			String employeeID, GeneralDate day, Optional<StampReflectionManagement> stampReflectionManagement);
+	
+	/**
+	 * 所属情報を反映する
+	 * @param companyId
+	 * @param employeeId
+	 * @param day
+	 * @param empCalAndSumExecLogID
+	 * @param employeeGeneralInfoImport
+	 * @return
+	 */
+	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
+			GeneralDate day, String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport);
 }

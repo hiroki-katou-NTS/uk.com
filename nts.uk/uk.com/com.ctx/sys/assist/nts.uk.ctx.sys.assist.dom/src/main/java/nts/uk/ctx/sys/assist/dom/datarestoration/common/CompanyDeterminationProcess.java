@@ -33,12 +33,11 @@ public class CompanyDeterminationProcess {
 		String internalFileName = tableList.get(FIRST_LINE).getInternalFileName();
 		// Get CID (17 first chars)
 		String cid = internalFileName.length() > 17 ? internalFileName.substring(0, 17) : "";
-		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
+		performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
 		if (AppContexts.user().companyId().equals(cid)) {
-			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
+			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.NOT_USE);
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
 			for (TableList tableListRecord: tableList) {
-				tableListRecord.setAnotherComCls(RecoverFormCompanyOther.IS_RE_OTHER_COMPANY);
 				tableListRepository.update(tableListRecord);
 			}
 			return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);

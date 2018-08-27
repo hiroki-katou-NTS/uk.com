@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -23,7 +24,7 @@ public interface ReflectStampDomainService {
 //			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 //			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 //			ExecutionType reCreateAttr);
-	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			ExecutionType reCreateAttr,

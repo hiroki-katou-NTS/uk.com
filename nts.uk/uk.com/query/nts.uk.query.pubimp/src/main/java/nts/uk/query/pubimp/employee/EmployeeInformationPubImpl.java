@@ -47,6 +47,7 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 					.build() : null;
 
 			WorkplaceExport wkp = item.getWorkplace().isPresent() ? WorkplaceExport.builder()
+					.workplaceId(item.getWorkplace().get().getWorkplaceId())
 					.workplaceCode(item.getWorkplace().get().getWorkplaceCode())
 					.workplaceName(item.getWorkplace().get().getWorkplaceName())
 					.workplaceGenericName(item.getWorkplace().get().getWorkplaceGenericName())
@@ -59,6 +60,7 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 					.build() : null;
 
 			PositionExport pos = item.getPosition().isPresent() ? PositionExport.builder()
+					.positionId(item.getPosition().get().getPositionId())
 					.positionCode(item.getPosition().get().getPositionCode())
 					.positionName(item.getPosition().get().getPositionName())
 					.build(): null;

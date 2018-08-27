@@ -268,10 +268,11 @@ public class HolidayWorkTimeSheet{
 			//時間の上限時間算出
 			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getTime());
 			//計算時間の上限算出
-			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime());
+//			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime());
 			//振替処理
 			loopHolidayTimeFrame = loopHolidayTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getTime():upperTime,
-																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime));
+//																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime)
+																															   loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime()));
 			
 			returnList.add(loopHolidayTimeFrame);
 		}
@@ -333,8 +334,14 @@ public class HolidayWorkTimeSheet{
 			return Optional.of(eachWorkTimeSet.get().getSubHolTimeSet());
 		}
 		else {
-			if(eachCompanyTimeSet.isPresent())
-				return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+			if(eachCompanyTimeSet.isPresent()) {
+				if(eachCompanyTimeSet.get().getTransferSetting().isUseDivision()) {
+					return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+				}
+				else {
+					return Optional.empty();
+				}
+			}
 		}
 		return Optional.empty();
 	}

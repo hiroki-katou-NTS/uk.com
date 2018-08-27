@@ -49,6 +49,7 @@
 
 .bottom-form {
 	margin-top: 20px;
+	margin-bottom: 5px;
 }
 
 .a7_7, .a7_11, .a7_15, .a7_19, .a7_23 {
@@ -85,4 +86,8 @@ table#tbl-condition tr, table#tbl-grant-hd-set tr {
 .input-form hr {
 	width: 90%;
     float: left;
+}
+
+.ntsComboBox {
+    width: 70px;
 }

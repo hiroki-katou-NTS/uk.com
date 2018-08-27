@@ -1,6 +1,13 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    let $: any = window["$"],
+        _: any = window["_"],
+        ko: any = window["ko"],
+        text: any = window["nts"]["uk"]["text"],
+        util: any = window["nts"]["uk"]["util"],
+        request: any = window["nts"]["uk"]["request"],
+        resource: any = window["nts"]["uk"]["resource"];
 
     /**
      * HelpButton binding handler
@@ -65,11 +72,30 @@ module nts.uk.ui.koExtentions {
             
             var $container = $(element).closest(".ntsHelpButton");
             var $content;
-            if (isImage) {
-                $content = $("<img src='" + request.resolvePath(image) + "' />");
+
+            if (_.has(data, 'image')) {
+                $content = $("<img>");
+
+                ko.computed({
+                    read: () => {
+                        let _image = ko.toJS(data.image);
+
+                        $content.attr('src', request.resolvePath(_image));
+                    }
+                });
             } else {
-                $content = $("<span>").text(resource.getText(textId, textParams));
-                $content.css('white-space', 'pre-line');
+                $content = $("<span>", {
+                    style: { 'white-space': 'pre-line' }
+                });
+
+                ko.computed({
+                    read: () => {
+                        let _textId = ko.toJS(data.textId),
+                            _textParams = ko.toJS(data.textParams);
+
+                        $content.text(resource.getText(_textId, _textParams));
+                    }
+                });
             }
             
             var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");

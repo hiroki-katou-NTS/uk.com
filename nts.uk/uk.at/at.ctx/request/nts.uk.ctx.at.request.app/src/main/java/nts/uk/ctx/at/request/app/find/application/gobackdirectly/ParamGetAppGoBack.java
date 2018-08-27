@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class ParamGetAppGoBack {
 	private List<String> employeeIDs;
+	private String appDate;
 }

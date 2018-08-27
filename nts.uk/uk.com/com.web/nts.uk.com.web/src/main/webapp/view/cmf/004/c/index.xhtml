@@ -28,9 +28,10 @@
 						<div class="div-table-col-big">
 							<div class="flex valign-center fixed-height outer "
 								style="height: 37px;">
-								<div style="display: inline; width: 200px; word-wrap: break-word;" data-bind="text: fileName"
-									id="C1_2" class="label-left cell">
-									</div>
+								<div
+									style="display: inline; width: 200px; word-wrap: break-word;"
+									data-bind="text: fileName" id="C1_2" class="label-left cell">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -48,13 +49,15 @@
 									value: password, 
 									constraint: 'FileCompressionPassword',
 									option: {textmode: 'password',width: '180px'},
-									enable: true, readonly: false }" /> 
+									enable: true, readonly: false }" />
 							</div>
 						</div>
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="2" id="C1_5" class="large proceed"
+					<button tabindex="2" id="C1_6" class="small"
+						data-bind="click: cancelProcessing">#{i18n.getText('CMF004_54')}</button>
+					<button tabindex="3" id="C1_5" class="large proceed"
 						data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF004_53')}</button>
 				</div>
 			</div>

@@ -274,13 +274,17 @@ module nts.uk.at.view.kmf002.c {
         private save(): void {
             let _self = this;
             if (!nts.uk.ui.errors.hasError()) {
+                _self.enableSave(false);
                 let id = _self.mapEmployeeCode.get(_self.selectedCode());
+                blockUI.invisible();
                 service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), id).done((data) => {
                     _self.getDataFromService();
                     _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    $( "#scrC #datePickerYear" ).focus();
-                });    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
+                    $( "#scrC .datePickerYear" ).focus();
+                }).always(()=> blockUI.clear());    
             } 
         }
         
@@ -301,6 +305,10 @@ module nts.uk.at.view.kmf002.c {
         private findAllEmployeeRegister(): JQueryPromise<any> {
             var dfd = $.Deferred<void>();
             let _self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
+                return;
+            }
             $.when(service.findAllEmployeeRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any) {
                 _self.alreadySettingList.removeAll();
                 _.forEach(data, function(id) {
@@ -314,6 +322,10 @@ module nts.uk.at.view.kmf002.c {
             
         private getDataFromService(): void {
             let _self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                _self.setDefaultMonthDay();
+                return;
+            }
             if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
                 $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.mapEmployeeCode.get(_self.selectedCode())), 
                         service.findFirstMonth()

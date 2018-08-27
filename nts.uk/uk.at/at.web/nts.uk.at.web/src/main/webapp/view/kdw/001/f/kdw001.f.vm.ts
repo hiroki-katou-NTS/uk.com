@@ -72,7 +72,7 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: getText('KDW001_78'), key: 'executionStatusName', width: 160 },
                     {
                         headerText: getText('KDW001_79'), key: 'executionStatus', width: 100,
-                        template: '<button class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
+                        template: '<button tabindex = "0" class="open-dialog-i" data-id="${empCalAndSumExecLogID}">参照</button>',
                         columnCssClass: "colStyleButton",
                     }
                 ];
@@ -158,6 +158,7 @@ module nts.uk.at.view.kdw001.f {
                         temp.push(item);
                     });
                     self.empCalAndSumExeLog(temp);
+                    $('#single-list_container').attr('tabindex', -1); 
                     self.getListPersonInforLog(self.listSid).done(function(){
                         dfd.resolve(); 
                         nts.uk.ui.block.clear();   
@@ -348,14 +349,14 @@ module nts.uk.at.view.kdw001.f {
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth%100 + "月度" + (data.closureName ==undefined?"":data.closureName);
+                this.processingMonthName = data.processingMonth%100 + "月度";
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
                 }
 
                 this.executedMenuJapan = data.executedMenuJapan;
-                this.executionDate = data.executionDate;
+                this.executionDate = data.executionDate.toString().slice(0,10);
                 this.executionStatus = data.executionStatus;
                 this.executionStatusName = data.executionStatusName;
                 this.employeeID = data.employeeID;
@@ -370,7 +371,7 @@ module nts.uk.at.view.kdw001.f {
             
             public changeName(id : any,name: string): void {
                 this.closureName = name;
-                this.processingMonthName = this.processingMonth%100 +"月度  " + ((id==undefined ||name==undefined)?"":id+":"+name);
+                this.processingMonthName = this.processingMonth%100 +"月度  ";
             }
             
             public changeIsTextRed(isTextRed: boolean): void {
@@ -550,8 +551,8 @@ module nts.uk.at.view.kdw001.f {
             startDate: string;
             endDate: string;
             constructor(startDate: string, endDate: string) {
-                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
-                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
+                this.startDate = moment.utc(startDate, "YYYY/MM/DD HH:mm:ss");
+                this.endDate = moment.utc(endDate, "YYYY/MM/DD HH:mm:ss");
             }
         }//end class InputEmpCalAndSumByDate
         

@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMon
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：月別実績の勤怠時間
@@ -87,6 +88,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	
 	private static final String SEL_NO_WHERE_TOTAL_TIMES = "SELECT a FROM KrcdtMonTotalTimes a";
 	
+	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.endYmd >= :startDate "
+			+ "AND a.endYmd <= :endDate "
+			+ "ORDER BY a.startYmd ";
+
 	private static final String FIND_TOTAL_TIMES_BY_YEAR_MONTH = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
 			"WHERE a.PK.employeeID =:employeeId",
 			"AND a.PK.yearMonth =:yearMonth");
@@ -313,6 +320,17 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 											.findFirst();
 					return c.toDomainAttendanceTimeOfMonthly(totalCountLst, monWorkClock);
 				}).collect(Collectors.toList());
+	}
+	
+	/** 検索　（終了日を含む期間） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
+		
+		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.getList(c -> c.toDomain());
 	}
 			
 	/** 登録および更新 */

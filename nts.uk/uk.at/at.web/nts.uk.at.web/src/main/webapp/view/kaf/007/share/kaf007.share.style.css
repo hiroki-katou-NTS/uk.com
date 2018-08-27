@@ -4,21 +4,23 @@
 	margin-right: 30px;
 }
 /* 勤務就業選択*/
-#workSelect-kaf007{
+#workSelect-kaf007 {
 	height: 70px;
 	margin-left: 35px;
 }
 /* 勤務種類*/
-.work-select-margin{
+.work-select-margin {
 	margin: 5px 0px 0px 29px;
 }
 
 .valign-center.control-group-kaf007 {
 	margin: 5px 0px 0px 00px;
 }
+
 .lblTitle-kaf007 {
 	width: 143px;
 }
+
 button.nts-switch-button {
 	width: 92px;
 }
@@ -39,35 +41,44 @@ input.col2.nts-editor.nts-input.reset-element {
 	line-height: 40px;
 	margin-left: 20px;
 }
+
 .control-group-kaf007.valign-center>* {
 	vertical-align: middle;
 }
-.row-width{
+
+.row-width {
 	width: 230px;
 }
+
 .link-label-kaf007 {
-	    margin-right: 12px;
+	margin-right: 12px;
 }
-.check-work-time{
-	margin-left:-5px;
+
+.check-work-time {
+	margin-left: -5px;
 }
-.hr-style{
+
+.hr-style {
 	border: none;
-    height: 1px;
-	width:562px;
+	height: 1px;
+	width: 562px;
 	/* Set the hr color */
-    color: #333; /* old IE */
-    background-color: #333; /* Modern Browsers */
+	color: #333; /* old IE */
+	background-color: #333; /* Modern Browsers */
 }
+
 #multiline-kaf007 {
 	display: inline-block;
 }
+
 .row-cell-margin {
 	margin: 5px 0px 5px 5px;
 }
+
 #inpReasonTextarea {
 	min-height: 100px;
 }
+
 .block {
 	display: block;
 	margin: 30px 0px 50px 30px;
@@ -78,13 +89,11 @@ input.col2.nts-editor.nts-input.reset-element {
 	padding-bottom: 10px;
 }
 
-
 /*Set Width*/
 input.nts-editor.nts-input.reset-element {
 	text-align: center;
 	width: 70px;
 }
-
 
 label.applicant {
 	margin-left: 20px;
@@ -98,7 +107,6 @@ div#combo-box.reset-element.ui-igcombo-wrapper {
 textarea.nts-editor.nts-input.reset-element {
 	height: 150px;
 }
-
 
 div.form-label.broken {
 	vertical-align: top;
@@ -130,7 +138,7 @@ div.form-label.broken {
 }
 
 .mainScreen {
-	height:auto;
+	height: auto;
 }
 
 #label-1 {
@@ -138,36 +146,47 @@ div.form-label.broken {
 }
 
 .lstApprover {
+	
 }
 
 /*div cover label of comment*/
 .lblComment {
 	width: 255px;
 }
+
 .right-content-kaf007 {
 	text-align: center !important;
 }
-.mode-style{
+
+.mode-style {
 	display: inline-block;
 }
-.label-right{
-	width: 80px; 
+
+.label-right {
+	width: 80px;
 	display: inline-block;
 }
-.cell.valign-center.colon-margin{
-	margin-right: 5px; 
+
+.cell.valign-center.colon-margin {
+	margin-right: 5px;
 	display: inline-block;
 }
+
 .overlay-reason-kaf007 {
 	position: relative;
 	z-index: 1;
 }
-.inputTime-kaf007{
+
+.inputTime-kaf007 {
 	width: 85px !important;
 }
-.row-width-inputTime{
-	width: 203px !important;
-}
-.bold{
+
+
+.bold {
 	font-weight: bold;
+}
+
+ #singleDate, #daterangepicker {
+	display: inline-block;
+	vertical-align: middle;
 }

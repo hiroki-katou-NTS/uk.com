@@ -47,6 +47,8 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 		// ループする期間を判断
 		int stepMon = 2;
 		if (periodAtr == PeriodAtrOfAgreement.THREE_MONTHS) stepMon = 3;
+		if (periodAtr == PeriodAtrOfAgreement.ONE_MONTH) stepMon = 1;
+		if (periodAtr == PeriodAtrOfAgreement.ONE_YEAR) stepMon = 12;
 		YearMonth idxYm = YearMonth.of(year.v(), startMonth.v());
 		for (int i = 0; i < 12; i += stepMon){
 			List<YearMonth> periodYmList = new ArrayList<>();

@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
@@ -414,6 +416,29 @@ public class JobTitlePubImp implements SyJobTitlePub {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub#
+	 * getJobTitleMapIdBaseDateName(java.lang.String, java.util.List,
+	 * java.util.List)
+	 */
+	@Override
+	public Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId,
+			List<String> jobIds, List<GeneralDate> baseDates) {
+		// Query infos
+		Map<GeneralDate, List<JobTitleInfo>> mapJobTitleInfos = this.jobTitleInfoRepository
+				.findByIds(companyId, jobIds, baseDates);
 
+		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		mapJobTitleInfos.entrySet().forEach(item -> {
+			item.getValue().forEach(jobTitleInfo -> {
+				mapResult.put(Pair.of(jobTitleInfo.getJobTitleId(), item.getKey()),
+						jobTitleInfo.getJobTitleName().v());
+			});
+		});
+
+		return mapResult;
+	}
 
 }

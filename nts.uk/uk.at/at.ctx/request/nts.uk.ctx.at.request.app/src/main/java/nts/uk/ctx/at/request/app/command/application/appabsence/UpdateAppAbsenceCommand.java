@@ -113,4 +113,6 @@ public class UpdateAppAbsenceCommand {
 	 * displayEndDateFlg
 	 */
 	private boolean displayEndDateFlg;
+	//specHoliday
+	private SpecHolidayCommand specHd;
 }

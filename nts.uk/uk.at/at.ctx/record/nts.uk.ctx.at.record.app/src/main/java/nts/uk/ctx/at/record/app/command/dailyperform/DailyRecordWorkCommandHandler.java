@@ -6,11 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
@@ -49,6 +54,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
@@ -61,7 +67,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -358,7 +364,22 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		//handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					Map<String, List<GeneralDate>> mapSidDate = commandOld.stream()
+							.collect(Collectors.groupingBy(x -> x.getEmployeeId(),
+									Collectors.collectingAndThen(Collectors.toList(),
+											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
+					List<DailyRecordDto> dtos = finder.find(mapSidDate);
+					List<DailyItemValue> dailyItemNews = dtos.stream()
+							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
+									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
+							.collect(Collectors.toList());
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+				});
+		executorService.submit(task);
+		
 		return items;
 	}
 
@@ -431,12 +452,16 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			
 			DOMAIN_CHANGED_BY_EVENT.entrySet().stream().filter(entry -> mapped.contains(entry.getKey())).map(entry -> entry.getValue())
 				.flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
-//				if(mapped.contains(layout)){
-					FinderFacade cFinder = finder.getFinder(layout);
-					if(cFinder != null){
-						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
-						updateCommandData(command.getCommand(layout), updatedD);
+					CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+					if(handler != null){
+						handler.handle((T) command.getCommand(layout));
 					}
+//				if(mapped.contains(layout)){
+//					FinderFacade cFinder = finder.getFinder(layout);
+//					if(cFinder != null){
+//						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
+//						updateCommandData(command.getCommand(layout), updatedD);
+//					}
 //				}
 			});
 		});

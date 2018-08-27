@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
@@ -102,5 +105,26 @@ public class RaiseSalaryTimeOfDailyPerfor {
 				this.raisingSalaryTimes.add(tc);
 			}
 		});
+	}
+	
+	public List<BonusPayTime> summary(BonusPayAtr atr ){
+		List<BonusPayTime> bpList = atr.isBonusPay()?this.getRaisingSalaryTimes():this.getAutoCalRaisingSalarySettings();
+		List<BonusPayTime> returnList = new ArrayList<>();
+		for(int i = 1 ; i<=10 ; i++) {
+			returnList.add(recreate(i,bpList));
+		}
+		return returnList;
+	}
+
+	private BonusPayTime recreate(int number, List<BonusPayTime> bpList) {
+			int bpTime = bpList.stream().filter(tc -> tc.getBonusPayTimeItemNo() == number).map(ts -> ts.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+			int bpWithinTime = bpList.stream().filter(tc -> tc.getBonusPayTimeItemNo() == number).map(ts -> ts.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+			int bpWithinCalcTime = bpList.stream().filter(tc -> tc.getBonusPayTimeItemNo() == number).map(ts -> ts.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+			int bpExcessTime =  bpList.stream().filter(tc -> tc.getBonusPayTimeItemNo() == number).map(ts -> ts.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+			int bpExcessCalcTime = bpList.stream().filter(tc -> tc.getBonusPayTimeItemNo() == number).map(ts -> ts.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+			return new BonusPayTime(number, 
+								    new AttendanceTime(bpTime),
+								    TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(bpWithinTime), new AttendanceTime( bpWithinCalcTime)),
+								    TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(bpExcessTime),new AttendanceTime( bpExcessCalcTime)));
 	}
 }

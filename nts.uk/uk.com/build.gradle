@@ -669,6 +669,8 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app') {
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
 	}
 }
 
@@ -925,6 +927,7 @@ project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ac') {
 		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
 		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
@@ -1274,6 +1277,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
 		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project (':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		compile project (':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
 		compile project (':com.ctx:sys:env:nts.uk.ctx.sys.env.app')
 		compile project (':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
@@ -1284,6 +1289,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.app')
+		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.dom')
 				
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')

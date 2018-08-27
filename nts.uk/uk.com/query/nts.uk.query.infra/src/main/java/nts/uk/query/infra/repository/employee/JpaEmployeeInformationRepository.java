@@ -35,7 +35,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
+	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName, wi.bsymtWorkplaceInfoPK.wkpid"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
 			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid"
@@ -46,7 +46,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
 
-	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
+	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
 			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
 			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
@@ -128,7 +128,9 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					String workplaceCode = (String) workplace.get()[1];
 					String workplaceGenericName = (String) workplace.get()[2];
 					String workplaceName = (String) workplace.get()[3];
+					String workplaceId = (String) workplace.get()[4];
 					employeeInfoList.get(empId).setWorkplace(Optional.of(WorkplaceModel.builder()
+							.workplaceId(workplaceId)
 							.workplaceCode(workplaceCode)
 							.workplaceGenericName(workplaceGenericName)
 							.workplaceName(workplaceName)
@@ -142,17 +144,19 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			List<Object[]> positions = this.getOptionalResult(param, POSITION_QUERY);
 			
 			employeeInfoList.keySet().forEach(empId -> {
-				Optional<Object[]> job = positions.stream().filter(wpl -> {
-					String id = (String) wpl[0];
+				Optional<Object[]> job = positions.stream().filter(pos -> {
+					String id = (String) pos[0];
 					return id.equals(empId);
 				}).findAny();
 				
 				if (job.isPresent()) {
 					String jobCode = (String) job.get()[1];
 					String jobName = (String) job.get()[2];
+					String jobId = (String) job.get()[3];
 					employeeInfoList.get(empId).setPosition(Optional.of(PositionModel.builder()
 							.positionCode(jobCode)
 							.positionName(jobName)
+							.positionId(jobId)
 							.build()));
 				}
 			});

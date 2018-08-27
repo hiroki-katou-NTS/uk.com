@@ -1,0 +1,97 @@
+#ex_accept_wizard {
+	width: 1300px;
+	height: 480px;
+}
+
+#ex_accept_wizard>.steps {
+	width: 250px;
+	height: 480px;
+}
+
+#ex_accept_wizard>.content {
+	width: auto;
+	height: 590px;
+	background: none;
+	margin-left: 5px;
+	margin-right: 0px;
+	display: inline-table;
+}
+
+#ex_accept_wizard>.content>.body {
+	padding-top: 0;
+}
+
+#ex_accept_wizard, #ex_accept_wizard .content {
+	overflow: visible;
+}
+
+#contents-area {
+	overflow: hidden;
+	height: 470px !important;
+}
+
+.contentF {
+	margin-left: 20px;
+	display: inline-block;
+	width :900px;
+}
+
+#lable {
+	width: 500px;
+}
+
+#tableLog {
+	border-spacing: 10px;
+    border-collapse: separate;
+}
+.contentB {
+	margin: 10px;
+	display: inline-block;
+}
+#list-box_b_grid_container {
+	height: 95px !important;
+	width: 153px !important;
+}
+#list-box_b_grid_scrollContainer {
+	overflow-y: hidden !important ;
+    overflow-x: hidden !important;
+}
+#title_b {
+	margin-bottom: 30px;
+}
+.listbox-wrapper {
+    margin-left: 20px;
+}
+#list-box_b_grid_displayContainer {
+	height: 231px !important;
+}
+#button_next_b{
+	margin-left: 492px;
+	margin-top: 190px;
+}
+
+#F2 {
+	width: 100%;
+	height: 432px;
+	
+}
+#F2_2 {
+	font-size :14px;
+	width: 450px;
+}
+
+#F3_1 {
+	width: 150px;
+	margin-top: 2px;
+}
+.ui-iggrid-filterrow.ui-widget > td {
+	border-width: 1px !important;
+}
+ #ccgcomponent{
+	display:none; 
+	margin-left: 252px;
+} 
+
+#igGridLog {
+	white-space: nowrap;
+}

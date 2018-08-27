@@ -90,7 +90,10 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
                         self.processedCount(self.getAsyncData(info.taskDatas, "processed").valueAsNumber);
                         if (!info.pending && !info.running) {
-                            if (info.status == "COMPLETED") self.processedCount(self.totalCount());
+                            if (info.status == "COMPLETED" || localStorage.getItem("MCUdpStatus") == "COMPLETED") {
+                                localStorage.setItem("MCUdpStatus", info.status);
+                                self.processedCount(self.totalCount());
+                            }
                             self.checkResult(info);
                             if (info.error) {
                                 alertError(info.error);
@@ -163,7 +166,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                     { headerText: getText('KMW006_16'), key: 'employeeCode', dataType: 'string', width: '160px' },
                     { headerText: getText('KMW006_17'), key: 'employeeName', dataType: 'string', width: '160px' },
                     { headerText: getText('KMW006_39'), key: 'atr', dataType: 'string', width: '120px' },
-                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '300px' }
+                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '400px' }
                 ],
                 features: [
                     {

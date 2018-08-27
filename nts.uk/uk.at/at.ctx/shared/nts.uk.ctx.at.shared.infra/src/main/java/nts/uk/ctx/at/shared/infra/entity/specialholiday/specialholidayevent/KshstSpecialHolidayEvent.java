@@ -75,7 +75,7 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 
 	/* 年齢基準月日 */
 	@Column(name = "AGE_STANDARD_BASE_DATE")
-	public GeneralDate ageStandardBaseDate;
+	public Integer ageStandardBaseDate;
 
 	/* メモ */
 	@Column(name = "MEMO")

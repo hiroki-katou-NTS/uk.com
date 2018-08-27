@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -32,10 +33,10 @@ public class NursingLeaveSetting extends AggregateRoot {
 	private MaxPersonSetting maxPersonSetting;
 	
 	/** 特別休暇枠NO */
-	private Integer specialHolidayFrame;
+	private Optional<Integer> specialHolidayFrame;
 	
 	/** 欠勤枠NO */
-	private Integer workAbsence;
+	private Optional<Integer> workAbsence;
 
 	/**
 	 * Checks if is managed.

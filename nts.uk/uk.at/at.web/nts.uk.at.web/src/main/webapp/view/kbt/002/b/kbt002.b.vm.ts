@@ -110,26 +110,30 @@ module nts.uk.at.view.kbt002.b {
                     return;
                 }
 
-                // get JsObject
-                //                let command: any = ko.toJS(self.currentExecItem);
-                let command: any = self.toJsonObject();
-                //                command.refDate = command.refDate == '' ? null : command.refDate;
-                nts.uk.ui.block.grayout();
-
-                // insert or update process execution
-                service.saveProcExec(command).done(function(savedProcExecCd) {
-                    nts.uk.ui.block.clear();
-
-                    // notice success
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        // Get process execution list
-                        self.getProcExecList(savedProcExecCd);
-                        setTimeout(function() { self.focusInput(); }, 100);
+                if(self.currentExecItem().workplaceList().length > 0) {
+                    // get JsObject
+                    //                let command: any = ko.toJS(self.currentExecItem);
+                    let command: any = self.toJsonObject();
+                    //                command.refDate = command.refDate == '' ? null : command.refDate;
+                    nts.uk.ui.block.grayout();
+    
+                    // insert or update process execution
+                    service.saveProcExec(command).done(function(savedProcExecCd) {
+                        nts.uk.ui.block.clear();
+    
+                        // notice success
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            // Get process execution list
+                            self.getProcExecList(savedProcExecCd);
+                            setTimeout(function() { self.focusInput(); }, 100);
+                        });
+                    }).fail((res: any) => {
+                        nts.uk.ui.block.clear();
+                        self.showMessageError(res);
                     });
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    self.showMessageError(res);
-                });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
+                }
             }
 
             // 削除 button
@@ -186,7 +190,14 @@ module nts.uk.at.view.kbt002.b {
                 let self = this;
                 block.grayout();
                 let canSelected = self.currentExecItem().workplaceList() ? self.currentExecItem().workplaceList() : [];
-                setShared('inputCDL008', { baseDate: moment(new Date()).toDate(), isMultiple: true, selectedCodes: canSelected });
+                setShared('inputCDL008', { 
+                baseDate: moment(new Date()).toDate(), 
+                isMultiple: true, 
+                selectedCodes: canSelected,
+                selectedSystemType: 2,
+                isrestrictionOfReferenceRange: true,
+                showNoSelection:  false,
+                isShowBaseDate:  false });
                 modal("com", "/view/cdl/008/a/index.xhtml").onClosed(function() {
                     block.clear();
                     let data = getShared('outputCDL008');
@@ -323,6 +334,7 @@ module nts.uk.at.view.kbt002.b {
                 //                $(".nts-input ").ntsEditor('validate');
                 $("#execItemCd").ntsEditor('validate');
                 $("#execItemName").ntsEditor('validate');
+                $(".ntsDatepicker").ntsEditor('validate');
                 if (self.currentExecItem().perScheduleCls()) {
                     $("#targetDate").ntsEditor('validate');
                     $("#creationPeriod").ntsEditor('validate');
@@ -373,6 +385,9 @@ module nts.uk.at.view.kbt002.b {
                 command.workplaceList = self.currentExecItem().workplaceList();
                 command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();
                 command.recreateTransfers =  self.currentExecItem().recreateTransfers();
+                command.appRouteUpdateAtr =  self.currentExecItem().appRouteUpdateAtr();
+                command.createNewEmp =  self.currentExecItem().createNewEmp();
+                command.appRouteUpdateMonthly =  self.currentExecItem().appRouteUpdateMonthly();
                 return command;
             }
 
@@ -439,6 +454,9 @@ module nts.uk.at.view.kbt002.b {
             workplaceList: Array<string>;
             recreateTypeChangePerson: boolean;
             recreateTransfers: boolean;
+            appRouteUpdateAtr : boolean;
+            createNewEmp :boolean;
+            appRouteUpdateMonthly :boolean;
         }
 
         export class ExecutionItem {
@@ -469,6 +487,10 @@ module nts.uk.at.view.kbt002.b {
             workplaceList: KnockoutObservableArray<string> = ko.observableArray([]);
             recreateTypeChangePerson: KnockoutObservable<boolean> = ko.observable(false);
             recreateTransfers: KnockoutObservable<boolean> = ko.observable(false);
+            appRouteUpdateAtr :KnockoutObservable<boolean> = ko.observable(false);
+            createNewEmp: KnockoutObservable<boolean> = ko.observable(false);
+            appRouteUpdateMonthly: KnockoutObservable<boolean> = ko.observable(false);
+            checkCreateNewEmp :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -498,7 +520,11 @@ module nts.uk.at.view.kbt002.b {
                     self.refDate(param.refDate || moment().format("YYYY/MM/DD"));
                     self.workplaceList(param.workplaceList || []);
                     self.recreateTypeChangePerson(param.recreateTypeChangePerson||false);
-                    self.recreateTransfers(param.recreateTransfers||false)
+                    self.recreateTransfers(param.recreateTransfers||false);
+                    self.appRouteUpdateAtr(param.appRouteUpdateAtr||false);
+                    self.createNewEmp(param.createNewEmp||false);
+                    self.appRouteUpdateMonthly(param.appRouteUpdateMonthly||false);
+                    self.checkCreateNewEmp((param.appRouteUpdateAtr==true && param.appRouteUpdateAtr == true)?true:false);
                 } else {
                     self.companyId('');
                     self.execItemCd('');
@@ -526,8 +552,27 @@ module nts.uk.at.view.kbt002.b {
                     self.refDate(moment().format("YYYY/MM/DD"));
                     self.workplaceList([]);
                     self.recreateTypeChangePerson(false);
-                    self.recreateTransfers(false)
+                    self.recreateTransfers(false);
+                    self.appRouteUpdateAtr(false);
+                    self.createNewEmp(false);
+                    self.appRouteUpdateMonthly(false);
+                    self.checkCreateNewEmp(false);
                 }
+                
+                self.appRouteUpdateAtr.subscribe(x=>{
+                    if(x==true && self.perScheduleCls()==true){
+                        self.checkCreateNewEmp(true);
+                    }else{
+                        self.checkCreateNewEmp(false);
+                    }
+                });
+                self.perScheduleCls.subscribe(x=>{
+                    if(x==true && self.appRouteUpdateAtr()==true){
+                        self.checkCreateNewEmp(true);
+                    }else{
+                        self.checkCreateNewEmp(false);
+                    }
+                });
                 
                   self.targetDate.subscribe(x=>{
                     var data =  this;

@@ -48,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -198,6 +199,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 		//休日出勤時間帯が存在せず、時間を求められない場合
 		List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList = new ArrayList<>();
 		List<HolidayWorkMidNightTime> addList = new ArrayList<>(); 
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		return new HolidayWorkTimeOfDaily(Collections.emptyList(),
 										  calcHolidayTimeWorkTimeList,
 				   						  Finally.of(new HolidayMidnightWork(addList)),

@@ -18,11 +18,6 @@ module nts.uk.at.view.kmf004.a.service {
         return nts.uk.request.ajax("at", path);
     }
     
-    export function findByCid(): JQueryPromise<any> {
-        var path = nts.uk.text.format(paths.findByCid);
-        return nts.uk.request.ajax("at", path);
-    }
-
     export function getSpecialHoliday(specialHolidayCode: number): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.getSpecialHoliday, specialHolidayCode);
         return nts.uk.request.ajax("at", path);

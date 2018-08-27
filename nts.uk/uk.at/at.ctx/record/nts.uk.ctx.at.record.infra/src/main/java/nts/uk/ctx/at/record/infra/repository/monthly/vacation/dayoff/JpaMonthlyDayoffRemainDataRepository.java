@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.TimeDayoffRemain;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
@@ -21,6 +20,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDa
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff.KrcdtMonDayoffRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.dayoff.KrcdtMonDayoffRemainPK;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Stateless
 public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implements MonthlyDayoffRemainDataRepository{
@@ -30,6 +31,11 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status"
 			+ " ORDER BY c.endDate ASC";
+	
+	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonDayoffRemain a "
+			+ "WHERE a.pk.sid = :employeeId "
+			+ "AND a.pk.ym = :yearMonth "
+			+ "ORDER BY a.startDate ";
 	
 	@Override
 	public List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus(String employeeId, YearMonth ym,
@@ -56,6 +62,15 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
 				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
 				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays), Optional.of(new RemainDataTimesMonth(c.unUsedTimes))));
+	}
+
+	@Override
+	public List<MonthlyDayoffRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonDayoffRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.getList(c -> toDomain(c));
 	}
 	
 	@Override
@@ -129,5 +144,17 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				entity.unUsedTimes = domain.getUnUsedDayTimes().getTime().get().v();
 			}
 		}
+	}
+	
+	@Override
+	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		
+		this.commandProxy().remove(KrcdtMonDayoffRemain.class,
+				new KrcdtMonDayoffRemainPK(
+						employeeId,
+						yearMonth.v(),
+						closureId.value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0)));
 	}
 }
