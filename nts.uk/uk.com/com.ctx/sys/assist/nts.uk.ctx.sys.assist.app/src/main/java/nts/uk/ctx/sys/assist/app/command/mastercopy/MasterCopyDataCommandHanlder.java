@@ -53,7 +53,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		TaskDataSetter setter = asyncTask.getDataSetter();
 
 		// get company id
-		String companyId = AppContexts.user().companyId();
+		String companyId = context.getCommand().getCompanyId();
 
 		// get command
 		MasterCopyDataCommand command = context.getCommand();
