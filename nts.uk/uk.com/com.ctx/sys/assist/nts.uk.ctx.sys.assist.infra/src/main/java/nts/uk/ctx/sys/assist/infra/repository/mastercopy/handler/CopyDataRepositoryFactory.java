@@ -14,23 +14,8 @@ public class CopyDataRepositoryFactory {
     static HashMap<String, DataCopyHandler> mapper = new HashMap<>();
 
     static {
-//        mapper.put("PPEMT_PER_INFO_CTG", new PpemtPerInfoCtgDataCopyHandler());
-//        mapper.put("PPEMT_PER_INFO_CTG_ORDER", new PersonalInfoDataCopyHandler());                  //Event：個人情報定義の初期値コピー
-//        mapper.put("PPEMT_PER_INFO_ITEM_CM", new PersonalInfoDataCopyHandler());                    //Event：個人情報定義の初期値コピー
-//        mapper.put("PPEMT_PER_INFO_ITEM", new PersonalInfoDataCopyHandler());                       //Event：個人情報定義の初期値コピー
-
-//        mapper.put("PPEMT_PER_INFO_ITEM_ORDER", new PersonalInfoDataCopyHandler());                 //Event：個人情報定義の初期値コピー
-//        mapper.put("PPEMT_DATE_RANGE_ITEM", new PersonalInfoDataCopyHandler());                     //Event：個人情報定義の初期値コピー
         mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
-//        mapper.put("PPEMT_SELECTION", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_SEL_ITEM_ORDER", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_NEW_LAYOUT", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_LAYOUT_ITEM_CLS", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_LAYOUT_ITEM_CLS_DF", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_PINFO_ITEM_GROUP", new CcgmtMyPageSetDataCopyHandler());
-//        mapper.put("PPEMT_PINFO_ITEM_DF_GROUP", new CcgmtMyPageSetDataCopyHandler());
         mapper.put("CCGMT_MY_PAGE_SET", new CcgmtMyPageSetDataCopyHandler());
-
         mapper.put("CCGST_STANDARD_MENU", new CcgstStandardMenuDataCopyHandler());
         mapper.put("CCGMT_TOPPAGE_PART", new CcgmtTopPagePartDataCopyHandler());
         mapper.put("CCGMT_PART_ITEM_SET", new CcgmtPartItemSetDataCopyHandler());
@@ -70,10 +55,8 @@ public class CopyDataRepositoryFactory {
         mapper.put("KSHST_AGG_LABOR_SET", new KshstAggLaborSetDataCopyHandler());
         mapper.put("KSHST_ZERO_TIME_SET", new KshstZeroTimeSetDataCopyHandler());
         mapper.put("KRCST_CONSTRAINT_TIME_CAL", new KrcstConstraintTimeCalDataCopyHandler());
-
         mapper.put("KRCST_WK_HOUR_LIMIT_CTRL", new KrcstWkHourLimitCtrlDataCopyHandler());
         mapper.put("KSHST_FLEX_SET", new KshstFlexSetDataCopyHandler());
-
         mapper.put("KRCMT_STAMP_IMPRINT", new KrcmtStampImprintDataCopyHandler());
         mapper.put("KRCDT_OUTING_MANAGEMENT", new KrcdtTemporaryWorkUseManageDataCopyHandler());
         mapper.put("KRCST_NIGHT_TIMESHEET", new KrcstNightTimeSheetDataCopyHandler());
@@ -86,7 +69,6 @@ public class CopyDataRepositoryFactory {
         mapper.put("KRCST_MON_EXCOUT_ROUND", new KrcstMonExcOutRoundDataCopyHandler());
         mapper.put("KRCST_DVGC_TIME", new KrcstDvgcTimeDataCopyHandler());
         mapper.put("KRCST_DVGC_REASON", new KrcstDvgcReasonDataCopyHandler());
-
         mapper.put("KMLMT_COST_CALC_SET", new KmlmtPersonCostCalculationDataCopyHandler());
         mapper.put("KSCMT_WEEKLY_WORK_SET", new KscmtWeeklyWorkSetDataCopyHandler());
         mapper.put("BSYST_TEMP_ABSENCE_FRAME", new BsystTempAbsenceFrameDataCopyHandler());
@@ -97,10 +79,8 @@ public class CopyDataRepositoryFactory {
         mapper.put("KSCMT_SCHE_PER_INFO_ATR", new KscmtSchePerInfoAtrDataCopyHandler());
         mapper.put("KSCST_WORKTYPE_DISP_SET", new KscstWorkTypeDispSetDataCopyHandler());
         mapper.put("KSCST_WORKTYPE_DISPLAY", new KscstWorkTypeDisplayDataCopyHandler());
-
         mapper.put("KRCMT_MON_ATTENDANCE_ITEM", new KrcmtMonAttendanceItemDataCopyHandler());
         mapper.put("KRCST_OPTIONAL_ITEM", new KrcstOptionalItemDataCopyHandler());
-//        mapper.put("KRCMT_ERAL_SET", new ErAlWorkRecordCopyHandler());                                  //Event:勤務実績のエラーアラームの初期値を登録する
         mapper.put("BSYMT_EMPLOYEE_CE_SET", new BsymtEmployeeCESettingDataCopyHandler());
         mapper.put("KRQST_APP_DIVERGEN_REASON", new KrqstAppDivergenReasonDataCopyHandler());
         mapper.put("KRQST_APP_REASON", new KrqstAppReasonDataCopyHandler());

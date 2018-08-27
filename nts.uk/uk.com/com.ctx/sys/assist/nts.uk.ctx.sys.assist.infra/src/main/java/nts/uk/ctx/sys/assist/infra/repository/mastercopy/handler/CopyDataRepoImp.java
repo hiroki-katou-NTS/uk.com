@@ -50,6 +50,7 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_SEL_ITEM_ORDER":
                         break;
                     case "PPEMT_NEW_LAYOUT":
+                    case "PPEMT_LAYOUT_ITEM_CLS_DF":
                         break;
                     case "PPEMT_LAYOUT_ITEM_CLS":
                         //Event：新規レイアウトの初期値コピー
