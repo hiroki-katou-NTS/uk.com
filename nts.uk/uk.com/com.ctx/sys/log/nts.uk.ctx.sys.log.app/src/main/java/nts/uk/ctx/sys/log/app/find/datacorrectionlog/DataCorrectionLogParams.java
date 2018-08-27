@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
+package nts.uk.ctx.sys.log.app.find.datacorrectionlog;
 
 import java.util.List;
 

@@ -203,8 +203,8 @@ public class LogBasicInformationFinder {
 									
 									// Setting tagetDate
 									String tagetDateStr = "";
-									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
-										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
+//									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey();
 										CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
 										if (calendarKeyType.value == CalendarKeyType.DATE.value) {
 											tagetDateStr = tagetDate.toString("yyyy/MM/dd");
@@ -216,7 +216,7 @@ public class LogBasicInformationFinder {
 											tagetDateStr = tagetDate.toString("yyyy");
 
 										}
-									}
+//									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
