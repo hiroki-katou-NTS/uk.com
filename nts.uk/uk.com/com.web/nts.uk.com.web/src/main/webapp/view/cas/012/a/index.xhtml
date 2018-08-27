@@ -79,7 +79,7 @@
 							<label class="username"
 								data-bind="text: selectRoleIndividual().userName"></label>
 							<div class="valign-center control-group">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_18')}</div>
+								<div data-bind="ntsFormLabel: { required: true}">#{i18n.getText('CAS012_18')}</div>
 								<div id="daterangepicker" tabindex="8"
 									data-bind="ntsDateRangePicker: { value: datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />
 							</div>
