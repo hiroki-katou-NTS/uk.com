@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
+package nts.uk.ctx.at.function.infra.generator.holidaysremaining;
 
 import java.util.ArrayList;
 import java.util.Collections;
