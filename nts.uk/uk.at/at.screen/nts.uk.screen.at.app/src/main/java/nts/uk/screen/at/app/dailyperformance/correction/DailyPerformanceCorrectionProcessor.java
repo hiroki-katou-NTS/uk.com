@@ -623,19 +623,22 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
-				//lockCell(screenDto, data, false);
-				lock = true;
+				if(mode == ScreenMode.APPROVAL.value) {
+					lock = lock && false;
+				}else {
+					lock = true;
+				}
 				
 			}
 			
 			if (lockApproval) {
 				setStateLock(data, DPText.LOCK_EDIT_APPROVAL);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) {
-					lock = lock && false;
-				}else {
+//				if(mode == ScreenMode.APPROVAL.value) {
+//					lock = lock && false;
+//				}else {
 					lock = true;
-				}
+//				}
 			}
 
 			if (lockSign && mode == ScreenMode.NORMAL.value) {
