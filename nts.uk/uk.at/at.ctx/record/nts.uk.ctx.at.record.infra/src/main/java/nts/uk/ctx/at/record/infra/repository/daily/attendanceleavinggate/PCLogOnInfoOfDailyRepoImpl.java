@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayPcLogonInfo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
@@ -138,7 +139,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 						+ logOnInfo.getWorkNo().v() + " , "
 						+ logOff + " , "
 						+ logOn + " )";
-				statementI.executeUpdate(insertTableSQL);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 			
 		} catch (Exception e) {

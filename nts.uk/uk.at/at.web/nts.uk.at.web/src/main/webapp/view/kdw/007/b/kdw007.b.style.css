@@ -30,3 +30,6 @@
 	margin-bottom: 20px
 }
 
+[dropdown-for="compareOperator-cbb"] .nts-combo-column-0 {
+  width: 240px !important;
+}

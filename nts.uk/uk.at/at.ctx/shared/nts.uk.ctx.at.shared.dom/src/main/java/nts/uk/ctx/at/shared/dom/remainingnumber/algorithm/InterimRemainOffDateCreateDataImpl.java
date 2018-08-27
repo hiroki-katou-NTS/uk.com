@@ -322,7 +322,10 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-			switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
+		if(!inforData.getWorkTypeRemain().isPresent()) {
+			return null;
+		}	
+		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
 				case Pause:
 					return createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
 				case SubstituteHoliday:	

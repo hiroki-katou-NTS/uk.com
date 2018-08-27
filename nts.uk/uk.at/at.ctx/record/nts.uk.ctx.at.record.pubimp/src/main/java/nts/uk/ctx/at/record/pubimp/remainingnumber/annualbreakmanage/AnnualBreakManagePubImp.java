@@ -102,6 +102,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						false, 
 						Optional.of(false),
 						Optional.empty(),
+						Optional.empty(),
 						Optional.empty());
 		if (aggrResultOfAnnualLeave.isPresent()){
 			//締め開始日以前に付与された年休残数を取得する
