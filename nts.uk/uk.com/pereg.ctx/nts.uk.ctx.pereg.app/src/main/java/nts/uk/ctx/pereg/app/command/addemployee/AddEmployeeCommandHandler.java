@@ -24,8 +24,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
@@ -106,33 +104,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
 
-	private static final Map<String, String> endDateItemCodes;
-	static {
-		Map<String, String> aMap = new HashMap<>();
-		// 所属会社履歴
-		aMap.put("CS00003", "IS00021");
-		// 分類１
-		aMap.put("CS00004", "IS00027");
-		// 雇用
-		aMap.put("CS00014", "IS00067");
-		// 職位本務
-		aMap.put("CS00016", "IS00078");
-		// 職場
-		aMap.put("CS00017", "IS00083");
-		// 休職休業
-		aMap.put("CS00018", "IS00088");
-		// 短時間勤務
-		aMap.put("CS00019", "IS00103");
-		// 労働条件
-		aMap.put("CS00020", "IS00120");
-		// 勤務種別
-		aMap.put("CS00021", "IS00256");
-		// 労働条件２
-		aMap.put("CS00070", "IS00782");
-
-		endDateItemCodes = Collections.unmodifiableMap(aMap);
-	}
-
 	private static final Map<String, String> mapSpecialCode;
 	static {
 		Map<String, String> aMap = new HashMap<>();
@@ -175,7 +146,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
 
-		processHistoryPeriod(inputs, command.getHireDate());
+//		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
@@ -566,7 +537,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		});
 		// kiểm tra list lỗi để trả về thông báo
 		if (!CollectionUtil.isEmpty(nodataItems)) {
-			throw new BusinessException("Msg_925", String.join(",", nodataItems));
+			throw new BusinessException("Msg_361", String.join(",", nodataItems));
 
 		}
 
@@ -591,24 +562,24 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
-		inputs.forEach(category -> {
-			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
-				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
-				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
-
-				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
-					category.getItems()
-							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
-				}
-				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems()
-							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
-				}
-
-			}
-		});
-	}
+//	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
+//		inputs.forEach(category -> {
+//			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
+//				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
+//				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
+//
+//				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
+//					category.getItems()
+//							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
+//				}
+//				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
+//					category.getItems()
+//							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
+//				}
+//
+//			}
+//		});
+//	}
 
 	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user
