@@ -4,6 +4,7 @@ module nts.uk.at.view.ksm005.b {
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
+    import blockUI = nts.uk.ui.block;
     export module viewmodel {
 
         export class ScreenModel {
@@ -468,7 +469,7 @@ module nts.uk.at.view.ksm005.b {
                 if(self.validateClient()){
                     return;    
                 }
-                
+                blockUI.grayout();
                 service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(), self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -482,7 +483,7 @@ module nts.uk.at.view.ksm005.b {
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                })
+                }).always(()=> blockUI.clear());
                                 
             }
             
