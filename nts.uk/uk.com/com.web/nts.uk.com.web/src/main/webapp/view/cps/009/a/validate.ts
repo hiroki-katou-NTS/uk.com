@@ -69,7 +69,7 @@ module validationcps009 {
                switch(item.dataType()){
                    
                case ITEM_SINGLE_TYPE.STRING:
-                       if (_.isNil(item.stringValue()) {
+                       if (_.isNil(item.stringValue())) {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -79,7 +79,7 @@ module validationcps009 {
                        break;
                        
                case ITEM_SINGLE_TYPE.NUMERIC:
-                       if (_.isNil(item.numbereditor.value()) {
+                       if (_.isNil(item.numbereditor.value())) {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -89,7 +89,7 @@ module validationcps009 {
                        break;
                        
                case ITEM_SINGLE_TYPE.TIME:
-                       if (_.isNil(item.dateWithDay()) {
+                       if (_.isNil(item.dateWithDay())) {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -99,7 +99,7 @@ module validationcps009 {
                   
                    
                case ITEM_SINGLE_TYPE.TIMEPOINT:
-                       if (_.isNil(item.dateWithDay()) {
+                       if (_.isNil(item.dateWithDay())) {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -133,7 +133,6 @@ module validationcps009 {
             
         });
     }
-    
     
     export enum ITEM_SINGLE_TYPE {
         STRING = 1,
