@@ -85,4 +85,35 @@ public class OutingTimeSheet extends DomainObject {
 																			  );
 	}
 	
+	/**
+	 * 自信が計算できる状態か判定うる
+	 * @return 計算可能である
+	 */
+	public boolean isCalcState() {
+		return isCalcGoOut() && isCalcComeBack();
+	}
+	
+	/**
+	 * 外出時刻が計算できる状態になっているか判定する
+	 * (nullになっていないか)
+	 * @return 計算可能である。
+	 */
+	private boolean isCalcGoOut() {
+		if(this.getGoOut() != null && this.getGoOut().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;
+	}
+	
+	/**
+	 * 戻り時刻が計算できる状態になっているか判定する
+	 * (null になっていないか)
+	 * @return　 計算可能である。
+	 */
+	private boolean isCalcComeBack() {
+		if(this.getComeBack() != null && this.getComeBack().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;		
+	}
 }

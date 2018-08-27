@@ -84,14 +84,11 @@ public class SelectionFinder {
 	public List<SelectionInitDto> getAllSelectionByHistoryId(SelectionInitQuery query) {
 		GeneralDate today = GeneralDate.today();
 		String companyId = AppContexts.user().companyId();
-		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 		String selectionItemId = query.getSelectionItemId();
 		List<Selection> selectionList = new ArrayList<>();
-		if (query.isCps006() && query.getSelectionItemClsAtr() == PersonEmployeeType.EMPLOYEE.value) {
-			selectionList = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, today);
-		} else {
-			selectionList = this.selectionRepo.getAllSelectionByCompanyId(zeroCompanyId, selectionItemId, today);
-		}
+			
+		selectionList = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, today);
+		
 		return selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 	}
 
@@ -107,10 +104,6 @@ public class SelectionFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		if (perEmplType == PersonEmployeeType.PERSON){
-			companyId = AppContexts.user().zeroCompanyIdInContract();
-		}
-		// Zero company
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
 		List<Selection> domainLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date);
 		if (domainLst != null) {

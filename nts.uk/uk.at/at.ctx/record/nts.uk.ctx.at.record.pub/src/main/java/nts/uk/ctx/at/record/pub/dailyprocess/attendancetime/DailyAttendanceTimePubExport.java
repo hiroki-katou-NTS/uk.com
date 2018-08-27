@@ -51,7 +51,4 @@ public class DailyAttendanceTimePubExport {
 		this.midNightTime = midNightTime;
 	}
 
-
-
-	
 }
