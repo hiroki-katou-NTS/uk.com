@@ -25,7 +25,7 @@ function initGrid() {
     
     $("#grid").ntsGrid({
         width: '440px',
-        height: '290px',
+        height: '338px',
         dataSource: __viewContext["viewModel"].categoryList() || [],
         primaryKey: 'categoryId',
         rowVirtualization: true,
@@ -55,7 +55,7 @@ function initGrid() {
         ]
     });
     
-    $(document).on("click", "#grid_selfAuth > span > div > label > span.box", function(evt, ui) {
+    $(document).on("click", "#grid_selfAuth > span > div > label > input", function(evt, ui) {
         let _this = $(this),
             grid = $("#grid"),
             checked: boolean = $("#grid_selfAuth > span > div > label > input:checked").val() == "on"? true: false,
@@ -68,7 +68,7 @@ function initGrid() {
 
     });
 
-    $(document).on("click", "#grid_otherAuth > span > div > label > span.box", function(evt, ui) {
+    $(document).on("click", "#grid_otherAuth > span > div > label > input", function(evt, ui) {
         let _this = $(this), 
             grid = $("#grid"), 
             checked: boolean = $("#grid_otherAuth > span > div > label > input:checked").val() == "on"? true: false,

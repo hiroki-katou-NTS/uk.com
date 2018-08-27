@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -21,8 +23,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -49,6 +54,8 @@ public class CreateLateOrLeaveEarlyCommandHandler
 
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeSetRepo;
+	@Inject
+	private ApplicationSettingRepository appSetRepo;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
@@ -91,14 +98,31 @@ public class CreateLateOrLeaveEarlyCommandHandler
 				&& appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
 
 		if (isShowFixedHideText) {
-
-			return appReason = fixedReason;
-
+			appReason = fixedReason;
+		} else {
+			if (!fixedReason.isEmpty() || !reasonText.isEmpty()) {
+				appReason = !fixedReason.isEmpty() ? fixedReason + System.lineSeparator() + reasonText : reasonText;
+			}
 		}
 
-		if (!fixedReason.isEmpty() || !reasonText.isEmpty()) {
-			appReason = !fixedReason.isEmpty() ? fixedReason + System.lineSeparator() + reasonText : reasonText;
+		Optional<ApplicationSetting> appSetOp = appSetRepo.getApplicationSettingByComID(companyID);
+
+		ApplicationSetting appSet = appSetOp.get();
+
+		boolean isReasonBlankWhenRequired = appSet.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				&& Strings.isBlank(appReason);
+		boolean isAnyReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) || isReasonTextFieldDisplay(appTypeSet);
+		if (isAnyReasonControlDisplay && isReasonBlankWhenRequired) {
+			throw new BusinessException("Msg_115");
 		}
 		return appReason;
+	}
+
+	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
+		return appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
+	}
+
+	private boolean isComboBoxReasonDisplay(AppTypeDiscreteSetting appTypeSet) {
+		return appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
 	}
 }

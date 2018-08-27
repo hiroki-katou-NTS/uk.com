@@ -129,6 +129,8 @@ module nts.uk.at.view.kaf005.b {
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             overtimeAtr: KnockoutObservable<number> = ko.observable(null);
             heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
