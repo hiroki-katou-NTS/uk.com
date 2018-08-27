@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
 import lombok.Data;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
 
 @Data
 public class PerInfoSelectionItemDto {
@@ -38,11 +37,6 @@ public class PerInfoSelectionItemDto {
 	private int extraCodeLength;
 
 	/**
-	 * 共有
-	 */
-	private boolean shareChecked;
-
-	/**
 	 * 統合コード
 	 */
 	private String integrationCode;
@@ -58,14 +52,13 @@ public class PerInfoSelectionItemDto {
 				domain.getFormatSelection().getCodeLength().v().intValue(),
 				domain.getFormatSelection().getNameLength().v().intValue(),
 				domain.getFormatSelection().getExternalCodeLength().v().intValue(),
-				domain.getClassification() == SelectionItemClassification.EmployeeInformation ? false : true,
 				domain.getIntegrationCode().isPresent() ? domain.getIntegrationCode().get().v() : null,
 				domain.getMemo().isPresent() ? domain.getMemo().get().v() : null);
 
 	}
 
 	public PerInfoSelectionItemDto(String selectionItemId, String selectionItemName, int characterType, int codeLength,
-			int nameLength, int extraCodeLength, boolean shareChecked, String integrationCode,
+			int nameLength, int extraCodeLength, String integrationCode,
 			String memo) {
 		super();
 		this.selectionItemId = selectionItemId;
@@ -74,12 +67,7 @@ public class PerInfoSelectionItemDto {
 		this.codeLength = codeLength;
 		this.nameLength = nameLength;
 		this.extraCodeLength = extraCodeLength;
-		this.shareChecked = shareChecked;
 		this.integrationCode = integrationCode;
 		this.memo = memo;
-	}
-	
-	public boolean isEmployeeClassification() {
-		return !shareChecked;
 	}
 }
