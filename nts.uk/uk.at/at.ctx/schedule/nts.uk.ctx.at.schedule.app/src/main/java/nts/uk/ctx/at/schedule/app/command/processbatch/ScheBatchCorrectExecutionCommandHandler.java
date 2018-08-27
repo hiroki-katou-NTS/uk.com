@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.app.command.processbatch;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateful;
@@ -35,6 +36,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -93,6 +96,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private InterimRemainOffMonthProcess interimRemainOffMonthProcess;
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
@@ -162,10 +168,12 @@ public class ScheBatchCorrectExecutionCommandHandler
 		// Get work type
 		WorkType workType = workTypeRepository.findByPK(companyId, command.getWorktypeCode()).get();
 		
+		GeneralDate startDate = command.getStartDate();
+		GeneralDate endDate = command.getEndDate();
+		DatePeriod period = new DatePeriod(startDate, endDate);
+		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
-			GeneralDate startDate = command.getStartDate();
-			GeneralDate endDate = command.getEndDate();
 			 	
 			EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(employeeId);
 			
@@ -207,9 +215,13 @@ public class ScheBatchCorrectExecutionCommandHandler
 				}
 				//setter.updateData(DATA_EXECUTION, dto);
 				
+				
 				// Add 1 more day to current day
 				currentDateCheck = currentDateCheck.nextValue(true);
 			}
+			
+			// 暫定データを作成する
+			Map<GeneralDate, DailyInterimRemainMngData> mapInterimData = interimRemainOffMonthProcess.monthInterimRemainData(companyId, employeeId, period);
 		}
 		
 		// Send the last batch of errors if there is still records unsent
