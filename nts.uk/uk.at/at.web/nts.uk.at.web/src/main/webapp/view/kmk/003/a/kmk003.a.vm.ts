@@ -235,7 +235,9 @@ module nts.uk.at.view.kmk003.a {
                         $('#search-daily-atr').focus();
                     }
                     else {
-                        self.enterNewMode();
+                        if (self.screenMode() != 2) {
+                            self.enterNewMode();
+                        }
                     }
                 });
 
@@ -697,7 +699,9 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-
+                
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
 
@@ -712,9 +716,6 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
-                
                 // do interlock if simple mode
                 if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);
