@@ -116,23 +116,28 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				InterimAbsMng absDataCreate = earchData.getInterimAbsData().get();
 				absDataCreate.setAbsenceMngId(mngId);
 				recAbsRepos.persistAndUpdateInterimAbsMng(absDataCreate);
+				break;
 			case PICKINGUP:
 				InterimRecMng recDataCreate = earchData.getRecData().get();
 				recDataCreate.setRecruitmentMngId(mngId);
 				recAbsRepos.persistAndUpdateInterimRecMng(recDataCreate);
+				break;
 			case SUBHOLIDAY:
 				InterimDayOffMng dayOffDataCreate = earchData.getDayOffData().get();
 				dayOffDataCreate.setDayOffManaId(mngId);
 				breakDayOffRepos.persistAndUpdateInterimDayOffMng(dayOffDataCreate);
+				break;
 			case BREAK:
 				InterimBreakMng breakDataCreate = earchData.getBreakData().get();
 				breakDataCreate.setBreakMngId(mngId);
 				breakDayOffRepos.persistAndUpdateInterimBreakMng(breakDataCreate);
+				break;
 			case SPECIAL:
 				earchData.getSpecialHolidayData().forEach(x -> {
 					x.setSpecialHolidayId(mngId);
 					specialHoliday.persistAndUpdateInterimSpecialHoliday(x);
 				});
+				break;
 			default:
 				break;
 			}			
