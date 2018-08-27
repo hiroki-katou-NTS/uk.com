@@ -41,6 +41,7 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_PER_INFO_CTG_ORDER":
                     case "PPEMT_PER_INFO_ITEM_CM":
                     case "PPEMT_PER_INFO_ITEM":
+                    case "PPEMT_DATE_RANGE_ITEM":
                         break;
                     case "PPEMT_PER_INFO_ITEM_ORDER":
                         personalInfoDataCopyAdapter.copyA(companyId, copyMethod);

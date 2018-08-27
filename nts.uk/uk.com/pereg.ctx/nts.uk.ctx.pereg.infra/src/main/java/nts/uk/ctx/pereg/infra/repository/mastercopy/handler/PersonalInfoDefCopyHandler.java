@@ -14,6 +14,8 @@ import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.SerializationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +24,11 @@ import java.util.stream.Collectors;
  * @author locph
  */
 public class PersonalInfoDefCopyHandler extends DataCopyHandler {
+
+	/**
+	 * Logger
+	 */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonalInfoDefCopyHandler.class);
     /**
      * The insert query.
      */
@@ -82,6 +89,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             case ADD_NEW:
                 // Insert Data
                 copyMasterData(sourceCid, targetCid, false);
+                break;
             case DO_NOTHING:
                 // Do nothing
             default:
@@ -325,6 +333,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     .collect(Collectors.toSet());
             //overwrite
             for (String catCd : sourcePersonalInfoCatCd) {
+                String perInfoCtgId = UUID.randomUUID().toString();
                 //1 update overwrite for PpemtPerInfoCtg
                 PpemtPerInfoCtg src = sgroupPersonalInfoCatByCatCd.get(catCd);
                 PpemtPerInfoCtg des = tgroupPersonalInfoCatByCatCd.get(catCd);
@@ -333,7 +342,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 if (des == null) {
                     des = new PpemtPerInfoCtg();
                     des.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK();
-                    des.ppemtPerInfoCtgPK.perInfoCtgId = UUID.randomUUID().toString();
+                    des.ppemtPerInfoCtgPK.perInfoCtgId = perInfoCtgId;
                     fl1 = true;
                 }
                 des.categoryName = src.categoryName;
@@ -344,6 +353,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     this.commandProxy.insert(des);
 
                 //2 update overwrite for PpemtPerInfoItem
+//                LOGGER.info("Test Event CMM001: " + sourceCid + "-" + catCd);
                 Map<String, PpemtPerInfoItem> sourcePerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(sourceCid, catCd)
                         .stream().collect(Collectors.toMap(o -> o.itemCd, o -> o));
                 Map<String, PpemtPerInfoItem> destPerInfoItems = findAllPpemtPerInfoItemByCidAndCcd(targetCid, catCd)
@@ -358,10 +368,10 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                         desPerInfoItem = new PpemtPerInfoItem();
                         desPerInfoItem.ppemtPerInfoItemPK = new PpemtPerInfoItemPK();
                         desPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId = UUID.randomUUID().toString();
+                        desPerInfoItem.perInfoCtgId = perInfoCtgId;
                         fl2 = true;
                     }
                     desPerInfoItem.itemCd = itemCd;
-                    desPerInfoItem.perInfoCtgId = srcPerInfoItem.perInfoCtgId;
                     desPerInfoItem.itemName = srcPerInfoItem.itemName;
                     desPerInfoItem.abolitionAtr = srcPerInfoItem.abolitionAtr;
                     desPerInfoItem.requiredAtr = srcPerInfoItem.requiredAtr;
@@ -379,7 +389,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 if (destDateRangeItem == null) {
                     destDateRangeItem = new PpemtDateRangeItem();
                     destDateRangeItem.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK();
-                    destDateRangeItem.ppemtPerInfoCtgPK.perInfoCtgId = UUID.randomUUID().toString();
+                    destDateRangeItem.ppemtPerInfoCtgPK.perInfoCtgId = perInfoCtgId;
                     fl3 = true;
                 }
                 destDateRangeItem.startDateItemId = sourceDateRangeItem.startDateItemId;
