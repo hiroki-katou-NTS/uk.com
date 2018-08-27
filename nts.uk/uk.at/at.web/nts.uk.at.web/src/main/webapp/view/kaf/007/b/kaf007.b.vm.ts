@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf007.b {
                         self.requiredReason( settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false );
                         //A8 勤務時間２ ※A7
                         //共通設定.複数回勤務
-                        self.isMultipleTime( settingData.multipleTime );
+                        // self.isMultipleTime( settingData.multipleTime );
                         //勤務変更申請基本データ（更新）
                         service.getWorkchangeByAppID( self.appID() ).done( function( detailData: any ) {
                             //workChangeDto

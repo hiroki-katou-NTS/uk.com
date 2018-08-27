@@ -104,7 +104,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
-					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0).findFirst().orElse(null);
 			boolean isNew = krcdtTimeLeavingWork == null;
 			if (isNew) {
 				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
@@ -184,7 +185,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 
 			}
-			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+//			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
 			krcdtTimeLeavingWork.daiLeavingWork = entity;
 			if (isNew) {
 				timeWorks.add(krcdtTimeLeavingWork);
