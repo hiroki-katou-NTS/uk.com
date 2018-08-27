@@ -30,49 +30,49 @@ public class HolidaysRemainingWebService extends WebService {
 	/* Finder */
 	@Inject
 	private HdRemainManageFinder hdRemainManageFinder;
-	
+
 	@Inject
 	private AddHdRemainManageCommandHandler addHdRemainManageCommandHandler;
-	
+
 	@Inject
 	private UpdateHdRemainManageCommandHandler updateHdRemainManageCommandHandler;
-	
+
 	@Inject
 	private RemoveHdRemainManageCommandHandler removeHdRemainManageCommandHandler;
-	
+
 	@Inject
 	private I18NResourcesForUK i18n;
-	
+
 	@POST
 	@Path("findAll")
 	public List<HdRemainManageDto> getHdRemainManageList() {
 		return this.hdRemainManageFinder.findAll();
 	}
-	
+
 	@POST
 	@Path("findByCode/{code}")
 	public HdRemainManageDto getHdRemainManageByCode(@PathParam("code") String code) {
 		return this.hdRemainManageFinder.findDtoByCode(code);
 	}
-	
+
 	@POST
 	@Path("add")
 	public void addHdRemainManage(HdRemainManageCommand comand) {
 		this.addHdRemainManageCommandHandler.handle(comand);
 	}
-	
+
 	@POST
 	@Path("update")
 	public void updateHdRemainManage(HdRemainManageCommand comand) {
 		this.updateHdRemainManageCommandHandler.handle(comand);
 	}
-	
+
 	@POST
 	@Path("remove")
 	public void removerHdRemainManage(HdRemainManageCommand comand) {
 		this.removeHdRemainManageCommandHandler.handle(comand);
 	}
-	
+
 	@POST
 	@Path("getDate")
 	public DateHolidayRemainingDto getDate() {
@@ -84,13 +84,13 @@ public class HolidaysRemainingWebService extends WebService {
 	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
 		return this.hdRemainManageFinder.getPermissionOfEmploymentForm();
 	}
-	
+
 	@POST
 	@Path("getBreakSelection")
-	public List<EnumConstant> getEnumValueOutputFormat(){
+	public List<EnumConstant> getEnumValueOutputFormat() {
 		return EnumAdaptor.convertToValueNameList(BreakSelection.class, i18n);
 	}
-	
+
 	@POST
 	@Path("getVariousVacationControl")
 	public VariousVacationControlDto getVariousVacationControl() {
