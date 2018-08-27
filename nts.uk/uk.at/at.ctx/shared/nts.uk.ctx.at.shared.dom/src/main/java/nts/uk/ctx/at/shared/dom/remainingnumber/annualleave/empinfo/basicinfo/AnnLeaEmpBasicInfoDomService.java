@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AnnLeaEmpBasicInfoDomService{
@@ -23,6 +26,9 @@ public class AnnLeaEmpBasicInfoDomService{
 
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaDataRepo;
+	
+	@Inject 
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 		
 	private static final String not_grant = "未付与";
 	
@@ -56,6 +62,15 @@ public class AnnLeaEmpBasicInfoDomService{
 
 		AnnLeaRemNumValueObject annLeaveRemainNumber = getAnnualLeaveNumber(companyId, listData);
 
+		// Total time
+		// No268特別休暇の利用制御
+		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());	
+		
+		if (annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO
+				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO) {
+			return annLeaveRemainNumber.getDays() + "日";
+		}
+		
 		int remainingMinutes = annLeaveRemainNumber.getMinutes();
 
 		int remainingHours = remainingMinutes / 60;
@@ -86,6 +101,22 @@ public class AnnLeaEmpBasicInfoDomService{
 			return "0" + Math.abs(minutes);
 		}
 		return "" + Math.abs(minutes);
+	}
+	
+	/**
+	 * アルゴリズム「次回年休情報を取得する」
+　	 * パラメータ＝社員ID：画面で選択している社員ID
+　	 * パラメータ＝年休付与基準日：IS00279の値
+	 * パラメータ＝年休付与テーブル：IS00280の値
+	 * パラメータ＝労働条件の期間：NULL
+	 * パラメータ＝契約時間：NULL
+	 * パラメータ＝入社年月日：NULL
+	 * パラメータ＝退職年月日：NULL
+	 * @return 次回年休付与日, 次回年休付与日数, 次回時間年休付与上限
+	 */
+	public YearHolidayInfoResult getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
+		YearHolidayInfoResult result = new YearHolidayInfoResult(GeneralDate.today(), 0.0, Optional.of(0));
+		return result;
 	}
 	
 }
