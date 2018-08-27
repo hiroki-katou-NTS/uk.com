@@ -272,6 +272,39 @@ module nts.uk.at.view.kaf000.shr{
                return true;
             }
             
+            public static displayMailDeleteRs(data: ProcessResult): void {
+                let autoSuccessMail = "", autoFailMail = "";
+                data.autoSuccessMail.forEach((value, index) => { 
+                    autoSuccessMail += value;
+                    if(index != data.autoSuccessMail.length-1){
+                        autoSuccessMail += ",";        
+                    }     
+                });
+                data.autoFailMail.forEach((value, index) => { 
+                    autoFailMail += value;
+                    if(index != data.autoFailMail.length-1){
+                        autoFailMail += ",";        
+                    }     
+                });
+                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        });
+                    });        
+                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                    });    
+                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                    });    
+                } else {
+                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");        
+                }
+            }
+            
             public static displayMailResult(data: ProcessResult): void {
                 let autoSuccessMail = "", autoFailMail = "";
                 data.autoSuccessMail.forEach((value, index) => { 
