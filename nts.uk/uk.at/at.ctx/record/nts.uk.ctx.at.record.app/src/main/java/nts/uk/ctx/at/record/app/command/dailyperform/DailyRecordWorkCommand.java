@@ -297,7 +297,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 										this.getAttendanceLeavingGate().toDomain(), 
 										this.getOptionalItem().toDomain(), 
 										this.getEditState().toDomain(), 
-										this.getTemporaryTime().toDomain());
+										this.getTemporaryTime().toDomain(),
+										this.getRemarks().toDomain());
 	}
 
 	public List<ItemValue> itemValues() {

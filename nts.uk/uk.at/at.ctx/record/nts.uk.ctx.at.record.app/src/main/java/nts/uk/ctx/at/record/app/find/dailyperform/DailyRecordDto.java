@@ -167,7 +167,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(pc)));
-//			this.setRemarks(domain.get)
+			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -408,7 +408,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
+				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
 				);
 	}
 
