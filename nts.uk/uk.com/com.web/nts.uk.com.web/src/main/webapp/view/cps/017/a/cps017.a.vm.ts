@@ -87,7 +87,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
-                        perInfoSelectionItem.selectionItemClassification(selectedObject.shareChecked ? 0 : 1);
 
                         self.constraints.selectionCode = selectedObject.codeLength;
                         self.constraints.selectionName = selectedObject.nameLength;
@@ -102,7 +101,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.changeLabelConstrain(selectedObject.characterType);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.isGroupManager === true && perInfoSelectionItem.selectionItemClassification() === 1) {
+                    if (self.isGroupManager === true) {
                         self.showRefecToAll(true);
                     } else {
                         self.showRefecToAll(false);
@@ -592,9 +591,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selName = self.selection().selectionName(),
                 exCd = self.selection().externalCD(),
 
-                //fibux: 23.2.2018
-                selIteClass = self.perInfoSelectionItem().selectionItemClassification(),
-
                 allValid = true;
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
@@ -620,8 +616,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         formatSelection: any;
         reflectedToAllCompanies: number;
 
-        //fixbug: 23.2.2018
-        selectionItemClassification: number;
     }
 
     interface ISelectionItem1 {
@@ -633,8 +627,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         codeLength: number;
         nameLength: number;
         extraCodeLength: number;
-
-        shareChecked: boolean;
 
         integrationCode?: string;
         memo?: string;
@@ -651,8 +643,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         nameLength: KnockoutObservable<number> = ko.observable(null);
         extraCodeLength: KnockoutObservable<number> = ko.observable(null);
 
-        selectionItemClassification: KnockoutObservable<number> = ko.observable();
-
         constructor(param: ISelectionItem1) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
@@ -662,8 +652,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.codeLength(param.codeLength);
             self.nameLength(param.nameLength);
             self.extraCodeLength(param.extraCodeLength);
-
-            self.selectionItemClassification((param.shareChecked ? 0 : 1) || '');
         }
     }
 

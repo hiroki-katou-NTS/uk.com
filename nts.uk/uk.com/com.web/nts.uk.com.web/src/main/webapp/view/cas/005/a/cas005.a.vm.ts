@@ -122,7 +122,7 @@ module nts.uk.com.view.cas005.a {
                     { code: '1', name: getText('CAS005_42') }
                 ]);
                 self.selectCategoryAssign = ko.observable(1);
-                self.selectReferenceAuthority = ko.observable(1);
+                self.selectReferenceAuthority = ko.observable("1");
                 
                 //combobox
                 self.selectedCode = ko.observable('1');
@@ -224,7 +224,6 @@ module nts.uk.com.view.cas005.a {
                         self.specifyingAgent(0);
                         self.registeredInquiries(0);
                         self.visibleWebmenu(true);
-                    } else {
                         self.getEmploymentRoleById(value);
                     }
                     self.objCommandScreenB(new model.RoleCas005Command(
@@ -239,7 +238,7 @@ module nts.uk.com.view.cas005.a {
                         self.bookingScreen(),
                         self.specifyingAgent(),
                         self.registeredInquiries(),
-                        self.selectReferenceAuthority(),
+                        parseInt(self.selectReferenceAuthority()),
                         self.listWorkPlaceAuthorityCommand()
                     ));
 
@@ -251,7 +250,7 @@ module nts.uk.com.view.cas005.a {
                     self.assignAtr(0);
                     self.selectWebMenu(0);
 
-                    self.selectReferenceAuthority(0);
+                    self.selectReferenceAuthority("0");
                     self.visibleWebmenu(true);
                 }
                 $("#roleNameFocus").focus(); 
@@ -455,14 +454,13 @@ module nts.uk.com.view.cas005.a {
             getEmploymentRoleById(roleId: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                if(self.assignAtr() == 1){
                     block.invisible();
                     service.getEmploymentRoleById(roleId).done(function(data) {
                         self.scheduleScreen(data.scheduleEmployeeRef);
                         self.bookingScreen(data.bookEmployeeRef);
                         self.specifyingAgent(data.employeeRefSpecAgent);
                         self.registeredInquiries(data.presentInqEmployeeRef);
-                        self.selectReferenceAuthority(data.futureDateRefPermit);
+                        self.selectReferenceAuthority(data.futureDateRefPermit.toString());
                         dfd.resolve(data);
                     }).fail(function(res: any) {
                         dfd.reject();
@@ -470,9 +468,6 @@ module nts.uk.com.view.cas005.a {
                     }).always(()=>{
                         block.clear();    
                     });
-                }else{
-                    dfd.resolve();
-                }
                 return dfd.promise();
             }
             //20Oct1993778343
@@ -539,7 +534,7 @@ module nts.uk.com.view.cas005.a {
                         self.bookingScreen(),
                         self.specifyingAgent(),
                         self.registeredInquiries(),
-                        self.selectReferenceAuthority(),
+                        parseInt(self.selectReferenceAuthority()),
                         self.listWorkPlaceAuthorityCommand()
                     ));
                     if (self.enableRoleCode()) {
@@ -709,7 +704,7 @@ Role screen Cas005
                         self.bookingScreen(),
                         self.specifyingAgent(),
                         self.registeredInquiries(),
-                        self.selectReferenceAuthority(),
+                        parseInt(self.selectReferenceAuthority()),
                         self.listWorkPlaceAuthorityParam()
                     ));
                     let param = {
