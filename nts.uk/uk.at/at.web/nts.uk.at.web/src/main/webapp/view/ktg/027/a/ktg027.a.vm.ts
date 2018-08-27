@@ -109,12 +109,6 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             return dfd.promise();
         }
-        if(moment("self.targetMonth()", "YYYYMM", false).isValid()) {
-            $('#residence-code').ntsError('set', 'えらーです');
-             $(".inputYM").trigger("validate");
-            $('#inputYM').focus();
-        }
-
     
         clickExtractionBtn() {
             $(".inputYM").trigger("validate");

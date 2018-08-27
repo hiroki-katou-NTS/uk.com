@@ -809,7 +809,9 @@ module cps002.a.vm {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
-
+                    
+                    self.checkLicense();
+                    
                 }).fail(error => {
 
                     dialog({ messageId: error.messageId, messageParams: error.parameterIds });
