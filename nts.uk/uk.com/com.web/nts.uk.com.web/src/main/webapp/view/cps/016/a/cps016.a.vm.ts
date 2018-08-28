@@ -54,24 +54,18 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         $("#selectionItemName").focus();
                     });
+                    self.checkCreate(false);
                 } else {
-                    perInfoSelectionItem.selectionItemName('');
-                    perInfoSelectionItem.characterType(false);
-                    perInfoSelectionItem.codeLength('');
-                    perInfoSelectionItem.nameLength('');
-                    perInfoSelectionItem.extraCodeLength('');
-                    perInfoSelectionItem.shareChecked(false);
-                    perInfoSelectionItem.integrationCode('');
-                    perInfoSelectionItem.memo('');
+                    self.registerDataSelectioItem(true);
                 }
-                self.checkCreate(false);
             });
         }
 
-        //開始
+        //開�
         start(): JQueryPromise<any> {
             let self = this;
             let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            
             if (groupCompanyAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
@@ -113,7 +107,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 if (itemList && itemList.length > 0) {
                     itemList.forEach(x => self.listItems.push(x));
-                } else {//0件の場合: エラーメッセージの表示(#Msg_455)
+                } else {//0件の場� エラーメヂ�ージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
                     //$("#selectionItemName").focus();
@@ -123,19 +117,20 @@ module nts.uk.com.view.cps016.a.viewmodel {
             return dfd.promise();
         }
 
-        //新規ボタン
-        registerDataSelectioItem() {
+        //新規�タン
+        registerDataSelectioItem(unselected?:boolean) {
             let self = this;
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
             nts.uk.ui.errors.clearAll();
-
-            perInfoSelectionItem.selectionItemId('');
+            if (!unselected) {
+                perInfoSelectionItem.selectionItemId('');
+            }
             perInfoSelectionItem.selectionItemName('');
 
             perInfoSelectionItem.characterType(false);
-            perInfoSelectionItem.codeLength('');
-            perInfoSelectionItem.nameLength('');
-            perInfoSelectionItem.extraCodeLength('');
+            perInfoSelectionItem.codeLength(null);
+            perInfoSelectionItem.nameLength(null);
+            perInfoSelectionItem.extraCodeLength(null);
 
             perInfoSelectionItem.shareChecked(false);
 
@@ -146,7 +141,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             $("#selectionItemName").focus();
         }
 
-        //検証チェック
+        //検証チェヂ�
         validate() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -168,19 +163,19 @@ module nts.uk.com.view.cps016.a.viewmodel {
             }
         }
 
-        //新規モード
+        //新規モー�
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
             block.invisible();    
-            //「個人情報の選択項目」を登録する
-            service.addDataSelectionItem(command).done(function(selectId) {
+            //「個人惱の選択雮」を登録する
+            service.addDataSelectionItem(command).done(function(selectId:any) {
                 self.listItems.removeAll();
-                //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
+                //画面頛�「選択雮名称一覧�選択雮名称一覧」を登録する
                 self.getAllSelectionItems().done(() => {
                     $("#selectionItemName").focus();
 
-                    //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                    //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
                     confirm({ messageId: "Msg_456" }).ifYes(() => {
                         let params = {
                             isDialog: true,
@@ -210,17 +205,17 @@ module nts.uk.com.view.cps016.a.viewmodel {
             }).always(()=>block.clear());
         }
 
-        //更新モード
+        //更新モー�
         update() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
             block.invisible();    
-            //「個人情報の選択項目」を更新する
+            //「個人惱の選択雮」を更新する
             service.updateDataSelectionItem(command).done(function() {
 
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.listItems.removeAll();
-                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
+                    //画面頛�「選択雮名称一覧�選択雮名称一覧」を更新する
                     self.getAllSelectionItems().done(() => {
                         $("#selectionItemName").focus();
                     });
@@ -243,33 +238,33 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             let command = ko.toJS(currentItem);
 
-            confirm({ messageId: "Msg_551" }).ifYes(() => {
-              block.grayout();     
-                service.removeDataSelectionItem(command).done(function() {
+            service.removeDataSelectionItem(command).done(function() {
+				confirm({ messageId: "Msg_551" }).ifYes(() => {
+					block.grayout();     
+					service.removeDataSelectionItem(command).done(function() {
                     
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.listItems.removeAll();
-                        self.getAllSelectionItems().done(() => {
-                            if (self.listItems().length > 0) {
-                                if (oldIndex == lastIndex) {
-                                    oldIndex--;
-                                }
-                                let newItem = self.listItems()[oldIndex];
-                                currentItem.selectionItemId(newItem.selectionItemId);
-                            }
-                            //                        self.listItems.valueHasMutated();
-                            else {
-                                self.registerDataSelectioItem();
-                            }
-                        });
-                    });
-                    self.listItems.valueHasMutated();
-
-                }).fail(error => {
-                    alertError({ messageId: "Msg_521" });
-                }).always(()=> block.clear());
-
-            });
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+							self.listItems.removeAll();
+							self.getAllSelectionItems().done(() => {
+								if (self.listItems().length > 0) {
+									if (oldIndex == lastIndex) {
+										oldIndex--;
+									}
+									let newItem = self.listItems()[oldIndex];
+									currentItem.selectionItemId(newItem.selectionItemId);
+								}
+								//                        self.listItems.valueHasMutated();
+								else {
+									self.registerDataSelectioItem();
+								}
+							});
+						});
+						self.listItems.valueHasMutated();
+					}).fail(error => {
+							alertError({ messageId: "Msg_521" });
+					}).always(()=> block.clear());
+				});
+			});
         }
 
         // 選択肢の登録ボタン
@@ -302,13 +297,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
         selectionItemId: string;
         selectionItemName: string;
 
-        characterType: number;
-        codeLength: number;
-        nameLength: number;
-        extraCodeLength: number;
+        characterType?: number;
+        codeLength?: number;
+        nameLength?: number;
+        extraCodeLength?: number;
 
-        shareChecked: boolean;
-
+        shareChecked?: boolean;
         integrationCode?: string;
         memo?: string;
 
@@ -319,9 +313,9 @@ module nts.uk.com.view.cps016.a.viewmodel {
         selectionItemName: KnockoutObservable<string> = ko.observable('');
 
         characterType: KnockoutObservable<boolean> = ko.observable(false);
-        codeLength: KnockoutObservable<number> = ko.observable('');
-        nameLength: KnockoutObservable<number> = ko.observable('');
-        extraCodeLength: KnockoutObservable<number> = ko.observable('');
+        codeLength: KnockoutObservable<number> = ko.observable(null);
+        nameLength: KnockoutObservable<number> = ko.observable(null);
+        extraCodeLength: KnockoutObservable<number> = ko.observable(null);
 
         shareChecked: KnockoutObservable<boolean> = ko.observable(false);
 

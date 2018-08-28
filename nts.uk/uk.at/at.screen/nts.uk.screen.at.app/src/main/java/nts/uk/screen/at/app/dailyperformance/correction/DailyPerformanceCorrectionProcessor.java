@@ -1102,22 +1102,36 @@ public class DailyPerformanceCorrectionProcessor {
 					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
-			   int rowId = 0;
-				for(int id = 0; id<lstError.size(); id++){
+			int rowId = 0;
+			for (int id = 0; id < lstError.size(); id++) {
 				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
 					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
-						for(int x=0 ; x < lstError.get(id).getAttendanceItemId().size(); x++){
-						//lstError.get(id).getAttendanceItemId().forEach(x -> {
-							DPErrorDto value = lstError.get(id);
-							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId),
-									value.getEmployeeId(), "", "", value.getProcessingDate(),
-									value.getErrorCode(), value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : value.getErrorAlarmMessage(), lstError.get(id).getAttendanceItemId().get(x), "",
-									errorSetting.isBoldAtr(), errorSetting.getMessageColor(), appMapDateSid.containsKey(value.getEmployeeId()+"|"+value.getProcessingDate()) ? appMapDateSid.get(value.getEmployeeId()+"|"+value.getProcessingDate()) : ""));
-							rowId ++;
-						};
+						DPErrorDto value = lstError.get(id);
+						if (lstError.get(id).getAttendanceItemId().size() > 0) {
+							for (int x = 0; x < lstError.get(id).getAttendanceItemId().size(); x++) {
+								// lstError.get(id).getAttendanceItemId().forEach(x
+								// -> {
+								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+										"", "", value.getProcessingDate(), value.getErrorCode(),
+										value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay()
+												: "",
+										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
+										errorSetting.getMessageColor(),
+										appMapDateSid
+												.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+														? appMapDateSid.get(
+																value.getEmployeeId() + "|" + value.getProcessingDate())
+														: ""));
+								rowId++;
+							}
+						} else {
+							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+									value.getProcessingDate(), value.getErrorCode(),
+									value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : ""));
+						}
 					}
 				}
-			};
+			}
 			// get list item to add item name
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			

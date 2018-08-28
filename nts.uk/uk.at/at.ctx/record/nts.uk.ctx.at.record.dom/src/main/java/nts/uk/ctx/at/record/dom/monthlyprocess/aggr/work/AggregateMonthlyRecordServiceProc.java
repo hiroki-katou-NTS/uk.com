@@ -63,6 +63,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
@@ -1010,8 +1011,9 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// マイナスなしを含めた期間内の特別休暇残を集計する
 			// 期間内の特別休暇残を集計する
-			InPeriodOfSpecialLeave inPeriod = this.specialLeaveMng.complileInPeriodOfSpecialLeave(
-					this.companyId, this.employeeId, period, true, period.end(), specialLeaveCode, true);
+			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(this.companyId, this.employeeId, period, true, period.end(), specialLeaveCode, true,
+					false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+			InPeriodOfSpecialLeave inPeriod = this.specialLeaveMng.complileInPeriodOfSpecialLeave(param);
 			
 			// マイナスなしの残数・使用数を計算
 			RemainDaysOfSpecialHoliday remainDays = inPeriod.getRemainDays();

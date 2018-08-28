@@ -65,7 +65,7 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
 	public KrcstCalcResultRange krcstCalcResultRange;
-
+	
 	/**
 	 * Instantiates a new krcst optional item.
 	 */

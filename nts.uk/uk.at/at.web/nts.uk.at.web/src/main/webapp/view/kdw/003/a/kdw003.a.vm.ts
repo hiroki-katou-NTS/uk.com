@@ -599,12 +599,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
                 self.listAttendanceItemId(arr);
-                self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
                 // reload MiGrid
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
-                self.getNameMonthly();
+                self.isVisibleMIGrid(data.monthResult.hasItem);
                 //
             }else{
                 self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
@@ -2218,7 +2217,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         convertToCDisplayType(value: string): string {
             switch (value) {
-                case "TIME": return "Clock";
+                case "TIME":
+                case "CLOCK":
+                    return "Clock";
                 case "DAYS": return "Decimal";
                 case "COUNT": return "Integer";
                 case "CURRENCY": return "Currency";

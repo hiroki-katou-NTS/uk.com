@@ -322,7 +322,10 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-			switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
+		if(!inforData.getWorkTypeRemain().isPresent()) {
+			return null;
+		}	
+		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
 				case Pause:
 					return createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
 				case SubstituteHoliday:	
@@ -415,27 +418,57 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//振替区分をチェックする
 		if(transferSetting.getSubHolTransferSetAtr() == SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL) {
 			//一定時間の振替処理を行う
-			//振替可能時間と一定時間を比較する
-			if(timeSetting < transferSetting.getCertainTime().v()) {
-				return new TranferTimeInfor(createAtr, 0, Optional.empty());
-			} else {
-				return new TranferTimeInfor(createAtr, transferSetting.getCertainTime().v(), Optional.empty());
-			}
+			return new TranferTimeInfor(createAtr, this.processCertainTime(transferSetting, timeSetting), Optional.empty());
 		} else {
-			//振替可能時間と1日の時間を比較する
-			if(timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
-				//振替可能時間と半日の時間を比較する
-				if(timeSetting < transferSetting.getDesignatedTime().getHalfDayTime().v()) {
-					return new TranferTimeInfor(createAtr, 0, Optional.of((double) 0));
-				} else {
-					return new TranferTimeInfor(createAtr, transferSetting.getDesignatedTime().getHalfDayTime().v(), Optional.of(0.5));
-				}				
-			} else {
-				return new TranferTimeInfor(createAtr, transferSetting.getDesignatedTime().getOneDayTime().v(), Optional.of(1.0));
-			}
+			//指定時間の振替処理を行う
+			return this.processDesignationTime(transferSetting, timeSetting, createAtr);			
 		}
 	}
-
+	/**
+	 * 一定時間の振替処理を行う
+	 * @param transferSetting
+	 * @param timeSetting 振替可能時間
+	 * @return
+	 */
+	private int processCertainTime(SubHolTransferSet transferSetting, Integer timeSetting) {
+		//一定時間をチェックする
+		//振替可能時間と一定時間を比較する
+		if(transferSetting.getCertainTime().v() > 0
+				&& timeSetting >= transferSetting.getCertainTime().v()) {
+			return transferSetting.getCertainTime().v();
+		}				
+		return 0;
+	}
+	/**
+	 * 指定時間の振替処理を行う
+	 * @param transferSetting
+	 * @param timeSetting 振替可能時間
+	 * @param createAtr
+	 * @return
+	 */
+	private TranferTimeInfor processDesignationTime(SubHolTransferSet transferSetting, Integer timeSetting, CreateAtr createAtr) {
+		//代休振替時間と代休振替日数をクリアする
+		TranferTimeInfor outData = new TranferTimeInfor(createAtr, 0, Optional.of((double) 0));
+		//1日の時間をチェックする
+		if(transferSetting.getDesignatedTime().getOneDayTime().v() < 0) {
+			return outData;
+		}
+		//振替可能時間と1日の時間を比較する
+		if(timeSetting < transferSetting.getDesignatedTime().getOneDayTime().v()) {
+			//半日の時間をチェックする
+			//振替可能時間と半日の時間を比較する
+			if(transferSetting.getDesignatedTime().getHalfDayTime().v() > 0
+					&& timeSetting > transferSetting.getDesignatedTime().getHalfDayTime().v()) {
+				outData.setDays(Optional.of(0.5));
+				outData.setTranferTime(transferSetting.getDesignatedTime().getHalfDayTime().v());
+			}			
+		} else {
+			outData.setDays(Optional.of(1.0));
+			outData.setTranferTime(transferSetting.getDesignatedTime().getOneDayTime().v());
+		}
+		return outData;
+	}
+	
 	@Override
 	public InforFormerRemainData createInterimDataFromApp(String cid, InterimRemainCreateInfor createInfo, AppRemainCreateInfor appInfor,
 			InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr) {

@@ -6,6 +6,8 @@ module nts.uk.com.view.cmm021.a {
          *  Service paths
          */
         var servicePath: any = {
+            findAlreadySettingWindow: "ctx/sys/gateway/single/signon/find/window/alreadysetting",
+            findAlreadySettingOtherAcc: "ctx/sys/gateway/single/signon/find/otheracc/alreadysetting",
             findListUserInfo: "ctx/sys/gateway/single/signon/find/userInfo",
             findListWindowAccByUserId: "ctx/sys/gateway/single/signon/find/window/account",
             saveWindowAccount: "ctx/sys/gateway/single/signon/save/windowAcc",
@@ -18,6 +20,15 @@ module nts.uk.com.view.cmm021.a {
 
         }
         
+
+        export function findAlreadySettingWindow(sIds: Array<string>): JQueryPromise<Array<string>> {
+            return nts.uk.request.ajax(servicePath.findAlreadySettingWindow, sIds);
+        }
+
+        export function findAlreadySettingOtherAcc(sIds: Array<string>): JQueryPromise<Array<string>> {
+            return nts.uk.request.ajax(servicePath.findAlreadySettingOtherAcc, sIds);
+        }
+
         // Screen B
         export function findListUserInfo(sIds: Array<string>, isScreenC: boolean): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findListUserInfo, { employeeIds: sIds, isScreenC: isScreenC});

@@ -3,22 +3,18 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
+import nts.arc.primitive.constraint.HalfIntegerMaxValue;
+import nts.arc.primitive.constraint.HalfIntegerMinValue;
 
 /**
  * @author hungnm
  *
  */
 //チェック条件値日数
-@DecimalMaxValue("99999999.5")
-@DecimalMinValue("-99999999.5")
-@DecimalMantissaMaxLength(1)
-public class CheckedTimesValueDay  extends DecimalPrimitiveValue<CheckedTimesValueDay> {
+@HalfIntegerMinValue(-99999999.5)
+@HalfIntegerMaxValue(99999999.5)
+public class CheckedTimesValueDay  extends HalfIntegerPrimitiveValue<CheckedTimesValueDay> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,7 +23,7 @@ public class CheckedTimesValueDay  extends DecimalPrimitiveValue<CheckedTimesVal
 	 *
 	 * @param rawValue the raw value
 	 */	
-	public CheckedTimesValueDay(BigDecimal rawValue) {
+	public CheckedTimesValueDay(Double rawValue) {
 		super(rawValue);
 	}
 	

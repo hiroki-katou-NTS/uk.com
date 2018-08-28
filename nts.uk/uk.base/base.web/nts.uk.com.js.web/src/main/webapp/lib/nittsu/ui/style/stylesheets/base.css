@@ -3565,6 +3565,7 @@ button.nts-switch-button[disabled].selected {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
