@@ -1209,8 +1209,9 @@ public class DailyPerformanceCorrectionProcessor {
 			// get list item to add item name
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			
-			Map<Integer, String> lstAttendanceItem = this.repo.getListAttendanceItem(
-					new ArrayList<>(itemIds)).stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
+			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
+					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName())); // 9s
 			// add employee code & name
 			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
 				String name = lstAttendanceItem.get(errorRefer.getItemId());

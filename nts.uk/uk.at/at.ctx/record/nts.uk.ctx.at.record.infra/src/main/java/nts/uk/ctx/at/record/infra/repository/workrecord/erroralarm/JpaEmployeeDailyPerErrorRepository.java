@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements EmployeeDailyPerErrorRepository {
@@ -121,12 +122,12 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 					+ "' , '" + employeeDailyPerformanceError.getEmployeeID() + "' , '"
 					+ employeeDailyPerformanceError.getDate() + "' , '" + employeeDailyPerformanceError.getCompanyID()
 					+ "' , " + employeeDailyPerformanceError.getErrorCancelAble() + " , " + errorAlarmMessage + " )";
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()) {
 				String insertAttendanceItem = "INSERT INTO KRCDT_ER_ATTENDANCE_ITEM ( ID , ATTENDANCE_ITEM_ID ) "
 						+ "VALUES( '" + id + "' , " + attendanceItemId + " )";
-				statementI.executeUpdate(insertAttendanceItem);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

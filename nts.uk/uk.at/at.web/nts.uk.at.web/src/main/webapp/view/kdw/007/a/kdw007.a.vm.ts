@@ -35,7 +35,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_6"), key: 'code', width: 45 },
-            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 }
+            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 ,formatter: _.escape}
         ]);
         lstFilteredData: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedErrorAlarm: KnockoutObservable<any>;
@@ -101,7 +101,17 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
-                        self.selectedErrorAlarmCode(self.codeToSelect() == null ? self.lstFilteredData()[0].code : self.codeToSelect());
+                        if (self.codeToSelect() == null) {
+                            if (self.selectedErrorAlarmCode() == self.lstFilteredData()[0].code)
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
+                        } else {
+                            if (self.selectedErrorAlarmCode() == self.codeToSelect())
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.codeToSelect());
+                        }
                         self.isNewMode(false);
                         self.selectedTab('tab-1');
                     } else {

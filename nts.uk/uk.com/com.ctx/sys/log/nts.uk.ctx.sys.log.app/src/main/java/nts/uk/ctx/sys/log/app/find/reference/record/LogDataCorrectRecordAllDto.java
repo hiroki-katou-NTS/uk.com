@@ -42,8 +42,8 @@ public class LogDataCorrectRecordAllDto {
 
 		return new LogDataCorrectRecordAllDto(domain.getOperationId(), domain.getTargetDataKey().getDateKey(),
 				domain.getTargetDataType().value, domain.getCorrectedItem().getName(),
-				domain.getCorrectedItem().getValueBefore().getViewValue(),
-				domain.getCorrectedItem().getValueAfter().getViewValue(), domain.getRemark(),
+				domain.getCorrectedItem().getValueBefore().getRawValue()==null?"":domain.getCorrectedItem().getValueBefore().getRawValue().getValue().toString(),
+				domain.getCorrectedItem().getValueAfter().getRawValue()==null?"":domain.getCorrectedItem().getValueAfter().getRawValue().getValue().toString(), domain.getRemark(),
 				getCorrectionAttr(domain.getCorrectionAttr().value), domain.getTargetUser().getUserName(),
 				domain.getTargetUser().getEmployeeId(), domain.getTargetUser().getUserId(), getTarGetYmd(domain),
 				getTarGetYm(domain), getarGetY(domain),

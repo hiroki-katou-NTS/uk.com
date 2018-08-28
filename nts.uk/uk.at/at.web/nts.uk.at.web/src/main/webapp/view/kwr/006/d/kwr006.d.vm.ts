@@ -29,12 +29,14 @@ module nts.uk.at.view.kwr006.d {
                 let dfd = $.Deferred<void>();
                 let data = nts.uk.ui.windows.getShared('KWR006_D');
 
-                service.getDataStartPage().done(function(data: any) {
-                    let arr: ItemModel[] = [];
-                    _.forEach(data, function(value, index) {
-                        arr.push(new ItemModel(value.code, value.name));
-                    })
-                    self.itemList(arr);
+                service.getDataStartPage().done(function(data) {
+                    if (_.isEmpty(data)) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1410" }).then(() => nts.uk.ui.windows.close());
+
+                    } else {
+                        let arr = _.map(data, item => new ItemModel(item.code, item.name));
+                        self.itemList(arr);
+                    }
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -51,14 +53,17 @@ module nts.uk.at.view.kwr006.d {
                     return;
                 }
                 service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR006_D')).done(function(data: any) {
-                    console.log("Hoang" + data);
-                    dataReturnScrC.lstAtdChoose = data;
-                    dataReturnScrC.codeCopy = self.D1_6_value();
-                    dataReturnScrC.nameCopy = self.D1_7_value();
-                    nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
-                    nts.uk.ui.windows.close();
+                    if (!_.isEmpty(data)) {
+                        dataReturnScrC.lstAtdChoose = data;
+                        dataReturnScrC.codeCopy = self.D1_6_value();
+                        dataReturnScrC.nameCopy = self.D1_7_value();
+                        nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
+                        nts.uk.ui.windows.close();
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" }).then(() => nts.uk.ui.windows.close());
+                    }
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.error(err);
+                    nts.uk.ui.dialog.alertError(err);
                 })
             }
 
