@@ -18,39 +18,70 @@ module nts.uk.at.view.kmk012.e {
             ];
 
             //View list data on grid.
+             var items0 = (function() {
+                let list = [];
+                _.forEach(model.items, function(value) {
+                    list.push(new GridItem(value.code, value.closureId, value.name));
+                });
+                return list;
+            })();
+
+            var comboColumns = [{ prop: 'name', length: 12 }];
+                    
             $("#gridData").ntsGrid({
-                width: '320px',
-                height: '450px',
-                dataSource: model.items,
-                primaryKey: 'code',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                hidePrimaryKey: true,
-
-                //columns on grid list.
+                        width: '371px',
+                        height: '373px',
+                        dataSource: items0,
+                        primaryKey: 'code',
+                        virtualization: true,
+                        virtualizationMode: 'continuous',
+                        hidePrimaryKey: true,
                 columns: [
-                    { headerText: 'ID', key: 'code', dataType: 'string', width: '0px' },
-                    { headerText: getText('KMK012_38'), key: 'name', dataType: 'string', width: '150px' },
-                    { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '150px', ntsControl: 'Combobox' }
-                ],
-                features: [{ name: 'Sorting', type: 'local' }],
-
-                //Defind combobox and other control
+                    { headerText: 'ID', key: 'code', dataType: 'string', width: '50px'},
+                    { headerText: getText('KMK012_38'), key: 'name1', dataType: 'string', width: '120px' },    
+                    { headerText: getText('KMK012_39'), key: 'closureId1', dataType: 'string', width: '250px', ntsControl: 'Combobox'},
+                    
+                ], 
+                features: [],
+                ntsFeatures: [],
                 ntsControls: [
-                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, width: 115 }]
+                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, width: 227 }]
+                });
             });
-           
-        });
 
         //Add function button
         $("#btnRegistry").on("click", function() {
             var source = $("#gridData").igGrid("option", "dataSource");
-            
+            var list = [];
+            source = _.forEach(source, function(value) {
+                list.push({code: value.code, name: value.name1, closureId: value.closureId1});
+            })
             //Add source data on grid to server
-            model.insertDelArray(source);
+            model.insertDelArray(list);
         });
-        
+                
         __viewContext.bind(model);
 
     });
+    
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+    class GridItem {
+        code: string;
+        closureId1: number;
+        name1: string;
+        constructor(code: string, closureId: number, name: string) {
+            this.code = code;
+            this.closureId1 = closureId;
+            this.name1 = name;
+        }
+    }
 }
