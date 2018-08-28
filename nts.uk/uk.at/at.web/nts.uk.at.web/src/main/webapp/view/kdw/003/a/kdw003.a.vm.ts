@@ -3076,6 +3076,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any;
             __viewContext.vm.flagCalculation = false;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
@@ -3107,6 +3109,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 };
                 service.calcTime(param).done((value) => {
                     __viewContext.vm.lstDomainEdit = value.dailyEdits;
+                     nts.uk.ui.block.clear();
                     dfd.resolve(value.cellEdits);
                 });
             }
@@ -3578,12 +3581,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         updateCodeName(rowId: any, itemId: any, name: any, code: any) {
-            //            let objectName = {};
-            //            objectName["Name" + itemId] = name;
-            //            let objectCode = {};
-            //            objectCode["Code" + itemId] = code;
-            $("#dpGrid").mGrid("updateCell", rowId, "Name" + itemId, name)
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
+                _.each(value.cellEdits, itemResult => {
+                    $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value);
+                })
+                nts.uk.ui.block.clear();
+                dfd.resolve();
+            });
+            $("#dpGrid").mGrid("updateCell", rowId, "Name" + itemId, name, true)
             $("#dpGrid").mGrid("updateCell", rowId, "Code" + itemId, code);
+            return dfd.promise();
         }
     }
 
