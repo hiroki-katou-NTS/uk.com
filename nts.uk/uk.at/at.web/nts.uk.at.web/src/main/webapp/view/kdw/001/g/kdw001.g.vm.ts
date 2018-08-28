@@ -16,6 +16,7 @@ module nts.uk.at.view.kdw001.g {
             listTargetPerson: KnockoutObservableArray<any>;
             executionContent : number;
             executionContentName :string;
+            hasFocus: boolean = ko.observable(true);
             
             constructor() {
                 let self = this;
