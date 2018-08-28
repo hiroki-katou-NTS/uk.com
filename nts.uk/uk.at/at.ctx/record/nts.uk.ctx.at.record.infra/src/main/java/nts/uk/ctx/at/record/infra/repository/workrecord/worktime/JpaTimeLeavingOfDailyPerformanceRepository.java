@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
@@ -103,7 +104,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
-					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0).findFirst().orElse(null);
 			boolean isNew = krcdtTimeLeavingWork == null;
 			if (isNew) {
 				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
@@ -183,7 +185,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 
 			}
-			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+//			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
 			krcdtTimeLeavingWork.daiLeavingWork = entity;
 			if (isNew) {
 				timeWorks.add(krcdtTimeLeavingWork);
@@ -223,7 +225,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_LEAVING_WORK ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
 					+ timeLeavingOfDailyPerformance.getEmployeeId() + "' , '" + timeLeavingOfDailyPerformance.getYmd()
 					+ "' , " + timeLeavingOfDailyPerformance.getWorkTimes().v() + " )";
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
 				// TimeLeavingWork - attendanceStamp - actualStamp
@@ -356,7 +358,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ leaveStampLocationCode + "' , "
 						+ leaveStampSource + ", "
 						+ leaveNumberReflec + " )";
-				statementI.executeUpdate(insertTimeLeaving);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
 		} catch (Exception e) {
 			

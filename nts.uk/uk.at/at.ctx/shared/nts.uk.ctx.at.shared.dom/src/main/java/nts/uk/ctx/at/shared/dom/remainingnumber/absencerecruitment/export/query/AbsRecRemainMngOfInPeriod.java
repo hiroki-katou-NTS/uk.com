@@ -41,4 +41,8 @@ public class AbsRecRemainMngOfInPeriod {
 	 * 繰越日数
 	 */
 	private double carryForwardDays;
+	/**
+	 * 振休エラー
+	 */
+	private List<PauseError> pError;
 }

@@ -11,14 +11,6 @@ module nts.uk.at.view.kmf022.a {
             viewmodelM:new kmf022.m.viewmodel.ScreenModel()
         };
         __viewContext.bind(__viewContext.viewModel);
-        let height = $(window).height();
-        $('#tabpanel-m').css("height", height - 163);
-        $('#tabpanel-l').css("height", height - 144);
-        $('#tabpanel-a').css("height", height - 144);
-        $('#tabpanel-m').css({"overflow":"auto","-ms-overflow-style":"auto"});
-        $('#tabpanel-l').css({"overflow":"auto","-ms-overflow-style":"auto"});
-        $('#tabpanel-a').css({"overflow":"auto","-ms-overflow-style":"auto"});
-        $('html').css({"overflow-y":"hidden","-ms-overflow-style":"none"});
         // show active tab panel 
         $('.navigator li a.active').trigger('click');
     });

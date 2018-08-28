@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -368,7 +369,7 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					//sử lý 21
 					//requestList 206 LaiTV(đã sủa EA)
-					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
+					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
 						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
@@ -379,14 +380,13 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);*/
-					
 					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
-					dto.setChildRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
+					// tạm thời ngày cấp đang fix là ngày hệ thống
+					dto.setChildRemainNo(new RemainingNumber(preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
 					//requestList 207 LaiTV(đã sủa EA)
-					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
+					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
 						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
@@ -397,9 +397,9 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					dto.setCareLeaveNo(preGrantStatement + afterGrantStatement);*/
 					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
-					dto.setCareLeaveNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
+					// tạm thời ngày cấp đang fix là ngày hệ thống
+					dto.setCareLeaveNo(new RemainingNumber(preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
 					//requestList 208(期間内の特別休暇残を集計する) 
@@ -409,9 +409,12 @@ public class OptionalWidgetKtgFinder {
 						//get request list 208 rồi trả về
 					}
 					for(int i=0; i<20; i++) {
-						sPHDRamainNos.add(new RemainingNumber(0, 0, GeneralDate.today(), true));
+						boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+						sPHDRamainNos.add(new RemainingNumber(0, 0, GeneralDate.today(), showAfter));
 					}
-					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, 1, false);
+					ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, datePeriod, false, startDate, 1, false,
+							false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 					double afterGrant = 0.0;
 					if(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()) {
 						afterGrant = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays();
