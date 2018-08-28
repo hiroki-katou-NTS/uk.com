@@ -58,7 +58,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     perInfoSelectionItem.codeLength('');
                     perInfoSelectionItem.nameLength('');
                     perInfoSelectionItem.extraCodeLength('');
-                    perInfoSelectionItem.shareChecked(false);
                     perInfoSelectionItem.integrationCode('');
                     perInfoSelectionItem.memo('');
                 }
