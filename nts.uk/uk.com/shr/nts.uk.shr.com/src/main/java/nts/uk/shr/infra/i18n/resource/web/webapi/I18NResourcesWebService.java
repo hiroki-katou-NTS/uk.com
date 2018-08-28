@@ -3,6 +3,7 @@ package nts.uk.shr.infra.i18n.resource.web.webapi;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -49,7 +50,18 @@ public class I18NResourcesWebService {
 	}
 	
 	public static String getHtmlToLoadResources() {
-		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen?v=" + VERSION + "\"></script>";
+		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
+
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		if (AppContexts.user().hasLoggedIn()) {
+			companyId = AppContexts.user().companyId();
+			languageId = AppContexts.user().language().basicLanguageId();
+		}
+		String systemId = "COM";
+		String version = i18n.getVersionOfCurrentCompany();
+		String companyVersion = createEtagString(companyId, languageId, systemId, version);
+		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen?v=" + companyVersion + "\"></script>";
 	}
 	
 	@POST
@@ -140,7 +152,10 @@ public class I18NResourcesWebService {
 	
 	private static EntityTag createEtag(String companyId, String languageId, String systemId, String version) {
 		// tag's format companyId_languageId_systemId_version
-		
+		return new EntityTag(createEtagString(companyId, languageId, systemId, version));
+	}
+	
+	private static String createEtagString(String companyId, String languageId, String systemId, String version) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(companyId);
 		builder.append("_");
@@ -149,6 +164,6 @@ public class I18NResourcesWebService {
 		builder.append(systemId);
 		builder.append("_");
 		builder.append(version);
-		return new EntityTag(builder.toString());
+		return builder.toString();
 	}
 }

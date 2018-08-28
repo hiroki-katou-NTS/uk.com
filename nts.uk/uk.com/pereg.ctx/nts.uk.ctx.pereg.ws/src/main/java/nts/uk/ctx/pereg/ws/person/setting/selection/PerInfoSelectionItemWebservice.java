@@ -214,9 +214,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// Lanlt
 	@POST
-	@Path("findAllSelectionItem/{selectionItemClsAtr}")
-	public List<PerInfoSelectionItemDto> getAllelectionItem(@PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
-		return this.finder.getAllSelectionItem(selectionItemClsAtr);
+	@Path("findAllSelectionItem")
+	public List<PerInfoSelectionItemDto> getAllelectionItem() {
+		return this.finder.getAllSelectionItem();
 	}
 
 	// update selection order

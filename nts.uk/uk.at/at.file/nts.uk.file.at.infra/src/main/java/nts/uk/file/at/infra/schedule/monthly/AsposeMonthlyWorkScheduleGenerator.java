@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.app.find.attendance.AttItemDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -364,6 +365,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
 		}
+		headerData.fixedHeaderData.add(WorkScheOutputConstants.CLOSURE_DATE);
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.REMARK);
 	}
 	
@@ -820,6 +822,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			detailedDate.setYearMonth(workingDate);
 			employeeData.lstDetailedMonthlyPerformance.add(detailedDate);
 			
+			// Closure date
+			ClosureDate closureDate = x.getClosureDate();
+			if (closureDate.getLastDayOfMonth()) {
+				detailedDate.closureDate = WorkScheOutputConstants.CLOSURE_DATE_LAST_DAY;
+			}
+			else {
+				detailedDate.closureDate = String.format(WorkScheOutputConstants.CLOSURE_DATE_NON_LAST_DAY, closureDate.getClosureDay().v());
+			}
+			
+			
 			// Remark content, it's full detail remark but will be processed on printing
 			detailedDate.errorDetail = "";
 			if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
@@ -837,7 +849,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value));
 				}
 				else {
-					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 			});
 		});
@@ -889,6 +901,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
 						YearMonth workingDate = x.getYearMonth();
 						
+						// Closure date
+						ClosureDate closureDate = x.getClosureDate();
+						if (closureDate.getLastDayOfMonth()) {
+							personalPerformanceDate.closureDate = WorkScheOutputConstants.CLOSURE_DATE_LAST_DAY;
+						}
+						else {
+							personalPerformanceDate.closureDate = String.format(WorkScheOutputConstants.CLOSURE_DATE_NON_LAST_DAY, closureDate.getClosureDay().v());
+						}
+						
 						// Remark content, it's full detail remark but will be processed on printing
 						personalPerformanceDate.detailedErrorData = "";
 						if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
@@ -906,7 +927,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value));
 							}
 							else {
-								personalPerformanceDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+								personalPerformanceDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 							}
 						});
 					});
@@ -1401,10 +1422,25 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						// A5_1
 						Cell dateCell = cells.get(currentRow, 0);
 						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
-						dateCell.setValue(yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month()));
+						String yearMonthStr = yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month());
+						
+						 
+						Cell prevYearMonthCell = cells.get(currentRow - dataRowCount, 0);
+						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
+							Range yearMonthRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
+							yearMonthRange.merge();
+						}
+						else {
+							dateCell.setValue(yearMonthStr);
+						}
 						
 						// A5_2
 						List<ActualValue> lstItem = detailedDailyPerformanceReportData.getActualValue();
+						
+						// A5_4
+						String closureDate = detailedDailyPerformanceReportData.getClosureDate();
+						Cell closureCell = cells.get(currentRow, 1);
+						closureCell.putValue(closureDate);
 						
 						// Divide list into smaller lists (max 16 items)
 						int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
@@ -1925,11 +1961,20 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				
 				// B5_1
 				Cell employeeCell = cells.get(currentRow, 0);
-				employeeCell.setValue(employee.getEmployeeName());
+				// Perform merge cell if prev data row belong to same employee
+				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
+				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
+					Range employeeRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
+					employeeRange.merge();
+				}
+				else {
+					employeeCell.setValue(employee.getEmployeeName());
+				}
 				
-//				Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 2);
-//				employeeRange.merge();
-				
+				// B5_3
+				Cell closureDateCell = cells.get(currentRow, 1);
+				String closureDate = employee.getClosureDate();
+				closureDateCell.putValue(closureDate);
 				
 				if (lstItem != null) {
 					// B5_3
@@ -2322,9 +2367,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			Cell dateCell = cells.get(currentRow, 0);
 			dateCell.setValue(headerData.getFixedHeaderData().get(0));
 			
+			// A2_1
+			Cell closureCell = cells.get(currentRow, 1);
+			closureCell.setValue(headerData.getFixedHeaderData().get(1));
+			
 			// A2_4
 			Cell remarkCell = cells.get(currentRow, 28);
-			remarkCell.setValue(headerData.getFixedHeaderData().get(1));
+			remarkCell.setValue(headerData.getFixedHeaderData().get(2));
 //		}
 //		else {
 //			// B2_1
