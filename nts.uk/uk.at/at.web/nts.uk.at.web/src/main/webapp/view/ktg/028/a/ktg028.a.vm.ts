@@ -184,15 +184,14 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     data.displayItemTypes = displayItemTypes;
                     service.update(data).done(function() {
                         self.isCreated(false);
-                        self.findAll().done(function() {
-                            self.currentCode_A2(data.topPageCode);
-                        });
                         nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId });
-                        block.clear();
                     }).always(function() {
                         $("#name").focus();
+                        self.findAll().done(function() {
+                            self.currentCode_A2(data.topPageCode);
+                        });
                     });
                 } else {
                     let data: any = {};
@@ -213,7 +212,10 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
                             $("#code").focus();
                         });
-                        block.clear();
+                    }).always(function() {
+                        self.findAll().done(function() {
+                            self.currentCode_A2(data.topPageCode);
+                        });
                     });
                 }
             }
