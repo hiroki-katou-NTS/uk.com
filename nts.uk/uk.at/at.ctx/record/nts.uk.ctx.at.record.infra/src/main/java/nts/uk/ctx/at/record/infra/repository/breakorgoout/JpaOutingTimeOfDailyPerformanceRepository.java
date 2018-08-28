@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
@@ -269,7 +270,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						+ outingTimeSheet.getOutingTimeCalculation().valueAsMinutes() + " , "
 						+ outingTimeSheet.getOutingTime().valueAsMinutes() + " , "
 						+ outingTimeSheet.getReasonForGoOut().value + " )";
-				statementI.executeUpdate(insertTableSQL);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
 			
