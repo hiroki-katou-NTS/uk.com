@@ -239,32 +239,30 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             let command = ko.toJS(currentItem);
 
-            service.removeDataSelectionItem(command).done(function() {
-				confirm({ messageId: "Msg_551" }).ifYes(() => {
-					block.grayout();     
-					service.removeDataSelectionItem(command).done(function() {
-                    
-						nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-							self.listItems.removeAll();
-							self.getAllSelectionItems().done(() => {
-								if (self.listItems().length > 0) {
-									if (oldIndex == lastIndex) {
-										oldIndex--;
-									}
-									let newItem = self.listItems()[oldIndex];
-									currentItem.selectionItemId(newItem.selectionItemId);
+			confirm({ messageId: "Msg_551" }).ifYes(() => {
+				block.grayout();     
+				service.removeDataSelectionItem(command).done(function() {
+                
+					nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+						self.listItems.removeAll();
+						self.getAllSelectionItems().done(() => {
+							if (self.listItems().length > 0) {
+								if (oldIndex == lastIndex) {
+									oldIndex--;
 								}
-								//                        self.listItems.valueHasMutated();
-								else {
-									self.registerDataSelectioItem();
-								}
-							});
+								let newItem = self.listItems()[oldIndex];
+								currentItem.selectionItemId(newItem.selectionItemId);
+							}
+							//                        self.listItems.valueHasMutated();
+							else {
+								self.registerDataSelectioItem();
+							}
 						});
-						self.listItems.valueHasMutated();
-					}).fail(error => {
-							alertError({ messageId: "Msg_521" });
-					}).always(()=> block.clear());
-				});
+					});
+					self.listItems.valueHasMutated();
+				}).fail(error => {
+						alertError({ messageId: "Msg_521" });
+				}).always(()=> block.clear());
 			});
         }
 
