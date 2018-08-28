@@ -173,6 +173,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
+                    self.checkCreateaaa(false);
+                    self.enableCreateNew(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
