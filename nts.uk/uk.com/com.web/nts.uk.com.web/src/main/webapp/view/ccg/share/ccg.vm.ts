@@ -1292,6 +1292,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let inputCDL008 = {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
+                    selectedSystemType: self.systemType,
                     selectedCodes: self.selectedCodeWorkplace()
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
