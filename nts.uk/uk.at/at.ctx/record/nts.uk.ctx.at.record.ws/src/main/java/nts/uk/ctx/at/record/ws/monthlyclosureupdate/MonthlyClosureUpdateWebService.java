@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.CheckCommand;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.CheckMonthlyClosureCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.ConfirmCompleteMonthlyUpdateCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.ExecuteMonthlyClosureCommandHandler;
@@ -51,6 +52,7 @@ public class MonthlyClosureUpdateWebService extends WebService {
 	@Inject
 	private MonthlyClosureUpdateLogExportService exportService;
 
+
 	@POST
 	@Path("execution")
 	public AsyncTaskInfo executeMonthlyClosureUpdate(MonthlyClosureResponse command) {
@@ -58,9 +60,9 @@ public class MonthlyClosureUpdateWebService extends WebService {
 	}
 
 	@POST
-	@Path("checkStatus/{closureId}")
-	public MonthlyClosureResponse checkMonthlyClosureUpdate(@PathParam("closureId") int closureId) {
-		return checkHandler.handle(closureId);
+	@Path("checkStatus")
+	public MonthlyClosureResponse checkMonthlyClosureUpdate(CheckCommand command) {
+		return checkHandler.handle(command);
 	}
 
 	@POST
@@ -83,8 +85,8 @@ public class MonthlyClosureUpdateWebService extends WebService {
 
 	@POST
 	@Path("getInfors")
-	public Kmw006aResultDto getInfor() {
-		return monthlyClosureFinder.getClosureInfors();
+	public Kmw006aResultDto getInfor(MonthlyClosureResponse response) {
+		return monthlyClosureFinder.getClosureInfors(response);
 	}
 
 	@POST

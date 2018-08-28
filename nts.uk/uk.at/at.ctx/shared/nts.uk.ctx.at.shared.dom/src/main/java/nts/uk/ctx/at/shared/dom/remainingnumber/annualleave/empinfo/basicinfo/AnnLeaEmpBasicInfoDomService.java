@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -16,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -29,6 +33,12 @@ public class AnnLeaEmpBasicInfoDomService{
 	
 	@Inject 
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	
+	@Inject 
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
 		
 	private static final String not_grant = "未付与";
 	
@@ -116,6 +126,24 @@ public class AnnLeaEmpBasicInfoDomService{
 	 */
 	public YearHolidayInfoResult getYearHolidayInfo(AnnLeaEmpBasicInfo annLea){
 		YearHolidayInfoResult result = new YearHolidayInfoResult(GeneralDate.today(), 0.0, Optional.of(0));
+		
+		// 次回休暇付与を計算する開始日を取得する
+		GeneralDate baseDate = GeneralDate.today();
+		
+		if (annLea.getEntryDate() != null && annLea.getRetireDate() != null ){
+			if (baseDate.before(annLea.getEntryDate()) || baseDate.after(annLea.getRetireDate())){
+				
+			}
+			
+		}
+		
+		// ドメインモデル「所属会社履歴（社員別）」を取得し、入社年月日を取得する
+		AffCompanyHistSharedImport affComHist = empEmployeeAdapter.GetAffComHisBySidAndBaseDate(annLea.getSid(), baseDate);
+		
+		
+		// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
+		Optional<WorkingConditionItem> workCond = workingConditionItemRepository.getBySidAndStandardDate(annLea.getSid(),baseDate);
+		
 		return result;
 	}
 	
