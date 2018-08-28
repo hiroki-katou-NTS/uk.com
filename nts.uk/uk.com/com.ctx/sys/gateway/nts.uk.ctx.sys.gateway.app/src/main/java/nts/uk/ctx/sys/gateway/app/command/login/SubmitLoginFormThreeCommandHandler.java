@@ -157,10 +157,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");
 		}
-		// check input password
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
+//		// check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
 	}
 
 	/**

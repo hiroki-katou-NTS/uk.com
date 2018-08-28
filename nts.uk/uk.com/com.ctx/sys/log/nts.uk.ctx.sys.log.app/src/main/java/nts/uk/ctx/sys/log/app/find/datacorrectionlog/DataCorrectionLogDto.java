@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
+package nts.uk.ctx.sys.log.app.find.datacorrectionlog;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -22,5 +22,6 @@ public class DataCorrectionLogDto {
 	private GeneralDateTime modifiedDateTime;
 	private int correctionAttr;
 	private String employeeId;
+	private int displayOrder;
 	
 }

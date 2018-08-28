@@ -57,10 +57,10 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
                 self.elapseTime.start();
-                if (self.params)
+                if (self.params.periodEnd)
                     self.processMonthlyUpdate();
                 else {
-                    self.taskId(localStorage.getItem("MonthlyClosureTaskId"));
+                    self.taskId(localStorage.getItem("MonthlyClosureTaskId") ? localStorage.getItem("MonthlyClosureTaskId") : self.params.monthlyClosureUpdateLogId);
                     self.checkAsyncProcess();
                 }
                 dfd.resolve();
@@ -128,6 +128,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.isComplete(true);
                 $("#F3_2").focus();
                 self.endTime(taskInfor.finishedAt);
+                localStorage.setItem("MonthlyClosureExecutionEndDate", self.endTime());
                 self.elapseTime.end();
                 self.completeStatus(result.updateLog.completeStatus);
             }).fail((error) => {

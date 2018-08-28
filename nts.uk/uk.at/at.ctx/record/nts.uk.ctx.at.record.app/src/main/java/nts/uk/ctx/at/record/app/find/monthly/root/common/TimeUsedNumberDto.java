@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.monthly.root.dto;
+package nts.uk.ctx.at.record.app.find.monthly.root.common;
 
 import java.util.Optional;
 
@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseTimes;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.UseNumber;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -20,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 @AllArgsConstructor
 /** 時間年休使用時間 */
 /** 年休上限残時間 */
-public class TimeAnnualLeaveUsedTimeDto implements ItemConst {
+public class TimeUsedNumberDto implements ItemConst {
 
 	/** 使用回数 */
 	@AttendanceItemValue(type = ValueType.COUNT)
@@ -42,8 +45,8 @@ public class TimeAnnualLeaveUsedTimeDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
 	private Integer usedTimeAfterGrant;
 
-	public static TimeAnnualLeaveUsedTimeDto from(TimeAnnualLeaveUsedTime domain) {
-		return domain == null ? null : new TimeAnnualLeaveUsedTimeDto(
+	public static TimeUsedNumberDto from(TimeAnnualLeaveUsedTime domain) {
+		return domain == null ? null : new TimeUsedNumberDto(
 						domain.getUsedTimes().v(), 
 						domain.getUsedTime().valueAsMinutes(),
 						domain.getUsedTimeBeforeGrant().valueAsMinutes(),
@@ -57,8 +60,8 @@ public class TimeAnnualLeaveUsedTimeDto implements ItemConst {
 							Optional.ofNullable(usedTimeAfterGrant == null ? null : new UsedMinutes(usedTimeAfterGrant)));
 	}
 	
-	public static TimeAnnualLeaveUsedTimeDto from(AnnualLeaveMaxRemainingTime domain) {
-		return domain == null ? null : new TimeAnnualLeaveUsedTimeDto(
+	public static TimeUsedNumberDto from(AnnualLeaveMaxRemainingTime domain) {
+		return domain == null ? null : new TimeUsedNumberDto(
 						0, domain.getTime().valueAsMinutes(),
 						domain.getTimeBeforeGrant().valueAsMinutes(),
 						domain.getTimeAfterGrant().isPresent() ? domain.getTimeAfterGrant().get().valueAsMinutes() : null);
@@ -69,5 +72,20 @@ public class TimeAnnualLeaveUsedTimeDto implements ItemConst {
 							new RemainingMinutes(usedTime),
 							new RemainingMinutes(usedTimeBeforeGrant),
 							Optional.ofNullable(usedTimeAfterGrant == null ? null : new RemainingMinutes(usedTimeAfterGrant)));
+	}
+	
+	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
+		return domain == null ? null : new TimeUsedNumberDto(
+						domain.getUseNumber().v(), 
+						domain.getUseTimes().valueAsMinutes(),
+						domain.getBeforeUseGrantTimes().valueAsMinutes(),
+						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
+	}
+	
+	public SpecialLeaveUseTimes toSpecial(){
+		return new SpecialLeaveUseTimes(new UseNumber(usedTimes), 
+										new SpecialLeavaRemainTime(usedTime), 
+										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
+										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
 	}
 }
