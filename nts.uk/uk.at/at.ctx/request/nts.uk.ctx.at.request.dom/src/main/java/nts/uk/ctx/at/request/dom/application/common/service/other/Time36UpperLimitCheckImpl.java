@@ -89,12 +89,12 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		}
 		if (!agreementTimeList.isEmpty()) {
 			AgreementTimeImport agreementTime = agreementTimeList.get(0);
-			if (agreementTime.getAfterAppReflect().isPresent()) {
-				AgreeTimeOfMonthExport agreeTimeOfMonth = agreementTime.getAfterAppReflect().get();
-				// 「時間外時間の詳細」．36時間=「月別実績の36協定時間」．申請反映後情報．限度エラー時間
-				appOvertimeDetail.setTime36(agreeTimeOfMonth.getLimitErrorTime());
-				// 「時間外時間の詳細」．実績時間=「月別実績の36協定時間」．申請反映後情報．36協定時間
-				appOvertimeDetail.setActualTime(agreeTimeOfMonth.getAgreementTime());
+			if (agreementTime.getConfirmed().isPresent()) {
+				AgreeTimeOfMonthExport confirmed = agreementTime.getConfirmed().get();
+				// 「時間外時間の詳細」．36時間=「36協定時間一覧」．確定情報．限度エラー時間
+				appOvertimeDetail.setTime36(confirmed.getLimitErrorTime());
+				// 「時間外時間の詳細」．実績時間=「36協定時間一覧」．確定情報．36協定時間
+				appOvertimeDetail.setActualTime(confirmed.getAgreementTime());
 			}
 		}
 		// 36協定対象項目一覧を取得
