@@ -775,6 +775,7 @@ module nts.uk.com.view.ccg.share.ccg {
                                     self.inputPeriod(new DateRangePickerModel(period.startDate, period.endDate));
                                     self.isApplySearchDone = true;
 
+                                    this.saveEmployeeRangeSelection();
                                     // apply data search
                                     self.applyDataSearch();
                                 });
@@ -1542,6 +1543,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.setAdvancedSearchParam();
 
                 nts.uk.ui.block.grayout(); // block ui
+                self.findAndReturnListEmployee(true);
+            }
+
+            /**
+             * Save employeeRangeSelection
+             */
+            private saveEmployeeRangeSelection(): void {
+                let self = this;
                 if (self.showClosure) { // save EmployeeRangeSelection if show closure
                     // check data exist
                     let empRangeSelection = self.employeeRangeSelection ?
@@ -1562,11 +1571,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             break;
                         default: break; // systemType not found
                     }
-                    service.saveEmployeeRangeSelection(empRangeSelection).done(() => {
-                        self.findAndReturnListEmployee(true);
-                    });
-                } else {
-                    self.findAndReturnListEmployee(true);
+                    service.saveEmployeeRangeSelection(empRangeSelection);
                 }
             }
 
