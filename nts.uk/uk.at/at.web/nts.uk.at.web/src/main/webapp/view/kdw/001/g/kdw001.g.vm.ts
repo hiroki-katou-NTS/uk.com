@@ -16,7 +16,7 @@ module nts.uk.at.view.kdw001.g {
             listTargetPerson: KnockoutObservableArray<any>;
             executionContent : number;
             executionContentName :string;
-            hasFocus: boolean = ko.observable(true);
+            showPeriod :boolean;
             
             constructor() {
                 let self = this;
@@ -30,6 +30,12 @@ module nts.uk.at.view.kdw001.g {
                     self.listPeson = param.listTargetPerson;
                     self.listTargetPerson = ko.observableArray([]);
                     self.executionContent = param.executionContent;
+                    if(param.executionContent == 3){
+                        self.showPeriod = false;
+                    } else {
+                        self.showPeriod = true;
+                    }
+                    
                     self.executionContentName = param.executionContentName;
                     
                     if(self.executionContentName == "日別計算" || self.executionContentName == "承認結果反映" || self.executionContentName == "日別作成"){
