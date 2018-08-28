@@ -466,7 +466,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let lastIndex = self.listSelection().length - 1;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeDataSelection(command).done(function() {
-
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                         self.listSelection.removeAll();
                         service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
@@ -482,8 +481,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 self.historySelection().histId.valueHasMutated();
                             }
                         });
+                        if (self.listSelection().length > 1) {
+                            self.checkCreateaaa(false);
+                        } else {
+                            self.checkCreateaaa(true);
+                        }
                     });
                 });
+                
             }).ifNo(() => {
                 self.selection().selectionID.valueHasMutated();
             })
