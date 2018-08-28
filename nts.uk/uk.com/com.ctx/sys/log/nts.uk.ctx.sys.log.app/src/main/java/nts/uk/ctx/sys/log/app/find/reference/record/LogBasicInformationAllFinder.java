@@ -19,7 +19,6 @@ import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
 import nts.uk.ctx.sys.log.dom.pereg.IPersonInfoCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.reference.ItemNoEnum;
 import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoImport;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.RoleExportAdapter;
 import nts.uk.ctx.sys.log.dom.reference.WebMenuAdapter;
@@ -103,13 +102,13 @@ public class LogBasicInformationAllFinder {
 					for(LoginRecord loginRecord :rsLoginRecord){
 						LogBasicInformation	logBasicInformation=map.get(loginRecord.getOperationId());
 						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-						PersonEmpBasicInfoImport persionInfor = null;
-						persionInfor = personEmpBasicInfoAdapter
-								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-						if (persionInfor != null) {
-							// itemNo 3
-							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-						}
+//						PersonEmpBasicInfoImport persionInfor = null;
+//						persionInfor = personEmpBasicInfoAdapter
+//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
+//						if (persionInfor != null) {
+//							// itemNo 3
+//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
+//						}
 						// Set user login name
 						// itemNo 1
 						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
@@ -202,13 +201,13 @@ public class LogBasicInformationAllFinder {
 					for(StartPageLog oPStartPageLog:listStartPageLog){					
 						LogBasicInformation	logBasicInformation=map.get(oPStartPageLog.getBasicInfo().getOperationId());
 						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-						PersonEmpBasicInfoImport persionInfor = null;
-						persionInfor = personEmpBasicInfoAdapter
-								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-						if (persionInfor != null) {
-							// itemNo 3
-							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-						}
+//						PersonEmpBasicInfoImport persionInfor = null;
+//						persionInfor = personEmpBasicInfoAdapter
+//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
+//						if (persionInfor != null) {
+//							// itemNo 3
+//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
+//						}
 						// Set user login name
 						// itemNo 1
 						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
@@ -307,13 +306,13 @@ public class LogBasicInformationAllFinder {
 						// convert log basic info to DTO
 						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
 						// get employee code login
-						PersonEmpBasicInfoImport persionInfor = null;
-						persionInfor = personEmpBasicInfoAdapter
-								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-						if (persionInfor != null) {
-							// itemNo 3
-							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-						}
+//						PersonEmpBasicInfoImport persionInfor = null;
+//						persionInfor = personEmpBasicInfoAdapter
+//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
+//						if (persionInfor != null) {
+//							// itemNo 3
+//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
+//						}
 						// Set user login name
 						// itemNo 1
 						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
@@ -381,14 +380,14 @@ public class LogBasicInformationAllFinder {
 						// itemNO 20
 						logBasicInfoDto.setUserNameTaget(personInfoCorrectionLog.getTargetUser().getUserName());
 						// itemNo 21
-						persionInfor = null;
-						persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
-								personInfoCorrectionLog.getTargetUser().getEmployeeId());
-						if (persionInfor != null) {
-							logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
-						} else {
-							logBasicInfoDto.setEmployeeCodeTaget("");
-						}
+//						persionInfor = null;
+//						persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
+//								personInfoCorrectionLog.getTargetUser().getEmployeeId());
+//						if (persionInfor != null) {
+//							logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
+//						} else {
+//							logBasicInfoDto.setEmployeeCodeTaget("");
+//						}
 						// itemNo 22
 						logBasicInfoDto.setCategoryProcess(
 								getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value));
@@ -408,23 +407,23 @@ public class LogBasicInformationAllFinder {
 										logBasicInfoDto.setMethodCorrection(this.getinfoOperateAttr(
 												categoryCorrectionLog.getInfoOperateAttr().value));
 										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
-											//if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
-												GeneralDate datekey = categoryCorrectionLog.getTargetKey()
-														.getDateKey();
-												// item 25
-												logBasicInfoDto.setTarGetYmd(datekey.toString());
-												// item 26
-												logBasicInfoDto
-														.setTarGetYm(String.valueOf(datekey.yearMonth()));
-												// item 27
-												logBasicInfoDto.setTarGetY(String.valueOf(datekey.year()));
-												// item 28
-												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
-														.getStringKey().isPresent()
-																? categoryCorrectionLog.getTargetKey()
-																		.getStringKey().get()
-																: "");
-											//}
+//											if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+//												Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
+//														.getDateKey();
+//												// item 25
+//												logBasicInfoDto.setTarGetYmd(datekey.get().toString());
+//												// item 26
+//												logBasicInfoDto
+//														.setTarGetYm(String.valueOf(datekey.get().yearMonth()));
+//												// item 27
+//												logBasicInfoDto.setTarGetY(String.valueOf(datekey.get().year()));
+//												// item 28
+//												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
+//														.getStringKey().isPresent()
+//																? categoryCorrectionLog.getTargetKey()
+//																		.getStringKey().get()
+//																: "");
+//											}
 
 										}
 
@@ -487,12 +486,12 @@ public class LogBasicInformationAllFinder {
 							// itemNo 2
 							logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
 							// itemNo 3
-							PersonEmpBasicInfoImport persionInfor = null;
-							persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
-									logBasicInformation.getUserInfo().getEmployeeId());
-							if (persionInfor != null) {
-								logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-							}
+//							PersonEmpBasicInfoImport persionInfor = null;
+//							persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
+//									logBasicInformation.getUserInfo().getEmployeeId());
+//							if (persionInfor != null) {
+//								logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
+//							}
 
 							// itemNo 4
 							if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
@@ -566,14 +565,14 @@ public class LogBasicInformationAllFinder {
 							// itemNo 20
 							logBasicInfoDto.setUserNameTaget(logDataCorrectRecordRefeDto.getUserNameTaget());
 							// itemNo 21
-							persionInfor = null;
-							persionInfor = personEmpBasicInfoAdapter
-									.getPersonEmpBasicInfoByEmpId(logDataCorrectRecordRefeDto.getEmployeeIdtaget());
-							if (persionInfor != null) {
-								logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
-							} else {
-								logBasicInfoDto.setEmployeeCodeTaget("");
-							}
+//							persionInfor = null;
+//							persionInfor = personEmpBasicInfoAdapter
+//									.getPersonEmpBasicInfoByEmpId(logDataCorrectRecordRefeDto.getEmployeeIdtaget());
+//							if (persionInfor != null) {
+//								logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
+//							} else {
+//								logBasicInfoDto.setEmployeeCodeTaget("");
+//							}
 							// itemNo 22
 							logBasicInfoDto.setTarGetYmd(logDataCorrectRecordRefeDto.getTarGetYmd());
 							// itemNo 23
