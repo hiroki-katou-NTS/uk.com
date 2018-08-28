@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk012.e {
             var comboColumns = [{ prop: 'name', length: 12 }];
                     
             $("#gridData").ntsGrid({
-                        width: '371px',
+                        width: '390px',
                         height: '373px',
                         dataSource: items0,
                         primaryKey: 'code',
@@ -34,15 +34,26 @@ module nts.uk.at.view.kmk012.e {
                         virtualizationMode: 'continuous',
                         hidePrimaryKey: true,
                 columns: [
-                    { headerText: 'ID', key: 'code', dataType: 'string', width: '50px'},
-                    { headerText: getText('KMK012_38'), key: 'name1', dataType: 'string', width: '120px' },    
-                    { headerText: getText('KMK012_39'), key: 'closureId1', dataType: 'string', width: '250px', ntsControl: 'Combobox'},
+                    { headerText: 'ID', key: 'code', dataType: 'string', width: '5px'},
+                    { headerText: getText('KMK012_38'), key: 'name1', dataType: 'string', width: '160px' },    
+                    { headerText: getText('KMK012_39'), key: 'closureId1', dataType: 'string', width: '210px', ntsControl: 'Combobox'},
                     
                 ], 
-                features: [],
+                features: [{ name: 'Resizing',
+                                            columnSettings: [{
+                                                columnKey: 'id', allowResizing: true, minimumWidth: 30
+                                            }, {
+                                                columnKey: 'flag', allowResizing: false 
+                                            }] 
+                                        },
+                                        { 
+                                            name: 'Selection',
+                                            mode: 'row',
+                                            multipleSelection: true
+                                        }],
                 ntsFeatures: [],
                 ntsControls: [
-                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, width: 227 }]
+                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true }]
                 });
             });
 
