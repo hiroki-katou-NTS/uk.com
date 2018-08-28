@@ -280,7 +280,7 @@ module cps002.a.vm {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
                 if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
-                    if (cardNo && cardNo.length < ce.digitsNumber) {
+                    if (cardNo && cardNo.length <= ce.digitsNumber) {
                         switch (ce.method) {
                             case EDIT_METHOD.PreviousZero: {
                                 emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
@@ -299,8 +299,6 @@ module cps002.a.vm {
                                 break;
                             }
                         }
-                    } else {
-                        emp.cardNo("");
                     }
                 }
             });
@@ -444,9 +442,14 @@ module cps002.a.vm {
         }
 
         initStampCard(newEmployeeCode: string) {
-            let self = this;
+            let self = this,
+                ce = ko.toJS(self.stampCardEditing);
             service.getInitCardNumber(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
+                if (value && value.length <= ce.digitsNumber) {
+                    self.currentEmployee().cardNo(value);
+                }else{
+                    self.currentEmployee().cardNo("");
+                }
             });
         }
 
@@ -643,7 +646,7 @@ module cps002.a.vm {
             self.categoryList.removeAll();
 
             service.getCopySetting().done((result: Array<ICopySetting>) => {
-                if (result.length) {
+                if (result.length > 0) {
                     self.categoryList(_.map(result, item => {
                         return new CategoryItem(item);
                     }));
