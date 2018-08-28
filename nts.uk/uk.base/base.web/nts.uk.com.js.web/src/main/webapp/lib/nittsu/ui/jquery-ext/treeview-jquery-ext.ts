@@ -63,6 +63,8 @@ module nts.uk.ui.jqueryExtentions {
                 $tree.igTreeGridSelection('selectRowById', selectedId);
                 virtualScroll($tree, selectedId);
             }
+            
+            $tree.trigger("ntstreeselectionchanged", [ selectedId ]);
         }
         
         function virtualScroll($tree: JQuery, id: any) {
