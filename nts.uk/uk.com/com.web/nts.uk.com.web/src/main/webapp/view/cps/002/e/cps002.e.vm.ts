@@ -17,7 +17,6 @@ module cps002.e.vm {
             let self = this, textValue = "";
             self.cardNoMode = getShared("empCodeMode");
 
-
             if (self.cardNoMode) {
                 $("#cardNumber").focus();
             } else {
@@ -30,6 +29,13 @@ module cps002.e.vm {
                 });
                 self.displayGenerateEmCode(displayEmCode.join("").toString());
             }
+        }
+        start(): JQueryPromise<any>{
+            let self = this,
+                dfd = $.Deferred();
+            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption;
+            setTimeout(dfd.resolve(),100);
+            return dfd.promise();
         }
 
         getCode() {

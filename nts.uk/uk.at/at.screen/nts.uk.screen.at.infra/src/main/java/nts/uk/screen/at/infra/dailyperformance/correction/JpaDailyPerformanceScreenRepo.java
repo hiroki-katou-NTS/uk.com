@@ -840,6 +840,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
+		if(lstAttendanceItem.size() <= 0){
+			return Collections.emptyList();
+		}
+		
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtDailyAttendanceItem> entities = this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
 				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem)

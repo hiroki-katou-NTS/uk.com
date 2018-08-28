@@ -148,10 +148,11 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					break;
 				case 27:
 				case 30:
-					String nameChildCareAtr = correctedItem.getBefore() == null ? null
+					String nameChildCareAtrBef = correctedItem.getBefore() == null ? null
 							: ChildCareAtr.valueOf(Integer.valueOf(correctedItem.getBefore())).description;
-					itemInfo = correctedItem.toItemInfo(nameChildCareAtr,
-							ChildCareAtr.valueOf(Integer.valueOf(correctedItem.getAfter())).description);
+					String nameChildCareAtrAft = correctedItem.getAfter() == null ? null
+							: ChildCareAtr.valueOf(Integer.valueOf(correctedItem.getAfter())).description;
+					itemInfo = correctedItem.toItemInfo(nameChildCareAtrBef, nameChildCareAtrAft);
 					break;
 				case 40:
 					String nameConfirmedAtr = correctedItem.getBefore() == null ? null
@@ -161,10 +162,11 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					break;
 				case 41:
 				case 42:
-					String nameBounceAtr = correctedItem.getBefore() == null ? null
+					String nameBounceAtrBef = correctedItem.getBefore() == null ? null
 							: BounceAtr.valueOf(Integer.valueOf(correctedItem.getBefore())).description;
-					itemInfo = correctedItem.toItemInfo(nameBounceAtr,
-							BounceAtr.valueOf(Integer.valueOf(correctedItem.getAfter())).description);
+					String nameBounceAtrAft = correctedItem.getAfter() == null ? null
+							: BounceAtr.valueOf(Integer.valueOf(correctedItem.getAfter())).description;
+					itemInfo = correctedItem.toItemInfo(nameBounceAtrBef, nameBounceAtrAft);
 					break;
 				case 63:
 					String employmentNameBef = listEmp.get(correctedItem.getBefore());

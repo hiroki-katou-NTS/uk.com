@@ -55,6 +55,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
         // constraints
         constraints: KnockoutObservable<any> = ko.observable();
         codeNameLabelConstraint : KnockoutObservableArray<string> = ko.observableArray();
+        codeConstraint : KnockoutObservable<any> = ko.observable('');
+        nameConstraint : KnockoutObservable<any> = ko.observable('');
         extenalLabelConstraint : KnockoutObservable<String> = ko.observable();
         
         focus: any = {
@@ -81,9 +83,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let selectedObject: ISelectionItem1 = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == id;
                     });
-
                     if (selectedObject != undefined) {
-
                         //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
@@ -173,6 +173,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
+                    self.checkCreateaaa(false);
+                    self.enableCreateNew(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
@@ -285,13 +287,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this;
             self.codeNameLabelConstraint.removeAll();
             if (characterType == 1) {
-                self.codeNameLabelConstraint.push('SelectionCdNumeric');
-                self.extenalLabelConstraint('ExternalCdNumeric');
-            } else {
                 self.codeNameLabelConstraint.push('SelectionCdAlphaNumeric');
+                self.codeConstraint('SelectionCdAlphaNumeric');
                 self.extenalLabelConstraint('ExternalCdAlphalNumeric');
+            } else {
+                self.codeNameLabelConstraint.push('SelectionCdNumeric');
+                self.codeConstraint('SelectionCdNumeric');
+                self.extenalLabelConstraint('ExternalCdNumeric');
             }
             self.codeNameLabelConstraint.push('SelectionName');
+            self.nameConstraint('SelectionName');
             self.codeNameLabelConstraint.valueHasMutated();
             self.extenalLabelConstraint.valueHasMutated();
         }
@@ -462,7 +467,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let lastIndex = self.listSelection().length - 1;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeDataSelection(command).done(function() {
-
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                         self.listSelection.removeAll();
                         service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
@@ -478,8 +482,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 self.historySelection().histId.valueHasMutated();
                             }
                         });
+                        if (self.listSelection().length > 1) {
+                           self.checkCreateaaa(false);
+                        } else {
+                            self.createNewData();
+                            self.checkCreateaaa(true);
+                        }
                     });
                 });
+                
             }).ifNo(() => {
                 self.selection().selectionID.valueHasMutated();
             })
