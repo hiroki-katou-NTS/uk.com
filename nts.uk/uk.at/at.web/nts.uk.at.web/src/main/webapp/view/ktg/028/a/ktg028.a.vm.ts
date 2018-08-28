@@ -121,7 +121,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
         findAll(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            block.grayout();
+            block.invisible();
             service.findAll().done((data: any) => {
                 self.allData = _.sortBy(data, 'topPageCode');
                 self.items_A2([]);
@@ -184,15 +184,18 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     data.displayItemTypes = displayItemTypes;
                     service.update(data).done(function() {
                         self.isCreated(false);
-                        nts.uk.ui.dialog.info({messageId: 'Msg_15'});
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId });
-                    }).always(function() {
-                        $("#name").focus();
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                    });
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
+                            $("#name").focus();
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
+                            $("#name").focus();
+                        });
+                        self.findAll();
+                    })
                 } else {
                     let data: any = {};
                     data.topPageCode = self.texteditorA3_2.value();
@@ -212,10 +215,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
                             $("#code").focus();
                         });
-                    }).always(function() {
-                        self.findAll().done(function() {
-                            self.currentCode_A2(data.topPageCode);
-                        });
+                        self.findAll();
                     });
                 }
             }
@@ -228,18 +228,18 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                 displayItemTypes: optionalWidget.displayItemTypes
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                block.grayout();
+                block.invisible();
                 service.remove(data).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     self.findAll().done(function() {
-                        if (self.items_A2().length == 0) {
-                            self.cleanForm();
-                        } else if (self.index() == self.items_A2().length) {
-                            self.currentCode_A2(self.items_A2()[self.index() - 1].topPageCode);
-                        } else {
-                            self.currentCode_A2(self.items_A2()[self.index()].topPageCode);
-                        }
-                    });
+                            if (self.items_A2().length == 0) {
+                                self.cleanForm();
+                            } else if (self.index() == self.items_A2().length) {
+                                self.currentCode_A2(self.items_A2()[self.index() - 1].topPageCode);
+                            } else {
+                                self.currentCode_A2(self.items_A2()[self.index()].topPageCode);
+                            }
+                        });
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.messageId);
