@@ -105,7 +105,6 @@ module nts.uk.at.view.kdw001.h {
                 let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
                 $.when(dfdGetAllErrMessageInfoByEmpID)
                     .done((dfdGetAllErrMessageInfoByEmpIDData) => {
-
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -167,6 +166,7 @@ module nts.uk.at.view.kdw001.h {
                             });
                         }); 
                     self.listErrMessageInfo.valueHasMutated();
+                    self.listErrMessageInfo(_.orderBy(self.listErrMessageInfo(), ["personCode", "disposalDay"], ["asc", "asc"]));
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
