@@ -17,7 +17,8 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid AND  f.empInsurHisPk.hisId =:hisId ";
-
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid ";
+    
     @Override
     public List<EmpInsurHis> getAllEmpInsurHis(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtEmpInsurHis.class)
@@ -46,4 +47,10 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
     public void remove(String cid, String hisId){
         this.commandProxy().remove(QpbmtEmpInsurHis.class, new QpbmtEmpInsurHisPk(cid, hisId)); 
     }
+
+	@Override
+	public List<EmpInsurHis> getEmpInsurHisByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, QpbmtEmpInsurHis.class).setParameter("cid", cid).
+				getList(item -> item.toDomain());
+	}
 }
