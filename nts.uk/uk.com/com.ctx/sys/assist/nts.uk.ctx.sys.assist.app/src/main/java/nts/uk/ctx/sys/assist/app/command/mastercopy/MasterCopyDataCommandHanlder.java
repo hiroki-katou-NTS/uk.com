@@ -6,10 +6,14 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.assist.dom.mastercopy.*;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,12 +25,10 @@ import java.util.stream.Collectors;
 @Stateless
 public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopyDataCommand> {
 
-	/** The master copy data finder. */
-	@Inject
-	private MasterCopyDataRepository repository;
-
-	@Inject
-	CopyDataRepository copyDataRepository;
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(MasterCopyDataCommandHanlder.class);
 
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
@@ -45,6 +47,13 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 
 	/** Interrupt flag */
 	private static boolean isInterrupted = false;
+
+	/** The master copy data finder. */
+	@Inject
+	private MasterCopyDataRepository repository;
+
+	@Inject
+	CopyDataRepository copyDataRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<MasterCopyDataCommand> context) {
@@ -125,7 +134,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 						setter.updateData(NUMBER_OF_ERROR, countError); // update
 						if (errorList.size() == 1)
 							dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
-						ex.printStackTrace();
+						LOGGER.error(ex.getMessage());
 					}
 				}
 				countSuccess++;
