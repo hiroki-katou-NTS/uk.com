@@ -95,3 +95,7 @@
 #igGridLog {
 	white-space: nowrap;
 }
+
+div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	height: 340px !important;
+}
