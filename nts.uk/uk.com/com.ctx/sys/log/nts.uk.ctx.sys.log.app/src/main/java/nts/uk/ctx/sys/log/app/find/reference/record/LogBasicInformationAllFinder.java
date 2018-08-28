@@ -408,23 +408,23 @@ public class LogBasicInformationAllFinder {
 										logBasicInfoDto.setMethodCorrection(this.getinfoOperateAttr(
 												categoryCorrectionLog.getInfoOperateAttr().value));
 										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
-											if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
-												Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
+											//if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+												GeneralDate datekey = categoryCorrectionLog.getTargetKey()
 														.getDateKey();
 												// item 25
-												logBasicInfoDto.setTarGetYmd(datekey.get().toString());
+												logBasicInfoDto.setTarGetYmd(datekey.toString());
 												// item 26
 												logBasicInfoDto
-														.setTarGetYm(String.valueOf(datekey.get().yearMonth()));
+														.setTarGetYm(String.valueOf(datekey.yearMonth()));
 												// item 27
-												logBasicInfoDto.setTarGetY(String.valueOf(datekey.get().year()));
+												logBasicInfoDto.setTarGetY(String.valueOf(datekey.year()));
 												// item 28
 												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
 														.getStringKey().isPresent()
 																? categoryCorrectionLog.getTargetKey()
 																		.getStringKey().get()
 																: "");
-											}
+											//}
 
 										}
 
