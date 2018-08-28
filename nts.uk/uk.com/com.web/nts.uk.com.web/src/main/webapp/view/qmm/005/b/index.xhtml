@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<script>var dialogSize = { width: 1550, height: 530 };</script>
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm005.b.start.js" />
+			<com:scriptfile path="qmm005.b.service.js" />
+			<com:scriptfile path="qmm005.b.vm.js" />
+			<com:stylefile path="qmm005.b.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class=""
+					data-bind="click: newCharacterSetting">#{i18n.getText('QMM005_22')}</button>
+					
+				<button  class="proceed "
+					data-bind="click: saveCharacterSetting">#{i18n.getText('QMM005_1')}</button>
+					
+				<button class=""
+					data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
+					
+				
+				</div>
+				
+				
+				
+				<div id="contents-area">
+					<div id="left-content" class="fixed-flex-layout-left">
+						<div id="clf-component">
+							<div data-bind="ntsPanel:{width: '120px', height: '335px', direction: 'right', showIcon: true, visible: true}">
+								<div id="list-box" data-bind="ntsListBox: {
+									options: processingYearList,
+									optionsValue: 'code',
+									optionsText: 'name',
+									multiple: false,
+									value: processingYearListSelectedCode,
+									rows: 10,
+									columns: [
+										
+										{ key: 'name', length: 5},
+									]}"></div>
+							</div>
+						</div>
+					</div>
+					
+					<div id="right-content" class="fixed-flex-layout-right">
+						<div>
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
+							<span><label>#{i18n.getText('QMM005_97')}</label></span>
+						</div>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+						<button class=""
+							data-bind="click: reflectSystemReferenceDateInformation">#{i18n.getText('QMM005_89')}</button>
+						<button class=""
+							data-bind="click: reflect">#{i18n.getText('QMM005_27')}</button>
+
+						<table id="expand-example">
+							<tbody>
+								<tr id="row-nonboder">
+									<th colspan="5"></th>
+									<th><button class="toggle-expand" data-bind="click: toggle">+</button></th>
+								</tr>
+								<tr class="bg-green">
+									<th rowspan="2"></th>
+									<th colspan="5">#{i18n.getText('QMM005_28')}</th>
+									
+									<th colspan="5" style="border-right: none;" data-bind="css: { hidden: !show() }"></th>
+								
+								</tr>
+								<tr class="bg-green">
+									<th>#{i18n.getText('QMM005_29')}</th>
+									<th>#{i18n.getText('QMM005_30')}</th>
+									<th>#{i18n.getText('QMM005_31')}</th>
+									<th>#{i18n.getText('QMM005_32')}</th>
+									<th>#{i18n.getText('QMM005_33')}</th>
+
+									<th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_44')}</th>
+									<th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_45')}</th>
+									<th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_112')}</th>
+									<th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_46')}</th>
+									<th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_47')}</th>
+								</tr>
+								<com:ko-foreach bind="itemList">
+									<tr>
+										<td><div class="label" data-bind="text: targetMonth"></div></td>
+										<td>
+                                            <div data-bind="ntsDatePicker: {value: paymentDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                            <div class="label" data-bind="text: payDay"></div>
+                                        </td>
+
+										<td><div data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div></td>
+										<td>
+											<div data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></div>
+											<div class="label" data-bind="text: collectMinutes"></div>
+										</td>
+
+										<td><div data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div></td>
+										<td>
+											<input data-bind="ntsNumberEditor: {value: numberOfWorkingDays}" style="width: 35px" /><span>day</span>
+
+										</td>
+
+										<td data-bind="css: { hidden: !$parent.show() }">
+											<div data-bind="ntsDatePicker: {value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+										</td>
+										<td data-bind="css: { hidden: !$parent.show() }">
+											<div data-bind="ntsDatePicker: {value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+										</td>
+										<td data-bind="css: { hidden: !$parent.show() }">
+											<div data-bind="ntsDatePicker: {value: timeClosingDate, dateFormat: 'YYYY/MM/DD'}"></div>
+										</td>
+										<td data-bind="css: { hidden: !$parent.show() }">
+											<div data-bind="ntsDatePicker: {value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
+										</td>
+										<td data-bind="css: { hidden: !$parent.show() }">
+											<div data-bind="ntsDatePicker: {value: accountingClosureDate, dateFormat: 'YYYY/MM/DD'}"></div>
+										</td>
+
+									</tr>
+									
+									
+								</com:ko-foreach>
+							</tbody>
+						</table>
+					</div>
+				
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
