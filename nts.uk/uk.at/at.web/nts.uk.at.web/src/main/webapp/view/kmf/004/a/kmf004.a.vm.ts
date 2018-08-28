@@ -131,8 +131,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
                         self.expYears(data.grantPeriodicDto.expirationDate.years);
                         self.expMonth(data.grantPeriodicDto.expirationDate.months);
-                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
-                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
+                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate);
+                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate);
                         
                         self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.gender);
@@ -922,8 +922,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
     }
     
+     class ItemFrame {
         code: string;
         name: string;
+        constructor(data) {
             if (data) {
                 this.code = data.itemType+data.specialHdFrameNo;
                 this.name = data.specialHdFrameName;
