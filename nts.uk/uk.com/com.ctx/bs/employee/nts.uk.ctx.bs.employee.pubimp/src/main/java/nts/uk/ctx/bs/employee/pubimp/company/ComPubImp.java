@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -69,6 +70,23 @@ public class ComPubImp implements SyCompanyPub {
 		}
 		return result;
 
+	}
+
+	@Override
+	public AffCompanyHistExport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
+		
+		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployeeAndBaseDate(sid, baseDate);
+		
+		AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(sid);
+		
+		AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
+		affComHostEx.setEmployeeId(sid);
+
+		affComHostEx.setLstAffComHistItem(affComBySid.getLstAffCompanyHistoryItem().stream()
+				.map(item -> new AffComHistItem(item.getHistoryId(), item.isDestinationData(), item.getDatePeriod()))
+				.collect(Collectors.toList()));
+
+		return affComHostEx;
 	};
 
 }
