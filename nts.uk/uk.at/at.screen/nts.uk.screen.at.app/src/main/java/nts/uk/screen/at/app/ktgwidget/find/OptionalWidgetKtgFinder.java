@@ -407,6 +407,8 @@ public class OptionalWidgetKtgFinder {
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 					for (SpecialHoliday specialHoliday : specialHolidays) {
 						//get request list 208 rồi trả về
+						//・上書きフラグ ← falseを渡してください(muto)
+						//・上書き用の暫定管理データ ← 空（null or Empty）で渡してください
 						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, datePeriod, false, startDate, specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
 						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 						
