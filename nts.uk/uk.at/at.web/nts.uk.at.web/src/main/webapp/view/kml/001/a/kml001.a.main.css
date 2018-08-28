@@ -160,9 +160,9 @@ input, textarea {
 #contents-area input.ui-igcombo-field {
 	padding-left: 10px;
 }
-.ui-igcombo-listitemholder .ui-igcombo-listitem {
+ .ui-igcombo-listitemholder .ui-igcombo-listitem {
 	padding-left: 10px;
-}
+} 
 #combo-box {
 	width: 132px;
 }
