@@ -168,6 +168,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.createNewData();
                         }
                     });
+                }else {
+                    self.enableRegister(false);
                 }
             });
 
