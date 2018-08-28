@@ -1,10 +1,11 @@
-package nts.uk.ctx.sys.log.app.finder.datacorrectionlog;
+package nts.uk.ctx.sys.log.app.find.datacorrectionlog;
 
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -55,25 +56,27 @@ public class DataCorrectionLogFinder {
 			throw new BusinessException("Msg_37");
 
 		for (DataCorrectionLog d : listCorrectionLog) {
-			LogBasicInformation basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId()).get();
-			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey().get(),
+			Optional<LogBasicInformation> basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId());
+			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey(),
 					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
 					d.getCorrectedItem().getValueBefore().getViewValue(),
 					d.getCorrectedItem().getValueAfter().getViewValue(),
-					basicInfo != null ? basicInfo.getUserInfo().getUserName() : null,
-					basicInfo != null ? basicInfo.getModifiedDateTime() : null, d.getCorrectionAttr().value,
-					d.getTargetUser().getEmployeeId());
+					basicInfo.isPresent() ? basicInfo.get().getUserInfo().getUserName() : null,
+					basicInfo.isPresent() ? basicInfo.get().getModifiedDateTime() : null, d.getCorrectionAttr().value,
+					d.getTargetUser().getEmployeeId(), d.getShowOrder());
 			result.add(log);
 		}
 		if (params.getDisplayFormat() == 0) { // by date
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getEmployeeId)
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		} else { // by individual
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
