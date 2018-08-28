@@ -114,10 +114,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             return item;
                         });
                         self.listHistorySelection(changeData);
-                        if (self.historySelection().histId() !== self.listHistorySelection()[0].histId) {
-                            self.historySelection().histId(self.listHistorySelection()[0].histId);    
+                        if(self.listHistorySelection().length > 0) {
+                            if (self.historySelection().histId() !== self.listHistorySelection()[0].histId) {
+                                self.historySelection().histId(self.listHistorySelection()[0].histId);    
+                            } else {
+                                self.historySelection().histId.valueHasMutated();    
+                            }
                         } else {
-                            self.historySelection().histId.valueHasMutated();    
+                            self.historySelection().histId("");
+                            self.historySelection().histId.valueHasMutated();
                         }
                     });
 
@@ -136,6 +141,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             historySelection.histId.subscribe(x => {
                 if (x) {
+                    self.enableRegister(true);
                     let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
                     if (histCur.endDate !== '9999/12/31') {
                         self.setEnableDisplay5(false);
@@ -167,12 +173,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.createNewData();
                         }
                     });
+                } else {
+                    self.listSelection.removeAll();
+                    self.createNewData();
+                    self.enableRegister(false);
                 }
             });
 
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
+                    self.checkCreateaaa(false);
+                    self.enableCreateNew(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
