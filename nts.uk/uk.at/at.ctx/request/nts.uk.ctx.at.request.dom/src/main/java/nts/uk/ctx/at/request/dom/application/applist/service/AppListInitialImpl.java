@@ -33,9 +33,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInf
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
@@ -47,7 +45,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
@@ -106,11 +103,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private ApplicationRepository_New repoApp;
 	@Inject
-	private ScBasicScheduleAdapter scBasicScheduleAdapter;
-	@Inject
 	private RecordWorkInfoAdapter recordWkpInfoAdapter;
-	@Inject
-	private EmployeeRequestAdapter empRequestAdapter;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 	@Inject
@@ -125,8 +118,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private DailyAttendanceTimeCaculation calTime;
 	@Inject
 	private AgentAdapter agentAdapter;
-	@Inject
-	private AtEmployeeAdapter employeeAdapter;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
@@ -172,7 +163,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Override
 	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		//申請一覧区分が申請 OR 承認-(Check xem là application hay aprove)
-//		List<Application_New> lstApp = new ArrayList<>();
 		AppListOutPut appFull = null;
 		if(param.getAppListAtr().equals(ApplicationListAtr.APPLICATION)){//申請
 			//アルゴリズム「申請一覧リスト取得申請」を実行する - 2
@@ -181,11 +171,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
 			appFull = this.getAppListByApproval(param,displaySet);
 		}
-		//取得した一覧の申請種類(単一化）でリストを作成する - create list for drop-down list (A4_4_1)
-		
-		// TODO Auto-generated method stub
-//		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
-//		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		return appFull;
 	}
 	/**
@@ -194,7 +179,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Override
 	public AppListOutPut getApplicationListByApp(AppListExtractCondition param) {
 		String companyId = AppContexts.user().companyId();
-		String sID = AppContexts.user().employeeId();
 		//アルゴリズム「申請一覧対象申請者取得」を実行する
 		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
 		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
@@ -206,7 +190,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//・申請者ID＝社員ID（リスト）
 			lstApp = repoApp.getByListApplicant(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
 		}
-//		List<Application_New> lstApp = repoApp.getListAppBySID(companyId, sID, param.getStartDate(), param.getEndDate());
 		List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
 		List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
 		List<Application_New> lstHdWork = lstApp.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());

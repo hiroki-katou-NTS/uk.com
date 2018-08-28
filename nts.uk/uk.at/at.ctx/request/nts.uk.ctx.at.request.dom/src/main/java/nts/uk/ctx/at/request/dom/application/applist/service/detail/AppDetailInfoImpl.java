@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -143,13 +145,20 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 		}
+		AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
+		TimeNo417 timeNo417 = timeDetail == null ? null : 
+			new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
+					timeDetail.getTime36().v(),
+					timeDetail.getNumOfYear36Over().v(),
+					timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 		return new AppOverTimeInfoFull(appId,
 				this.convertTime(appOt.getWorkClockFrom1()),
 				this.convertTime(appOt.getWorkClockTo1()),
 				this.convertTime(appOt.getWorkClockFrom2()),
 				this.convertTime(appOt.getWorkClockTo2()),
 				lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
-				this.convertTime(appOt.getFlexExessTime()));
+				this.convertTime(appOt.getFlexExessTime()),
+				timeNo417);
 	}
 
 	/**
@@ -229,12 +238,18 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
+		AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
+		TimeNo417 timeNo417 = timeDetail == null ? null : 
+				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
+						timeDetail.getTime36().v(),
+						timeDetail.getNumOfYear36Over().v(),
+						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 		return new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 				hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 				hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
 				hdWork.getWorkClock2().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getStartTime().v()),
 				hdWork.getWorkClock2().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getEndTime().v()),
-				lstFrame);
+				lstFrame, timeNo417);
 	}
 	/**
 	 * 勤務変更申請
@@ -414,13 +429,20 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}
 			}
+			AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
+			TimeNo417 timeNo417 = timeDetail == null ? null : 
+				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
+						timeDetail.getTime36().v(),
+						timeDetail.getNumOfYear36Over().v(),
+						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppOverTimeInfoFull(appId,
 					this.convertTime(appOt.getWorkClockFrom1()),
 					this.convertTime(appOt.getWorkClockTo1()),
 					this.convertTime(appOt.getWorkClockFrom2()),
 					this.convertTime(appOt.getWorkClockTo2()),
 					lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
-					this.convertTime(appOt.getFlexExessTime())));
+					this.convertTime(appOt.getFlexExessTime()),
+					timeNo417));
 		}
 		return lstAppFull;
 	}
@@ -491,12 +513,18 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 					mapWorkTimeName.put(wkTimeCD, workTimeName);
 				}
 			}
+			AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
+			TimeNo417 timeNo417 = timeDetail == null ? null : 
+				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
+						timeDetail.getTime36().v(),
+						timeDetail.getNumOfYear36Over().v(),
+						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 					hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 					hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
 					hdWork.getWorkClock2().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getStartTime().v()),
 					hdWork.getWorkClock2().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock2().getEndTime().v()),
-					lstFrame));
+					lstFrame, timeNo417));
 		}
 		return lstAppFull;
 	}

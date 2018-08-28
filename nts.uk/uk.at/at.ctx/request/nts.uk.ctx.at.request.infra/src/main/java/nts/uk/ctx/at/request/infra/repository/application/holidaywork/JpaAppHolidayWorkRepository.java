@@ -8,9 +8,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.GoBackAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
@@ -18,6 +22,8 @@ import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolida
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHolidayWork e";
@@ -149,10 +155,30 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		List<AppHolidayWork> lstHd =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHolidayWork.class)
 			.setParameter("companyID", companyID)
 			.setParameter("lstAppID", lstAppID)
-			.getList(c -> c.toDomain());
+			.getList(c -> toDomainPlus(c));
 		for (AppHolidayWork hd : lstHd) {
 			lstMap.put(hd.getAppID(), hd);
 		}
 		return lstMap;
+	}
+	public AppHolidayWork toDomainPlus(KrqdtAppHolidayWork entity){
+		return new AppHolidayWork(null, 
+				entity.getKrqdtAppHolidayWorkPK().getCid(), 
+				entity.getKrqdtAppHolidayWorkPK().getAppId(), 
+				entity.holidayWorkInputs.stream()
+					.map(x -> x.toDomain()).collect(Collectors.toList()),
+				new WorkTypeCode(entity.getWorkTypeCode()),
+				entity.getWorkTimeCode() == null ? null : new WorkTimeCode(entity.getWorkTimeCode()), 
+				new HolidayWorkClock(entity.getWorkClockStart1() == null ? null : new HolidayAppPrimitiveTime(entity.getWorkClockStart1()),
+						entity.getWorkClockEnd1() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockEnd1()),
+					EnumAdaptor.valueOf(entity.getGoAtr1(), GoBackAtr.class),
+					EnumAdaptor.valueOf(entity.getBackAtr1(), GoBackAtr.class)),
+				new HolidayWorkClock(entity.getWorkClockStart2() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockStart2()),
+						entity.getWorkClockEnd2() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockEnd2()),
+						EnumAdaptor.valueOf(entity.getGoAtr2(), GoBackAtr.class),
+						EnumAdaptor.valueOf(entity.getBackAtr2(), GoBackAtr.class)), 
+				entity.getDivergenceReason(),
+				entity.getHolidayShiftNight(),
+				entity.appOvertimeDetail == null ? Optional.empty() : Optional.of(entity.appOvertimeDetail.toDomain()));
 	}
 }
