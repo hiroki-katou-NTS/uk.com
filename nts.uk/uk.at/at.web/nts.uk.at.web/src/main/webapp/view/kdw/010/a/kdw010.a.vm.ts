@@ -55,6 +55,7 @@ module nts.uk.at.view.kdw010.a {
                     if (codeChanged == 1) {
                         self.enableState(true);
                     } else {
+                        $('.nts-input').ntsError('clear');
                         self.enableState(false);
                     }
                 });
