@@ -37,6 +37,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
@@ -99,6 +100,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 	
 	@Inject
 	private InterimRemainOffMonthProcess interimRemainOffMonthProcess;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
@@ -221,7 +225,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 			}
 			
 			// 暫定データを作成する
-			Map<GeneralDate, DailyInterimRemainMngData> mapInterimData = interimRemainOffMonthProcess.monthInterimRemainData(companyId, employeeId, period);
+			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
+			//Map<GeneralDate, DailyInterimRemainMngData> mapInterimData = interimRemainOffMonthProcess.monthInterimRemainData(companyId, employeeId, period);
 		}
 		
 		// Send the last batch of errors if there is still records unsent
