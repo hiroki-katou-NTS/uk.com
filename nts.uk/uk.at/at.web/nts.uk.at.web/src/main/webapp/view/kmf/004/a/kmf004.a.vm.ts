@@ -168,7 +168,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         let temp = [];
                         _.forEach(targetItems, function(code) {
                             let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
+                            if(selectedItem){
                             temp.push(selectedItem);
+                                }
                         });
                         
                         let text = "";
