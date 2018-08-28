@@ -1244,6 +1244,12 @@ module nts.uk.at.view.kmk002.a {
                     return true;
                 }
 
+                const lastItem = _.last(self.optionalItem.calcFormulas());
+                if (lastItem && self.optionalItem.optionalItemAtr() != lastItem.formulaAtr()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1408' });
+                    return false;
+                }
+
                 // validate required formulaName & required setting formula
                 self.optionalItem.validateListFormula();
 
