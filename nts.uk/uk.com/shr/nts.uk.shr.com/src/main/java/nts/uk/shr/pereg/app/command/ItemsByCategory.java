@@ -1,5 +1,7 @@
 package nts.uk.shr.pereg.app.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
+import java.lang.reflect.Field;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -72,6 +75,105 @@ public class ItemsByCategory {
 		
 		// set item values
 		val inputsMap = this.createInputsMap();
+		
+		try {
+			Field fieldGrantDateItemName = commandClass.getField("grantDateItemName");
+			Field fieldDeadlineDateItemName = commandClass.getField("deadlineDateItemName");
+			switch (this.categoryCd) {
+			case "CS00039":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00409").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00410").itemName());
+				break;
+			case "CS00040":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00424").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00425").itemName());
+				break;
+			case "CS00041":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00439").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00440").itemName());
+				break;
+			case "CS00042":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00454").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00455").itemName());
+				break;
+			case "CS00043":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00469").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00470").itemName());
+				break;
+			case "CS00044":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00484").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00485").itemName());
+				break;
+			case "CS00045":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00499").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00500").itemName());
+				break;
+			case "CS00046":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00514").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00515").itemName());
+				break;
+			case "CS00047":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00529").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00530").itemName());
+				break;
+			case "CS00048":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00544").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00545").itemName());
+				break;
+			case "CS00059":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00629").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00630").itemName());
+				break;
+			case "CS00060":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00644").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00645").itemName());
+				break;
+			case "CS00061":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00659").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00660").itemName());
+				break;
+			case "CS00062":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00674").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00675").itemName());
+				break;
+			case "CS00063":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00689").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00690").itemName());
+				break;
+			case "CS00064":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00704").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00705").itemName());
+				break;
+			case "CS00065":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00719").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00720").itemName());
+				break;
+			case "CS00066":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00734").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00735").itemName());
+				break;
+			case "CS00067":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00749").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00750").itemName());
+				break;
+			case "CS00068":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00764").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00765").itemName());
+				break;
+			case "CS00037":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00385").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00386").itemName());
+				break;
+			case "CS00038":
+				fieldGrantDateItemName.set(command , inputsMap.get("IS00398").itemName());
+				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00399").itemName());
+				break;
+			default:
+				break;
+			}
+			
+			
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {}
 
 		AnnotationUtil.getStreamOfFieldsAnnotated(commandClass, PeregItem.class).forEach(field -> {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
@@ -84,7 +186,7 @@ public class ItemsByCategory {
 				}
 			}
 		});
-
+		
 		return command;
 	}
 

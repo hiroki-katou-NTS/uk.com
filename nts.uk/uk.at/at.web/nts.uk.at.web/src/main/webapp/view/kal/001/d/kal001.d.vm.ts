@@ -133,7 +133,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // process when click button interrupt
         public interrupt(): void {
             let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_835" })
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
                     nts.uk.request.asyncTask.requestToCancel(self.taskId());
                     self.setFinished();

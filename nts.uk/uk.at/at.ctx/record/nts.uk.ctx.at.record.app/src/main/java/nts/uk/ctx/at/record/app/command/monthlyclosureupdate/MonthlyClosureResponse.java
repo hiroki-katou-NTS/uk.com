@@ -19,11 +19,12 @@ public class MonthlyClosureResponse {
 	
 	private String monthlyClosureUpdateLogId;
 	private List<String> listEmployeeId;
-	private int closureId;
+	private Integer closureId;
 	private GeneralDateTime startDT;
-	private int currentMonth;
-	private int closureDay;
-	private boolean isLastDayOfMonth;
+	private GeneralDateTime endDT;
+	private Integer currentMonth;
+	private Integer closureDay;
+	private Boolean isLastDayOfMonth;
 	private GeneralDate periodStart;
 	private GeneralDate periodEnd;
 
