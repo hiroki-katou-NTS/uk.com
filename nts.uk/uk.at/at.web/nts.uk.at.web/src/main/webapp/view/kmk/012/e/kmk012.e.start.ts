@@ -13,9 +13,6 @@ module nts.uk.at.view.kmk012.e {
             //Insert comboColumnas with value = 0;
             var closureCdNameDto = new viewmodel.ClosureCdNameDto(-1, '');
             comboItems.unshift(closureCdNameDto);
-            var comboColumns = [
-                { prop: 'name', length: 8 }
-            ];
 
             //View list data on grid.
              var items0 = (function() {
