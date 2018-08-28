@@ -44,7 +44,7 @@
 							{ prop: 'name', length: 5 },
 						],
 						dropDownAttachedToBody: true}"></div>
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
+					<div  data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
                		<div data-bind="ntsRadioBoxGroup: {
 						options: enumConditionType,
 						optionsValue: 'code',
@@ -91,9 +91,10 @@
 							]}"></div>
 				 	</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 1">
-					 	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
+					 	<div style="margin-left: -20px" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
 					 	<button data-bind="click: openSelectAtdItemDialogComparison">#{i18n.getText('KDW007_73')}</button>
 					 	<input id="display-compare-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
+					 					name: '#[KDW007_101]', 
 									 	value: displayCompareAtdItems, 
 									 	readonly: true, 
 									 	required: currentAtdItemCondition.conditionType() == 1

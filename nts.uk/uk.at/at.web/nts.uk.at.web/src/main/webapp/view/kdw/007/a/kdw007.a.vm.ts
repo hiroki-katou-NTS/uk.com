@@ -35,7 +35,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_6"), key: 'code', width: 45 },
-            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 }
+            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 ,formatter: _.escape}
         ]);
         lstFilteredData: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedErrorAlarm: KnockoutObservable<any>;
