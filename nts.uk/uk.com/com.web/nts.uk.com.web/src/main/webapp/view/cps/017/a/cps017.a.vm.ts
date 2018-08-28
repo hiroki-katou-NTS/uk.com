@@ -482,8 +482,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             }
                         });
                         if (self.listSelection().length > 1) {
-                            self.checkCreateaaa(false);
+                           self.checkCreateaaa(false);
                         } else {
+                            self.createNewData();
                             self.checkCreateaaa(true);
                         }
                     });
