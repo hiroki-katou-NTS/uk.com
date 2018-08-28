@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.ExcessTimesYearAdapter;
@@ -108,11 +109,11 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		}
 		// 超過回数を取得する
 		Year year = new Year(appOvertimeDetail.getYearMonth().year());
-		int excessTimes = excessTimesYearAdapter.getExcessTimesYear(employeeId, year);
+		AgreementExcessInfoImport agreeInfo = excessTimesYearAdapter.getExcessTimesYear(employeeId, year);
 		// 「時間外時間の詳細」．36年間超過回数 = 返した回数
-		appOvertimeDetail.setNumOfYear36Over(excessTimes);
+		appOvertimeDetail.setNumOfYear36Over(agreeInfo.getExcessTimes());
 		// 「時間外時間の詳細」．36年間超過月.Add(返した超過の年月)
-		// TODO appOvertimeDetail.setYear36OverMonth(new ArrayList<>());
+		appOvertimeDetail.setYear36OverMonth(agreeInfo.getYearMonths());
 		// ３６上限チェック
 		if(appOvertimeDetail.check36UpperLimit()){
 			errorFlg = true;

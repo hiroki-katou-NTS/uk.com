@@ -9,5 +9,5 @@ public interface ExcessTimesYearAdapter {
 	 * @param year 年度
 	 * @return 年間超過回数
 	 */
-	int getExcessTimesYear(String employeeId, Year year);
+	AgreementExcessInfoImport getExcessTimesYear(String employeeId, Year year);
 }
