@@ -50,8 +50,8 @@
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: enableOpenDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
-				<button id="A1_007" class="danger" tabindex="6"
-					data-bind="click: ReflUnrComp, visible : showRefecToAll , enable: enableReflUnrComp">#{i18n.getText('CPS017_49')}</button>
+				<button id="A1_007" tabindex="6"
+					data-bind="click: ReflUnrComp, visible : showRefecToAll">#{i18n.getText('CPS017_49')}</button>
 
 				<com:ko-if bind="(isDialog() === true)">
 					<button id="A1_008" tabindex="5" style="display: none"
@@ -74,7 +74,7 @@
 						<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
+								searchMode: 'highlight',
 								targetKey: 'selectionItemId',
 								mode: 'igGrid', 
 								comId: 'sel_item_grid',

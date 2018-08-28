@@ -31,6 +31,10 @@ public class EmpCalAndSumExeLogDto {
 	private String companyID;
 	
 	/**
+	 * 選択した締め
+	 */
+	private String closureName;
+	/**
 	 * 処理月
 	 */
 	private Integer processingMonth;
@@ -89,7 +93,8 @@ public class EmpCalAndSumExeLogDto {
 	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain, List<ExecutionLog> lstExecutionLog) {
 		return new EmpCalAndSumExeLogDto(
 				domain.getEmpCalAndSumExecLogID(), 
-				domain.getCompanyID(), 
+				domain.getCompanyID(),
+				null,
 				domain.getProcessingMonth().v(), 
 				domain.getExecutedMenu().value, 
 				domain.getExecutionDate(), 

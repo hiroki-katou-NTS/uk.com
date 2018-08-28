@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +22,16 @@ public class SpecialLeaveRemainCommand {
 	private String deadlineDate;
 	private int expStatus;
 	private int registerType;
-	private double numberDayGrant;
-	private int timeGrant;
-	private double numberDayUse;
-	private int timeUse;
-	private double numberDaysOver;
-	private int timeOver;
-	private double numberDayRemain;
-	private int timeRemain;
+	private BigDecimal numberDayGrant;
+	private Integer timeGrant;
+	private BigDecimal numberDayUse;
+	private Integer timeUse;
+	private BigDecimal numberDaysOver;
+	private Integer timeOver;
+	private BigDecimal numberDayRemain;
+	private Integer timeRemain;
+	
+	public String grantDateItemName;
+	public String deadlineDateItemName;
 
 }

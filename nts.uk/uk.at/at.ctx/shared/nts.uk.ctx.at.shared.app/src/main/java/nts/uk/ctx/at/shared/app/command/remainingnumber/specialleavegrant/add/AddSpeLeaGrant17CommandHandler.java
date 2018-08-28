@@ -53,7 +53,8 @@ public class AddSpeLeaGrant17CommandHandler
 				command.getNumberDaysOver(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
 				command.getNumberDayRemain(),
-				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null);
+				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
+				command.grantDateItemName, command.deadlineDateItemName);
 
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}
