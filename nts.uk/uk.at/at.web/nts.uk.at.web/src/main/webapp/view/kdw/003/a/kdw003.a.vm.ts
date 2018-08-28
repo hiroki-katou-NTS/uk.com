@@ -2818,11 +2818,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 header.constraint["min"] = "0";
                                 header.constraint["max"] = "9999999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
-                                header["columnCssClass"] = "right-align";
+                                header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Integer") {
-                                header["columnCssClass"] = "right-align";
+                                header["columnCssClass"] = "halign-right";
                             }
                             delete header.constraint.primitiveValue;
                         } else {
@@ -2831,10 +2831,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (header.group == undefined || header.group.length == 0) {
                                     delete header.constraint.cDisplayType;
                                     if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
-                                        header["columnCssClass"] = "right-align";
+                                        header["columnCssClass"] = "halign-right";
                                     }
-                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes") {
-                                        header["columnCssClass"] = "right-align";
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" ) {
+                                        header["columnCssClass"] = "halign-right";
                                     }
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;
