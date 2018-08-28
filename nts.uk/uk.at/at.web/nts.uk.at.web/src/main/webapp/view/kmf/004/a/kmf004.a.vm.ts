@@ -52,11 +52,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageCriteriaCls: KnockoutObservableArray<Items>;
         selectedAgeCriteria: KnockoutObservable<string>;
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
-        ageBaseDate: KnockoutObservable<string>;
+        ageBaseDate: KnockoutObservable<string> = ko.observable("");
         ageBaseDateEnable: KnockoutObservable<boolean>;
         selectedTargetItems: any;
-        listSpecialHlFrame: KnockoutObservableArray<any>;
-        listAbsenceFrame: KnockoutObservableArray<any>;
         targetItems: KnockoutObservableArray<any>; 
         cdl002Name: KnockoutObservable<String>;
         cdl003Name: KnockoutObservable<String>;
@@ -71,8 +69,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.sphdList = ko.observableArray([]);
             
-            self.listSpecialHlFrame = ko.observableArray([]);
-            self.listAbsenceFrame = ko.observableArray([]);
+           
             self.targetItems = ko.observableArray([]);
             
             self.cdl002Name = ko.observableArray([]);
@@ -427,20 +424,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData(), self.getSpecialHolidayFrame(), self.getAbsenceFrame()).done(function() {
-                       
-                if(self.listSpecialHlFrame().length > 0) {
-                    _.forEach(self.listSpecialHlFrame(), function(item) {
-                        self.targetItems.push(item);
-                    });
-                }
-                
-                if(self.listAbsenceFrame().length > 0) {
-                    _.forEach(self.listAbsenceFrame(), function(item) {
-                        self.targetItems.push(item);
-                    });
-                }
-                
+            $.when(self.getSphdData(), self.findAllItemFrame()).done(function() {
+              
                 if (self.sphdList().length > 0) {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
@@ -454,6 +439,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 dfd.reject(res);    
             });
 
+            return dfd.promise();
+        }
+        
+        findAllItemFrame(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.findAllItemFrame().done(function(data) {
+                self.targetItems(_.map(data, (item) => {
+                    return new ItemFrame(item);
+                }));
+                  dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             return dfd.promise();
         }
         
@@ -487,48 +486,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
                 
             });
-        }
-        
-        /**
-         * Get data absence frame from database
-         */
-        getAbsenceFrame(): any {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getAllAbsenceFrame().done(function(data) {
-                if (data.length != 0) {
-                    self.listAbsenceFrame.removeAll();
-                    _.forEach(data, function(item) {
-                        if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemData("b" + item.absenceFrameNo, item.absenceFrameName, 2);
-                            self.listAbsenceFrame.push(ko.toJS(absenceFrame));
-                        }
-                    });
-                }
-                dfd.resolve();
-            }).fail((res) => { });
-            return dfd.promise();
-        }
-        
-        /**
-         * Get data special holiday frame form database
-         */
-        getSpecialHolidayFrame(): any {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getAllSpecialHolidayFrame().done(function(data) {
-                if (data.length != 0) {
-                    self.listSpecialHlFrame.removeAll();
-                    _.forEach(data, function(item) {
-                        if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemData("a" + item.specialHdFrameNo, item.specialHdFrameName, 1);
-                            self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
-                        }
-                    });
-                }
-                dfd.resolve();
-            }).fail((res) => { });
-            return dfd.promise();
         }
         
         openJDialog() {
@@ -915,10 +872,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate("");
+            self.ageBaseDate(101);
             self.ageBaseDateReq(false);
             self.ageBaseDateDefaultValue(true);
-            
             self.yearReq(true);
             self.dayReq(true);
             
@@ -963,6 +919,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         constructor(specialHolidayCode: number, specialHolidayName: string) {
             this.specialHolidayCode = specialHolidayCode;
             this.specialHolidayName = specialHolidayName;       
+        }
+    }
+    
+        code: string;
+        name: string;
+            if (data) {
+                this.code = data.itemType+data.specialHdFrameNo;
+                this.name = data.specialHdFrameName;
+            }
         }
     }
     
