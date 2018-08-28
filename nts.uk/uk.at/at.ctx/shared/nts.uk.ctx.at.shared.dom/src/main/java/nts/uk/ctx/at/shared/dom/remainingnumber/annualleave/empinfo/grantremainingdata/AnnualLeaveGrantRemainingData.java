@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
@@ -60,30 +62,34 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 	 */
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
-	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String cID, String employeeId, GeneralDate grantDate,
-			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
-			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
-			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
-		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
-		domain.cid = cID;
-		domain.annLeavID = annLeavID;
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String cID, String employeeId,
+			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,
+			Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays, double remainDays,
+			Integer remainMinutes, double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		
-		domain.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-				remainDays, remainMinutes, usedPercent);
-		
-		if (prescribedDays != null && deductedDays != null && workingDays != null) {
-			domain.annualLeaveConditionInfo = Optional
-					.of(AnnualLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
-		} else {
-			domain.annualLeaveConditionInfo = Optional.empty();
-		}
-		return domain;
+			AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
+			domain.cid = cID;
+			domain.annLeavID = annLeavID;
+			domain.employeeId = employeeId;
+			domain.grantDate = grantDate;
+			domain.deadline = deadline;
+			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+
+			domain.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+					remainDays, remainMinutes, usedPercent);
+
+			if (prescribedDays != null && deductedDays != null && workingDays != null) {
+				domain.annualLeaveConditionInfo = Optional
+						.of(AnnualLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
+			} else {
+				domain.annualLeaveConditionInfo = Optional.empty();
+			}
+			return domain;
 	}
+	
+
+	
 	
 	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
@@ -154,5 +160,32 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		
 		// 年休使用残を返す
 		return remainingDays;
+	}
+	
+	public static void validate2(AnnualLeaveGrantRemainingData domain){
+		if ((domain.getDetails().getGrantNumber().getDays() != null)
+				|| (domain.getDetails().getUsedNumber().getDays() != null)
+				|| (domain.getDetails().getRemainingNumber().getDays() != null)) {
+			if (domain.getGrantDate() == null || domain.getDeadline() == null) {
+				if (domain.getGrantDate() == null) {
+					throw new BusinessException("Msg_925", "付与日");
+				}
+				if (domain.getDeadline() == null) {
+					throw new BusinessException("Msg_925", "期限日");
+				}
+			}
+		}
+		if (domain.getGrantDate() == null  && domain.getDeadline() != null) {
+			throw new BusinessException("Msg_925", "付与日");
+		}
+		if (domain.getDeadline() == null && domain.getGrantDate() != null) {
+			throw new BusinessException("Msg_925", "期限日");
+		}
+		// 付与日＞使用期限の場合はエラー #Msg_1023
+		if (domain.getGrantDate() != null || domain.getDeadline() != null) {
+			if (domain.getGrantDate().compareTo(domain.getDeadline()) > 0) {
+				throw new BusinessException("Msg_1023");
+			}
+		}
 	}
 }

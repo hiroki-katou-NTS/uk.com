@@ -23,6 +23,7 @@
 				nts.uk.ctx.pereg.dom.usesetting.EmpCodeLetter
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.pereg.dom.usesetting.CardNoLetter
+				nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -83,7 +84,7 @@
 									<input id="cardNumber"
 										data-bind="ntsTextEditor: {
 													value: cardNumberLetter ,
-													constraint:'CardNoLetter',
+													constraint:'StampNumber',
 													name: '#{i18n.getText('CPS002_81')}',
 													option: {
 														textmode: 'text',

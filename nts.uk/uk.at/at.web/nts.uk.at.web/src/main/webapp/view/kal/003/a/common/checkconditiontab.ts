@@ -270,9 +270,11 @@ module nts.uk.at.view.kal003.a.tab {
                 }
                 if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listMulMonCheckSet().length || _.filter(self.listMulMonCheckSet(), function(o) { return o.useAtr(); }).length == 0) {
                     block.clear();
+                    nts.uk.ui.errors.clearAll();
                     return;
                 }
                 self.listMulMonCheckSet.remove(function(item) {
+                    nts.uk.ui.errors.clearAll();
                     return item.useAtr();
                 })
                 nts.uk.ui.errors.clearAll();
@@ -299,10 +301,14 @@ module nts.uk.at.view.kal003.a.tab {
                 }
                 if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length || _.filter(self.listWorkRecordExtractingConditions(), function(o) { return o.useAtr(); }).length == 0) {
                     block.clear();
+                    nts.uk.ui.errors.clearAll();
                     return;
                 }
                 //self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
-                self.listWorkRecordExtractingConditions.remove(function(item) { return item.useAtr(); })
+                self.listWorkRecordExtractingConditions.remove(function(item) { 
+                    nts.uk.ui.errors.clearAll();
+                    return item.useAtr(); 
+                })
                 nts.uk.ui.errors.clearAll();
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
