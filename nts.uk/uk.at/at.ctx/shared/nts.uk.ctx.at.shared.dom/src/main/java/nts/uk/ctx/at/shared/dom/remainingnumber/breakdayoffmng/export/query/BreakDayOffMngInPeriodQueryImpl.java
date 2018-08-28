@@ -74,6 +74,13 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
 		//発生数・使用数を計算する
 		RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes = this.getRemainOccurrenceUseDayTimes(lstDetailData, inputParam.getDateData());
+		List<DayOffError> lstError = new ArrayList<>();
+		if(remainUnDigestedDayTimes.getRemainDays() < 0) {
+			lstError.add(DayOffError.DAYERROR);
+		}
+		if(remainUnDigestedDayTimes.getRemainTimes() < 0) {
+			lstError.add(DayOffError.TIMEERROR);
+		}
 		BreakDayOffRemainMngOfInPeriod outputData = new BreakDayOffRemainMngOfInPeriod(lstDetailData, 
 				remainUnDigestedDayTimes.getRemainDays(),
 				remainUnDigestedDayTimes.getRemainTimes(),
@@ -84,7 +91,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				getRemainOccurrenceUseDayTimes.getUnDigestedDays(),
 				getRemainOccurrenceUseDayTimes.getUnDigestedTimes(),
 				calcCarryForwardDays.getCarryForwardDays(), 
-				calcCarryForwardDays.getCarryForwardTime());
+				calcCarryForwardDays.getCarryForwardTime(),
+				lstError);
 		return outputData;
 	}
 

@@ -89,8 +89,8 @@ public class SpecialHolidayEventFinder {
 			if (x.getTargetItem() != null) {
 				List<Integer> frameNos = x.getTargetItem().getAbsenceFrameNo();
 				if (!CollectionUtil.isEmpty(frameNos)) {
-					frameNos.forEach(no->{
-						if(!hasSettingNos.contains(no)){
+					frameNos.forEach(no -> {
+						if (!hasSettingNos.contains(no)) {
 							hasSettingNos.add(no);
 						}
 					});
@@ -135,6 +135,12 @@ public class SpecialHolidayEventFinder {
 			return SpecialHolidayEventDto.fromDomain(sHEventOpt.get());
 		}
 		return null;
+	}
+
+	public List<SpecialHolidayEventDto> findAll() {
+		String companyId = AppContexts.user().companyId();
+		return this.sHEventRepo.findByCompany(companyId).stream().map(x -> SpecialHolidayEventDto.fromDomain(x))
+				.collect(Collectors.toList());
 	}
 
 }

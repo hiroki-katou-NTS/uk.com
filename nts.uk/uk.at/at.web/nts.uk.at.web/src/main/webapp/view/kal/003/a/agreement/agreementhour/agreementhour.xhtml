@@ -20,7 +20,7 @@
 		</div>
 		<div class="mg-bot-10">
 			<button data-bind="click: createNewLine">#{i18n.getText('KAL003_203')}</button>
-			<button data-bind="click: deleteLine">#{i18n.getText('KAL003_204')}</button>
+			<button data-bind="click: deleteLine, enable : checkUseAtr">#{i18n.getText('KAL003_204')}</button>
 		</div>
 		<table id="fixed-table-agreement-hour">
 			<colgroup>
