@@ -186,7 +186,7 @@
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
-										constraint: ko.toJS($vm.codeNameLabelConstraint)[0], 
+										constraint: $vm.codeConstraint, 
 										required: true, 
 										enable: $parent.enableSelectionCd, 
 		 								immediate: false}, hasFocus: $vm.focus.code" />
@@ -197,7 +197,7 @@
 									data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
 								value: selectionName, 
-								constraint: ko.toJS($vm.codeNameLabelConstraint)[1], 
+								constraint: $vm.nameConstraint, 
 								required: true, 
  								enable: $parent.enableSelectionName, 
 								immediate: false}, hasFocus: $vm.focus.name" />
