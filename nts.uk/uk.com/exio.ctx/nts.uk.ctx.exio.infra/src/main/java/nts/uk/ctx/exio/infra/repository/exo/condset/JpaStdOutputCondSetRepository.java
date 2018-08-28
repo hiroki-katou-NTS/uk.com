@@ -57,13 +57,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public void add(StdOutputCondSet domain) {
-	    Optional<OiomtStdOutputCondSet> stdOutputCondSet = this.queryProxy().find(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCode().v()), OiomtStdOutputCondSet.class);
-	    if(stdOutputCondSet.isPresent()) {
-	        this.commandProxy().update(toEntity(domain));
-	    } else {
-	        this.commandProxy().insert(toEntity(domain));
-	    }
-	   
+	    this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override

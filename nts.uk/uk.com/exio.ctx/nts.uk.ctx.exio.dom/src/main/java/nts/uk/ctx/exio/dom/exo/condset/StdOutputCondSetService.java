@@ -27,6 +27,7 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -92,12 +93,10 @@ public class StdOutputCondSetService {
 			RegisterMode mode, int standType) {
 		StandardOutputItemOrder standardOutputItemOrder;
 		String cid = AppContexts.user().companyId();
-		int order = 0;
-		for (int i = 0; i < listStandardOutputItemOrder.size(); i++) {
-			order++;
-			if (standType == StandardAtr.STANDARD.value) {
+		if (standType == StandardAtr.STANDARD.value) {
+		    for (int i = 0; i < listStandardOutputItemOrder.size(); i++) {
 				standardOutputItemOrder = new StandardOutputItemOrder(cid,
-						listStandardOutputItemOrder.get(i).getOutputItemCode().v(), cndSetCd, order);
+						listStandardOutputItemOrder.get(i).getOutputItemCode().v(), cndSetCd, i+1);
 				standardOutputItemOrderRepository.add(standardOutputItemOrder);
 			}
 		}
@@ -122,33 +121,17 @@ public class StdOutputCondSetService {
 	 * @param condSetCd
 	 */
 	public void remove(String cid, String condSetCd) {
-		List<StandardOutputItem> listStandardOutputItem = stdOutputItemRepository.getStdOutItemByCidAndSetCd(cid,
-				condSetCd);
-		List<StandardOutputItemOrder> listStandardOutputItemOrder = standardOutputItemOrderRepository
-				.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd);
-		Optional<OutCndDetail> outCndDetail = outCndDetailRepository.getOutCndDetailById(cid, condSetCd);
-		if (listStandardOutputItem != null && !listStandardOutputItem.isEmpty()) {
-			stdOutputItemRepository.remove(listStandardOutputItem);
-		}
-
-		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()) {
-			standardOutputItemOrderRepository.remove(listStandardOutputItemOrder);
-		}
-		if (outCndDetail.isPresent()) {
-			outCndDetailRepository.remove(cid, condSetCd);
-		}
+		stdOutputItemRepository.remove(cid, condSetCd);
+		standardOutputItemOrderRepository.remove(cid, condSetCd);
+		outCndDetailRepository.remove(cid, condSetCd);
 		stdOutputCondSetRepository.remove(cid, condSetCd);
 	}
 
 	// 外部出力設定登録確認
 	private boolean outputSetRegisConfir(RegisterMode mode, int standType, String cId, int autoExecution,
 			String cndSetCd) {
-		if (mode == RegisterMode.NEW) {
-			if (standType == StandardAtr.STANDARD.value) {
-				if (checkExist(cId, cndSetCd)) {
-					throw new BusinessException("Msg_3");
-				}
-			}
+		if (mode == RegisterMode.NEW && standType == StandardAtr.STANDARD.value && checkExist(cId, cndSetCd)) {
+			throw new BusinessException("Msg_3");
 		}
 		if (autoExecution == NotUseAtr.NOT_USE.value) {
 			throw new BusinessException("Msg_677");
@@ -158,16 +141,17 @@ public class StdOutputCondSetService {
 
 	private boolean checkExist(String cid, String cndSetCd) {
 		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid, cndSetCd);
-		if (stdOutputCondSet.isPresent()) {
-			return true;
-		}
-		return false;
+		return stdOutputCondSet.isPresent();
 	}
 
 	// 外部出力登録条件設定
 	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, int standType, RegisterMode mode) {
 		if (standType == StandardAtr.STANDARD.value) {
-			stdOutputCondSetRepository.add(stdOutputCondSet);
+		    if (mode == RegisterMode.NEW) {
+		        stdOutputCondSetRepository.add(stdOutputCondSet);
+		    } else {
+		        stdOutputCondSetRepository.update(stdOutputCondSet); 
+		    }
 		}
 	}
 
@@ -180,14 +164,12 @@ public class StdOutputCondSetService {
 		// 外部出力取得項目一覧_定型
 		List<StandardOutputItem> listStdOutputItem = outputAcquisitionItemList(cId, cndSetCode);
 
-		// 外部出力取得項目並順一覧_定型
+		// 外部出力取得項目並順一覧_定型---
 		List<StandardOutputItemOrder> listStdOutputItemOrder = outputAcquisitionItemOrderList(cId, cndSetCode);
 
 		// 外部出力取得条件一覧
 		outCndDetail = outCndDetailRepository.getOutCndDetailByCode(cndSetCode);
-		if (outCndDetail.isPresent()) {
-			outCndDetail.get().setListOutCndDetailItem(outputAcquisitionConditionList(cndSetCode));
-		}
+		outCndDetail.ifPresent(i -> i.setListOutCndDetailItem(outputAcquisitionConditionList(cndSetCode)));
 
 		// 取得内容の項目を複写先用の情報に変更する
 		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, listStdOutputItemOrder);
@@ -232,7 +214,6 @@ public class StdOutputCondSetService {
 		RegisterMode mode = RegisterMode.NEW;
 		String newCndSetCode = copyParams.getConditionSetCode().v();
 		if (checkExist(copyParams.getCid(), newCndSetCode)) {
-			mode = RegisterMode.UPDATE;
 			this.remove(copyParams.getCid(), newCndSetCode);
 		}
 		// 外部出力登録条件設定

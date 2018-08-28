@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.infra.repository.exo.outputitemorder;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -20,6 +19,9 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.outItemCd =:outItemCd AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
+	
+	private static final String DELETE_OUT_ITEM_ORDER = "DELETE FROM OiomtStdOutItemOrder f "
+            + "WHERE f.stdOutItemOrderPk.cid =:cid AND f.stdOutItemOrderPk.condSetCd =:condSetCd ";
 
 	@Override
 	public List<StandardOutputItemOrder> getAllStandardOutputItemOrder() {
@@ -58,12 +60,7 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 	@Override
 	public void update(StandardOutputItemOrder domain) {
 		this.commandProxy().update(OiomtStdOutItemOrder.toEntity(domain));
-	}
-	
-	@Override
-	public void update(List<StandardOutputItemOrder> domain) {
-		this.commandProxy().updateAll(OiomtStdOutItemOrder.toEntity(domain));
-	}
+	}	
 
 	@Override
 	public void remove(String cid, String outItemCd, String condSetCd) {
@@ -71,11 +68,7 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 	}
 	
 	@Override
-	public void remove(List<StandardOutputItemOrder> listStandardOutputItemOrder) {
-		this.commandProxy().removeAll(OiomtStdOutItemOrder.class, OiomtStdOutItemOrder.toEntity(listStandardOutputItemOrder).stream()
-				.map(i -> new OiomtStdOutItemOrderPk(i.stdOutItemOrderPk.cid, i.stdOutItemOrderPk.outItemCd, i.stdOutItemOrderPk.condSetCd))
-				.collect(Collectors.toList()));
-		
-		
+	public void remove(String cid, String condSetCd) {
+	    this.getEntityManager().createQuery(DELETE_OUT_ITEM_ORDER, OiomtStdOutItemOrder.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	}
 }
