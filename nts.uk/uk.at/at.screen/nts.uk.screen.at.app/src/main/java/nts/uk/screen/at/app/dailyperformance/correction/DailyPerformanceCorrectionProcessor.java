@@ -190,6 +190,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private ShowDialogError showDialogError;
 	
+	@Inject
+	private DisplayRemainingHolidayNumber remainHolidayService;
+	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	
@@ -1482,16 +1485,19 @@ public class DailyPerformanceCorrectionProcessor {
 		return this.repo.getListEmployee(null, null, lstWorkplace, null);
 	}
 
-	/** アルゴリズム「休暇の管理状況をチェックする」を実行する */
+	/** アルゴリズム「休暇残数を表示する」を実行する */
 	public void getHolidaySettingData(DailyPerformanceCorrectionDto dailyPerformanceCorrectionDto) {
-		// アルゴリズム「年休設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		// アルゴリズム「振休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		// アルゴリズム「代休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		// アルゴリズム「60H超休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
+//		String companyId = AppContexts.user().companyId();
+//		String employeeId = "";
+//		GeneralDate baseDate = GeneralDate.today();
+//		// アルゴリズム「年休設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(remainHolidayService.getAnnualLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「振休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setSubstVacationDto(remainHolidayService.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「代休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setCompensLeaveComDto(remainHolidayService.getCompensatoryLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「60H超休管理設定を取得する」を実行する
+////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
 	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer) {

@@ -72,16 +72,16 @@ public interface DailyPerformanceScreenRepo {
 	List<ClosureDto> getClosureId(Map<String, String> sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
-	YearHolidaySettingDto getYearHolidaySetting();
+//	YearHolidaySettingDto getYearHolidaySetting();
 
 	/** Query select KSVST_COM_SUBST_VACATION 振休（会社） by company id */
-	SubstVacationDto getSubstVacationDto();
+//	SubstVacationDto getSubstVacationDto();
 
 	/** Query select KCLMT_COMPENS_LEAVE_COM 代休管理設定(会社) by company id */
-	CompensLeaveComDto getCompensLeaveComDto();
+//	CompensLeaveComDto getCompensLeaveComDto();
 
 	/** Query select KSHST_COM_60H_VACATION 60H超休（会社） by company id */
-	Com60HVacationDto getCom60HVacationDto();
+//	Com60HVacationDto getCom60HVacationDto();
 
 	/** Get list sorted job titles */
 	List<String> getListJobTitle(DateRange dateRange);

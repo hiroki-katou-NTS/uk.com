@@ -118,15 +118,16 @@
 								]}"></div>
                                 <button id="btnExtraction" data-bind="click: btnExtraction_Click"
                                         style="top: -12px">#{i18n.getText('KDW003_20')}</button>
-                                <button id="btnVacationRemaining" style="visibility: hidden;"
-                                        data-bind="click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
+                                <button id="btnVacationRemaining"
+                                        data-bind="visible: referenceVacation().allVacation(), 
+                                        			click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
                                 <!-- visible: referenceVacation().allVacation -->
                                 <div id="vacationRemaining-content">
-                                    <button data-bind="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
-                                    <button data-bind="visible: referenceVacation().substVacation">#{i18n.getText('Com_SubstituteHoliday')}</button>
-                                    <button data-bind="visible: referenceVacation().yearHoliday19">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-                                    <button data-bind="visible: referenceVacation().compensLeave">#{i18n.getText('Com_CompensationHoliday')}</button>
-                                    <button data-bind="visible: referenceVacation().com60HVacation">#{i18n.getText('Com_ExsessHoliday')}</button>
+                                    <button data-bind="visible: referenceVacation().yearHoliday20(), click: openKDL020Dialog">#{i18n.getText('Com_PaidHoliday')}</button>
+                                    <button data-bind="visible: referenceVacation().substVacation(), click: openKDL009Dialog">#{i18n.getText('Com_SubstituteHoliday')}</button>
+                                    <button data-bind="visible: referenceVacation().yearHoliday19(), click: openkdl029Dialog">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+                                    <button data-bind="visible: referenceVacation().compensLeave(), click: openKDL005Dialog">#{i18n.getText('Com_CompensationHoliday')}</button>
+                                    <button data-bind="visible: referenceVacation().com60HVacation()">#{i18n.getText('Com_ExsessHoliday')}</button>
                                 </div>
                                 <button id="btnComfirmAttendance"
                                         data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
@@ -135,11 +136,10 @@
                                     <table id="fixed-table">
                                         <thead>
                                             <tr>
-                                                <th class="ui-widget-header"
-                                                    style="width: 65px; height: 22px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+                                                <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
                                                 <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
                                                 <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-                                                <th class="ui-widget-header" style="width: 100px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+                                                <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -163,6 +163,8 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <label data-bind="text: dataHoliday().dispSysDate"></label>
+                                    <label style="padding-left: 20px">#{i18n.getText('KDW003_122')}</label>
                                 </div>
                             </div>
                             <div id="container" style="padding-top: 12px">
