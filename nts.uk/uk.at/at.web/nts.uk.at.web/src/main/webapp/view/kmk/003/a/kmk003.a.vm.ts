@@ -235,7 +235,12 @@ module nts.uk.at.view.kmk003.a {
                         $('#search-daily-atr').focus();
                     }
                     else {
-                        self.enterNewMode();
+                        if (self.screenMode() != 2) {
+                            self.enterNewMode();
+                        }
+                        else {
+                            self.enterCopyMode();
+                        }
                     }
                 });
 
@@ -546,7 +551,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 // Validate Msg_770
-                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getShiftTwo();
+                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
                 if (shiftTwo.useAtr() && (shiftTwo.start() >= shiftTwo.end())) {
                     $('#shiftTwoStart').ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText('KMK003_216')]});
                 }
@@ -697,7 +702,10 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-
+                
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
 
@@ -712,9 +720,6 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
-                
                 // do interlock if simple mode
                 if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);
