@@ -74,7 +74,7 @@ public class KfnstPlanTimeItemDataCopyHandler extends DataCopyHandler {
 					for (int j = 0; j < oldDatas.size(); j++) {
 						Object[] targetAttr = (Object[]) oldDatas.get(j);
 						// compare keys and remove
-						if (dataAttr[1].equals(targetAttr[1]) && dataAttr[2] == targetAttr[2]) {
+						if (dataAttr[1].equals(targetAttr[1]) && dataAttr[2].equals(targetAttr[2])) {
 							zeroCompanyDatas.remove(i);
 							i -= 1;
 							break;
