@@ -330,7 +330,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
 			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
-					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
+					ExecutedMenu.SELECT_AND_RUN, GeneralDateTime.now(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
 		//}

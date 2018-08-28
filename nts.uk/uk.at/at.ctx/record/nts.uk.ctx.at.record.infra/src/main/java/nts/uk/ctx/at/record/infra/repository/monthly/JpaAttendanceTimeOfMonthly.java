@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：月別実績の勤怠時間
@@ -80,12 +81,18 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
 			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
+			+ "ORDER BY a.PK.employeeId, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.startYmd <= :endDate "
 			+ "AND a.endYmd >= :startDate ";
+	
+	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.endYmd >= :startDate "
+			+ "AND a.endYmd <= :endDate "
+			+ "ORDER BY a.startYmd ";
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -171,6 +178,17 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
+				.getList(c -> c.toDomain());
+	}
+	
+	/** 検索　（終了日を含む期間） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
+		
+		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(c -> c.toDomain());
 	}
 			

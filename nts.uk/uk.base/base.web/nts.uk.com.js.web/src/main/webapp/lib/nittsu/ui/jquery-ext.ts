@@ -57,7 +57,8 @@ module nts.uk.ui.jqueryExtentions {
         
         let $container = $dialog.closest(".ui-dialog");
         
-        let offsetContentsArea = window.parent.$("#header").height();
+        //let offsetContentsArea = window.parent.$("#header").height();
+        let offsetContentsArea = 0;
         let offsetDialog = $container.offset();
         
         if (offsetDialog.top < offsetContentsArea) {

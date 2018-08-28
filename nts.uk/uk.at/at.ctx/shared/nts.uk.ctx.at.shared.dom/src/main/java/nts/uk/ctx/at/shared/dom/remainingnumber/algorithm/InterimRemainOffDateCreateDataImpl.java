@@ -322,7 +322,10 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-			switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
+		if(!inforData.getWorkTypeRemain().isPresent()) {
+			return null;
+		}	
+		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
 				case Pause:
 					return createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
 				case SubstituteHoliday:	
@@ -449,11 +452,11 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		if(appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			// 休日出勤申請から代休振替情報を作成する
 			DayoffTranferInfor tranferInforFromHoliday = this.tranferInforFromHolidayWork(cid, dayOffTimeIsUse, appInfor, remainInfor, createAtr);
-			outputData.setDayOffTranfer(Optional.of(tranferInforFromHoliday));
+			outputData.setDayOffTranfer(tranferInforFromHoliday == null ? Optional.empty() : Optional.of(tranferInforFromHoliday));
 		} else {
 			//休日出勤以外の申請から代休振替情報を作成する
 			DayoffTranferInfor tranferInforNotFromHoliday = this.transferInforFromNotHolidayWork(cid, dayOffTimeIsUse, appInfor, createInfo, remainInfor, createAtr);
-			outputData.setDayOffTranfer(Optional.of(tranferInforNotFromHoliday));
+			outputData.setDayOffTranfer(tranferInforNotFromHoliday == null ? Optional.empty() : Optional.of(tranferInforNotFromHoliday));
 		}
 		
 		return outputData;
@@ -508,13 +511,13 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				//振替用就業時間帯コード：労働条件項目.区分別勤務.休日出勤時.就業時間帯コード
 				Optional<WorkingConditionItem> coditionInfo = conditionService.findWorkConditionByEmployee(sid, baseDate);
 				if(!coditionInfo.isPresent()) {
-					return null;
+					return "000";
 				} else {
 					coditionInfo.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 				}
 			}
 		}
-		return null;
+		return "000";
 	}
 
 	@Override

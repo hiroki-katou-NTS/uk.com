@@ -320,7 +320,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalOverTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							overTimeWork, new AttendanceTime(0)));
+							overTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
 					break;
 						
 				case TRANSFER:
@@ -341,7 +341,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, new AttendanceTime(0)));
+							transferTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
 					break;
 				}
 				break;
@@ -444,7 +444,7 @@ public class OverTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
-	 * 残業時間の集計
+	 * 残業時間の集計　（期間別集計用）
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param roleOverTimeFrameMap 残業枠の役割
