@@ -70,11 +70,11 @@ div#tab-panel {
 
 .methodsCls.ntsControl.radio-wrapper.reset-element {
     width: 265px;
-    padding: 10px 40px;
+    margin: 10px 40px;
     float: left;
 }
 
-.methodsCls label.ntsRadioBox {
+.methodsCls label.ntsRadioBox:FIRST-CHILD {
 	height: 90px;
 }
 
@@ -110,7 +110,6 @@ div#tab-panel {
 .timing {
     width: 280px;
     float: left;
-    margin: -105px 290px;
 }
 
 .btn-d-dialog, .timing-hint {

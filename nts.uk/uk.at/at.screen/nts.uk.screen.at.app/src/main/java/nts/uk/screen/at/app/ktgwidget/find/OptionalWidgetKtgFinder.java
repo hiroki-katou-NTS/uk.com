@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -411,7 +412,9 @@ public class OptionalWidgetKtgFinder {
 						boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
 						sPHDRamainNos.add(new RemainingNumber(0, 0, GeneralDate.today(), showAfter));
 					}
-					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, 1, false);
+					ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, datePeriod, false, startDate, 1, false,
+							false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 					double afterGrant = 0.0;
 					if(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()) {
 						afterGrant = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays();

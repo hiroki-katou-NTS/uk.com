@@ -10,13 +10,13 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDaily
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間中の年休積休残数を取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetAnnAndRsvRemNumWithinPeriod {
 
@@ -42,7 +42,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
-			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
+			Optional<List<TmpAnnualHolidayMng>> tempAnnDataforOverWriteList,
 			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate,
@@ -74,7 +74,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
-			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
+			Optional<List<TmpAnnualHolidayMng>> tempAnnDataforOverWriteList,
 			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate,

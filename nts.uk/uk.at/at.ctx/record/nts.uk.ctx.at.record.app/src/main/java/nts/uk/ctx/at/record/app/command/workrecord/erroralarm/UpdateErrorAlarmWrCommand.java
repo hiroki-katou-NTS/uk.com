@@ -73,6 +73,7 @@ public class UpdateErrorAlarmWrCommand {
 	private boolean group2UseAtr;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2;
+	private int newMode;
 
 	public UpdateErrorAlarmWrCommand() {
 		super();
@@ -84,7 +85,7 @@ public class UpdateErrorAlarmWrCommand {
 			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
 			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2, boolean group2UseAtr,
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2) {
+			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2, int newMode) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
@@ -108,6 +109,7 @@ public class UpdateErrorAlarmWrCommand {
 		this.group2UseAtr = group2UseAtr;
 		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
 		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
+		this.newMode = newMode;
 	}
 
 	@SuppressWarnings("unchecked")

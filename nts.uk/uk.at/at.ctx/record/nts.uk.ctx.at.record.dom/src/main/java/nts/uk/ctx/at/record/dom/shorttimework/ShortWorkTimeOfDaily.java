@@ -110,17 +110,22 @@ public class ShortWorkTimeOfDaily {
 			}
 		}
 		//就業時間外時間帯
-		OutsideWorkTimeSheet outsideWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get();
-		//残業
-		if(outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()) {
-			for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets()) {
-				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
-			}
+		Optional<OutsideWorkTimeSheet> outsideWorkTimeSheet = Optional.empty();
+		if(recordClass.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
+			recordClass.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get();
 		}
-		//休出
-		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
-			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
-				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
+		//残業
+		if(outsideWorkTimeSheet.isPresent()) {
+			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
+				for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets()) {
+					list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
+				}
+			}
+			//休出
+			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
+					list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(dedAtr, condition));
+				}
 			}
 		}
 		

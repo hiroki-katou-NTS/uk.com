@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
+package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import lombok.Value;
 
@@ -9,4 +9,5 @@ public class HolidaysRemainingOutputConditionQuery {
 	private String outputItemSettingCode;
 	private int pageBreak;
 	private String baseDate;
+	private int closureId;
 }

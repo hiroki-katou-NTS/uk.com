@@ -246,6 +246,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         openSelectAtdItemDialogTarget() {
             let self = this;
+            nts.uk.ui.block.invisible();
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
@@ -280,6 +281,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     });
                 }
             });
+            nts.uk.ui.block.clear();
         }
 
         openSelectAtdItemDialogComparison() {

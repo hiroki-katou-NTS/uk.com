@@ -428,7 +428,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private AchievementOutput getAchievement(String companyID, String employeeID, GeneralDate appDate) {
+	public AchievementOutput getAchievement(String companyID, String employeeID, GeneralDate appDate) {
 		// アルゴリズム「実績取得」を実行する
 		if (appDate != null) {
 			return collectAchievement.getAchievement(companyID, employeeID, appDate);
