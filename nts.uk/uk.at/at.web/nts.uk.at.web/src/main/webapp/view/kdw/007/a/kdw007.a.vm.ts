@@ -101,7 +101,17 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
-                        self.selectedErrorAlarmCode(self.codeToSelect() == null ? self.lstFilteredData()[0].code : self.codeToSelect());
+                        if (self.codeToSelect() == null) {
+                            if (self.selectedErrorAlarmCode() == self.lstFilteredData()[0].code)
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
+                        } else {
+                            if (self.selectedErrorAlarmCode() == self.codeToSelect())
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.codeToSelect());
+                        }
                         self.isNewMode(false);
                         self.selectedTab('tab-1');
                     } else {

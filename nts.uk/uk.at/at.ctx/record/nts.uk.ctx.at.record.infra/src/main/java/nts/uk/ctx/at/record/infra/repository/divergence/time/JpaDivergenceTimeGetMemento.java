@@ -116,7 +116,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	@Override
 	public List<Integer> getTargetItems() {
 		if (!CollectionUtil.isEmpty(this.entityDvgcAttendance)) {
-			return this.entityDvgcAttendance.stream().map(item -> item.getId().getAttendanceId())
+			return this.entityDvgcAttendance.stream().filter(item -> item != null).map(item -> item.getId().getAttendanceId())
 					.collect(Collectors.toList());
 		}
 
