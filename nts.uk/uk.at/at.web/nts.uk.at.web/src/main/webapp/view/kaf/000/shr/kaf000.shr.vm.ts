@@ -247,6 +247,30 @@ module nts.uk.at.view.kaf000.shr{
         }
         
         export class CommonProcess {
+            public static getComboBoxReason(selectID: string, listID: Array<string>, displaySet: boolean): string{
+                if(!displaySet){
+                    return "";    
+                }
+                if(nts.uk.util.isNullOrEmpty(selectID)){
+                    return "";        
+                }         
+                let reasonValue = _.find(listID, o => { return o.reasonId == selectID; }).reasonName;
+                if(nts.uk.util.isNullOrUndefined(reasonValue)){
+                    return "";    
+                }
+                return reasonValue;
+            }
+            
+            public static getTextAreaReason(reasonText: string, displaySet: boolean, enableSet: boolean): string{
+                if(!displaySet){
+                    return "";    
+                }
+                if(!enableSet){
+                    return "";    
+                }
+                return reasonText;
+            }
+            
             public static checkAppReason(appReasonRequired: boolean, inputReasonDisp: boolean, detailReasonDisp: boolean, appReason: string): boolean {
                 if(appReasonRequired == false) {
                     return true;

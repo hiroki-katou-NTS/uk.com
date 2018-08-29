@@ -379,6 +379,7 @@ public class AppAbsenceFinder {
 			result.setLstRela(lstRela);
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
+		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
 		return result;
 	}
 
