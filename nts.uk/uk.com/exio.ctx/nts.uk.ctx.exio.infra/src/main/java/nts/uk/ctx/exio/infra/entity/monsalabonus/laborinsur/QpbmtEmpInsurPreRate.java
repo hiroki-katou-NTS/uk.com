@@ -19,41 +19,40 @@ import java.io.Serializable;
 public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
     /**
-    * ID
-    */
+     * ID
+     */
     @EmbeddedId
     public QpbmtEmpInsurPreRatePk empInsurPreRatePk;
-    
+
     /**
-    * 
-    */
+     * 個人負担率
+     */
     @Basic(optional = false)
     @Column(name = "IND_BD_RATIO")
     public String indBdRatio;
-    
+
     /**
-    * 
-    */
+     * 事業主負担率
+     */
     @Basic(optional = false)
     @Column(name = "EMP_CONTR_RATIO")
     public String empContrRatio;
-    
+
     /**
-    * 
-    */
+     * 個人端数区分
+     */
     @Basic(optional = false)
     @Column(name = "PER_FRAC_CLASS")
     public int perFracClass;
-    
+
     /**
-    * 
-    */
+     * 事業主端数区分
+     */
     @Basic(optional = false)
     @Column(name = "BUSI_OW_FRAC_CLASS")
     public int busiOwFracClass;
-    
+
     @Override
     protected Object getKey()
     {

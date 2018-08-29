@@ -1,15 +1,14 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 /**
 * 雇用保険料率: 主キー情報
@@ -23,7 +22,7 @@ public class QpbmtEmpInsurPreRatePk implements Serializable
     private static final long serialVersionUID = 1L;
     
     /**
-    * 
+    * 履歴ID
     */
     @Basic(optional = false)
     @Column(name = "HIS_ID")
