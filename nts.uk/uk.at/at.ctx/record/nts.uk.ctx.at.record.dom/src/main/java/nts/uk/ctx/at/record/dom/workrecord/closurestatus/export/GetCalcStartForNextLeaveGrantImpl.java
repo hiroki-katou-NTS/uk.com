@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.closurestatus.export;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 public class GetCalcStartForNextLeaveGrantImpl implements GetCalcStartForNextLeaveGrant {
 
 	/** 締め状態管理 */
+	@Inject
 	private ClosureStatusManagementRepository closureStatusMngRepo;
 	
 	/** 次回年休付与を計算する開始日を取得する */
