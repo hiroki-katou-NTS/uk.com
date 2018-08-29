@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
+package nts.uk.ctx.exio.dom;
 
 import java.util.Optional;
 import java.util.List;

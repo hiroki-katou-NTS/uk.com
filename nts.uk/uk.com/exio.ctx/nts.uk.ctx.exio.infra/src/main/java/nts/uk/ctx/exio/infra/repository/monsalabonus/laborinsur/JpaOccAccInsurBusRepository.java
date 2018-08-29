@@ -1,13 +1,13 @@
 package nts.uk.ctx.exio.infra.repository.monsalabonus.laborinsur;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.exio.dom.OccAccInsurBusRepository;
+import nts.uk.ctx.exio.dom.OccAccInsurBus;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBus;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBusRepository;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccInsurBus;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccInsurBusPk;
 
@@ -44,6 +44,6 @@ public class JpaOccAccInsurBusRepository extends JpaRepository implements OccAcc
 
     @Override
     public void remove(String cid, int occAccInsurBusNo){
-        this.commandProxy().remove(QpbmtOccAccInsurBus.class, new QpbmtOccAccInsurBusPk(cid, occAccInsurBusNo)); 
+        this.commandProxy().remove(QpbmtOccAccInsurBus.class, new QpbmtOccAccInsurBusPk(cid, occAccInsurBusNo));
     }
 }

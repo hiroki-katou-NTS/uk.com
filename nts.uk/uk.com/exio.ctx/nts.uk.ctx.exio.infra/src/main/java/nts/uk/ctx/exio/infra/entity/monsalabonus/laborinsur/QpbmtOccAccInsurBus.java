@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -8,10 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBus;
+import nts.uk.ctx.exio.dom.OccAccInsurBus;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -32,14 +33,14 @@ public class QpbmtOccAccInsurBus extends UkJpaEntity implements Serializable
     public QpbmtOccAccInsurBusPk occAccInsurBusPk;
     
     /**
-    * 
+    * 利用する
     */
     @Basic(optional = false)
     @Column(name = "TO_USE")
     public int toUse;
     
     /**
-    * 
+    * 名称
     */
     @Basic(optional = true)
     @Column(name = "NAME")

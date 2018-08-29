@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom;
+package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,37 +8,32 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
-* 労災保険料率
+* 労災保険履歴
 */
 @AllArgsConstructor
 @Getter
-public class OccAccIsPrRate extends AggregateRoot
+public class OccAccIsHis extends AggregateRoot
 {
     
     /**
     * 
     */
-    private String ocAcIsPrRtId;
+    private String cid;
     
     /**
-    * 履歴ID
+    * 
     */
     private String hisId;
     
     /**
-    * 労災保険事業No
+    * 
     */
-    private int occAccInsurBusNo;
+    private int startDate;
     
     /**
-    * 端数区分
+    * 
     */
-    private int fracClass;
-    
-    /**
-    * 事業主負担率
-    */
-    private String empConRatio;
+    private int endDate;
     
     
 }

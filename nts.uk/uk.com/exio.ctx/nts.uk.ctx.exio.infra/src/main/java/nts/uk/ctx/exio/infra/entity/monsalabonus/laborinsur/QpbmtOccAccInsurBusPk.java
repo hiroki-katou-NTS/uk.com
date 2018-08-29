@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -23,14 +22,14 @@ public class QpbmtOccAccInsurBusPk implements Serializable
     private static final long serialVersionUID = 1L;
     
     /**
-    * 
+    * 会社ID
     */
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;
     
     /**
-    * 
+    * 労災保険事業No
     */
     @Basic(optional = false)
     @Column(name = "OCC_ACC_INSUR_BUS_NO")

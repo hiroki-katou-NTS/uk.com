@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -8,10 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRate;
+import nts.uk.ctx.exio.dom.OccAccIsPrRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_OCC_ACC_IS_ PR_RATE")
+@Table(name = "QPBMT_OCC_ACC_IS_PR_RATE")
 public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -32,25 +33,25 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     public QpbmtOccAccIsPrRatePk occAccIsPrRatePk;
     
     /**
-    * 
+    * 労災保険事業No
     */
     @Basic(optional = false)
     @Column(name = "OCC_ACC_INSUR_BUS_NO")
     public int occAccInsurBusNo;
     
     /**
-    * 
+    * 端数区分
     */
     @Basic(optional = false)
     @Column(name = "FRAC_CLASS")
     public int fracClass;
     
     /**
-    * 
+    * 事業主負担率
     */
     @Basic(optional = false)
     @Column(name = "EMP_CON_RATIO")
-    public int empConRatio;
+    public String empConRatio;
     
     @Override
     protected Object getKey()
