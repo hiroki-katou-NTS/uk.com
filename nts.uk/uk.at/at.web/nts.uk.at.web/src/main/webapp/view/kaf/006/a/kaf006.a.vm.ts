@@ -628,7 +628,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
-<<<<<<< HEAD
             if(self.holidayTypeCode() != 1){
                 self.registerApp();
             }else{
@@ -668,21 +667,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         registerApp(){
             let self = this;
-=======
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
             let appReason: string;
-//            appReason = self.getReason(
-//                self.selectedReason(),
-//                self.reasonCombo(),
-//                self.multilContent()
-//            );
-//            let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
-//            if (appReasonError) {
-//                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-//                return;
-//            }
             if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                 return;
             }

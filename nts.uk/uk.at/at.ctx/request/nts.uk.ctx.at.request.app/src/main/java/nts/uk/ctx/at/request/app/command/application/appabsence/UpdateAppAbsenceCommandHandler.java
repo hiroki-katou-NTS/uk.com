@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,9 +29,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-=======
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -42,7 +37,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -66,15 +60,13 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	@Inject
 	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
-<<<<<<< HEAD
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-=======
+	@Inject
 	private DisplayReasonRepository displayRep;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();

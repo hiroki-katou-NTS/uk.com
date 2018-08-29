@@ -104,7 +104,6 @@ module nts.uk.at.view.kaf006.b{
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
-<<<<<<< HEAD
         //No.376
         yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
         subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
@@ -117,14 +116,11 @@ module nts.uk.at.view.kaf006.b{
         stockDis: KnockoutObservable<boolean> = ko.observable(false);
         //ver20
         disAll: KnockoutObservable<boolean> = ko.observable(false);
-=======
-            
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReason: KnockoutObservable<boolean> = ko.observable(false);
         enableReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReasonLst: Array<common.DisplayReason> = []; 
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -528,16 +524,6 @@ module nts.uk.at.view.kaf006.b{
              let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
              let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
              let appReason: string;
-//             appReason = self.getReason(
-//                self.selectedReason(),
-//                self.reasonCombo(),
-//                self.multilContent()
-//            );
-//             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
-//             if (appReasonError) {
-//                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-//                 return;
-//             }
              if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                  return;
              }

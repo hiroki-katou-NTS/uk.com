@@ -401,7 +401,6 @@ public class AppAbsenceFinder {
 			result.setLstRela(lstRela);
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
-<<<<<<< HEAD
 		//No.376
 		//残数取得する
 		List<AppEmploymentSetting> appEmpSetAs = appCommonSet.getAppEmploymentWorkType().stream()
@@ -409,9 +408,7 @@ public class AppAbsenceFinder {
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
 				appAbsence.getApplication().getAppDate(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
-=======
 		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
->>>>>>> e22da96113c95db6bbb06019810c20598811e486
 		return result;
 	}
 
