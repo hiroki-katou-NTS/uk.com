@@ -2,11 +2,14 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -44,9 +47,24 @@ public class AppOvertimeDetail extends DomainObject {
 	private AttendanceTimeMonth actualTime;
 
 	/**
-	 * 36時間
+	 * 限度エラー時間
 	 */
-	private AttendanceTimeMonth time36;
+	private MonthlyTime limitErrorTime;
+
+	/**
+	 * 限度アラーム時間
+	 */
+	private MonthlyTime limitAlarmTime;
+
+	/**
+	 * 特例限度エラー時間
+	 */
+	private Optional<MonthlyTime> exceptionLimitErrorTime;
+
+	/**
+	 * 特例限度アラーム時間
+	 */
+	private Optional<MonthlyTime> exceptionLimitAlarmTime;
 
 	/**
 	 * 36年間超過月
@@ -58,39 +76,39 @@ public class AppOvertimeDetail extends DomainObject {
 	 */
 	private NumberOfMonth numOfYear36Over;
 
-	public AppOvertimeDetail(String cid, String appId, int applicationTime, int yearMonth, int actualTime, int time36,
+	public AppOvertimeDetail(String cid, String appId, int applicationTime, int yearMonth, int actualTime,
+			int limitErrorTime, int limitAlarmTime, Integer exceptionLimitErrorTime, Integer exceptionLimitAlarmTime,
 			List<Integer> overMonth, int numOfYear36Over) {
 		super();
 		this.cid = cid;
 		this.appId = appId;
-		this.applicationTime = new AttendanceTimeMonth(applicationTime);
+		this.setApplicationTime(applicationTime);
 		this.yearMonth = new YearMonth(yearMonth);
-		this.actualTime = new AttendanceTimeMonth(actualTime);
-		this.time36 = new AttendanceTimeMonth(time36);
+		this.setActualTime(actualTime);
+		this.setLimitErrorTime(limitErrorTime);
+		this.setLimitAlarmTime(limitAlarmTime);
+		this.setExceptionLimitErrorTime(exceptionLimitErrorTime);
+		this.setExceptionLimitAlarmTime(exceptionLimitAlarmTime);
 		this.year36OverMonth = new ArrayList<>();
 		for (Integer month : overMonth) {
 			this.year36OverMonth.add(new Year36OverMonth(cid, appId, month));
 		}
-		this.numOfYear36Over = new NumberOfMonth(numOfYear36Over);
+		this.setNumOfYear36Over(numOfYear36Over);
 	}
 
 	public AppOvertimeDetail() {
 		super();
 		this.cid = "";
 		this.appId = "";
-		this.applicationTime = new AttendanceTimeMonth(0);
+		this.setApplicationTime(0);
 		this.yearMonth = new YearMonth(0);
-		this.actualTime = new AttendanceTimeMonth(0);
-		this.time36 = new AttendanceTimeMonth(0);
-		this.numOfYear36Over = new NumberOfMonth(0);
+		this.setActualTime(0);
+		this.setLimitErrorTime(0);
+		this.setLimitAlarmTime(0);
+		this.setExceptionLimitErrorTime(null);
+		this.setExceptionLimitAlarmTime(null);
 		this.year36OverMonth = new ArrayList<>();
-	}
-
-	/**
-	 * ３６上限チェック
-	 */
-	public boolean check36UpperLimit() {
-		return this.time36.v() < this.actualTime.v() + this.applicationTime.v();
+		this.setNumOfYear36Over(0);
 	}
 
 	public boolean existOverMonth(YearMonth month) {
@@ -120,8 +138,22 @@ public class AppOvertimeDetail extends DomainObject {
 		this.actualTime = new AttendanceTimeMonth(actualTime);
 	}
 
-	public void setTime36(int time36) {
-		this.time36 = new AttendanceTimeMonth(time36);
+	public void setLimitErrorTime(int limitErrorTime) {
+		this.limitErrorTime = new MonthlyTime(limitErrorTime);
+	}
+
+	public void setLimitAlarmTime(int limitAlarmTime) {
+		this.limitAlarmTime = new MonthlyTime(limitAlarmTime);
+	}
+
+	public void setExceptionLimitErrorTime(Integer exceptionLimitErrorTime) {
+		this.exceptionLimitErrorTime = Objects.isNull(exceptionLimitErrorTime) ? Optional.empty()
+				: Optional.ofNullable(new MonthlyTime(exceptionLimitErrorTime));
+	}
+
+	public void setExceptionLimitAlarmTime(Integer exceptionLimitAlarmTime) {
+		this.exceptionLimitAlarmTime = Objects.isNull(exceptionLimitAlarmTime) ? Optional.empty()
+				: Optional.ofNullable(new MonthlyTime(exceptionLimitAlarmTime));
 	}
 
 	public void setNumOfYear36Over(int numOfYear36Over) {

@@ -62,16 +62,37 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	public int actualTime;
 
 	/**
-	 * 36時間
+	 * 限度エラー時間
 	 */
 	@Basic(optional = false)
-	@Column(name = "TIME36")
-	public int time36;
+	@Column(name = "LIMIT_ERROR_TIME")
+	public int limitErrorTime;
+
+	/**
+	 * 限度アラーム時間
+	 */
+	@Basic(optional = false)
+	@Column(name = "LIMIT_ALARM_TIME")
+	public int limitAlarmTime;
+
+	/**
+	 * 特例限度エラー時間
+	 */
+	@Basic(optional = true)
+	@Column(name = "EXCEPTION_LIMIT_ERROR_TIME")
+	public Integer exceptionLimitErrorTime;
+
+	/**
+	 * 特例限度アラーム時間
+	 */
+	@Basic(optional = true)
+	@Column(name = "EXCEPTION_LIMIT_ALARM_TIME")
+	public Integer exceptionLimitAlarmTime;
 
 	@OneToMany(targetEntity = KrqdtYear36OverMonth.class, mappedBy = "appOvertimeDetail", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRQDT_YEAR36_OVER_MONTH")
 	private List<KrqdtYear36OverMonth> year36OverMonth;
-	
+
 	/**
 	 * 36年間超過回数
 	 */
@@ -80,17 +101,13 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	public int numOfYear36Over;
 
 	@OneToOne
-	@PrimaryKeyJoinColumns({ 
-		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") 
-	})
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppOvertime appOvertime;
-	
+
 	@OneToOne
-	@PrimaryKeyJoinColumns({ 
-		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") 
-	})
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppHolidayWork appHolidayWork;
 
 	@Override
@@ -100,7 +117,8 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 
 	public AppOvertimeDetail toDomain() {
 		return new AppOvertimeDetail(this.appOvertimeDetailPk.cid, this.appOvertimeDetailPk.appId, this.applicationTime,
-				this.yearMonth, this.actualTime, this.time36,
+				this.yearMonth, this.actualTime, this.limitErrorTime, this.limitAlarmTime, this.exceptionLimitErrorTime,
+				this.exceptionLimitAlarmTime,
 				this.year36OverMonth.stream().map(x -> x.toDomain().getOverMonth().v()).collect(Collectors.toList()),
 				this.numOfYear36Over);
 	}
@@ -112,17 +130,24 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 		AppOvertimeDetail domain = domainOtp.get();
 		return new KrqdtAppOvertimeDetail(new KrqdtAppOvertimeDetailPk(domain.getCid(), domain.getAppId()),
 				domain.getApplicationTime().v(), domain.getYearMonth().v(), domain.getActualTime().v(),
-				domain.getTime36().v(), domain.getYear36OverMonth(), domain.getNumOfYear36Over().v());
+				domain.getLimitErrorTime().v(), domain.getLimitAlarmTime().v(),
+				domain.getExceptionLimitErrorTime().isPresent() ? domain.getExceptionLimitErrorTime().get().v() : null,
+				domain.getExceptionLimitAlarmTime().isPresent() ? domain.getExceptionLimitAlarmTime().get().v() : null,
+				domain.getYear36OverMonth(), domain.getNumOfYear36Over().v());
 	}
 
 	public KrqdtAppOvertimeDetail(KrqdtAppOvertimeDetailPk appOvertimeDetailPk, int applicationTime, int yearMonth,
-			int actualTime, int time36, List<Year36OverMonth> year36OverMonth, int numOfYear36Over) {
+			int actualTime, int limitErrorTime, int limitAlarmTime, Integer exceptionLimitErrorTime,
+			Integer exceptionLimitAlarmTime, List<Year36OverMonth> year36OverMonth, int numOfYear36Over) {
 		super();
 		this.appOvertimeDetailPk = appOvertimeDetailPk;
 		this.applicationTime = applicationTime;
 		this.yearMonth = yearMonth;
 		this.actualTime = actualTime;
-		this.time36 = time36;
+		this.limitErrorTime = limitErrorTime;
+		this.limitAlarmTime = limitAlarmTime;
+		this.exceptionLimitErrorTime = exceptionLimitErrorTime;
+		this.exceptionLimitAlarmTime = exceptionLimitAlarmTime;
 		this.year36OverMonth = year36OverMonth.stream().map(x -> KrqdtYear36OverMonth.toEntity(x))
 				.collect(Collectors.toList());
 		this.numOfYear36Over = numOfYear36Over;

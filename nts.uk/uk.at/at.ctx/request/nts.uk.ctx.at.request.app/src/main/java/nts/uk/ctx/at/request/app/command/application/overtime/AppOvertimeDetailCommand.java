@@ -28,9 +28,24 @@ public class AppOvertimeDetailCommand {
 	private int actualTime;
 
 	/**
-	 * 36時間
+	 * 限度エラー時間
 	 */
-	private int time36;
+	private int limitErrorTime;
+
+	/**
+	 * 限度アラーム時間
+	 */
+	private int limitAlarmTime;
+
+	/**
+	 * 特例限度エラー時間
+	 */
+	private Integer exceptionLimitErrorTime;
+
+	/**
+	 * 特例限度アラーム時間
+	 */
+	private Integer exceptionLimitAlarmTime;
 
 	/**
 	 * 36年間超過月
@@ -43,7 +58,8 @@ public class AppOvertimeDetailCommand {
 	private int numOfYear36Over;
 
 	public AppOvertimeDetail toDomain(String cid, String appId) {
-		return new AppOvertimeDetail(cid, appId, this.applicationTime, this.yearMonth, this.actualTime, this.time36,
+		return new AppOvertimeDetail(cid, appId, this.applicationTime, this.yearMonth, this.actualTime,
+				this.limitErrorTime, this.limitAlarmTime, this.exceptionLimitErrorTime, this.exceptionLimitAlarmTime,
 				this.year36OverMonth, this.numOfYear36Over);
 	}
 }

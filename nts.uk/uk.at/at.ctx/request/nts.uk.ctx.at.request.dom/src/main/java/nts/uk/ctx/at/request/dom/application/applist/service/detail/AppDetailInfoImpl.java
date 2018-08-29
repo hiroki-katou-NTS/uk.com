@@ -148,7 +148,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
 			new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-					timeDetail.getTime36().v(),
+					timeDetail.getLimitErrorTime().v(),
 					timeDetail.getNumOfYear36Over().v(),
 					timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 		return new AppOverTimeInfoFull(appId,
@@ -241,7 +241,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 		TimeNo417 timeNo417 = timeDetail == null ? null : 
 				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getTime36().v(),
+						timeDetail.getLimitErrorTime().v(),
 						timeDetail.getNumOfYear36Over().v(),
 						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 		return new AppHolidayWorkFull(appId, workTypeName,workTimeName,
@@ -432,7 +432,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			AppOvertimeDetail timeDetail = appOt.getAppOvertimeDetail().isPresent() ? appOt.getAppOvertimeDetail().get() : null;
 			TimeNo417 timeNo417 = timeDetail == null ? null : 
 				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getTime36().v(),
+						timeDetail.getLimitErrorTime().v(),
 						timeDetail.getNumOfYear36Over().v(),
 						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppOverTimeInfoFull(appId,
@@ -516,7 +516,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			AppOvertimeDetail timeDetail = hdWork.getAppOvertimeDetail().isPresent() ? hdWork.getAppOvertimeDetail().get() : null;
 			TimeNo417 timeNo417 = timeDetail == null ? null : 
 				new TimeNo417(timeDetail.getActualTime().v() + timeDetail.getApplicationTime().v(),
-						timeDetail.getTime36().v(),
+						timeDetail.getLimitErrorTime().v(),
 						timeDetail.getNumOfYear36Over().v(),
 						timeDetail.getYear36OverMonth().stream().map(c -> c.getOverMonth().v()).collect(Collectors.toList()));
 			lstAppFull.add(new AppHolidayWorkFull(appId, workTypeName,workTimeName,

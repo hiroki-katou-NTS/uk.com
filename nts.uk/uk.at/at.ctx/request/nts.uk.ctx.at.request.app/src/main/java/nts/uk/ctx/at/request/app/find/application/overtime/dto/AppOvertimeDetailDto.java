@@ -30,9 +30,24 @@ public class AppOvertimeDetailDto {
 	private int actualTime;
 
 	/**
-	 * 36時間
+	 * 限度エラー時間
 	 */
-	private int time36;
+	private int limitErrorTime;
+
+	/**
+	 * 限度アラーム時間
+	 */
+	private int limitAlarmTime;
+
+	/**
+	 * 特例限度エラー時間
+	 */
+	private Integer exceptionLimitErrorTime;
+
+	/**
+	 * 特例限度アラーム時間
+	 */
+	private Integer exceptionLimitAlarmTime;
 
 	/**
 	 * 36年間超過月
@@ -50,7 +65,9 @@ public class AppOvertimeDetailDto {
 		}
 		AppOvertimeDetail domain = domainOtp.get();
 		return new AppOvertimeDetailDto(domain.getApplicationTime().v(), domain.getYearMonth().v(),
-				domain.getActualTime().v(), domain.getTime36().v(),
+				domain.getActualTime().v(), domain.getLimitErrorTime().v(), domain.getLimitAlarmTime().v(),
+				domain.getExceptionLimitErrorTime().isPresent() ? domain.getExceptionLimitErrorTime().get().v() : null,
+				domain.getExceptionLimitAlarmTime().isPresent() ? domain.getExceptionLimitAlarmTime().get().v() : null,
 				domain.getYear36OverMonth().stream().map(x -> x.getOverMonth().v()).collect(Collectors.toList()),
 				domain.getNumOfYear36Over().v());
 	}
