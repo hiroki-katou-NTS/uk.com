@@ -188,7 +188,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}
 		
 		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
-																		new BigDecimal(c.getGrantDays().v()), // avoid compile error 
+																		c.getGrantDays().v(),
 																		c.getTimes().v(), 
 																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
 																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 

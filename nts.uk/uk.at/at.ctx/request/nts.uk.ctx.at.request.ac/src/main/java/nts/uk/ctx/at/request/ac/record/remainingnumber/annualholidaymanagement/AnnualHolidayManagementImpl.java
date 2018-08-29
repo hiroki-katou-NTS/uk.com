@@ -27,7 +27,7 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId, GeneralDate baseDate) {
 		return this.annualPub.acquireNextHolidayGrantDate(cId, sId,Optional.of(baseDate)).stream()
 				.map(x -> new NextAnnualLeaveGrantImport(x.getGrantDate(),
-						new BigDecimal(x.getGrantDays().v()), // avoid compile error
+						x.getGrantDays().v(),
 						x.getTimes().v(),
 						getLimitedHDDays(x.getTimeAnnualLeaveMaxDays()),
 						getLimitedTimeHdTime(x.getTimeAnnualLeaveMaxTime()),
@@ -53,7 +53,7 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 	public Optional<AttendRateAtNextHolidayImport> getDaysPerYear(String companyId, String employeeId) {
 		return this.annualPub.getDaysPerYear(companyId, employeeId)
 				.map(x -> new AttendRateAtNextHolidayImport(x.getNextHolidayGrantDate(),
-						new BigDecimal(x.getNextHolidayGrantDays().v()), // avoid compile error
+						x.getNextHolidayGrantDays().v(),
 						x.getAttendanceRate().v(), x.getAttendanceRate().v(),
 						x.getPredeterminedDays().v(), x.getAnnualPerYearDays().v()));
 

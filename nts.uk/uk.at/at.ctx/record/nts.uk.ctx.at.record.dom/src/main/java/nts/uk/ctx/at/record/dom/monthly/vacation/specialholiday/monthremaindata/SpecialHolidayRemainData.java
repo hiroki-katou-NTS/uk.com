@@ -191,9 +191,18 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		return domain;
 	}
 
-	public SpecialHolidayRemainData(String sid, YearMonth ym, int closureId, DatePeriod closurePeriod,
-			ClosureStatus closureStatus, ClosureDate closureDate, int specialHolidayCd, ActualSpecialLeave actualSpecial,
-			SpecialLeave specialLeave, boolean grantAtr, Optional<SpecialLeaveGrantUseDay> grantDays) {
+	public SpecialHolidayRemainData(
+			String sid,
+			YearMonth ym,
+			int closureId,
+			ClosureDate closureDate,
+			DatePeriod closurePeriod,
+			ClosureStatus closureStatus,
+			int specialHolidayCd,
+			ActualSpecialLeave actualSpecial,
+			SpecialLeave specialLeave,
+			Optional<SpecialLeaveGrantUseDay> grantDays,
+			boolean grantAtr) {
 		super();
 		this.sid = sid;
 		this.ym = ym;

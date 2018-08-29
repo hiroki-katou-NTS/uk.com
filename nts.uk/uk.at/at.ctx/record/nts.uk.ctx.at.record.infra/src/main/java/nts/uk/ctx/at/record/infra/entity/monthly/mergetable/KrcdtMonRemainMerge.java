@@ -3084,7 +3084,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -3148,7 +3148,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -3260,7 +3260,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -3324,7 +3324,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -3436,7 +3436,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -3500,7 +3500,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -3612,7 +3612,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -3676,7 +3676,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -3788,7 +3788,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -3852,7 +3852,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -3964,7 +3964,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4028,7 +4028,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -4140,7 +4140,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4204,7 +4204,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -4316,7 +4316,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4380,7 +4380,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -4492,7 +4492,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4556,7 +4556,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -4668,7 +4668,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4732,7 +4732,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -4844,7 +4844,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -4908,7 +4908,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5020,7 +5020,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5086,7 +5086,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5198,7 +5198,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5262,7 +5262,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5374,7 +5374,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5438,7 +5438,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5550,7 +5550,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5614,7 +5614,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5726,7 +5726,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5790,7 +5790,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -5902,7 +5902,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -5966,7 +5966,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -6078,7 +6078,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -6142,7 +6142,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -6254,7 +6254,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -6318,7 +6318,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -6430,7 +6430,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 			if (useNumber != null) {
 				val useDays = useNumber.getUseDays();
-				val useTimes = useNumber.getUseTimes();
+				val useTimes = useNumber.getUseTimes().orElse(null);
 
 				if (useDays != null) {
 					/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
@@ -6494,7 +6494,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				val useDays = factUseDays.getUseDays();
 
 				/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-				val useTimes = factUseDays.getUseTimes();
+				val useTimes = factUseDays.getUseTimes().orElse(null);
 				if (useDays != null) {
 
 					/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
@@ -6995,9 +6995,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate1, this.closureEndDate1),
 				EnumAdaptor.valueOf(this.closureStatus1, ClosureStatus.class),
+				1,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7088,9 +7089,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate2, this.closureEndDate2),
 				EnumAdaptor.valueOf(this.closureStatus2, ClosureStatus.class),
+				2,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7182,9 +7184,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate3, this.closureEndDate3),
 				EnumAdaptor.valueOf(this.closureStatus3, ClosureStatus.class),
+				3,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7275,9 +7278,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate4, this.closureEndDate4),
 				EnumAdaptor.valueOf(this.closureStatus4, ClosureStatus.class),
+				4,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7369,9 +7373,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate5, this.closureEndDate5),
 				EnumAdaptor.valueOf(this.closureStatus5, ClosureStatus.class),
+				5,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7464,9 +7469,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate6, this.closureEndDate6),
 				EnumAdaptor.valueOf(this.closureStatus6, ClosureStatus.class),
+				6,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7558,9 +7564,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate7, this.closureEndDate7),
 				EnumAdaptor.valueOf(this.closureStatus7, ClosureStatus.class),
+				7,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7651,9 +7658,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate8, this.closureEndDate8),
 				EnumAdaptor.valueOf(this.closureStatus8, ClosureStatus.class),
+				8,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7745,9 +7753,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate9, this.closureEndDate9),
 				EnumAdaptor.valueOf(this.closureStatus9, ClosureStatus.class),
+				9,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7839,9 +7848,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate10, this.closureEndDate10),
 				EnumAdaptor.valueOf(this.closureStatus10, ClosureStatus.class),
+				10,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -7933,9 +7943,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate11, this.closureEndDate11),
 				EnumAdaptor.valueOf(this.closureStatus11, ClosureStatus.class),
+				11,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8026,9 +8037,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate12, this.closureEndDate12),
 				EnumAdaptor.valueOf(this.closureStatus12, ClosureStatus.class),
+				12,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8120,9 +8132,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate13, this.closureEndDate13),
 				EnumAdaptor.valueOf(this.closureStatus13, ClosureStatus.class),
+				13,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8215,9 +8228,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate14, this.closureEndDate14),
 				EnumAdaptor.valueOf(this.closureStatus14, ClosureStatus.class),
+				14,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8309,9 +8323,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate15, this.closureEndDate15),
 				EnumAdaptor.valueOf(this.closureStatus15, ClosureStatus.class),
+				15,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8402,9 +8417,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate16, this.closureEndDate16),
 				EnumAdaptor.valueOf(this.closureStatus16, ClosureStatus.class),
+				16,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8496,16 +8512,17 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate17, this.closureEndDate17),
 				EnumAdaptor.valueOf(this.closureStatus17, ClosureStatus.class),
+				17,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
 				(this.grantAtr17 !=  0));
 	}
 	
-			public SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
+	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
 		
 		/** 特別休暇月別残数データ．実特別休暇．残数 **/
 		SpecialLeaveRemain factRemain = new SpecialLeaveRemain();
@@ -8589,9 +8606,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate18, this.closureEndDate18),
 				EnumAdaptor.valueOf(this.closureStatus18, ClosureStatus.class),
+				18,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8682,9 +8700,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate19, this.closureEndDate19),
 				EnumAdaptor.valueOf(this.closureStatus19, ClosureStatus.class),
+				19,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
@@ -8776,9 +8795,10 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
 				new DatePeriod(this.closureStartDate20, this.closureEndDate20),
 				EnumAdaptor.valueOf(this.closureStatus20, ClosureStatus.class),
+				20,
 				actualSpecial,
 				specialLeave,
 				Optional.ofNullable(grantDays),
