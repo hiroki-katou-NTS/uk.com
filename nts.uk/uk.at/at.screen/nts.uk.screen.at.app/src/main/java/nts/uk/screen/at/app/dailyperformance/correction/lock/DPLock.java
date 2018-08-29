@@ -206,7 +206,7 @@ public class DPLock {
 		
 		Map<Integer, Closure> closures = closureIds.isEmpty() ? Collections.emptyMap()
 				: closureRepository.findByListId(companyId, new ArrayList<>(closureIds)).stream()
-						.filter(x -> x.getUseClassification().equals(UseClassification.UseClass_NotUse))
+						.filter(x -> x.getUseClassification().value == UseClassification.UseClass_Use.value)
 						.collect(Collectors.toMap(x -> x.getClosureId().value, x -> x));
 
 		List<ClosureSidDto> closureSid = closureDtos.stream().filter(x -> closures.containsKey(x.getClosureId())).map(x -> {
