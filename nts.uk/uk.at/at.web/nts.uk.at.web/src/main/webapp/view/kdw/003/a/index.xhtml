@@ -37,7 +37,7 @@
                     nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
                     nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD
                     nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
-                    nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
+                    nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
                     nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
                     nts.uk.shr.com.primitive.WorkplaceCode
                     nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
@@ -45,6 +45,7 @@
                     nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                     nts.uk.shr.com.time.TimeWithDayAttr
+                    nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
                 </com:ValidatorScript>
             </ui:define>
 
@@ -251,7 +252,7 @@
                                                                 <input style="width: 55px"
                                                                        data-bind="ntsTimeEditor: {
 																						name: fst.nameAbsentDeductionTime, 
-																						constraint: 'SampleTimeDuration', 
+																						constraint: 'AttendanceTimeMonth', 
 																						value: fst.absentDeductionTime, 
 																						inputFormat: 'time', 
 																						mode: 'time', 

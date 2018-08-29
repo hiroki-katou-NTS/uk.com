@@ -893,7 +893,7 @@ public class DailyPerformanceCorrectionProcessor {
 				.filter(x -> x.getEmployeeId().equals(data.getEmployeeId())
 						  && x.getClosureId() == cPeriod.get().getClosureId().value
 						  && x.getProcessYM() == cPeriod.get().getYearMonth().v().intValue()
-						  && x.getClosureDay() == cPeriod.get().getClosureDate().getClosureDay().v().intValue()).findFirst();
+						  && x.getClosureDay() == cPeriod.get().getPeriod().end().day()).findFirst();
 		return monthOpt.isPresent();
 	}
 	
