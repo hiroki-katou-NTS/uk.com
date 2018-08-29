@@ -202,10 +202,12 @@ module nts.uk.pr.view.kmf001.l {
                     return false;
                 }
                 if (self.nursingSetting().selectedManageNursing() == 1 && self.childNursingSetting().selectedManageNursing() == 1 ) {
-                    if (self.nursingSetting().nursingLeaveSpecialHoliday() == self.childNursingSetting().nursingLeaveSpecialHoliday()) {
+                    if (self.nursingSetting().nursingLeaveSpecialHoliday() == self.childNursingSetting().nursingLeaveSpecialHoliday()
+                        && self.nursingSetting().nursingLeaveSpecialHoliday() != 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1366", message: message("Msg_1366")});
                         return false;
-                    } else if (self.nursingSetting().nursingLeaveWorkAbsence() == self.childNursingSetting().nursingLeaveWorkAbsence()) {
+                    } else if (self.nursingSetting().nursingLeaveWorkAbsence() == self.childNursingSetting().nursingLeaveWorkAbsence()
+                        && self.nursingSetting().nursingLeaveWorkAbsence() != 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1367", message: message("Msg_1367")});
                         return false;
                     }
