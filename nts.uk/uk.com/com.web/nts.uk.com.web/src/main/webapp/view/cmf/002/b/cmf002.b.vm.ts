@@ -51,6 +51,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 block.clear();   
             });
             
+            self.isNewMode.subscribe((data) => {
+               if (data) {
+                   $("#B5_1").focus();
+               } else {
+                   $("#B3_3").focus();
+               }
+            });
+            
         }
         
         /**
@@ -64,7 +72,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            //TODO: Tạo domain ngoài
             service.getCndSet().done((itemList: Array<IConditionSet>) =>{
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
@@ -78,8 +85,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.isNewMode(true);
                     self.createNewCondition();
                 }
-            }).fail(function(res: any) {
-               
             }).always(() => {
                 block.clear();
             });
@@ -225,6 +230,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                 self.conditionSetData().conditionSetName(destinationName);
                             }
                             self.initScreen(destinationCode);
+                            $("#B5_2").focus();
                         });  
                     });
                 }
