@@ -322,7 +322,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-		if(!inforData.getWorkTypeRemain().isPresent()) {
+		if(!inforData.getWorkTypeRemain().isPresent()
+				|| inforData.getWorkTypeRemain().get().getWorkTypeClass() == null) {
 			return null;
 		}	
 		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
@@ -357,7 +358,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//勤務種類別残数情報を設定する
 		outputData.setWorkTypeRemain(Optional.of(remainInfor));
 		//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
-		DayoffTranferInfor tranferData = this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, CreateAtr.SCHEDULE, null, dayOffTimeIsUse);
+		DayoffTranferInfor tranferData = this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, 0, CreateAtr.SCHEDULE, 0, dayOffTimeIsUse);
 		outputData.setDayOffTranfer(tranferData == null ? Optional.empty() : Optional.of(tranferData));
 		return outputData;
 	}
@@ -373,11 +374,11 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		TranferTimeInfor transferBreak = new TranferTimeInfor(createAtr, timeSetting, Optional.empty());
 		TranferTimeInfor transferOver = new TranferTimeInfor(createAtr, timeOverSetting, Optional.empty());
 		//振替可能時間をチェックする
-		if(timeSetting == null) {
+		if(timeSetting == 0) {
 			//アルゴリズム「所定時間を取得」を実行する
 			timeSetting = workTimeService.getTimeByWorkTimeTypeCode(workTimeCode, remainInfor.getWorkTypeCode());
 		}
-		if(timeOverSetting != null && dayOffTimeIsUse) {
+		if(timeOverSetting != 0 && dayOffTimeIsUse) {
 			//振替残業時間を作成する
 			transferOver = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME);
 		}
@@ -506,7 +507,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		String workTimeCode = appInfor.getWorkTimeCode().isPresent() ? appInfor.getWorkTimeCode().get() : "000";
 		
 		
-		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, null, dayOffTimeIsUse);
+		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, 0, dayOffTimeIsUse);
 	}
 
 	@Override

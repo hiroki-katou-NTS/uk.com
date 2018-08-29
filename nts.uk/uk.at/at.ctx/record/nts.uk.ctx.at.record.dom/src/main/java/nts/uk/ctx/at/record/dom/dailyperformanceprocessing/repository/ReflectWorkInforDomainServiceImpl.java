@@ -1464,7 +1464,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		AutoCalFlexOvertimeSetting autoCalFlexOvertimeSetting = new AutoCalFlexOvertimeSetting(flexExcessTime);
 
 		// 加給: 加給の自動計算設定
-		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(
+				baseAutoCalSetting.getRaisingSalary().isSpecificRaisingSalaryCalcAtr(),
+				baseAutoCalSetting.getRaisingSalary().isRaisingSalaryCalcAtr());
 
 		// 休出時間: 休出時間の自動計算設定
 		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(
@@ -1489,10 +1491,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
 
 		// //遅刻早退: 遅刻早退の自動計算設定
-		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true, true);
+		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(
+				baseAutoCalSetting.getLeaveEarly().isLate(), baseAutoCalSetting.getLeaveEarly().isLeaveEarly());
 		// 乖離時間: 乖離時間の自動計算設定
 		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
-				DivergenceTimeAttr.USE);
+				EnumAdaptor.valueOf(baseAutoCalSetting.getDivergenceTime().getDivergenceTime().value, DivergenceTimeAttr.class));
 
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
@@ -1884,6 +1887,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 加給設定を取得する
 			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
 					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(), workPlaceIdList);
+
+			return bonusPaySetting;
 		} else {
 			// 「期間内マスタ一覧」と「就業時間帯コード」から加給設定を取得する
 			// 就業時間帯の加給設定を取得する
@@ -1908,13 +1913,45 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 							bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
 									: Optional.empty();
+
+							return bonusPaySetting;
+						} else {
+							return bonusPay;
 						}
+					} else {
+						// return fail
+						List<MasterList> masterLists = periodInMasterList.getMasterLists();
+						Optional<MasterList> newMasterLists = masterLists.stream()
+								.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+						bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+								: Optional.empty();
+
+						return bonusPaySetting;
 					}
+				} else {
+					// return fail
+					List<MasterList> masterLists = periodInMasterList.getMasterLists();
+					Optional<MasterList> newMasterLists = masterLists.stream()
+							.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+					bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+							: Optional.empty();
+
+					return bonusPaySetting;
 				}
+			} else {
+				// return fail
+				List<MasterList> masterLists = periodInMasterList.getMasterLists();
+				Optional<MasterList> newMasterLists = masterLists.stream()
+						.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+				bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+						: Optional.empty();
+
+				return bonusPaySetting;
 			}
 		}
-
-		return bonusPaySetting;
 	}
 
 	/**

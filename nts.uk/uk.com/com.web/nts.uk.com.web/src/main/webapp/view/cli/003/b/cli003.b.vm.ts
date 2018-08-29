@@ -635,7 +635,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '405px',
+                height: '348px',
                 features: [
                     {
                         name: "Paging",
@@ -659,6 +659,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 rowVirtualization: true,
+                virtualization : true,
+                virtualizationMode: 'continuous',
                 dataSource: self.listLogBasicInforModel,
                 columns: self.columnsIgGrid()
             });
