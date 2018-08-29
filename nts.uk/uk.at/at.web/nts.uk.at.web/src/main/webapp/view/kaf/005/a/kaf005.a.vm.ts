@@ -370,7 +370,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             
             if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                 self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                let reasonID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 }).divergenceReasonID;
+                let defaultID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 })
+                let reasonID = "";
+                if(!nts.uk.util.isNullOrUndefined(defaultID)){
+                    reasonID = defaultID;         
+                }
                 self.selectedReason2(reasonID);
                 self.multilContent2(data.divergenceReasonContent); 
             }
@@ -1024,8 +1028,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             
             if(overtimeDto.divergenceReasonDtos != null){
                 self.reasonCombo2(_.map(overtimeDto.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                self.selectedReason2(overtimeDto.divergenceReasonDtos.divergenceReasonIdDefault);
-                self.multilContent2(overtimeDto.divergenceReasonContent);
+                let defaultID = _.find(overtimeDto.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 })
+                let reasonID = "";
+                if(!nts.uk.util.isNullOrUndefined(defaultID)){
+                    reasonID = defaultID;         
+                }
+                self.selectedReason2(reasonID);
+                self.multilContent2(overtimeDto.divergenceReasonContent); 
             }
             
             self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);

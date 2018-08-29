@@ -1,5 +1,6 @@
 module nts.uk.at.view.ktg028.a.viewmodel {
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         texteditorA3_2: any;
         texteditorA4_2: any;
@@ -103,28 +104,24 @@ module nts.uk.at.view.ktg028.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            self.initData();
-            let a = 0;
-            dfd.resolve();
-            return dfd.promise();
-        }
-        initData(): void {
-            let self = this;
             var listWidgets = __viewContext.enums.WidgetDisplayItemType;
             listWidgets.forEach(function (value) {
               self.items_A7.push(new ItemEnum(value.value.toString(),value.name));
-            }); 
+            });
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
                 }else{
                     self.isCreated(true);    
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
         findAll(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.findAll().done((data: any) => {
                 self.allData = _.sortBy(data, 'topPageCode');
                 self.items_A2([]);
@@ -133,6 +130,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         , element.width, element.height, _.map(_.filter(element.displayItemTypes, ['notUseAtr', 1]), 'displayItemType')));
                 });
                 dfd.resolve();
+            }).always(function(){
+                block.clear();
             });
 
             return dfd.promise();
@@ -157,7 +156,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             $("#name").trigger("validate");
             $("#height").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 let optionalWidget = _.find(self.allData, ['topPageCode', self.currentCode_A2()]);
                 let displayItemTypes: Array<any> = [];
                 let values = _.map(self.items_A7(), 'value');
@@ -188,13 +187,15 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                        nts.uk.ui.dialog.info({messageId: 'Msg_15'});
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
+                            $("#name").focus();
+                        });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId });
-                    }).always(function() {
-                        nts.uk.ui.block.clear();
-                        $("#name").focus();
-                    });
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
+                            $("#name").focus();
+                        });
+                        self.findAll();
+                    })
                 } else {
                     let data: any = {};
                     data.topPageCode = self.texteditorA3_2.value();
@@ -214,8 +215,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
                             $("#code").focus();
                         });
-                    }).always(function() {
-                        nts.uk.ui.block.clear();
+                        self.findAll();
                     });
                 }
             }
@@ -228,10 +228,10 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                 displayItemTypes: optionalWidget.displayItemTypes
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                nts.uk.ui.block.grayout();
+                block.invisible();
                 service.remove(data).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                        self.findAll().done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.findAll().done(function() {
                             if (self.items_A2().length == 0) {
                                 self.cleanForm();
                             } else if (self.index() == self.items_A2().length) {
@@ -240,13 +240,11 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                                 self.currentCode_A2(self.items_A2()[self.index()].topPageCode);
                             }
                         });
-                    });
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.messageId);
+                    block.clear();
                 });
-            }).then(function() {
-                nts.uk.ui.block.clear();
             });
         }
 

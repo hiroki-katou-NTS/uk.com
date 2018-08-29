@@ -50,6 +50,7 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		oldData.execItemName = updateData.execItemName;
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
 		oldData.execSetting = setSetting(oldData.execSetting, updateData.execSetting);
+		oldData.processExecType =updateData.processExecType;
 		this.commandProxy().update(oldData);
 		
 	}

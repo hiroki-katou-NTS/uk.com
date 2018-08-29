@@ -115,11 +115,11 @@ body {
 
 #exCode {
 	margin-top: 5px;
-	width: 70px !important;
+	width: 90px !important;
 }
 
 #memoSelection {
-	width: 200px;
 	height: 75px;
 	margin-top: 5px;
+	width: 300px;
 }
