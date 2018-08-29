@@ -58,6 +58,7 @@ module nts.uk.at.view.kmk011.f {
                 
                 // prevent if have any error
                 if(_self.hasError()){
+                    blockUI.clear();
                     return;    
                 }
                 
