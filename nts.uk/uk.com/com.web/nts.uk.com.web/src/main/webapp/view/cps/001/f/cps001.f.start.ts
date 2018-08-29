@@ -78,7 +78,7 @@ function ButtonClick() {
     var id = $(this).data("id");
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
-    $("#file-upload").ntsFileUpload("clear");
+    __viewContext['viewModel'].filename('');
 }
 
 interface IPersonAuth {
