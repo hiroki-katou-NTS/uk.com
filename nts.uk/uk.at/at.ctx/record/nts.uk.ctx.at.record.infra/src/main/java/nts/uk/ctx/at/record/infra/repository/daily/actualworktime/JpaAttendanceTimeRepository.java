@@ -7,58 +7,33 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
-import javax.persistence.Convert;
 
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
-import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergenceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergenceTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
-import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkPK;
-import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
-import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTsPK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTime;
-import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework;
-import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
-import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
-import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
 import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
 import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
-import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacationPK;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -84,11 +59,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
-		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
+		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -443,8 +418,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
-	public List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, KrcdtDayAttendanceTime.class)
-				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList(x -> x.toDomain());
+	public List<Integer> find(String employeeId, List<GeneralDate> ymd) {
+		return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, Integer.class)
+				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList();
 	}
 }

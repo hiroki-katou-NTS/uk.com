@@ -604,48 +604,47 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return result;
 	}
 
-	@Override
-	public YearHolidaySettingDto getYearHolidaySetting() {
-		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KalmtAnnualPaidLeave.class);
-		if (entity.isPresent()) {
-			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false,
-					entity.get().getPriorityType());
-		}
-		return null;
-	}
-
-	@Override
-	public SubstVacationDto getSubstVacationDto() {
-		Optional<KsvstComSubstVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KsvstComSubstVacation.class);
-		if (entity.isPresent()) {
-			return new SubstVacationDto(entity.get().getCid(), entity.get().getIsManage() == 1 ? true : false,
-					entity.get().getExpirationDateSet(), entity.get().getAllowPrepaidLeave() == 1 ? true : false);
-		}
-		return null;
-	}
-
-	@Override
-	public CompensLeaveComDto getCompensLeaveComDto() {
-		Optional<KclmtCompensLeaveCom> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KclmtCompensLeaveCom.class);
-		if (entity.isPresent()) {
-			return new CompensLeaveComDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false);
-		}
-		return null;
-	}
-
-	@Override
-	public Com60HVacationDto getCom60HVacationDto() {
-		Optional<KshstCom60hVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KshstCom60hVacation.class);
-		if (entity.isPresent()) {
-			return new Com60HVacationDto(entity.get().getCid(), entity.get().getManageDistinct() == 1 ? true : false,
-					entity.get().getSixtyHourExtra(), entity.get().getTimeDigestTive());
-		}
-		return null;
-	}
+//	@Override
+//	public YearHolidaySettingDto getYearHolidaySetting() {
+//		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KalmtAnnualPaidLeave.class);
+//		if (entity.isPresent()) {
+//			return new YearHolidaySettingDto();
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public SubstVacationDto getSubstVacationDto() {
+//		Optional<KsvstComSubstVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KsvstComSubstVacation.class);
+//		if (entity.isPresent()) {
+//			return new SubstVacationDto(entity.get().getCid(), entity.get().getIsManage() == 1 ? true : false,
+//					entity.get().getExpirationDateSet(), entity.get().getAllowPrepaidLeave() == 1 ? true : false);
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public CompensLeaveComDto getCompensLeaveComDto() {
+//		Optional<KclmtCompensLeaveCom> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KclmtCompensLeaveCom.class);
+//		if (entity.isPresent()) {
+//			return new CompensLeaveComDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false);
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public Com60HVacationDto getCom60HVacationDto() {
+//		Optional<KshstCom60hVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KshstCom60hVacation.class);
+//		if (entity.isPresent()) {
+//			return new Com60HVacationDto(entity.get().getCid(), entity.get().getManageDistinct() == 1 ? true : false,
+//					entity.get().getSixtyHourExtra(), entity.get().getTimeDigestTive());
+//		}
+//		return null;
+//	}
 
 	@Override
 	public List<String> getListJobTitle(DateRange dateRange) {

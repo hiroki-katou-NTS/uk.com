@@ -36,6 +36,7 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
@@ -89,6 +90,9 @@ public class DailyPerformanceSelectItemProcessor {
 	
 	@Inject
 	private OptionalItemRepository optionalItemRepository;
+	
+	@Inject
+	private DisplayRemainingHolidayNumber remainHolidayService;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -280,14 +284,17 @@ public class DailyPerformanceSelectItemProcessor {
 
 	/** アルゴリズム「休暇の管理状況をチェックする」を実行する */
 	private void getHolidaySettingData(DailyPerformanceCorrectionDto dailyPerformanceCorrectionDto) {
-		// アルゴリズム「年休設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		// アルゴリズム「振休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		// アルゴリズム「代休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		// アルゴリズム「60H超休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
+//		String companyId = AppContexts.user().companyId();
+//		String employeeId = "";
+//		GeneralDate baseDate = GeneralDate.today();
+//		// アルゴリズム「年休設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(remainHolidayService.getAnnualLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「振休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setSubstVacationDto(remainHolidayService.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「代休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setCompensLeaveComDto(remainHolidayService.getCompensatoryLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「60H超休管理設定を取得する」を実行する
+////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,

@@ -41,6 +41,10 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	/** The role workplace ID finder. */
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
+	
+	@Inject 
+	private GetWhetherLoginerCharge app;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -145,56 +149,14 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
-		GetWhetherLoginerCharge getDataObject = new GetWhetherLoginerCharge();
-		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
-		RoleWhetherLoginDto dto = getDataObject.getWhetherLoginerCharge();
-		outputRole.setEmployeeCharge(dto.isEmployeeCharge());
-		outputRole.setSalaryProfessional(dto.isSalaryProfessional());
-		outputRole.setHumanResOfficer(dto.isHumanResOfficer());
-		outputRole.setOfficeHelperPersonne(dto.isOfficeHelperPersonne());
-		outputRole.setPersonalInformation(dto.isPersonalInformation());
-		
-		String employmentRoleID = AppContexts.user().roles().forAttendance();
-		String salaryRoleID = AppContexts.user().roles().forPayroll();
-		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
-		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
-		String personalInforRoleID = AppContexts.user().roles().forPersonalInfo();
-
-		Optional<Role> roleEmployment = roleRepo.findByRoleId(employmentRoleID);
-		if (roleEmployment.isPresent()) {
-			if (roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setEmployeeCharge(true);
-			}
-		}
-		Optional<Role> roleSalaryRole = roleRepo.findByRoleId(salaryRoleID);
-		if (roleSalaryRole.isPresent()) {
-			if (roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setSalaryProfessional(true);
-			}
-		}
-
-		Optional<Role> roleHumanResource = roleRepo.findByRoleId(humanResourceRoleID);
-		if (roleHumanResource.isPresent()) {
-			if (roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setHumanResOfficer(true);
-			}
-		}
-
-		Optional<Role> roleOfficeHelper = roleRepo.findByRoleId(officeHelperRoleID);
-		if (roleOfficeHelper.isPresent()) {
-			if (roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setOfficeHelperPersonne(true);
-			}
-		}
-
-		Optional<Role> rolePersonalInfor = roleRepo.findByRoleId(personalInforRoleID);
-		if (rolePersonalInfor.isPresent()) {
-			if (rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setPersonalInformation(true);
-			}
-		}
-
-		return outputRole;
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
 	}
 
 	@Override

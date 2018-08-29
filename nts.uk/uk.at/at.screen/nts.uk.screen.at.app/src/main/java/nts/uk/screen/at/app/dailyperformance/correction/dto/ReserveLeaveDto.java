@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.dailyperformance.correction.dto.remainnumber;
+package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.Value;
 
@@ -11,7 +11,7 @@ import lombok.Value;
 @Value
 public class ReserveLeaveDto {
 
-	private boolean displayRemainNumber;
+	private boolean manageRemainNumber;
 	
 	private Integer remainNumber; 
 	
