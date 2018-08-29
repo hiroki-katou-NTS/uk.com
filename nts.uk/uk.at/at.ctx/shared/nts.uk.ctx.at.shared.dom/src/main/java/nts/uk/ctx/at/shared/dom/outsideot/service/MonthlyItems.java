@@ -24,16 +24,16 @@ public enum MonthlyItems {
 	OVERTIME_10(44, "残業時間10", 10),
 	
 	// 休出時間
-	BREAKTIME_1(110, "残業時間1", 1),
-	BREAKTIME_2(111, "残業時間2", 2),
-	BREAKTIME_3(112, "残業時間3", 3),
-	BREAKTIME_4(113, "残業時間4", 4),
-	BREAKTIME_5(114, "残業時間5", 5),
-	BREAKTIME_6(115, "残業時間6", 6),
-	BREAKTIME_7(116, "残業時間7", 7),
-	BREAKTIME_8(117, "残業時間8", 8),
-	BREAKTIME_9(118, "残業時間9", 9),
-	BREAKTIME_10(119, "残業時間10", 10);
+	BREAKTIME_1(110, "休出時間1", 1),
+	BREAKTIME_2(111, "休出時間2", 2),
+	BREAKTIME_3(112, "休出時間3", 3),
+	BREAKTIME_4(113, "休出時間4", 4),
+	BREAKTIME_5(114, "休出時間5", 5),
+	BREAKTIME_6(115, "休出時間6", 6),
+	BREAKTIME_7(116, "休出時間7", 7),
+	BREAKTIME_8(117, "休出時間8", 8),
+	BREAKTIME_9(118, "休出時間9", 9),
+	BREAKTIME_10(119, "休出時間10", 10);
 	
 	public final int itemId;
 	public final String itemName;
