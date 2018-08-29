@@ -332,11 +332,7 @@ module nts.uk.com.view.kwr002.a {
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
                 service.exportService(self.exportDto()).done((response) => {
                     if (response.taskDatas.length > 0) {
-                        var res = "";
-                        for (let data of response.taskDatas) {
-                            res = res.concat(data.valueAsString + "\n");
-                        }
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1269", message: res });
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
@@ -357,11 +353,7 @@ module nts.uk.com.view.kwr002.a {
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done((response) => {
                     if (response.taskDatas.length > 0) {
-                        var res = "";
-                        for (let data of response.taskDatas) {
-                            res = res.concat(data.valueAsString + "\n");
-                        }
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1269", message: res });
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {

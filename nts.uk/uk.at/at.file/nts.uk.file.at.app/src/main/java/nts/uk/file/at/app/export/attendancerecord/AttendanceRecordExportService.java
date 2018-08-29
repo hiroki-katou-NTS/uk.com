@@ -145,6 +145,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
 
 		List<String> wplIds = new ArrayList<>();
+		String invidual = "";
 
 		// Get workplace history
 		for (Employee e : request.getEmployeeList()) {
@@ -845,14 +846,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				} else {
 					// If closure not found
-					setter.setData("messageId" + employee.employeeCode,
-							I18NText.getText("Msg_1269", employee.employeeCode, employee.employeeName));
+					invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+					
 				}
 
 			} else {
 
 				// If closure is wrong
-				setter.setData("messageId" + employee.employeeCode, I18NText.getText("Msg_1269",employee.employeeCode, employee.employeeName ));
+				invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+				
 			}
 
 			if (realDataOfEmployee == 0) {
@@ -860,6 +862,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 		}
 
+		// set invidual to client
+		if (!invidual.isEmpty()) {
+			setter.setData("invidual", invidual);
+		}
 		if (employeeListAfterSort.size() <= nullDataEmployeeList.size()) {
 			// If real data of employee isn't exist
 			exceptions.addMessage("Msg_37");
