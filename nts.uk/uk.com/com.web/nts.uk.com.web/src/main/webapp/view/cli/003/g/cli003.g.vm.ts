@@ -175,7 +175,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }
         }
 
-        getAllLogDisplaySet() {
+        getAllLogDisplaySet() { 
             var self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
