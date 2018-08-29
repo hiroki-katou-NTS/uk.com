@@ -1,4 +1,4 @@
-module nts.uk.com.view.cps017.a.viewmodel {
+﻿module nts.uk.com.view.cps017.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -176,8 +176,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         }
                     });
                 }else {
-                    self.enableRegister(false);
-                } else {
                     self.listSelection.removeAll();
                     self.createNewData();
                     self.enableRegister(false);
@@ -623,15 +621,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
                 allValid = false;
-                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を趁�な�);
+                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を超えない");
             }
             if (selName.length > self.constraints.selectionName) {
                 allValid = false;
-                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を趁�な�);
+                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を超えない");
             }
             if (exCd.length > self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
-                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を趁�な�);
+                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を超えない");
             }
             return allValid;
         }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthlyclosureupdate;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
@@ -9,8 +10,8 @@ import nts.arc.time.GeneralDateTime;
  * @author HungTT
  *
  */
-
-@Value
+@AllArgsConstructor
+@Data
 public class ClosureInforDto {
 	/** The closure id. */
 	// 締めＩＤ
