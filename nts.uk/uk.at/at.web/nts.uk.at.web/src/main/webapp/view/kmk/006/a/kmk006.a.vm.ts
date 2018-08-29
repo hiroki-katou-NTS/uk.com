@@ -1143,7 +1143,7 @@ module nts.uk.at.view.kmk006.a {
             public onSelectWkpJob(): void {
                 var self = this;
                 self.selectedTab('tab-1');
-
+                self.inputDate(new Date());
                 self.clearAllError();
                 self.baseDateJobListTotal(moment(new Date()).toDate());
                 self.baseDateTreeListTotal(moment(new Date()).toDate());
