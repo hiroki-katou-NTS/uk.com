@@ -10,6 +10,8 @@ public interface EmpInsurPreRateRepository
 {
 
     List<EmpInsurPreRate> getAllEmpInsurPreRate();
+    
+    List<EmpInsurPreRate> getEmpInsurPreRateByCid(String cId);
 
     Optional<EmpInsurPreRate> getEmpInsurPreRateById(String hisId, String empPreRateId);
 

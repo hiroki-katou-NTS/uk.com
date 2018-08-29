@@ -46,4 +46,10 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
     public void remove(String hisId, String empPreRateId){
         this.commandProxy().remove(QpbmtEmpInsurPreRate.class, new QpbmtEmpInsurPreRatePk(hisId, empPreRateId)); 
     }
+
+	@Override
+	public List<EmpInsurPreRate> getEmpInsurPreRateByCid(String cId) {
+		
+		return null;
+	}
 }
