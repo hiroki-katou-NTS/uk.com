@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  */
 public enum MonthlyItems {
 	// フレックス超過時間
-	FLEX_EXCESS_TIME(17, "フレックス超過時間", 1),
+	FLEX_EXCESS_TIME(17, "フレックス超過時間", null),
 	
 	// 残業時間
 	OVERTIME_1(35, "残業時間1", 1),
@@ -37,9 +37,9 @@ public enum MonthlyItems {
 	
 	public final int itemId;
 	public final String itemName;
-	public final int frameNo;
+	public final Integer frameNo;
 
-	private MonthlyItems(int itemId, String itemName, int frameNo) {
+	private MonthlyItems(int itemId, String itemName, Integer frameNo) {
 		this.itemId = itemId;
 		this.itemName = itemName;
 		this.frameNo = frameNo;
