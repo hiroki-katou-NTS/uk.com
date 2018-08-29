@@ -628,7 +628,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
-            if(self.holidayTypeCode() != 1){
+            if(self.holidayTypeCode() != 0){
                 self.registerApp();
             }else{
                 let setNo65 = {
