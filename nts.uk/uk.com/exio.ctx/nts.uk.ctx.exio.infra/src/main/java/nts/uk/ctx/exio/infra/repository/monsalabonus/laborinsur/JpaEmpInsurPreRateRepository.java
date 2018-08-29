@@ -17,7 +17,8 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurPreRate f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurPreRatePk.hisId =:hisId AND  f.empInsurPreRatePk.empPreRateId =:empPreRateId ";
-
+    private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurPreRatePk.hisId =:hisId";
+    
     @Override
     public List<EmpInsurPreRate> getAllEmpInsurPreRate(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtEmpInsurPreRate.class)
@@ -48,8 +49,9 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
     }
 
 	@Override
-	public List<EmpInsurPreRate> getEmpInsurPreRateByCid(String cId) {
-		
-		return null;
+	public List<EmpInsurPreRate> getEmpInsurPreRateByCid(String hisId) {
+		return this.queryProxy().query(SELECT_BY_HIS_ID, QpbmtEmpInsurPreRate.class)
+		        .setParameter("hisId", hisId)
+		        .getList(c->c.toDomain());
 	}
 }

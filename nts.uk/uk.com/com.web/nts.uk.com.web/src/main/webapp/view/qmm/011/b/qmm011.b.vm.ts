@@ -9,8 +9,9 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     export class ScreenModel {
         
         listPerFracClass:       KnockoutObservableArray<ItemModel> = ko.observableArray(getListPerFracClass());
-        listEmpInsHis:          KnockoutObservableArray<EmploymentInsRate> = ko.observableArray([]);
-        selectedEmpInsHis:      KnockoutObservable<EmploymentInsRate> = ko.observable();
+        listEmpInsHis:          KnockoutObservableArray<IEmplInsurHis> = ko.observableArray([]);
+        listEmpInsurPreRate     KnockoutObservableArray<IEmpInsurPreRate> = ko.observableArray([]);
+        selectedEmpInsHis:      KnockoutObservable<IEmplInsurHis> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
         index:                  KnockoutObservable<number> = ko.observable(0);
         selectedEmpInsHisId:    KnockoutObservable<string> = ko.observable('');
@@ -21,6 +22,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         perFracClass:           KnockoutObservable<string> = ko.observable('');
         empContrRatio:          KnockoutObservable<string> = ko.observable('');
         busiOwFracClass:        KnockoutObservable<string> = ko.observable('');
+        isNewMode:              KnockoutObservable<boolean> = ko.observable(true);
         
         constructor() {
             let self = this;
@@ -36,11 +38,17 @@ module nts.uk.com.view.qmm011.b.viewmodel {
        initScreen(hisId: string){
            let self = this;
            block.invisible();
-           service.getEmpInsHis().done((listEmpInsHis: Array<EmploymentInsRate>) =>{
+           service.getEmpInsHis().done((listEmpInsHis: Array<IEmplInsurHis>) =>{
                 if (listEmpInsHis && listEmpInsHis.length > 0) {
                     self.listEmpInsHis(listEmpInsHis);
-                    self.index(self.getIndex());
+                    self.index(self.getIndex(null));
                     self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()]);
+                    service.getEmpInsurPreRate().done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) =>{
+                        self.listEmpInsurPreRate(listEmpInsurPreRate);
+                        self.isNewMode(false);
+                    });
+                } else {
+                    self.isNewMode(false);
                 }
             }).always(() => {
                 block.clear();
@@ -53,7 +61,8 @@ module nts.uk.com.view.qmm011.b.viewmodel {
            self.endDate = param.endDate;
        }
         
-       getIndex(){
+       getIndex(hisId: string){
+           let self = this;
            let temp = _.findLast(self.listEmpInsHis(), function(x) { 
                 return x.hisId == hisId;
            });
@@ -61,10 +70,22 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                return temp;         
            }
            return 0;
-       } 
-        
-
-    }
+       }
+       
+       openEscreen(){
+            modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
+                let params = getShared('QMM011_B_Param');
+                if (params) {
+                    let override = params.overWrite;
+                    let destinationCode = params.copyDestinationCode;
+                    let destinationName = params.destinationName;
+                    let result = params.result;
+                    service.register().done(()=> {
+                    
+                    });
+                }
+            });
+        }
     
     class IEmplInsurHis{
         hisId: string
@@ -79,12 +100,39 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         endDate: string;
         between: string;
         constructor(param: IEmplInsurHis) {
-            this.hisId = param.hisId;
-            this.startDate = param.startDate;
-            this.endDate = param.endDate;
-            this.between = '~';
+            this.hisId(param.hisId || '');
+            this.startDate(param.startDate || '');
+            this.endDate(param.endDate || '');
+            this.between('~');
         }
     }
+    
+    class IEmpInsurPreRate{
+         hisId: string;
+         empPreRateId: string;
+         indBdRatio: string;
+         empContrRatio: string;
+         perFracClass: number;
+         busiOwFracClass: number;
+      }
+    
+    class EmpInsurPreRate{
+         hisId: string;
+         empPreRateId: string;
+         indBdRatio: string;
+         empContrRatio: string;
+         perFracClass: number;
+         busiOwFracClass: number;
+         constructor(param: IEmpInsurPreRate) {
+            this.hisId(param.hisId);
+            this.empPreRateId(param.empPreRateId);
+            this.indBdRatio(param.indBdRatio);
+            this.empContrRatio(param.empContrRatio);
+            this.perFracClass(param.perFracClass);
+            this.busiOwFracClass(param.busiOwFracClass);
+        }
+    }
+    
     export function getListPerFracClass(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('CMF002_358')),

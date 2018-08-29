@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurHisRepository;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurPreRateRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -15,9 +14,6 @@ public class EmpInsurPreRateFinder {
 	
 	@Inject
 	private EmpInsurPreRateRepository empInsurPreRateRepository;
-
-	@Inject
-	private EmpInsurHisRepository empInsurHisRepository;
 	
 	public List<EmpInsurPreRateDto> getListEmplInsurPreRate(){
 		String cId = AppContexts.user().companyId();
