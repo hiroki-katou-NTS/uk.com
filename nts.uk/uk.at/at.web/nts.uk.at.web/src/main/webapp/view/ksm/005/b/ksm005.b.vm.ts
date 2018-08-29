@@ -49,6 +49,7 @@ module nts.uk.at.view.ksm005.b {
                 
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(self.getMonth());
+                self.yearMonthPicked.extend({ notify: 'always' });
                 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
                     if (self.isBuild) {
@@ -66,7 +67,7 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
-                    if(nts.uk.ui.errors.hasError()){
+                    if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
