@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -35,5 +36,8 @@ public class SrcdtDataCorrectionLogPk {
 	@Column(name = "ITEM_ID")
 	@Basic(optional = false)
 	public String itemId;
+	
+	@Column(name = "YMD_KEY")
+	public GeneralDate ymdKey;
 
 }
