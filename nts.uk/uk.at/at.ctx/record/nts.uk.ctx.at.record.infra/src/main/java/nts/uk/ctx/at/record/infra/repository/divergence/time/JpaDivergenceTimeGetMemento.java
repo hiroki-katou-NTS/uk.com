@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
@@ -114,9 +115,9 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public List<Integer> getTargetItems() {
-		if (this.entityDvgcAttendance != null) {
-			return this.entityDvgcAttendance.stream().map(item -> item.getId().getAttendanceId())
-					.collect(Collectors.toList());
+		if (!CollectionUtil.isEmpty(this.entityDvgcAttendance)) {
+			return this.entityDvgcAttendance.stream().filter(item -> item != null)
+					.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 		}
 
 		return this.entityDvgcTime.getKrcstDvgcAttendances().stream()

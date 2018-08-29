@@ -72,6 +72,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	@Override
 	public void add(AnnualLeaveGrantRemainingData data) {
+		if(data != null) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
 		entity.annLeavID = data.getAnnLeavID();
 		entity.sid = data.getEmployeeId();
@@ -79,18 +80,19 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		updateValue(entity, data);
 
 		this.commandProxy().insert(entity);
+		}
 	}
 
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
-		Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getAnnLeavID(), KRcmtAnnLeaRemain.class);
-		if (entityOpt.isPresent()) {
-			KRcmtAnnLeaRemain entity = entityOpt.get();
-			updateValue(entity, data);
-
-			this.commandProxy().update(entity);
+		if (data != null) {
+			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getAnnLeavID(),KRcmtAnnLeaRemain.class);
+			if (entityOpt.isPresent()) {
+				KRcmtAnnLeaRemain entity = entityOpt.get();
+				updateValue(entity, data);
+				this.commandProxy().update(entity);
+			}
 		}
-
 	}
 
 	private void updateValue(KRcmtAnnLeaRemain entity, AnnualLeaveGrantRemainingData data) {

@@ -28,4 +28,8 @@ public class InPeriodOfSpecialLeave {
 	 * 特別休暇期間外の使用
 	 */
 	private List<UseDaysOfPeriodSpeHoliday> useOutPeriod;
+	/**
+	 * 特別休暇エラー
+	 */
+	private List<SpecialLeaveError> lstError;
 }

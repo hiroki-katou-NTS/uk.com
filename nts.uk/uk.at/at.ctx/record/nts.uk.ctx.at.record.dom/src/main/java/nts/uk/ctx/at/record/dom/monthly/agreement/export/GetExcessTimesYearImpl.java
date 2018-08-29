@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
@@ -20,7 +24,9 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 	
 	/** 年間超過回数の取得 */
 	@Override
-	public int algorithm(String employeeId, Year year) {
+	public AgreementExcessInfo algorithm(String employeeId, Year year) {
+
+		List<YearMonth> yearMonths = new ArrayList<>();
 		
 		// 36協定時間を取得
 		val agreementTimeList =  this.agreementTimeOfMngPrdRepo.findByYearOrderByYearMonth(employeeId, year);
@@ -33,13 +39,14 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 			case EXCESS_EXCEPTION_LIMIT_ERROR:
 			case EXCESS_LIMIT_ERROR_SP:
 				excessCount++;
+				yearMonths.add(agreementTime.getYearMonth());
 				break;
 			default:
 				break;
 			}
 		}
 		
-		// 件数を返す
-		return excessCount;
+		// 36協定釣果情報を返す
+		return AgreementExcessInfo.of(excessCount, yearMonths);
 	}
 }
