@@ -64,20 +64,21 @@
 					<tbody>
 						<tr class="bg-green">
 							<!--B3_2  個人負担率  -->
-							<th width ="80px"></th>
+							<th></th>
 							<th colspan="2" style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
 							<!--B3_3 端数処理  -->
 							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
 							<!--B3_4  事業主負担率  -->
 							<th colspan="2" >#{i18n.getText('QMM011_13')}</th>
 							<!--B3_5  端数処理  -->
-							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
+							<th colspan = "2" >#{i18n.getText('QMM011_12')}</th>
 						</tr>
+						<com:ko-foreach bind="listEmpInsurPreRate">
 						<tr>
-							<td class="bg-green" width ="80px" style="border: 1px solid #CCC">
+							<td class="bg-green" style="border: 1px solid #CCC">
 								<label id= "B3_6">#{i18n.getText('QMM011_14')}</label>
 							</td>
-							<td width ="80px">
+							<td >
 								<input id = "B3_7" 
 										data-bind="ntsNumberEditor: {
 																option : {width: '100px'},
@@ -89,8 +90,8 @@
 							<td>
 								<label id= "B3_8">#{i18n.getText('QMM011_15')}</label>
 							</td>
-							<td colspan = "2" width ="160px">
-								<input id = "B3_9"
+							<td colspan = "2">
+								<div id = "B3_9"
 										data-bind="ntsComboBox: {
 																name: '#{i18n.getText('QMM011_15')}',
 																value: perFracClass,
@@ -101,7 +102,7 @@
 																optionsText: 'name'
 																}"/>
 							</td>
-							<td width ="80px">
+							<td>
 									<input id = "B3_11"
 										data-bind="ntsNumberEditor: {
 																option : {width: '60px'},
@@ -112,7 +113,7 @@
 							<td width ="8px">
 								<label id= "B3_12">#{i18n.getText('QMM011_15')}</label>
 							</td>
-							<td colspan = "2" width ="160px">
+							<td colspan = "2">
 								<input id = "B3_13"
 										data-bind="ntsNumberEditor: {
 																option : {width: '60px'},
@@ -121,9 +122,8 @@
 																}"/>
 
 							</td>
-								
 						</tr>
-						
+						</com:ko-foreach>
 					</tbody>
 				</table>
 				</div>
