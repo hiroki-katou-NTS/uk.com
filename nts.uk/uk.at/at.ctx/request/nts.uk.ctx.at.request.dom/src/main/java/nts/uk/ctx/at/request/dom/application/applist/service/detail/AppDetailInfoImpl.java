@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppOverTimeInfoFull getAppOverTimeInfo(String companyId, String appId) {
-		Optional<AppOverTime> appOtOp = repoOverTime.getAppOvertimeFrame(companyId, appId);
-		AppOverTime appOt = appOtOp.get();
+		Map<String, AppOverTime> appOtOp = repoOverTime.getListAppOvertimeFrame(companyId, Arrays.asList(appId));
+		AppOverTime appOt = appOtOp.get(appId);
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (OverTimeInput overTime : lstOverTimeInput) {
@@ -192,8 +193,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId) {
-		Optional<AppHolidayWork> appHdWork = repoHolidayWork.getAppHolidayWorkFrame(companyId, appId);
-		AppHolidayWork hdWork = appHdWork.get();
+		Map<String,AppHolidayWork> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
+		AppHolidayWork hdWork = appHdWork.get(appId);
 		List<HolidayWorkInput> lstOverTimeInput = hdWork.getHolidayWorkInputs();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (HolidayWorkInput overTime : lstOverTimeInput) {
