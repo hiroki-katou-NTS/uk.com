@@ -35,6 +35,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -72,6 +75,9 @@ public class MonthlyAggregateProcessService {
 	private ClosureService closureService;
 	
 	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	@Inject
 	private AttendanceItemNameDomainService attdItemNameDomainService;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
@@ -103,7 +109,7 @@ public class MonthlyAggregateProcessService {
 		}
 		List<EmployeeSearchDto> employeesDto = employees.stream().filter(c-> listEmployeeID.contains(c.getId())).collect(Collectors.toList());
 		//tab 2
-		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto));
+		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto, companyID));
 		//tab 3
 		
 		listValueExtractAlarm.addAll(this.extraResultMonthly(companyID, listExtra, period, employeesDto));
@@ -112,7 +118,7 @@ public class MonthlyAggregateProcessService {
 	}
 	//tab 2
 	private List<ValueExtractAlarm> extractMonthlyFixed(List<FixedExtraMonFunImport> listFixed,
-			DatePeriod period, List<EmployeeSearchDto> employees) {
+			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		GeneralDate lastDateInPeriod = period.end();
@@ -138,6 +144,27 @@ public class MonthlyAggregateProcessService {
 					break;
 				}
 			}
+			
+			
+			
+			
+			//MinhVV
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+
+			if (listFixed.get(5).isUseAtr()) {
+				Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
+						.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
+				if (checkDeadline.isPresent()) {
+					checkDeadline.get().setAlarmValueMessage(listFixed.get(5).getMessage());
+					checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+					String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
+					checkDeadline.get().setAlarmValueDate(dateString);
+					listValueExtractAlarm.add(checkDeadline.get());
+				}
+			}
+
+			
+			
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
