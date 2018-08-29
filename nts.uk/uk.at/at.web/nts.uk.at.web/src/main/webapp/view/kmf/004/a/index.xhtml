@@ -66,7 +66,7 @@
 								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td width="70">
-								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: isDisable, name: '#[KMF004_5]'} " />
 							</td>
 							<td>
 								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />

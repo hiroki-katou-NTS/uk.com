@@ -651,14 +651,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									break;
 								}
 							}
-
-							// itemValueResult =
-							// attendanceService.getMonthlyValueOf(employee.getEmployeeId(),
-							// closureDate.getLastDayOfMonth() ? yearMonth :
-							// yearMonth.addMonths(1),
-							// closure.getClosureId().value,
-							// closureDate.getClosureDay().v(),
-							// closureDate.getLastDayOfMonth(), monthlyId);
 						}
 
 						for (CalculateAttendanceRecord item : calculateUpperMonthly) {
@@ -780,8 +772,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						}
 						index = 0;
 						for (String item : lowerResult) {
-							if (item != null)
+							if (item != null) {
+								if (columnDataMonthlyArray[index] == null) {
+									columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
+								}
 								columnDataMonthlyArray[index].setLower(item);
+							}
 							index++;
 
 						}

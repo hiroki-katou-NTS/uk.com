@@ -262,6 +262,10 @@ public class ItemValue {
 		case SELECTION: 
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
+		case READONLY:
+		case RELATE_CATEGORY:
+		case NUMBERIC_BUTTON:
+		case READONLY_BUTTON:
 			return viewContent;
 		case TIME:
 			return formatMinutesToTime(Integer.valueOf(value));

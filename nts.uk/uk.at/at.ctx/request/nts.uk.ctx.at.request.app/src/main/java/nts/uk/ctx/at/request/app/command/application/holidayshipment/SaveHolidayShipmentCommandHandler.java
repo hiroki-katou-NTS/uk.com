@@ -286,7 +286,6 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 
-
 		return commonApp;
 
 	}
@@ -508,7 +507,7 @@ public class SaveHolidayShipmentCommandHandler
 			String sID) {
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
-		if (absCmd != null && isCheck) {
+		if (isSaveAbs(command.getComType()) && isCheck) {
 			String wkTypeCD = absCmd.getWkTypeCD();
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);

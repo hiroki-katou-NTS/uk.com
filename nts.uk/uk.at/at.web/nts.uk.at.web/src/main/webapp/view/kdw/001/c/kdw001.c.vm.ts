@@ -278,7 +278,7 @@ module nts.uk.at.view.kdw001.c {
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
                     showClosure: true, // 就業締め日利用
-                    showAllClosure: true, // 全締め表示
+                    showAllClosure: false, // 全締め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
 

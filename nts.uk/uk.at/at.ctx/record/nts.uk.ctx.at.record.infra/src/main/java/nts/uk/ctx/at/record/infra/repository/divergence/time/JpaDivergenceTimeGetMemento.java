@@ -1,16 +1,15 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 
 /**
@@ -27,13 +26,18 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	/**
 	 * Instantiates a new jpa divergence time repository get memento.
 	 *
-	 * @param entityDvgcTime            the entityDvgcTime
-	 * @param entityDvgcAttendance the entity dvgc attendance
+	 * @param entityDvgcTime
+	 *            the entityDvgcTime
+	 * @param entityDvgcAttendance
+	 *            the entity dvgc attendance
 	 */
-	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime, List<KrcstDvgcAttendance> entityDvgcAttendance) {
+	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime,
+			@SuppressWarnings("unchecked") List<KrcstDvgcAttendance>... entityDvgcAttendance) {
 
 		this.entityDvgcTime = entityDvgcTime;
-		this.entityDvgcAttendance = entityDvgcAttendance;
+		if (entityDvgcAttendance.length > 0) {
+			this.entityDvgcAttendance = entityDvgcAttendance[0];
+		}
 	}
 
 	/*
@@ -44,7 +48,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public Integer getDivergenceTimeNo() {
-		return entityDvgcTime.getId().getNo();
+		return this.entityDvgcTime.getId().getNo();
 	}
 
 	/*
@@ -55,7 +59,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return entityDvgcTime.getId().getCid();
+		return this.entityDvgcTime.getId().getCid();
 	}
 
 	/*
@@ -66,7 +70,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceTimeUseSet getDivTimeUseSet() {
-		return DivergenceTimeUseSet.valueOf(entityDvgcTime.getDvgcTimeUseSet().intValue());
+		return DivergenceTimeUseSet.valueOf(this.entityDvgcTime.getDvgcTimeUseSet().intValue());
 	}
 
 	/*
@@ -77,7 +81,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceTimeName getDivTimeName() {
-		return new DivergenceTimeName(entityDvgcTime.getDvgcTimeName());
+		return new DivergenceTimeName(this.entityDvgcTime.getDvgcTimeName());
 	}
 
 	/*
@@ -88,7 +92,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceType getDivType() {
-		return DivergenceType.valueOf(entityDvgcTime.getDvgcType().intValue());
+		return DivergenceType.valueOf(this.entityDvgcTime.getDvgcType().intValue());
 	}
 
 	/*
@@ -99,8 +103,8 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceTimeErrorCancelMethod getErrorCancelMedthod() {
-		return new DivergenceTimeErrorCancelMethod(entityDvgcTime.getReasonInputCanceled().intValue(),
-				entityDvgcTime.getReasonSelectCanceled().intValue());
+		return new DivergenceTimeErrorCancelMethod(this.entityDvgcTime.getReasonInputCanceled().intValue(),
+				this.entityDvgcTime.getReasonSelectCanceled().intValue());
 	}
 
 	/*
@@ -111,14 +115,13 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public List<Integer> getTargetItems() {
-		if(entityDvgcAttendance == null){
-			return new ArrayList<Integer>() ;
+		if (!CollectionUtil.isEmpty(this.entityDvgcAttendance)) {
+			return this.entityDvgcAttendance.stream().filter(item -> item != null)
+					.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 		}
-		List<Integer> temp =  entityDvgcAttendance.stream().map(item -> {			
-			KrcstDvgcAttendancePK pk = item.getId();
-			return pk.getAttendanceId();
-			}).collect(Collectors.toList());
-		return temp;
+
+		return this.entityDvgcTime.getKrcstDvgcAttendances().stream()
+				.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 	}
 
 }

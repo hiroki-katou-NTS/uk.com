@@ -5,14 +5,16 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.command.monthly.absenceleave.AbsenceLeaveRemainMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.affliation.AffiliationInfoOfMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.annualleave.AnnLeaRemNumEachMonthCommand;
 import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommand;
+import nts.uk.ctx.at.record.app.command.monthly.dayoff.DayOffRemainMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommand;
+import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -39,8 +41,18 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	/** 積立年休月別残数データ */
 	@Getter
 	private final RsvLeaRemNumEachMonthCommand reserveLeave = new RsvLeaRemNumEachMonthCommand();
+	
+	/** 特別休暇月別残数データ */
+	@Getter
+	private final SpecialHolidayRemainMonthlyCommand specialHoliday = new SpecialHolidayRemainMonthlyCommand();
 
+	/** 代休月別残数データ */
+	@Getter
+	private final DayOffRemainMonthlyCommand dayOff = new DayOffRemainMonthlyCommand();
 
+	/** 振休月別残数データ */
+	@Getter
+	private final AbsenceLeaveRemainMonthlyCommand absence = new AbsenceLeaveRemainMonthlyCommand();
 
 	public MonthlyWorkCommonCommand getCommand(String group){
 		MonthlyWorkCommonCommand command = null;
@@ -60,6 +72,15 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
 			command = this.reserveLeave;
 			break;
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_CODE:
+			command = this.absence;
+			break;
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE:
+			command = this.specialHoliday;
+			break;
+		case MONTHLY_OFF_REMAIN_CODE:
+			command = this.dayOff;
+			break;
 		default:
 			break;
 		}
@@ -74,6 +95,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.setRecords(fullDto.getAnyItem());
 		this.annualLeave.setRecords(fullDto.getAnnLeave());
 		this.reserveLeave.setRecords(fullDto.getRsvLeave());
+		this.specialHoliday.setRecords(fullDto.getSpecialHoliday());
+		this.dayOff.setRecords(fullDto.getDayOff());
+		this.absence.setRecords(fullDto.getAbsenceLeave());
 	}
 
 	@Override
@@ -84,6 +108,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.forEmployee(employeId);
 		this.annualLeave.forEmployee(employeId);
 		this.reserveLeave.forEmployee(employeId);
+		this.specialHoliday.forEmployee(employeId);
+		this.dayOff.forEmployee(employeId);
+		this.absence.forEmployee(employeId);
 	}
 	
 	public MonthlyRecordWorkCommand fromItems(List<ItemValue> itemValues){
@@ -112,6 +139,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.yearMonth(yearMonth);
 		this.annualLeave.yearMonth(yearMonth);
 		this.reserveLeave.yearMonth(yearMonth);
+		this.specialHoliday.yearMonth(yearMonth);
+		this.dayOff.yearMonth(yearMonth);
+		this.absence.yearMonth(yearMonth);
 	}
 
 	@Override
@@ -122,6 +152,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.closureId(closureId);
 		this.annualLeave.closureId(closureId);
 		this.reserveLeave.closureId(closureId);
+		this.specialHoliday.closureId(closureId);
+		this.dayOff.closureId(closureId);
+		this.absence.closureId(closureId);
 	}
 
 	@Override
@@ -132,5 +165,8 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.closureDate(closureDate);
 		this.annualLeave.closureDate(closureDate);
 		this.reserveLeave.closureDate(closureDate);
+		this.specialHoliday.closureDate(closureDate);
+		this.dayOff.closureDate(closureDate);
+		this.absence.closureDate(closureDate);
 	}
 }

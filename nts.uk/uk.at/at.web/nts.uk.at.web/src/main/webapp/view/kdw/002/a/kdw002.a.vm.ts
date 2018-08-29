@@ -91,8 +91,9 @@ module nts.uk.at.view.kdw002.a {
                     } else {
 
                         $(document).on('click', '.search-btn', function(evt) {
-                            let item = $("#gridList").igGrid("option", "dataSource")[0].displayNumber;
-                            self.aICurrentCode(item);
+                            self.txtItemId(null);
+                            self.txtItemName(null);
+                            self.headerColorValue(null);
                             self.aICurrentCode.valueHasMutated();
                         });
                         $(document).on('click', '.clear-btn', function(evt) {
