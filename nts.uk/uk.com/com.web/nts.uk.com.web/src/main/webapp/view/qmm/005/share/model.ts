@@ -111,81 +111,225 @@ module nts.uk.com.view.qmm005.share.model {
 
 
     export interface IPaymentDateSettingList {
-        targetMonth:string,
         paymentDate:string,
-        payDay:string,
         employeeExtractionReferenceDate:string,
         socialInsuranceCollectionMonth:number,
-        collectMinutes:string,
         specificationPrintDate:number,
         numberOfWorkingDays:number,
-        day:string,
         socialInsuranceStandardDate: string,
         employmentInsuranceStandardDate: string,
         timeClosingDate: string,
         incomeTaxReferenceDate: string,
         accountingClosureDate: string
     }
-    
-    
-    
+
 
     
-    
-    export class PaymentDateSettingList{
-        targetMonth:string;
-        paymentDate:KnockoutObservable<string>;
-        payDay:string;        
-        employeeExtractionReferenceDate:KnockoutObservable<string>;
-        socialInsuranceCollectionMonth:KnockoutObservable<number>;
-        specificationPrintDate:KnockoutObservable<number>;
-        numberOfWorkingDays:KnockoutObservable<number>;
-        day:string;
-        collectMinutes:string;
-        
-        socialInsuranceStandardDate: KnockoutObservable<string>;
-        employmentInsuranceStandardDate: KnockoutObservable<string>;
-        timeClosingDate: KnockoutObservable<string>;
-        incomeTaxReferenceDate: KnockoutObservable<string>;
-        accountingClosureDate: KnockoutObservable<string>;
-        
-        constructor(
-            targetMonth:string,
-            paymentDate:string,
-            payDay:string,
-            employeeExtractionReferenceDate:string,
-            socialInsuranceCollectionMonth:number,
-            collectMinutes:string,
-            specificationPrintDate:number,
-            numberOfWorkingDays:number,
-            day:string,
-            socialInsuranceStandardDate: string,
-            employmentInsuranceStandardDate: string,
-            timeClosingDate: string,
-            incomeTaxReferenceDate: string,
-            accountingClosureDate: string
+    export interface ISetDaySupport{
+        cid:string,
+        processCategoryNO:string,
+        socialInsurCollecMonth:number,
+        processDate:number,
+        incomeTaxDate:string,
+        closeDateTime:string,
+        empExtraRefeDate:string,
+        closureAccountingDate:string,
+        socialInsurStanDate:string,
+        empInsurdStanDate:string,
+        payMentDate:string,
+        numberWorkDay:number
+    }
 
-        ){
-            this.targetMonth= targetMonth;
-            this.paymentDate=ko.observable(paymentDate);
-            this.payDay=payDay;
-            this.socialInsuranceCollectionMonth=ko.observable(socialInsuranceCollectionMonth);
-            this.specificationPrintDate=ko.observable(specificationPrintDate);
-            this.numberOfWorkingDays=ko.observable(numberOfWorkingDays);
-            this.day=day;
-            this.employeeExtractionReferenceDate=ko.observable(employeeExtractionReferenceDate);
-            this.collectMinutes=collectMinutes;
-            this.socialInsuranceStandardDate=ko.observable(socialInsuranceStandardDate);
-            this.employmentInsuranceStandardDate=ko.observable(employmentInsuranceStandardDate);
-            this.timeClosingDate=ko.observable(timeClosingDate);
-            this.incomeTaxReferenceDate=ko.observable(incomeTaxReferenceDate);
-            this.accountingClosureDate=ko.observable(accountingClosureDate);
+
+    
+    export class SetDaySupport{
+        cid:string;
+        processCategoryNO:string;
+        socialInsurCollecMonth:KnockoutObservable<number>;
+        processDate:KnockoutObservable<number>;
+        incomeTaxDate:KnockoutObservable<string>;
+        closeDateTime:KnockoutObservable<string>;
+        empExtraRefeDate:KnockoutObservable<string>;
+        closureAccountingDate:KnockoutObservable<string>;
+        socialInsurStanDate:KnockoutObservable<string>;
+        empInsurdStanDate:KnockoutObservable<string>;
+        payMentDate:KnockoutObservable<string>;
+        numberWorkDay:KnockoutObservable<number>;
+           constructor(params:ISetDaySupport){
+            this.cid=params.cid;
+            this.processCategoryNO=params.processCategoryNO;
+            this.socialInsurCollecMonth=ko.observable(params.socialInsurCollecMonth);
+            this.processDate=ko.observable(params.processDate);
+            this.incomeTaxDate=ko.observable(params.incomeTaxDate);
+            this.closeDateTime=ko.observable(params.closeDateTime);
+            this.empExtraRefeDate=ko.observable(params.empExtraRefeDate);
+            this.closureAccountingDate=ko.observable(params.closureAccountingDate);
+            this.socialInsurStanDate=ko.observable(params.socialInsurStanDate);
+            this.empInsurdStanDate=ko.observable(params.empInsurdStanDate);
+            this.payMentDate=ko.observable(params.payMentDate);
+            this.numberWorkDay=ko.observable(params.numberWorkDay);
+
         }
         
         
         
     }
-    
 
+    export enum Abolition{
+        Abolition=0,
+        Not_Abolition=1
+    }
     
+    export interface IProcessInfomation {
+        cid: string,
+        processCategoryNO: string,
+        processingYear: number,
+        deprecatCategory: Abolition
+    }
+
+
+    export class ProcessInfomation{
+        cid:string;
+        processCategoryNO:string;
+        processName:KnockoutObservable<string>;
+        deprecatCategory:KnockoutObservable<Abolition>;
+
+        constructor(cid:string,processCategoryNO:string,processingYear:number, deprecatCategory:Abolition){
+            this.cid=cid;
+            this.processCategoryNO=processCategoryNO;
+            this.processName=ko.observable(processingYear);
+            this.deprecatCategory=ko.observable(deprecatCategory);
+        }
+    }
+
+
+
+    export class SpecPrintYmSet{
+        cid:string;
+        processCategoryNO:string;
+        processDate:KnockoutObservable<string>;
+        printDate:KnockoutObservable<string>;
+        constructor(spec:ISpecPrintYmSet){
+            this.cid=spec.cid;
+            this.processCategoryNO=spec.processCategoryNO;
+            this.processDate=ko.observable(spec.printDate);
+            this.printDate=ko.observable(spec.printDate);
+        }
+    }
+
+    interface ISpecPrintYmSet{
+        cid:string
+        processCategoryNO:string;
+        processDate:string;
+        printDate:string;
+    };
+
+
+    export class MonthlyPaymentDate{
+        datePayment:DateSelectClassification;
+        constructor(datePayment:DateSelectClassification){
+            this.datePayment=this.datePayment;
+        }
+    }
+
+    export class EmployeeExtractionReferenceDate{
+        refeDate:DateSelectClassification;
+        referMonth:PreviousMonthClassification;
+        constructor(refeDate:DateSelectClassification, referMonth:PreviousMonthClassification){
+            this.refeDate=refeDate;
+            this.referMonth=referMonth
+        }
+    }
+
+    export class AccountingClosureDate {
+        disposalDay: DateSelectClassification;
+        processMonth: MonthlyPaymentDate;
+
+        constructor(disposalDay: DateSelectClassification,
+                    processMonth: MonthlyPaymentDate) {
+            this.disposalDay = disposalDay;
+            this.processMonth = processMonth;
+        }
+    }
+
+
+    export class DetailPrintingMonth{
+        printingMonth:PreviousMonthClassification;
+        constructor(printingMonth:PreviousMonthClassification){
+            this.printingMonth=printingMonth;
+        }
+    }
+
+
+    export class SalaryInsuranceCollecMonth{
+        monthsCollected:SocialInsuColleMonth;
+        constructor(monthsCollected:SocialInsuColleMonth){
+            this.monthsCollected=this.monthsCollected;
+        }
+    }
+
+    export class SocialInsuranceStanDate {
+        baseYear: YearSelectClassification;
+        baseMonth: InsuranceStanMonthClassSification;
+        baseDate: DateSelectClassification;
+
+        constructor(baseYear: YearSelectClassification,
+                    baseMonth: InsuranceStanMonthClassSification,
+                    baseDate: DateSelectClassification) {
+            this.baseDate = baseDate;
+            this.baseMonth = baseMonth;
+            this.baseYear = baseYear
+        }
+    }
+
+    export class closeDate {
+        timeCloseDate: TimeCloseDateClassification;
+        baseYear: YearSelectClassification;
+        RefeDate: DateSelectClassification;
+        baseMonth: SocialInsuColleMonth;
+
+        constructor(timeCloseDate: TimeCloseDateClassification,
+                    baseYear: YearSelectClassification,
+                    RefeDate: DateSelectClassification,
+                    baseMonth: SocialInsuColleMonth) {
+            this.timeCloseDate = timeCloseDate;
+            this.baseYear = baseYear;
+            this.RefeDate = RefeDate;
+            this.baseMonth = baseMonth;
+        }
+    }
+
+    export class IncomeTaxBaseYear {
+        baseYear: YearSelectClassification;
+        refeDate: DateSelectClassification;
+        baseMonth: MonthSelectionSegment;
+
+        constructor(baseYear: YearSelectClassification,
+                    refeDate: DateSelectClassification,
+                    baseMonth: MonthSelectionSegment) {
+            this.baseYear = baseYear;
+            this.baseMonth = baseMonth;
+            this.refeDate = refeDate;
+        }
+    }
+
+    export class basicSetting {
+        monthlyPaymentDate: MonthlyPaymentDate;
+        employeeExtractionreferenceDate: EmployeeExtractionReferenceDate;
+        accountingClosureDate: AccountingClosureDate;
+        numberOfWorkingDays: number;
+
+        constructor(monthlyPaymentDate: MonthlyPaymentDate,
+                    employeeExtractionreferenceDate: EmployeeExtractionReferenceDate,
+                    accountingClosureDate: AccountingClosureDate,
+                    numberOfWorkingDays: number) {
+            this.monthlyPaymentDate = monthlyPaymentDate;
+            this.employeeExtractionreferenceDate = employeeExtractionreferenceDate;
+            this.accountingClosureDate = accountingClosureDate;
+            this.numberOfWorkingDays = numberOfWorkingDays;
+        }
+    }
+
+
+
 }
