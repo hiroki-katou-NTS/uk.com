@@ -216,7 +216,7 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let userId = self.currentUserDto().userID;
+                    let userId = self.currentCode();
                     let deleteCmd = new model.DeleteCmd(userId, self.currentPersonId());
                     service.deleteUser(deleteCmd).done(function() {
                         blockUI.clear();
