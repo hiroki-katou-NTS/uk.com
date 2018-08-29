@@ -68,12 +68,17 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		AbsDaysRemain remainUnDigestedDays = this.getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate());
 		//発生数・使用数を計算する
 		AbsDaysRemain occurrenceUseDays= this.getOccurrenceUseDays(lstAbsRec, paramInput.getDateData());
+		List<PauseError> lstError = new ArrayList<>();
+		if(remainUnDigestedDays.getRemainDays() < 0) {
+			lstError.add(PauseError.PAUSEREMAINNUMBER);
+		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
 				remainUnDigestedDays.getRemainDays(), 
 				remainUnDigestedDays.getUnDigestedDays(),
 				occurrenceUseDays.getRemainDays(),
 				occurrenceUseDays.getUnDigestedDays(),
-				carryForwardDays);
+				carryForwardDays,
+				lstError);
 		return outputData;
 	}
 

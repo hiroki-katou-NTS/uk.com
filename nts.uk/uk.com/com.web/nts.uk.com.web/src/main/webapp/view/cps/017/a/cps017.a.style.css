@@ -93,6 +93,7 @@ body {
 
 .form-input {
 	margin-bottom: 20px;
+	margin-top: 10px;
 }
 
 .input {
@@ -118,7 +119,7 @@ body {
 }
 
 #memoSelection {
-	width: 200px;
 	height: 75px;
 	margin-top: 5px;
+	width: 300px;
 }
