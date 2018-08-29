@@ -331,12 +331,12 @@ module nts.uk.com.view.kwr002.a {
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
                 service.exportService(self.exportDto()).done((response) => {
-                    if(response.taskDatas.length >0){
-                        var res = new Array() ;
-                        for (let data of response.taskDatas){
-                            res.push(data.valueAsString);
+                    if (response.taskDatas.length > 0) {
+                        var res = "";
+                        for (let data of response.taskDatas) {
+                            res = res.concat(data.valueAsString + "\n");
                         }
-                        nts.uk.ui.dialog.bundledErrors(res);
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1269", message: res });
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
@@ -356,12 +356,12 @@ module nts.uk.com.view.kwr002.a {
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
                 service.exportService(self.exportDto()).done((response) => {
-                     if(response.taskDatas.length >0){
-                        var res ="";
-                        for (let data of response.taskDatas){
-                            res=res.concat(data.valueAsString + "\n");
-                        }                         
-                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1269", message: res});
+                    if (response.taskDatas.length > 0) {
+                        var res = "";
+                        for (let data of response.taskDatas) {
+                            res = res.concat(data.valueAsString + "\n");
+                        }
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1269", message: res });
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
@@ -394,11 +394,11 @@ module nts.uk.com.view.kwr002.a {
 
                 nts.uk.ui.dialog.bundledErrors(res);
                 // show error message
-//                if (Array.isArray(res.errors)) {
-//                    nts.uk.ui.dialog.bundledErrors(res);
-//                } else {
-//                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                }
+                //                if (Array.isArray(res.errors)) {
+                //                    nts.uk.ui.dialog.bundledErrors(res);
+                //                } else {
+                //                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                //                }
             }
 
             public openBDialog(): JQueryPromise<any> {
