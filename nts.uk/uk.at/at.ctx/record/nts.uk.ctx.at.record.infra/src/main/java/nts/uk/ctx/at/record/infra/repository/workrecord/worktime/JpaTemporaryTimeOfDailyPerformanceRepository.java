@@ -99,11 +99,12 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  		krcdtDaiTemporaryTime.workTimes = domain.getWorkTimes().v();
  		domain.getTimeLeavingWorks().stream().forEach(c -> {
  			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
- 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+ 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+ 								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 1).findFirst().orElse(null);
  			boolean isNew = krcdtTimeLeavingWork == null;
  			if(isNew){
  				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
- 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(), c.getWorkNo().v(), domain.getYmd(), 0);
+ 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(), c.getWorkNo().v(), domain.getYmd(), 1);
  			}
  			if(c.getAttendanceStamp().isPresent()){
  				TimeActualStamp attendanceStamp = c.getAttendanceStamp().get();
@@ -157,7 +158,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = c.getLeaveStamp().get().getNumberOfReflectionStamp();
  			}
  			krcdtTimeLeavingWork.daiTemporaryTime = krcdtDaiTemporaryTime;
- 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 1;
+// 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 1;
  			if(isNew){
  				timeWorks.add(krcdtTimeLeavingWork);
  			}

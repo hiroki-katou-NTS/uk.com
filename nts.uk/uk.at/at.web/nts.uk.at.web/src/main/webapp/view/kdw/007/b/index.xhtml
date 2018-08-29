@@ -19,6 +19,7 @@
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue
  			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw007.b.style.css" />
@@ -102,7 +103,7 @@
 				 	</com:ko-if>
 				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
 					 	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_99')}</div>
-					 	<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0 || currentAtdItemCondition.conditionAtr() == 3">
+					 	<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0">
 						 	<input id="startValue" class="value-input needcheck" data-bind="ntsNumberEditor: {
 						 				name: '#[KDW007_75]', 
 						 				value: currentAtdItemCondition.compareStartValue, 
@@ -116,18 +117,34 @@
 										constraint: 'CheckedTimesValue'
 									}" />
 				 		</com:ko-if>
-				 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 4">
+				 		 	<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 3">
 						 	<input id="startValue" class="value-input needcheck" data-bind="ntsNumberEditor: {
 						 				name: '#[KDW007_75]', 
 						 				value: currentAtdItemCondition.compareStartValue, 
 						 				required: true, 
-						 				constraint: 'CheckedTimesValueDay'}" />
+						 				constraint: 'CheckedAmountValue'}" />
 						 	<input id="endValue" class="value-input needcheck" data-bind="ntsNumberEditor: {
 				 						name: '#[KDW007_76]', 
 				 						value: currentAtdItemCondition.compareEndValue,
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
-										constraint: 'CheckedTimesValueDay'
+										constraint: 'CheckedAmountValue'
+									}" />
+				 		</com:ko-if>
+				 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 4">
+						 	<input id="startValue" class="value-input needcheck" data-bind="ntsNumberEditor: {
+						 				name: '#[KDW007_75]', 
+						 				value: currentAtdItemCondition.compareStartValue, 
+						 				required: true, 
+						 				constraint: 'CheckedTimesValueDay',
+						 				option: {decimallength: 1}}" />
+						 	<input id="endValue" class="value-input needcheck" data-bind="ntsNumberEditor: {
+				 						name: '#[KDW007_76]', 
+				 						value: currentAtdItemCondition.compareEndValue,
+										enable: currentAtdItemCondition.compareOperator() > 5,
+										required: currentAtdItemCondition.conditionType() == 0,
+										constraint: 'CheckedTimesValueDay',
+										option: {decimallength: 1}
 									}" />
 				 		</com:ko-if>
 				 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
