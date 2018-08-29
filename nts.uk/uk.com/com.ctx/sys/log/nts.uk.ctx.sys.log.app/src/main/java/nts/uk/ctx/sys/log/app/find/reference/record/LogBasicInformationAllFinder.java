@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -29,6 +28,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
@@ -90,30 +90,34 @@ public class LogBasicInformationAllFinder {
 			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
 			List<String> listOperationId= new ArrayList<>();
 			Map<String, LogBasicInformation> map=new HashMap<>();
+			List<String> employeeIds = new ArrayList<>();
 			for(LogBasicInformation logBasicInformation : lstLogBasicInformation){
 				listOperationId.add(logBasicInformation.getOperationId());
 				map.put(logBasicInformation.getOperationId(), logBasicInformation);
+				if(logBasicInformation.getUserInfo() !=null){
+					employeeIds.add(logBasicInformation.getUserInfo().getEmployeeId());
+					
+				}
 			}
-			
+			// Get list employee code
+			Map<String, String> mapEmployeeCodes = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeeIds);
 			switch (recordTypeEnum) {
 			case LOGIN:
 			List<LoginRecord> rsLoginRecord	=this.loginRecordRepository.logRecordInfor(listOperationId);
 				if(!CollectionUtil.isEmpty(rsLoginRecord)){
 					for(LoginRecord loginRecord :rsLoginRecord){
 						LogBasicInformation	logBasicInformation=map.get(loginRecord.getOperationId());
-						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-//						PersonEmpBasicInfoImport persionInfor = null;
-//						persionInfor = personEmpBasicInfoAdapter
-//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-//						if (persionInfor != null) {
-//							// itemNo 3
-//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-//						}
-						// Set user login name
-						// itemNo 1
-						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
-						// itemNo 2
-						logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
+						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);					
+						// itemNo 3
+						UserInfo userDto = logBasicInformation.getUserInfo();
+						if (userDto != null) {
+							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+							// itemNo 1
+							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+							// itemNo 2
+							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+						}					
+					
 
 						// itemNo 4
 						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
@@ -201,18 +205,17 @@ public class LogBasicInformationAllFinder {
 					for(StartPageLog oPStartPageLog:listStartPageLog){					
 						LogBasicInformation	logBasicInformation=map.get(oPStartPageLog.getBasicInfo().getOperationId());
 						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-//						PersonEmpBasicInfoImport persionInfor = null;
-//						persionInfor = personEmpBasicInfoAdapter
-//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-//						if (persionInfor != null) {
-//							// itemNo 3
-//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-//						}
 						// Set user login name
-						// itemNo 1
-						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
-						// itemNo 2
-						logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
+						// itemNo 3
+						UserInfo userDto = logBasicInformation.getUserInfo();
+						if (userDto != null) {
+							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+							// itemNo 1
+							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+							// itemNo 2
+							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+						}	
+					
 						// itemNo 4
 						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
 							logBasicInfoDto
@@ -300,24 +303,27 @@ public class LogBasicInformationAllFinder {
 				List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
 				.findByTargetAndDate(listOperationId, logParams.getListTagetEmployeeId(), datePeriodTaget);
 				if (!CollectionUtil.isEmpty(listPersonInfoCorrectionLog)) {
-					
+					// Get list employee code
+					List<String> employeePerSonIds = new ArrayList<>();
+					for (PersonInfoCorrectionLog personInfoCorrectionLog : listPersonInfoCorrectionLog) {
+						if(personInfoCorrectionLog.getTargetUser() !=null){
+							employeePerSonIds.add(personInfoCorrectionLog.getTargetUser().getEmployeeId());
+						}					
+					}
+					Map<String, String> mapEmployeeCodePersons = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeePerSonIds);
 					for (PersonInfoCorrectionLog personInfoCorrectionLog : listPersonInfoCorrectionLog) {
 						LogBasicInformation	logBasicInformation=map.get(personInfoCorrectionLog.getOperationId());
 						// convert log basic info to DTO
 						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-						// get employee code login
-//						PersonEmpBasicInfoImport persionInfor = null;
-//						persionInfor = personEmpBasicInfoAdapter
-//								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
-//						if (persionInfor != null) {
-//							// itemNo 3
-//							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-//						}
 						// Set user login name
-						// itemNo 1
-						logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
-						// itemNo 2
-						logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
+						UserInfo userDto = logBasicInformation.getUserInfo();
+						if (userDto != null) {
+							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+							// itemNo 1
+							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+							// itemNo 2
+							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+						}						
 						// itemNo 4
 						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
 							logBasicInfoDto.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
@@ -375,10 +381,11 @@ public class LogBasicInformationAllFinder {
 								+ logBasicInformation.getTargetProgram().getScreenId()
 								+ logBasicInformation.getTargetProgram().getQueryString();
 						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+						UserInfo userInfo	=personInfoCorrectionLog.getTargetUser();
 						// itemNO 19
-						logBasicInfoDto.setUserIdTaget(personInfoCorrectionLog.getTargetUser().getUserId());
+						logBasicInfoDto.setUserIdTaget(userInfo.getUserId());
 						// itemNO 20
-						logBasicInfoDto.setUserNameTaget(personInfoCorrectionLog.getTargetUser().getUserName());
+						logBasicInfoDto.setUserNameTaget(userInfo.getUserName());
 						// itemNo 21
 //						persionInfor = null;
 //						persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
@@ -388,6 +395,7 @@ public class LogBasicInformationAllFinder {
 //						} else {
 //							logBasicInfoDto.setEmployeeCodeTaget("");
 //						}
+						logBasicInfoDto.setEmployeeCodeTaget(mapEmployeeCodePersons.get(userInfo.getEmployeeId()));
 						// itemNo 22
 						logBasicInfoDto.setCategoryProcess(
 								getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value));
@@ -407,23 +415,23 @@ public class LogBasicInformationAllFinder {
 										logBasicInfoDto.setMethodCorrection(this.getinfoOperateAttr(
 												categoryCorrectionLog.getInfoOperateAttr().value));
 										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
-//											if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
-//												Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
-//														.getDateKey();
-//												// item 25
-//												logBasicInfoDto.setTarGetYmd(datekey.get().toString());
-//												// item 26
-//												logBasicInfoDto
-//														.setTarGetYm(String.valueOf(datekey.get().yearMonth()));
-//												// item 27
-//												logBasicInfoDto.setTarGetY(String.valueOf(datekey.get().year()));
-//												// item 28
-//												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
-//														.getStringKey().isPresent()
-//																? categoryCorrectionLog.getTargetKey()
-//																		.getStringKey().get()
-//																: "");
-//											}
+											
+												GeneralDate datekey = categoryCorrectionLog.getTargetKey()
+														.getDateKey();
+												// item 25
+												logBasicInfoDto.setTarGetYmd(datekey.toString());
+												// item 26
+												logBasicInfoDto
+														.setTarGetYm(String.valueOf(datekey.yearMonth()));
+												// item 27
+												logBasicInfoDto.setTarGetY(String.valueOf(datekey.year()));
+												// item 28
+												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
+														.getStringKey().isPresent()
+																? categoryCorrectionLog.getTargetKey()
+																		.getStringKey().get()
+																: "");
+											
 
 										}
 
@@ -469,30 +477,32 @@ public class LogBasicInformationAllFinder {
 						listOperationId, logParams.getListTagetEmployeeId(), datePeriodTaget, targetDataType);
 				if(!CollectionUtil.isEmpty(rsDataCorectLog)){					
 					// convert list data corect log to DTO
+					List<String> employeePerSonIds = new ArrayList<>();
 					List<LogDataCorrectRecordAllDto> lstLogDataCorecRecordRefeDto = new ArrayList<>();
 					for (DataCorrectionLog dataCorrectionLog : rsDataCorectLog) {
 						LogDataCorrectRecordAllDto logDataCorrectRecordRefeDto = LogDataCorrectRecordAllDto
 								.fromDomain(dataCorrectionLog);
 						lstLogDataCorecRecordRefeDto.add(logDataCorrectRecordRefeDto);
+						if(dataCorrectionLog.getTargetUser() !=null){
+							employeePerSonIds.add(dataCorrectionLog.getTargetUser().getEmployeeId());
+						}
 					}
+					Map<String, String> mapEmployeeCodePersons = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeePerSonIds);
 					//
 					if (!CollectionUtil.isEmpty(lstLogDataCorecRecordRefeDto)) {
+											
 						for (LogDataCorrectRecordAllDto logDataCorrectRecordRefeDto : lstLogDataCorecRecordRefeDto) {
 							// convert log basic info to DTO
 							LogBasicInformation logBasicInformation =map.get(logDataCorrectRecordRefeDto.getOperationId());
 							LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-							// itemNo 1
-							logBasicInfoDto.setUserIdLogin(logBasicInformation.getUserInfo().getUserId());
-							// itemNo 2
-							logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
-							// itemNo 3
-//							PersonEmpBasicInfoImport persionInfor = null;
-//							persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
-//									logBasicInformation.getUserInfo().getEmployeeId());
-//							if (persionInfor != null) {
-//								logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
-//							}
-
+							UserInfo userDto = logBasicInformation.getUserInfo();
+							if (userDto != null) {
+								logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+								// itemNo 1
+								logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+								// itemNo 2
+								logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+							}	
 							// itemNo 4
 							if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
 								logBasicInfoDto.setIpAddress(
@@ -573,6 +583,8 @@ public class LogBasicInformationAllFinder {
 //							} else {
 //								logBasicInfoDto.setEmployeeCodeTaget("");
 //							}
+							// itemNo 21
+							logBasicInfoDto.setEmployeeCodeTaget(mapEmployeeCodePersons.get(logDataCorrectRecordRefeDto.getEmployeeIdtaget()));
 							// itemNo 22
 							logBasicInfoDto.setTarGetYmd(logDataCorrectRecordRefeDto.getTarGetYmd());
 							// itemNo 23
