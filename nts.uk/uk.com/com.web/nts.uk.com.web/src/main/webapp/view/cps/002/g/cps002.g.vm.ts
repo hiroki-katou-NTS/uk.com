@@ -73,6 +73,10 @@ module cps002.g.vm {
                 self.checkStart(true);
                 dfd.resolve();
             });
+            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption;
+            service.getStamCardEdit().done(data => {
+                __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
+            });
 
             return dfd.promise();
 

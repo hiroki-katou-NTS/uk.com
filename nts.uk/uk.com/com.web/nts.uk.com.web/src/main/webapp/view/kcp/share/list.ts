@@ -319,10 +319,8 @@ module kcp.share.list {
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
-                let selectedClosureId = _.isNil(data.selectedClosureId) ?
-                    null : _.isFunction(data.selectedClosureId) ?
-                        data.selectedClosureId() : data.selectedClosureId;
-                self.selectedClosureId(selectedClosureId);
+                self.selectedClosureId = _.isFunction(data.selectedClosureId) ?
+                    data.selectedClosureId : ko.observable(data.selectedClosureId);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;

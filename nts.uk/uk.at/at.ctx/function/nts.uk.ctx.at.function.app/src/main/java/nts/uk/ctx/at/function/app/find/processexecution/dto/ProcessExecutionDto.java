@@ -101,6 +101,9 @@ public class ProcessExecutionDto {
 	/* 承認ルート更新（月次） */
 	private boolean appRouteUpdateMonthly;
 	
+	/* 実行種別*/
+	private int processExecType;
+	
 	public ProcessExecutionDto() {
 		super();
 	}
@@ -136,7 +139,8 @@ public class ProcessExecutionDto {
 				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer(),
 				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value==1?true:false,
 				!domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent()?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value==1?true:false,
-				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false
+				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false,
+				domain.getProcessExecType().value
 				);
 	}
 }
