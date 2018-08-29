@@ -9,6 +9,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -57,6 +58,9 @@ public class WorkScheduleQueryData {
 	
 	/** The lst employment. */
 	List<CodeName> lstEmployment;
+	
+	/** The lst optional item. */
+	List<OptionalItem> lstOptionalItem;
 	
 	/** The lst display item. */
 	List<AttendanceItemsDisplay> lstDisplayItem;
