@@ -2505,6 +2505,12 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
 			// [更新処理：月別集計、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：アラーム抽出、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			this.procExecLogRepo.update(procExecLog);
 
 		} else {
@@ -2530,6 +2536,12 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			procExecLog = new ProcessExecutionLog(new ExecutionCode(execItemCd), companyId, null, taskLogList, execId);
 			this.procExecLogRepo.insert(procExecLog);

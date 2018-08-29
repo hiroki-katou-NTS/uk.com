@@ -225,7 +225,7 @@
 					                         				<!-- B12-1 -->
 					                         				<div tabindex="33" data-bind="ntsCheckBox: { checked: appRouteUpdateAtrNormal ,enable : processExecType() == 0 }" style="width : 100%; ">#{i18n.getText('KBT002_188')}</div>
 					                         				<!-- B12-2 -->
-					                         				<div tabindex="34" class="subExecSetting" data-bind="ntsCheckBox: { checked: createNewEmp, enable: checkCreateNewEmp() &amp;&amp; processExecType() == 0 }">#{i18n.getText('KBT002_33')}</div>
+					                         				<div tabindex="34" class="subExecSetting" data-bind="ntsCheckBox: { checked: createNewEmp, enable: appRouteUpdateAtrNormal() &amp;&amp; processExecType() == 0 }">#{i18n.getText('KBT002_33')}</div>
 					                         			</div>
 					                         		</div>
 					                         		<div  class="execSetting" style="display:flex">	

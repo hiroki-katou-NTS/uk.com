@@ -3,7 +3,11 @@ package nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.month
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
-
+/**
+ * 承認中間データエラーメッセージ情報（月別実績）
+ * @author tutk
+ *
+ */
 @Getter
 public class AppDataInfoMonthly extends AggregateRoot {
 	

@@ -51,7 +51,7 @@ public class TransfereePerson {
 		List<String> leaderEmpIdList = new ArrayList<>();
 		//・社員ID（異動者、勤務種別変更者のみ）（List）
 		List<String> noLeaderEmpIdList = empIds;
-		// check 異動者を再作成する
+		// 異動者を再作成するか判定
 		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()){
 			//異動者の絞り込み todo request list 189
 			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter.getWplByListSidAndPeriod(empIds, p);
@@ -59,6 +59,7 @@ public class TransfereePerson {
 				wplEmpIdList.add(x.getEmployeeId());
 			});
 		}
+		//勤務種別変更者を再作成するか判定
 		if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()){
 		// 勤務種別の絞り込み
 			 newEmpIdList = this.refineWorkType(companyId, empIds, p.start());

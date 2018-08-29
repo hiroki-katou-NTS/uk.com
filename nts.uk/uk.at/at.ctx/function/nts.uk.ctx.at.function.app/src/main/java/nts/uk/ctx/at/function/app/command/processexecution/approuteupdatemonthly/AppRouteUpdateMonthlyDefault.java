@@ -150,15 +150,15 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				// 氏名の種類 → ビジネスネーム日本語
 				regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
-				// regulationInfoEmployeeAdapterImport.setSystemType(2);
-				// //勤務種別で絞り込む → FALSE
-				// regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
-				// //勤務種別コード一覧 → 空
-				// regulationInfoEmployeeAdapterImport.setWorktypeCodes(new
-				// ArrayList<String>());
-				//
-				// //就業締めで絞り込む → FALSE
-				// regulationInfoEmployeeAdapterImport.setFilterByClosure(false);
+				 regulationInfoEmployeeAdapterImport.setSystemType(2);
+				 //勤務種別で絞り込む → FALSE
+				 regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
+				 //勤務種別コード一覧 → 空
+				 regulationInfoEmployeeAdapterImport.setWorktypeCodes(new
+				 ArrayList<String>());
+				
+				 //就業締めで絞り込む → FALSE
+				 regulationInfoEmployeeAdapterImport.setFilterByClosure(false);
 
 			} else {
 				// 【更新処理自動実行.実行範囲.実行範囲区分 ＝ 会社 の場合】
@@ -209,15 +209,15 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				// 氏名の種類 → ビジネスネーム日本語
 				regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
-				// regulationInfoEmployeeAdapterImport.setSystemType(2);
-				// //勤務種別で絞り込む → FALSE
-				// regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
-				// //勤務種別コード一覧 → 空
-				// regulationInfoEmployeeAdapterImport.setWorktypeCodes(new
-				// ArrayList<String>());
-				//
-				// //就業締めで絞り込む → FALSE
-				// regulationInfoEmployeeAdapterImport.setFilterByClosure(false);
+				 regulationInfoEmployeeAdapterImport.setSystemType(2);
+				 //勤務種別で絞り込む → FALSE
+				 regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
+				 //勤務種別コード一覧 → 空
+				 regulationInfoEmployeeAdapterImport.setWorktypeCodes(new
+				 ArrayList<String>());
+				
+				 //就業締めで絞り込む → FALSE
+				 regulationInfoEmployeeAdapterImport.setFilterByClosure(false);
 			}
 
 			// <<Public>> 就業条件で社員を検索して並び替える

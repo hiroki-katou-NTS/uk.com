@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -124,6 +126,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<ExecuteProcessExecutionCommand> {
 
@@ -2493,7 +2496,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		return new DatePeriod(startClosingDate, endClosingDate);
 	}
 
-	// 実行前登録処理
+	// 	
 	private ProcessExecutionLog preExecutionRegistrationProcessing(String companyId, String execItemCd, String execId,
 			ProcessExecutionLogManage processExecutionLogManage, int execType) {
 		Optional<ProcessExecutionLog> procExecLogOpt = this.procExecLogRepo.getLog(companyId, execItemCd);
@@ -2522,6 +2525,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
 			// [更新処理：月別集計、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+			
+			// [更新処理：アラーム抽出、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);		
 			this.procExecLogRepo.update(procExecLog);
 
 		} else {
@@ -2547,6 +2557,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			procExecLog = new ProcessExecutionLog(new ExecutionCode(execItemCd), companyId, null, taskLogList, execId);
 			this.procExecLogRepo.insert(procExecLog);

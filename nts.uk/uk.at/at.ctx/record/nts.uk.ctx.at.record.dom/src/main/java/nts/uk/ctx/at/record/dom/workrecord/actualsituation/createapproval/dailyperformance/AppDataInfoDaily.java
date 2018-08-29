@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.daily
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * 承認中間データエラーメッセージ情報（日別実績）
+ * @author tutk
+ *
+ */
 @Getter
 public class AppDataInfoDaily extends AggregateRoot {
 	
