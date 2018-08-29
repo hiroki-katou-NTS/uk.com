@@ -59,7 +59,10 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.startPage(self.appID());
 
             self.prePostSelectedCode.subscribe((newCd) => {
-                self.prePostText(_.find(self.prePostTypes(), { 'code': newCd }).text);
+                let prePostItem = _.find(self.prePostTypes(), { 'code': newCd });
+                if (prePostItem) {
+                    self.prePostText(prePostItem.text);
+                }
             });
 
             self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
@@ -124,11 +127,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             block.invisible();
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
-                        self.startPage(self.appID());
-                    });
+                    self.startPage(self.appID(), true);
                 });
-
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
@@ -175,14 +175,17 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return appReason;
         }
 
-        startPage(appID: string): JQueryPromise<any> {
+        startPage(appID: string, isReload?: boolean): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
             block.invisible();
             service.findById(appParam).done((data) => {
                 self.setDataFromStart(data);
-
+                if (isReload)
+                    self.start(data.application.applicationDate).done(() => {
+                        nts.uk.ui.block.clear();
+                    });
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
@@ -214,11 +217,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 } else {
                     if (data.recApp) {
                         self.setDataApp(self.recWk(), data.recApp, 1);
-
+                        self.absWk(new common.AppItems());
                     }
                     if (data.absApp) {
                         self.setDataApp(self.absWk(), data.absApp, 2);
-
+                        self.recWk(new common.AppItems());
                     }
 
                 }

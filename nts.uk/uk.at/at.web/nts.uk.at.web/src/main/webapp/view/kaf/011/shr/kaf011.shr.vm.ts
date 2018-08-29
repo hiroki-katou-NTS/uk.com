@@ -453,7 +453,7 @@ module nts.uk.at.view.kaf011.shr {
                     let newAbsAppID = nts.uk.ui.windows.getShared('KAF_011_C_PARAMS');
                     if (newAbsAppID) {
                         if (newAbsAppID != 'Msg_198') {
-                            vm.startPage(newAbsAppID);
+                            vm.startPage(newAbsAppID, true);
                         } else {
                             nts.uk.request.jump('../../../cmm/045/a/index.xhtml');
                         }
