@@ -103,6 +103,9 @@ public class OutputItemDailyWorkScheduleFinder {
 	/** The Constant SHEET_NO_1. */
 	private static final int SHEET_NO_1 = 1;
 	
+	private static final String AUTHORITY_DEFINE = "権限";
+	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
+	
 	/**
 	 * Find by cid.
 	 *
@@ -179,8 +182,6 @@ public class OutputItemDailyWorkScheduleFinder {
 			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
 		}		
 		
-//		Map<Integer, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
-		
 		// get all domain 日別勤務表の出力項目
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
 		
@@ -191,10 +192,6 @@ public class OutputItemDailyWorkScheduleFinder {
 										OutputItemDailyWorkScheduleDto dto = new OutputItemDailyWorkScheduleDto();
 										dto.setItemCode(domain.getItemCode().v());
 										dto.setItemName(domain.getItemName().v());
-										/*dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
-										dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
-										dto.setWorkTypeNameDisplay(domain.getWorkTypeNameDisplay().value);
-										dto.setRemarkInputNo(domain.getRemarkInputNo().value);*/
 										return dto;
 									})
 									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))
@@ -216,6 +213,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
+		List<DataInforReturnDto> lstData;
+		
 		if (!optFormatPerformanceImport.isPresent()) {
 			return new ArrayList<>();
 		}
@@ -224,13 +223,17 @@ public class OutputItemDailyWorkScheduleFinder {
 			case AUTHORITY: // In case of authority
 				// Get domain 会社の日別実績の修正のフォーマット
 				List<AuthorityDailyPerformanceFormat> lstAuthorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId);
-				return lstAuthorityDailyPerformanceFormat.stream()
+				lstData = lstAuthorityDailyPerformanceFormat.stream()
 							.map(obj -> {
 								DataInforReturnDto dto = new DataInforReturnDto();
 								dto.setCode(obj.getDailyPerformanceFormatCode().v());
 								dto.setName(obj.getDailyPerformanceFormatName().v());
 								return dto;
 							}).collect(Collectors.toList());
+				if (lstData.isEmpty()) {
+					throw new BusinessException("Msg_1140", new String[]{AUTHORITY_DEFINE});
+				} 
+				return lstData;
 			case BUSINESS_TYPE: // In case of work type
 				// Get doamin 勤務種別日別実績の修正のフォーマット
 				List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatByCompanyId(companyId);
@@ -242,7 +245,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				// businessTypeCode get from doamin 勤務種別日別実績の修正のフォーマット
 				List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
 	
-				return lstBusinessType.stream()
+				lstData = lstBusinessType.stream()
 					.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
 					.map(domain -> {
 						DataInforReturnDto dto = new DataInforReturnDto();
@@ -251,8 +254,12 @@ public class OutputItemDailyWorkScheduleFinder {
 						return dto;
 					})
 				.collect(Collectors.toList());
-				default:
-					return new ArrayList<>();
+				if (lstData.isEmpty()) {
+					throw new BusinessException("Msg_1140", new String[]{BUSINESS_TYPE_DEFINE});
+				}
+				return lstData;
+			default:
+				return new ArrayList<>();
 		}
 	}
 	
@@ -266,7 +273,11 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (optOutputItemDailyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			return getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
+			List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
+			if (lstData.isEmpty()) {
+				throw new BusinessException("Msg_1411");
+			} 
+			return lstData;
 		}
 	}
 	
@@ -366,17 +377,6 @@ public class OutputItemDailyWorkScheduleFinder {
 								.sorted(Comparator.comparing(PrintRemarksContentDto::getPrintItem))
 								.collect(Collectors.toList());
 	} 
-	
-	/**
-	 * Convert list to map attendance item.
-	 *
-	 * @param lst the lst
-	 * @return the map
-	 */
-	private Map<Integer, String> convertListToMapAttendanceItem(List<DailyAttendanceItemDto> lst) {
-		return lst.stream().collect(
-                Collectors.toMap(DailyAttendanceItemDto::getId, DailyAttendanceItemDto::getName));
-	}
 	
 	public OutputItemDailyWorkScheduleDto findByCodeId(String code) {
 		String companyId = AppContexts.user().companyId();
