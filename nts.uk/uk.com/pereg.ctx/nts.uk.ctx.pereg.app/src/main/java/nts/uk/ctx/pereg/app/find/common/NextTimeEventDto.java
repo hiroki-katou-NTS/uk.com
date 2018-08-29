@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Data
 @NoArgsConstructor
@@ -51,7 +52,7 @@ public class NextTimeEventDto {
 		if (nextGrantDay == null){
 			return null;
 		}
-		return nextGrantDay +"日";
+		return nextGrantDay + TextResource.localize("CPS001_147");
 	}
 	
 	private static String nextTimeMaxTime(Optional<Integer> nextMaxTime) {
