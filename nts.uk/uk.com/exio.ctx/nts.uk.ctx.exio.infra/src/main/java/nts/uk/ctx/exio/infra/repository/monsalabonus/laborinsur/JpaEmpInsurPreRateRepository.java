@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurPreRate
 public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpInsurPreRateRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsur PreRate f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurPreRate f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurPreRatePk.hisId =:hisId AND  f.empInsurPreRatePk.empPreRateId =:empPreRateId ";
 
     @Override

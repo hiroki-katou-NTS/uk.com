@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
+package nts.uk.ctx.exio.dom;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,22 +16,22 @@ public class OccAccInsurBus extends AggregateRoot
 {
     
     /**
-    * 
+    * 会社ID
     */
     private String cid;
     
     /**
-    * 
+    * 労災保険事業No
     */
     private int occAccInsurBusNo;
     
     /**
-    * 
+    * 利用する
     */
     private int toUse;
     
     /**
-    * 
+    * 名称
     */
     private String name;
     

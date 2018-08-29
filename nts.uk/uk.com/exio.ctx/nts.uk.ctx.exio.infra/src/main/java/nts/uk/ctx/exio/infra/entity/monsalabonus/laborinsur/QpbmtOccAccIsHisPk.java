@@ -11,28 +11,27 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 労災保険料率: 主キー情報
-*/
+ * 労災保険履歴: 主キー情報
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtOccAccIsPrRatePk implements Serializable
-{
+public class QpbmtOccAccIsHisPk implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 
-    */
+     *
+     */
     @Basic(optional = false)
-    @Column(name = "OC_AC_IS_PR_RT_ID")
-    public String ocAcIsPrRtId;
-    
+    @Column(name = "CID")
+    public String cid;
+
     /**
-    * 履歴ID
-    */
+     *
+     */
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;
-    
+
 }
