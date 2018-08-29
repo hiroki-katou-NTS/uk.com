@@ -31,12 +31,14 @@ module nts.uk.com.view.cli003.i {
                     console.log(data);
                     if (data && data.length > 0) {
                         data = _.orderBy(data, ['code'], ['asc', 'asc']);
+                         let listCodeset=[];
                         for (let i = 0; i < data.length; i++) {
                             var logDisplaySet = data[i];
-                            self.listCode.push(new model.LogDisplaySetting(logDisplaySet.logSetId, logDisplaySet.cid, logDisplaySet.code, logDisplaySet.name,
+                            listCodeset.push(new model.LogDisplaySetting(logDisplaySet.logSetId, logDisplaySet.cid, logDisplaySet.code, logDisplaySet.name,
                                 logDisplaySet.dataType, logDisplaySet.recordType));
 
                         }
+                        self.listCode(listCodeset);
 
                         self.selectFirstItem();
                     } else {
