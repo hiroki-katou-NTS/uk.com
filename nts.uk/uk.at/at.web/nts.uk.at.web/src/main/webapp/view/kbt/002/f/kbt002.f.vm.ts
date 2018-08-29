@@ -47,7 +47,7 @@ module nts.uk.at.view.kbt002.f {
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogH(data, event)}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" onclick="kbt002FModel.openDialogH(${execItemCd})" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
                     },
                 ]);
                 
@@ -104,10 +104,10 @@ module nts.uk.at.view.kbt002.f {
                     block.clear();
                 });    
             }
-            openDialogH(data, event){
+            openDialogH(execItemCd){
                 let self = this;
                 block.grayout();
-                var execItemCd = $(event.target).data("code");
+                
                 setShared('inputDialogH', {execItemCd: execItemCd});
                 modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
                     block.clear();
