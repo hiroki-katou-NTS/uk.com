@@ -7,7 +7,8 @@ module cmm045.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
-        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
+        //delete switch button - ver35
+//        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
         //lst fill in grid list
         items: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
         //lst full data get from db
@@ -40,6 +41,15 @@ module cmm045.a.viewmodel {
         extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
         isHidden: KnockoutObservable<boolean> = ko.observable(false);
+        //_______CCG001____
+        ccgcomponent: any;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+        baseDate: KnockoutObservable<Date>;
+        selectedEmployee: KnockoutObservableArray<any>;
+        workplaceId: KnockoutObservable<string> = ko.observable("");
+        employeeId: KnockoutObservable<string> = ko.observable("");
+        //ver35
+        lstSidFilter: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([
@@ -54,6 +64,57 @@ module cmm045.a.viewmodel {
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
+            
+            //_____CCG001________
+            self.selectedEmployee = ko.observableArray([]);
+            self.showinfoSelectedEmployee = ko.observable(false);
+            self.ccgcomponent = {
+           
+            showEmployeeSelection: false, // 検索タイプ
+            systemType: 2, // システム区分 - 就業
+            showQuickSearchTab: true, // クイック検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: false, // 就業締め日利用
+            showAllClosure: false, // 全締め表示
+            showPeriod: false, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parameter */
+            baseDate: moment.utc().toISOString(), // 基準日
+            inService: true, // 在職区分
+            leaveOfAbsence: true, // 休職区分
+            closed: true, // 休業区 
+            retirement: true, // 退職区分
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参照可能な社員すべて
+            showOnlyMe: true, // 自分だけ
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雇用条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 分類条件
+            showJobTitle: true, // 職位条件
+            showWorktype: true, // 勤種条件
+            isMutipleCheck: true,
+            /**  
+            * @param dataList: list employee returned from component.
+            * Define how to use this list employee by yourself in the function's body.
+            */
+            returnDataFromCcg001: function(data: any){
+                self.showinfoSelectedEmployee(true);
+                self.selectedEmployee(data.listEmployee);
+                console.log(data.listEmployee);
+                self.lstSidFilter([]);
+                _.each(data.listEmployee, function(emp){
+                    self.lstSidFilter.push(emp.employeeId);
+                });
+                self.filter();
+             }
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -104,7 +165,7 @@ module cmm045.a.viewmodel {
                     if (obj.cancelStatus) {//取消
                         self.selectedIds.push(6);
                     }
-                    self.selectedRuleCode(obj.appDisplayAtr);
+//                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
                 }
@@ -117,7 +178,7 @@ module cmm045.a.viewmodel {
 
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
                 let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
@@ -127,9 +188,9 @@ module cmm045.a.viewmodel {
                         console.log(data);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
-                        self.selectedRuleCode.subscribe(function(codeChanged) {
-                            self.filter();
-                        });
+//                        self.selectedRuleCode.subscribe(function(codeChanged) {
+//                            self.filter();
+//                        });
                         //luu param
                         if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
@@ -137,7 +198,7 @@ module cmm045.a.viewmodel {
                         }
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
                         character.save('AppListExtractCondition', paramSave);
 //                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
@@ -244,6 +305,9 @@ module cmm045.a.viewmodel {
                             let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                             self.selectedCode(selectedType);    
                         }
+                        if(self.mode() == 0){
+                            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                        }
                         block.clear();
                         dfd.resolve();
                     });
@@ -256,7 +320,7 @@ module cmm045.a.viewmodel {
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
             var self = this;
-            let widthAuto = isHidden == false ? '1120px' : '1040px';
+            let widthAuto = isHidden == false ? '1110px' : '1030px';
             $("#grid2").ntsGrid({
                 width: widthAuto,
                 height: '500px',
@@ -271,10 +335,10 @@ module cmm045.a.viewmodel {
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px'},
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px', hidden: isHidden},
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px', 
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '270px', 
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}
@@ -303,8 +367,13 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                let a = self.findDataModeAppByID(id, self.items());
-                let lstAppId = self.findListAppType(a.appType);
+                //Bug #97203 - EA2540
+//                let a = self.findDataModeAppByID(id, self.items());
+//                let lstAppId = self.findListAppType(a.appType);
+                let lstAppId = [];
+                _.each(self.items(), function(app){
+                    lstAppId.push(app.appId);
+                });
                 nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
@@ -475,8 +544,13 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                let a = self.findDataModeAppByID(id, self.items());
-                let lstAppId = self.findListAppType(a.appType);
+                //Bug #97203 - EA2540
+//                let a = self.findDataModeAppByID(id, self.items());
+//                let lstAppId = self.findListAppType(a.appType);
+                let lstAppId = [];
+                _.each(self.items(), function(app){
+                    lstAppId.push(app.appId);
+                });
                 nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
@@ -876,7 +950,7 @@ module cmm045.a.viewmodel {
         //※特別休暇申請.続柄コード　＝　入力ありの場合
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
+            let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : absence.day + getText('CMM045_278');
             //hdAppSet.specialVaca
             let result = getText('CMM045_279') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
             return result;
@@ -1329,7 +1403,7 @@ module cmm045.a.viewmodel {
             }
             let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
             let param = new vmbase.AppListParamFilter(condition, false, 0);
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
@@ -1529,7 +1603,7 @@ module cmm045.a.viewmodel {
             }else{
                 paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
             }
             //luu
                 character.save('AppListExtractCondition', paramNew);

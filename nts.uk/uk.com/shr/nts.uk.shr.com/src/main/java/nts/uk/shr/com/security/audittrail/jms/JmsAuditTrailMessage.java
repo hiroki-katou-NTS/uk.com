@@ -1,6 +1,7 @@
 package nts.uk.shr.com.security.audittrail.jms;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.jms.MapMessage;
 import javax.jms.Session;
@@ -26,16 +27,16 @@ public class JmsAuditTrailMessage {
 	private final CorrectionProcessorId processorId;
 	
 	@Getter
-	private final Serializable parameter;
+	private final HashMap<String, Serializable> parameters;
 	
 	@SneakyThrows
 	public static JmsAuditTrailMessage restore(MapMessage message) {
 		
 		String operationId = message.getString(MAPKEY_OPERATION_ID);
 		val processorId = CorrectionProcessorId.of(message.getInt(MAPKEY_PROCESSOR_ID));
-		Serializable parameter = ObjectSerializer.restore(message.getString(MAPKEY_PARAMETER));
+		HashMap<String, Serializable> parameters = ObjectSerializer.restore(message.getString(MAPKEY_PARAMETER));
 		
-		return new JmsAuditTrailMessage(operationId, processorId, parameter);
+		return new JmsAuditTrailMessage(operationId, processorId, parameters);
 	}
 	
 	@SneakyThrows
@@ -44,7 +45,7 @@ public class JmsAuditTrailMessage {
 		
 		message.setString(MAPKEY_OPERATION_ID, this.operationId);
     	message.setInt(MAPKEY_PROCESSOR_ID, processorId.value);
-    	message.setString(MAPKEY_PARAMETER, ObjectSerializer.toBase64(this.parameter));
+    	message.setString(MAPKEY_PARAMETER, ObjectSerializer.toBase64(this.parameters));
     	
     	return message;
 	}

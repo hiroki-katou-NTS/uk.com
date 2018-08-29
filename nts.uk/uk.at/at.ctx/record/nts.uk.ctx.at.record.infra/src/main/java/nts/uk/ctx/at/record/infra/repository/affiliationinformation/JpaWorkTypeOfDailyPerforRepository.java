@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformanc
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiWorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements WorkTypeOfDailyPerforRepository {
@@ -62,7 +63,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(insertTableSQL);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -91,9 +92,9 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
 			Statement statementU = con.createStatement();
-			statementU.executeUpdate(updateTableSQL);
+			statementU.executeUpdate(JDBCUtil.toInsertWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

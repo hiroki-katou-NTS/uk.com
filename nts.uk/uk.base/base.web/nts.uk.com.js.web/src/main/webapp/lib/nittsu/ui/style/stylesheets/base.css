@@ -1034,6 +1034,19 @@ div.label {
   white-space: pre-wrap;
 }
 
+*.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
 /*****************************
   Icon
 *****************************/
@@ -2255,11 +2268,9 @@ button.nts-switch-button.selected:hover {
 button.nts-switch-button[disabled] {
   background-color: #d9d9d9;
 }
-/* line 46, ../sass/components/_switchbutton.scss */
-button.nts-switch-button[disabled]:hover {
-  background-color: #d9d9d9;
+button.nts-switch-button[disabled].selected {
+  background-color: #7b8;
 }
-
 /* line 52, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper {
   display: inline-block;
@@ -2984,7 +2995,7 @@ button.nts-switch-button[disabled]:hover {
   padding: 0px;
   border-color: #767171 !important;
   border-radius: 0px;
-  z-index: 120001;
+  z-index: 10000001;
 }
 /* line 16, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar {
@@ -3553,6 +3564,7 @@ button.nts-switch-button[disabled]:hover {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {

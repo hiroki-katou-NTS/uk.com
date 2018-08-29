@@ -1,3 +1,10 @@
+let $: any = window['$'],
+    _: any = window['_'],
+    ko: any = window['ko'],
+    nts: any = window['nts'],
+    moment: any = window['moment'],
+    __viewContext: any = window['__viewContext'];
+
 module cps002.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
@@ -13,6 +20,8 @@ module cps002.a.vm {
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
     import alertError = nts.uk.ui.dialog.alertError;
+    import alertWarning = nts.uk.ui.dialog.caution;
+
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -62,7 +71,7 @@ module cps002.a.vm {
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         // check quyen có thể setting copy 
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
@@ -111,8 +120,31 @@ module cps002.a.vm {
             }
         };
 
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
+        classWarning: KnockoutObservable<string> = ko.observable("");
+
         constructor() {
             let self = this;
+
+            ko.computed({
+                read: () => {
+                    let step = ko.toJS(self.currentStep),
+                        typi = ko.toJS(self.createTypeId);
+
+                    if (step == 1 && typi == 1) {
+                        $('#ccgcomponent').css('visibility', '');
+                    } else {
+                        $('#ccgcomponent').css('visibility', 'hidden');
+                    }
+
+                    if (step != 2) {
+                        $('#emp_reg_info_wizard').css('min-height', '');
+                    } else {
+                        $('#emp_reg_info_wizard').css('min-height', '720px');
+                    }
+                }
+            });
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
@@ -223,7 +255,7 @@ module cps002.a.vm {
                 }
             });
 
-            self.currentEmployee().avatarId.subscribe((avartarId) => {
+            self.currentEmployee().avatarCropedId.subscribe((avartarId) => {
                 let self = this,
                     avartarContent = $("#employeeAvatar");
 
@@ -242,34 +274,35 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this;
                 self.autoUpdateCardNo(employeeCode);
-            }); 
-            
+            });
+
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
-
-                if (cardNo && cardNo.length < ce.digitsNumber) {
-                    switch (ce.method) {
-                        case EDIT_METHOD.PreviousZero: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterZero: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.PreviousSpace: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterSpace: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
-                            break;
+                if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
+                    if (cardNo && cardNo.length <= ce.digitsNumber) {
+                        switch (ce.method) {
+                            case EDIT_METHOD.PreviousZero: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterZero: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.PreviousSpace: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterSpace: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
                         }
                     }
                 }
             });
-            
+
             // check quyen có thể setting copy hoặc setting init
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
@@ -287,7 +320,7 @@ module cps002.a.vm {
                     }
                 }
             });
-
+            self.checkLicense();
             self.start();
         }
 
@@ -310,12 +343,12 @@ module cps002.a.vm {
                 });
             }
         }
-        
+
         logMouseOver() {
             let self = this;
             self.autoUpdateCardNo(self.currentEmployee().employeeCode());
         }
-        
+
         autoUpdateCardNo(employeeCode) {
             let self = this;
             let employee = self.currentEmployee();
@@ -344,12 +377,10 @@ module cps002.a.vm {
                     break;
             }
         }
-        
+
         start() {
             let self = this;
             self.currentEmployee().clearData();
-
-            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 self.subContraint(false);
@@ -359,10 +390,7 @@ module cps002.a.vm {
                     self.employeeBasicInfo(data);
                 });
                 self.getLayout();
-                dfd.resolve(data);
             });
-
-            return dfd.promise();
         }
 
         getLayout() {
@@ -383,6 +411,9 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(userSetting));
                         self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
+                    }).always(() => {
+                        // show content
+                        $('#contents-area').css('visibility', 'visible');
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
@@ -410,13 +441,18 @@ module cps002.a.vm {
             }
         }
 
-        initStampCard(newEmployeeCode : string) {
-            let self = this;
+        initStampCard(newEmployeeCode: string) {
+            let self = this,
+                ce = ko.toJS(self.stampCardEditing);
             service.getInitCardNumber(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
+                if (value && value.length <= ce.digitsNumber) {
+                    self.currentEmployee().cardNo(value);
+                }else{
+                    self.currentEmployee().cardNo("");
+                }
             });
         }
-        
+
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -444,6 +480,7 @@ module cps002.a.vm {
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
                     if (self.createTypeId() === 3) {
+                        $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));  
                         self.gotoStep2();
                         return;
                     }
@@ -476,6 +513,25 @@ module cps002.a.vm {
             self.currentStep(0);
 
             self.start();
+
+            self.getUserSetting();
+
+        }
+
+        getUserSetting(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getUserSetting().done((result: IUserSetting) => {
+                if (!result) {
+                    self.currentEmployee().employeeCode("");
+                    self.currentEmployee().cardNo("");
+                }
+
+                dfd.resolve();
+            });
+
+            return dfd.promise();
+
         }
 
         gotoStep2() {
@@ -541,6 +597,8 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
+            //Name Screen D 
+            $('#pg-name').text('CPS002D'+ ' ' + text('CPS002_4'));
         }
 
         isUseInitValue() {
@@ -558,13 +616,17 @@ module cps002.a.vm {
             if (self.isUseInitValue()) {
 
                 //start Screen C
+                //Set name Screen C　#CPS002_3
+                $('#pg-name').text('CPS002C'+ ' ' + text('CPS002_3'));
 
                 self.loadInitSettingData();
 
-
+                 $('#combo-box').focus();
             } else {
 
                 //start Screen B
+                //Set name Screen B　#CPS002_2
+                $('#pg-name').text('CPS002B'+ ' ' + text('CPS002_2'));
 
                 $('#search_box').hide();
 
@@ -572,8 +634,7 @@ module cps002.a.vm {
                 if (self.copyEmployee().employeeId == '') {
                     $('#hor-scroll-button-show').trigger('click');
                 }
-                $('#inp_baseDate').focus();
-
+                $('#combo-box').focus();
             }
 
 
@@ -585,7 +646,7 @@ module cps002.a.vm {
             self.categoryList.removeAll();
 
             service.getCopySetting().done((result: Array<ICopySetting>) => {
-                if (result.length) {
+                if (result.length > 0) {
                     self.categoryList(_.map(result, item => {
                         return new CategoryItem(item);
                     }));
@@ -647,12 +708,14 @@ module cps002.a.vm {
             self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
             }
             if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
                 return;
             }
         }
@@ -691,32 +754,10 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
-            
-            // list category nghỉ đặc biệt còn lại
-            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
-                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
-            for (var i = 0; i < command.inputs.length; i++) {
-                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
-                    if((command.inputs[i].items[0].value == undefined) 
-                        ||(command.inputs[i].items[1].value == undefined) 
-                        || (command.inputs[i].items[3].value == undefined) 
-                        || (command.inputs[i].items[4].value == undefined) 
-                        || (command.inputs[i].items[5].value == undefined) 
-                        || (command.inputs[i].items[6].value == undefined) 
-                        || (command.inputs[i].items[7].value == undefined) 
-                        || (command.inputs[i].items[8].value == undefined) 
-                        || (command.inputs[i].items[9].value == undefined) 
-                        || (command.inputs[i].items[10].value == undefined)){
-                        _.remove(command.inputs, function(n: any) {
-                            return n.categoryCd == command.inputs[i].categoryCd;
-                        });
-                    }
-                }
-            }
-            
+            command.categoryName = nts.uk.resource.getText("CPS001_152");
+            command.itemName = nts.uk.resource.getText("CPS001_150");
 
             if (!self.isError()) {
-
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
@@ -729,6 +770,8 @@ module cps002.a.vm {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
+                    
+                     self.checkLicense();
 
                 }).fail(error => {
 
@@ -762,7 +805,7 @@ module cps002.a.vm {
                 }
             });
         }
-        
+
 
         openJModal(param, data) {
 
@@ -778,8 +821,8 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#cardNumber").ntsError("clear");
-                        currentEmp.cardNo(result);
-                        currentEmp.cardNo.valueHasMutated();
+                    currentEmp.cardNo(result);
+                    currentEmp.cardNo.valueHasMutated();
                 }
             });
         }
@@ -818,29 +861,45 @@ module cps002.a.vm {
                 setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
-
+                setShared("openIDialog", self.currentEmployee().avatarOrgId());
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                    let imageResult = getShared("imageId");
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult.cropImgId)
-                        self.defaultImgId(imageResult.defaultImgId);
+                    let dataShare = getShared("imageId");
+                    if (dataShare) {
+                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId),
+                            self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
+                            self.currentEmployee().fileName(dataShare.fileName)
                     }
                 });
 
             }
         }
 
-
         openInitModal() {
-
-
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
             });
         }
 
+        checkLicense() {
+            let self = this;
 
+            service.licenseCheck().done((data: ILicensenCheck) => {
+                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
+                self.licenseCheckDipslay(data.display);
+
+                if (!!data.message) {
+                    self.classWarning('color-schedule-error');
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] }).then(() => {
+                        if (data.message === 'Msg_1370') {
+                            jump('/view/ccg/008/a/index.xhtml');
+                        }
+                    });
+                } else {
+                    self.classWarning('');
+                }
+            });
+        }
     }
 
     class BoxModel {
@@ -859,16 +918,24 @@ module cps002.a.vm {
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        avatarOrgId: KnockoutObservable<string> = ko.observable("");
+        avatarCropedId: KnockoutObservable<string> = ko.observable("");
+        categoryName: KnockoutObservable<string> = ko.observable("");
+        itemName: KnockoutObservable<string> = ko.observable("");
+        fileName: KnockoutObservable<string> = ko.observable("");
         clearData() {
             let self = this;
             self.employeeName("");
             self.employeeCode("");
-            self.avatarId("");
             self.loginId("");
             self.password("");
+            self.avatarOrgId("");
+            self.avatarCropedId("");
+            self.categoryName("");
+            self.itemName("");
+            self.fileName("");
         }
     }
 
@@ -1129,7 +1196,7 @@ module cps002.a.vm {
         PreviousSpace = 3,
         AfterSpace = 4
     }
-    
+
     enum CardNoValType {
         //頭文字指定 (InitialDesignation)
         INIT_DESIGNATION = 1,
@@ -1140,14 +1207,14 @@ module cps002.a.vm {
         //最大値 (MaxValue)
         MAXVALUE = 4,
         //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
-        CPC_AND_EMPC = 5 
+        CPC_AND_EMPC = 5
     }
 
     enum POSITION {
         Previous = 0,
         After = 1
     }
-    
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
@@ -1168,6 +1235,15 @@ module cps002.a.vm {
         No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+    }
+    interface ILicensenCheck {
+        display: boolean;
+        registered: number;
+        canBeRegistered: number;
+        maxRegistered: number;
+        message: string;
+        licenseKey: string;
+        status: string;
     }
 
 }

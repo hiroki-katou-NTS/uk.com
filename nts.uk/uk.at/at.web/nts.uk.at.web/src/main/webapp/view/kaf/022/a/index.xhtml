@@ -35,8 +35,7 @@
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" />
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
  			<com:ValidatorScript>
- 				nts.uk.ctx.at.request.dom.setting.workplace.Memo500
-				<!-- nts.uk.shr.com.primitive.Memo -->
+				nts.uk.ctx.at.request.dom.setting.workplace.Memo
 				nts.uk.ctx.at.request.dom.setting.company.displayname.DispName
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
@@ -44,10 +43,13 @@
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.NameWork
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
 				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.MailTitle
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.MailBody
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
 				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType
 				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
 				nts.uk.ctx.at.request.dom.application.BreakReflect
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.UnitAssignmentOvertime
@@ -73,7 +75,7 @@
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
                         <button  id="btn_001" class="button proceed separate-button fix-button"
-                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}, enable: $parent.viewmodelL.allowRegister()">#{i18n.getText('KAF022_1')}</button>
                         <button  id="btn_002" class="button separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
@@ -85,7 +87,7 @@
 				<com:ko-if bind="currentTab()==='m'">
 					<div class="center-content-kaf022l">
 						<button id="btn_001" class="button proceed separate-button fix-button"
-								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM)">#{i18n.getText('KAF022_1')}</button>
+								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM), enable: $vm.viewmodelM.allowRegister()">#{i18n.getText('KAF022_1')}</button>
 						<button id="btn_002" class="button separate-button fix-button"
 								data-bind="click: $vm.viewmodelM.openDialogCopy.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()">#{i18n.getText('KAF022_274')}</button>
 						<button id="btn_004" class="button danger separate-button fix-button"
@@ -470,7 +472,7 @@
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -483,13 +485,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_2" style = "margin-left: 90px;">#{i18n.getText('KAF022_375')}</span>
-											<span> <input style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_2" style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: normalOtTime,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -499,13 +501,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_3" style = "margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
-											<span> <input style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_3" style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: retrictPreTimeDay,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -578,8 +580,9 @@
 									<tr>
 									</tr>
 								</thead>
-								<tbody data-bind="foreach: listDataA8">
-									<tr>
+								<tbody>
+									<com:ko tag="foreach" bind="listDataA8">
+									<tr data-bind="if: (appType() == 0 &#124;&#124; appType() == 1) &amp; flg() != 1">
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
 										<td><div
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
@@ -600,6 +603,63 @@
 										<td>
 											<div  class ="a4_7"
 												data-bind="ntsComboBox: {
+													width: '90px',
+													options: $parent.itemListA8_33,
+													optionsValue: 'code',
+													visibleItemsCount: 2,
+													value: displayInitialSegment,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 7}
+													]},attr:{
+														tabindex:91 + $index()*6
+													}">
+											</div>
+										</td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: canClassificationChange, enable: disableA8},attr:{
+														tabindex:92 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+									</tr>
+									</com:ko>
+									<com:ko tag="foreach" bind="listDataA8">
+									<tr data-bind="if: flg() == 1">
+										<td class="color-header"><span class = "hdtype" id="a8_8"  data-bind="text:appTypeName"></span></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
+														tabindex:93 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
+														tabindex:94 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+									</tr>
+									</com:ko>
+									<com:ko tag="foreach" bind="listDataA8">
+									<tr data-bind="if: (appType() == 2 &#124;&#124; appType() == 4 &#124;&#124; appType() == 6 &#124;&#124; appType() == 7 &#124;&#124; appType() == 9 &#124;&#124; appType() == 10) &amp; flg() == 0">
+										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
+														tabindex:95 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
+														tabindex:96 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },attr:{
+														tabindex:97 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },attr:{
+														tabindex:98 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td>
+											<div  class ="a4_7"
+												data-bind="ntsComboBox: {
+													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
 													visibleItemsCount: 2,
@@ -610,16 +670,16 @@
 													columns: [
 														{ prop: 'name', length: 7 }
 													]},attr:{
-														tabindex:91 + $index()*6
+														tabindex:99 + $index()*6
 													}">
 											</div>
 										</td>
 										<td><div
-												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
-														tabindex:92 + $index()*6
+												data-bind="ntsCheckBox: { checked: canClassificationChange, enable: disableA8 },attr:{
+														tabindex:100 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
-
+									</com:ko>
 								</tbody>
 							</table>
 							<!-- A9 update ver29 di chuyen-->
@@ -745,7 +805,7 @@
 										<td>
 											<div id="a11_13" class="a5_14" tabindex="219"
 												data-bind="ntsRadioBoxGroup: {
-													options: itemListA11_12,
+													options: itemListA11_8,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: selectedIdA11_13,
@@ -863,7 +923,7 @@
 									<tr>
 									<td class="color-header" id="a13_2">#{i18n.getText('KAF022_103')}</td>
 									<td>
-										<button tabindex="223" class="small">#{i18n.getText('KAF022_104')}</button>
+										<button tabindex="223" class="small" data-bind="click: openUDialog">#{i18n.getText('KAF022_104')}</button>
 										<span tabindex="224">
 											<input  class="nts-input"
 												id="inpName" style="width: 350px"
@@ -885,7 +945,7 @@
 								</colgroup>
 								<thead>
 									<tr>
-										<th class="ui-widget-header" id="a14_1" colspan="2">#{i18n.getText('KAF022_105')}</th>
+										<th class="ui-widget-header" id="a14_1" colspan="2" data-bind="text: nts.uk.resource.getText('KAF022_105')"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -912,8 +972,8 @@
 								</colgroup>
 								<thead>
 									<tr>
-										<th class="ui-widget-header" id="a15_1" colspan="1">#{i18n.getText('KAF022_105')}</th>
-										<th class="ui-widget-header" id="a15_2" colspan="1">#{i18n.getText('KAF022_105')}</th>
+										<th class="ui-widget-header" id="a15_1" colspan="1" data-bind="text: nts.uk.resource.getText('KAF022_107')"></th>
+										<th class="ui-widget-header" id="a15_2" colspan="1" data-bind="text: nts.uk.resource.getText('KAF022_108')"></th>
 									</tr>
 								</thead>
 								<tbody data-bind="foreach : listDataA15" >
@@ -938,7 +998,7 @@
 							<!-- A16 -->
 							<table class="viewmodel-a" id="fixed-table-a16">
 								<colgroup>
-									<col width="300px" />
+									<col width="350px" />
 									<col width="500px" />
 								</colgroup>
 								<thead>
@@ -966,7 +1026,7 @@
 										<td  class="color-header" id="a16_3"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_112')}</div></td>
 										<td>
 											<div tabindex="501" data-bind="with: texteditorA16_8">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 												    name:'#{i18n.getText('KAF022_112')}',
 													value: value,
 													constraint: constraint,
@@ -978,7 +1038,9 @@
 										</td>
 									</tr>
 									<tr>
-										<td class="color-header" id="a16_4"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_113')}</div></td>
+										<td class="color-header" id="a16_4">
+											<div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_113')}</div>
+										</td>
 										<td>
 											<div  data-bind="with: texteditorA16_9">
 												<input tabindex="502" data-bind="ntsTextEditor: {
@@ -996,7 +1058,7 @@
 										<td class="color-header" id="a16_5"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_114')}</div></td>
 										<td>
 											<div tabindex="503" data-bind="with: texteditorA16_10">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('KAF022_114')}',
 													value: value,
 													constraint: constraint,
@@ -1011,7 +1073,7 @@
 										<td class="color-header" id="a16_6"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_116')}</div></td>
 										<td>
 											<div tabindex="504" data-bind="with: texteditorA16_11">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('KAF022_116')}',
 													value: value,
 													constraint: constraint,
@@ -1022,6 +1084,50 @@
 											</div>
 										</td>
 									</tr>
+									<!-- A16_14 -->
+									<tr>
+										<td class="color-header" id="a16_12"><div data-bind="ntsFormLabel: { constraint: 'MailTitle', inline:true}">#{i18n.getText('KAF022_368')}</div></td>
+										<td>
+											<div tabindex="505" data-bind="with: texteditorA16_14">
+												<input id="a16_14" data-bind="ntsTextEditor: {
+													name:'#{i18n.getText('KAF022_117')}',
+													value: value,
+													constraint: 'MailTitle',
+													option: option,
+													required: true,
+													enable: enable,
+													readonly: false}" ></input>  
+											</div>
+										</td>
+									</tr>
+									<!-- A16_15 -->
+									<tr>
+										<td class="color-header" id="a16_13"><div data-bind="ntsFormLabel: { constraint: 'MailBody',inline:true}">#{i18n.getText('KAF022_369')}</div></td>
+										<td>
+											<div tabindex="506" data-bind="with: texteditorA16_15">
+												<textarea id="a16_15" data-bind="ntsMultilineEditor: {
+													name:'#{i18n.getText('KAF022_118')}',
+													value: value,
+													constraint: 'MailBody',
+													option: option,
+													required: true,
+													enable: true,
+													readonly: false}" ></textarea>
+											</div>
+										</td>
+									</tr>
+									<tr>
+					                    <td class="color-header" id="A16_6" data-bind = "text: text('KAF022_370')"></td>
+					                    <td>
+					                        <div tabindex="507" data-bind="ntsRadioBoxGroup: {
+					                            options: itemListA16_17,
+					                            optionsValue: 'code',
+					                            optionsText: 'name',
+					                            value: selectedIdA16_17,
+					                            enable: true}">
+					                        </div>
+					                    </td>
+					                </tr>
 								</tbody>
 							</table>
 

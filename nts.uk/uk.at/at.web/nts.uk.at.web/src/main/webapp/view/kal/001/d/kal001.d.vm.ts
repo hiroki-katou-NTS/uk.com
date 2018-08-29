@@ -25,8 +25,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // D1_12
         timeStartStr: KnockoutObservable<string>;
 
-        numberEmpSuccess: number;
-        numberEmpSuccessStr: KnockoutObservable<string>;
+        numberEmpSuccess: KnockoutObservable<number>;
         totalEmployees: KnockoutObservable<number>;
         employeeErrors: KnockoutObservableArray<String>;
         strPersion: KnockoutObservable<String> = ko.observable("人");
@@ -40,6 +39,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         selectedEmpployee: Array<UnitModel>;
         listAlarmExtraValueWkReDto: KnockoutObservableArray<AlarmExtraValueWkReDto>;
         countLoop: number = 0;
+        taskId : KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             var self = this;
@@ -48,9 +48,8 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.timeEnd = ko.observable("");
             self.timeProcess = ko.observable("");
             self.timeStartStr = ko.observable("");
-            self.numberEmpSuccessStr = ko.observable("0");
             self.totalEmployees = params.totalEmpProcess;
-            self.numberEmpSuccess = 0;
+            self.numberEmpSuccess = ko.observable(0);
             self.dialogMode = ko.observable(true);
             
             self.timeStartStr = ko.observable(moment(new Date()).format("YYYY/MM/DD H:mm"));
@@ -66,6 +65,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
 
             //process alam list 
             //code process screen A
+            let start = performance.now();
             block.invisible();
             service.isExtracting().done((isExtracting: boolean) => {
                 if (isExtracting) {
@@ -76,7 +76,23 @@ module nts.uk.com.view.kal001.d.viewmodel {
                     return;
                 }
                 service.extractStarting().done((statusId: string) => {
-                    self.handGetInforLoop(statusId);
+                    console.log("time service 2  : "+(performance.now() -start).toString());
+                    service.extractAlarm(self.taskId,self.numberEmpSuccess, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                        console.log("time service 3  : "+(performance.now() -start).toString());
+
+                        service.extractFinished(statusId);
+                        if(dataExtractAlarm.extracting) {
+                           self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
+                        } 
+                        if (!dataExtractAlarm.nullData) {
+                            self.listAlarmExtraValueWkReDto = dataExtractAlarm.extractedAlarmData;
+                        }
+                        self.setFinished();
+                    }).fail((errorExtractAlarm)=>{
+                        alertError(errorExtractAlarm);
+                    }).always(()=>{
+                        block.clear();    
+                    });
                 }).fail((errorExtractAlarm) => {
                     block.clear();
                     alertError(errorExtractAlarm);
@@ -113,51 +129,13 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let result = time.toISOString().substr(11, 8);
             self.timeProcess(result);
         }
-        
-        public handGetInforLoop(statusId : string): void {
-            let self = this;
-            let item = self.listSelectedEmpployee[self.countLoop]; 
-            self.selectedEmpployee = ko.observableArray<UnitModel>([]);
-            self.selectedEmpployee.push(item);
-            self.getInformationExtracyAlarm(self.selectedEmpployee(), statusId, item, self.countLoop);
-        }
-        
-        public getInformationExtracyAlarm(selectedEmpployeeList: Array<UnitModel>, statusId: string, empObject: UnitModel, countLoop: number): void {
-            let self = this;
-            // Count employee
-            self.numberEmpSuccess = self.numberEmpSuccess + 1;
-            self.numberEmpSuccessStr(self.numberEmpSuccess);
-            // Get information
-            service.extractAlarm(selectedEmpployeeList, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto) => {
-                service.extractFinished(statusId);
-                if (dataExtractAlarm.extracting) {
-                    self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
-                }
-                if (!dataExtractAlarm.nullData) {
-                    _.forEach(dataExtractAlarm.extractedAlarmData, function(item: AlarmExtraValueWkReDto) {
-                        self.listAlarmExtraValueWkReDto.push(item);
-                    });
-                }
-
-            }).fail((errorExtractAlarm) => {
-                self.employeeErrors.push(empObject.id);
-
-            }).always(() => {
-                if (countLoop == self.totalEmployees - 1) {
-                    self.setFinished();
-                } else if (!self.isInterrupt()) {
-                    self.countLoop++;
-                    self.handGetInforLoop(statusId);
-                }
-            });
-            
-        }
+ 
         // process when click button interrupt
         public interrupt(): void {
             let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_835" })
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
-                    self.isInterrupt=ko.observable(true);
+                    nts.uk.request.asyncTask.requestToCancel(self.taskId());
                     self.setFinished();
                 })
                 .ifNo(() => {
@@ -168,13 +146,12 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // set time now
         public setFinished(): void {
             let self = this;
-            if (self.numberEmpSuccess == self.totalEmployees) {
+            if (self.numberEmpSuccess() == self.totalEmployees) {
                 self.displayStrFinish(true);
             }
             window.clearInterval(self.interval);
             self.timeEnd(moment(new Date()).format("YYYY/MM/DD H:mm"));
             self.dialogMode(false);
-
         }
 
         //  process when click button closePopup 
@@ -184,7 +161,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let params = {
                 extractingFlg : self.extractingFlg(),
                 isExtracting : self.isExtracting(),
-                listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto()
+                listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto
             };
             nts.uk.ui.windows.setShared("KAL001_D_PARAMS",params);
             close();

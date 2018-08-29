@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInf
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
@@ -58,18 +59,19 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
 					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
 					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
 					+ affiliationInforOfDailyPerfor.getEmploymentCode().v() + "' , '"
 					+ affiliationInforOfDailyPerfor.getJobTitleID() + "' , '"
 					+ affiliationInforOfDailyPerfor.getClsCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getWplID() + "' , '"
-					+ affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "' )";
+					+ affiliationInforOfDailyPerfor.getWplID() + "' , "
+					+ bonusPaycode + " )";
 			Statement statementI = con.createStatement();
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 
@@ -120,16 +122,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
+		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
+				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
+				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
+				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
-			String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
-					+ domain.getEmploymentCode().v() + "' AND JOB_ID = '" + domain.getJobTitleID()
-					+ "' AND CLS_CODE = '" + domain.getClsCode().v() + "' AND WKP_ID = '" + domain.getWplID()
-					+ "' AND BONUS_PAY_CODE = '" + domain.getBonusPaySettingCode().v() + "' WHERE SID = '"
-					+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
-			Statement statementU = con.createStatement();
-			statementU.executeUpdate(updateTableSQL);
+				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 

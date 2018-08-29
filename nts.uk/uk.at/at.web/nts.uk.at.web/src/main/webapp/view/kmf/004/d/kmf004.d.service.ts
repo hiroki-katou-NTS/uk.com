@@ -2,7 +2,7 @@ module nts.uk.at.view.kmf004.d.service {
     
     var paths: any = {
         findBySphdCd: "shared/grantdatetbl/findBySphdCd/{0}",
-        findByGrantDateCd: "shared/grantdatetbl/findByGrantDateCd/{0}",
+        findByGrantDateCd: "shared/grantdatetbl/findByGrantDateCd/{0}/{1}",
         addGrantDate: "shared/grantdatetbl/add",
         updateGrantDate: "shared/grantdatetbl/update",
         deleteGrantDate: "shared/grantdatetbl/delete"
@@ -13,8 +13,8 @@ module nts.uk.at.view.kmf004.d.service {
         return nts.uk.request.ajax("at", path);
     }
 
-    export function findByGrantDateCd(grantDateCode: string): JQueryPromise<any> {
-        var path = nts.uk.text.format(paths.findByGrantDateCd, grantDateCode);
+    export function findByGrantDateCd(specialHolidayCode: number, grantDateCode: string): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.findByGrantDateCd, specialHolidayCode, grantDateCode);
         return nts.uk.request.ajax("at", path);
     }
     
@@ -44,6 +44,7 @@ module nts.uk.at.view.kmf004.d.service {
     }
     
     export interface ElapseDto {
+        specialHolidayCode: number,
         grantDateCode: string,
         elapseNo: number,
         months: number,

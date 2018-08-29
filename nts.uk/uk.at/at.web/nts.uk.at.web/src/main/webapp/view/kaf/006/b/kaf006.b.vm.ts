@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006.b{
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
+    import getText = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
@@ -85,67 +86,184 @@ module nts.uk.at.view.kaf006.b{
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason:  KnockoutObservable<boolean> = ko.observable(true);
         version: number = 0;
-                
+        //ver15
+        selectedRelation: KnockoutObservable<any> = ko.observable('');
+        relationCombo: KnockoutObservableArray<any> = ko.observableArray([]);
+        relaReason: KnockoutObservable<any> = ko.observable('');
+        mournerDis: KnockoutObservable<boolean> = ko.observable(false);
+        isCheck: KnockoutObservable<boolean> = ko.observable(false);
+        fix: KnockoutObservable<boolean> = ko.observable(false);
+        maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
+        maxDayline1: KnockoutObservable<string> = ko.observable('');
+        maxDayline2: KnockoutObservable<string> = ko.observable('');
+        requiredRela: KnockoutObservable<boolean> = ko.observable(true);
+        //上限日数
+        maxDay: KnockoutObservable<number> = ko.observable(0);
+        //喪主加算日数
+        dayOfRela: KnockoutObservable<number> = ko.observable(0);
+        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
+        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
+        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
               self.startPage(self.appID()).done(function(){
 
                 });   
+            self.selectedRelation.subscribe(function(codeChange){
+                if(codeChange === undefined || codeChange == null || codeChange.length == 0){
+                    return;
+                }
+                service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
+                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                    let line1 = getText('KAF006_44');
+                    let maxDay = 0;
+                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                        maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                    }else{//・その以外 ⇒ 上限日数
+                        maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                    }
+                    if(data.maxDayObj != null){
+                        self.maxDay(data.maxDayObj.maxDay);
+                        self.dayOfRela(data.maxDayObj.dayOfRela);  
+                    }
+                    let line2 = getText('KAF006_46',[maxDay]);
+                    
+                    self.maxDayline1(line1);
+                    self.maxDayline2(line2);
+                });
+            self.isCheck.subscribe(function(checkChange){
+                if(self.mournerDis()){
+                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                    let line1 = getText('KAF006_44');
+                    let maxDay = 0;
+                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                        maxDay = self.maxDay() + self.dayOfRela();
+                    }else{//・その以外 ⇒ 上限日数
+                        maxDay = self.maxDay();
+                    }
+                    let line2 = getText('KAF006_46',[maxDay]);
+                    
+                    self.maxDayline1(line1);
+                    self.maxDayline2(line2);
+                }
+            });
+            });
         }
         /**
          * 
          */
         startPage(appID: string): JQueryPromise<any> {
-                nts.uk.ui.block.invisible();
-                let self = this;
-                let dfd = $.Deferred();
-                service.findByAppID(appID).done((data) => { 
-                    self.initData(data);
-                    //find by change AllDayHalfDay
-                    self.selectedAllDayHalfDayValue.subscribe((value) => {
-                        self.getChangeAllDayHalfDayForDetail(value);
-                    });
-                    // find change value A5_3
-                    self.displayHalfDayValue.subscribe((value) => {
-                        self.findChangeDisplayHalfDay(value);
-                    });
-                    // change workType
-                    self.selectedTypeOfDuty.subscribe((value) => {
-                        self.findChangeWorkType(value);
-                    });
-                    self.displayWorkTimeName.subscribe((value) => {
-                        self.changeDisplayWorkime();
-                    });
-                    self.changeWorkHourValue.subscribe((value) => {
-                        self.changeDisplayWorkime();
-                         if(value && !nts.uk.util.isNullOrEmpty(data.workTimeCode)){
-                             self.enbbtnWorkTime(true);
-                         }else{
-                             self.enbbtnWorkTime(false);
-                         }
-                    });
-                    dfd.resolve(); 
-                })
-                .fail(function(res) {
-                    if (res.messageId == 'Msg_426') {
-                        dialog.alertError({ messageId: res.messageId }).then(function() {
-                            nts.uk.ui.block.clear();
-                        });
-                    } else if (res.messageId == 'Msg_473') {
-                        dialog.alertError({ messageId: res.messageId }).then(function() {
-                            nts.uk.ui.block.clear();
-                        });
-                    } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(function() {
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                            nts.uk.ui.block.clear();
-                        });
-                    }
-                    dfd.reject(res);  
+            nts.uk.ui.block.invisible();
+            let self = this;
+            let dfd = $.Deferred();
+            service.findByAppID(appID).done((data) => { 
+                self.initData(data);
+                //find by change AllDayHalfDay
+                self.selectedAllDayHalfDayValue.subscribe((value) => {
+                    self.getChangeAllDayHalfDayForDetail(value);
                 });
-                return dfd.promise();
+                // find change value A5_3
+                self.displayHalfDayValue.subscribe((value) => {
+                    self.findChangeDisplayHalfDay(value);
+                });
+                // change workType
+                self.selectedTypeOfDuty.subscribe((value) => {
+                    self.findChangeWorkType(value);
+                });
+                self.displayWorkTimeName.subscribe((value) => {
+                    self.changeDisplayWorkime();
+                });
+                self.changeWorkHourValue.subscribe((value) => {
+                    self.changeDisplayWorkime();
+                    self.enbbtnWorkTime(value);
+                });
+                //hoatt 2018.08.09
+                self.changeForSpecHd(data);
+                dfd.resolve(); 
+            })
+            .fail(function(res) {
+                if (res.messageId == 'Msg_426') {
+                    dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                } else if (res.messageId == 'Msg_473') {
+                    dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() {
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        nts.uk.ui.block.clear();
+                    });
+                }
+                dfd.reject(res);  
+            });
+            return dfd.promise();
+        }
+        changeForSpecHd(data: any){
+            let self = this;
+             //hoatt 2018.08.09
+            //relationship list
+            self.relationCombo([]);
+            let lstRela = [];
+            _.each(data.lstRela, function(rela){
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+            });
+            self.relationCombo(lstRela);
+            let fix = false;
+            if(data.specHdForEventFlag){
+                fix = data.maxNumberDayType == 2 ? true : false;
             }
+            self.fix(fix);
+            if(!fix){
+                self.requiredRela(false);
+            }else{
+                self.requiredRela(true);
+            }
+            self.maxDayDis(data.specHdForEventFlag);
+            if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
+                self.mournerDis(true);
+            }else{
+                self.mournerDis(false);
+            }
+            nts.uk.ui.errors.clearAll();
+            if(self.holidayTypeCode() == 3){
+                if(data.specHdDto != null){
+                    self.relaReason(data.specHdDto.relationshipReason);
+                    self.isCheck(data.specHdDto.mournerFlag);
+                    self.selectedRelation(data.specHdDto.relationshipCD);
+                    if(!fix && self.relaReason() != ''){
+                        $("#relaReason").ntsError('clear');
+                    }
+                }else{//data db k co
+                    if(!fix){//th an clear rela reason
+                        self.relaReason('');
+                    }
+                    $("#relaReason").ntsError('clear');
+                    if(self.relaReason() != ''){
+                        $("#relaReason").trigger("validate");
+                    }
+                }
+                //上限日数表示エリア(vùng hiển thị số ngày tối đa)
+                let line1 = getText('KAF006_44');
+                let maxDay = 0;
+                if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
+                    maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                }else{//・その以外 ⇒ 上限日数
+                    maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                }
+                if(data.maxDayObj != null){
+                    self.maxDay(data.maxDayObj.maxDay);
+                    self.dayOfRela(data.maxDayObj.dayOfRela);  
+                }
+                let line2 = getText('KAF006_46',[maxDay]);
+                
+                self.maxDayline1(line1);
+                self.maxDayline2(line2);
+            }
+            
+        }
         // change by switch button AllDayHalfDay(A3_12)
         getChangeAllDayHalfDayForDetail(value: any){
             let self = this;
@@ -163,6 +281,11 @@ module nts.uk.at.view.kaf006.b{
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -202,6 +325,11 @@ module nts.uk.at.view.kaf006.b{
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
+                    self.fix(false);
+                    self.mournerDis(false);
+                    self.maxDayDis(false);
+                    self.isCheck(false);
+                    self.relaReason('');
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -227,6 +355,9 @@ module nts.uk.at.view.kaf006.b{
         findChangeWorkType(value: any){
             let self = this;
             let dfd = $.Deferred();
+            if(self.selectedTypeOfDuty() == null || self.selectedTypeOfDuty() == undefined || self.selectedTypeOfDuty().length == 0){
+                return;
+            }
             service.getChangeWorkType({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
@@ -234,6 +365,8 @@ module nts.uk.at.view.kaf006.b{
                 workTypeCode: self.selectedTypeOfDuty(),
                 workTimeCode: self.workTimeCode()
             }).done((result) =>{
+                //hoatt 2018.08.09
+                self.changeForSpecHd(result);
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if(result.startTime1 != null){
                     self.timeStart1(result.startTime1);    
@@ -302,7 +435,13 @@ module nts.uk.at.view.kaf006.b{
                 self.eblTimeEnd1(false);
                 self.enbReasonCombo(false);
                 self.enbContentReason(false);
+                self.relaEnable(false);
+                self.relaMourner(false);
+                self.relaRelaReason(false);
             }else if(data.initMode == 1){
+                self.relaEnable(true);
+                self.relaMourner(true);
+                self.relaRelaReason(true);
                 // edit Mode
                 self.enbAllDayHalfDayFlg(true);
                 self.enbWorkType(true);
@@ -325,6 +464,10 @@ module nts.uk.at.view.kaf006.b{
          update(): JQueryPromise<any> {
              let self = this;
              $("#workTypes").trigger('validate');
+             $("#relaReason").trigger("validate");
+             if(self.holidayTypeCode() == 3 && self.fix()){
+                $("#relaCD-combo").trigger("validate");
+            }
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
@@ -341,7 +484,13 @@ module nts.uk.at.view.kaf006.b{
              if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
                  return;
              }
-             
+             let specHd = null;
+            if(self.holidayTypeCode() == 3 && self.fix()){
+                specHd = {  relationCD: self.selectedRelation(),
+                            mournerCheck: self.isCheck(),
+                            relaReason: self.relaReason()
+                        }
+            }
              let paramInsert = {
                 version: self.version,
                 appID: self.appID(),
@@ -359,7 +508,8 @@ module nts.uk.at.view.kaf006.b{
                 startTime1: self.timeStart1(),
                 endTime1: self.timeEnd1(),
                 startTime2: self.timeStart2(),
-                endTime2: self.timeEnd2()
+                endTime2: self.timeEnd2(),
+                specHd: specHd
              };
              service.updateAbsence(paramInsert).done((data) =>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {

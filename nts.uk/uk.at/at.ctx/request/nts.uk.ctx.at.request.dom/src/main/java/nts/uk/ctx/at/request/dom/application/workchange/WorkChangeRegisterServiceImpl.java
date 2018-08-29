@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
 @Stateless
 @Transactional
@@ -30,6 +32,9 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
+	
+	@Inject 
+	private BasicScheduleService basicScheduleService;
 
 	@Override
 	public ProcessResult registerData(AppWorkChange workChange, Application_New app) {
@@ -80,6 +85,16 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 			// エラーメッセージ(Msg_582)
 			// エラーリストにセットする
 			throw new BusinessException("Msg_582");
+		}
+	}
+
+	@Override
+	public boolean isTimeRequired(String workTypeCD) {
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCD);
+		if(setupType==SetupType.REQUIRED){
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

@@ -4,6 +4,7 @@ module nts.uk.com.view.cas003.a {
         import infor = nts.uk.ui.dialog.info;
         import alert = nts.uk.ui.dialog.alert;
         import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             passPolicyCheck: KnockoutObservable<boolean>;
             firstTimeCheck: KnockoutObservable<boolean>;
@@ -152,17 +153,17 @@ module nts.uk.com.view.cas003.a {
                     accountPolicy = new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
 
                 } else if (self.passPolicyCheck() && !self.accLockCheck()) {
-                    accountPolicy = new AccountPolicy({ errorCount: 0, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
+                    accountPolicy = new AccountPolicy({ errorCount: 1, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
                 } else if (!self.passPolicyCheck() && !self.accLockCheck()) {
-                    accountPolicy = new AccountPolicy({ errorCount: 0, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
+                    accountPolicy = new AccountPolicy({ errorCount: 1, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
                 }
                 else {
                     accountPolicy = new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
                 }
-
+                blockUI.grayout();
                 service.updateAccountPolicy(accountPolicy).done(() => {
                     infor(nts.uk.resource.getMessage("Msg_15", []));
-                });
+                }).always(()=> blockUI.clear());
 
             }
 

@@ -60,8 +60,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			oldPassword = command.getPassword();
 			// check validate input
 			this.checkInput(command);
-	
-			this.reCheckContract(command.getContractCode(), command.getContractPassword());
+
+			if (!this.reCheckContract(command.getContractCode(), command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// find user by login id
 			Optional<UserImportNew> userOp = userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(), loginId);
@@ -84,7 +86,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
 				
-				return new CheckChangePassDto(false, msgErrorId);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			}
 	
 			// check time limit
@@ -101,7 +103,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null);
+			return new CheckChangePassDto(true, null,false);
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -114,7 +116,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Success.value, null);
 		this.service.callLoginRecord(param);
 					
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
@@ -127,10 +129,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		if (command.getLoginId() == null || command.getLoginId().trim().isEmpty()) {
 			throw new BusinessException("Msg_309");
 		}
-		//check input password
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
+//		//check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
 	}
 	
 	/**

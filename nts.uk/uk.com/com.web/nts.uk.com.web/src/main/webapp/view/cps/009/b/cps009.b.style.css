@@ -22,3 +22,7 @@
 #registration {
 	margin-top: 10px !important;
 }
+
+#grid0 td[role="gridcell"] {
+	white-space: nowrap;
+}

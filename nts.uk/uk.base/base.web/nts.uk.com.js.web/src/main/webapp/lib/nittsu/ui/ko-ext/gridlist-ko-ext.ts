@@ -372,6 +372,17 @@ module nts.uk.ui.koExtentions {
                 }
             }
             
+            let currentSources = sources.slice();
+            var currentSelectedItems = $grid.ntsGridList('getSelected');
+            var removed = _.differenceWith(currentSelectedItems, currentSources, function (c1, c2){ return _.isEqual(c1.id.toString(), c2[optionsValue].toString())})
+            if(!_.isEmpty(removed)){
+                _.forEach(removed, (e) => {
+                    $grid.igGridSelection("deselectRowById", e.id);    
+                });  
+                $grid.trigger("selectionchanged");
+                currentSelectedItems = $grid.ntsGridList('getSelected');
+            }
+            
             if(String($grid.attr("filtered")) === "true"){
                 let filteredSource = [];
                 _.forEach(gridSource, function(item){
@@ -387,7 +398,6 @@ module nts.uk.ui.koExtentions {
                     $grid.igGrid("dataBind");    
                 }
             } else {
-                let currentSources = sources.slice();
                 
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -406,8 +416,6 @@ module nts.uk.ui.koExtentions {
                     $grid.igGrid("dataBind");
                 }
             }  
-
-            var currentSelectedItems = $grid.ntsGridList('getSelected');
             var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function(current, newVal) {
                 if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
                     return true;

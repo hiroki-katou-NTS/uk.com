@@ -28,4 +28,5 @@ public class WorkScheduleOutputQueryDto {
 	/** The work schedule output condition dto. */
 	private WorkScheduleOutputConditionDto condition;
 
+	private GeneralDate baseDate;
 }

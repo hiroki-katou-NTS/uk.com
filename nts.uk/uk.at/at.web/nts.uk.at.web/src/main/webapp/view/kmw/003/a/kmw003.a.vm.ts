@@ -145,12 +145,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             self.actualTimeSelectedCode.subscribe(value => {
                 self.actualTimeSelectedDat(self.actualTimeDats()[value]);
+//                if(self.monthlyParam().actualTime ==null){
+//                    let temp = {startDate : moment(self.actualTimeSelectedDat().startDate).toISOString(), endDate : moment(self.actualTimeSelectedDat().endDate).toISOString()  };
+//                    self.monthlyParam().actualTime = temp;    
+//                }else{
+//                    self.monthlyParam().actualTime.startDate = moment(self.actualTimeSelectedDat().startDate).toISOString();
+//                    self.monthlyParam().actualTime.endDate = moment(self.actualTimeSelectedDat().endDate).toISOString();    
+//                }
+                
+//                self.initScreen();
                 //実績期間を変更する
                 self.updateActualTime();
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
                 if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen()) self.updateDate(value);
+                
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -386,7 +396,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }).fail(function(error) {
                 if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                     //Open KDM003C to select format code
-                    self.displayItem();
+                    self.displayItem().done((x) => {
+                     dfd.resolve();
+                }).fail(function(error) {
+                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                    nts.uk.request.jumpToTopPage();
+                });
+                dfd.reject();
+                });
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
@@ -396,6 +413,83 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        
+        initScreenFormat(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+            localStorage.removeItem(window.location.href + '/dpGrid');
+            nts.uk.ui.errors.clearAllGridErrors();
+            service.startScreen(self.monthlyParam()).done((data) => {
+                if(data.selectedClosure){
+                let closureInfoArray = []
+                  closureInfoArray = _.map(data.lstclosureInfoOuput, function(item: any) {
+                return { code: item.closureName, name: item.closureId };
+                });
+                //self.closureInfoItems(closureInfoArray);
+                self.selectedClosure(data.selectedClosure);
+                }
+                self.employIdLogin = __viewContext.user.employeeId;
+                self.dataAll(data);
+                self.dataBackup = _.cloneDeep(data) ;
+                self.itemValueAll(data.itemValues);
+                self.receiveData(data);
+                self.createSumColumn(data);
+                self.columnSettings(data.lstControlDisplayItem.columnSettings);
+                /*********************************
+                 * Screen data
+                 *********************************/
+                // attendance item
+                self.lstAttendanceItem(data.param.lstAtdItemUnique);
+                // closure ID
+                self.closureId(data.closureId);
+                self.reloadParam().closureId = data.closureId;
+                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
+                //Closure name
+                self.closureName(data.closureName);
+                // closureDateDto
+                self.closureDateDto(data.closureDate);
+                //actual times
+                self.actualTimeDats(data.lstActualTimes);
+                self.actualTimeSelectedDat(data.selectedActualTime);
+                self.initActualTime();
+                //comment
+                self.comment(data.comment != null ? '■ ' + data.comment : null);
+                /*********************************
+                 * Grid data
+                 *********************************/
+                // Fixed Header
+                self.setFixedHeader(data.lstFixedHeader);
+                self.extractionData();
+                self.loadGrid();
+                self.employmentCode(data.employmentCode);
+                self.dailyPerfomanceData(self.dpData);                
+                self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
+
+                //画面項目の非活制御をする
+                self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+                self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
+                if(data.showRegisterButton == false){
+                    self.showButton().enable_A1_1(data.showRegisterButton);
+                    self.showButton().enable_A1_2(data.showRegisterButton);
+                    self.showButton.valueHasMutated();
+                }
+                nts.uk.ui.block.clear();
+                dfd.resolve(data.processDate);
+            }).fail(function(error) {
+                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                    dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        
+        
+        
         
         loadRowScreen(loadAll?: boolean) {
             var self = this;
@@ -611,7 +705,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         selectedIndex = i;
                 }
             }
-            self.actualTimeSelectedCode(selectedIndex);
+            self.actualTimeSelectedCode(0);
         };
         /*********************************/
         receiveData(data) {
@@ -717,6 +811,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.setHeaderColor();
             let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
+            self.actualTimeSelectedCode.subscribe(code => {
+               dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
+            });
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
@@ -1228,8 +1325,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         updateActualTime() {
             let self = this;
             self.monthlyParam().actualTime = self.actualTimeSelectedDat();
-            //self.actualTimeSelectedDat
-            //self.initScreen();
+//            self.monthlyParam().actualTime.startDate = moment(self.actualTimeSelectedDat().startDate).toISOString();
+//            self.monthlyParam().actualTime.endDate = moment(self.actualTimeSelectedDat().endDate).toISOString();
+//            //self.actualTimeSelectedDat
+//            self.initScreen();
         }
         /**
          * Check all CheckBox
@@ -1342,8 +1441,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          * 起動モード：月別
          * 選択済項目：選択している「月別実績のフォーマットコード」
          */
-        displayItem() {
+        displayItem() : JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
             let formatParam = { initMode: 1, selectedItem: "" };
             nts.uk.ui.windows.setShared("KDW003C_Param", formatParam);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
@@ -1351,9 +1451,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (formatCd) {
                     self.formatCodes.removeAll();
                     self.formatCodes.push(formatCd);
-                    self.initScreen();
+             self.initScreenFormat().done((processDate) => {
+                     dfd.resolve();
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                    nts.uk.request.jumpToTopPage();
+                });
+                dfd.reject();
+            });
+                }else{
+                   dfd.reject(); 
                 }
             });
+            return  dfd.promise();
         }
     }
     /**

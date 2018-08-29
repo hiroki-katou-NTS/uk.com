@@ -69,7 +69,7 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 
 		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.check(EACheckIDs, workingDate,
 				employeeIds);
-		if (listErrorExport == null)
+		if (listErrorExport.isEmpty())
 			return result;
 		else {
 			result = listErrorExport.stream()

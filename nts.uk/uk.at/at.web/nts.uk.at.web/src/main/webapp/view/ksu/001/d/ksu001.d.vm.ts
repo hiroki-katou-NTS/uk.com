@@ -1,13 +1,16 @@
 module nts.uk.at.view.ksu001.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
+    
     export class ScreenModel {
         itemList: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, nts.uk.resource.getText("KSU001_79")),
-            new BoxModel(2, nts.uk.resource.getText("KSU001_80"))
+            new BoxModel(1, getText("KSU001_79")),
+            new BoxModel(2, getText("KSU001_80"))
         ]);
         selectedId: KnockoutObservable<number> = ko.observable(1);
-        text = nts.uk.resource.getText("KSU001_82");
+        text = getText("KSU001_82");
         listEmployee = getShared("dataForScreenD").empItems;
         //KCP005
         listComponentOption: any;
@@ -30,11 +33,12 @@ module nts.uk.at.view.ksu001.d.viewmodel {
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
-            let self = this;
+            let self = this, arrSid: any = [];
 
             _.each(self.listEmployee, (x) => {
-                self.employeeList.push({ code: x.empCd, name: x.empName });
+                arrSid.push({ code: x.empCd, name: x.empName });
             });
+            self.employeeList(arrSid);
 
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -62,11 +66,11 @@ module nts.uk.at.view.ksu001.d.viewmodel {
             let self = this;
 
             if (!self.multiSelectedCode() || self.multiSelectedCode().length == 0) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_499' });
+                alertError({ messageId: 'Msg_499' });
                 return;
             }
             if (self.selectedIds().length === 0) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_500' });
+                alertError({ messageId: 'Msg_500' });
                 return;
             }
             nts.uk.ui.block.grayout();
@@ -91,10 +95,9 @@ module nts.uk.at.view.ksu001.d.viewmodel {
                     clickCloseDialog: false
                 });
                 nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError(error.messageId);
             });
-
-
-
         }
 
         /**

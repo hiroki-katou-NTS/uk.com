@@ -158,7 +158,7 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingName: string;
         deleteExistData: KnockoutObservable<number>;
         deleteExistDataMethod: KnockoutObservable<number> = ko.observable(null);
-        acceptMode: KnockoutObservable<number> = ko.observable(0);
+        acceptMode: KnockoutObservable<number> = ko.observable(null);
         csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
         csvDataStartLine: KnockoutObservable<number> = ko.observable(null);
         characterCode: KnockoutObservable<number> = ko.observable(null);
@@ -178,8 +178,6 @@ module nts.uk.com.view.cmf001.share.model {
                 this.deleteExistDataMethod(deleteExistDataMethod);
             if (!nts.uk.util.isNullOrUndefined(acceptMode))
                 this.acceptMode(acceptMode);
-            else
-                this.acceptMode(0);
             if (csvDataItemLineNumber)
                 this.csvDataItemLineNumber(csvDataItemLineNumber);
             if (csvDataStartLine)

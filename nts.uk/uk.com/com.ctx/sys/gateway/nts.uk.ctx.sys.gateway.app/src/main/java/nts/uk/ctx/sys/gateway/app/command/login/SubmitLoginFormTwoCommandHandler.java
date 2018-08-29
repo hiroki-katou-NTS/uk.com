@@ -81,7 +81,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkInput(command);
 	
 			//recheck contract
-			this.reCheckContract(contractCode, command.getContractPassword());
+			if (!this.reCheckContract(contractCode, command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// Edit employee code
 			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
@@ -103,7 +105,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
-				return new CheckChangePassDto(false, msgErrorId);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			} 
 			
 			// check time limit
@@ -126,7 +128,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null);
+			return new CheckChangePassDto(true, null,false);
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -139,7 +141,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
 		this.service.callLoginRecord(param);
 		
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
@@ -157,10 +159,10 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");
 		}
-		// check input password
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
+//		// check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
 	}
 
 	/**

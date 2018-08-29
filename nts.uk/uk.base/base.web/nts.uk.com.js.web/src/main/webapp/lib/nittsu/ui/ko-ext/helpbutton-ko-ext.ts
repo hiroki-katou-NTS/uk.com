@@ -1,6 +1,13 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    let $: any = window["$"],
+        _: any = window["_"],
+        ko: any = window["ko"],
+        text: any = window["nts"]["uk"]["text"],
+        util: any = window["nts"]["uk"]["util"],
+        request: any = window["nts"]["uk"]["request"],
+        resource: any = window["nts"]["uk"]["resource"];
 
     /**
      * HelpButton binding handler
@@ -13,12 +20,13 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var image: string = ko.unwrap(data.image);
+            var popUpId: string = ko.unwrap(data.popUpId);
             var textId: string = ko.unwrap(data.textId);
             var textParams: string = ko.unwrap(data.textParams);
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var position: string = ko.unwrap(data.position);
             
-            var isImage = !util.isNullOrUndefined(image);
+            var isText = !util.isNullOrUndefined(textId) || !util.isNullOrUndefined(textParams);
 
             //Position
             var myPositions: Array<string> = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
@@ -65,11 +73,33 @@ module nts.uk.ui.koExtentions {
             
             var $container = $(element).closest(".ntsHelpButton");
             var $content;
-            if (isImage) {
-                $content = $("<img src='" + request.resolvePath(image) + "' />");
+
+            if (_.has(data, 'image')) {
+                $content = $("<img>");
+
+                ko.computed({
+                    read: () => {
+                        let _image = ko.toJS(data.image);
+
+                        $content.attr('src', request.resolvePath(_image));
+                    }
+                });
+            } else if (_.has(data, 'popUpId')) {
+                $content = $('#' + popUpId);
+                // add pop-up-container
             } else {
-                $content = $("<span>").text(resource.getText(textId, textParams));
-                $content.css('white-space', 'pre-line');
+                $content = $("<span>", {
+                    style: { 'white-space': 'pre-line' }
+                });
+
+                ko.computed({
+                    read: () => {
+                        let _textId = ko.toJS(data.textId),
+                            _textParams = ko.toJS(data.textParams);
+
+                        $content.text(resource.getText(_textId, _textParams));
+                    }
+                });
             }
             
             var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
@@ -77,7 +107,7 @@ module nts.uk.ui.koExtentions {
                 .append($caret)
                 .append($content)
                 .appendTo($container).hide();
-            if (!isImage) {
+            if (isText) {
                 let CHARACTER_DEFAULT_WIDTH = 7;
                 let DEFAULT_SPACE = 5;
                 let textLengths = _.map($content.text().split(/\r\n/g), function(o) { return nts.uk.text.countHalf(o); });

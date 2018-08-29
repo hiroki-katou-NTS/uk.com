@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -32,6 +31,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
 import nts.uk.ctx.workflow.dom.service.ApproveService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
@@ -426,7 +426,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					}
 					//1.承認状況の判断
-					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, listApprovalPhaseState.get(i), approverID,agents);
+					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(
+							companyID, listApprovalPhaseState.get(i), approverID,
+							agents.stream().map(x -> x.getAgentSid1()).collect(Collectors.toList()));
 					if(listApprovalPhaseState.get(i).getPhaseOrder().equals(5) && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) ){
 						checkStatusFrame(approvalStatusOutput,approvalStatus);
 						employeephase = i;
@@ -760,5 +762,19 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			}
 		}
 		return lstResult;
+	}
+	@Override
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, RootType.EMPLOYMENT_APPLICATION.value);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		Optional<ApprovalPhaseState> opCurrentPhase = approvalRootState.getListApprovalPhaseState().stream()
+				.filter(x -> x.getPhaseOrder()==phaseNumber).findAny();
+		if(!opCurrentPhase.isPresent()){
+			return false;
+		}
+		return approveService.isApproveApprovalPhaseStateComplete(companyID, opCurrentPhase.get());
 	}
 }

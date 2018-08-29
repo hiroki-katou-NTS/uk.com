@@ -10,7 +10,7 @@ public interface StartPageLogRepository {
 
 	Optional<StartPageLog> find(String operationId);
 
-	List<StartPageLog> find(List<String> operationId);
+	List<StartPageLog> find(List<String> operationIds);
 	
 	List<StartPageLog> finds(String companyId);
 	

@@ -2,8 +2,10 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,9 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.MonthlyRecordValuesImport;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
@@ -37,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 /**
  * 月次の集計処理
  * @author tutk
@@ -117,6 +122,8 @@ public class MonthlyAggregateProcessService {
 		for(EmployeeSearchDto employee : employees) {
 			//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+			if(closure == null)
+				continue;
 			int closureID= closure.getClosureId().value;
 			ClosureDate closureDate = null;
 			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
@@ -182,14 +189,24 @@ public class MonthlyAggregateProcessService {
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		GeneralDate lastDateInPeriod = period.end();
 		
-		
+		GeneralDate tempStart = period.start();
+		GeneralDate tempEnd = period.end();
+		YearMonth startYearMonth = tempStart.yearMonth();
+		YearMonth endYearMonth = tempEnd.yearMonth();
+		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYearMonth, endYearMonth);
+		List<MonthlyRecordValuesImport> monthlyRecords;
+		List<Integer> itemIds = Arrays.asList(202,203,204,205,206);
 		
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
+			if(!extra.isUseAtr())
+				continue;
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
 					
 					//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 					Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+					if(closure == null)
+						continue;
 					int closureID= closure.getClosureId().value;
 					ClosureDate closureDate = null;
 					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
@@ -204,9 +221,6 @@ public class MonthlyAggregateProcessService {
 							break;
 						}
 					}
-					
-					
-					
 					switch (extra.getTypeCheckItem()) {
 					case 0:
 //						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
@@ -215,7 +229,7 @@ public class MonthlyAggregateProcessService {
 //							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 //									employee.getWorkplaceId(),
 //									employee.getId(),
-//									yearMonth.toString(),
+//									this.yearmonthToString(yearMonth),
 //									TextResource.localize("KAL010_100"),
 //									TextResource.localize("KAL010_209"),
 //									TextResource.localize("KAL010_210"),
@@ -224,39 +238,105 @@ public class MonthlyAggregateProcessService {
 //							listValueExtractAlarm.add(resultMonthlyValue);
 //						}
 						break;
-					case 1:
-						Check36AgreementValueImport checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
-								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						
-						if(checkAgreementError.isCheck36AgreementCon()) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_204"),
-									TextResource.localize("KAL010_205",String.valueOf(checkAgreementError.getErrorValue()/60)+":"+String.valueOf(checkAgreementError.getErrorValue()%60)), 
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
+					case 1: // 36協定エラー時間  
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if(!CollectionUtil.isEmpty(monthlyRecords)){
+						if(closure == null){
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_204"),
+												TextResource.localize("KAL010_205",
+												this.timeToString(check36AgreementValueImport.getErrorValue())), 
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+						}else{
+							List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
+							for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
+								if (monthlyRecordValuesImport.getClosureId().value == closureID) {
+									monthlyFilterResult.add(monthlyRecordValuesImport);
+								}
+							}
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(), monthlyFilterResult ,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_204"),
+												TextResource.localize("KAL010_205",
+												this.timeToString(check36AgreementValueImport.getErrorValue())), 
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+							
+						}
 						}
 						break;
-					case 2:
-						Check36AgreementValueImport checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
-								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						if(checkAgreementAlarm.isCheck36AgreementCon()) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_206"),
-									TextResource.localize("KAL010_207",String.valueOf(checkAgreementAlarm.getAlarmValue()/60)+":"+String.valueOf(checkAgreementAlarm.getAlarmValue()%60)),
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						if(true) {
+					case 2: // 36協定アラーム時間 
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if(closure == null) {
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+												this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+						}else{
+							List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
+							for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
+								if (monthlyRecordValuesImport.getClosureId().value == closureID) {
+									monthlyFilterResult.add(monthlyRecordValuesImport);
+								}
+							}
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(), monthlyFilterResult ,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+												this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
 							
 						}
 						break;
@@ -265,6 +345,7 @@ public class MonthlyAggregateProcessService {
 					default:
 						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
 								yearMonth, closureID,closureDate, employee.getId(), extra.getCheckConMonthly());
+						//true
 						if(checkPerTimeMonActualResult) {
 							if(extra.getTypeCheckItem() ==8) {
 								String alarmDescription1 = "";
@@ -287,7 +368,7 @@ public class MonthlyAggregateProcessService {
 									}
 									//if type = time
 									if(erAlAtdItemCon.getConditionAtr() == 1) {
-										startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon.getCompareStartValue().intValue()%60);
+										startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
 									}
 									CompareOperatorText compareOperatorText = convertCompareType(compare);
 									//0 : AND, 1 : OR
@@ -298,24 +379,24 @@ public class MonthlyAggregateProcessService {
 										compareAndOr = "OR";
 									}
 									if(!alarmDescription1.equals("")) {
-										alarmDescription1 = compareAndOr +" "+ alarmDescription1;
+										alarmDescription1 += compareAndOr +" ";
 									}
 									if(compare<=5) {
-										alarmDescription1 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+										alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
 //												startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
 									}else {
 										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
 										if(erAlAtdItemCon.getConditionAtr() == 1) {
-											endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()%60);
+											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
-										if(compare>5 && compare<=7) {
-											alarmDescription1 = startValue +" "+
+										else if(compare>5 && compare<=7) {
+											alarmDescription1 += startValue +" "+
 													compareOperatorText.getCompareLeft()+ " "+
 													nameErrorAlarm+ " "+
 													compareOperatorText.getCompareright()+ " "+
 													endValue+ " ";	
 										}else {
-											alarmDescription1 = nameErrorAlarm + " "+
+											alarmDescription1 += nameErrorAlarm + " "+
 													compareOperatorText.getCompareLeft()+ " "+
 													startValue + ","+endValue+ " "+
 													compareOperatorText.getCompareright()+ " "+
@@ -323,11 +404,11 @@ public class MonthlyAggregateProcessService {
 										}
 									}
 								}
-								if(!alarmDescription1.equals(""))
-									alarmDescription1 = "("+alarmDescription1+")";
+//								if(listErAlAtdItemCon.size()>1)
+//									alarmDescription1 = "("+alarmDescription1+")";
 								
 								if(extra.getCheckConMonthly().isGroup2UseAtr()) {
-									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon();
+									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon();
 									//group 2 
 									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
 										int compare = erAlAtdItemCon2.getCompareOperator();
@@ -344,35 +425,35 @@ public class MonthlyAggregateProcessService {
 										}
 										//if type = time
 										if(erAlAtdItemCon2.getConditionAtr() == 1) {
-											startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon2.getCompareStartValue().intValue()%60);
+											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
 										}
 										CompareOperatorText compareOperatorText = convertCompareType(compare);
 										//0 : AND, 1 : OR
 										String compareAndOr = "";
-										if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+										if(extra.getCheckConMonthly().getGroup2().getConditionOperator() == 0) {
 											compareAndOr = "AND";
 										}else {
 											compareAndOr = "OR";
 										}
 										if(!alarmDescription2.equals("")) {
-											alarmDescription2 = compareAndOr +" "+ alarmDescription2;
+											alarmDescription2 += compareAndOr +" ";
 										}
 										if(compare<=5) {
-											alarmDescription2 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+											alarmDescription2 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
 //													startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
 										}else {
 											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
 											if(erAlAtdItemCon2.getConditionAtr() == 1) {
-												endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()%60);
+												endValue = this.timeToString(erAlAtdItemCon2.getCompareEndValue().intValue());
 											}
 											if(compare>5 && compare<=7) {
-												alarmDescription2 = startValue +" "+
+												alarmDescription2 += startValue +" "+
 														compareOperatorText.getCompareLeft()+ " "+
 														nameErrorAlarm+ " "+
 														compareOperatorText.getCompareright()+ " "+
 														endValue+ " ";	
 											}else {
-												alarmDescription2 = nameErrorAlarm + " "+
+												alarmDescription2 += nameErrorAlarm + " "+
 														compareOperatorText.getCompareLeft()+ " "+
 														startValue + ","+endValue+ " "+
 														compareOperatorText.getCompareright()+ " "+
@@ -380,20 +461,30 @@ public class MonthlyAggregateProcessService {
 											}
 										}
 									}//end for
-									
-									if(!alarmDescription2.equals(""))
-										alarmDescription2 = "("+alarmDescription2+")";
+//									
+//									if(listErAlAtdItemCon2.size()>1)
+//										alarmDescription2 = "("+alarmDescription2+")";
 								}
 								String alarmDescriptionValue= "";
 								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
-									alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+									}
+								}else{
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") OR ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+								}
 								}
 									
 									
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
-										yearMonth.toString(),
+										this.yearmonthToString(yearMonth),
 										TextResource.localize("KAL010_100"),
 										TextResource.localize("KAL010_60"),
 										alarmDescriptionValue,	
@@ -422,17 +513,17 @@ public class MonthlyAggregateProcessService {
 								switch(extra.getTypeCheckItem()) {
 								case 4 ://時間
 									nameItem = TextResource.localize("KAL010_47");
-									String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
+									String startValueTime = this.timeToString(startValue.intValue());
 									String endValueTime = "";
 									if(compare<=5) {
 										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
 									}else {
-										endValueTime = String.valueOf(endValue.intValue()/60)+":"+String.valueOf(endValue.intValue()%60);
+										endValueTime = this.timeToString(endValue.intValue());
 										if(compare>5 && compare<=7) {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTime,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueTime
 													);	
 										}else {
@@ -440,7 +531,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueTime + ","+endValueTime,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
@@ -485,7 +576,7 @@ public class MonthlyAggregateProcessService {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueTimes
 													);	
 										}else {
@@ -493,7 +584,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueTimes + "," + endValueTimes,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
@@ -511,7 +602,7 @@ public class MonthlyAggregateProcessService {
 											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueMoney+".00"
 													);	
 										}else {
@@ -519,7 +610,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueMoney + ".00," + endValueMoney+".00",
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
@@ -533,7 +624,7 @@ public class MonthlyAggregateProcessService {
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
-										yearMonth.toString(),
+										this.yearmonthToString(yearMonth),
 										TextResource.localize("KAL010_100"),
 										nameItem,
 										//TODO : còn thiếu
@@ -554,6 +645,20 @@ public class MonthlyAggregateProcessService {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private String timeToString(int value ){
+		if(value%60<10){
+			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
+		}
+		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
+	}
+	
+	private String yearmonthToString(YearMonth yearMonth){
+		if(yearMonth.month()<10){
+			return  String.valueOf(yearMonth.year())+"/0"+  String.valueOf(yearMonth.month());
+		}
+		return String.valueOf(yearMonth.year())+"/"+  String.valueOf(yearMonth.month());
 	}
 	
 	private CompareOperatorText convertCompareType(int compareOperator) {

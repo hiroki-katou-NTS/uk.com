@@ -34,7 +34,7 @@
 					data-bind="enable: checkDelete, click: remove">#{i18n.getText('KMF004_3')}</button>
 				<!-- H1_4: Button close -->
 				<button id="btn_004" class="button separate-button fix-button"
-					data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+					data-bind="click: close">#{i18n.getText('KMF004_57')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
@@ -69,15 +69,13 @@
 									required: true,
 									name: '#{i18n.getText('KMF004_87')}',
 									immediate: false,
-									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'})),
 									enable: check}" />
 								<!-- H3_3: Name--> <input class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: { 	value: selectedName,
 									constraint: 'RelationshipName',
 									name: '#{i18n.getText('KMF004_88')}',
 									required: true,
-									enable: true}, 
-									hasFocus: isSelected" />
+									enable: true}" />
 							</td>
 
 						</tr>

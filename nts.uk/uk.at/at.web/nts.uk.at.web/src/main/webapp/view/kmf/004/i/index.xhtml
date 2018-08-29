@@ -11,7 +11,7 @@
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
-				nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit
+				nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.i.main.css" />
@@ -23,10 +23,12 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- I1_1 -->
-				<a class="goback" data-bind="ntsLinkButton: {}">
+				<a tabindex="0" class="goback"
+					data-bind="ntsLinkButton: {jump: '/view/kmf/004/x/index.xhtml'}">
 					#{i18n.getText('KMF004_70')} </a>
 				<!-- I1_2 -->
-				<button class="proceed" data-bind="click:saveData">#{i18n.getText('KMF004_2')}</button>
+				<button class="proceed"
+					data-bind="click:saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- I1_3 -->
 				<button class="danger"
 					data-bind="click:deleteItem, enable: !currentSHEvent().createNew()">#{i18n.getText('KMF004_3')}</button>
@@ -43,7 +45,8 @@
 									primaryKey: 'specialHdFrameNo',
 									columns: frameColumns ,
 									multiple: false,
-									value: currentFrameCd
+									value: currentFrameCd,
+									rows:15
 								}"></table>
 				</div>
 				<div id="right-content" style="float: left;"
@@ -105,7 +108,7 @@
 												<button
 													data-bind="click:$parent.openGDialog,enable:maxNumberDay()==2">#{i18n.getText('KMF004_79')}</button>
 											</div>
-											<div class="div_line">
+											<div class="div_line" data-bind="visible:maxNumberDay()==2">
 												<!-- I7_8 -->
 												<label>#{i18n.getText('KMF004_80')} </label>
 											</div>
@@ -216,18 +219,22 @@
 											<!-- I13_2 -->
 											<input
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			name:'#{i18n.getText('KMF004_49')}',
 																			value: ageLowerLimit ,
 																			enable: $parent.ageLimit ,
-																			option:{width:'60',unitID:'AGE'}
+																			option:{width:'60',unitID:'AGE'},
+																			 required:$parent.ageLimit
 																			}" />
 											<!-- I13_3 -->
 											#{i18n.getText('KMF004_45')}
 											<!-- I13_4 -->
 											<input
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			name:'#{i18n.getText('KMF004_50')}',
 																			value: ageHigherLimit ,
 																			enable: $parent.ageLimit ,
-																			option:{width:'60',unitID:'AGE'} 
+																			option:{width:'60',unitID:'AGE'} ,
+																		 	required:$parent.ageLimit
 																			}" />
 										</div>
 									</div>
@@ -246,7 +253,7 @@
 													value: ageStandard,
 													optionsText: 'name',
 													editable: false ,
-													enable: true ,
+													enable: ageLimit ,
 													width:'70',
 													columns: [
 														{ prop: 'name', length: 4 },
@@ -254,7 +261,12 @@
 
 											<!-- I13_8 -->
 											<div style="margin-left: 20px;"
-												data-bind="ntsDatePicker: {value: ageStandardBaseDate ,enable: ageLimit , dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYY/MM/DD'}"></div>
+												data-bind="ntsMonthDays: {
+												name:'#{i18n.getText('KMF004_52')}',
+												width:'60',
+												value: ageStandardBaseDate ,
+												enable: ageLimit , 
+												required:ageLimit}"></div>
 										</div>
 									</div>
 								</div>

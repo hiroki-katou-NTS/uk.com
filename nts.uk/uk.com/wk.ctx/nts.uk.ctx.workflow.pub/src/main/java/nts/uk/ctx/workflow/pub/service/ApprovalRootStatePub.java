@@ -260,4 +260,13 @@ public interface ApprovalRootStatePub {
 	 * @return
 	 */
 	public List<ApproverRemandExport> getListApproverRemand(String appID);
+	
+	/**
+	 * 1.指定する承認フェーズの承認が完了したか
+	 * @param approvalPhaseState ドメインモデル「承認フェーズインスタンス」
+	 * @return 承認完了フラグ(true, false)
+　				true：指定する承認フェーズの承認が完了
+　				false：指定する承認フェーズの承認がまだ未完了
+	 */
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
 }

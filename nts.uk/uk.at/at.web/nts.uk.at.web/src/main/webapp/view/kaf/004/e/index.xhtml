@@ -84,6 +84,7 @@
 				<div id="combo-box"
 					data-bind="ntsComboBox: {
 								name: '#[KAF004_17]',
+								dropDownAttachedToBody:true,
 								options: ListTypeReason,
 								optionsValue: 'reasonID',
 								visibleItemsCount: 5,
@@ -96,7 +97,7 @@
 								]}"></div>
 			</div>
 			</com:ko-if>
-			<com:ko-if bind="appCommonSetting().appTypeDiscreteSetting().displayReasonFlg()!=0">
+			<com:ko-if bind="showReasonText() ">
 			<div class="valign-center control-group">
 				<div  class="text_form_label" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_18')}</div>
 				
@@ -108,7 +109,7 @@
 									resizeable: false,
 			                    	width: '610'
 			                   	},
-								
+								enable:appCommonSetting().appTypeDiscreteSetting().displayReasonFlg()!=0
 								}" />
 				
 			</div>

@@ -28,7 +28,7 @@ module nts.uk.at.view.kal001.a.model {
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;     
-
+        empCount  : KnockoutObservable<number>;
         
         // right component
         alarmCombobox: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -109,7 +109,7 @@ module nts.uk.at.view.kal001.a.model {
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 maxRows  : 22
             };
-        
+            self.empCount = ko.observable(0);
             
                    
         }
@@ -198,13 +198,15 @@ module nts.uk.at.view.kal001.a.model {
             else
                 self.checkAll(false);
 
+            
+                            
         }
         
         public open_Dialog(): any {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-          
+            let start = performance.now();
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
@@ -236,14 +238,13 @@ module nts.uk.at.view.kal001.a.model {
             modal("/view/kal/001/d/index.xhtml").onClosed(() => {
                 // Set param to screen export B
                 let paramD= getShared("KAL001_D_PARAMS");
-                setShared("extractedAlarmData", paramD);
-                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                if (!paramD.extractingFlg) {
+                    setShared("extractedAlarmData", paramD);
+                    modal("/view/kal/001/b/index.xhtml").onClosed(() => {
 
-                });  
-            });      
-            
-            
-
+                    });
+                }  
+            });
         }
 
     }
@@ -277,7 +278,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                     
-            }else if(dto.category ==7){
+            }else if(dto.category ==7 || dto.category == 9 ){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 
@@ -438,7 +439,7 @@ module nts.uk.at.view.kal001.a.model {
         periodStart: string; // 対象期間（開始)
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }
+    } 
     
      export class PeriodByCategoryTemp {
         category : number;
@@ -462,6 +463,5 @@ module nts.uk.at.view.kal001.a.model {
             this.visible = dto.visible();
           }
       }
-         
 }
 

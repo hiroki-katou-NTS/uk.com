@@ -54,7 +54,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
             let self = this;
             self.currentFrameCd.subscribe((newCd) => {
                 service.changeSpecialEvent(newCd).done((data) => {
-                    self.currentSHEvent(new SpecialHolidayEvent(data));
+                    $("input").ntsError('clear');
+                    self.currentSHEvent().setData(new SpecialHolidayEvent(data));
                 });
             });
         }
@@ -81,10 +82,11 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 if (datas && datas.length) {
                     if (isReload) {
                         self.currentFrameCd.valueHasMutated();
-                        _.each($('td i'), icon => ko.bindingHandlers.ntsIcon.init(icon, () => ({ no: 78 })));
+                        
                     } else {
                         self.currentFrameCd(datas[0].specialHdFrameNo);
                     }
+                    _.each($('td i'), icon => ko.bindingHandlers.ntsIcon.init(icon, () => ({ no: 78 })));
                 }
             }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                 .always(() => {
@@ -100,6 +102,10 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         saveData() {
             let self = this,
                 cmd = ko.toJS(self.currentSHEvent);
+            $(".nts-input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.invisible();
             service.save(cmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
@@ -118,7 +124,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 service.remove(self.currentFrameCd())
                     .done(() => {
                         dialog({ messageId: "Msg_16" }).then(function() {
-                            self.startPage(true);
+                            self.startPage(false);
                         });;
                     })
                     .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
@@ -130,7 +136,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
 
         openGDialog() {
             let self = this;
-            setShared("SHeNo", __viewContext['viewModel'].currentFrameCd());
+            setShared("KMF004Data", { makeInvitation: self.makeInvitation(), sHENo: __viewContext['viewModel'].currentFrameCd() });
             modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
             });
         }
@@ -182,16 +188,25 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         createNew: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data?) {
             let self = this;
-
-            self.empList.subscribe((data) => {
-                let txtArray = _.map(data, item => { return item.employmentCd });
-                self.employmentTxt(txtArray.join('+'));
-
+            self.empList.subscribe((newData) => {
+                if (!_.size(newData)) {
+                    self.employmentTxt("");
+                    return;
+                }
+                let codes = _.map(newData, item => { return item.employmentCd });
+                service.findEmpByCodes(codes).done((datas) => {
+                    self.employmentTxt(_.map(datas, item => { return item.name }).join(' + '));
+                });
             });
-            self.clsList.subscribe((data) => {
-
-                let txtArray = _.map(data, item => { return item.classificationCd });
-                self.classificationTxt(txtArray.join('+'));
+            self.clsList.subscribe((newData) => {
+                if (!_.size(newData)) {
+                    self.classificationTxt("");
+                    return;
+                }
+                let codes = _.map(newData, item => { return item.classificationCd });
+                service.findClsByCodes(codes).done((datas) => {
+                    self.classificationTxt(_.map(datas, item => { return item }).join(' + '));
+                });
             });
 
             self.createNew(data ? false : true);
@@ -199,24 +214,39 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 self.specialHolidayEventNo(__viewContext['viewModel'].currentFrameCd());
             }
             if (data) {
-                self.companyId(data.companyId);
-                self.maxNumberDay(data.maxNumberDay);
-                self.fixedDayGrant(data.fixedDayGrant);
-                self.makeInvitation(data.makeInvitation == 0 ? false : true);
-                self.includeHolidays(data.includeHolidays == 0 ? false : true);
-                self.ageLimit(data.ageLimit == 0 ? false : true);
-                self.genderRestrict(data.genderRestrict == 0 ? false : true);
-                self.restrictEmployment(data.restrictEmployment == 0 ? false : true);
-                self.restrictClassification(data.restrictClassification == 0 ? false : true);
-                self.gender(data.gender);
-                self.ageRange().setData(data.ageRange);
-                self.ageStandard(data.ageStandard);
-                self.ageStandardBaseDate(data.ageStandardBaseDate);
-                self.memo(data.memo);
-                self.clsList(_.map(data.clsList, item => { return new ClassificationList(item) }));
-                self.empList(_.map(data.empList, item => { return new EmploymentList(item) }));
+                self.newData(data);
             }
         }
+        newData(data) {
+            let self = this;
+            self.companyId(data.companyId);
+            self.maxNumberDay(data.maxNumberDay);
+            self.fixedDayGrant(data.fixedDayGrant);
+            self.makeInvitation(data.makeInvitation == 0 ? false : true);
+            self.includeHolidays(data.includeHolidays == 0 ? false : true);
+            self.ageLimit(data.ageLimit == 0 ? false : true);
+            self.genderRestrict(data.genderRestrict == 0 ? false : true);
+            self.restrictEmployment(data.restrictEmployment == 0 ? false : true);
+            self.restrictClassification(data.restrictClassification == 0 ? false : true);
+            self.gender(data.gender);
+            self.ageRange().setData(data.ageRange);
+            self.ageStandard(data.ageStandard);
+            self.ageStandardBaseDate(data.ageStandardBaseDate);
+            self.memo(data.memo);
+            self.clsList(_.map(data.clsList, item => { return new ClassificationList(item) }));
+            self.empList(_.map(data.empList, item => { return new EmploymentList(item) }));
+        }
+        setData(data) {
+            let self = this;
+            data = ko.toJS(data);
+            self.newData(data);
+            self.specialHolidayEventNo(data.specialHolidayEventNo);
+            self.createNew(data.createNew);
+        }
+
+
+
+
         openCDL002() {
             let self = this,
                 selectedCodes = _.map(self.empList(), item => { return item.employmentCd });
@@ -253,8 +283,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
 
     }
     export class AgeRange {
-        ageLowerLimit: KnockoutObservable<number> = ko.observable(0);
-        ageHigherLimit: KnockoutObservable<number> = ko.observable(0);
+        ageLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        ageHigherLimit: KnockoutObservable<number> = ko.observable(null);
         constructor(data?) {
             if (data) {
                 this.ageLowerLimit(data.ageLowerLimit);

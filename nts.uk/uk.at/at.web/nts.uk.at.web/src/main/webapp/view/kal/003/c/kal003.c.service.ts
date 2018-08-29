@@ -5,7 +5,10 @@ module nts.uk.at.view.kal003.c.service {
         getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
         getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
         getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-        getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
+        getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
+        getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
+        //get name monhtly
+        getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
     }
 
     export function getAttendanceItemByCodes(codes, mode) {
@@ -17,6 +20,7 @@ module nts.uk.at.view.kal003.c.service {
 
     export function getAttendanceItemByAtr(atr, mode) {
         if (mode == 1) //monthly
+            //return nts.uk.request.ajax("at", paths.getListMonthlyByAtrPrimitive + atr);
             return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
         else //daily
             return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
@@ -28,4 +32,7 @@ module nts.uk.at.view.kal003.c.service {
         else //daily
             return nts.uk.request.ajax("at", paths.getOptItemByAtr + atr);
     }
+    export function getNameMonthly(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameMonthly,listID);
+        }
 }

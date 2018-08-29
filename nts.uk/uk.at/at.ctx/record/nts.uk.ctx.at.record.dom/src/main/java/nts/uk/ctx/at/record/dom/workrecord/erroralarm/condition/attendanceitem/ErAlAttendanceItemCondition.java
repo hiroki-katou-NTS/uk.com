@@ -71,7 +71,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.targetNO = targetNO;
 		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
-		this.type = ErrorAlarmConditionType.of(type);
+		this.type = ErrorAlarmConditionType.of(type);	
 	}
 
 	/**
@@ -136,7 +136,12 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		}
 		Integer targetValue = calculateTargetValue(getItemValue);
 
-		if (this.compareRange != null) {
+		if(this.inputCheck != null){
+			if(this.inputCheck.getInputCheckCondition() == InputCheckCondition.INPUT_DONE){
+				return targetValue == null;
+			}
+			return targetValue != null;
+		} else if (this.compareRange != null) {
 			return this.compareRange.checkRange(targetValue, c -> getVValue(c));
 		} else {
 			return this.compareSingleValue.check(targetValue, getItemValue, c -> getVValue(c));
@@ -149,7 +154,15 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
 		if (this.uncountableTarget != null) {
-			return getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+			List<Integer> items = Arrays.asList(this.uncountableTarget.getAttendanceItem());
+			if(items.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目が不正です。");
+			}
+			List<Integer> values = getItemValue.apply(items);
+			if(values.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目の値が不正です。");
+			}
+			return values.get(0);
 		} else {
 			return this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
 		}
@@ -170,9 +183,19 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 			return ((TimeWithDayAttr) target).valueAsMinutes();
 		case TIMES:
 			return ((CheckedTimesValue) target).v();
+		case DAYS:
+			return ((CheckedTimesValue) target).v();
 		default:
 			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
+	}
+
+	public void setTargetNO(int targetNO) {
+		this.targetNO = targetNO;
+	}
+
+	public void setUseAtr(boolean useAtr) {
+		this.useAtr = useAtr;
 	}
 
 	// @SuppressWarnings("unchecked")
@@ -190,4 +213,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 	// }
 	// }
+	
+	
+	
 }

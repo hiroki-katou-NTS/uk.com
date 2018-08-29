@@ -41,7 +41,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -104,6 +103,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
@@ -114,7 +114,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
@@ -312,13 +312,19 @@ public class DailyPerformanceCorrectionProcessor {
 		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
 		// only get detail infomation employee when mode 2, 3 extract
+		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
+		val timeStart1 = System.currentTimeMillis();
+		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
+		//set name workplace
+		screenDto.getLstEmployee().stream().map(x -> {
+			val wph = WPHMap.get(x.getId());
+			x.setWorkplaceName(wph == null ? "" : wph.getName());
+			return x;
+		}).collect(Collectors.toList());
 		if(displayFormat == 0){
 			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
 			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
 		}
-		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
-		val timeStart1 = System.currentTimeMillis();
-		Map<String, List<WorkPlaceIdPeriodAtScreen>> WPHMap = repo.getWplByListSidAndPeriod(changeEmployeeIds);
 		//List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart1));//slow
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initScreen, sId,
@@ -617,8 +623,8 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
 							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
 						}
-						if (value.isEmpty()) {
-							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), value,
+						if (value.isEmpty() || value.equals("null")) {
+							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), "",
 									attendanceAtrAsString, TYPE_LABEL));
 							value = NAME_EMPTY;
 						} else {
@@ -785,6 +791,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public boolean lockHist(Map<String, DatePeriod> empHist, DPDataDto data) {
 		   if(empHist.isEmpty()) return false;
 		   val datePeriod = empHist.get(data.getEmployeeId());
+		   if(datePeriod != null && data.getDate().after(datePeriod.end())) return false;
            if(datePeriod != null && (data.getDate().afterOrEquals(datePeriod.start()) && data.getDate().beforeOrEquals(datePeriod.end()))) return false;
            return true;
 	}
@@ -970,22 +977,16 @@ public class DailyPerformanceCorrectionProcessor {
 					x.getBusinessName(), "", "", "", false)).collect(Collectors.toList());
 		}
 	}
-	public List<DPDataDto> setWorkPlace(Map<String, List<WorkPlaceIdPeriodAtScreen>> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
+	public List<DPDataDto> setWorkPlace(Map<String, WorkPlaceHistTemp> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
 		//Map<String, List<AffComHistItemImport>> affCompanyMap = affCompany.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getLstAffComHistItem(), (x, y) -> x));
 		return employees.stream().map(x -> {
-			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  getWorkPlaceIdDate(wPHMap.get(x.getEmployeeId()), x.getDate()): "");
+			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  wPHMap.get(x.getEmployeeId()).getWorkplaceId(): "");
 			//x.setDatePriod(affCompanyMap.containsKey(x.getId()) ?  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()): new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 			return x;
 		}).filter(x -> affCompanyMap.containsKey(x.getEmployeeId()) &&  getDateRetire(affCompanyMap.get(x.getEmployeeId()), x.getDate())).collect(Collectors.toList());
 		//.filter(x -> affCompanyMap.containsKey(x.getId()) &&  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()));
 	}
 	
-	public String getWorkPlaceIdDate(List<WorkPlaceIdPeriodAtScreen> dateWorkPlace, GeneralDate date){
-		List<WorkPlaceIdPeriodAtScreen> data = dateWorkPlace.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
-		if(data.isEmpty()) return "";
-		else return data.get(0).getWorkplaceId();
-	}
-	 
 	public boolean getDateRetire(List<AffComHistItemAtScreen> dateHist, GeneralDate date){
 		List<AffComHistItemAtScreen> data = dateHist.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
 		if(data.isEmpty()) return false;
@@ -1070,22 +1071,36 @@ public class DailyPerformanceCorrectionProcessor {
 					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
-			   int rowId = 0;
-				for(int id = 0; id<lstError.size(); id++){
+			int rowId = 0;
+			for (int id = 0; id < lstError.size(); id++) {
 				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
 					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
-						for(int x=0 ; x < lstError.get(id).getAttendanceItemId().size(); x++){
-						//lstError.get(id).getAttendanceItemId().forEach(x -> {
-							DPErrorDto value = lstError.get(id);
-							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId),
-									value.getEmployeeId(), "", "", value.getProcessingDate(),
-									value.getErrorCode(), value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : value.getErrorAlarmMessage(), lstError.get(id).getAttendanceItemId().get(x), "",
-									errorSetting.isBoldAtr(), errorSetting.getMessageColor(), appMapDateSid.containsKey(value.getEmployeeId()+"|"+value.getProcessingDate()) ? appMapDateSid.get(value.getEmployeeId()+"|"+value.getProcessingDate()) : ""));
-							rowId ++;
-						};
+						DPErrorDto value = lstError.get(id);
+						if (lstError.get(id).getAttendanceItemId().size() > 0) {
+							for (int x = 0; x < lstError.get(id).getAttendanceItemId().size(); x++) {
+								// lstError.get(id).getAttendanceItemId().forEach(x
+								// -> {
+								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+										"", "", value.getProcessingDate(), value.getErrorCode(),
+										value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay()
+												: "",
+										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
+										errorSetting.getMessageColor(),
+										appMapDateSid
+												.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+														? appMapDateSid.get(
+																value.getEmployeeId() + "|" + value.getProcessingDate())
+														: ""));
+								rowId++;
+							}
+						} else {
+							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+									value.getProcessingDate(), value.getErrorCode(),
+									value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : ""));
+						}
 					}
 				}
-			};
+			}
 			// get list item to add item name
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			
@@ -1259,9 +1274,9 @@ public class DailyPerformanceCorrectionProcessor {
 		//set item atr from optional
 		Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 		Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
-				: optionalItemRepository.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
-						.filter(x -> x.getOptionalItemNo() != null && x.getOptionalItemAtr() != null)
-						.collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), OptionalItem::getOptionalItemAtr));
+				: repo.findByListNos(companyId, new ArrayList<>(optionalItemOpt.values())).stream()
+						.filter(x -> x.getItemNo() != null && x.getOptionalItemAtr() != null)
+						.collect(Collectors.toMap(x -> x.getItemNo(), OptionalItemDto::getOptionalItemAtr));
 		setOptionalItemAtr(lstAttendanceItem, optionalItemOpt, optionalItemAtrOpt);
 		
 		result.createSheets(disItem.getLstSheet());

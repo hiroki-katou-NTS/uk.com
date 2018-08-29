@@ -17,7 +17,7 @@ public enum RetentionPeriodIndicator {
 	/**
 	 * 年
 	 */
-	YEAR           (1, "Enum_RetentionPeriodIndicator_YEAR"),
+	YEAR           (3, "Enum_RetentionPeriodIndicator_YEAR"),
 
 	/**
 	 * 年月
@@ -27,7 +27,7 @@ public enum RetentionPeriodIndicator {
 	/**
 	 * 年月日
 	 */
-	YEAR_MONTH_DAY (3, "Enum_RetentionPeriodIndicator_YEAR_MONTH_DAY");
+	YEAR_MONTH_DAY (1, "Enum_RetentionPeriodIndicator_YEAR_MONTH_DAY");
 
 	/** The value. */
 	public final int value;

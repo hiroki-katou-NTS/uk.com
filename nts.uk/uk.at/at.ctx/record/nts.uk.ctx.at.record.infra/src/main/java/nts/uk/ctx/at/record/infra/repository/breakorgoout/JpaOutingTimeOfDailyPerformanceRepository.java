@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
@@ -151,8 +152,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent()
 						&& outingTimeSheet.getGoOut().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? outingTimeSheet.getGoOut().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + outingTimeSheet.getGoOut().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'" 
 										: null;
 				int outActualStampSource = (outingTimeSheet.getGoOut().isPresent()
 						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent())
@@ -175,8 +176,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
 						&& outingTimeSheet.getGoOut().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? outingTimeSheet.getGoOut().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + outingTimeSheet.getGoOut().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 				int outStampSource = (outingTimeSheet.getGoOut().isPresent()
 						&& outingTimeSheet.getGoOut().get().getStamp().isPresent())
@@ -204,8 +205,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent()
 						&& outingTimeSheet.getComeBack().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? outingTimeSheet.getComeBack().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + outingTimeSheet.getComeBack().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;	
 				int backActualStampSource = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent())
@@ -233,8 +234,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? outingTimeSheet.getComeBack().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + outingTimeSheet.getComeBack().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 												
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
@@ -249,27 +250,27 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						+ outing.getEmployeeId() + "' , '" + outing.getYmd()
 						+ "' , " + outingTimeSheet.getOutingFrameNo().v() + " , "
 						+ outStampTime + " , "
-						+ outStampRoundingTime + " , '"
-						+ outStampLocationCode + "' , "
+						+ outStampRoundingTime + " , "
+						+ outStampLocationCode + " , "
 						+ outStampSource + ", "
 						+ outActualTime + " , "
-						+ outActualRoundingTime + " , '"
-						+ outActualStampLocationCode + "' , "
+						+ outActualRoundingTime + " , "
+						+ outActualStampLocationCode + " , "
 						+ outActualStampSource + ", "
 						+ outNumberReflec + ", "
 						+ backStampTime + " , "
-						+ backStampRoundingTime + " , '"
-						+ backStampLocationCode + "' , "
+						+ backStampRoundingTime + " , "
+						+ backStampLocationCode + " , "
 						+ backStampSource + ", "
 						+ backActualTime + " , "
-						+ backActualRoundingTime + " , '"
-						+ backActualStampLocationCode + "' , "
+						+ backActualRoundingTime + " , "
+						+ backActualStampLocationCode + " , "
 						+ backActualStampSource + ", "
 						+ backNumberReflec + " , "
 						+ outingTimeSheet.getOutingTimeCalculation().valueAsMinutes() + " , "
 						+ outingTimeSheet.getOutingTime().valueAsMinutes() + " , "
 						+ outingTimeSheet.getReasonForGoOut().value + " )";
-				statementI.executeUpdate(insertTableSQL);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
 			

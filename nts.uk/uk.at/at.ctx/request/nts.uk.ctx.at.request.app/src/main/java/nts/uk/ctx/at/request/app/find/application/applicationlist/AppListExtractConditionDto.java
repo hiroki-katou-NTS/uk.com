@@ -24,6 +24,8 @@ public class AppListExtractConditionDto {
 	@Setter
 	private String endDate;
 	/**申請一覧区分*/
+	/**0: 申請*/
+	/**1: 承認*/
 	private Integer appListAtr;
 	/**申請種類*/
 	private Integer appType;

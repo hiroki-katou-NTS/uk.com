@@ -18,10 +18,4 @@ public class InsertRelationshipCommand {
 	private String relationshipName;
 
 	private boolean threeParentOrLess;
-
-	public int isThreeParentOrLess() {
-
-		return this.threeParentOrLess == true ? 1 : 0;
-
-	}
 }

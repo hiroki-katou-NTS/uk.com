@@ -324,7 +324,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 						mapOvertimeFrame, 
 						appOvertimeInfor.getOverTimeShiftNight(),
 						appOvertimeInfor.getFlexExessTime(),
-						appOvertimeInfor.getOverTimeAtr()); 
+						appOvertimeInfor.getOverTimeAtr(),
+						appInfor.getAppReason() == null ? "" : appInfor.getAppReason().v()); 
 		overTimeTmp = new OvertimeReflectPara(appInfor.getEmployeeID(), 
 				appInfor.getAppDate(), 
 				true,

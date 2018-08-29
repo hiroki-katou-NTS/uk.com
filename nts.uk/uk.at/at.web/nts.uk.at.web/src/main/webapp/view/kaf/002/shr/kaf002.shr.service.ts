@@ -19,8 +19,8 @@ module nts.uk.at.view.kaf002.shr {
             return ajax("at", paths.findByAppID, appID);
         }
         
-        export function newScreenFind(): JQueryPromise<any> {
-            return ajax(paths.newScreenFind);
+        export function newScreenFind(employeeID, date): JQueryPromise<any> {
+            return ajax(paths.newScreenFind, { employeeID: employeeID, date: date });
         }
         
         export function insert(command): JQueryPromise<any> {

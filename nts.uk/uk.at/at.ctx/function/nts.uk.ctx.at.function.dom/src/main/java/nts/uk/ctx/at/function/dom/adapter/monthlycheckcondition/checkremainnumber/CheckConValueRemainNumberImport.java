@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.checkremainnumber;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -10,11 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CheckConValueRemainNumberImport {
 	
-	private int daysValue;
+	private BigDecimal daysValue;
 	
 	private Integer timeValue;
 
-	public CheckConValueRemainNumberImport(int daysValue, Integer timeValue) {
+	public CheckConValueRemainNumberImport(BigDecimal daysValue, Integer timeValue) {
 		super();
 		this.daysValue = daysValue;
 		this.timeValue = timeValue;

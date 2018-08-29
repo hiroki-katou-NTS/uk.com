@@ -16,4 +16,19 @@ public enum WorkAtr {
 	/** The value. */
 	public final int value;
 
+	/**
+	 * 1日であるか判定する
+	 * @return　1日である
+	 */
+	public boolean isOneDay() {
+		return this.equals(OneDay);
+	}
+	
+	/**
+	 * 午後であるか判定する
+	 * @return 午後である
+	 */
+	public boolean isAfterNoon() {
+		return this.equals(Afternoon);
+	}
 }

@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author tutk
  *
  */
-@StringMaxLength(100)
+@StringMaxLength(400)
 public class FixedConditionWorkRecordName extends StringPrimitiveValue<FixedConditionWorkRecordName> {
 
 	private static final long serialVersionUID = 1L;

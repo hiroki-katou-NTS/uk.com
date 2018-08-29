@@ -29,7 +29,7 @@ public class KshstGrantDayRelationship extends UkJpaEntity implements Serializab
 
 	/* 喪主時加算日数 */
 	@Column(name = "MORNING_HOUR")
-	public int morningHour;
+	public Integer morningHour;
 
 	@Override
 	protected Object getKey() {

@@ -12,7 +12,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode);
 	
-	void CreateAbsence(AppAbsence domain, Application_New newApp);
+	void createAbsence(AppAbsence domain, Application_New newApp);
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック

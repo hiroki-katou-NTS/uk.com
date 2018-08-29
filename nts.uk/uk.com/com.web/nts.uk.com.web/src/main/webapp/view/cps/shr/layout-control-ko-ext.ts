@@ -1,4 +1,20 @@
 module nts.custombinding {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'];
+
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
@@ -86,6 +102,9 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
+                    html {
+                        -ms-overflow-y: hidden;
+                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }
@@ -838,7 +857,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: [itemName] }, text: text('？' + _index)">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: resourceParams }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: {
                                 DATE_TYPE: {
@@ -1748,59 +1767,67 @@ module nts.custombinding {
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.min = first.value() + 1;
+                                                    clone.item.min = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.max = second.value() - 1;
+                                                    clone.item.max = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                         case ITEM_SINGLE_TYPE.TIMEPOINT:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.timePointItemMin = first.value() + 1;
+                                                    clone.item.timePointItemMin = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.timePointItemMax = second.value() - 1;
+                                                    clone.item.timePointItemMax = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                     }
                                 }
@@ -1840,7 +1867,8 @@ module nts.custombinding {
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
                     //def.required = _.has(def, "required") ? (ko.isObservable(def.required) ? def.required : ko.observable(def.required)) : ko.observable(!!item.isRequired);
 
-                    def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
+                    def.resourceId = _.has(def, "resourceId") ? ko.isObservable(def.resourceId) ? def.resourceId : ko.observable(def.resourceId) : ko.observable();
+                    def.resourceParams = _.has(def, "resourceParams") ? ko.isObservable(def.resourceParams) ? def.resourceParams : ko.observableArray(def.resourceParams) : ko.observableArray();
 
                     def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
 
@@ -1866,16 +1894,16 @@ module nts.custombinding {
 
                     //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
+                    if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let data = ko.toJS(def.lstComboBoxValue),
                             selected = _.find(data, (f: any) => f.optionValue == def.value());
 
                         if (!selected) {
                             def.value(undefined);
+                        } else {
+                            def.defText = selected.optionText;
                         }
-                    }
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON) {
                         def.value.subscribe(v => {
                             if (v) {
                                 let data = ko.toJS(def.lstComboBoxValue),
@@ -1910,7 +1938,10 @@ module nts.custombinding {
                             proc = function(data: any): any {
                                 if (!data.item) {
                                     return {
-                                        value: String(data.value),
+                                        text: undefined,
+                                        value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                        defText: undefined,
+                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                         typeData: 1
                                     };
                                 }
@@ -1919,19 +1950,28 @@ module nts.custombinding {
                                     default:
                                     case ITEM_SINGLE_TYPE.STRING:
                                         return {
-                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 1
                                         };
-                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.NUMERIC:
+                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
                                         return {
-                                            value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.DATE:
                                         return {
-                                            value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? moment.utc(data.defValue, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                             typeData: 3
                                         };
                                     case ITEM_SINGLE_TYPE.SELECTION:
@@ -1940,31 +1980,46 @@ module nts.custombinding {
                                         switch (data.item.referenceType) {
                                             case ITEM_SELECT_TYPE.ENUM:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 2
                                                 };
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 1
                                                 };
                                             case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                let value: number = !nou(data.value) ? Number(data.value) : undefined;
-                                                if (!nou(value)) {
+                                                let value: number = !_.isNil(data.value) ? Number(data.value) : undefined;
+                                                if (!_.isNil(value)) {
                                                     if (String(value) == String(data.value)) {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 2
                                                         };
                                                     } else {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 1
                                                         };
                                                     }
                                                 } else {
                                                     return {
-                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                         typeData: 1
                                                     };
                                                 }
@@ -1974,7 +2029,10 @@ module nts.custombinding {
                                         return null;
                                     case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                         return {
-                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.READONLY_BUTTON:
@@ -1991,12 +2049,19 @@ module nts.custombinding {
                                     return data ? {
                                         checked: x.checked,
                                         recordId: x.recordId,
+                                        categoryId: x.categoryId,
                                         categoryCd: x.categoryCode,
+                                        categoryName: x.categoryName,
+                                        categoryType: x.ctgType,
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
+                                        itemName: x.itemName,
+                                        text: data.text,
                                         value: data.value,
-                                        dvalue: x.defValue,
-                                        'type': data.typeData
+                                        defText: data.defText,
+                                        defValue: data.defValue,
+                                        'type': data.typeData,
+                                        logType: x.item.dataTypeValue
                                     } : null;
                                 })
                                 .filter(x => !!x)
@@ -2014,21 +2079,30 @@ module nts.custombinding {
                                     deleted = group[recordId].map(m => m.checked).filter(m => !m).length == 0;
 
                                 if (_recordId || (!_recordId && !deleted)) {
+                                    let ctg = _.head(group[recordId]);
                                     // delete check for CARD_NO
-                                    if (_categoryCd == "CS00069" && !group[recordId][0].value) {
+                                    if (_categoryCd == "CS00069" && !ctg.value) {
                                         deleted = true;
                                     }
 
                                     inputs.push({
                                         recordId: _recordId,
                                         categoryCd: _categoryCd,
+                                        categoryId: ctg.categoryId,
+                                        categoryName: ctg.categoryName,
+                                        categoryType: ctg.categoryType,
                                         'delete': deleted,
                                         items: group[recordId].map(m => {
                                             return {
                                                 definitionId: m.definitionId,
                                                 itemCode: m.itemCode,
+                                                itemName: m.itemName,
+                                                text: m.text,
                                                 value: deleted ? m.dvalue : m.value,
-                                                'type': m.type
+                                                defText: m.defText,
+                                                defValue: m.defValue,
+                                                'type': m.type,
+                                                logType: m.logType
                                             };
                                         })
                                     });
@@ -2651,18 +2725,18 @@ module nts.custombinding {
                                         // order by dispOrder asc
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
-                                            .filter(f => {
+                                            .filter((f: IItemDefinition) => {
                                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
-                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    if (item.categoryCode === "CS00001") {
+                                                        return f.itemCode !== "IS00001";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
-                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    if (item.categoryCode === "CS00002") {
+                                                        return f.itemCode !== "IS00003";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
-                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    if (item.categoryCode === "CS00003") {
+                                                        return f.itemCode !== "IS00020";
                                                     }
                                                 }
 
@@ -2735,6 +2809,7 @@ module nts.custombinding {
                             .removeClass('selected');
                     }, 0);
                 })
+                .on('dblclick', (evt) => { evt.preventDefault() })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
                     $(evt.target)
                         .removeClass('selected');
@@ -2872,7 +2947,8 @@ module nts.custombinding {
                         });
                     }
                 }
-            });
+            })
+                .on('dblclick', (evt) => { evt.stopImmediatePropagation() });
 
             // set data controls and option to element
             $element.data('options', opts);
@@ -2919,6 +2995,15 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
+
+
+            /*if ($(ctrls.listbox).find('[id$="_grid"]').data('igGrid')) {
+                $(ctrls.listbox).find('[id$="_grid"]').igGrid("option", "columns", [
+                    { key: 'id', headerText: '', hidden: true },
+                    { key: 'itemName', headerText: text('CPS007_9') }
+                ]);
+            }*/
+
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }

@@ -80,7 +80,9 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			this.checkInput(command);
 			
 			//reCheck Contract
-			this.reCheckContract(contractCode, command.getContractPassword());
+			if (!this.reCheckContract(contractCode, command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// Edit employee code
 			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
@@ -102,7 +104,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
-				return new CheckChangePassDto(false, msgErrorId);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			} 
 			
 			// check time limit
@@ -124,7 +126,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null);
+			return new CheckChangePassDto(true, null,false);
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -137,7 +139,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
 		this.service.callLoginRecord(param);
 		
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
@@ -155,10 +157,10 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");
 		}
-		// check input password
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
+//		// check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
 	}
 
 	/**

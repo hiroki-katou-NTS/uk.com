@@ -4,6 +4,7 @@ module nts.uk.at.view.ksm005.b {
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
+    import blockUI = nts.uk.ui.block;
     export module viewmodel {
 
         export class ScreenModel {
@@ -36,7 +37,7 @@ module nts.uk.at.view.ksm005.b {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
@@ -65,6 +66,9 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+                    if(nts.uk.ui.errors.hasError()){
+                        return; 
+                    }
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
                     }
@@ -469,6 +473,10 @@ module nts.uk.at.view.ksm005.b {
                     return;    
                 }
                 
+                if (_.isNull(self.yearMonthPicked())){
+                    return;
+                }
+                blockUI.grayout();
                 service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(), self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -482,7 +490,7 @@ module nts.uk.at.view.ksm005.b {
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                })
+                }).always(()=> blockUI.clear());
                                 
             }
             

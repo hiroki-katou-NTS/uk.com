@@ -250,6 +250,7 @@ module cas009.a.viewmodel {
                                     } else {
                                         self.selectedRole.roleId(roles[0].roleId);
                                     }
+                                    self.selectedRole.roleId.valueHasMutated();
                                 } else {
                                     self.createNew();
                                 }

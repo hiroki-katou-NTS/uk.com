@@ -127,9 +127,7 @@ button.nts-switch-button {
     width: 710px;
     height: 380px;
 }
-.nts-editor.nts-input.reset-element{
-	height:10px;
-}
+
 #contents-area {
     overflow: hidden;
 }

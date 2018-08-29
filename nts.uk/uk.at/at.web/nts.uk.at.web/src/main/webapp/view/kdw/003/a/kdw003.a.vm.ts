@@ -289,12 +289,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
 
                     var elementDate = dateRange.startDate;
-                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
-                            self.lstDate.push({ date: elementDate });
-                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                        }
-                    }
+//                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+//                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
+//                            self.lstDate.push({ date: elementDate });
+//                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+//                        }
+//                    }
                     if (self.displayFormat() == 1) {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate;
@@ -601,17 +601,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
-                    formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
-                    formatDailyItem['order'] = item.order
+                    if(formatDailyItem){
+                        formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
+                        formatDailyItem['order'] = item.order;
+                    }
                 });
                 let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
                 self.listAttendanceItemId(arr);
-                self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
                 // reload MiGrid
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
-                self.getNameMonthly();
+                self.isVisibleMIGrid(data.monthResult.hasItem);
                 //
             }else{
                 self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
@@ -880,7 +881,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: lstData[0].date,
                     endDate: lstData[lstData.length - 1].date
                 },
-                mode: 0,
+                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive
@@ -2174,7 +2175,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
                 totalWidthColumn += id.columnWidth;
             });
             
@@ -2195,7 +2196,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         convertToCDisplayType(value: string): string {
             switch (value) {
-                case "TIME": return "Clock";
+                case "TIME":
+                case "CLOCK":
+                    return "Clock";
                 case "DAYS": return "Decimal";
                 case "COUNT": return "Integer";
                 case "CURRENCY": return "Currency";
@@ -2272,30 +2275,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         case 8:
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                              transfer.stampRequestMode = 1;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                              transfer.stampRequestMode = 2;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 11:
                             //KAF002-打刻申請（レコーダイメージ）
                              transfer.stampRequestMode = 3;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                          
                         case 12:
                             //KAF002-打刻申請（その他）
                              transfer.stampRequestMode = 4;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                             

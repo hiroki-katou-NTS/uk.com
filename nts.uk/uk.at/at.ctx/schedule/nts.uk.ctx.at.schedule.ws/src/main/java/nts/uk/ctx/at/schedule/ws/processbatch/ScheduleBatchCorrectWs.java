@@ -47,17 +47,6 @@ public class ScheduleBatchCorrectWs extends WebService {
 	}
 	
 	/**
-	 * Interrupt.
-	 *
-	 * @param interrupt the execution
-	 */
-	@POST
-	@Path("interrupt")
-	public void interrupt() {
-		this.execution.interrupt();
-	}
-	
-	/**
 	 * Execution.
 	 *
 	 * @param command the command

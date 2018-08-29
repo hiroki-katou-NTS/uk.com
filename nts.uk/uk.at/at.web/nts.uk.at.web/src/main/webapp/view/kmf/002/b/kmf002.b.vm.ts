@@ -4,10 +4,10 @@ module nts.uk.at.view.kmf002.b {
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+    import CommonTableMonthDaySet = nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet;
     export module viewmodel {
         export class ScreenModel {
-            commonTableMonthDaySet: KnockoutObservable<nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet>;
+            commonTableMonthDaySet: KnockoutObservable<CommonTableMonthDaySet>;
             multiSelectedWorkplaceId: KnockoutObservableArray<any>;
             baseDate: KnockoutObservable<Date>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel[]>;
@@ -19,7 +19,7 @@ module nts.uk.at.view.kmf002.b {
 
             constructor(){
                 let _self = this;
-                _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
+                _self.commonTableMonthDaySet = ko.observable(new CommonTableMonthDaySet());
                 _self.commonTableMonthDaySet().visibleInfoSelect(true);
                 _self.commonTableMonthDaySet().infoSelect1(nts.uk.resource.getText("Com_Workplace"));
                 _self.enableSave = ko.observable(true);
@@ -139,14 +139,20 @@ module nts.uk.at.view.kmf002.b {
             
             public saveWorkpalce(): void {
                 let _self = this;
+                
                 if (!nts.uk.ui.errors.hasError()) {
+                    _self.enableSave(false);
+                    blockUI.invisible();
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), 
                                     _self.commonTableMonthDaySet().arrMonth(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
                     _self.getDataFromService();
-                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});                    
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                });    
+                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});
+                                             
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
+                }).always(()=> blockUI.clear());    
                 }  
             }
             
@@ -167,7 +173,14 @@ module nts.uk.at.view.kmf002.b {
             
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.dataDefault();
+                    return;
+                }
                 if ($('#tree-grid').getRowSelected()[0] != null) {
+                    if (_.isEmpty(_self.commonTableMonthDaySet().fiscalYear())) {
+                        _self.commonTableMonthDaySet().fiscalYear(moment().format('YYYY'));
+                    }
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {

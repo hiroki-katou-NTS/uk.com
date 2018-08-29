@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.yearholidaygrant;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -31,7 +29,7 @@ public class KshstGrantHdTbl extends UkJpaEntity {
 	
 	/* 年休付与日数 */
 	@Column(name = "GRANT_DAY")
-	public BigDecimal grantDay;
+	public Double grantDay;
 	
 	/* 半日年休上限回数 */
 	@Column(name = "LIMIT_TIME_HD")
@@ -55,7 +53,7 @@ public class KshstGrantHdTbl extends UkJpaEntity {
 		return kshstGrantHdTblPK;
 	}
 
-	public KshstGrantHdTbl(KshstGrantHdTblPK kshstGrantHdTblPK, BigDecimal grantDays, 
+	public KshstGrantHdTbl(KshstGrantHdTblPK kshstGrantHdTblPK, Double grantDays, 
 			Integer limitTimeHd, Integer limitDayYear) {
 		super();
 		this.kshstGrantHdTblPK = kshstGrantHdTblPK;

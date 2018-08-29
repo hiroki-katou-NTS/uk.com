@@ -1,4 +1,16 @@
-.open-page {
-	width: 250px;
-	margin: 30px;
+button.large {
+	width: 400px;
+	margin: 20px;
+    height: 110px;
+}
+
+div.title {
+	font-size: 24px;
+    text-align: center;
+    margin-top: -25px;
+    padding-bottom: 20px;
+}
+
+div.text {
+	text-align: left;
 }

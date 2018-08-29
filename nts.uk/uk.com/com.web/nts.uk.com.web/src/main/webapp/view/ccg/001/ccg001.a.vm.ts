@@ -37,6 +37,8 @@ module nts.uk.com.view.ccg001.a {
             showAllClosure: KnockoutObservable<boolean>; // 全締め表示
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
             periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
+            maxPeriodRange: KnockoutObservable<string>;
+            periodRanges: Array<any>;
             lazyLoad: KnockoutObservable<boolean>;
 
             constructor() {
@@ -48,6 +50,12 @@ module nts.uk.com.view.ccg001.a {
                     { name: '人事', value: 4 }, // HUMAN_RESOURCES
                     { name: '管理者', value: 5 } // ADMINISTRATOR
                 ]);
+                self.periodRanges = [
+                    {name: 'なし', value: 'none'},
+                    {name: '１ヶ月', value: 'oneMonth'},
+                    {name: '１年', value: 'oneYear'}
+                    
+                ];
                 self.selectedEmployee = ko.observableArray([]);
 
                 // initial ccg options
@@ -94,6 +102,7 @@ module nts.uk.com.view.ccg001.a {
                 self.showAllClosure = ko.observable(true); // 全締め表示
                 self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
+                self.maxPeriodRange = ko.observable('none');
                 self.lazyLoad = ko.observable(false);
             }
 
@@ -106,6 +115,9 @@ module nts.uk.com.view.ccg001.a {
                     return;
                 }
                 // clear ccg001 errors
+                $('#ccg001-search-period .ntsDateRangeComponent').ntsError('clear');
+                $('#ccg001-search-period .ntsStartDate input').ntsError('clear');
+                $('#ccg001-search-period .ntsEndDate input').ntsError('clear');
                 $('#inp_baseDate').ntsError('clear');
                 $('#inp-period-startYMD').ntsError('clear');
                 $('#inp-period-endYMD').ntsError('clear');
@@ -129,6 +141,7 @@ module nts.uk.com.view.ccg001.a {
                     showAllClosure: self.showAllClosure(), // 全締め表示
                     showPeriod: self.showPeriod(), // 対象期間利用
                     periodFormatYM: self.periodFormatYM(), // 対象期間精度
+                    maxPeriodRange: self.maxPeriodRange(),
 
                     /** Required parameter */
                     baseDate: self.baseDate().toISOString(), // 基準日

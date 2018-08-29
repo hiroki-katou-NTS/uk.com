@@ -7,7 +7,7 @@ module nts.uk.at.view.kal001.b {
             if (param.isExtracting) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_993" });
             }
-            if (!param.isExtracting && param.listAlarmExtraValueWkReDto.length <= 0) {// same condiditon dataExtractAlarm.nullData
+            if (!param.isExtracting && (!extractedAlarmData || extractedAlarmData.length <= 0)) {// same condiditon dataExtractAlarm.nullData
                 nts.uk.ui.dialog.info({ messageId: "Msg_835" });
             }
         }

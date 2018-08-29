@@ -183,16 +183,22 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	protected void reCheckContract(String contractCode, String contractPassword) {
+	protected boolean reCheckContract(String contractCode, String contractPassword) {
 		InstallationType systemConfig = AppContexts.system().getInstallationType();
 		// case Cloud
 		if (systemConfig.value == InstallationType.CLOUD.value) {
 			// reCheck contract
 			// pre check contract
-			this.checkContractInput(contractCode, contractPassword);
+			if (!this.checkContractInput(contractCode, contractPassword)) {
+				return false;
+			}
 			// contract auth
-			this.contractAccAuth(contractCode, contractPassword);
+			if (!this.contractAccAuth(contractCode, contractPassword)) {
+				return false;
+			}
+			return true;
 		}
+		return true;
 	}
 
 	/**
@@ -203,13 +209,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	private void checkContractInput(String contractCode, String contractPassword) {
+	private boolean checkContractInput(String contractCode, String contractPassword) {
 		if (StringUtil.isNullOrEmpty(contractCode, true)) {
-			throw new RuntimeException();
+			return false;
 		}
 		if (StringUtil.isNullOrEmpty(contractPassword, true)) {
-			throw new RuntimeException();
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -238,7 +245,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_301");
 		}
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -249,22 +256,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	private void contractAccAuth(String contractCode, String contractPassword) {
+	private boolean contractAccAuth(String contractCode, String contractPassword) {
 		Optional<Contract> contract = contractRepository.getContract(contractCode);
 		if (contract.isPresent()) {
 			// check contract pass
 			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
 					.isEqualTo(contract.get().getPassword().v())) {
-				throw new RuntimeException();
+				return false;
 			}
 			// check contract time
 			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
 					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
-				throw new RuntimeException();
+				return false;
 			}
 		} else {
-			throw new RuntimeException();
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -323,7 +331,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		this.setRoleId(user.getUserId());
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -439,7 +447,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -724,15 +732,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (!user.get().getAssociatePersonId().get().isEmpty()) {
 			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId().get()));
 
-			employees.forEach(empItem -> {
-				// アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm
-				// "社員が削除されたかを取得")
-				if (this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted()) {
-					// 社員（List）から当該社員を除く (Remove the employee from the employee
-					// (List))
-					employees.remove(empItem);
-				}
-			});
+			employees = employees.stream()
+				.filter(empItem -> !this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted())
+				.collect(Collectors.toList());
 		}
 
 		// imported（権限管理）「会社」を取得する (imported (authority management) Acquire

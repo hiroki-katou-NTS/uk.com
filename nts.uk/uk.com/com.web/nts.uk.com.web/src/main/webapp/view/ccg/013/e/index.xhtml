@@ -24,12 +24,11 @@
 		<ui:define name="content">
 			<div id="content-area" class="body">
 				<div id="functions-area-bottom">
-					<div class="bg-yellow" style="padding: 12px 20px;"
-						data-bind="ntsCheckBox: { checked: allowOverwrite, enable: true, text: '#{i18n.getText('CCG013_102')}' }"></div>
+					<div style="padding: 12px 20px;"
+						data-bind="ntsCheckBox: { checked: allowOverwrite, style: 'warnpanel', enable: true, text: '#{i18n.getText('CCG013_102')}' }"></div>
 					<div style="padding-bottom: 10px;"></div>
-					<button id="e1_10" class="x-large bg-daily-reflect-application"
+					<button id="e1_10" class="x-large proceed"
 						data-bind="click: submit">#{i18n.getText('CCG013_60')}</button>
-					<span style="padding: 0 20px;"></span>
 					<button id="e1_11" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_61')}</button>
 				</div>
 
@@ -55,7 +54,7 @@
 									data-bind="ntsFormLabel: {required: true, constraint: ['WebMenuCode', 'WebMenuName']}">#{i18n.getText('CCG013_59')}</div></td>
 							<td width="30"></td>
 							<td><input id="web-code" class="web-code"
-								data-bind="ntsTextEditor: {name:'#[CCG013_49]', value: code, required: true, constraint: 'WebMenuCode'}, hasfocus: true" /></td>
+								data-bind="ntsTextEditor: {name:'#[CCG013_49]', value: code, required: true, constraint: 'WebMenuCode', immediate: true ,option: {autofill:true, filldirection:'left'}}, hasfocus: true" /></td>
 							<td width="10"></td>
 							<td><input id="web-name" class="web-name"
 								data-bind="ntsTextEditor: {name:'#[CCG013_50]', value: name, required: true, constraint: 'WebMenuName'}" /></td>

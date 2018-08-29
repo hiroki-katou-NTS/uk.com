@@ -6,8 +6,8 @@ import lombok.Data;
 public class AgeRangeCommand {
 	
 	/** 年齢下限 */
-	private int ageLowerLimit;
+	private Integer ageLowerLimit;
 
 	/** 年齢上限 */
-	private int ageHigherLimit;
+	private Integer ageHigherLimit;
 }

@@ -33,7 +33,7 @@ public class KshstRelationshipItem extends UkJpaEntity implements Serializable {
 
 	/* 3親等以内とする */
 	@Column(name = "THREE_PARENT_OR_LESS")
-	public int threeParentOrLess;
+	public boolean threeParentOrLess;
 
 	@Override
 	protected Object getKey() {

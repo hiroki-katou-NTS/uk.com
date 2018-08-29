@@ -28,6 +28,9 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
@@ -40,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;;
@@ -86,6 +91,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ClosureService closureService;
 	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
 	
@@ -110,9 +118,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
 	
-	/** Interrupt flag */
-	private static boolean isInterrupted = false;
-			
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,16 +159,11 @@ public class ScheBatchCorrectExecutionCommandHandler
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
-		// Set interrupt flag to false to start execution
-		isInterrupted = false;
+		// Get work type
+		WorkType workType = workTypeRepository.findByPK(companyId, command.getWorktypeCode()).get();
 		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
-			// Stop if being interrupted
-			if (isInterrupted) {
-				break;
-			}
-			
 			GeneralDate startDate = command.getStartDate();
 			GeneralDate endDate = command.getEndDate();
 			 	
@@ -172,12 +172,14 @@ public class ScheBatchCorrectExecutionCommandHandler
 			GeneralDate currentDateCheck = startDate;
 			// 開始日から終了日までループ
 			while (currentDateCheck.compareTo(endDate) <= 0) {
-				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
-				
-				// Stop if being interrupted
-				if (isInterrupted) {
-					break;
+				// check is client submit cancel ［中断］(Interrupt)
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					
+					return;
 				}
+				
+				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck, workType);
 				
 				if (optErrorMsg.isPresent()) {
 					
@@ -221,10 +223,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		//setter.updateData(DATA_EXECUTION, dto);
 	}
 	
-	public void interrupt() {
-		isInterrupted = true;
-	}
-	
 	/**
 	 * Next day.
 	 *
@@ -239,7 +237,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	 * Register process.
 	 */
 	// 登録処理
-	private Optional<String> registerProcess(String companyId, ScheBatchCorrectSetCheckSaveCommand command, String employeeId, GeneralDate baseDate){
+	private Optional<String> registerProcess(String companyId, ScheBatchCorrectSetCheckSaveCommand command, String employeeId, GeneralDate baseDate, WorkType workType){
 		
 		// call check schedule update
 		Optional<String> optionalMessage = this.getCheckScheduleUpdate(companyId, employeeId, baseDate);
@@ -257,8 +255,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(employeeId, baseDate);
 			
 			// 登録メイン処理
-			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
-					employeeId, baseDate);
+			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(companyId, optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
+					employeeId, baseDate, workType);
 		}
 		else {
 			return optionalMessage;

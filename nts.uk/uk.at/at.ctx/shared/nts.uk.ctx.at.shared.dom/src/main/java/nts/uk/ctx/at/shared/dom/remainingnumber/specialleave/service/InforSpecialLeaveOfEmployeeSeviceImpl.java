@@ -21,20 +21,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeBaseYear;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.ElapseYear;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDate;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDateTbl;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.TypeTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.TimeLimitSpecification;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -70,20 +71,23 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//付与日数情報を取得する
 		GrantDaysInforByDates grantDayInfors = this.getGrantDays(cid, sid, complileDate, specialHoliday, leaverBasicInfo);
 		//「付与日数一覧」の件数をチェックする
+		Optional<Integer> upLimiDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays() == null ? Optional.empty() 
+				: Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v());
 		if(grantDayInfors == null || grantDayInfors.getLstGrantDaysInfor().isEmpty()) {
 			//状態：「付与なし」を返す
-			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v()),
+			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
 					new ArrayList<>(), specialHoliday.getGrantRegular().isAllowDisappear());
 		} else {
 			//期限を取得する
 			List<SpecialHolidayInfor> getDeadlineInfo = this.getDeadlineInfo(grantDayInfors, specialHoliday);
 			
-			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v()),
+			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
 					getDeadlineInfo, specialHoliday.getGrantRegular().isAllowDisappear());
 		}
 	}
 	@Override
-	public GrantDaysInforByDates getGrantDays(String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday, SpecialLeaveBasicInfo leaveBasicInfo) {
+	public GrantDaysInforByDates getGrantDays(String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday,
+			SpecialLeaveBasicInfo leaveBasicInfo) {
 		GeneralDate grantDate = GeneralDate.today();
 		//取得しているドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
 		if(speHoliday.getGrantRegular().getGrantDate() == GrantDate.EMP_GRANT_DATE) {
@@ -112,14 +116,15 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
 		if(speHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_START_DATE_SPECIFY) {
 			//固定の付与日一覧を求める
-			return this.askGrantDays(cid, employeeId, period, grantDate, speHoliday);
+			return this.askGrantDays(cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
 		} else {
 			//テーブルに基づいた付与日数一覧を求める
 			return this.askGrantdaysFromtable(cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
 		}
 	}
 	@Override
-	public GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday) {
+	public GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday, 
+			SpecialLeaveBasicInfo leaveBasicInfo) {
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
 		GeneralDate hikakuYmd = grantDate;
@@ -127,9 +132,22 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		int interval = grantTime.getFixGrantDate().getInterval().v();
 		GeneralDate hikakuYmdTmp = grantDate.addDays(interval);
 		GeneralDate nextTime = grantDate;
+		double grantDays = 0;
+		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+		//　　付与日数　←　特別休暇基本情報．付与設定．付与日数
+		if(leaveBasicInfo.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED) {
+			grantDays = leaveBasicInfo.getGrantSetting().getGrantDays().isPresent() ? leaveBasicInfo.getGrantSetting().getGrantDays().get().v() : 0;
+		}
+		//　◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+		// 　　付与日数　←　ドメインモデル「特別休暇．付与情報．固定付与日．固定付与日数」
+		
+		else {
+			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
+		}
 		//パラメータ「期間」に一致する付与日数を生成する
 		for(int i = 0; hikakuYmd.daysTo(hikakuYmdTmp) - i >= 0; i++){			
 			GeneralDate loopDate = period.start().addDays(i);
+			nextTime = loopDate;
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(loopDate)
 					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
@@ -140,14 +158,13 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 						|| checkUser.isEmploymentError()
 						|| checkUser.isGenderError()) {
 					//パラメータ「付与日数一覧」を追加する
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), 0);
+					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), grantDays);
 					lstOutput.add(outPut);
 				} else {
 					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
 					lstOutput.add(outPut);
 				}
 			} else if (period.end().before(loopDate)) {
-				nextTime = loopDate;
 				break;
 			}
 		}
@@ -160,7 +177,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//Imported(就業)「社員」を取得する
 		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(sid);
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
-		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//性別が一致するかチェックする
 			if(empInfor.getGender() != specialLeaveRestric.getGender().value) {
 				//パラメータ「エラーフラグ．性別条件に一致しない」にTRUEをセットする
@@ -168,7 +185,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			}
 		}
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
-		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			List<String> sids = new ArrayList<>();
 			sids.add(sid);
 			//アルゴリズム「社員所属雇用履歴を取得」を実行する
@@ -198,7 +215,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			}
 		}
 		//ドメインモデル「特別休暇利用条件」．分類条件をチェックする
-		if(specialLeaveRestric.getRestrictionCls() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getRestrictionCls() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//アルゴリズム「社員所属分類履歴を取得」を実行する
 			List<String> lstSids = new ArrayList<>();
 			lstSids.add(sid);
@@ -223,19 +240,20 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			
 		}
 		//ドメインモデル「特別休暇利用条件」．年齢条件をチェックする
-		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			GeneralDate ageBase = GeneralDate.today();
 			//年齢基準日を求める
+			MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
+			int year = 0;
 			if(specialLeaveRestric.getAgeStandard().getAgeCriteriaCls() == AgeBaseYear.THIS_YEAR) {
-				MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
-				if(ageBaseDate != null) {
-					ageBase = GeneralDate.ymd(ageBase.year(), ageBaseDate.getMonth(), ageBaseDate.getDay());	
-				}
+				year = ageBaseDate != null ? ageBase.year() : 0;
 			} else {
-				MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();	
-				if(ageBaseDate != null) {
-					ageBase = GeneralDate.ymd(ageBase.year() + 1, ageBaseDate.getMonth(), ageBaseDate.getDay());
-				}
+				year = ageBaseDate != null ? ageBase.year() + 1 : 0;
+			}
+			if(year != 0
+					&& ageBaseDate.getMonth() != 0
+					&& ageBaseDate.getDay() != 0) {
+				ageBase = GeneralDate.ymd(year, ageBaseDate.getMonth(), ageBaseDate.getDay());
 			}
 			//求めた「年齢基準日」時点の年齢を求める
 			int yearBase = ageBase.addYears(-empInfor.getBirthDay().year()).year();
@@ -254,23 +272,28 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		Optional<GrantDateTbl> optGranDateTbl = Optional.empty();
 		GeneralDate outputDate = null;
-		if( basicInfor.getGrantSetting().getGrantTable().isPresent()) {
-			optGranDateTbl = grantTableRepos.findByCode(cid, basicInfor.getSpecialLeaveCode().v(), basicInfor.getGrantSetting().getGrantTable().get().v());
-		} else {
-			optGranDateTbl = grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
+		List<ElapseYear> elapseYear = new ArrayList<>();
+		//◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
+		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
+				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
+			elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),
+					basicInfor.getGrantSetting().getGrantTable().get().v());
 		}
-		
-		//取得できなかった場合 - Không get được
-		if(!optGranDateTbl.isPresent()) {
-			return null;
-		}				
-		GrantDateTbl grantDateTbl = optGranDateTbl.get();
+		//◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+		//規定のテーブルとする＝TRUE
+		else {
+			optGranDateTbl = grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
+			if(optGranDateTbl.isPresent()) {
+				elapseYear = optGranDateTbl.get().getElapseYear();
+			}
+		}
 		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
-		List<ElapseYear> elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, grantDateTbl.getGrantDateCode().v());
 		for (ElapseYear yearData : elapseYear) {//TODO xem lai
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
 			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
+			outputDate = granDateTmp;
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(granDateTmp)
 					&& period.end().afterOrEquals(granDateTmp)) {
@@ -287,7 +310,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					lstOutput.add(output);
 				}
 			} else if(period.end().before(granDateTmp)) {
-				outputDate = granDateTmp;
+				
 				break;
 			}
 		}
@@ -323,7 +346,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			for (GrantDaysInfor daysInfor : grantDaysInfor.getLstGrantDaysInfor()) {
 				SpecialHolidayInfor output = new SpecialHolidayInfor();
 				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
-					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null ? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
+					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null 
+							? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
 				} else {
 					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
 					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd()));

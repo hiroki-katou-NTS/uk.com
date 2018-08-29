@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -174,6 +175,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// Comment
 		if (monPerformanceFun.isPresent()) {
 			screenDto.setComment(monPerformanceFun.get().getComment().v());
+			screenDto.setDailySelfChkDispAtr(monPerformanceFun.get().getDailySelfChkDispAtr());
 		}
 		if (formatPerformance.isPresent()) {
 			screenDto.setFormatPerformance(FormatPerformanceDto.fromDomain(formatPerformance.get()));
@@ -202,7 +204,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
-			 closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
 			screenDto.setClosureId(closureId);
 			
 			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
@@ -210,7 +212,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 			// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
 			//set A3_2
-			 yearMonth = 0;
+			yearMonth = 0;
 			if (param.getYearMonth() == 0) {
 				if (presentClosingPeriodExport.isPresent()) {
 					yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
@@ -609,16 +611,24 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MPHeaderDto> lstMPHeaderDto = MPHeaderDto.GenerateFixedHeader();
 		int size = lstMPHeaderDto.size();
 		
-		//G7 2* hidden column approval
-		if(approvalProcessingUseSetting.getUseMonthApproverConfirm()==false){
-			for (int i = 0; i < size; i++) {
-				MPHeaderDto mpHeaderDto = lstMPHeaderDto.get(i);
-				if("approval".equals(mpHeaderDto.getKey())){
-					lstMPHeaderDto.remove(mpHeaderDto);
-					break;
-				}
+		//G7 G8 G9 hidden column identitfy, approval, dailyconfirm
+		for (Iterator<MPHeaderDto> iter = lstMPHeaderDto.listIterator(); iter.hasNext(); ) {
+			MPHeaderDto mpHeaderDto = iter.next();
+			if ("identify".equals(mpHeaderDto.getKey())
+					&& screenDto.getIdentityProcess().getUseMonthSelfCK() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+			if ("approval".equals(mpHeaderDto.getKey())
+					&& approvalProcessingUseSetting.getUseMonthApproverConfirm() == false) {
+				iter.remove();
+				continue;
 			}
-			
+			if ("dailyconfirm".equals(mpHeaderDto.getKey())
+					&& screenDto.getDailySelfChkDispAtr() == 0) {
+		        iter.remove();
+		        continue;
+		    }
 		}
 		
 		/**
@@ -681,6 +691,20 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream()
 				.collect(Collectors.toList());
+		
+		int empSize = screenDto.getLstEmployee().size();
+		 final List<AttendanceTimeOfMonthly> lstAttendanceTimeOfMonthly;
+		if(attdanceIds.contains(202)){
+			//lstAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.findByEmployees(screenDto.getLstEmployee().stream().map(x->x.getId()).collect(Collectors.toList()), new YearMonth(yearMonth), ClosureId.valueOf(closureId), new ClosureDate(screenDto.getClosureDate().getClosureDay(), screenDto.getClosureDate().getLastDayOfMonth()));
+			List<YearMonth>	 lstYearMonth= new ArrayList<YearMonth>();
+			lstYearMonth.add(new YearMonth(yearMonth));
+			lstAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(screenDto.getLstEmployee().stream().map(x->x.getId()).collect(Collectors.toList()),lstYearMonth);
+		}else{
+			lstAttendanceTimeOfMonthly = null;
+		}
+		
+	
+		
 		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId),
 				screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
 		if (results.size() > 0) {
@@ -701,8 +725,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		List<EditStateOfMonthlyPerformanceDto> editStateOfMonthlyPerformanceDtos = this.repo
 				.findEditStateOfMonthlyPer(new YearMonth(screenDto.getProcessDate()), listEmployeeIds, attdanceIds);
-
-		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
+		//empSize
+		//screenDto.getLstEmployee().size()
+		for (int i = 0; i < empSize; i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
 			// lock check box1 identify
@@ -796,9 +821,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 							}
 						}
 						// color for attendance Item 202
+						//if(item.getItemId()==202&& lstAttendanceTimeOfMonthly!=null){
 						if(item.getItemId()==202){
 						//月別実績の勤怠時間．月の計算．36協定時間．36協定時間のエラー状態
-						Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.find(employeeId,new YearMonth(rowData.getYearMonth()) , ClosureId.valueOf(rowData.getClosureId()), new ClosureDate(rowData.getClosureDate().getClosureDay(), rowData.getClosureDate().getLastDayOfMonth()) );
+							
+						//Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.find(employeeId,new YearMonth(rowData.getYearMonth()) , ClosureId.valueOf(rowData.getClosureId()), new ClosureDate(rowData.getClosureDate().getClosureDay(), rowData.getClosureDate().getLastDayOfMonth()) );
+						Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = lstAttendanceTimeOfMonthly.stream().filter(x-> x.getEmployeeId().equals(employeeId)).findFirst();
 						if(optAttendanceTimeOfMonthly.isPresent()){
 							MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get().getMonthlyCalculation();
 							if(monthlyCalculation!=null){
@@ -831,6 +859,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 								}
 							}
 						}
+						
+						
 						}
 						
 						

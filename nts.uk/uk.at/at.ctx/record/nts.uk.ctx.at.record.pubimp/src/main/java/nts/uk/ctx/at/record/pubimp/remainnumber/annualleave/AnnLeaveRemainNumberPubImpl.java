@@ -108,7 +108,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// 期間中の年休残数を取得
 			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
-					Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(), Optional.empty());
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
@@ -200,7 +200,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				// 期間中の年休残数を取得
 				aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 						item.getDatePeriod(), TempAnnualLeaveMngMode.OTHER, item.getDatePeriod().end(), false, false,
-						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave);
+						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, Optional.empty());
 				// 結果をListに追加
 				if (aggrResultOfAnnualLeave.isPresent()) {
 					result.add(
@@ -231,7 +231,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override	
 	public ReNumAnnLeaReferenceDateExport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
 		ReNumAnnLeaReferenceDateExport result = new ReNumAnnLeaReferenceDateExport();
-		
+		List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
+		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 		
 		String companyId = AppContexts.user().companyId();
 		// 社員に対応する締め開始日を取得する
@@ -242,7 +243,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeID,
 				datePeriod, TempAnnualLeaveMngMode.OTHER, date, false, false, Optional.of(false), Optional.empty(),
-				Optional.empty());
+				Optional.empty(), Optional.empty());
 		if(aggrResult.isPresent()){
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
 			if(asOfPeriodEnd != null){
@@ -308,7 +309,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						1.00,
 						2.00);
 				result.setAnnualLeaveRemainNumberExport(annualLeaveRemainingNumberExport);
-				List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
 				// add 年休付与情報(仮)
 				if(!CollectionUtil.isEmpty(asOfPeriodEnd.getGrantRemainingList())){
 					for(AnnualLeaveGrantRemaining annualLeave : asOfPeriodEnd.getGrantRemainingList()){
@@ -349,14 +349,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 								annualLeave.getDeadline());
 						annualLeaveGrantExports.add(annualLeaveGrantExport);
 					}
-					result.setAnnualLeaveGrantExports(annualLeaveGrantExports);
 				}
 			}
 		}
 		List<TempAnnualLeaveManagement> tempAnnualLeaveManagements = this.tempAnnualLeaveMngRepository.findByEmployeeID(employeeID);
 		// add 年休管理情報(仮)
 		if(!CollectionUtil.isEmpty(tempAnnualLeaveManagements)){
-			List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 			for(TempAnnualLeaveManagement temp : tempAnnualLeaveManagements){
 				Double daysUsedNo = 0.00;
 				if(temp.getAnnualLeaveUse() != null){
@@ -372,7 +370,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						temp.getScheduleRecordAtr().value);
 				annualLeaveManageInforExports.add(annualLeaveManageInforExport);
 			}
-			result.setAnnualLeaveManageInforExports(annualLeaveManageInforExports);
+			
 		}
 		// 年休出勤率を計算する:TODO: Trong EA ghi chưa làm được
 		
@@ -380,7 +378,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			result.getAnnualLeaveRemainNumberExport().setAttendanceRate(1.00);
 			result.getAnnualLeaveRemainNumberExport().setWorkingDays(2.0);
 		}
-
+		result.setAnnualLeaveGrantExports(annualLeaveGrantExports);
+		result.setAnnualLeaveManageInforExports(annualLeaveManageInforExports);
 		return result;
 	}
 }

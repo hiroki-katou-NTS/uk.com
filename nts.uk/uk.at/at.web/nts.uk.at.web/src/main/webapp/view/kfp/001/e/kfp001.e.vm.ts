@@ -60,14 +60,15 @@ module nts.uk.at.view.kfp001.e {
                 var self = this;
                 let dataE = nts.uk.ui.windows.getShared("KFP001_DATAE");
                 let dataExc = nts.uk.ui.windows.getShared("KFP001_DATA_EXC");
+                let period = nts.uk.ui.windows.getShared("KFP001_PERIOD");
                 $(".closebutton").focus();
                 //system date
                 if (dataD !== undefined) {
                     //method execute
                     self.dataFromD(dataD.anyPeriodAggrLogId);
                     service.executeAggr(dataD.anyPeriodAggrLogId).done(res => {
-                        self.startDate(moment.utc(dataE.aggrPeriodCommand.startDate).format("YYYY/MM/DD"));
-                        self.endDate(moment.utc(dataE.aggrPeriodCommand.endDate).format("YYYY/MM/DD"));
+                        self.startDate(period.startDate);
+                        self.endDate(period.endDate);
                         self.executeId(dataD.anyPeriodAggrLogId);
                         self.logId(dataE.targetCommand.executionEmpId)
                         self.taskId(res.id);

@@ -33,4 +33,6 @@ public class CompensatoryDayOffManaDataCommand {
 
 	// 未相殺時間数
 	private Integer remainTimes;
+	
+	private int unknownDate;
 }

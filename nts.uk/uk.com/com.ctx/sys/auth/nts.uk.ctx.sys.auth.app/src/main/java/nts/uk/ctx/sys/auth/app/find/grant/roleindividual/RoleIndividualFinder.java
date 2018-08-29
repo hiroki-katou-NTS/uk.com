@@ -75,12 +75,11 @@ public class RoleIndividualFinder {
  			
 			String loginID = user.getLoginID().v();
 			// Filter get Person
-			if (!StringUtil.isNullOrEmpty(user.getAssociatedPersonID().get(), false)) {
-				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
+			if(user.getAssociatedPersonID().isPresent()){
+				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID().get())).findFirst();
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
 			}
-		  
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
 					roleIndividualGrant.getCompanyId(),
@@ -150,7 +149,7 @@ public class RoleIndividualFinder {
         
         List<String> userIdRequest = new ArrayList<String>();
         for(User user : listUsers){
-        	if(user.getAssociatedPersonID() != null){
+        	if(user.getAssociatedPersonID().isPresent()){
         		userIdRequest.add(user.getAssociatedPersonID().get());
         	}
         }
@@ -158,9 +157,9 @@ public class RoleIndividualFinder {
         if(userIdRequest.size() > 0){
         	List<PersonImport> listPerson = personAdapter.findByPersonIds(userIdRequest);
         	for(User user:listUsers){
-        		if(user.getAssociatedPersonID() != null){
+        		if(user.getAssociatedPersonID().isPresent()){
 	        		for(PersonImport person: listPerson){
-	        			if(user.getAssociatedPersonID().equals(person.getPersonId())){
+	        			if(user.getAssociatedPersonID().get().equals(person.getPersonId())){
 	        				user.setUserName(Optional.of(new UserName(person.getPersonName())));
 	        			}
 	        		}
@@ -170,13 +169,14 @@ public class RoleIndividualFinder {
 		
 		for (RoleIndividualGrant rGrant : ListRoleGrants) {
 			String userName = "";
-            User user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst().get();
-            if( user.getUserName().isPresent())
-            	userName = user.getUserName().get().v();
-            rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.getLoginID().v()));
-
+            Optional<User> user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst();
+            if(user.isPresent()){
+	            if( user.get().getUserName().isPresent())
+	            	userName = user.get().getUserName().get().v();
+	            rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.get().getLoginID().v()));
+            }
 		}
-		return rGrants;
+		return rGrants; 
 	}
 	
 	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){

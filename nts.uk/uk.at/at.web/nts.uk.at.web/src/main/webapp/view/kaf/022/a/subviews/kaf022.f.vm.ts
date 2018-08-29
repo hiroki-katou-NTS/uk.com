@@ -73,7 +73,7 @@ ko.components.register('kaf022-f', {
                             <div class="ntsControl blockrow">
                                 <label  class="ntsRadioBox" >
                                     <input type="radio" name="textRadioF" data-bind="
-                                            checkedValue: 0,
+                                            checkedValue: 1,
                                             checked: selectedValueF13,
                                             enable: true
                                         " />
@@ -84,7 +84,7 @@ ko.components.register('kaf022-f', {
                             <div class="ntsControl blockrow">
                                 <label  class="ntsRadioBox">
                                     <input type="radio" name="textRadioF" data-bind="
-                                            checkedValue: 1, 
+                                            checkedValue: 0, 
                                             checked: selectedValueF13,
                                             enable: true
                                         " />
@@ -95,7 +95,7 @@ ko.components.register('kaf022-f', {
                             <div class="ntsControl blockrow">
                                 <label class="ntsRadioBox">
                                     <input type="radio" name="textRadioF" data-bind="
-                                              checkedValue: 2,
+                                              checkedValue: 3,
                                               checked: selectedValueF13,
                                               enable: true
                                           " />
@@ -107,7 +107,7 @@ ko.components.register('kaf022-f', {
                             <div class="ntsControl blockrow">
                                 <label class="ntsRadioBox">
                                     <input type="radio" name="textRadioF" data-bind="
-                                               checkedValue: 3,
+                                               checkedValue: 2,
                                                checked: selectedValueF13,
                                                enable: true
                                             " />

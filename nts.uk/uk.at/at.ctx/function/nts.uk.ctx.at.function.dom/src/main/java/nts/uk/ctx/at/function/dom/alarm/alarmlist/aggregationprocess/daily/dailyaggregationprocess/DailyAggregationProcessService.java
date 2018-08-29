@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
@@ -26,13 +32,11 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -76,7 +80,7 @@ public class DailyAggregationProcessService {
 			DatePeriod datePeriod) {
 		 List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
-		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
+		List<ValueExtractAlarm> listValueExtractAlarm = Collections.synchronizedList(new ArrayList<>()); 		
 		
 		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		alCheckConByCategoryRepo.find(comId, AlarmCategory.DAILY.value, checkConditionCode).ifPresent(alCheckConByCategory -> {
@@ -90,8 +94,35 @@ public class DailyAggregationProcessService {
 			listValueExtractAlarm.addAll(this.extractCheckCondition(dailyAlarmCondition, datePeriod, employees, comId, employeeIds));
 			
 			// tab4: 「システム固定のチェック項目」で実績をチェックする
-			List<ValueExtractAlarm> fixed = employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
-					.flatMap(List::stream).collect(Collectors.toList());
+			List<ValueExtractAlarm> fixed = Collections.synchronizedList(new ArrayList<>());
+//					employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
+//					.flatMap(List::stream).collect(Collectors.toList());
+			/** 並列処理、AsyncTask */
+			// Create thread pool.
+			ExecutorService executorService = Executors.newFixedThreadPool(5);
+			CountDownLatch countDownLatch = new CountDownLatch(employees.size());
+			
+			employees.forEach(employee -> {
+				AsyncTask task = AsyncTask.builder()
+						.withContexts()
+						.keepsTrack(true)
+						.threadName(this.getClass().getName())
+						.build(() -> {
+							fixed.addAll(this.extractFixedCondition(dailyAlarmCondition, period, employee));
+							// Count down latch.
+							countDownLatch.countDown();
+						});
+				executorService.submit(task);
+			});
+			// Wait for latch until finish.
+			try {
+				countDownLatch.await();
+			} catch (InterruptedException ie) {
+				throw new RuntimeException(ie);
+			} finally {
+				// Force shut down executor services.
+				executorService.shutdown();
+			}
 			listValueExtractAlarm.addAll(fixed);
 		});
 		
@@ -271,11 +302,11 @@ public class DailyAggregationProcessService {
 			String alarmGroup1= "";
 			String alarmGroup2 ="";
 			ErAlConAttendanceItemAdapterDto group1 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem);
-			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem);
+			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem,checkItem);
+			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup2();
+			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem,checkItem);
 			if(alarmGroup1.length()!=0 && alarmGroup2.length() !=0 ) {
-				alarmContent = "(" + alarmGroup1 + ")" + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) + "(" + alarmGroup2 + ")";
+				alarmContent =   alarmGroup1 + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) +  alarmGroup2 ;
 			}else {
 				alarmContent = alarmGroup1+ alarmGroup2;
 			}
@@ -309,29 +340,63 @@ public class DailyAggregationProcessService {
 
 	}
 	
-	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem ) {
+	private String formatHourDataByGroup(String  minutes, int conditionAtr) {
+		//conditionAtr = 1 : 時間 ,conditionAtr = 2 : 時刻
+		if(conditionAtr ==1 || conditionAtr ==2) {
+			String h="", m="";
+			if(minutes !=null && !minutes.equals("")) {
+				Integer hour = Integer.parseInt(minutes);
+				h = hour.intValue()/60 +"";
+				m = hour.intValue()%60 +"";
+				if(h.length()<2) h ="0" +h;
+				if(m.length()<2) m ="0" +m;
+				
+				return h+ ":"+ m;
+			}else {
+				return "";
+			}
+			
+		}else {
+			return minutes;
+		}
+
+	}
+	
+	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem,TypeCheckWorkRecord checkItem ) {
 		String alarmGroup= "";		
 		
 		if (!group.getLstErAlAtdItemCon().isEmpty()) {
 			for (int i = 0; i < group.getLstErAlAtdItemCon().size(); i++) {
 				ErAlAtdItemConAdapterDto itemCon = group.getLstErAlAtdItemCon().get(i);
 				CoupleOperator coupleOperator = findOperator(itemCon.getCompareOperator());
-				
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
 					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						+ coupleOperator.getOperatorStart() 
+						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getSingleAtdItem() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						+ coupleOperator.getOperatorStart()
+						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
 					}
 
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {
-						alarm = "(式" + (i + 1) + itemCon.getCompareStartValue() + coupleOperator.getOperatorStart() + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorEnd()
-								+ itemCon.getCompareEndValue() + ")";
+						alarm = "(式" + (i + 1) 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
+								+ coupleOperator.getOperatorStart()
+								+ calculateAttendanceText(itemCon,listAttenDanceItem) 
+								+ coupleOperator.getOperatorEnd()
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())+ ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ", " + itemCon.getCompareEndValue()
-								+ coupleOperator.getOperatorEnd() + calculateAttendanceText(itemCon,listAttenDanceItem) + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+								+ coupleOperator.getOperatorStart() 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
+								+ ", " 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())
+								+ coupleOperator.getOperatorEnd() 
+								+ calculateAttendanceText(itemCon,listAttenDanceItem) + ")";
 					}
 				}
 

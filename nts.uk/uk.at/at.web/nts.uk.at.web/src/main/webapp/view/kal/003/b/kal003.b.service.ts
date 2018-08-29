@@ -13,8 +13,9 @@ module nts.uk.at.view.kal003.b.service {
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
             getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
-            
-
+            // start MinhVV Edit
+            getEnumTypeCheckWorkRecordMultipleMonth: "/at/function/alarm/checkcondition/kal003b/get-enum-type-check-work-record-multiple-month",
+            // End MinhVV
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
             getEnumTypeCheckWorkRecord:     "/at/function/alarm/checkcondition/kal003b/getEnumTypeCheckWorkRecord",
@@ -27,10 +28,18 @@ module nts.uk.at.view.kal003.b.service {
             
             getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
             getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-            getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
+            getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
+            getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
+            
+            //getname monthly
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+            
 
     }
-
+    // MinhVV ADD
+    export function getEnumTypeCheckWorkRecordMultipleMonth() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeCheckWorkRecordMultipleMonth);
+    }
     ////アルゴリズム「日次の初期起動」を実行する
     //command: checkItem => return List<AttdItemDto>
     export function getDailyItemChkItemComparison(checkItem) : JQueryPromise<any> {
@@ -118,6 +127,7 @@ module nts.uk.at.view.kal003.b.service {
 
     export function getAttendanceItemByAtrNew(atr, mode) {
         if (mode == 1) //monthly
+            //return nts.uk.request.ajax("at", paths.getListMonthlyByAtrPrimitive + atr);
             return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
         else //daily
             return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
@@ -126,7 +136,14 @@ module nts.uk.at.view.kal003.b.service {
     export function getOptItemByAtrNew(atr, mode) {
         if (mode == 1) //monthly
             return nts.uk.request.ajax("at", paths.getMonthlyOptItemByAtr + atr);
+            
         else //daily
             return nts.uk.request.ajax("at", paths.getOptItemByAtr + atr);
     }
+    
+    export function getNameMonthly(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameMonthly,listID);
+        }
+    
+    
 }

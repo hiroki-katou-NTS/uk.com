@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf000.test.service{
     var paths = {
         getApplicationIdByDate : "at/request/application/getApplicationInfo",
         getAppInfoByAppID: "at/request/application/getAppInfoByAppID",
-        getAppData: "shared/specialholidaynew/findByCID"
+        getAppData: "shared/specialholiday/findByCID"
     }  
     
     export function getAppId(data: dateInfor){
