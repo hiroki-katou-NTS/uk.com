@@ -59,8 +59,8 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: !$vm.decimalSelectionCls(),
-								enable: !$vm.decimalSelectionCls(),
+								required: $vm.decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
 								option : {width : '45px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
@@ -79,7 +79,7 @@
 								value: minuteFractionDigitProcessCls,
 								optionsText: 'name',
 								editable: false,
-								enable: !$vm.decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
 								required: true,
 								selectFirstIfNull : false,
 								columns: [
@@ -327,7 +327,7 @@
 			<!--  M20  -->
 			<div id="functions-area-bottom">
 				<button id="L20_1" class="x-large proceed "
-					data-bind="click: sendData">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: sendData, enable: !enableRegister()">#{i18n.getText('CMF002_161')}</button>
 				<button id="L20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>

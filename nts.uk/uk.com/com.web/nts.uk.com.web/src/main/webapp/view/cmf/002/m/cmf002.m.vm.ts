@@ -194,6 +194,10 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             }
             return enable;
         }
+        
+        enableRegister(){
+            return hasError();
+        }
 
         start(): JQueryPromise<any> {
             //block.invisible();

@@ -84,14 +84,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 $("#L8_2_2").trigger("validate");
             }
             
-//            if (self.timeDataFormatSetting().nullValueSubs() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {
-//                $("#L9_2").ntsError('check');
-//            }
-            
-//            if (self.timeDataFormatSetting().fixedValue() == 1) {
-//                $("#L10_2").ntsError('check');
-//            }
-            
             if (!hasError()) {
                 let data = ko.toJS(self.timeDataFormatSetting);
                 
@@ -188,7 +180,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             let self = this;
             let enable = (self.timeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
             if(!enable){
-                $('#L9_2_2').ntsError('clear');
+                $('#L9_2').ntsError('clear');
                 self.timeDataFormatSetting().valueOfNullValueSubs(null);
             }
             return enable;
@@ -202,7 +194,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalSelectionCls() {
             let self = this;
             let enable = (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if(enable) {
+            if(!enable) {
                 $('#L3_1').ntsError('clear');
                 self.timeDataFormatSetting().minuteFractionDigit(null);
             }
@@ -213,15 +205,19 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             let self = this;
             return (self.inputMode);
         }
+        //L7
         enableFixedValue() {
             let self = this;
             let enable = (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
             if(!enable) {
                 $('#L10_2').ntsError('clear');
                 self.timeDataFormatSetting().valueOfFixedValue(null);
-            } else{
-                error.clearAll();
             }
+            return enable;
+        }
+
+        enableRegister(){
+            return hasError();
         }
 
         start(): JQueryPromise<any> {
