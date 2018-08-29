@@ -59,15 +59,17 @@ module nts.uk.com.view.cmf002.y {
                     if (res) {
                         let sortByExternalOutLog = _.orderBy(res, ["logRegisterDateTime"]);
                         if (sortByExternalOutLog && sortByExternalOutLog.length) {
-                            _.forOwn(sortByExternalOutLog, function(index) {
-                                self.externalOutLog.push(new ExternalOutLog(
+                            let temp: Array<ExternalOutLog> = [];
+							_.forOwn(sortByExternalOutLog, function(index) {
+                                temp.push(new ExternalOutLog(
                                     index.errorContent,
                                     index.errorEmployee,
                                     index.errorTargetValue,
                                     index.errorItem
-                                ));
-                                self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+                                ));     
                             });
+							self.externalOutLog(temp);
+							self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
                         }
                     }
                 }).fail(function(res: any) {
