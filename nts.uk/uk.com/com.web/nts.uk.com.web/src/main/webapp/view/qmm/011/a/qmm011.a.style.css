@@ -13,7 +13,8 @@
 .div-table {
 	display: table;
 	width: 1000px;
-	border: 0, background-color: #eee;
+	border: 0;
+	background-color: #eee;
 	border-spacing: 5px;
 	margin-left: 100px;
 	margin-top: 20px;

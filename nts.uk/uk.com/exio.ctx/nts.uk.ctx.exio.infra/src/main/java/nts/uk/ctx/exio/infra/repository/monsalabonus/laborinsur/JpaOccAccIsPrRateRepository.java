@@ -1,15 +1,14 @@
 package nts.uk.ctx.exio.infra.repository.monsalabonus.laborinsur;
 
-import java.util.Optional;
-import java.util.List;
-
-import javax.ejb.Stateless;
-
-import nts.uk.ctx.exio.dom.OccAccIsPrRateRepository;
-import nts.uk.ctx.exio.dom.OccAccIsPrRate;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRate;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRateRepository;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsPrRate;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsPrRatePk;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAccIsPrRateRepository

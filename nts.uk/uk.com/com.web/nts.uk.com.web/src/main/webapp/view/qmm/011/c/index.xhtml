@@ -8,7 +8,6 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.c.start.js" />
 			<com:scriptfile path="qmm011.c.service.js" />
 			<com:scriptfile path="qmm011.c.vm.js" />
@@ -71,8 +70,7 @@
 							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
 							<!--B3_4  事業主負担率  -->
 							<th colspan="2" >#{i18n.getText('QMM011_13')}</th>
-							<!--B3_5  端数処理  -->
-							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
+
 						</tr>
 							<tr>
 								<td class="bg-green" width ="80px" style="border: 1px solid #CCC">
@@ -113,15 +111,7 @@
 								<td width ="8px">
 									<label id= "B3_12">#{i18n.getText('QMM011_15')}</label>
 								</td>
-								<td colspan = "2" width ="160px">
-									<input id = "B3_13"
-											data-bind="ntsNumberEditor: {
-																		option : {width: '60px'},
-																		value: busiOwFracClass, 
-																		name:'#{i18n.getText('QMM011_12')}'
-																		}"/>
 
-								</td>
 								
 							</tr>
 					</tbody>

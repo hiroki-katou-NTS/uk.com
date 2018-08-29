@@ -1,18 +1,15 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurPreRate;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.InsuPremiumFractionClassification;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
 * 雇用保険料率
@@ -66,10 +63,10 @@ public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
     }
 
     public EmpInsurPreRate toDomain() {
-        return new EmpInsurPreRate(this.empInsurPreRatePk.hisId, this.empInsurPreRatePk.empPreRateId, this.indBdRatio, this.empContrRatio, this.perFracClass, this.busiOwFracClass);
+        return new EmpInsurPreRate(this.empInsurPreRatePk.hisId, this.empInsurPreRatePk.empPreRateId, this.indBdRatio, this.empContrRatio, EnumAdaptor.valueOf(this.perFracClass, InsuPremiumFractionClassification.class),  EnumAdaptor.valueOf(this.busiOwFracClass, InsuPremiumFractionClassification.class));
     }
     public static QpbmtEmpInsurPreRate toEntity(EmpInsurPreRate domain) {
-        return new QpbmtEmpInsurPreRate(new QpbmtEmpInsurPreRatePk(domain.getHisId(), domain.getEmpPreRateId()), domain.getIndBdRatio(), domain.getEmpContrRatio(), domain.getPerFracClass(), domain.getBusiOwFracClass());
+        return new QpbmtEmpInsurPreRate(new QpbmtEmpInsurPreRatePk(domain.getHisId(), domain.getEmpPreRateId()), domain.getIndBdRatio(), domain.getEmpContrRatio(), domain.getPerFracClass().value, domain.getBusiOwFracClass().value);
     }
 
 }

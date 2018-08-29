@@ -2,10 +2,7 @@ package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
 * 雇用保険料率
@@ -26,24 +23,24 @@ public class EmpInsurPreRate extends AggregateRoot
     private String empPreRateId;
     
     /**
-    * 
+    * 個人負担率
     */
     private String indBdRatio;
     
     /**
-    * 
+    * 事業主負担率
     */
     private String empContrRatio;
     
     /**
-    * 
+    * 個人端数区分
     */
-    private int perFracClass;
+    private InsuPremiumFractionClassification perFracClass;
     
     /**
-    * 
+    * 事業主端数区分
     */
-    private int busiOwFracClass;
+    private InsuPremiumFractionClassification busiOwFracClass;
     
     
 }

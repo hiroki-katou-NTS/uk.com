@@ -1,19 +1,14 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.OccAccIsPrRate;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.InsuPremiumFractionClassification;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
 * 労災保険料率
@@ -60,10 +55,10 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     }
 
     public OccAccIsPrRate toDomain() {
-        return new OccAccIsPrRate(this.occAccIsPrRatePk.ocAcIsPrRtId, this.occAccIsPrRatePk.hisId, this.occAccInsurBusNo, this.fracClass, this.empConRatio);
+        return new OccAccIsPrRate(this.occAccIsPrRatePk.ocAcIsPrRtId, this.occAccIsPrRatePk.hisId, this.occAccInsurBusNo,  EnumAdaptor.valueOf(this.fracClass, InsuPremiumFractionClassification.class), this.empConRatio);
     }
     public static QpbmtOccAccIsPrRate toEntity(OccAccIsPrRate domain) {
-        return new QpbmtOccAccIsPrRate(new QpbmtOccAccIsPrRatePk(domain.getOcAcIsPrRtId(), domain.getHisId()), domain.getOccAccInsurBusNo(), domain.getFracClass(), domain.getEmpConRatio());
+        return new QpbmtOccAccIsPrRate(new QpbmtOccAccIsPrRatePk(domain.getOcAcIsPrRtId(), domain.getHisId()), domain.getOccAccInsurBusNo(), domain.getFracClass().value, domain.getEmpConRatio());
     }
 
 }
