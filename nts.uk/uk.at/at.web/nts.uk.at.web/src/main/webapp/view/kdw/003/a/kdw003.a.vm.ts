@@ -287,21 +287,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime) 
-                    $('#fixed-table td:nth-child(1),th:nth-child(1)').show();
+                    $('#fixed-table td:nth-child(1), #fixed-table th:nth-child(1)').show();
                 else 
-                    $('#fixed-table td:nth-child(1),th:nth-child(1)').hide();
+                    $('#fixed-table td:nth-child(1), #fixed-table th:nth-child(1)').hide();
                 if (val.dispSubstitute)
-                    $('#fixed-table td:nth-child(2),th:nth-child(2)').show();
+                    $('#fixed-table td:nth-child(2), #fixed-table th:nth-child(2)').show();
                 else 
-                    $('#fixed-table td:nth-child(2),th:nth-child(2)').hide();
+                    $('#fixed-table td:nth-child(2), #fixed-table th:nth-child(2)').hide();
                 if (val.dispAnnualDay || val.dispAnnualTime)
-                    $('#fixed-table td:nth-child(3),th:nth-child(3)').show(); 
+                    $('#fixed-table td:nth-child(3), #fixed-table th:nth-child(3)').show(); 
                 else 
-                    $('#fixed-table td:nth-child(3),th:nth-child(3)').hide();
+                    $('#fixed-table td:nth-child(3), #fixed-table th:nth-child(3)').hide();
                 if (val.dispReserve)
-                    $('#fixed-table td:nth-child(4),th:nth-child(4)').show();
+                    $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').show();
                 else
-                    $('#fixed-table td:nth-child(4),th:nth-child(4)').hide();
+                    $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
             });
         }
         helps(event, data) {
