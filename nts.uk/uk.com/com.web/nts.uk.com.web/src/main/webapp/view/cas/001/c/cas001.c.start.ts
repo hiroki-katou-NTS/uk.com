@@ -26,23 +26,25 @@ module nts.uk.com.view.cas001.c {
                         columnSettings: [
                             { columnKey: "roleName", allowTooltips: true }
                         ],
-                        visibility: "overflow"                     
+                        visibility: "overflow"
                     }
                 ]
             });       
         __viewContext.bind(__viewContext["viewModel"]);
+        
         
         $(document).ready(function() {
             $('#grid0_container').attr("tabindex", "-1");
             $('#grid0_virtualContainer').attr("tabindex", "1");
             $('span.box').attr("tabindex", "1");
             let beforeIndex = -1;
+            $("#grid0 > tbody > tr:nth-child(1) > td:nth-child(1) > div > div > label > span").focus();
             $(window).keyup((e) => {
                 if (e.which === 9) {
                     let tabindex = e.target.attributes.tabindex ? e.target.attributes.getNamedItem("tabindex").value : e.target.attributes.getNamedItem("tab-index").value;
-                    if (beforeIndex == 3) {
-                        $("#grid0_disabled > span > div > label > span.box").focus();
-                    }
+//                    if (beforeIndex == 3) {
+//                        $("#grid0 > tbody > tr:nth-child(1) > td:nth-child(1) > div > div > label > span").focus();
+//                    }
                     beforeIndex = parseInt(tabindex);
                 }
             });

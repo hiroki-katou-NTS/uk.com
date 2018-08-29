@@ -57,7 +57,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
                 self.elapseTime.start();
-                if (self.params)
+                if (self.params.check != 2 || !self.params.check)
                     self.processMonthlyUpdate();
                 else {
                     self.taskId(localStorage.getItem("MonthlyClosureTaskId"));
@@ -76,6 +76,18 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private processMonthlyUpdate(): void {
             var self = this;
             var command = self.params;
+//            var command = {
+//                    closureDay : self.params.closureDay,
+//                    closureId: self.params.closureId,
+//                    currentMonth: self.params.currentMonth,
+//                    endDT: self.params.endDT,
+//                    isLastDayOfMonth: self.params.isLastDayOfMonth,
+//                    listEmployeeId: self.params.listEmployeeId,
+//                    monthlyClosureUpdateLogId: self.params.monthlyClosureUpdateLogId,
+//                    periodEnd: self.params.periodEnd,
+//                    periodStart: moment(self.params.periodStart).format("yyyy-MM-dd hh:mm:ss.SSS"),
+//                    startDT: self.params.startDT
+//                }
             service.executeMonthlyClosure(command).done(res => {
                 self.taskId(res.id);
                 localStorage.setItem("MonthlyClosureTaskId", res.id);
@@ -128,6 +140,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.isComplete(true);
                 $("#F3_2").focus();
                 self.endTime(taskInfor.finishedAt);
+                localStorage.setItem("MonthlyClosureExecutionEndDate", self.endTime());
                 self.elapseTime.end();
                 self.completeStatus(result.updateLog.completeStatus);
             }).fail((error) => {
@@ -146,6 +159,13 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 localStorage.removeItem("MonthlyClosureId");
                 localStorage.removeItem("MonthlyClosureExecutionDateTime");
                 localStorage.removeItem("MonthlyClosureTaskId");
+//                localStorage.removeItem("MonthlyClosureStartDT");
+//                localStorage.removeItem("MonthlyClosureEndDT");
+//                localStorage.removeItem("MonthlyClosureCurrentMonth");
+//                localStorage.removeItem("MonthlyClosureDay");
+//                localStorage.removeItem("MonthlyClosureDayOfMonth");
+//                localStorage.removeItem("MonthlyClosurePeriodStart");
+//                localStorage.removeItem("MonthlyClosurePeriodEnd");
                 setShared("kmw006fConfirm", {check: true});
                 nts.uk.ui.windows.close();
             }).fail((error) => {

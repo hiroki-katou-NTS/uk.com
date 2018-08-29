@@ -77,7 +77,7 @@ module nts.uk.at.view.kml001.a {
                             nts.uk.ui.block.clear();    
                             self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                                 if(value!=null) {
-                                    nts.uk.ui.block.invisible();
+                                    //nts.uk.ui.block.invisible();
                                     let historyID = _.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; }).historyID();
                                     servicebase.findByHistoryID(historyID).done(data => {
                                         self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));   
@@ -99,6 +99,8 @@ module nts.uk.at.view.kml001.a {
                                         });   
                                     }).fail(res => {
                                             
+                                    }).always(() => {
+                                        nts.uk.ui.block.clear();
                                     });
                                     self.isInsert(false);
                                     $("#memo").focus(); 
