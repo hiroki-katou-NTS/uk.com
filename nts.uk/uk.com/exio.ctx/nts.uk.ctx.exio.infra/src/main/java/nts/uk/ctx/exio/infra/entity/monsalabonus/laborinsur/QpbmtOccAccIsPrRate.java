@@ -2,8 +2,6 @@ package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.InsuPremiumFractionClassification;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -55,7 +53,7 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     }
 
     public OccAccIsPrRate toDomain() {
-        return new OccAccIsPrRate(this.occAccIsPrRatePk.ocAcIsPrRtId, this.occAccIsPrRatePk.hisId, this.occAccInsurBusNo,  EnumAdaptor.valueOf(this.fracClass, InsuPremiumFractionClassification.class), this.empConRatio);
+        return new OccAccIsPrRate(this.occAccIsPrRatePk.ocAcIsPrRtId, this.occAccIsPrRatePk.hisId, this.occAccInsurBusNo, this.fracClass, this.empConRatio);
     }
     public static QpbmtOccAccIsPrRate toEntity(OccAccIsPrRate domain) {
         return new QpbmtOccAccIsPrRate(new QpbmtOccAccIsPrRatePk(domain.getOcAcIsPrRtId(), domain.getHisId()), domain.getOccAccInsurBusNo(), domain.getFracClass().value, domain.getEmpConRatio());

@@ -1,13 +1,13 @@
 package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
 * 労災保険料率
 */
-@AllArgsConstructor
+
 @Getter
 public class OccAccIsPrRate extends AggregateRoot
 {
@@ -36,6 +36,12 @@ public class OccAccIsPrRate extends AggregateRoot
     * 事業主負担率
     */
     private String empConRatio;
-    
-    
+
+    public OccAccIsPrRate(String ocAcIsPrRtId, String hisId, int occAccInsurBusNo, int fracClass, String empConRatio) {
+        this.ocAcIsPrRtId = ocAcIsPrRtId;
+        this.hisId = hisId;
+        this.occAccInsurBusNo = occAccInsurBusNo;
+        this.fracClass = EnumAdaptor.valueOf(fracClass, InsuPremiumFractionClassification.class);
+        this.empConRatio = empConRatio;
+    }
 }

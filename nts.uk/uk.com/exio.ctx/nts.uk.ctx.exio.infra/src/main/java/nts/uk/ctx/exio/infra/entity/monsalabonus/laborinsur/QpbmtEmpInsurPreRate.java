@@ -3,9 +3,7 @@ package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurPreRate;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.InsuPremiumFractionClassification;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -17,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_EMP_INSUR_ PRE_RATE")
+@Table(name = "QPBMT_EMP_INSUR_PRE_RATE")
 public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -39,14 +37,14 @@ public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
     * 
     */
     @Basic(optional = false)
-    @Column(name = "EMP_CONTR_ RATIO")
+    @Column(name = "EMP_CONTR_RATIO")
     public String empContrRatio;
     
     /**
     * 
     */
     @Basic(optional = false)
-    @Column(name = "PER_ FRAC_CLASS")
+    @Column(name = "PER_FRAC_CLASS")
     public int perFracClass;
     
     /**
@@ -63,7 +61,7 @@ public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
     }
 
     public EmpInsurPreRate toDomain() {
-        return new EmpInsurPreRate(this.empInsurPreRatePk.hisId, this.empInsurPreRatePk.empPreRateId, this.indBdRatio, this.empContrRatio, EnumAdaptor.valueOf(this.perFracClass, InsuPremiumFractionClassification.class),  EnumAdaptor.valueOf(this.busiOwFracClass, InsuPremiumFractionClassification.class));
+        return new EmpInsurPreRate(this.empInsurPreRatePk.hisId, this.empInsurPreRatePk.empPreRateId, this.indBdRatio, this.empContrRatio, this.perFracClass, this.busiOwFracClass);
     }
     public static QpbmtEmpInsurPreRate toEntity(EmpInsurPreRate domain) {
         return new QpbmtEmpInsurPreRate(new QpbmtEmpInsurPreRatePk(domain.getHisId(), domain.getEmpPreRateId()), domain.getIndBdRatio(), domain.getEmpContrRatio(), domain.getPerFracClass().value, domain.getBusiOwFracClass().value);
