@@ -90,18 +90,18 @@
 									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_10')}</div>
 								</div>
 								<div class="cell valign-center" data-bind="with: currentPersonCost">
-									<div id="combo-box" data-bind="ntsComboBox: {
+									<div id="combo-box"  data-bind="ntsComboBox: {
 															name: '#[KML001_27]',
-															options: ko.observableArray([
+															options: [
 												                { code: 0, name: '#{i18n.getText('KML001_22')}' },
 												                { code: 1, name: '#{i18n.getText('KML001_23')}' },
 												                { code: 2, name: '#{i18n.getText('KML001_24')}' },
 												                { code: 3, name: '#{i18n.getText('KML001_25')}' },
-												                { code: 4, name: '#{i18n.getText('KML001_26')}' }
-												            ]),
+												                { code: 4, name: '#{i18n.getText('KML001_26')}' }],
 															optionsValue: 'code',
 															value: unitPrice,
 															optionsText: 'name',
+															dropDownAttachedToBody:true,
 															enable: true }">
 									</div>
 								</div>
@@ -109,7 +109,7 @@
 							<div class="table">
 								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'PersonCostMemo' }">#{i18n.getText('KML001_11')}</div>
 								<a data-bind="with: currentPersonCost">
-									<textarea id="memo" data-bind="ntsMultilineEditor: {
+									<textarea id="memo"  data-bind="ntsMultilineEditor: {
 										name: '#[KML001_11]',
 										value: memo,
 										constraint: 'PersonCostMemo'}" />
