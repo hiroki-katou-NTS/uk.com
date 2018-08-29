@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -42,7 +41,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
-    @JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate date;
 
 	private int calculationState;
