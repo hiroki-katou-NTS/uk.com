@@ -272,9 +272,11 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
-            // validate baseDate
-            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
-                return;
+            // set current system date if baseDate is invalid
+            const baseDate = self.$input.find('#work-place-base-date');
+            baseDate.ntsError('check');
+            if (baseDate.ntsError('hasError')) {
+                self.baseDate(new Date());
             }
 
             // Find data.
@@ -311,20 +313,21 @@ module kcp.share.tree {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
                     dfd.resolve();
-                })
+                });
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
                     self.addIconToAlreadyCol();
                 });
-                // defined function focus
-                $.fn.focusTreeGridComponent = function() {
-                    if (self.hasBaseDate()) {
-                        $('.base-date-editor').first().focus();
-                    } else {
-                        $("#combo-box-tree-component").focus();
-                    }
-                }
             });
+
+            // defined function focus
+            $.fn.focusTreeGridComponent = function() {
+                if (self.hasBaseDate()) {
+                    $('.base-date-editor').first().focus();
+                } else {
+                    $("#combo-box-tree-component").focus();
+                }
+            }
 
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
@@ -602,8 +605,9 @@ module kcp.share.tree {
             let dfd = $.Deferred<void>();
             let self = this;
             self.addColToGrid(self.data, self.itemList());
-            self.$input.html(TREE_COMPONENT_HTML);
-            _.defer(() => {
+
+            const initComponent = () => {
+                self.$input.html(TREE_COMPONENT_HTML);
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
 
@@ -655,14 +659,11 @@ module kcp.share.tree {
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
-                // set selected workplaced
-                if (!_.isNil(self.selectedWorkplaceIds())) {
-                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
-                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
-                }
-
                 // init event selected changed
                 self.initEvent();
+
+                // set selected workplaced
+                self.selectedWorkplaceIds.valueHasMutated();
 
                 // fix bug scroll on tree
                 _.defer(() => {
@@ -687,7 +688,14 @@ module kcp.share.tree {
                 }
                 
                 dfd.resolve();
-            });
+            };
+
+            if (_.isNil(ko.dataFor(document.body))) {
+                nts.uk.ui.viewModelApplied.add(initComponent);
+            } else {
+                initComponent();
+            }
+
             return dfd.promise();
         }
 
@@ -707,6 +715,15 @@ module kcp.share.tree {
                 } else {
                     self.selectedWorkplaceIds(selecteds[0]);
                 }
+            });
+
+            self.selectedWorkplaceIds.subscribe(ids => {
+                const grid = $('#' + self.getComIdSearchBox());
+                if (_.isNil(grid.data("igGrid"))) {
+                    return;
+                }
+                grid.ntsTreeGrid('setSelected',
+                    self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
             });
         }
 
@@ -736,7 +753,11 @@ module kcp.share.tree {
          */
         public reload() {
             let self = this;
-            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+
+            // validate base date
+            const baseDate = self.$input.find('#work-place-base-date');
+            baseDate.ntsError('check');
+            if (baseDate.ntsError('hasError')) {
                 return;
             }
             const param = <service.WorkplaceParam>{};
@@ -767,7 +788,6 @@ module kcp.share.tree {
         private selectAll() {
             let self = this;
             this.selectedWorkplaceIds(this.listWorkplaceId);
-            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
         }
 
         /**
@@ -781,7 +801,6 @@ module kcp.share.tree {
             self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
             if (listSubWorkplaceId.length > 0) {
                 self.selectedWorkplaceIds(listSubWorkplaceId);
-                $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
             }
         }
         /**
@@ -941,12 +960,7 @@ module kcp.share.tree {
         static KCP004_8 = nts.uk.resource.getText('KCP004_8');
     }
 
-var TREE_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:com="http://xmlns.jcp.org/jsf/component"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <style type="text/css">
+var TREE_COMPONENT_HTML = `<style type="text/css">
 #nts-component-list .nts-searchbbox-wrapper {
     float: left;
 }
@@ -1013,8 +1027,7 @@ var TREE_COMPONENT_HTML = `<?xml version='1.0' encoding='UTF-8' ?>
             <table id="multiple-tree-grid" class="cf">
             </table>
         <!-- /ko -->
-    </div>
-</ui:composition>`;
+    </div>`;
 }
 
 /**

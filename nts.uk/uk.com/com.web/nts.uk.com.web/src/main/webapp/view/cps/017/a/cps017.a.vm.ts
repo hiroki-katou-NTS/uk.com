@@ -1,4 +1,4 @@
-module nts.uk.com.view.cps017.a.viewmodel {
+﻿module nts.uk.com.view.cps017.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -55,6 +55,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
         // constraints
         constraints: KnockoutObservable<any> = ko.observable();
         codeNameLabelConstraint : KnockoutObservableArray<string> = ko.observableArray();
+        codeConstraint : KnockoutObservable<any> = ko.observable('');
+        nameConstraint : KnockoutObservable<any> = ko.observable('');
         extenalLabelConstraint : KnockoutObservable<String> = ko.observable();
         
         focus: any = {
@@ -74,16 +76,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //check insert/update
             self.checkCreateaaa = ko.observable(true);
 
-            //Subscribe: 項目変更→項目のID変更
+            //Subscribe: 頛�変更→雮のID変更
             perInfoSelectionItem.selectionItemId.subscribe(id => {
                 if (id) {
 
                     let selectedObject: ISelectionItem1 = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == id;
                     });
-
                     if (selectedObject != undefined) {
-
                         //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
@@ -101,8 +101,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         // change form-label
                         self.changeLabelConstrain(selectedObject.characterType);
                     }
-                    // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.isGroupManager === true && perInfoSelectionItem.selectionItemClassification() === 1) {
+                    // シスッ�管琀��かつ　選択してあ�選択雮の「選択雮区刀�＝社員のと�
+                    if (self.isGroupManager === true) {
                         self.showRefecToAll(true);
                     } else {
                         self.showRefecToAll(false);
@@ -115,10 +115,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             return item;
                         });
                         self.listHistorySelection(changeData);
-                        if (self.historySelection().histId() !== self.listHistorySelection()[0].histId) {
-                            self.historySelection().histId(self.listHistorySelection()[0].histId);    
+                        if(self.listHistorySelection().length > 0) {
+                            if (self.historySelection().histId() !== self.listHistorySelection()[0].histId) {
+                                self.historySelection().histId(self.listHistorySelection()[0].histId);    
+                            } else {
+                                self.historySelection().histId.valueHasMutated();    
+                            }
                         } else {
-                            self.historySelection().histId.valueHasMutated();    
+                            self.historySelection().histId("");
+                            self.historySelection().histId.valueHasMutated();
                         }
                     });
 
@@ -137,6 +142,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             historySelection.histId.subscribe(x => {
                 if (x) {
+                    self.enableRegister(true);
                     let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
                     if (histCur.endDate !== '9999/12/31') {
                         self.setEnableDisplay5(false);
@@ -154,7 +160,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     self.historySelection().endDate(histCur.endDate);
 
                     self.listSelection.removeAll();
-                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
+                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {
+                        if (itemList && itemList.length > 0) {
                             self.checkCreateaaa(false);
 
                             // fix responsive bug
@@ -168,12 +175,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.createNewData();
                         }
                     });
+                }else {
+                    self.listSelection.removeAll();
+                    self.createNewData();
+                    self.enableRegister(false);
                 }
             });
 
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
+                    self.checkCreateaaa(false);
+                    self.enableCreateNew(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
@@ -204,7 +217,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         }
 
-        //開始
+        //開�
         start(): JQueryPromise<any> {
             let self = this,
                 historySelection: HistorySelection = self.historySelection(),
@@ -217,7 +230,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
 
-            // ドメインモデル「個人情報の選択項目」をすべて取得する
+            // ドメインモッ�「個人惱の選択雮」をすべて取得す�
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 if (itemList && itemList.length > 0) {
 
@@ -286,18 +299,21 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this;
             self.codeNameLabelConstraint.removeAll();
             if (characterType == 1) {
-                self.codeNameLabelConstraint.push('SelectionCdNumeric');
-                self.extenalLabelConstraint('ExternalCdNumeric');
-            } else {
                 self.codeNameLabelConstraint.push('SelectionCdAlphaNumeric');
+                self.codeConstraint('SelectionCdAlphaNumeric');
                 self.extenalLabelConstraint('ExternalCdAlphalNumeric');
+            } else {
+                self.codeNameLabelConstraint.push('SelectionCdNumeric');
+                self.codeConstraint('SelectionCdNumeric');
+                self.extenalLabelConstraint('ExternalCdNumeric');
             }
             self.codeNameLabelConstraint.push('SelectionName');
+            self.nameConstraint('SelectionName');
             self.codeNameLabelConstraint.valueHasMutated();
             self.extenalLabelConstraint.valueHasMutated();
         }
 
-        //新規ボタン
+        //新規�タン
         createNewData() {
             let self = this;
             let selection: Selection = self.selection();
@@ -352,7 +368,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.enableReflUnrComp(value);
         }
 
-        //検証チェック 
+        //検証チェヂ� 
         validate() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -373,7 +389,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }
         }
 
-        //新規モード
+        //新規モー�
         add() {
             let self = this,
                 currentItem: Selection = self.selection(),
@@ -421,7 +437,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         }
 
-        //更新モード
+        //更新モー�
         update() {
            
             let self = this,
@@ -463,7 +479,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let lastIndex = self.listSelection().length - 1;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeDataSelection(command).done(function() {
-
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                         self.listSelection.removeAll();
                         service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
@@ -479,14 +494,21 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 self.historySelection().histId.valueHasMutated();
                             }
                         });
+                        if (self.listSelection().length > 1) {
+                           self.checkCreateaaa(false);
+                        } else {
+                            self.createNewData();
+                            self.checkCreateaaa(true);
+                        }
                     });
                 });
+                
             }).ifNo(() => {
                 self.selection().selectionID.valueHasMutated();
             })
         }
 
-        // 履歴削除をする
+        // 履歴削除をす�
         removeHistory() {
             let self = this;
             let perInfoSelectionItem = self.perInfoSelectionItem();
@@ -754,6 +776,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == 1)
-        return "●";
+        return "�;
     return '';
 }

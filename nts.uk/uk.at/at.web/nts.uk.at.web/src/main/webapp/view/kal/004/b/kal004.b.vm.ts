@@ -81,19 +81,19 @@ module nts.uk.com.view.kal004.b.viewmodel {
             var extractionId = self.getParam.extractionId;
             var extractionRange = self.getParam.extractionRange;
             var strSpecify = self.strSelected(); 
-            var strPreviousDay = null;
-            var strMakeToDay = null;
-            var strDay = null;
-            var strPreviousMonth = null ;
-            var strCurrentMonth = null;
-            var strMonth = null;
+            var strPreviousDay = 0;
+            var strMakeToDay = 0;
+            var strDay = 0;
+            var strPreviousMonth = 0 ;
+            var strCurrentMonth = 0;
+            var strMonth = 0;
             var endSpecify = self.endSelected();
-            var endPreviousDay = null;
-            var endMakeToDay = null;
-            var endDay = null;
-            var endPreviousMonth = null;
-            var endCurrentMonth = null;
-            var endMonth = null;
+            var endPreviousDay = 0;
+            var endMakeToDay = 0;
+            var endDay = 0;
+            var endPreviousMonth = 0;
+            var endCurrentMonth = 0;
+            var endMonth = 0;
             //start
             if(self.strSelected()==0){
                 if(self.getCategoryId() == 5 || self.getCategoryId() == 13){
@@ -101,7 +101,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 }else{
                     strPreviousDay = self.strPreviousDay();
                 }
-                strDay = self.strDay();
+                strDay = Number(self.strDay());
                 if(strDay==0){
                     strMakeToDay = 1;
                 }else{
@@ -123,7 +123,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 }else{
                     endPreviousDay = self.endPreviousDay();
                 }
-                endDay = self.endDay();
+                endDay = Number(self.endDay());
                 if(endDay==0){
                     endMakeToDay = 1;
                 }else{

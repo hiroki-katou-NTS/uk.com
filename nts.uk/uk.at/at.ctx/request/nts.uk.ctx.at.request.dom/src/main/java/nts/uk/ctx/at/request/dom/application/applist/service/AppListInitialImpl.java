@@ -477,39 +477,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
 			List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
 			//get info full
-//			for (Application_New app : lstOverTime) {
-//				AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
-//				lstAppOt.add(appOt);
-//			}
 			//残業申請: get full info (0)
 			List<String> lstAppOtID = lstOverTime.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 			if(!lstAppOtID.isEmpty()){
 				lstAppOt = repoAppDetail.getListAppOverTimeInfo(companyId, lstAppOtID);
 			}
 			//直行直帰申請: get full info (4)
-//			for (Application_New app : lstGoBack) {
-//				AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
-//				lstAppGoBack.add(appGoBack);
-//			}
 			List<String> lstAppGoBackID = lstGoBack.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 			if(!lstAppGoBackID.isEmpty()){
 				lstAppGoBack = repoAppDetail.getListAppGoBackInfo(companyId, lstAppGoBackID);
 			}
-//			for (Application_New app : lstHdWork) {
-//				AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
-//				lstAppHdWork.add(appHdWork);
-//			}
-			
 			//休日出勤時間申請: get full info(6);
 			List<String> lstAppHdID = lstHdWork.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 			if(!lstAppHdID.isEmpty()){
 				lstAppHdWork = repoAppDetail.getListAppHdWorkInfo(companyId, lstAppHdID);
 			}
 			//勤務変更申請: get full info (2)
-//			for (Application_New app : lstWkChange) {
-//				AppWorkChangeFull appWkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
-//				lstAppWorkChange.add(appWkChange);
-//			}
 			List<String> lstAppWkChangeID = lstWkChange.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 			if(!lstAppWkChangeID.isEmpty()){
 				lstAppWorkChange = repoAppDetail.getListAppWorkChangeInfo(companyId, lstAppWkChangeID);

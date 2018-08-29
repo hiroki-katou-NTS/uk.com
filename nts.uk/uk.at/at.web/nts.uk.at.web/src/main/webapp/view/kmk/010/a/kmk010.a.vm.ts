@@ -163,8 +163,7 @@ module nts.uk.at.view.kmk010.a {
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
                     var isSave: number = nts.uk.ui.windows.getShared("isSave");
                     if (isSave && isSave == 1) {
-                        $('.lableData').ntsError('clear');
-                        $('.overtime').ntsError('clear');
+                        nts.uk.ui.errors.clearAll();
                         self.startPage().done(() => {
                             service.initTooltip();
                         });
@@ -180,8 +179,7 @@ module nts.uk.at.view.kmk010.a {
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
                     var isSave: number = nts.uk.ui.windows.getShared("isSave");
                     if (isSave && isSave == 1) {
-                        $('.lableData').ntsError('clear');
-                        $('.overtime').ntsError('clear');
+                        nts.uk.ui.errors.clearAll();
                         self.startPage().done(() => {
                             service.initTooltip();
                         });

@@ -129,10 +129,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		if (command.getLoginId() == null || command.getLoginId().trim().isEmpty()) {
 			throw new BusinessException("Msg_309");
 		}
-		//check input password
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
+//		//check input password
+//		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+//			throw new BusinessException("Msg_310");
+//		}
 	}
 	
 	/**

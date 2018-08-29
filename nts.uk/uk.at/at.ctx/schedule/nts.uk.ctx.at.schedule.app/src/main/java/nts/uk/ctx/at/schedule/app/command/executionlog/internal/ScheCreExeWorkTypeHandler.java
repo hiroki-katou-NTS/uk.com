@@ -222,6 +222,10 @@ public class ScheCreExeWorkTypeHandler {
 			case 1:
 				List<WorkType> findByCompanyIdAndLeaveAbsences = this.workTypeRepository
 						.findByCompanyIdAndLeaveAbsence(command.getBaseGetter().getCompanyId());
+				// check findByCompanyIdAndLeaveAbsences empty
+				if(findByCompanyIdAndLeaveAbsences.isEmpty()){
+					break;
+				}
 				WorkType workType2 = findByCompanyIdAndLeaveAbsences.get(FIRST_DATA);
 				WorkTypeCd = workType2.getWorkTypeCode().v();
 				break;

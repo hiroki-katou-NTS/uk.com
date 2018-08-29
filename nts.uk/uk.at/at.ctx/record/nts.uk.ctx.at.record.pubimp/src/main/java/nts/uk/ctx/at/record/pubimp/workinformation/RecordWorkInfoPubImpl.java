@@ -122,6 +122,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 					record.setOutingTimePrivate(ot.getRecordTotalTime().getTotalTime().getTime().valueAsMinutes());
 				}
 			});
+			
 			totalWT.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().ifPresent(ovt -> {
 				if(ovt.getFlexTime() != null && ovt.getFlexTime().getFlexTime() != null){
 					record.setFlexTime(ovt.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes());

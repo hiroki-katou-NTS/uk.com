@@ -50,8 +50,8 @@
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: enableOpenDialogB" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
-				<button id="A1_007" class="danger" tabindex="6"
-					data-bind="click: ReflUnrComp, visible : showRefecToAll , enable: enableReflUnrComp">#{i18n.getText('CPS017_49')}</button>
+				<button id="A1_007" tabindex="6"
+					data-bind="click: ReflUnrComp, visible : showRefecToAll">#{i18n.getText('CPS017_49')}</button>
 
 				<com:ko-if bind="(isDialog() === true)">
 					<button id="A1_008" tabindex="5" style="display: none"
@@ -74,7 +74,7 @@
 						<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
+								searchMode: 'highlight',
 								targetKey: 'selectionItemId',
 								mode: 'igGrid', 
 								comId: 'sel_item_grid',
@@ -182,11 +182,11 @@
 						</div>
 						<div class="input">
 							
-							 	<span><input id="code"
+							 	<span><input class = "limited-label" id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
-										constraint: ko.toJS($vm.codeNameLabelConstraint)[0], 
+										constraint: $vm.codeConstraint, 
 										required: true, 
 										enable: $parent.enableSelectionCd, 
 		 								immediate: false}, hasFocus: $vm.focus.code" />
@@ -197,7 +197,7 @@
 									data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
 								value: selectionName, 
-								constraint: ko.toJS($vm.codeNameLabelConstraint)[1], 
+								constraint: $vm.nameConstraint, 
 								required: true, 
  								enable: $parent.enableSelectionName, 
 								immediate: false}, hasFocus: $vm.focus.name" />
@@ -209,7 +209,7 @@
 								<label>#{i18n.getText('CPS017_23')}</label>
 							</div>
 							<div class="input">
-								<input id="exCode"
+								<input class = ".limited-label" id="exCode"
 									data-bind="ntsTextEditor: {
 									name: '#[CPS017_24]',
 									value: externalCD,

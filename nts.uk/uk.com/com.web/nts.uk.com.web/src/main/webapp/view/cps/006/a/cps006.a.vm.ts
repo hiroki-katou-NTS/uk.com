@@ -331,6 +331,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         });
                     });
                 }
+                $('#ctgName').focus();
             });
         }
 
@@ -363,6 +364,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     dialog.alertError({ messageId: res.messageId });
                 }
             }).always(() => {
+                $('#ctgName').focus();
                 block.clear();
             });
 
