@@ -192,14 +192,17 @@ public class MonthlyAggregateProcessService {
 							case 2 :break;//chua co
 							case 3 :break;//chua co
 							case 4 :
-								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID.get(),closureDate.get());
-								if(agreement.isPresent()) {
-									agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
-									agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-									String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
-									agreement.get().setAlarmValueDate(dateAgreement);
-									listValueExtractAlarm.add(agreement.get());
-								}
+									if (closureID.isPresent() && closureDate.isPresent()) {
+										Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(
+												employee.getId(), yearMonth.v().intValue(), closureID.get(), closureDate.get());
+										if (agreement.isPresent()) {
+											agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
+											agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+											String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
+											agreement.get().setAlarmValueDate(dateAgreement);
+											listValueExtractAlarm.add(agreement.get());
+										}
+									}
 							break;
 							default : break; // so 6 : chua co
 						}//end switch
