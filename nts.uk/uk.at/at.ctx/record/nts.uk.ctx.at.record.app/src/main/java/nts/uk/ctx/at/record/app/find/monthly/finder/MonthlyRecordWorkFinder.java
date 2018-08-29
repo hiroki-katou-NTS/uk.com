@@ -9,12 +9,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnnLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
@@ -43,6 +46,15 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	@Inject
 	private AnyItemOfMonthlyFinder anyItemFinder;
 
+	@Inject
+	private DayOffRemainMonthFinder dayOffFinder;
+	
+	@Inject
+	private SpecialHolidayRemainMonthFinder specialHolidayFinder;
+	
+	@Inject
+	private AbsenceLeaveRemainMonthFinder absenceLeaveFinder;
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public MonthlyRecordWorkDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
@@ -57,6 +69,9 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		dto.setAnnLeave(annLeaFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setRsvLeave(rsvLeaFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setAnyItem(anyItemFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setDayOff(dayOffFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setAbsenceLeave(absenceLeaveFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setSpecialHoliday(specialHolidayFinder.find(employeeId, yearMonth, closureId, closureDate));
 		return dto;
 	}
 
@@ -83,6 +98,9 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);
 		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
 		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
+		List<MonthlyDayoffRemainDataDto> dayOff = dayOffFinder.find(employeeId, yearMonth);
+		List<AbsenceLeaveRemainDataDto> absenceLeave = absenceLeaveFinder.find(employeeId, yearMonth);
+		List<SpecialHolidayRemainDataDto> specialHoliday = specialHolidayFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());
@@ -94,6 +112,9 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 			dto.setAnnLeave(filterItem(ann, a));
 			dto.setRsvLeave(filterItem(rsv, a));
 			dto.setAnyItem(filterItem(any, a));
+			dto.setDayOff(filterItem(dayOff, a));
+			dto.setAbsenceLeave(filterItem(absenceLeave, a));
+			dto.setSpecialHoliday(filterItem(specialHoliday, a));
 			return dto;
 		}).collect(Collectors.toList());
 	}

@@ -81,6 +81,9 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, 
 						appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeIDLoop)).findAny().get().getAppRootInstanceLst());
+				if(appRootInstance==null){
+					continue;
+				}
 				// 対象日の就業実績確認状態を取得する
 				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, employeeIDLoop, loopDate, rootType);
 				// 中間データから承認ルートインスタンスに変換する
@@ -127,7 +130,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		}
 		// 承認ルートなしフラグをチェックする
 		if(noAppRootFlag){
-			throw new BusinessException("error on process: 対象日の承認ルート中間データを取得する");
+			return null;
 		}
 		return result;
 	}

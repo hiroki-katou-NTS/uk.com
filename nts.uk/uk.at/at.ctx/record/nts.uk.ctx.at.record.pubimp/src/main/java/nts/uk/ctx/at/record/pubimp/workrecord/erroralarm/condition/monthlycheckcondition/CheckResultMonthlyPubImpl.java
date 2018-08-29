@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -73,15 +76,16 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
-			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
-		boolean check = perTimeMonActualResult.checkPerTimeMonActualResult(
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth,Optional<ClosureId> closureID, Optional<ClosureDate> closureDate,
+			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition, List<Integer> attendanceIds) {
+		Map<String, Integer> result = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 
 				closureID, 
 				closureDate, 
 				employeeID, 
-				convertToExport(attendanceItemCondition));
-		return check;
+				convertToExport(attendanceItemCondition),
+				attendanceIds);
+		return result;
 	}
 	
 	private SpecHolidayCheckCon convertToSpecHolidayCheckConDto(SpecHolidayCheckConPubEx dto) {
@@ -171,6 +175,13 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 
 		return group;
 
+	}
+
+	@Override
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
+			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

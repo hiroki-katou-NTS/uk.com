@@ -948,6 +948,7 @@ project (':com.ctx:sys:log:nts.uk.ctx.sys.log.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':pereg.ctx:nts.uk.ctx.pereg.pub')
 	}
 }
 
