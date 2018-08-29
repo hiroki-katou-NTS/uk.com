@@ -294,14 +294,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//3
 		if(!retentionTypeUseFlg && checkDis.isRetentionManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．積休管理区分が管理する
 			//基準日時点の積立年休残数を取得する - RQ201
-			Optional<RsvLeaManagerImport> subVaca = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
-			if(subVaca.isPresent()){
+			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
+			if(stock.isPresent()){
 				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
 				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
-				if(subVaca.get().getGrantRemainingList().size() > 0){
-					subVacaRemain = new Double(0L);
-					for (RsvLeaGrantRemainingImport rsv : subVaca.get().getGrantRemainingList()) {
-						subVacaRemain = subVacaRemain + rsv.getRemainingNumber();
+				if(stock.get().getGrantRemainingList().size() > 0){
+					stockRemain = new Double(0L);
+					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
+						stockRemain = stockRemain + rsv.getRemainingNumber();
 					}
 				}
 			}
@@ -311,10 +311,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		if(!yearTypeUseFlg && checkDis.isYearManage()){//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse && output．年休管理区分が管理する
 
 			//基準日時点の年休残数を取得する - RQ198
-			ReNumAnnLeaReferenceDateImport stock = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
+			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
 			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-			stockRemain = stock.getAnnualLeaveRemainNumberExport() == null ? null : 
-				stock.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay();
+			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay();
 		}
 		return new NumberOfRemainOutput(yearRemain, subHdRemain, subVacaRemain, stockRemain);
 	}
