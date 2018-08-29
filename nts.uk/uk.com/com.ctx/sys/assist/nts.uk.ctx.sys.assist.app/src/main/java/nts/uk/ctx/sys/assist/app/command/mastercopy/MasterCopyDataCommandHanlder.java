@@ -113,9 +113,6 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 					try {
 						copyDataRepository.copy(companyId, targetTableInfo,
 								categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
-						countSuccess++;
-						setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
-						
 					} catch (Exception ex) {
 						MasterCopyCategory copyCategory = repository.findCatByCategoryNo(masterCopyData.getCategoryNo().v());
 						MasterCopyCategoryDto categoryDto = new MasterCopyCategoryDto();
@@ -139,6 +136,8 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 						LOGGER.error(ex.getMessage());
 					}
 				}
+				countSuccess++;
+				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 			}
 		}
 
