@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject;
+package nts.uk.ctx.pereg.app.find.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

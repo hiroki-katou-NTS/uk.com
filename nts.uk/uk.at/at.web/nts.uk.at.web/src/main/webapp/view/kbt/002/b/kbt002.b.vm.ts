@@ -111,7 +111,7 @@ module nts.uk.at.view.kbt002.b {
                 }
 
                 if((self.currentExecItem().execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" }); 
                 } else {
                     // get JsObject
                     //                let command: any = ko.toJS(self.currentExecItem);

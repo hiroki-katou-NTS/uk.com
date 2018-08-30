@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.nexttime;
+package nts.uk.ctx.pereg.app.find.common;
 
 import lombok.Getter;
 

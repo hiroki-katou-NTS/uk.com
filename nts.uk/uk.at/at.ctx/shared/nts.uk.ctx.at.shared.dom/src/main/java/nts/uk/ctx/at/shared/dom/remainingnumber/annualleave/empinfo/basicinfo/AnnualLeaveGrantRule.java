@@ -34,10 +34,16 @@ public class AnnualLeaveGrantRule {
 	
 	
 	public String nextTimeGrantDate() {
+		if (nextGrantDate == null){
+			return null;
+		}
 		return this.nextGrantDate.toString("yyyy/MM/dd");
 	}
 	
 	public String nextTimeGrantDays() {
+		if (nextGrantDay == null){
+			return null;
+		}
 		return this.nextGrantDay +"日";
 	}
 	

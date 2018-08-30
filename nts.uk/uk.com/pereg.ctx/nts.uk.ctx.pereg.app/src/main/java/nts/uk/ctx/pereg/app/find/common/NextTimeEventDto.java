@@ -1,16 +1,15 @@
-package nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.nexttime;
+package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.YearHolidayInfoResult;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Data
 @NoArgsConstructor
 public class NextTimeEventDto {
-	
 	/**
 	 * 次回年休付与日
 	 */
@@ -43,11 +42,17 @@ public class NextTimeEventDto {
 	}
 	
 	private static String nextTimeGrantDate(GeneralDate nextGrantDate) {
+		if (nextGrantDate == null){
+			return null;
+		}
 		return nextGrantDate.toString("yyyy/MM/dd");
 	}
 	
 	private static String nextTimeGrantDays(Double nextGrantDay) {
-		return nextGrantDay +"日";
+		if (nextGrantDay == null){
+			return null;
+		}
+		return nextGrantDay + TextResource.localize("CPS001_147");
 	}
 	
 	private static String nextTimeMaxTime(Optional<Integer> nextMaxTime) {

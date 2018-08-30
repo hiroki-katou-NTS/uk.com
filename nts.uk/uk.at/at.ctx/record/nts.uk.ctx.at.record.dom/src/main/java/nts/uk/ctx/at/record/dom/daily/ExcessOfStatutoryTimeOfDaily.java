@@ -372,16 +372,4 @@ public class ExcessOfStatutoryTimeOfDaily {
 	public void controlMidTimeUpper(AttendanceTime upperTime) {
 		this.excessOfStatutoryMidNightTime.controlUpperTime(upperTime);
 	}
-	
-	/**
-	 * 全残業枠の残業時間と振替残業時間の合計時間を算出する
-	 * @return　残業合計時間　＋　振替残業合計時間
-	 */
-	public AttendanceTime calcOverTime() {
-		if(this.overTimeWork != null
-		&& this.overTimeWork.isPresent()) {
-			return new AttendanceTime(this.getOverTimeWork().get().calcTotalFrameTime() + this.getOverTimeWork().get().calcTransTotalFrameTime());
-		}
-		return new AttendanceTime(0);
-	}
 }
