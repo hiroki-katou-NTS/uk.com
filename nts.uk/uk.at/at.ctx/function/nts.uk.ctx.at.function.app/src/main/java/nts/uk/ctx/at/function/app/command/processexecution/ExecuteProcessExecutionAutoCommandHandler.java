@@ -2495,6 +2495,10 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
 			}
 			this.processExecLogManaRepo.update(processExecutionLogManage);
+			
+			//ドメインモデル「更新処理自動実行ログ」を削除する
+			this.procExecLogRepo.remove(companyId, execItemCd, procExecLogOpt.get().getExecId());
+			
 			// [更新処理：スケジュールの作成、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
 			// [更新処理：日別作成、終了状態 ＝ 未実施]
@@ -2511,7 +2515,9 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
 			// [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			this.procExecLogRepo.update(procExecLog);
+			
+			procExecLog.setExecId(execId); 
+			this.procExecLogRepo.insert(procExecLog);
 
 		} else {
 			// アルゴリズム「更新処理自動実行ログ新規登録処理」を実行する

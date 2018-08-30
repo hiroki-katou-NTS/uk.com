@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -40,15 +43,15 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	private GeneralDate date;
 
-	private CalculationState calculationState;
+	private int calculationState;
 
 	// 直行区分
-	private NotUseAttribute goStraightAtr;
+	private int goStraightAtr;
 
 	// 直帰区分
-	private NotUseAttribute backStraightAtr;
+	private int backStraightAtr;
 
-	private DayOfWeek dayOfWeek;
+	private int dayOfWeek;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -56,13 +59,13 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
-			result.setBackStraightAtr(workInfo.getBackStraightAtr());
-			result.setCalculationState(workInfo.getCalculationState());
-			result.setGoStraightAtr(workInfo.getGoStraightAtr());
+			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
-			result.setDayOfWeek(workInfo.getDayOfWeek());
+			result.setDayOfWeek(workInfo.getDayOfWeek() != null ? workInfo.getDayOfWeek().value : 0);
 			result.exsistData();
 		}
 		return result;
@@ -104,7 +107,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
-				calculationState, goStraightAtr, backStraightAtr, date, dayOfWeek,
+				EnumAdaptor.valueOf(calculationState, CalculationState.class), EnumAdaptor.valueOf(goStraightAtr, NotUseAttribute.class), EnumAdaptor.valueOf(backStraightAtr, NotUseAttribute.class), date, EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(),
 										c.getWorking() == null ? 0 : c.getWorking(), 

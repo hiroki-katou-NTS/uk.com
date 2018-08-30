@@ -2,7 +2,7 @@ module nts.uk.at.view.kwr006.c {
 
     import service = nts.uk.at.view.kwr006.c.service;
     import blockUI = nts.uk.ui.block;
-    
+
     export module viewmodel {
         const DEFAULT_DATA_FIRST = 0;
         export class ScreenModel {
@@ -67,7 +67,7 @@ module nts.uk.at.view.kwr006.c {
                 });
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape}
+                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
                 self.itemListConditionSet = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
@@ -129,11 +129,17 @@ module nts.uk.at.view.kwr006.c {
                     if (!_.isNil(KWR006DOutput)) {
                         self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
-                            const chosen = self.outputItemPossibleLst().filter(item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
-                            self.items(self.outputItemPossibleLst());
-                            self.currentCodeListSwap(chosen);
-                            $('#C3_3').focus();
+                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
+                            if (!_.isEmpty(chosen)) {
+                                self.items(self.outputItemPossibleLst());
+                                self.currentCodeListSwap(chosen);
+                                $('#C3_3').focus();
+                            } else {
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" });
+                                $('#C3_3').focus();
+                            }
                         } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" });
                             $('#C3_2').focus();
                         }
 
