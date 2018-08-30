@@ -2,11 +2,11 @@ module kdl002.a.viewmodel {
     export class ScreenModel {
         isShowNoSelectRow:boolean;
         isMulti: boolean;
-        items: KnockoutObservableArray<model.ItemModel>;
+        items: KnockoutObservableArray<model.WorkTypeInfor>;
         columns: KnockoutObservableArray<any>;
         currentCodeList: KnockoutObservableArray<any>;
         posibleItems: Array<string>;
-        dataSoure: Array<model.ItemModel>;
+        dataSoure: Array<model.WorkTypeInfor>;
 
         constructor() {
             var self = this;
@@ -41,11 +41,11 @@ module kdl002.a.viewmodel {
                 return;
             }
             if (self.posibleItems.length > 0) {
-                service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
+                service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.WorkTypeInfor>) {
                     let lstItemOrder = self.sortbyList(lstItem);
                     $("input").focus();
                     let lstItemMapping =  _.map(lstItemOrder , item => {
-                        return new model.ItemModel(item.workTypeCode, item.name, item.memo);
+                        return new model.WorkTypeInfor(item.workTypeCode, item.name, item.memo, item.dispOrder);
                     });
                     self.initNotSelectItem(!self.isMulti, lstItemMapping);
                     self.items(lstItemMapping);
@@ -76,33 +76,17 @@ module kdl002.a.viewmodel {
          * 2. Code
          */
         sortbyList(lstItem: Array<any>): Array<any>{
-            let lstA: Array<any> = [];//list order != null
-            let lstB: Array<any> = [];//list order = null
-            let result: Array<any> = [];//list sort
-            _.each(lstItem, function(item){
-                if(item.dispOrder != null){
-                    lstA.push(item);
-                }
-                if(item.dispOrder == null){
-                    lstB.push(item);
-                }
-            });
-            let sortByA =  _.orderBy(lstA, ["dispOrder"], ["asc"]);
-            let sortByB =  _.orderBy(lstB, ["workTypeCode"], ["asc"]);
-                //push list A (common)
-                _.each(sortByA, function(obj){
-                    result.push(obj);
-                });
-            _.each(sortByB, function(obj){
-                    result.push(obj);
-                });
-            return result;
+            let lwt : Array<any> = [];
+            if (lstItem && !!lstItem.length) {
+                lwt = _.orderBy(lstItem, ['dispOrder', 'workTypeCode'], ['asc', 'asc']);
+            }
+            return lwt;
         }
         //event When click to 決定 ボタン
         register() {
             var self = this;
             if(self.isMulti == true){
-                let lstObj = [];
+                let lstObj : any[] = [];
                 for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
                     let objectNew = self.findItem(self.currentCodeList()[i]);
                     if(objectNew != undefined && objectNew != null){
@@ -116,7 +100,7 @@ module kdl002.a.viewmodel {
                 let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2);
             }else{
-                let lstObj2 = [];
+                let lstObj2 : any[] = [];
                 let objectNew2 = self.findItem(self.currentCodeList());
                 if(objectNew2 != undefined && objectNew2 != null){
                     lstObj2.push({ "code": objectNew2.workTypeCode, "name":objectNew2.name});
@@ -128,10 +112,9 @@ module kdl002.a.viewmodel {
         /**
          * find item is selected
          */
-        findItem(value: any): model.ItemModel {
+        findItem(value: any): model.WorkTypeInfor {
             var self = this;
-            var itemModel = null;
-            return _.find(self.items(), function(obj: model.ItemModel) {
+            return _.find(self.items(), function(obj: model.WorkTypeInfor) {
                 return obj.workTypeCode == value;
             })
         }
@@ -140,7 +123,7 @@ module kdl002.a.viewmodel {
             var self = this;
             let selectCode = nts.uk.ui.windows.getShared('KDL002_SelectedItemId');
             if(self.isMulti == true){
-                let lstObj = [];
+                let lstObj : any[] = [];
                 for (let i =0, length = selectCode.length; i< length ;i++) {
                     let objectNew = self.findItem(selectCode[i]);
                     if(objectNew != undefined && objectNew != null){
@@ -150,7 +133,7 @@ module kdl002.a.viewmodel {
                 let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2,true);
             }else{
-                let lstCancel = [];
+                let lstCancel : any[] = [];
                 if(selectCode != null && selectCode !== undefined){
                     let objectNew2 = self.findItem(selectCode);
                     if(objectNew2 != undefined && objectNew2 != null){
@@ -163,14 +146,16 @@ module kdl002.a.viewmodel {
         }
     }
     export module model {
-        export class ItemModel {
+        export class WorkTypeInfor {
             workTypeCode: string;
             name: string;
             memo: string;
-            constructor(workTypeCode: string, name: string, memo: string) {
+            dispOrder: number;
+            constructor(workTypeCode: string, name: string, memo: string, dispOrder: number) {
                 this.workTypeCode = workTypeCode;
                 this.name = name;
                 this.memo = memo;
+                this.dispOrder = dispOrder;
             }
         }
     

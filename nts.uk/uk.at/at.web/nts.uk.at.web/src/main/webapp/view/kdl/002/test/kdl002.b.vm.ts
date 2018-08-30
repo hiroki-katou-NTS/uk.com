@@ -66,7 +66,10 @@ module kdl002.b.viewmodel {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                 self.SelectedCode();
-                self.SelectedCode(lst[0].code);
+                if (lst.length > 0){
+                    self.SelectedCode(lst[0].code);
+                }
+                
             })
         }
     }
