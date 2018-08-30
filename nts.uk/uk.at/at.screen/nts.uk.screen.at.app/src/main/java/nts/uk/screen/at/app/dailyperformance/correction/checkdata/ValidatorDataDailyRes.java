@@ -54,7 +54,7 @@ public class ValidatorDataDailyRes {
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
-			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213 };
+			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 	
 	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed().collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x%2 == 0 ? INPUT_CHECK[x+1] : INPUT_CHECK[x-1]));
 	
