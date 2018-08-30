@@ -56,12 +56,12 @@ public class RemainAnnualLeaveUpdating {
 	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
 		deleteDataAfterCurrentMonth(period, empId);
-//		if (output != null) {
+		if (output != null) {
 			updateRemainAnnualLeaveNumber(output, period, empId);
 			updateMaxAnnualLeaveNumber(output, period, empId);
-//		} else {
-//			return;
-//		}
+		} else {
+			return;
+		}
 	}
 
 	/**
