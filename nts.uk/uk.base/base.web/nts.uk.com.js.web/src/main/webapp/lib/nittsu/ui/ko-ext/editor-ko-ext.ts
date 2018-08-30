@@ -531,7 +531,8 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            let option: any = ko.toJS(data.option),
+            let option: any = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {},
+                eOption = $.extend(this.getDefaultOption(), option),
                 required = (data.required !== undefined) ? ko.unwrap(data.required) : false,
                 constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "",
                 name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
@@ -539,9 +540,9 @@ module nts.uk.ui.koExtentions {
             // update editor option
             $.extend(this.editorOption, {
                 required: required,
-                decimallength: Number(option.decimallength),
-                grouplength: Number(option.grouplength),
-                decimalseperator: option.decimalseperator
+                decimallength: Number(eOption.decimallength),
+                grouplength: Number(eOption.grouplength),
+                decimalseperator: eOption.decimalseperator
             });
             
             return new validation.NumberValidator(name, constraintName, this.editorOption);
