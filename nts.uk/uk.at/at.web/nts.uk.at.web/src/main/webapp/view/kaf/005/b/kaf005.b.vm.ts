@@ -243,6 +243,11 @@ module nts.uk.at.view.kaf005.b {
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
+                    self.indicationOvertimeFlg(false);    
+                } else {
+                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self);    
+                }
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                 self.workTypeChangeFlg(data.workTypeChangeFlg);
                 // preAppOvertime

@@ -541,6 +541,57 @@ module nts.uk.at.view.kaf010.share {
                 self.overtimeWork.push(overtimeWork2);
             } 
             
+            public static setOvertimeWorkDetail(appOvertimeDetailDto: any, self: any, status: any): void {
+                let overtimeWork = new common.OvertimeWork("",0,0,0,0,"","");
+                
+                overtimeWork.yearMonth(nts.uk.time.formatYearMonth(appOvertimeDetailDto.yearMonth));
+                if(appOvertimeDetailDto.exceptionLimitErrorTime > 0){
+                    overtimeWork.limitTime(appOvertimeDetailDto.exceptionLimitErrorTime);    
+                } else {
+                    overtimeWork.limitTime(appOvertimeDetailDto.limitErrorTime);    
+                }
+                overtimeWork.actualTime(appOvertimeDetailDto.actualTime);
+                overtimeWork.appTime(appOvertimeDetailDto.applicationTime);
+                overtimeWork.totalTime(appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime);
+                switch(status){
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
+                        overtimeWork.backgroundColor(common.Color.ALARM);
+                        overtimeWork.textColor(common.Color.ALARM_TEXT);
+                        break;
+                    }   
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
+                        overtimeWork.backgroundColor(common.Color.ERROR);
+                        overtimeWork.textColor(common.Color.ERROR_TEXT);
+                        break;
+                    } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
+                        overtimeWork.backgroundColor(common.Color.ALARM);
+                        overtimeWork.textColor(common.Color.ALARM_TEXT);
+                        break;
+                    }     
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
+                        overtimeWork.backgroundColor(common.Color.ERROR);
+                        overtimeWork.textColor(common.Color.ERROR_TEXT);
+                        break;
+                    }  
+                    default: break;
+                }
+                
+                self.overtimeWork.removeAll();
+                self.overtimeWork.push(overtimeWork);
+            }
+            
             public static convertTime(minutes: number){
                 if(minutes < 0){
                     return "-" + nts.uk.time.format.byId("Time_Short_HM", -minutes);    
