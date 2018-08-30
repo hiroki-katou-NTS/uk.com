@@ -69,7 +69,12 @@ module kcp009.viewmodel {
             self.selectedItem = data.selectedItem;
             
             // Set SelectedItem: First Item
-            self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+            let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
+            if (codeEmp) {
+                self.selectedItem(__viewContext.user.employeeId);
+            } else {
+                self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+            }
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());
