@@ -445,8 +445,8 @@ module nts.uk.at.view.kmk003.a {
              */
             private validateInput(): void {
                 let self = this;
-                let commonDayoff = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
-                let commonOvertime = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
+                let commonDayoff = self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
+                let commonOvertime = self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
                 self.clearAllError();
                 $('.nts-editor').each((index, element) => {
                     if (!element.id) {
@@ -465,16 +465,14 @@ module nts.uk.at.view.kmk003.a {
                 self.validatetab7();
                 
                 //validate disabled item tab 11
-                if (!nts.uk.util.isNullOrEmpty(self.backupCommonSetting)) {
-                    if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
-                        self.validateTab11(commonDayoff, commonOvertime);
-                    }
-                    else {
-                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
-                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
-                    }
+                if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
+                    self.validateTab11(commonDayoff,commonOvertime);
+                }
+                else {
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
                 }
             }
             

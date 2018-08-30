@@ -19,7 +19,6 @@ import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
@@ -62,10 +61,6 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
 	public KfnmtProcessExecutionSetting execSetting;
 
-	/* 実行種別 */
-	@Column(name = "PROCESS_EXEC_TYPE")
-	public int processExecType;
-	
 	@Override
 	protected Object getKey() {
 		return this.kfnmtProcExecPK;
@@ -118,9 +113,7 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				);
 
 		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
-				new ExecutionName(this.execItemName), execScope, execSetting,
-				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
-				);
+				new ExecutionName(this.execItemName), execScope, execSetting);
 	}
 
 	public static KfnmtProcessExecution toEntity(ProcessExecution domain) {
@@ -163,6 +156,6 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
 				domain.getExecSetting().getAppRouteUpdateMonthly().value
 				);
-		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
+		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting);
 	}
 }
