@@ -251,7 +251,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		//登録時の残数チェック
 		/** ・登録対象一覧 :	申請(List) */
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		appData.add(new AppRemainCreateInfor(companyID, command.getAppID(), GeneralDate.today(), startDate, 
+		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDate.today(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
 				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 
