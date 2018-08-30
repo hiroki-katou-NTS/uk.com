@@ -11,7 +11,7 @@ public interface EmpInsurPreRateRepository
 
     List<EmpInsurPreRate> getAllEmpInsurPreRate();
     
-    List<EmpInsurPreRate> getEmpInsurPreRateByCid(String cId);
+    List<EmpInsurPreRate> getEmpInsurPreRateByHisId(String hisId);
 
     Optional<EmpInsurPreRate> getEmpInsurPreRateById(String hisId, String empPreRateId);
 

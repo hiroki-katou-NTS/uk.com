@@ -43,10 +43,12 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 if (listEmpInsHis && listEmpInsHis.length > 0) {
                     self.listEmpInsHis(listEmpInsHis);
                     self.index(self.getIndex(null));
-                    self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()]);
-                    service.getEmpInsurPreRate().done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) =>{
-                        self.listEmpInsurPreRate(listEmpInsurPreRate);
-                        self.isNewMode(false);
+                    self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
+                    service.getEmpInsurPreRate(self.selectedEmpInsHisId()).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) =>{
+                        if(listEmpInsurPreRate && listEmpInsurPreRate.length > 0) {
+                            self.listEmpInsurPreRate(listEmpInsurPreRate);
+                            self.isNewMode(false);
+                        }
                     });
                 } else {
                     self.isNewMode(false);
@@ -74,21 +76,29 @@ module nts.uk.com.view.qmm011.b.viewmodel {
        }
        
        openEscreen(){
-            modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
-                let params = getShared('QMM011_B_Param');
-                if (params) {
-                    let override = params.overWrite;
-                    let destinationCode = params.copyDestinationCode;
-                    let destinationName = params.destinationName;
-                    let result = params.result;
-                    service.register().done(()=> {
+           let self = this;
+           setShared('QMM011_E_PARAMS', {
+                    startDate:  self.listEmpInsHis()
+           });
                     
-                    });
+           modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
+               let params = getShared('QMM011_B_Param');
+               if (params) {
+                   let override = params.overWrite;
+                   let destinationCode = params.copyDestinationCode;
+                   let destinationName = params.destinationName;
+                   let result = params.result;
+                   service.register().done(()=> {
+                    
+                   });
                 }
             });
         }
         
         openFscreen(){
+            setShared('QMM011_F_PARAMS', {
+                    
+           });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_B_Param');
                 if (params) {
@@ -127,7 +137,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     class IEmpInsurPreRate{
          hisId: string;
          empPreRateId: string;
-         indBdRatio: string;
+         indBdRatio: number;
          empContrRatio: string;
          perFracClass: number;
          busiOwFracClass: number;
@@ -136,7 +146,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     class EmpInsurPreRate{
          hisId: string;
          empPreRateId: string;
-         indBdRatio: string;
+         indBdRatio: number;
          empContrRatio: string;
          perFracClass: number;
          busiOwFracClass: number;

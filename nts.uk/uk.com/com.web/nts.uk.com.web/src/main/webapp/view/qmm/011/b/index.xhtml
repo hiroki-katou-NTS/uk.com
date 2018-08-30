@@ -21,9 +21,9 @@
 				data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="">#{i18n.getText('QMM011_6')}</button>
+						<button id ="B1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="">#{i18n.getText('QMM011_7')}</button>
+						<button id ="B1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div>
 						<!--B1_4 雇用保険料率一覧 -->
@@ -82,20 +82,21 @@
 							<td >
 								<input id = "B3_7" 
 										data-bind="ntsNumberEditor: {
-																option : {width: '100px'},
+																option : {width: '60px'},
 																name: '#{i18n.getText('QMM011_11')}',
 																value: indBdRation,
 																required: false
 																}"/>
-								<label id= "B3_8">#{i18n.getText('QMM011_15')}</label>
+								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
-							<td colspan = "2">
+							<td>
 								<div id = "B3_9"
 										data-bind="ntsComboBox: {
+																option : {width: '60px'},
 																name: '#{i18n.getText('QMM011_15')}',
 																value: perFracClass,
 																required: false,
-																options: listPerFracClass,
+																options: $parent.listPerFracClass,
 																optionsValue: 'code',
 																visibleItemsCount: 5,
 																optionsText: 'name'
@@ -111,7 +112,7 @@
 
 								<label id= "B3_12">#{i18n.getText('QMM011_15')}</label>
 							</td>
-							<td colspan = "2">
+							<td>
 								<input id = "B3_13"
 										data-bind="ntsNumberEditor: {
 																option : {width: '60px'},

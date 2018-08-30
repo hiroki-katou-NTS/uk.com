@@ -49,7 +49,7 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
     }
 
 	@Override
-	public List<EmpInsurPreRate> getEmpInsurPreRateByCid(String hisId) {
+	public List<EmpInsurPreRate> getEmpInsurPreRateByHisId(String hisId) {
 		return this.queryProxy().query(SELECT_BY_HIS_ID, QpbmtEmpInsurPreRate.class)
 		        .setParameter("hisId", hisId)
 		        .getList(c->c.toDomain());

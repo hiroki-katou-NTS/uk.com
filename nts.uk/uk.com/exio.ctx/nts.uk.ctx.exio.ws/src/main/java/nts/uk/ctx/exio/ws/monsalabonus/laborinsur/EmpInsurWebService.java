@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -25,9 +26,9 @@ public class EmpInsurWebService extends WebService {
 	private EmpInsurHisFinder empInsurHisFinder;
 	
 	@POST
-	@Path("getEmpInsurPreRate")
-	public List<EmpInsurPreRateDto> getEmpInsurPreRate() {
-		return empInsurPreRateFinder.getListEmplInsurPreRate();
+	@Path("getEmpInsurPreRate/{hisId}")
+	public List<EmpInsurPreRateDto> getEmpInsurPreRate(@PathParam("hisId") String hisId) {
+		return empInsurPreRateFinder.getListEmplInsurPreRate(hisId);
 	}
 	
 	@POST
