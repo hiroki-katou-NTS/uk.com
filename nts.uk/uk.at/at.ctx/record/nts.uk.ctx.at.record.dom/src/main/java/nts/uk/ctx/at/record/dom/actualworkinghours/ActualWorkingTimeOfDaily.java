@@ -484,7 +484,9 @@ public class ActualWorkingTimeOfDaily {
 		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
 			Optional<BreakTimeSheet> equalTimeSheet = Optional.empty();
 			for(BreakTimeOfDailyPerformance masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
-				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
+				if( masterBreakTimeSheet != null
+			     && masterBreakTimeSheet.getBreakType() != null
+				 &&	masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
 					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
 																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
 																			  .filter(tc -> tc.getStartTime().equals(breakTimeSheet.get().getStartTime())
