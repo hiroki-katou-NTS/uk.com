@@ -41,7 +41,7 @@
 						</tr>
 					</table>
 					<div style="padding-top: 10px;padding-left: 19px;" >
-						<table id="single-list" data-bind="ntsGridList: {								
+						<table tabindex="1" id="single-list" data-bind="ntsGridList: {								
 									height: 250,
 									dataSource: dataSource ,
 									primaryKey: 'employeeId',
@@ -52,7 +52,7 @@
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="-1" data-bind="click: closeDialog"  >#{i18n.getText('KBT002_134')}</button>
+					<button tabindex="2" data-bind="click: closeDialog"  >#{i18n.getText('KBT002_134')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>
