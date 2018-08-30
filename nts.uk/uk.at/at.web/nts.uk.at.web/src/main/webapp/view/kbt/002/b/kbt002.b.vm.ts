@@ -110,8 +110,8 @@ module nts.uk.at.view.kbt002.b {
                     return;
                 }
 
-                if((execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
+                if((self.currentExecItem().execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" }); 
                 } else {
                     // get JsObject
                     //                let command: any = ko.toJS(self.currentExecItem);
@@ -365,9 +365,15 @@ module nts.uk.at.view.kbt002.b {
                     command.execItemCd = self.currentExecItem().execItemCd();
                     command.execItemName = self.currentExecItem().execItemName();
                     command.perScheduleCls = self.currentExecItem().perScheduleCls();
+                     if(self.currentExecItem().perScheduleCls()==false){
+                        command.targetDate = 1;                        
+                        command.creationPeriod = 1;
+                    }else{
+                        command.creationPeriod = self.currentExecItem().creationPeriod();
+                        command.targetDate = self.currentExecItem().targetDate();
+                    }
+
                     command.targetMonth = self.currentExecItem().targetMonth();
-                    command.targetDate = self.currentExecItem().targetDate();
-                    command.creationPeriod = self.currentExecItem().creationPeriod();
                     command.creationTarget = self.currentExecItem().creationTarget();
                     command.recreateWorkType = false;//B15_3
                     command.manualCorrection = false;//B15_4
