@@ -89,7 +89,8 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」を取得する
 			AppRootInstance appRootInstanceNewest = appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).get();
 			// output．承認ルートの内容は取得したドメインモデル「承認ルート中間データ」を比較する
-			boolean isSame = compareAppRootContent(appRootInstanceNewest, appRootInstance);
+			boolean isSame = compareAppRootContent(appRootInstanceNewest, appRootInstance)
+					&& compareAppRootContent(appRootInstance, appRootInstanceNewest);
 			if(isSame){
 				return new AppRootInstanceContent(appRootInstanceNewest, errorFlag, errorMsgID);
 			}
