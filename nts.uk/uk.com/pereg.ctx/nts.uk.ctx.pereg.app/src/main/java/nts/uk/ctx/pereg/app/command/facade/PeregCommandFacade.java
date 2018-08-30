@@ -21,17 +21,21 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
@@ -95,6 +99,14 @@ public class PeregCommandFacade {
 
 	@Inject
 	private GetUserByEmpFinder userFinder;
+	
+	@Inject
+	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
+	
+	@Inject
+	private FacadeUtils facadeUtils;
+	
+	private final static String nameStartDate = "開始日";
 	
 	private final static String nameEndate = "終了日";
 	
@@ -249,6 +261,12 @@ public class PeregCommandFacade {
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
 		
+		// getall required items by category id
+		Map<String, List<String>> itemByCtgId = perInfoItemDefRepositoty
+				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
+						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
+						AppContexts.user().contractCode());
+		
 		if (isCps002 == false) {
 			if (addInputs.size() > 0) {
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
@@ -260,6 +278,32 @@ public class PeregCommandFacade {
 		
 		addInputs.forEach(itemsByCategory -> {
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
+			
+			// Check is enough item to regist
+			List<String> listScreenItem = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
+			
+			// Set all default item
+			List<ItemValue> listDefault = facadeUtils.getListDefaultItem(itemsByCategory.getCategoryCd(),listScreenItem, container.getEmployeeId());
+			itemsByCategory.getItems().addAll(listDefault);
+			
+			List<String> listItemAfter = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
+			
+			// Item missing 
+			Optional<String> itemExclude = Optional.empty();
+			
+			if (itemByCtgId.containsKey(itemsByCategory.getCategoryId())) {
+
+				itemExclude = itemByCtgId.get(itemsByCategory.getCategoryId()).stream().filter(i -> !listItemAfter.contains(i))
+						.findFirst();
+			}
+			
+			// If there is missing item throw error
+			if (itemExclude.isPresent() && isCps002){
+				throw new BusinessException("Msg_1351");
+			} else if (itemExclude.isPresent() && !isCps002){
+				throw new BusinessException("Msg_1353");
+			}
+			
 			// In case of optional category fix category doesn't exist
 			String recordId = null;
 			
@@ -659,11 +703,6 @@ public class PeregCommandFacade {
 	@Transactional
 	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-
-		val handler = this.deleteHandlers.get(command.getCategoryCode());
-		if (handler != null) {
-			handler.handlePeregCommand(command);
-		}
 		
 		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
 				command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
@@ -676,10 +715,6 @@ public class PeregCommandFacade {
 		}).collect(Collectors.toList());
 		
 		mergerItem.addAll(command.getInputs());
-		
-
-		val commandForUserDef = new PeregUserDefDeleteCommand(command);
-		this.userDefDelete.handle(commandForUserDef);
 
 		/*
 		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
@@ -759,6 +794,14 @@ public class PeregCommandFacade {
 				itemInfo, dKey, rInfo);
 
 		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+
+		val handler = this.deleteHandlers.get(command.getCategoryCode());
+		if (handler != null) {
+			handler.handlePeregCommand(command);
+		}
+
+		val commandForUserDef = new PeregUserDefDeleteCommand(command);
+		this.userDefDelete.handle(commandForUserDef);
 
 		DataCorrectionContext.transactionFinishing();
 	}

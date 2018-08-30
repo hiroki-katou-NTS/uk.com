@@ -148,6 +148,10 @@ public interface PerInfoItemDefRepositoty {
 
 	void updateAbolitionItem(List<PersonInfoItemDefinition> itemLst);
 	
+	Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd);
 	
+	Map<String, List<String>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd);
 
 }

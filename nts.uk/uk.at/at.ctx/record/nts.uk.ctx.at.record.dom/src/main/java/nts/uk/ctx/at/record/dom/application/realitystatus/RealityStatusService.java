@@ -236,6 +236,7 @@ public class RealityStatusService {
 			List<DailyConfirmOutput> listDailyConfirm, SumCountOutput sumCount) {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
+		// // Request list 113
 		// imported（ワークフロー）「承認ルート状況」を取得する
 		List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter.getApprovalByEmplAndDate(startDate,
 				endDate, sId, cid, 1);
@@ -572,6 +573,7 @@ public class RealityStatusService {
 			String empName = Objects.isNull(empInfo) ? "" : empInfo.getEmployeeCode() + "　 " +empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
+				// Request list 113
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
 						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();

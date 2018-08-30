@@ -810,16 +810,16 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 */
 	@Override
 	public Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
-			List<String> wpkCodes, List<GeneralDate> baseDates) {
+			List<String> wpkIds, List<GeneralDate> baseDates) {
 		// Query infos
-		Map<GeneralDate, List<WorkplaceInfo>> mapJobTitleInfos = this.workplaceInfoRepo
-				.findByWkpCds(companyId, wpkCodes, baseDates);
+		Map<GeneralDate, List<WorkplaceInfo>> mapWorkplaceInfos = this.workplaceInfoRepo
+				.findByWkpIds(companyId, wpkIds, baseDates);
 
 		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
-		mapJobTitleInfos.entrySet().forEach(item -> {
-			item.getValue().forEach(jobTitleInfo -> {
-				mapResult.put(Pair.of(jobTitleInfo.getWorkplaceCode().v(), item.getKey()),
-						jobTitleInfo.getWorkplaceName().v());
+		mapWorkplaceInfos.entrySet().forEach(item -> {
+			item.getValue().forEach(workplaceInfo -> {
+				mapResult.put(Pair.of(workplaceInfo.getWorkplaceId(), item.getKey()),
+						workplaceInfo.getWorkplaceName().v());
 			});
 		});
 

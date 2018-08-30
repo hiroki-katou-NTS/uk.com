@@ -530,8 +530,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 * findByWkpCds(java.lang.String, java.util.List, java.util.List)
 	 */
 	@Override
-	public Map<GeneralDate, List<WorkplaceInfo>> findByWkpCds(String companyId,
-			List<String> wpkCodes, List<GeneralDate> baseDates) {
+	public Map<GeneralDate, List<WorkplaceInfo>> findByWkpIds(String companyId,
+			List<String> wpkIds, List<GeneralDate> baseDates) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -548,7 +548,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		listPredicate.add(criteriaBuilder.equal(
 				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid),
 				companyId));
-		listPredicate.add(root.get(BsymtWorkplaceInfo_.wkpcd).in(wpkCodes));
+		listPredicate.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(wpkIds));
 
 		List<Predicate> listPredicateBaseDate = new ArrayList<>();
 		baseDates.forEach(baseDate -> {
@@ -572,8 +572,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		baseDates.forEach(baseDate -> {
 			mapItem.putAll(result.stream().collect(Collectors.groupingBy(item -> {
-				BsymtJobHist jobHist = (BsymtJobHist) item[1];
-				return (new DatePeriod(jobHist.getStartDate(), jobHist.getEndDate()))
+				BsymtWorkplaceHist workplaceHist = (BsymtWorkplaceHist) item[1];
+				return (new DatePeriod(workplaceHist.getStrD(), workplaceHist.getEndD()))
 						.contains(baseDate) ? baseDate : null;
 			}, Collectors.mapping(
 					x -> new WorkplaceInfo(

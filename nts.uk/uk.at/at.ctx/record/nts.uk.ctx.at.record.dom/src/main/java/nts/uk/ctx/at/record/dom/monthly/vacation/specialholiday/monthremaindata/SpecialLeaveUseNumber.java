@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +25,5 @@ public class SpecialLeaveUseNumber extends DomainObject {
 	/**
 	 * 使用時間
 	 */
-	private SpecialLeaveUseTimes useTimes;
+	private Optional<SpecialLeaveUseTimes> useTimes;
 }

@@ -280,7 +280,7 @@ module cps002.a.vm {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
                 if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
-                    if (cardNo && cardNo.length < ce.digitsNumber) {
+                    if (cardNo && cardNo.length <= ce.digitsNumber) {
                         switch (ce.method) {
                             case EDIT_METHOD.PreviousZero: {
                                 emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
@@ -299,8 +299,6 @@ module cps002.a.vm {
                                 break;
                             }
                         }
-                    } else {
-                        emp.cardNo("");
                     }
                 }
             });
@@ -444,9 +442,14 @@ module cps002.a.vm {
         }
 
         initStampCard(newEmployeeCode: string) {
-            let self = this;
+            let self = this,
+                ce = ko.toJS(self.stampCardEditing);
             service.getInitCardNumber(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
+                if (value && value.length <= ce.digitsNumber) {
+                    self.currentEmployee().cardNo(value);
+                }else{
+                    self.currentEmployee().cardNo("");
+                }
             });
         }
 
@@ -618,7 +621,7 @@ module cps002.a.vm {
 
                 self.loadInitSettingData();
 
-
+                 $('#combo-box').focus();
             } else {
 
                 //start Screen B
@@ -631,8 +634,7 @@ module cps002.a.vm {
                 if (self.copyEmployee().employeeId == '') {
                     $('#hor-scroll-button-show').trigger('click');
                 }
-                $('#inp_baseDate').focus();
-
+                $('#combo-box').focus();
             }
 
 
@@ -644,7 +646,7 @@ module cps002.a.vm {
             self.categoryList.removeAll();
 
             service.getCopySetting().done((result: Array<ICopySetting>) => {
-                if (result.length) {
+                if (result.length > 0) {
                     self.categoryList(_.map(result, item => {
                         return new CategoryItem(item);
                     }));
@@ -755,47 +757,6 @@ module cps002.a.vm {
             command.categoryName = nts.uk.resource.getText("CPS001_152");
             command.itemName = nts.uk.resource.getText("CPS001_150");
 
-            // list category nghỉ đặc biệt còn lại
-            var listCtg = [{ ctgCode: 'CS00039' }, { ctgCode: 'CS00040' }, { ctgCode: 'CS00041' }, { ctgCode: 'CS00042' }, { ctgCode: 'CS00043' }, { ctgCode: 'CS00044' }, { ctgCode: 'CS00045' }, { ctgCode: 'CS00046' }, { ctgCode: 'CS00047' }, { ctgCode: 'CS00048' },
-                { ctgCode: 'CS00059' }, { ctgCode: 'CS00060' }, { ctgCode: 'CS00061' }, { ctgCode: 'CS00062' }, { ctgCode: 'CS00063' }, { ctgCode: 'CS00064' }, { ctgCode: 'CS00065' }, { ctgCode: 'CS00066' }, { ctgCode: 'CS00067' }, { ctgCode: 'CS00068' }];
-            for (var i = 0; i < command.inputs.length; i++) {
-                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
-                    if ((command.inputs[i].items[0].value == undefined)
-                        || (command.inputs[i].items[1].value == undefined)
-                        || (command.inputs[i].items[3].value == undefined)
-                        || (command.inputs[i].items[4].value == undefined)
-                        || (command.inputs[i].items[5].value == undefined)
-                        || (command.inputs[i].items[6].value == undefined)
-                        || (command.inputs[i].items[7].value == undefined)
-                        || (command.inputs[i].items[8].value == undefined)
-                        || (command.inputs[i].items[9].value == undefined)
-                        || (command.inputs[i].items[10].value == undefined)) {
-                        _.remove(command.inputs, function(n: any) {
-                            return n.categoryCd == command.inputs[i].categoryCd;
-                        });
-                    }
-                }
-
-                // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
-                // fix bug #96124
-                if (command.inputs[i].categoryCd === 'CS00037') {
-                    if ((command.inputs[i].items[0].value == undefined)
-                        || (command.inputs[i].items[1].value == undefined)
-                        || (command.inputs[i].items[3].value == undefined)
-                        || (command.inputs[i].items[4].value == undefined)
-                        || (command.inputs[i].items[5].value == undefined)) {
-                        _.remove(command.inputs, function(n: any) {
-                            return n.categoryCd == command.inputs[i].categoryCd;
-                        });
-
-                        _.remove(self.layout().listItemCls(), function(m: any) {
-                            return m.personInfoCategoryCD == 'CS00037';
-                        });
-                    }
-                }
-            }
-
-
             if (!self.isError()) {
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
@@ -809,6 +770,8 @@ module cps002.a.vm {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
+                    
+                     self.checkLicense();
 
                 }).fail(error => {
 

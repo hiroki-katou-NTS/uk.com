@@ -321,7 +321,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -615,9 +615,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
-                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
+                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -3909,6 +3909,8 @@ var nts;
             ui.documentReady = $.Callbacks();
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
+            /** Event to notify ViewModel applied bindings. */
+            ui.viewModelApplied = $.Callbacks();
             // Kiban ViewModel
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
@@ -3948,6 +3950,7 @@ var nts;
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
+                    ui.viewModelApplied.fire(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
                     nts.uk.cookie.remove("startfrommenu", { path: "/" });
@@ -4923,7 +4926,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
                         }
                         else {
-                            var formated = value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0");
+                            var formated = value.toString() === "0" ? "0" : uk.text.removeFromStart(inputText, "0");
                             if (formated.indexOf(".") >= 0) {
                                 formated = uk.text.removeFromEnd(formated, "0");
                             }
@@ -14980,7 +14983,8 @@ var nts;
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
-                    var offsetContentsArea = window.parent.$("#header").height();
+                    //let offsetContentsArea = window.parent.$("#header").height();
+                    var offsetContentsArea = 0;
                     var offsetDialog = $container.offset();
                     if (offsetDialog.top < offsetContentsArea) {
                         offsetDialog.top = offsetContentsArea;
@@ -17366,8 +17370,8 @@ var nts;
                             if (!$input.attr('readonly')) {
                                 // Remove separator (comma)
                                 var numb = Number(data.value());
-                                if (_.isNumber(numb) && !_.isNaN(numb)) {
-                                    $input.val(numb);
+                                if (_.isNumber(numb) && !_.isNaN(numb) && String(data.value()).trim() != '') {
+                                    $input.val(numb.toLocaleString(undefined, { useGrouping: false }));
                                 }
                                 else {
                                     $input.val(data.value());
@@ -17393,14 +17397,18 @@ var nts;
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
-                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
-                            var unit = uk.text.getNumberUnit(this.editorOption.unitID);
-                            this.editorOption.symbolChar = unit.unitText;
-                            this.editorOption.symbolPosition = unit.position;
-                            this.setupUnit($input, width);
-                        }
-                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                            this.setupUnit($input, width);
+                        else {
+                            if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                                var unit = uk.text.getNumberUnit(this.editorOption.unitID);
+                                this.editorOption.symbolChar = unit.unitText;
+                                this.editorOption.symbolPosition = unit.position;
+                                this.setupUnit($input, width);
+                            }
+                            else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                                this.setupUnit($input, width);
+                            }
+                            // remove currency symbol if number mode
+                            $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
@@ -17428,11 +17436,14 @@ var nts;
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
-                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
-                        name = nts.uk.resource.getControlName(name);
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        this.editorOption['required'] = required;
+                        var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {}, eOption = $.extend(this.getDefaultOption(), option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
+                        // update editor option
+                        $.extend(this.editorOption, {
+                            required: required,
+                            decimallength: Number(eOption.decimallength),
+                            grouplength: Number(eOption.grouplength),
+                            decimalseperator: eOption.decimalseperator
+                        });
                         return new validation.NumberValidator(name, constraintName, this.editorOption);
                     };
                     return NumberEditorProcessor;
@@ -19007,18 +19018,19 @@ var nts;
         (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
+                var $ = window['$'], _ = window['_'], ko = window['ko'];
                 /**
                 * SearchBox Binding Handler
                 */
                 var SearchBox = (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
-                        this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
+                        this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);
                         this.searchField = searchField;
                     }
                     SearchBox.prototype.search = function (searchKey) {
                         var self = this;
-                        if (nts.uk.util.isNullOrEmpty(this.source)) {
+                        if (_.isEmpty(this.source)) {
                             return [];
                         }
                         var flatArr = nts.uk.util.flatArray(this.source, this.childField);
@@ -19034,7 +19046,7 @@ var nts;
                         return filtered;
                     };
                     SearchBox.prototype.setDataSource = function (source) {
-                        this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
+                        this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);
                     };
                     SearchBox.prototype.getDataSource = function () {
                         return this.cloneDeep(this.source);
@@ -19061,24 +19073,24 @@ var nts;
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
                         ;
-                        this.mode = nts.uk.util.isNullOrEmpty(mode) ? "highlight" : mode;
+                        this.mode = _.isEmpty(mode) ? "highlight" : mode;
                         this.key = key;
                     }
                     SearchPub.prototype.search = function (searchKey, selectedItems) {
                         var result = new SearchResult();
                         var filtered = this.seachBox.search(searchKey);
-                        if (!nts.uk.util.isNullOrEmpty(filtered)) {
+                        if (!_.isEmpty(filtered)) {
                             var key_1 = this.key;
                             if (this.mode === "highlight") {
                                 result.options = this.seachBox.getDataSource();
                                 var index = 0;
-                                if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
+                                if (!_.isEmpty(selectedItems)) {
                                     var firstItemValue_1 = $.isArray(selectedItems)
                                         ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
                                     index = _.findIndex(filtered, function (item) {
                                         return item[key_1].toString() === firstItemValue_1;
                                     });
-                                    if (!nts.uk.util.isNullOrUndefined(index)) {
+                                    if (!_.isNil(index)) {
                                         index++;
                                     }
                                 }
@@ -19091,7 +19103,7 @@ var nts;
                                 var selectItem = _.filter(filtered, function (itemFilterd) {
                                     return _.find(selectedItems, function (item) {
                                         var itemVal = itemFilterd[key_1];
-                                        if (nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])) {
+                                        if (_.isNil(itemVal) || _.isNil(item["id"])) {
                                             return false;
                                         }
                                         return itemVal.toString() === item["id"].toString();
@@ -19121,9 +19133,10 @@ var nts;
                         var minusWidth = 0;
                         var data = ko.unwrap(valueAccessor());
                         var fields = ko.unwrap(data.fields);
-                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+                        var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : defaultSearchText;
                         var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
                         var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
@@ -19140,16 +19153,15 @@ var nts;
                             targetMode = "igGrid";
                         }
                         var $container = $(element);
-                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
                         $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
-                        if (!nts.uk.util.isNullOrEmpty(label)) {
+                        if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
                             $formLabel.prependTo($container);
-                            ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], function () {
-                                return {};
-                            }, allBindingsAccessor, viewModel, bindingContext);
+                            ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], function () { return ({}); }, allBindingsAccessor, viewModel, bindingContext);
+                            ko.bindingHandlers["ntsFormLabel"].update($formLabel[0], function () { return ({}); }, allBindingsAccessor, viewModel, bindingContext);
                             minusWidth += $formLabel.outerWidth(true);
                         }
                         var $button = $container.find("button.search-btn");
@@ -19202,7 +19214,7 @@ var nts;
                                 }
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_1.options)) {
+                                if (_.isEmpty(result_1.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -19233,7 +19245,7 @@ var nts;
                                         });
                                         component_1.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component_1.igGrid("dataBind");
-                                        //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                        //                            if(_.isEmpty(selectedProperties)){
                                         component_1.trigger("selectionchanged");
                                         //                            }
                                     }
@@ -19258,7 +19270,7 @@ var nts;
                         };
                         var nextSearch = function () {
                             var searchKey = $input.val();
-                            if (nts.uk.util.isNullOrEmpty(searchKey)) {
+                            if (_.isEmpty(searchKey)) {
                                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(function () {
                                     $input.focus();
                                     //                        $input.select();
@@ -19311,7 +19323,7 @@ var nts;
                                         return ci[primaryKey] === i[primaryKey];
                                     }) === undefined;
                                 });
-                                if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                if (!_.isEmpty(newItems)) {
                                     var gridSources_1 = component.igGrid("option", "dataSource");
                                     _.forEach(newItems, function (item) {
                                         gridSources_1.push(item);
@@ -19452,8 +19464,8 @@ var nts;
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                                 $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
-                                initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
-                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                                initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
+                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
                             $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
@@ -19493,7 +19505,7 @@ var nts;
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                             .withDataSource(data.value())
                             .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion)
-                            .setSearchMode(data.searchMode || "highlight")
+                            .setSearchMode("highlight")
                             .setColumns(rightColumns())
                             .setPrimaryKey(primaryKey)
                             .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
@@ -19934,6 +19946,7 @@ var nts;
                                 this.resetOriginalDataSource();
                             }
                             this.bindData(this.originalDataSource);
+                            this.$searchBox.val('');
                         }
                     };
                     SwapPart.prototype.build = function () {
@@ -19962,14 +19975,16 @@ var nts;
                             var gotoEnd = source.splice(0, selected[0].index + 1);
                             source = source.concat(gotoEnd);
                         }
-                        var iggridColumns = _.map(this.columns, function (c) {
+                        /*var iggridColumns = _.map(this.columns, c => {
                             c["key"] = c.key === undefined ? c.prop : c.key;
                             c["dataType"] = 'string';
                             return c;
-                        });
+                        });*/
+                        var searchCriterion = this.searchCriterion;
                         var searchedValues = _.find(source, function (val) {
-                            return _.find(iggridColumns, function (x) {
-                                return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                            return _.find(searchCriterion, function (x) {
+                                //return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                                return val[x].toString().indexOf(value) >= 0;
                             }) !== undefined;
                         });
                         if (searchedValues === undefined) {
@@ -22624,13 +22639,22 @@ var nts;
                 var ntsFileUpload;
                 (function (ntsFileUpload) {
                     $.fn.ntsFileUpload = function (option) {
-                        var dfd = $.Deferred();
-                        var fileInput;
-                        if ($(this).find("input[type='file']").length == 0) {
-                            fileInput = $(this).get(0);
+                        var $container = $(this);
+                        if (typeof option === 'string' && option === 'clear') {
+                            resetFileUpload($container);
                         }
                         else {
-                            fileInput = $(this).find("input[type='file']").get(0);
+                            return uploadFile($container, option);
+                        }
+                    };
+                    function uploadFile($container, option) {
+                        var dfd = $.Deferred();
+                        var fileInput;
+                        if ($container.find("input[type='file']").length == 0) {
+                            fileInput = $container.get(0);
+                        }
+                        else {
+                            fileInput = $container.find("input[type='file']").get(0);
                         }
                         if (fileInput !== undefined) {
                             var files = fileInput.files;
@@ -22674,7 +22698,13 @@ var nts;
                             dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
                         }
                         return dfd.promise();
-                    };
+                    }
+                    function resetFileUpload($container) {
+                        $container.find("input[type='file']").val(null);
+                        $container.data("restored-by-cancel", false);
+                        $container.data("files-cache-for-cancel", null);
+                        $container.data("selected-file-name", '');
+                    }
                 })(ntsFileUpload = jqueryExtentions.ntsFileUpload || (jqueryExtentions.ntsFileUpload = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -27085,22 +27115,22 @@ var nts;
                                 });
                                 return this;
                             };
-                            Handler.KEY_DOWN = "keydown";
-                            Handler.KEY_UP = "keyup";
-                            Handler.FOCUS_IN = "focusin";
-                            Handler.BLUR = "blur";
-                            Handler.CLICK = "click";
-                            Handler.MOUSE_DOWN = "mousedown";
-                            Handler.SCROLL = "scroll";
-                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                            Handler.RECORDS = "iggridvirtualrecordsrender";
-                            Handler.CELL_CLICK = "iggridcellclick";
-                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
+                        Handler.KEY_DOWN = "keydown";
+                        Handler.KEY_UP = "keyup";
+                        Handler.FOCUS_IN = "focusin";
+                        Handler.BLUR = "blur";
+                        Handler.CLICK = "click";
+                        Handler.MOUSE_DOWN = "mousedown";
+                        Handler.SCROLL = "scroll";
+                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                        Handler.RECORDS = "iggridvirtualrecordsrender";
+                        Handler.CELL_CLICK = "iggridcellclick";
+                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
@@ -29463,9 +29493,10 @@ var nts;
                         }
                         var minusWidth = 0;
                         var fields = options.fields;
-                        var searchText = (options.searchText !== undefined) ? options.searchText : "検索";
                         var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・";
                         var searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
+                        var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+                        var searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
                         var label = (options.label !== undefined) ? options.label : "";
                         var enable = options.enable;
                         var dataSource = options.items;
@@ -30044,9 +30075,13 @@ var nts;
                             });
                         }
                         else {
+                            if (selectedId.constructor === Array) {
+                                selectedId = selectedId[0];
+                            }
                             $tree.igTreeGridSelection('selectRowById', selectedId);
                             virtualScroll($tree, selectedId);
                         }
+                        $tree.trigger("ntstreeselectionchanged", [selectedId]);
                     }
                     function virtualScroll($tree, id) {
                         var virtualization = $tree.igTreeGrid("option", "virtualization");
@@ -30574,6 +30609,40 @@ var nts;
                     return NtsTableButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTableButton'] = new NtsTableButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var originalClick = ko.bindingHandlers.click;
+                // override click binding with timeClick (default: 500)
+                var SafeClickBindingHandler = (function () {
+                    function SafeClickBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
+                                return function () {
+                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = timeClick && _.isNumber(Number(timeClick)) ? Number(timeClick) : 500;
+                                    if (time > _timeClick) {
+                                        //pass through the arguments
+                                        originalFunction.apply(viewModel, arguments);
+                                    }
+                                    lastPreventTime = new Date().getTime();
+                                };
+                            };
+                            // call originalClick init
+                            originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
+                        };
+                    }
+                    return SafeClickBindingHandler;
+                }());
+                ko.bindingHandlers['click'] = new SafeClickBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -31211,7 +31280,8 @@ var nts;
                             mode: self.timeMode,
                             enable: allBindData.enable,
                             disabled: allBindData.disabled,
-                            option: { width: "70" } };
+                            option: { width: "70" },
+                            constraint: 'AttendanceClock' };
                     };
                     return EditorConstructSite;
                 }());
@@ -31394,6 +31464,8 @@ var nts;
                 var REQUIRED = "required";
                 var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
                 var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
+                var IS_REMOVE_BY_VM = "remove-by-vm";
+                var IS_USER_SELECTED = "user-selected";
                 var SELECTED_FILE_NAME = "selected-file-name";
                 var STEREOTYPE = "stereotype";
                 var IMMEDIATE_UPLOAD = "immediate-upload";
@@ -31440,14 +31512,19 @@ var nts;
                             }
                             $container.ntsError("clear");
                             var selectedFilePath = $(this).val();
-                            // canceled on selecting file dialog
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
+                                if ($container.data(IS_REMOVE_BY_VM) === true) {
+                                    // canceled on selecting file dialog
+                                    $container.data(IS_REMOVE_BY_VM, false);
+                                    return;
+                                }
                                 if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
                                     $container.data(IS_RESTORED_BY_CANCEL, true);
                                     this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                                 }
                                 return;
                             }
+                            $container.data(IS_USER_SELECTED, true);
                             $container.data(FILES_CACHE_FOR_CANCEL, this.files);
                             var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                             $container.data(SELECTED_FILE_NAME, selectedFileName);
@@ -31508,6 +31585,12 @@ var nts;
                         var $fileNameLabel = $container.find(".filenamelabel");
                         // when change just only filename, file in input must be cleared
                         if ($container.data(SELECTED_FILE_NAME) !== fileName) {
+                            if ($container.data(IS_USER_SELECTED) !== true && !nts.uk.util.isNullOrUndefined($container.data(IS_USER_SELECTED))) {
+                                $container.data(IS_REMOVE_BY_VM, true);
+                            }
+                            else {
+                                $container.data(IS_REMOVE_BY_VM, false);
+                            }
                             $container.data(SELECTED_FILE_NAME, "");
                             $container.find("input[type='file']").val(null);
                         }
@@ -31525,6 +31608,7 @@ var nts;
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
                         $fileNameInput.prop("disabled", !enable);
+                        $container.data(IS_USER_SELECTED, false);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -31653,11 +31737,12 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var image = ko.unwrap(data.image);
+                        var popUpId = ko.unwrap(data.popUpId);
                         var textId = ko.unwrap(data.textId);
                         var textParams = ko.unwrap(data.textParams);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
-                        var isImage = !util.isNullOrUndefined(image);
+                        var isText = !util.isNullOrUndefined(textId) || !util.isNullOrUndefined(textParams);
                         //Position
                         var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
                         var atPositions = position.split(" ");
@@ -31710,6 +31795,10 @@ var nts;
                                 }
                             });
                         }
+                        else if (_.has(data, 'popUpId')) {
+                            $content = $('#' + popUpId);
+                            // add pop-up-container
+                        }
                         else {
                             $content = $("<span>", {
                                 style: { 'white-space': 'pre-line' }
@@ -31726,7 +31815,7 @@ var nts;
                             .append($caret)
                             .append($content)
                             .appendTo($container).hide();
-                        if (!isImage) {
+                        if (isText) {
                             var CHARACTER_DEFAULT_WIDTH = 7;
                             var DEFAULT_SPACE = 5;
                             var textLengths = _.map($content.text().split(/\r\n/g), function (o) { return nts.uk.text.countHalf(o); });
@@ -31830,7 +31919,8 @@ var nts;
                         var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
                         var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
                         var croppable = false;
-                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
+                        var maxSize = nts.uk.util.isNullOrUndefined(data.maxSize) ? undefined : ko.unwrap(data.maxSize);
+                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile, undefined, maxSize);
                         var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
                         var constructSite = new ImageEditorConstructSite($element, helper);
                         var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
@@ -32058,8 +32148,26 @@ var nts;
                                 self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
+                            if (!self.validateFilesSize(this.files[0])) {
+                                // if file's size > maxSize, remove that file                    
+                                $(this).val('');
+                                return;
+                            }
                             self.validateFile(this.files);
                         });
+                    };
+                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
+                        var self = this;
+                        var MAX_SIZE = self.helper.maxSize;
+                        // if MAX_SIZE == undefined => do not check size
+                        if (!MAX_SIZE) {
+                            return true;
+                        }
+                        if (file.size > MAX_SIZE * 1048576) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
+                            return false;
+                        }
+                        return true;
                     };
                     ImageEditorConstructSite.prototype.validateFile = function (files) {
                         var self = this;
@@ -32096,7 +32204,7 @@ var nts;
                     return ImageEditorConstructSite;
                 }());
                 var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
+                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query, maxSize) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -32110,6 +32218,7 @@ var nts;
                                 self.IMAGE_EXTENSION.push(ex.toUpperCase());
                             });
                         }
+                        self.maxSize = maxSize;
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
                         return this.IMAGE_EXTENSION.join(", ");

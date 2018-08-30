@@ -22,7 +22,9 @@
 					<button tabindex="1" class="proceed large btnSave" id="btn_save" 
 						data-bind="click: saveClosureHistory, enable: $root.errors.isEmpty">#{i18n.getText('KMK012_1')}</button>
 						
-					<button id="button12" tabindex="2" data-bind="click: openDialogE">#{i18n.getText('KMK012_43')}</button>	
+					<button id="button12" tabindex="2" data-bind="click: openDialogE">#{i18n.getText('KMK012_43')}</button>
+					
+					<button id="btnDialogCalDailyPfm" tabindex="-1" data-bind="click: openDialogCalDailyPfm">#{i18n.getText('KMK012_50')}</button>	
 				</div>
 				
 				<div id="contents-area">

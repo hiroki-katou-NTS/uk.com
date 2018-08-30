@@ -41,6 +41,25 @@ public class ItemInfo {
 	}
 	
 	/**
+	 * create to insert value(name is display on screen) to DB
+	 * set viewValue = name is display on screen
+	 *  
+	 * @param id
+	 * @param name
+	 * @param attr
+	 * @param valueBefore
+	 * @param valueAfter
+	 * @param nameValueBef
+	 * @param nameValueAft
+	 * @return
+	 */
+	public static ItemInfo createWithViewValue(String id, String name, DataValueAttribute attr, Object valueBefore,
+			Object valueAfter, Object viewValueBef, Object viewValueAft) {
+		return new ItemInfo(id, name, Value.createWithViewValue(valueBefore, attr, viewValueBef),
+				Value.createWithViewValue(valueAfter, attr, viewValueAft));
+	}
+	
+	/**
 	 * create to read data only, not to write
 	 * @param id
 	 * @param name
@@ -71,6 +90,10 @@ public class ItemInfo {
 		
 		static Value create(Object value, String viewValue, DataValueAttribute attr) {
 			return new Value(new RawValue(Type.defaultOf(attr), value), viewValue);
+		}
+		
+		static Value createWithViewValue(Object value, DataValueAttribute attr, Object viewValue) {
+			return new Value(new RawValue(Type.defaultOf(attr), value), attr.format(viewValue));
 		}
 		
 		/**
