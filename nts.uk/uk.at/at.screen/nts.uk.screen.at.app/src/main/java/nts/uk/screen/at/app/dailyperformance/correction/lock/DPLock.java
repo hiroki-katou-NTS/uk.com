@@ -76,7 +76,7 @@ public class DPLock {
 						new YearMonth(x.getClosureMonth()));
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
-					if (actualLockDto.get().getDailyLockState() == 1 || actualLockDto.get().getMonthlyLockState() == 1) {
+					if (actualLockDto.get().getDailyLockState() == 1) {
 						employeeAndDateRange.put(mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", DPText.LOCK_EDIT_CELL_DAY),
 								datePeriod);
 					}
