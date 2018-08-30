@@ -17,11 +17,14 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.ExcessTimesYearAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.outsideot.service.MonthlyItems;
 import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.outsideot.service.Time36AgreementTargetItem;
@@ -53,6 +56,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
 	@Inject
 	private OutsideOTSettingService outsideOTSettingService;
+
+	@Inject
+	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyId, String employeeId, GeneralDate appDate,
@@ -123,8 +129,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		// 「時間外時間の詳細」．36年間超過月.Add(返した超過の年月)
 		appOvertimeDetail.setYear36OverMonth(agreeInfo.getYearMonths());
 		// 36協定時間の状態チェック
-		// TODO No.514
-		if (true) {
+		AgreementTimeStatusOfMonthly checkAgreement = agreementTimeStatusAdapter.checkAgreementTimeStatus(
+				new AttendanceTimeMonth(
+						appOvertimeDetail.getApplicationTime().v() + appOvertimeDetail.getActualTime().v()),
+				appOvertimeDetail.getLimitAlarmTime(), appOvertimeDetail.getLimitErrorTime(),
+				appOvertimeDetail.getExceptionLimitErrorTime(), appOvertimeDetail.getExceptionLimitErrorTime());
+		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
 			errorFlg = true;
 			// 「時間外時間の詳細」．年月は取得した超過月詳細に存在するかチェックする
 			if (!appOvertimeDetail.existOverMonth(appOvertimeDetail.getYearMonth())) {
@@ -161,8 +172,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			appOvertimeDetail.setApplicationTime(this.calcBreakAppTime(appTimeItems, targetItem));
 		}
 		// 36協定時間の状態チェック
-		// TODO No.514
-		if (true) {
+		AgreementTimeStatusOfMonthly checkAgreement = agreementTimeStatusAdapter.checkAgreementTimeStatus(
+				new AttendanceTimeMonth(
+						appOvertimeDetail.getApplicationTime().v() + appOvertimeDetail.getActualTime().v()),
+				appOvertimeDetail.getLimitAlarmTime(), appOvertimeDetail.getLimitErrorTime(),
+				appOvertimeDetail.getExceptionLimitErrorTime(), appOvertimeDetail.getExceptionLimitErrorTime());
+		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
 			errorFlg = true;
 			// 「時間外時間の詳細」．年月は「時間外時間の詳細」．36年間超過月に存在するかチェックする
 			if (!appOvertimeDetail.existOverMonth(appOvertimeDetail.getYearMonth())) {

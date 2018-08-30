@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 
 /**
  * 時間外時間の詳細
@@ -49,22 +49,22 @@ public class AppOvertimeDetail extends DomainObject {
 	/**
 	 * 限度エラー時間
 	 */
-	private MonthlyTime limitErrorTime;
+	private LimitOneMonth limitErrorTime;
 
 	/**
 	 * 限度アラーム時間
 	 */
-	private MonthlyTime limitAlarmTime;
+	private LimitOneMonth limitAlarmTime;
 
 	/**
 	 * 特例限度エラー時間
 	 */
-	private Optional<MonthlyTime> exceptionLimitErrorTime;
+	private Optional<LimitOneMonth> exceptionLimitErrorTime;
 
 	/**
 	 * 特例限度アラーム時間
 	 */
-	private Optional<MonthlyTime> exceptionLimitAlarmTime;
+	private Optional<LimitOneMonth> exceptionLimitAlarmTime;
 
 	/**
 	 * 36年間超過月
@@ -139,21 +139,21 @@ public class AppOvertimeDetail extends DomainObject {
 	}
 
 	public void setLimitErrorTime(int limitErrorTime) {
-		this.limitErrorTime = new MonthlyTime(limitErrorTime);
+		this.limitErrorTime = new LimitOneMonth(limitErrorTime);
 	}
 
 	public void setLimitAlarmTime(int limitAlarmTime) {
-		this.limitAlarmTime = new MonthlyTime(limitAlarmTime);
+		this.limitAlarmTime = new LimitOneMonth(limitAlarmTime);
 	}
 
 	public void setExceptionLimitErrorTime(Integer exceptionLimitErrorTime) {
 		this.exceptionLimitErrorTime = Objects.isNull(exceptionLimitErrorTime) ? Optional.empty()
-				: Optional.ofNullable(new MonthlyTime(exceptionLimitErrorTime));
+				: Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime));
 	}
 
 	public void setExceptionLimitAlarmTime(Integer exceptionLimitAlarmTime) {
 		this.exceptionLimitAlarmTime = Objects.isNull(exceptionLimitAlarmTime) ? Optional.empty()
-				: Optional.ofNullable(new MonthlyTime(exceptionLimitAlarmTime));
+				: Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime));
 	}
 
 	public void setNumOfYear36Over(int numOfYear36Over) {
