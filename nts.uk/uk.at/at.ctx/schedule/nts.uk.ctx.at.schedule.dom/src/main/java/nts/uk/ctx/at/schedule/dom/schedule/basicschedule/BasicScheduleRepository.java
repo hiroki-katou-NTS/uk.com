@@ -163,11 +163,4 @@ public interface BasicScheduleRepository {
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 	
 	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
-	/**
-	 * 検索
-	 * @param employeeId 社員ID
-	 * @param dateData　リスト
-	 * @return
-	 */
-	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates);
 }
