@@ -274,7 +274,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let maxDisplayOrder = _.maxBy(categoryItems, item => {
                 return item.displayOrder;
             });
-            let nextDisplayOrder = maxDisplayOrder ? maxDisplayOrder.displayOrder + 1 : 1;
+            let nextDisplayOrder = maxDisplayOrder ? parseInt(maxDisplayOrder.displayOrder) + 1 : 1;
             for (let i = 0; i < self.selectedExOutputCateItemDatas().length; i++) {
                 let exOutCateItemData = _.find(self.listExOutCateItemData(), item => {
                     return item.itemNo() == self.selectedExOutputCateItemDatas()[i];

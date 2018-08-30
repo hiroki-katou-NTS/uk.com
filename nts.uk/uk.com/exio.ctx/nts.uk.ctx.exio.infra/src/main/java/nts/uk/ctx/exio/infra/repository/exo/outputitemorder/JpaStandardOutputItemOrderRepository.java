@@ -64,7 +64,9 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 
 	@Override
 	public void remove(String cid, String outItemCd, String condSetCd) {
-		this.commandProxy().remove(OiomtStdOutItemOrder.class, new OiomtStdOutItemOrderPk(cid, outItemCd, condSetCd));
+		this.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtStdOutItemOrder.class, new OiomtStdOutItemOrderPk(cid, outItemCd, condSetCd));
+        });
 	}
 	
 	@Override

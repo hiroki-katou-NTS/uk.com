@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
+    import error = nts.uk.ui.errors;
 
     export class ScreenModel {
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem({
@@ -61,6 +62,11 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             var self = this;
             return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
         }
+        
+        enableRegister(){
+            return error.hasError();
+        }
+        
         retirementOutput() {
             var self = this;
             return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
