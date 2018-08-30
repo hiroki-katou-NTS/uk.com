@@ -49,10 +49,8 @@ module nts.uk.com.view.cas004.a {
                         self.currentEmpCid(currentUser.cid);
                         self.isSpecial(currentUser.specialUser);
                         self.isMultiCom(currentUser.multiCompanyConcurrent);
-                        self.isChangePass(false);
-                        self.isDisplay(true);
                     };
-                    self.isDelete(true);
+                    self.updateMode();
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -96,6 +94,13 @@ module nts.uk.com.view.cas004.a {
                 errors.clearAll();
                 $('#login-id').focus();
                 $('.nts-input').ntsError('clear');
+            }
+            
+            updateMode(): void {
+                let self = this;
+                self.isChangePass(false);
+                self.isDisplay(true);
+                self.isDelete(true);
             }
             
             private resetData() {
@@ -143,10 +148,10 @@ module nts.uk.com.view.cas004.a {
                                         }
                                     }
                                     else {
-                                        self.currentCode(userId);
                                         self.isFocusFirst(false);
+                                        self.updateMode();
+                                        self.currentCode(userId);
                                         self.companyCode(null);
-                                        
                                     };
                                 });
                             }).fail((res) => {
@@ -184,8 +189,9 @@ module nts.uk.com.view.cas004.a {
                                         }
                                     }
                                     else {
-                                        self.currentCode(updateUser.userID);
                                         self.isFocusFirst(false);
+                                        self.updateMode();
+                                        self.currentCode(updateUser.userID);
                                         self.companyCode(null);
                                     };
                                 });
