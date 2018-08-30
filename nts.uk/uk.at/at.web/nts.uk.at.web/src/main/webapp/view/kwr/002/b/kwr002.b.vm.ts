@@ -38,7 +38,9 @@ module nts.uk.com.view.kwr002.b {
             self.newMode = ko.observable(false);
 
             self.currentARESCode.subscribe((value) => {
-                errors.clearAll();
+                _.defer(() => {
+                    errors.clearAll();
+                });
                 self.resetShare();
                 if (value) {
                     service.getARESByCode(value).done((aRESData) => {
@@ -193,7 +195,7 @@ module nts.uk.com.view.kwr002.b {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES
                             service.addARES(data).done(() => {
-                                
+
                                 dialogInfo({ messageId: "Msg_15" });
                                 self.callGetAll(self, currentData);
                             });
