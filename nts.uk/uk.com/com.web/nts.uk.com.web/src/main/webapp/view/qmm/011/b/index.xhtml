@@ -84,21 +84,19 @@
 										data-bind="ntsNumberEditor: {
 																option : {width: '60px'},
 																name: '#{i18n.getText('QMM011_11')}',
-																value: indBdRation,
+																value: indBdRatio,
 																required: false
 																}"/>
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div id = "B3_9"
+								<input id = "B3_9"
 										data-bind="ntsComboBox: {
-																option : {width: '60px'},
+																
 																name: '#{i18n.getText('QMM011_15')}',
 																value: perFracClass,
-																required: false,
 																options: $parent.listPerFracClass,
 																optionsValue: 'code',
-																visibleItemsCount: 5,
 																optionsText: 'name'
 																}"/>
 							</td>
@@ -114,10 +112,13 @@
 							</td>
 							<td>
 								<input id = "B3_13"
-										data-bind="ntsNumberEditor: {
+										data-bind="ntsComboBox: {
 																option : {width: '60px'},
 																value: busiOwFracClass, 
-																name:'#{i18n.getText('QMM011_12')}'
+																name:'#{i18n.getText('QMM011_12')}',
+																options: $parent.listPerFracClass,
+																optionsText: 'name',
+																optionsValue: 'code',
 																}"/>
 
 							</td>

@@ -1,6 +1,16 @@
 package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
+import java.math.BigDecimal;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+
+@Getter
+@Setter
 public class EmpInsurBusBurRatio {
+	
+	private String hisId;
     /**
      *
      */
@@ -25,4 +35,16 @@ public class EmpInsurBusBurRatio {
      * 事業主端数区分
      */
     private InsuPremiumFractionClassification busiOwFracClass;
+
+	public EmpInsurBusBurRatio(String hisId, int empPreRateId, BigDecimal indBdRatio, BigDecimal empContrRatio,
+			int perFracClass, int busiOwFracClass) {
+		super();
+		this.empPreRateId = EnumAdaptor.valueOf(empPreRateId, EmpInsurRateId.class);
+		this.indBdRatio = new InsuranceRate(indBdRatio);
+		this.empContrRatio = new InsuranceRate(empContrRatio);
+		this.perFracClass = EnumAdaptor.valueOf(perFracClass, InsuPremiumFractionClassification.class);
+		this.busiOwFracClass = EnumAdaptor.valueOf(busiOwFracClass, InsuPremiumFractionClassification.class);
+	}
+    
+    
 }

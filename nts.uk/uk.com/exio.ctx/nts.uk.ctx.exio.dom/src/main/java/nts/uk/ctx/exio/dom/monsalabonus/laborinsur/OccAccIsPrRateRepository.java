@@ -9,13 +9,6 @@ import java.util.Optional;
 public interface OccAccIsPrRateRepository
 {
 
-    List<OccAccIsPrRate> getAllOccAccIsPrRate();
-
-    Optional<OccAccIsPrRate> getOccAccIsPrRateById(String ocAcIsPrRtId, String hisId);
-
-    void add(OccAccIsPrRate domain);
-
-    void update(OccAccIsPrRate domain);
 
     void remove(String ocAcIsPrRtId, String hisId);
 

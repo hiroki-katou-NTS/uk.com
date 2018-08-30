@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtEmpInsurPreRatePk implements Serializable
+public class QpbmtEmpInsurBusBurRatioPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -33,6 +33,6 @@ public class QpbmtEmpInsurPreRatePk implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "EMP_PRE_RATE_ID")
-    public String empPreRateId;
+    public int empPreRateId;
     
 }

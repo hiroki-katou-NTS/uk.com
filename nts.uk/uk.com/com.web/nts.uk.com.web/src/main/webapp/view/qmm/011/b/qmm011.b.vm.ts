@@ -19,8 +19,8 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         monthlyCalendar:        KnockoutObservable<string> = ko.observable('2010/1');
         startDate:              KnockoutObservable<string> = ko.observable('2010/1');
         endDate:                KnockoutObservable<string> = ko.observable('2010/1');
-        indBdRation:            KnockoutObservable<string> = ko.observable('');
-        perFracClass:           KnockoutObservable<string> = ko.observable('');
+        indBdRatio:             KnockoutObservable<string> = ko.observable('');
+        perFracClass:           KnockoutObservable<number> = ko.observable();
         empContrRatio:          KnockoutObservable<string> = ko.observable('');
         busiOwFracClass:        KnockoutObservable<string> = ko.observable('');
         isNewMode:              KnockoutObservable<boolean> = ko.observable(true);
@@ -162,11 +162,11 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     
     export function getListPerFracClass(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText('CMF002_358')),
-            new model.ItemModel(1, getText('CMF002_359')),
-            new model.ItemModel(2, getText('CMF002_360')),
-            new model.ItemModel(3, getText('CMF002_361')),
-            new model.ItemModel(4, getText('CMF002_362'))
+            new model.ItemModel('0', getText('CMF002_358')),
+            new model.ItemModel('1', getText('CMF002_359')),
+            new model.ItemModel('2', getText('CMF002_360')),
+            new model.ItemModel('3', getText('CMF002_361')),
+            new model.ItemModel('4', getText('CMF002_362'))
         ];
     }
 }

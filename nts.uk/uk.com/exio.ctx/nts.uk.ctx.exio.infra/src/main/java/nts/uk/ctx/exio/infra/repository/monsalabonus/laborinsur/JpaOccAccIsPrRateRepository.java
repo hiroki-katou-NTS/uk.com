@@ -17,29 +17,7 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsPrRate f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.ocAcIsPrRtId =:ocAcIsPrRtId AND  f.occAccIsPrRatePk.hisId =:hisId ";
 
-    @Override
-    public List<OccAccIsPrRate> getAllOccAccIsPrRate(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtOccAccIsPrRate.class)
-                .getList(item -> item.toDomain());
-    }
 
-    @Override
-    public Optional<OccAccIsPrRate> getOccAccIsPrRateById(String ocAcIsPrRtId, String hisId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtOccAccIsPrRate.class)
-        .setParameter("ocAcIsPrRtId", ocAcIsPrRtId)
-        .setParameter("hisId", hisId)
-        .getSingle(c->c.toDomain());
-    }
-
-    @Override
-    public void add(OccAccIsPrRate domain){
-        this.commandProxy().insert(QpbmtOccAccIsPrRate.toEntity(domain));
-    }
-
-    @Override
-    public void update(OccAccIsPrRate domain){
-        this.commandProxy().update(QpbmtOccAccIsPrRate.toEntity(domain));
-    }
 
     @Override
     public void remove(String ocAcIsPrRtId, String hisId){

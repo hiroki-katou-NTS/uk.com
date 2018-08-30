@@ -45,11 +45,5 @@ public class QpbmtOccAccInsurBus extends UkJpaEntity implements Serializable
         return occAccInsurBusPk;
     }
 
-    public OccAccInsurBus toDomain() {
-        return new OccAccInsurBus(this.occAccInsurBusPk.cid, this.occAccInsurBusPk.occAccInsurBusNo, this.toUse, this.name);
-    }
-    public static QpbmtOccAccInsurBus toEntity(OccAccInsurBus domain) {
-        return new QpbmtOccAccInsurBus(new QpbmtOccAccInsurBusPk(domain.getCid(), domain.getOccAccInsurBusNo()), domain.getToUse(), domain.getName());
-    }
 
 }

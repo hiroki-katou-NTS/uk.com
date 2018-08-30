@@ -6,16 +6,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurPreRateRepository;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatioRepository;
 
 @Stateless
 public class EmpInsurPreRateFinder {
 	
 	@Inject
-	private EmpInsurPreRateRepository empInsurPreRateRepository;
+	private EmpInsurBusBurRatioRepository empInsurBusBurRatioReopository;
 	
 	public List<EmpInsurPreRateDto> getListEmplInsurPreRate(String hisId){
-		return empInsurPreRateRepository.getEmpInsurPreRateByHisId(hisId).stream().
+		return empInsurBusBurRatioReopository.getEmpInsurBusBurRatioByHisId(hisId).stream().
 				map(item -> EmpInsurPreRateDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }

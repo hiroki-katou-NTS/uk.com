@@ -52,11 +52,5 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
         return occAccIsPrRatePk;
     }
 
-    public OccAccIsPrRate toDomain() {
-        return new OccAccIsPrRate(this.occAccIsPrRatePk.ocAcIsPrRtId, this.occAccIsPrRatePk.hisId, this.occAccInsurBusNo, this.fracClass, this.empConRatio);
-    }
-    public static QpbmtOccAccIsPrRate toEntity(OccAccIsPrRate domain) {
-        return new QpbmtOccAccIsPrRate(new QpbmtOccAccIsPrRatePk(domain.getOcAcIsPrRtId(), domain.getHisId()), domain.getOccAccInsurBusNo(), domain.getFracClass().value, domain.getEmpConRatio());
-    }
 
 }
