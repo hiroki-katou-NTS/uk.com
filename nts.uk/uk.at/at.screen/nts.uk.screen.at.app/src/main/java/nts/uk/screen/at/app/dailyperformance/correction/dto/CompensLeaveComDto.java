@@ -20,7 +20,7 @@ public class CompensLeaveComDto {
 
 	private boolean manageTimeOff;
 
-	private Integer compenLeaveRemain;
+	private Double compenLeaveRemain;
 	
 	private Integer timeRemain;
 	

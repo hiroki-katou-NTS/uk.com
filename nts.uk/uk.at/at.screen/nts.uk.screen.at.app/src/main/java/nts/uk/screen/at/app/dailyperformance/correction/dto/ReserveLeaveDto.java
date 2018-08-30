@@ -13,6 +13,6 @@ public class ReserveLeaveDto {
 
 	private boolean manageRemainNumber;
 	
-	private Integer remainNumber; 
+	private Double remainNumber; 
 	
 }

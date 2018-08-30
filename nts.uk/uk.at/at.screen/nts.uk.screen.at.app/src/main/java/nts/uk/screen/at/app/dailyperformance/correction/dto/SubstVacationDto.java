@@ -18,6 +18,6 @@ public class SubstVacationDto {
 
 	private boolean manageAtr;
 
-	private Integer holidayRemain;
+	private Double holidayRemain;
 	
 }

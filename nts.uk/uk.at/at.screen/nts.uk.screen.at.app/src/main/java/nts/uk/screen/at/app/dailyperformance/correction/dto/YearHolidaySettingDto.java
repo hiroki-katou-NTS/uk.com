@@ -20,7 +20,7 @@ public class YearHolidaySettingDto {
 
 	private boolean manageTimeOff;
 
-	private Integer annualLeaveRemain;
+	private Double annualLeaveRemain;
 	
 	private Integer timeRemain;
 	

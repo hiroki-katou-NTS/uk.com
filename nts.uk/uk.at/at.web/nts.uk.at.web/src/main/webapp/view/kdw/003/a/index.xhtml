@@ -145,27 +145,33 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().compensationDay"></span></td>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().substitute"></span></td>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().annualDay"></span></td>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().reserve"></span></td>
+                                                <td class="ui-widget-body remain-compen-day">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
+                                               	</td>
+                                                <td class="ui-widget-body remain-subst-day">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
+                                                </td>
+                                                <td class="ui-widget-body remain-annual-day">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
+                                                </td>
+                                                <td class="ui-widget-body remain-reserve-day">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
+                                                </td>
                                             </tr>
                                             <tr>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().compensationTime"></span></td>
+                                                <td class="ui-widget-body remain-compen-time">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
+                                                </td>
                                                 <td class="ui-widget-body"></td>
-                                                <td class="ui-widget-body"><span class="text-holiday"
-                                                                                 data-bind="text: dataHoliday().annualTime"></span></td>
+                                                <td class="ui-widget-body remain-annual-time">
+                                                	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
+                                                </td>
                                                 <td class="ui-widget-body"></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                     <label data-bind="text: dataHoliday().dispSysDate"></label>
-                                    <label style="padding-left: 20px">#{i18n.getText('KDW003_122')}</label>
+                                    <label style="padding-left: 20px" data-bind="text: dataHoliday().dispNextGrantDate"></label>
                                 </div>
                             </div>
                             <div id="container" style="padding-top: 12px">

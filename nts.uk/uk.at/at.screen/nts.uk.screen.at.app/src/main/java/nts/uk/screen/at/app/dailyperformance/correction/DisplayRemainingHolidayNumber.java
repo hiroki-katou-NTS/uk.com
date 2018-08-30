@@ -1,12 +1,18 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
-import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSettingDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -33,13 +39,21 @@ public class DisplayRemainingHolidayNumber {
 
 	@Inject
 	private AnnLeaveRemainNumberAdapter annLeaveRemainAdapter;
+	
+	@Inject
+	private ReserveLeaveManagerApdater rsvLeaveRemainAdapter;
+	
+	@Inject
+	private AnnualHolidayManagementAdapter annualHolidayMng;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		AnnualHolidaySetOutput output = absenceProc.getSettingForAnnualHoliday(companyId);
 		if (output.isYearHolidayManagerFlg()) {
 			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
 					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
-			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(), 1, 2);
+			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
+					remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay(),
+					remainNum.getAnnualLeaveRemainNumberExport().getTimeAnnualLeaveWithMinusGrantPre());
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);
 		}
@@ -48,7 +62,9 @@ public class DisplayRemainingHolidayNumber {
 	public ReserveLeaveDto getReserveLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		boolean manageAtr = absenceProc.getSetForYearlyReserved(companyId, employeeId, date);
 		if (manageAtr) {
-			return new ReserveLeaveDto(manageAtr, 4);
+			// call requestlist201
+			Optional<RsvLeaManagerImport> optOutput = rsvLeaveRemainAdapter.getRsvLeaveManager(employeeId, date);
+			return new ReserveLeaveDto(manageAtr, optOutput.get().getReserveLeaveInfo().getBefRemainDay());
 		} else 
 			return new ReserveLeaveDto(false, null);
 	}
@@ -57,7 +73,7 @@ public class DisplayRemainingHolidayNumber {
 		LeaveSetOutput output = absenceProc.getSetForLeave(companyId, employeeId, date);
 		if (output.isSubManageFlag()) {
 			// TODO: call requestlist506
-			return new SubstVacationDto(output.isSubManageFlag(), 2);
+			return new SubstVacationDto(output.isSubManageFlag(), 0.0);
 		}
 		return new SubstVacationDto(false, null);
 	}
@@ -66,7 +82,7 @@ public class DisplayRemainingHolidayNumber {
 		SubstitutionHolidayOutput output = absenceProc.getSettingForSubstituteHoliday(companyId, employeeId, date);
 		if (output != null && output.isSubstitutionFlg()) {
 			// TODO: call requestlist505
-			return new CompensLeaveComDto(output.isSubstitutionFlg(), output.isTimeOfPeriodFlg(), 1, 2);
+			return new CompensLeaveComDto(output.isSubstitutionFlg(), output.isTimeOfPeriodFlg(), 0.0, 0);
 		} else {
 			return new CompensLeaveComDto(false, false, null, null);
 		}
@@ -75,6 +91,11 @@ public class DisplayRemainingHolidayNumber {
 	public Com60HVacationDto getCom60HVacationSetting(String companyId, String employeeId, GeneralDate date) {
 		Com60HVacationDto output = new Com60HVacationDto("", false, null, null);
 		return output;
+	}
+	
+	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
+		List<NextAnnualLeaveGrantImport> lstOutput = this.annualHolidayMng.acquireNextHolidayGrantDate(companyId, employeeId, date);
+		return lstOutput.get(0).grantDate;
 	}
 	
 	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId) {
@@ -86,6 +107,7 @@ public class DisplayRemainingHolidayNumber {
 		result.setReserveLeave(this.getReserveLeaveSetting(companyId, employeeId, baseDate));
 		result.setSubstitutionLeave(this.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
 		result.setCom60HVacation(this.getCom60HVacationSetting(companyId, employeeId, baseDate));
+		result.setNextGrantDate(this.getNextGrantDate(companyId, employeeId, baseDate));
 		return result;
 	}
 
