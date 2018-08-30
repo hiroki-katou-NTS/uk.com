@@ -4,7 +4,7 @@ module nts.uk.at.view.ksm005.c {
     import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
     import CopyMonthlyPatternSettingDto = service.model.CopyMonthlyPatternSettingDto;
     import HistoryDto = service.model.HistoryDto;
-
+    import blockUI = nts.uk.ui.block;
     export module viewmodel {
 
         export class ScreenModel {
@@ -481,6 +481,7 @@ module nts.uk.at.view.ksm005.c {
                     return;
                 }
                 var dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
+                blockUI.grayout();
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -491,7 +492,7 @@ module nts.uk.at.view.ksm005.c {
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });    
+                }).always(()=> blockUI.clear());    
             }
             
             /**
