@@ -2,6 +2,10 @@
 /* 	width: 1405px; */
 /* } */
 
+#contents-area{
+	height: calc(100vh - 21px) !important;
+}
+
 body {
 	overflow: hidden;
 /* 	width: 1405px; */
@@ -12,10 +16,9 @@ body {
 	margin-right: 30px;
 }
 
-#contents-area {
-	width: 1260px;
-	height: 800px;
-}
+/* #contents-area {
+	min-height: 800px;
+} */
 
 .pull-left {
 	float: left;
@@ -73,7 +76,7 @@ body {
 
 #itemRegisterLst {
 	margin-top: 20px;
-	width: 415px;
+	width: 405px;
 }
 
 .caret-background.caret-right:after {
@@ -82,37 +85,41 @@ body {
 
 /* ---------------------------------------- content-right -----------------------------------------------------------*/
 #content-right {
-	margin-left: 15px;
-	margin-top: 115px;
+/* 	margin-left: 15px;
+	margin-top: 115px; */
 	width: 425px !important;
 	height: 580px;
 }
 
 .form-input {
 	margin-bottom: 20px;
+	margin-top: 10px;
 }
 
 .input {
 	clear: both;
 	margin-left: 20px;
 	margin-bottom: 10px;
-}
+} 
 
 #code {
 	margin-top: 5px;
+	width: 70px !important;
 }
 
 #name {
 	max-width: 300px !important;
 	margin-top: 5px;
+	width: 203px !important;
 }
 
 #exCode {
 	margin-top: 5px;
+	width: 70px !important;
 }
 
 #memoSelection {
-	width: 300px;
+	width: 200px;
 	height: 75px;
 	margin-top: 5px;
 }

@@ -448,13 +448,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let recordType = Number(self.logTypeSelectedCode());
 
             // set param log
+             var format = 'YYYY/MM/DD HH:mm:ss';
             let paramLog = {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             // set param for get parent header name
@@ -495,6 +496,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
 
                             if (data.length > 0) {
+                                // order by list
+                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
+                                 }
+                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
+                                 }
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
@@ -514,7 +522,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                         }
                                         if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                             logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logtemp);
+                                            self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                         countLog++;
                                     } else {
@@ -587,7 +595,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
             logBasicInfoModel.subColumnsHeaders = subColumHeaderTemp;
             return logBasicInfoModel;
         }
-
         getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) {
             let tempList = logBasicInfoModel.lstLogOutputItemDto;
             var subColumHeaderTemp: IgGridColumnModel[] = [];
@@ -628,7 +635,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '373',
+                height: '405px',
                 features: [
                     {
                         name: "Paging",
@@ -662,7 +669,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '405',
+                height: '405px',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -709,12 +716,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
-                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "10%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" }
+                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "20%" },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%" },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%" }
 
                         ],
                         features: [
+                          
+                            {
+                                name: 'Selection',
+                                mode: "row",
+                                multipleSelection: false
+                            },
                             {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
@@ -795,6 +808,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         ],
                         features: [
                             {
+                                name: 'Selection',
+                                multipleSelection: false
+                            },
+                            {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
                                 columnSettings: []
@@ -857,6 +874,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
+            
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -1089,14 +1107,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
             // set param log for export file CSV
+            var format = 'YYYY/MM/DD HH:mm:ss';      
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                 endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment(self.startDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
-                endDateOperator: moment(self.endDateOperator(), "YYYY/MM/DD H:mm:ss").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
             //fix itemNo
@@ -1982,6 +2001,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
+        childrentKey:string;
         operationId: string;
         targetDate: string;
         categoryName: string;
@@ -2263,7 +2283,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         ITEM_VALUE_BEFOR = "valueBefore",
         ITEM_VALUE_AFTER = "valueAfter",
         ITEM_CORRECT_ATTR = "correctionAttr",
-        ITEM_OPERATION_ID = "operationId"
+        ITEM_OPERATION_ID = "operationId",
+        ITEM_PARRENT_KEY = "parentKey"
     }
     /*C
     *the enum of EMPLOYEE_SPECIFIC

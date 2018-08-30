@@ -81,6 +81,7 @@ module nts.uk.at.view.kmk002.a {
             applyFormula: KnockoutObservable<string>;
             selectedFormulaAbove: number;
             selectedFormulaBelow: number;
+            unit: KnockoutObservable<string>;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -98,6 +99,7 @@ module nts.uk.at.view.kmk002.a {
             isTimeSelected: KnockoutObservable<boolean>;
             isNumberSelected: KnockoutObservable<boolean>;
             isAmountSelected: KnockoutObservable<boolean>;
+            enableUnit: KnockoutComputed<boolean>;
             isCheckedFromChild = false;
 
             // stash
@@ -117,6 +119,7 @@ module nts.uk.at.view.kmk002.a {
                 this.applyFormula = ko.observable('');
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
+                this.unit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -125,6 +128,9 @@ module nts.uk.at.view.kmk002.a {
                 this.isTimeSelected = ko.observable(false);
                 this.isAmountSelected = ko.observable(false);
                 this.isNumberSelected = ko.observable(false);
+                this.enableUnit = ko.computed(() => {
+                    return this.isNumberSelected() || this.isAmountSelected();
+                });
 
                 // init datasource
                 this.initDatasource();
@@ -297,6 +303,7 @@ module nts.uk.at.view.kmk002.a {
                             self.optionalItemAtr(self.optionalItemAtrStash);
                         });
                     } else {
+                        self.checkSelectedAtr();
                         // save new value to stash
                         self.optionalItemAtrStash = value;
                     }
@@ -777,7 +784,8 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calcResultRange.toDto();
+                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
+                dto.unit = self.enableUnit() ? self.unit() : self.optionalItemDtoStash.unit;
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -799,6 +807,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
+                self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
 
                 // reset apply formula
@@ -1062,17 +1071,33 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert view model to dto
              */
-            public toDto(): CalcResultRangeDto {
+            public toDto(calcResultRangeStash: CalcResultRangeDto): CalcResultRangeDto {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
-                dto.numberUpper = self.numberUpper();
-                dto.numberLower = self.numberLower();
-                dto.amountUpper = self.amountUpper();
-                dto.amountLower = self.amountLower();
-                dto.timeUpper = self.timeUpper();
-                dto.timeLower = self.timeLower();
+
+                if (self.upperCheck()) {
+                    dto.numberUpper = self.numberUpper();
+                    dto.amountUpper = self.amountUpper();
+                    dto.timeUpper = self.timeUpper();
+                } else {
+                    // get stored data from stash
+                    dto.numberUpper = calcResultRangeStash.numberUpper;
+                    dto.amountUpper = calcResultRangeStash.amountUpper;
+                    dto.timeUpper = calcResultRangeStash.timeUpper;
+                }
+
+                if (self.lowerCheck()) {
+                    dto.numberLower = self.numberLower();
+                    dto.amountLower = self.amountLower();
+                    dto.timeLower = self.timeLower();
+                } else {
+                    // get stored data from stash
+                    dto.numberLower = calcResultRangeStash.numberLower;
+                    dto.amountLower = calcResultRangeStash.amountLower;
+                    dto.timeLower = calcResultRangeStash.timeLower;
+                }
                 return dto;
             }
         }
@@ -1096,7 +1121,7 @@ module nts.uk.at.view.kmk002.a {
                 self.selectedCode = ko.observable('');
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
-                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
+                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100, formatter: _.escape },
                     {
                         headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
                         formatter: atr => {

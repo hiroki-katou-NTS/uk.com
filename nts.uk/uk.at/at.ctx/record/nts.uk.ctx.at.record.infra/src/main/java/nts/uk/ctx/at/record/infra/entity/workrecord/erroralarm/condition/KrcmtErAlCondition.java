@@ -87,28 +87,28 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "FILTER_BY_BUSINESS_TYPE")
 	public int filterByBusinessType;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
 
 	@Column(name = "FILTER_BY_JOB_TITLE")
 	public int filterByJobTitle;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
 
 	@Column(name = "FILTER_BY_EMPLOYMENT")
 	public int filterByEmployment;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
 
 	@Column(name = "FILTER_BY_CLASSIFICATION")
 	public int filterByClassification;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlClass> lstClassification;
 
@@ -127,11 +127,11 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "WT_COMPARE_ATR")
 	public Integer wtCompareAtr;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtActual> lstWtActual;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtPlan> lstWtPlan;
 
@@ -150,11 +150,11 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "WH_COMPARE_ATR")
 	public Integer whCompareAtr;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhActual> lstWhActual;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhPlan> lstWhPlan;
 

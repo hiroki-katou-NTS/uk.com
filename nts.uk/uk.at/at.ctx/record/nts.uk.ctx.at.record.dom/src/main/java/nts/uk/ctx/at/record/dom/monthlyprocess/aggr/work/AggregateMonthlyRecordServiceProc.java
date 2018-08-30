@@ -37,6 +37,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
@@ -62,6 +63,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -70,7 +77,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 処理：ドメインサービス：月別実績を集計する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AggregateMonthlyRecordServiceProc {
@@ -79,12 +86,16 @@ public class AggregateMonthlyRecordServiceProc {
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 期間中の年休積休残数を取得 */
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
+	/** 出勤率計算用日数を取得する */
+	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
 	/** 期間内の振出振休残数を取得する */
 	private AbsenceReruitmentMngInPeriodQuery absenceRecruitMng;
 	/** 期間内の休出代休残数を取得する */
 	private BreakDayOffMngInPeriodQuery breakDayoffMng;
-	/** 出勤率計算用日数を取得する */
-	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 特別休暇 */
+	private SpecialHolidayRepository specialHolidayRepo;
+	/** 期間内の特別休暇残を集計する */
+	private SpecialLeaveManagementService specialLeaveMng;
 	/** 月別実績の編集状態 */
 	private EditStateOfMonthlyPerRepository editStateRepo;
 	
@@ -131,6 +142,8 @@ public class AggregateMonthlyRecordServiceProc {
 			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng,
 			BreakDayOffMngInPeriodQuery breakDayoffMng,
 			GetDaysForCalcAttdRate getDaysForCalcAttdRate,
+			SpecialHolidayRepository specialHolidayRepo,
+			SpecialLeaveManagementService specialLeaveMng,
 			EditStateOfMonthlyPerRepository editStateRepo){
 
 		this.repositories = repositories;
@@ -138,6 +151,8 @@ public class AggregateMonthlyRecordServiceProc {
 		this.absenceRecruitMng = absenceRecruitMng;
 		this.breakDayoffMng = breakDayoffMng;
 		this.getDaysForCalcAttdRate = getDaysForCalcAttdRate;
+		this.specialHolidayRepo = specialHolidayRepo;
+		this.specialLeaveMng = specialLeaveMng;
 		this.editStateRepo = editStateRepo;
 	}
 	
@@ -782,8 +797,14 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 代休
 		this.dayoffRemain(period);
-
+		
 		ConcurrentStopwatches.stop("12430:代休：");
+		ConcurrentStopwatches.start("12440:特別休暇：");
+		
+		// 特別休暇
+		this.specialLeaveRemain(period);
+		
+		ConcurrentStopwatches.stop("12440:特別休暇：");
 	}
 	
 	/**
@@ -974,6 +995,41 @@ public class AggregateMonthlyRecordServiceProc {
 							new RemainDataDaysMonth(aggrResult.getUnDigestedDays()),
 							Optional.of(new RemainDataTimesMonth(aggrResult.getUnDigestedTimes()))));
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
+		}
+	}
+	
+	/**
+	 * 特別休暇
+	 * @param period 期間
+	 */
+	private void specialLeaveRemain(DatePeriod period){
+
+		// 「特別休暇」を取得する
+		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
+		for (val specialHoliday : specialHolidays){
+			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
+
+			// マイナスなしを含めた期間内の特別休暇残を集計する
+			// 期間内の特別休暇残を集計する
+			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(this.companyId, this.employeeId, period, true, period.end(), specialLeaveCode, true,
+					false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+			InPeriodOfSpecialLeave inPeriod = this.specialLeaveMng.complileInPeriodOfSpecialLeave(param);
+			
+			// マイナスなしの残数・使用数を計算
+			RemainDaysOfSpecialHoliday remainDays = inPeriod.getRemainDays();
+			SpecialLeaveRemainNoMinus remainNoMinus = new SpecialLeaveRemainNoMinus(remainDays);
+			
+			// 特別休暇月別残数データを更新
+			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(
+					this.employeeId,
+					this.yearMonth,
+					this.closureId,
+					this.closureDate,
+					period,
+					specialLeaveCode,
+					inPeriod,
+					remainNoMinus);
+			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
 		}
 	}
 	

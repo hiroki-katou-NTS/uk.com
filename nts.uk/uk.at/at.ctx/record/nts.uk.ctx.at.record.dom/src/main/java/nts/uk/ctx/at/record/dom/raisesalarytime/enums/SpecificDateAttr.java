@@ -17,4 +17,12 @@ public enum SpecificDateAttr {
 	USE(1);
 	
 	public final int value;
+
+	/**
+	 * 使用するか判定する
+	 * @return　使用する
+	 */
+	public boolean isUse() {
+		return this.equals(USE);
+	}
 }

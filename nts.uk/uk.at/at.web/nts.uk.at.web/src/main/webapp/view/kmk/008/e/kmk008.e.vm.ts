@@ -54,6 +54,9 @@ module nts.uk.at.view.kmk008.e {
                     if (WorkplaceSelect) {
                         self.currentWorkplaceName(WorkplaceSelect.name);
                         self.isRemove(WorkplaceSelect.isAlreadySetting);
+                        if (self.workplaceGridList().length > 0) {
+                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
+                    }
                     }
                 });
             }
@@ -61,6 +64,7 @@ module nts.uk.at.view.kmk008.e {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
                 } else {
@@ -110,7 +114,7 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
                 let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
-
+                nts.uk.ui.block.invisible();
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
                         if (listError.length > 0) {
@@ -122,6 +126,7 @@ module nts.uk.at.view.kmk008.e {
                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.getDetail(self.selectedWorkplaceId());
+                         nts.uk.ui.block.clear();
                     });
                     return;
                 }
@@ -136,7 +141,9 @@ module nts.uk.at.view.kmk008.e {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.getalreadySettingList();
                     self.getDetail(self.selectedWorkplaceId());
+                     nts.uk.ui.block.clear();
                 });
+                nts.uk.ui.block.clear();
             }
 
             removeDataWorkPlace() {

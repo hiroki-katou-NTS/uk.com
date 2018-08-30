@@ -37,7 +37,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
                 return;
             }
-            var key = self.searchValue();
+            var key = self.searchValue().trim();
+            if(key.length>3000){
+                return;
+            }
             var Special = self.special();
             var Multi = self.multi();
             var roleType =  self.roleTypeParam;

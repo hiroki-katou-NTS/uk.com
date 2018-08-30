@@ -64,9 +64,8 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 	private void setEmployeeInfo(EmployeeDataMngInfo employee, PersonInfoExport perResult) {
 		perResult.setEmployeeId(employee.getEmployeeId());
 		perResult.setEmployeeCode(employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
-		String cid = AppContexts.user().companyId();
 
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(cid, employee.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(employee.getCompanyId(), employee.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 

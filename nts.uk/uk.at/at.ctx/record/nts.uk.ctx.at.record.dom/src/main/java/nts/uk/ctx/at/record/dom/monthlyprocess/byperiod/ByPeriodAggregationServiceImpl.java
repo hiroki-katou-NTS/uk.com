@@ -127,7 +127,9 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 
 			if (coStatus == ProcessState.SUCCESS){
 				
-				dataSetter.setData("aggCreateCount", stateHolder.count());
+				// ログ情報（実行内容の完了状態）を更新する
+				this.targetRepo.updateExcution(target);
+				dataSetter.updateData("aggCreateCount", stateHolder.count());
 			}
 			if (coStatus == ProcessState.INTERRUPTION){
 				

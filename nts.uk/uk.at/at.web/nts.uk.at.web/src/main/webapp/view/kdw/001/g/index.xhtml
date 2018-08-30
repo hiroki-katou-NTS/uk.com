@@ -39,12 +39,12 @@
 						<!-- G1_11 -->
 						<td><span data-bind="text:nameClosue"></span></td>
 					</tr>
-					<tr>
+					<tr  id = "period-date">
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- G1_14 -->
-						<td colspan="2"><span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span></td>
+						<td colspan="2" data-bind = "visible: showPeriod"><span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span></td>
 					</tr>
 					<tr>
 						<td>
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+				<button class="large" data-bind="click: closeDialog, hasFocus: true" >#{i18n.getText('KDW001_38')}</button>
 			</div>
 			
 		</ui:define>
