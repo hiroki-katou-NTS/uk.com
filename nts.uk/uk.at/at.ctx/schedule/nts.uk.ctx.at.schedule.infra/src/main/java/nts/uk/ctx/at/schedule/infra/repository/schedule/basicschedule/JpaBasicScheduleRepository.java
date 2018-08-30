@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,6 +85,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public static final String GET_LIST_BY_LIST_SID_DATE = "SELECT a " + "FROM KscdtBasicSchedule a "
 			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds "
 			+ "AND (a.kscdpBSchedulePK.date BETWEEN :startDate AND :endDate)";
+	
+	public String GET_BY_LIST_DATE = "SELECT c FROM KscdtBasicSchedule c"
+			+ " WHERE c.kscdpBSchedulePK.sId = :employeeId"
+			+ " AND c.kscdpBSchedulePK.date IN :dates";
 
 	@Override
 	public void insert(BasicSchedule bSchedule) {
@@ -1220,5 +1225,17 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates) {
+		if(dates.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<BasicSchedule> result = this.queryProxy().query(GET_BY_LIST_DATE, KscdtBasicSchedule.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dates", dates)
+				.getList(x -> toDomain(x));
+		return result;
 	}
 }
