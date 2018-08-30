@@ -35,6 +35,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         "211": "213", "213": "211"
     }
 
+    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44];
+    
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
     export class ScreenModel {
@@ -209,6 +211,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         showLock:  KnockoutObservable<boolean> = ko.observable(true);
         unLock:  KnockoutObservable<boolean> = ko.observable(false);
+        
+        itemChange:  any = [];
         
         constructor(dataShare: any) {
             var self = this;
@@ -3096,42 +3100,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any;
             __viewContext.vm.flagCalculation = false;
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
                     return data.columnKey == columnKey && data.rowId == rowId;
                 });
             } else {
-                keyId = columnKey.substring(1, columnKey.length);
+                if (columnKey.indexOf("NO") != -1) {
+                    keyId = columnKey.substring(2, columnKey.length);
+                } else {
+                    keyId = columnKey.substring(1, columnKey.length);
+                }
             }
             
-            if (valueError != undefined) {
-                dfd.resolve({ id: rowId, item: columnKey, value: value })
-            } else {
-                let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
-                    return item.id == rowId;
-                });
+            let itemChange = _.find(ITEM_CHANGE, function(o) { return o === Number(keyId); });
+            if (itemChange == undefined) {
+                dfd.resolve({ id: rowId, item: columnKey, value: value });
+            }
+            else {
+                if (valueError != undefined) {
+                    dfd.resolve({ id: rowId, item: columnKey, value: value })
+                } else {
+                    nts.uk.ui.block.invisible();
+                    nts.uk.ui.block.grayout();
+                    let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
+                        return item.id == rowId;
+                    });
 
-                let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
-                    return item.itemId == keyId;
-                });
-                let item = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
-                    return String(value.id) === keyId;
-                })
-                let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
-                let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
+                    let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
+                        return item.itemId == keyId;
+                    });
+                    let item = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
+                        return String(value.id) === keyId;
+                    })
+                    let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
+                    let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
-                let param = {
-                    dailyEdits: __viewContext.vm.lstDomainEdit,
-                    itemEdit: dataMap
-                };
-                service.calcTime(param).done((value) => {
-                    __viewContext.vm.lstDomainEdit = value.dailyEdits;
-                     nts.uk.ui.block.clear();
-                    dfd.resolve(value.cellEdits);
-                });
+                    let param = {
+                        dailyEdits: __viewContext.vm.lstDomainEdit,
+                        itemEdit: dataMap
+                    };
+                    service.calcTime(param).done((value) => {
+                        __viewContext.vm.lstDomainEdit = value.dailyEdits;
+                        nts.uk.ui.block.clear();
+                        dfd.resolve(value.cellEdits);
+                    });
+                }
             }
             return dfd.promise();
         }

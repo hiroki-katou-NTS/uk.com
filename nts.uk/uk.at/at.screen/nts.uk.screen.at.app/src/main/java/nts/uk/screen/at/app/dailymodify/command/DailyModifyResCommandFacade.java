@@ -56,6 +56,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
+import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -65,10 +66,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Transactional
 /** 日別修正CommandFacade */
 public class DailyModifyResCommandFacade {
-
-	/** finder */
-	@Inject
-	private DailyRecordWorkFinder finder;
 
 	@Inject
 	private DailyRecordWorkCommandHandler handler;
@@ -81,9 +78,6 @@ public class DailyModifyResCommandFacade {
 
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
-
-	@Inject
-	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
 	@Inject
 	private ValidatorDataDailyRes validatorDataDaily;
@@ -118,31 +112,29 @@ public class DailyModifyResCommandFacade {
 		return editData;
 	}
 
-	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
-		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
+	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
+		List<DailyRecordDto> dtoNews = new ArrayList<>();
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-		dtoOlds = finder.find(query.stream()
-				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
-						c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList())))));
-		dtoNews = dtoOlds.stream().map(o -> {
-
-			List<ItemValue> itemValues = query.stream()
+		
+		dtoNews = dtoEdits.stream().map(o -> {
+			val itemChanges =  querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
-					.findFirst().get().getItemValues();
-			DailyRecordDto dtoClone = o.clone();
-			AttendanceItemUtil.fromItemValues(dtoClone, itemValues);
-			dtoClone.getOptionalItem().ifPresent(optional -> {
+					.findFirst();
+			if(!itemChanges.isPresent()) return o;
+			List<ItemValue> itemValues = itemChanges.get().getItemValues();
+			AttendanceItemUtil.fromItemValues(o, itemValues);
+			o.getOptionalItem().ifPresent(optional -> {
 				optional.correctItems(optionalMaster);
 			});
-			dtoClone.getTimeLeaving().ifPresent(dto -> {
+			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
 			});
-			return dtoClone;
+			return o;
 		}).collect(Collectors.toList());
-		return Pair.of(dtoOlds, dtoNews);
+		return dtoNews;
 	}
 
 	private DailyRecordWorkCommand createCommand(String sid, DailyRecordDto dto, DailyModifyQuery query) {
@@ -201,8 +193,13 @@ public class DailyModifyResCommandFacade {
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream().filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+
 
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
+		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
 		List<DailyRecordDto> dailyOlds, dailyEdits = new ArrayList<>();
 		if(!querys.isEmpty() && !dataParent.isFlagCalculation()){
@@ -212,6 +209,7 @@ public class DailyModifyResCommandFacade {
 			dailyEdits = dataParent.getDailyEdits().stream()
 					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
 					.collect(Collectors.toList());
+			dailyEdits = queryNotChanges.isEmpty() ? dailyEdits : toDto(queryNotChanges, dailyEdits);
 		} else {
 			dailyOlds = dataParent.getDailyOlds();
 			dailyEdits = dataParent.getDailyEdits();
