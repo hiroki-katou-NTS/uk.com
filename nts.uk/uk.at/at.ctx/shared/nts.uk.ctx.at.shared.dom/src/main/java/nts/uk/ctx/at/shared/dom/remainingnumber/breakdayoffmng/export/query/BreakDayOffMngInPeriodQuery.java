@@ -121,4 +121,12 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	List<BreakDayOffDetail> lstInterimData(BreakDayOffRemainMngParam inputParam, List<BreakDayOffDetail> lstDetailData);
+	
+	/**
+	 * [No.505]代休残数を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	double getBreakDayOffMngRemain(String employeeID, GeneralDate date);
 }
