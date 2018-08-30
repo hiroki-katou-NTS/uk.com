@@ -111,7 +111,7 @@ module nts.uk.at.view.kbt002.b {
                 }
 
                 if((self.currentExecItem().execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" }); 
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
                 } else {
                     // get JsObject
                     //                let command: any = ko.toJS(self.currentExecItem);
@@ -379,7 +379,7 @@ module nts.uk.at.view.kbt002.b {
                     command.manualCorrection = false;//B15_4
                     command.createEmployee = self.currentExecItem().createEmployee();
                     command.recreateTransfer = false;//B15_2(1)
-                    command.dailyPerfCls = self.currentExecItem().dailyPerfCls();
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsNormal();//B8_1
                     command.dailyPerfItem = self.currentExecItem().dailyPerfItem();
                     command.midJoinEmployee = self.currentExecItem().midJoinEmployee();
                     command.reflectResultCls = self.currentExecItem().reflectResultCls();
@@ -392,7 +392,7 @@ module nts.uk.at.view.kbt002.b {
                     command.execScopeCls = self.currentExecItem().execScopeCls();
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
-                    command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();
+                    command.recreateTypeChangePerson = false;
                     command.recreateTransfers =  false;//B15_2(2)
                     command.appRouteUpdateAtr =  self.currentExecItem().appRouteUpdateAtrNormal()
                     command.createNewEmp =  self.currentExecItem().createNewEmp();
@@ -412,7 +412,7 @@ module nts.uk.at.view.kbt002.b {
                     command.manualCorrection = self.currentExecItem().manualCorrection();//B15_4
                     command.createEmployee = false;
                     command.recreateTransfer = self.currentExecItem().recreateTransfer();//B15_2(1)
-                    command.dailyPerfCls = false;
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_2
                     command.dailyPerfItem = 0;
                     command.midJoinEmployee = false;
                     command.reflectResultCls = false;
@@ -425,7 +425,7 @@ module nts.uk.at.view.kbt002.b {
                     command.execScopeCls = 1;
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
-                    command.recreateTypeChangePerson = false;
+                    command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();//B14_2
                     command.recreateTransfers =  self.currentExecItem().recreateTransfer();//B15_2(2)
                     command.appRouteUpdateAtr =  self.currentExecItem().appRouteUpdateAtrReCreate();
                     command.createNewEmp =  false;
@@ -506,6 +506,9 @@ module nts.uk.at.view.kbt002.b {
             processExecType : number;
             appRouteUpdateAtrNormal : boolean;
             appRouteUpdateAtrReCreate : boolean;
+            //dailyPerfCls
+            dailyPerfClsNormal : boolean;
+            dailyPerfClsReCreate : boolean;
         }
 
         export class ExecutionItem {
@@ -543,6 +546,9 @@ module nts.uk.at.view.kbt002.b {
             processExecType : KnockoutObservable<number> = ko.observable(null);
             appRouteUpdateAtrNormal :KnockoutObservable<boolean> = ko.observable(false);
             appRouteUpdateAtrReCreate :KnockoutObservable<boolean> = ko.observable(false);
+            
+            dailyPerfClsNormal :KnockoutObservable<boolean> = ko.observable(false);
+            dailyPerfClsReCreate :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -580,14 +586,23 @@ module nts.uk.at.view.kbt002.b {
                     self.processExecType(param.processExecType);
                     self.appRouteUpdateAtrNormal(param.appRouteUpdateAtr||false);
                     self.appRouteUpdateAtrReCreate(param.appRouteUpdateAtr||false);
+                    
+                    self.dailyPerfClsNormal(param.dailyPerfCls||false);
+                    self.dailyPerfClsReCreate(param.dailyPerfCls||false);
                     if(self.processExecType()==0){
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
                         self.appRouteUpdateAtrReCreate(false);
+                        
+                        self.dailyPerfClsNormal(self.dailyPerfCls());
+                        self.dailyPerfClsReCreate(false);
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
                         self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
+                        
+                        self.dailyPerfClsNormal(false);
+                        self.dailyPerfClsReCreate(self.dailyPerfCls());
                     }
                     
                 } else {
@@ -625,6 +640,8 @@ module nts.uk.at.view.kbt002.b {
                     self.processExecType(0);
                     self.appRouteUpdateAtrNormal(false);
                     self.appRouteUpdateAtrReCreate(false);
+                    self.dailyPerfClsNormal(false);
+                    self.dailyPerfClsReCreate(false);
                 }
                 
                 self.appRouteUpdateAtr.subscribe(x=>{
@@ -647,10 +664,16 @@ module nts.uk.at.view.kbt002.b {
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
                         self.appRouteUpdateAtrReCreate(false);
+                        
+                        self.dailyPerfClsNormal(self.dailyPerfCls());
+                        self.dailyPerfClsReCreate(false);
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
                         self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
+                        
+                        self.dailyPerfClsNormal(false);
+                        self.dailyPerfClsReCreate(self.dailyPerfCls());
                     }
                 });
                 
