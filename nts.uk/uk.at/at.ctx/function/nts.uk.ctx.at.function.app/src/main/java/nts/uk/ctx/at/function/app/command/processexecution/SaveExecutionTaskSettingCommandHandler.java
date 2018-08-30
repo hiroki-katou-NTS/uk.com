@@ -7,8 +7,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.eclipse.persistence.jpa.jpql.parser.WhenClause;
@@ -62,6 +67,16 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 	
 	@Inject
 	private UkJobScheduler scheduler;
+	
+	@Resource
+	private SessionContext scContext;
+	
+	private SaveExecutionTaskSettingCommandHandler self;
+
+	@PostConstruct
+	public void init() {
+		this.self = scContext.getBusinessObject(SaveExecutionTaskSettingCommandHandler.class);
+	}
 
 	@Override
 	protected String handle(CommandHandlerContext<SaveExecutionTaskSettingCommand> context) {
@@ -360,11 +375,10 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		String scheduleId;
 		Optional<GeneralDateTime> nextFireTime;
 		
-		boolean isValid = CronExpression.isValidExpression(cron.getCronExpressions().get(0).toString());
-		if(isValid) {
-			scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
+		try {
+			scheduleId = self.scheduleOnCurrentCompany(options);
 			nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-		} else {
+		} catch (Exception e) {
 			scheduleId = "";
 			nextFireTime = Optional.empty();
 		}
@@ -378,7 +392,17 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		}
 		taskSetting.setEndScheduleId(endScheduleId);
 		*/
+		try {
+			self.saveTaskSetting(command,taskSetting,companyId, days, scheduleId);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1110");
+		}
 		
+		return taskSetting.getExecItemCd().v();
+	}
+	
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	public void saveTaskSetting(SaveExecutionTaskSettingCommand command, ExecutionTaskSetting taskSetting, String companyId, List<RepeatMonthDaysSelect> days, String scheduleId) throws Exception {
 		if (command.isNewMode()) {
 			try {
 				this.execTaskSettingRepo.insert(taskSetting);
@@ -420,7 +444,11 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			}
 			
 		}
-		return taskSetting.getExecItemCd().v();
+	}
+	
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	public String scheduleOnCurrentCompany(UkJobScheduleOptions options) throws Exception {
+		return this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 	}
 	
 	public  boolean  isLastDayOfMonth(int year, int month, int day ) {
