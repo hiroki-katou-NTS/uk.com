@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * 更新処理自動実行
@@ -53,10 +52,7 @@ public class ProcessExecution extends AggregateRoot {
 			if(!execSetting.getPerSchedule().isPerSchedule() && //B7_1
 			   !execSetting.getDailyPerf().isDailyPerfCls() && //B8_1
 			   !execSetting.isReflectResultCls() && //B9_1
-			   !execSetting.isMonthlyAggCls()  && //B10_1
-			   execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE && //B12_1
-			   execSetting.getAppRouteUpdateMonthly() == NotUseAtr.NOT_USE) { //B12_3 
-				
+			   !execSetting.isMonthlyAggCls()) { //B10_1
 				throw new BusinessException("Msg_1230");
 			}
 		}else {//B16_3がTRUEの場合

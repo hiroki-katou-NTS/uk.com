@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf003.b {
     export module viewmodel {
         export class ScreenModel {
             
-            buton_E_enable: KnockoutObservable<boolean> = ko.observable(true);
+            buton_E_enable: KnockoutObservable<string> = ko.observable(true);
             
             // systemtype from C
             systemtypeFromC: KnockoutObservable<ItemCombobox>;
@@ -690,7 +690,6 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
-                self.buton_E_enable(false);
                 self.saveManualSetting();
             }
 
@@ -714,6 +713,7 @@ module nts.uk.com.view.cmf003.b {
 
                         setShared("CMF001_E_PARAMS", params);
                         nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml").onClosed(() => {
+                            self.buton_E_enable(false);
                             $(".goback").focus();
                         });
                     }
