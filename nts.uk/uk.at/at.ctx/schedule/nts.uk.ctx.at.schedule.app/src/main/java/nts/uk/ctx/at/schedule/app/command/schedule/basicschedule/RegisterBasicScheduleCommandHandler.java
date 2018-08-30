@@ -36,6 +36,7 @@ public class RegisterBasicScheduleCommandHandler
 	protected List<String> handle(CommandHandlerContext<DataRegisterBasicSchedule> context) {
 		// list listBasicScheduleBefore is data from DB
 		List<BasicSchedule> listBasicScheduleBefore = new ArrayList<BasicSchedule>();
+		List<BasicSchedule> listBasicScheduleAfter = new ArrayList<BasicSchedule>();
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 		String companyId = AppContexts.user().companyId();
 		DataRegisterBasicSchedule command = context.getCommand();
@@ -43,9 +44,9 @@ public class RegisterBasicScheduleCommandHandler
 		boolean isInsertMode = true;
 		List<RegisterBasicScheduleCommand> listRegisterBasicScheduleCommand = command.getListRegisterBasicSchedule();
 		// list listBasicScheduleAfter is data from screen
-		List<BasicSchedule> listBasicScheduleAfter = listRegisterBasicScheduleCommand.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		List<BasicSchedule> listBasicSchedule = listRegisterBasicScheduleCommand.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		
-		List<String> errorList = basicScheduleService.register(companyId, Integer.valueOf(modeDisplay), listBasicScheduleAfter, listBasicScheduleBefore, isInsertMode, registrationListDateSchedule);
+		List<String> errorList = basicScheduleService.register(companyId, Integer.valueOf(modeDisplay), listBasicSchedule, listBasicScheduleBefore, listBasicScheduleAfter, isInsertMode, registrationListDateSchedule);
 
 		// <<Public>> データ修正記録を登録する(đăng ký record chỉnh sử data)
 		this.basicScheCorrectCommandHandler.handle(new BasicScheCorrectCommand(listBasicScheduleBefore, listBasicScheduleAfter, isInsertMode));
