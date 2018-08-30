@@ -330,6 +330,45 @@ module nts.uk.com.view.qmm005.share.model {
         }
     }
 
+    interface IReferenceDateInformation {
+        dailyPaymentDateCheck: boolean,
+        empExtractionRefDateCheck: boolean,
+        socialInsuranceMonthCheck: boolean,
+        specPrintDateCheck: boolean,
+        numWorkingDaysCheck: boolean,
+        socialInsuranceDateCheck: boolean,
+        empInsuranceStandardDateCheck: boolean,
+        timeClosingCheck: boolean,
+        incomeTaxReferenceCheck: boolean,
+        accountingClosureDateCheck: boolean,
+    }
 
+
+
+    export class ReferenceDateInformation {
+        dailyPaymentDateCheck: KnockoutObservable<boolean>;
+        empExtractionRefDateCheck: KnockoutObservable<boolean>;
+        socialInsuranceMonthCheck: KnockoutObservable<boolean>;
+        specPrintDateCheck: KnockoutObservable<boolean>;
+        numWorkingDaysCheck: KnockoutObservable<boolean>;
+        socialInsuranceDateCheck: KnockoutObservable<boolean>;
+        empInsuranceStandardDateCheck: KnockoutObservable<boolean>;
+        timeClosingCheck: KnockoutObservable<boolean>;
+        incomeTaxReferenceCheck: KnockoutObservable<boolean>;
+        accountingClosureDateCheck: KnockoutObservable<boolean>;
+
+        constructor(params: IReferenceDateInformation) {
+            this.dailyPaymentDateCheck = ko.observable(params.dailyPaymentDateCheck);
+            this.empExtractionRefDateCheck = ko.observable(params.empExtractionRefDateCheck);
+            this.socialInsuranceMonthCheck = ko.observable(params.socialInsuranceMonthCheck);
+            this.specPrintDateCheck = ko.observable(params.specPrintDateCheck);
+            this.numWorkingDaysCheck = ko.observable(params.numWorkingDaysCheck);
+            this.socialInsuranceDateCheck = ko.observable(params.socialInsuranceDateCheck);
+            this.empInsuranceStandardDateCheck = ko.observable(params.empInsuranceStandardDateCheck);
+            this.timeClosingCheck = ko.observable(params.timeClosingCheck);
+            this.incomeTaxReferenceCheck = ko.observable(params.incomeTaxReferenceCheck);
+            this.accountingClosureDateCheck = ko.observable(params.accountingClosureDateCheck);
+        }
+    }
 
 }
