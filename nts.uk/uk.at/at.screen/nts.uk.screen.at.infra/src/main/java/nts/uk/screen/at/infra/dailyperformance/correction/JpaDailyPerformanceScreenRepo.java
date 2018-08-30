@@ -306,7 +306,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE emp.kclmpClosureEmploymentPK.companyId = :companyId ");
 		builderString.append("AND emp.kclmpClosureEmploymentPK.employmentCD IN :emptcd ");
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
-		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId");
+		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId ");
+		builderString.append("AND closure.useClass = 1");
 		SEL_CLOSURE_IDS = builderString.toString();
 
 		builderString = new StringBuilder();

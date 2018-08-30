@@ -74,18 +74,19 @@ public class DPLock {
 			closureDtos.forEach(x -> {
 				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
 						new YearMonth(x.getClosureMonth()));
+				DatePeriod dateResult = periodLock(x.getDatePeriod(), datePeriod);
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
 					if (actualLockDto.get().getDailyLockState() == 1) {
 						employeeAndDateRange.put(mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", DPText.LOCK_EDIT_CELL_DAY),
-								datePeriod);
+								dateResult);
 					}
 				}
 				// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
 				List<WorkFixedDto> workFixeds = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
 				for (WorkFixedDto workFixedOp : workFixeds) {
 					employeeAndDateRange.put(mergeString(x.getSid(), "|", x.getClosureId().toString(),
-							"|" + workFixedOp.getWkpId(), "|", DPText.LOCK_EDIT_CELL_WORK), datePeriod);
+							"|" + workFixedOp.getWkpId(), "|", DPText.LOCK_EDIT_CELL_WORK), dateResult);
 				}
 			});
 		}
@@ -243,5 +244,19 @@ public class DPLock {
 	
 	public boolean inRange(DPDataDto data, DatePeriod dateM) {
 		return data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end());
+	}
+	
+	private DatePeriod periodLock(DatePeriod dateEmp, DatePeriod dateCls){
+		GeneralDate startDateResult = dateEmp.start();
+		GeneralDate endDateResult = dateEmp.end();
+	    if(dateEmp.start().beforeOrEquals(dateCls.start())){
+	    	startDateResult = dateCls.start();
+	    }
+	    
+	    if(dateEmp.end().afterOrEquals(dateCls.end())){
+	    	endDateResult = dateCls.end();
+	    }
+	    
+	    return new DatePeriod(startDateResult, endDateResult);
 	}
 }

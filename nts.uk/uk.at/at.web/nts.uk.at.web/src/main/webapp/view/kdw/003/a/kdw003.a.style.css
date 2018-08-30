@@ -45,10 +45,10 @@
 	margin-left: 200px;
 }
 
-.grid-container {
+#gid {
 	margin: 15px 0 0 0px;
     margin-top: -6px;
-    height: 800px;
+    height: 700px;
 }
 
 .setting-container {
@@ -230,7 +230,7 @@
 #text-flex {
 	left: 400px;
 	position: relative;
-	top: -74px;
+	top: -112px;
 	width: 216px;}
 	
 .italic-text{

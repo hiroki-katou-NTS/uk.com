@@ -275,15 +275,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.getNameMonthly();
                 }
             });
-            if(window.screen.availWidth > 1600){
-                $(".grid-container").attr('style', 'height: 800px !IMPORTANT');
-            }else if(1366 < window.screen.availWidth  && window.screen.availWidth <= 1600){
-                $(".grid-container").attr('style', 'height: 720px !IMPORTANT'); 
-            }else if(1280 < window.screen.availWidth  && window.screen.availWidth <= 1366){
-                $(".grid-container").attr('style', 'height: 500px !IMPORTANT'); 
-            }else{
-                $(".grid-container").attr('style', 'height: 850px !IMPORTANT'); 
-            }
+            
+            $(".grid-container").attr('style', 'height: '+ (window.screen.availHeight -268) +'px !IMPORTANT');
             
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime) 
@@ -2460,7 +2453,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let startTime = performance.now();
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
-                height: '800px',
+                height: (window.screen.availHeight - 250) + "px",
                 headerHeight: '45px',
                 dataSource: self.lstDataSourceLoad,
                 primaryKey: 'id',
