@@ -1,8 +1,9 @@
 package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+
+import java.util.List;
 
 /**
 * 労災保険料率
@@ -21,27 +22,14 @@ public class OccAccIsPrRate extends AggregateRoot
     * 履歴ID
     */
     private String hisId;
-    
-    /**
-    * 労災保険事業No
+    /*
+    *各事業負担率
     */
-    private int occAccInsurBusNo;
-    
-    /**
-    * 端数区分
-    */
-    private InsuPremiumFractionClassification fracClass;
-    
-    /**
-    * 事業主負担率
-    */
-    private String empConRatio;
+    private List<OccAccInsurBusiBurdenRatio> eachBusBurdenRatio;
 
-    public OccAccIsPrRate(String ocAcIsPrRtId, String hisId, int occAccInsurBusNo, int fracClass, String empConRatio) {
+    public OccAccIsPrRate(String ocAcIsPrRtId, String hisId,List<OccAccInsurBusiBurdenRatio> eachBusBurdenRatio) {
         this.ocAcIsPrRtId = ocAcIsPrRtId;
         this.hisId = hisId;
-        this.occAccInsurBusNo = occAccInsurBusNo;
-        this.fracClass = EnumAdaptor.valueOf(fracClass, InsuPremiumFractionClassification.class);
-        this.empConRatio = empConRatio;
+        this.eachBusBurdenRatio=eachBusBurdenRatio;
     }
 }

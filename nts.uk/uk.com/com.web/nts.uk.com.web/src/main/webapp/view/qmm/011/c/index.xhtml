@@ -59,58 +59,49 @@
 				<div id ="B2_6" class="set-row">
 					<hr />
 				</div>
-				<div class = "table">
-				<table id="3_1" >
+				<div>
+				<table id="C3_2" >
 					<tbody>
 						<tr class="bg-green">
 							<!--B3_2  個人負担率  -->
-							<th width ="80px"></th>
-							<th colspan="2" style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
+							<th></th>
+							<th></th>
 							<!--B3_3 端数処理  -->
-							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
+							<th>#{i18n.getText('QMM011_12')}</th>
 							<!--B3_4  事業主負担率  -->
-							<th colspan="2" >#{i18n.getText('QMM011_13')}</th>
+							<th>#{i18n.getText('QMM011_13')}</th>
 
 						</tr>
 							<tr>
-								<td class="bg-green" width ="80px" style="border: 1px solid #CCC">
-									<label id= "B3_6">#{i18n.getText('QMM011_14')}</label>
+								<td class="bg-green" width ="5%">
+									<label id= "B3_6"></label>
 								</td>
-								<td width ="80px">
-									<input id = "B3_7" 
-											data-bind="ntsNumberEditor: {
-																	option : {width: '100px'},
-																	name: '#{i18n.getText('QMM011_11')}',
-																	value: indBdRation,
-																	required: false
-																	}"/>
+								<td class="bg-green"  width ="45%">
+
 								</td>
-								<td>
-									<label id= "B3_8">#{i18n.getText('QMM011_15')}</label>
+								<td width ="25%">
+									<div tabindex="5"><input id = "C3_6" style="float: left"
+												data-bind="ntsNumberEditor: {
+									option : {width: '30px'},
+									name: '#{i18n.getText('QMM011_13')}',
+									value: indBdRation,
+									required: false
+									}"/><span id = "C3_7" style="float: right">#{i18n.getText('QMM011_15')}</span></div>
+
 								</td>
-								<td colspan = "2" width ="160px">
-									<input id = "B3_9"
-											data-bind="ntsComboBox: {
-																	name: '#{i18n.getText('QMM011_15')}',
-																	value: perFracClass,
-																	required: false,
-																	options: listPerFracClass,
-																	optionsValue: 'code',
-																	visibleItemsCount: 5,
-																	optionsText: 'name'
-																	}"/>
+								<td width ="25%">
+									<div tabindex="6" id = "C3_8"
+										 data-bind="ntsComboBox: {
+																name: '#{i18n.getText('QMM011_12')}',
+																value: perFracClass,
+																required: false,
+																options: listPerFracClass,
+																optionsValue: 'code',
+																visibleItemsCount: 5,
+																optionsText: 'name'
+																}"/>
 								</td>
-								<td width ="80px">
-									<input id = "B3_11"
-											data-bind="ntsNumberEditor: {
-																		option : {width: '60px'},
-																		value: empContrRatio, 
-																		name: '#{i18n.getText('QMM011_13')}'
-																		}"/>
-								</td>
-								<td width ="8px">
-									<label id= "B3_12">#{i18n.getText('QMM011_15')}</label>
-								</td>
+
 
 								
 							</tr>

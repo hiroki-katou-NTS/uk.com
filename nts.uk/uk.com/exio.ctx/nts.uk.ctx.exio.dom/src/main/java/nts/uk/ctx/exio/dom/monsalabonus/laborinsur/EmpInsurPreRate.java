@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -13,41 +12,27 @@ public class EmpInsurPreRate extends AggregateRoot
 {
     
     /**
-    * 
+    * 履歴ID
     */
     private String hisId;
-    
     /**
-    * 
-    */
-    private String empPreRateId;
-    
+     *農林水産清酒製造の事業負担率
+     */
+    private EmpInsurBusBurRatio busRatioOfAgriForestFish;
     /**
-    * 個人負担率
-    */
-    private String indBdRatio;
-    
+     *建設の事業負担率
+     */
+    private EmpInsurBusBurRatio busBurRatioOfConstruction;
     /**
-    * 事業主負担率
-    */
-    private String empContrRatio;
-    
-    /**
-    * 個人端数区分
-    */
-    private InsuPremiumFractionClassification perFracClass;
-    
-    /**
-    * 事業主端数区分
-    */
-    private InsuPremiumFractionClassification busiOwFracClass;
+     *一般の事業負担率
+     */
+    private EmpInsurBusBurRatio genBusBurdenRatio;
 
-    public EmpInsurPreRate(String hisId, String empPreRateId, String indBdRatio, String empContrRatio, int perFracClass, int busiOwFracClass) {
+
+    public EmpInsurPreRate(String hisId, EmpInsurBusBurRatio busRatioOfAgriForestFish, EmpInsurBusBurRatio busBurRatioOfConstruction, EmpInsurBusBurRatio genBusBurdenRatio) {
         this.hisId = hisId;
-        this.empPreRateId = empPreRateId;
-        this.indBdRatio = indBdRatio;
-        this.empContrRatio = empContrRatio;
-        this.perFracClass = EnumAdaptor.valueOf(perFracClass, InsuPremiumFractionClassification.class);
-        this.busiOwFracClass = EnumAdaptor.valueOf(busiOwFracClass, InsuPremiumFractionClassification.class);
+        this.busRatioOfAgriForestFish = busRatioOfAgriForestFish;
+        this.busBurRatioOfConstruction = busBurRatioOfConstruction;
+        this.genBusBurdenRatio = genBusBurdenRatio;
     }
 }
