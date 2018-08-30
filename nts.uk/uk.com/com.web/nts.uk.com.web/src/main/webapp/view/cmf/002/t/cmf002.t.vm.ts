@@ -35,8 +35,6 @@ module nts.uk.com.view.cmf002.t.viewmodel {
             if (info) {
                 self.conditionSetCd(info.conditionSetCd);
                 self.conditionName(info.conditionName);
-                self.copyDestinationCode(info.conditionSetCd);
-                self.destinationName(info.conditionName);
             }
             self.overWrite(false);
             block.clear();
