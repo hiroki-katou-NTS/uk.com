@@ -76,4 +76,5 @@ public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject {
 		this.workTimezone.correctDefaultData(screenMode);
 		this.ottimezone.correctDefaultData(screenMode);
 	}
+	
 }

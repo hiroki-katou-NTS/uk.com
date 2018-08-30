@@ -701,7 +701,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -788,7 +788,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -857,26 +857,28 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var headerSetting = [];
                 var newSource = [];
                 let recordType = self.logTypeSelectedCode();
-                for (var i = 0; i < parentSource.length; i++) {
-                    if (parentSource[i].operationId === childSource[0].operationId) {
-                        headerSetting = parentSource[i].subColumnsHeaders;
-                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
-                        }
-                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                  if(childSource.length > 0){
+                    for (var i = 0; i < parentSource.length; i++) {
+                        if (parentSource[i].operationId === childSource[0].operationId) {
+                            headerSetting = parentSource[i].subColumnsHeaders;
+                            if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                            }
+                            if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                            }
                         }
                     }
+                    ui.options.dataSource = newSource;
+                    $(ui.element).data("headersetting", headerSetting);
                 }
-                ui.options.dataSource = newSource;
-                $(ui.element).data("headersetting", headerSetting);
             });
         }
 
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
-            
+            self.columnsIgGrid.push(new IgGridColumnSwitchModel("parentkey", -2, recordType));
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -1982,6 +1984,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
+        parentKey:string;
         childrentKey:string;
         operationId: string;
         targetDate: string;
@@ -2067,6 +2070,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
+                    this.hidden = true;
+                    break;
+                }
+                case -2: {
+                     this.key = ITEM_PROPERTY.ITEM_PARRENT_KEY;
                     this.hidden = true;
                     break;
                 }

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -221,8 +220,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	public Optional<LeaveManagementData> getByLeaveId(String leaveManaId) {
+
 		String QUERY_BY_ID = "SELECT s FROM KrcmtLeaveManaData s WHERE s.leaveID = :leaveID";
 		Optional<KrcmtLeaveManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("leaveID", leaveManaId).getSingle();
+
 		if (entity.isPresent()) {
 			return Optional.ofNullable(toDomain(entity.get()));
 		}

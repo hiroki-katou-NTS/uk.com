@@ -111,7 +111,7 @@ module cps001.e.vm {
                         isAvatar: false ,
                         fileName : data.originalName,
                         categoryName : nts.uk.resource.getText("CPS001_152"), 
-                        itemName : nts.uk.resource.getText("CPS001_155"), 
+                        itemName : nts.uk.resource.getText("CPS001_151"), 
                         fileIdOld:self.fileIdOld , 
                         fileNameOld : self.fileNameOld};
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
