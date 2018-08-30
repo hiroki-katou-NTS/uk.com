@@ -60,14 +60,9 @@ module nts.uk.ui.jqueryExtentions {
                     virtualScroll($tree, id);
                 });
             } else {
-                if (selectedId.constructor === Array) {
-                    selectedId = selectedId[0];
-                }
                 $tree.igTreeGridSelection('selectRowById', selectedId);
                 virtualScroll($tree, selectedId);
             }
-            
-            $tree.trigger("ntstreeselectionchanged", [ selectedId ]);
         }
         
         function virtualScroll($tree: JQuery, id: any) {

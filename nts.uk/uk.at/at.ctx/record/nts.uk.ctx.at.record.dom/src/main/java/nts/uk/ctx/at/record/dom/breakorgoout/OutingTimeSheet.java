@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -78,7 +77,6 @@ public class OutingTimeSheet extends DomainObject {
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),
 																			  Optional.empty(),
-																			  WorkingBreakTimeAtr.NOTWORKING,
 																			  Finally.of(this.reasonForGoOut),
 																			  Finally.empty(),
 																			  Optional.empty(),

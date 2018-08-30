@@ -1,17 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.vacation.absenceleave;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
@@ -35,11 +31,6 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 			+ "WHERE a.pk.sId = :employeeId "
 			+ "AND a.pk.ym = :yearMonth "
 			+ "ORDER BY a.startDate ";
-
-	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonSubOfHdRemain a "
-			+ "WHERE a.pk.sId IN :employeeIds "
-			+ "AND a.pk.ym IN :yearMonths "
-			+ "ORDER BY a.pk.sId, a.startDate ";
 	
 	@Override
 	public List<AbsenceLeaveRemainData> getDataBySidYmClosureStatus(String employeeId, YearMonth ym,
@@ -58,21 +49,6 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
-	}
-
-	@Override
-	public List<AbsenceLeaveRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
-		
-		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
-		
-		List<AbsenceLeaveRemainData> results = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonSubOfHdRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> toDomain(c)));
-		});
-		return results;
 	}
 
 	private AbsenceLeaveRemainData toDomain(KrcdtMonSubOfHdRemain c) {

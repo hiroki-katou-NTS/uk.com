@@ -1,18 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.vacation.dayoff;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
@@ -40,11 +36,6 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 			+ "WHERE a.pk.sid = :employeeId "
 			+ "AND a.pk.ym = :yearMonth "
 			+ "ORDER BY a.startDate ";
-	
-	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonDayoffRemain a "
-			+ "WHERE a.pk.sid IN :employeeIds "
-			+ "AND a.pk.ym IN :yearMonths "
-			+ "ORDER BY a.pk.sid, a.startDate ";
 	
 	@Override
 	public List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus(String employeeId, YearMonth ym,
@@ -80,21 +71,6 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
-	}
-	
-	@Override
-	public List<MonthlyDayoffRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
-		
-		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
-		
-		List<MonthlyDayoffRemainData> results = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonDayoffRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> toDomain(c)));
-		});
-		return results;
 	}
 	
 	@Override

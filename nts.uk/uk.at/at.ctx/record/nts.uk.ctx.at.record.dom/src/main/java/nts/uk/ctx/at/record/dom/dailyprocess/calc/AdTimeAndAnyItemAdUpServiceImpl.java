@@ -29,9 +29,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private AdTimeAnyItemStoredForDailyCalc adTimeAnyItemStoredForDailyCalc;
 	
-	@Inject
-	private ReplaceOverTimeTestRepository replaceOverTimeTestRepository;
-	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
 							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
@@ -39,8 +36,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 		if(attendanceTime.isPresent()) {
 			if(attendanceTimeRepository.find(empId, ymd).isPresent()) {
 				attendanceTimeRepository.update(attendanceTime.get());
-				//replaceOverTimeTestRepository.updateTEST();
-				
 			}
 			else {
 				attendanceTimeRepository.add(attendanceTime.get());

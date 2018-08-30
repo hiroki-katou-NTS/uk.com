@@ -397,8 +397,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param breakList 就業時間帯側の休憩リスト
 	 * @param breakOfDaily 
 	 */
-	public static int calcDivergenceNo8910(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, 
-										   TotalWorkingTime calcResultOotsuka) {
+	public static int calcDivergenceNo8910(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, TotalWorkingTime calcResultOotsuka) {
 		//実績がそもそも存在しない(不正)の場合
 		if(!integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()
 		 ||!masterBreakList.isPresent()) 
@@ -411,7 +410,7 @@ public class ActualWorkingTimeOfDaily {
 		case 8:
 			return processNumberEight(integrationOfDailyInDto, breakList, breakOfDaily);
 		case 9:
-			return processNumberNight(integrationOfDailyInDto, breakList, breakOfDaily,calcResultOotsuka);
+			return processNumberNight(integrationOfDailyInDto, breakList, breakOfDaily);
 		case 10:
 			return processNumberTen(integrationOfDailyInDto, breakList, breakOfDaily);
 		default:
@@ -444,8 +443,8 @@ public class ActualWorkingTimeOfDaily {
 			return 0;
 		}
 	}
-	public static int processNumberNight(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily, TotalWorkingTime calcResultOotsuka) {
-		//休憩枠No2取得
+	public static int processNumberNight(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily) {
+		//休憩枠No1取得
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
@@ -456,22 +455,21 @@ public class ActualWorkingTimeOfDaily {
 				attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
 			}
 		}
-		//実働時間 > 8:00 && 残業合計(振替残業含む)>0
-		if(calcResultOotsuka.getActualTime().greaterThan(480) && calcResultOotsuka.getExcessOfStatutoryTimeOfDaily().calcOverTime().greaterThan(0)) {
-			//出退勤が休憩No2を含んでいるか
+		//出退勤が休憩No1を含んでいるか
+		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
 			val calcValue = new AttendanceTime(breakTimeSheet.get().getEndTime().valueAsMinutes() - breakTimeSheet.get().getStartTime().valueAsMinutes())
-										.minusMinutes(breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes());
+											.minusMinutes(breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes());
 			return calcValue.greaterThan(0)?calcValue.valueAsMinutes():0;
 		}
 		//含んでいない
 		else {
-		//乖離時間0
-		return 0;
+			//乖離時間0
+			return 0;
 		}
 	}
 	
 	public static int processNumberTen(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily) {
-		//休憩枠No2取得
+		//休憩枠No1取得
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
@@ -486,13 +484,11 @@ public class ActualWorkingTimeOfDaily {
 		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
 			Optional<BreakTimeSheet> equalTimeSheet = Optional.empty();
 			for(BreakTimeOfDailyPerformance masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
-				if( masterBreakTimeSheet != null
-			     && masterBreakTimeSheet.getBreakType() != null
-				 &&	masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
+				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
 					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
 																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
-																			  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
-																					  					.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()))).findFirst();
+																			  .filter(tc -> tc.getStartTime().equals(breakTimeSheet.get().getStartTime())
+							 													  &&tc.getStartTime().equals(breakTimeSheet.get().getEndTime())).findFirst();
 				}
 			}
 			if(equalTimeSheet.isPresent()) {
@@ -501,7 +497,8 @@ public class ActualWorkingTimeOfDaily {
 			}
 			//該当した物が一つもない
 			else {
-				val difference = breakTimeSheet.get().getEndTime().valueAsMinutes() - breakTimeSheet.get().getStartTime().valueAsMinutes();
+				val difference = new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()).lengthAsMinutes() 
+									    - breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();
 				return difference>0?difference:0;
 			}
 		}

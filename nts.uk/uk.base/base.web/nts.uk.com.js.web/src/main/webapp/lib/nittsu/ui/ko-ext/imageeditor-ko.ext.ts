@@ -21,9 +21,8 @@ module nts.uk.ui.koExtentions {
             let extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
             let msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
             let croppable = false;
-			let maxSize = nts.uk.util.isNullOrUndefined(data.maxSize) ? undefined : ko.unwrap(data.maxSize);
             
-            let helper: ImageEditorHelper = new ImageEditorHelper(extension, msgIdForUnknownFile, undefined, maxSize);
+            let helper: ImageEditorHelper = new ImageEditorHelper(extension, msgIdForUnknownFile);
 
             let $container = $("<div>", { 'class': 'image-editor-container' }),
                 $element = $(element).append($container);
@@ -98,6 +97,7 @@ module nts.uk.ui.koExtentions {
 
         helper: ImageEditorHelper;
         cropper: Cropper;
+
         constructor($root: JQuery, helper: ImageEditorHelper) {
             this.$root = $root;
             this.helper = helper;
@@ -300,41 +300,15 @@ module nts.uk.ui.koExtentions {
         buildFileChangeHandler() {
             let self = this;
             self.$inputFile.change(function() {
-				
                 self.$root.data("img-status", self.buildImgStatus("img loading", 2));
-                
                 if (nts.uk.util.isNullOrEmpty(this.files)) {
                     self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                     return;
                 }
-                
-                if (!self.validateFilesSize(this.files[0])) {
-                    // if file's size > maxSize, remove that file                    
-                    $(this).val('');
-                    return;
-                }
                     
                 self.validateFile(this.files);
-                
             });
         }
-        
-        validateFilesSize(file: File) {
-            let self = this;
-            let MAX_SIZE = self.helper.maxSize;
-            
-            // if MAX_SIZE == undefined => do not check size
-            if (!MAX_SIZE) {
-                return true;   
-            }
-            
-            if (file.size > MAX_SIZE * 1048576) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
-                return false;
-            }
-            
-            return true;  
-        } 
                 
         validateFile(files: File[]){
             let self = this;
@@ -377,9 +351,8 @@ module nts.uk.ui.koExtentions {
         BYTE_SIZE: number = 1024;
         SIZE_UNITS: Array<string> = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
         msgIdForUnknownFile: string;
-		maxSize : number;
 
-        constructor(extensions?: Array<string>, msgIdForUnknownFile?: string, query?: SrcChangeQuery, maxSize: number) {
+        constructor(extensions?: Array<string>, msgIdForUnknownFile?: string, query?: SrcChangeQuery) {
             let self = this;
             self.data = query;
             self.msgIdForUnknownFile = msgIdForUnknownFile;
@@ -390,7 +363,6 @@ module nts.uk.ui.koExtentions {
                     self.IMAGE_EXTENSION.push(ex.toUpperCase());
                 });
             }
-			self.maxSize = maxSize;
         }
 
         toStringExtension() {

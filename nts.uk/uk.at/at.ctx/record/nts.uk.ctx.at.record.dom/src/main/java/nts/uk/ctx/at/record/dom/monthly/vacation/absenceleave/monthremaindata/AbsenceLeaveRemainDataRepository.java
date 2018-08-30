@@ -22,17 +22,9 @@ public interface AbsenceLeaveRemainDataRepository {
 	 * 検索　（年月）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
-	 * @return 振休月別残数データリスト
+	 * @return 振休月別残数データリスト　（開始年月日順）
 	 */
 	List<AbsenceLeaveRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
-
-	/**
-	 * 検索　（社員IDリストと年月リスト）
-	 * @param employeeIds 社員IDリスト
-	 * @param yearMonths 年月リスト
-	 * @return 振休月別残数データリスト
-	 */
-	List<AbsenceLeaveRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 振休月別残数データ 　を追加および更新
