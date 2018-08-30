@@ -55,6 +55,7 @@ module nts.uk.at.view.kdw010.a {
                     if (codeChanged == 1) {
                         self.enableState(true);
                     } else {
+                        $('.nts-input').ntsError('clear');
                         self.enableState(false);
                     }
                 });
@@ -151,7 +152,8 @@ module nts.uk.at.view.kdw010.a {
             registration() {
                 blockUI.invisible();
                 var self = this;
-                $('.nts-input').trigger("validate");
+                if (self.selectUse() == 1)
+                    $('.nts-input').trigger("validate");
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
                         var useAtr = self.selectUse() == 1 ? true : false;

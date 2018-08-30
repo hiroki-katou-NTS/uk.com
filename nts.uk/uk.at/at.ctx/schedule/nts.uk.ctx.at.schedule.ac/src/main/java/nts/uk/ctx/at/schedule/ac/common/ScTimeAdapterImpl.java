@@ -26,7 +26,7 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 		return ScTimeImport.builder()
 				.actualWorkTime(export.getActualWorkTime())
 				.breakTime(export.getBreakTime())
-				.childCareTime(export.getChildCareTime())
+				.childCareTime(export.getChildTime())
 				.employeeid(export.getEmployeeid())
 				.personalExpenceTime(export.getPersonalExpenceTime())
 				.preTime(export.getPreTime())
