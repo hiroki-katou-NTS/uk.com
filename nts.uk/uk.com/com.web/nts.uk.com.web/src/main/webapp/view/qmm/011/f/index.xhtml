@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 400, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm011.f.vm.js" />
+			<com:scriptfile path="qmm011.f.start.js" />
+			<com:scriptfile path="qmm011.f.service.js" />
+			<com:stylefile path="qmm011.f.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="title">
+					<!-- F1_1 履歴編集 -->
+					<span id="F1_1" class="label">#{i18n.getText('#QMM011_')}</span>
+				</div>
+				<!-- E1_2 名称 -->
+				<div>
+				<div id="F1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM011_')}</div>
+				<span class="label" data-bind="text: workCode"></span>
+				<!-- F1_3 保険名称 -->
+				<span id="F1_3" class="label" data-bind="text: workCode"></span>
+				</div>
+				<!-- E1_4 期間 -->
+				<div id="E1_4" data-bind="ntsFormLabel: { required: true}">
+					<span class="label">#{i18n.getText('#QMM011_')}</span>
+					<!-- E1_5 開始年月 -->
+					<div id = "E1_5" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+					<!-- E1_6 ～ 9999/12 -->
+					<span id="E1_6" class="label">#{i18n.getText('#QMM011_')}</span>
+				</div>
+				<!-- E1_7 履歴の引継ぎ -->
+				<div id="E1_7" data-bind="ntsFormLabel: { required: true}">
+					<span class="label">#{i18n.getText('#QMM011_')}</span>
+					<!-- E1_8 履歴の引継ぎ -->
+					<div data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: true}
+											">
+					</div>
+					<!-- E1_9 最新の履歴から引き継ぐ -->
+					<span id="E1_9" class="label">#{i18n.getText('#QMM011_')}</span>
+					<!-- E1_10 初めから作成する。 -->
+					<span id="E1_10" class="label">#{i18n.getText('#QMM011_')}</span>
+				</div>
+				
+					<div>
+						<hr />
+					</div>
+			<div id="functions-area-bottom">
+				<!-- E2_1 登録 -->
+				<button id="E2_1" tabindex="7" class="proceed large"
+					data-bind="click: updateData">#{i18n.getText('qmm011_')}</button>
+				<!-- E2_2 削除 -->
+				<button id="E2_2" tabindex="8" class="danger large "
+					data-bind="click: removeData">#{i18n.getText('qmm011_')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

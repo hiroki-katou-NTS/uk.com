@@ -32,7 +32,7 @@ public class QpbmtEmpInsurPreRatePk implements Serializable
     * 
     */
     @Basic(optional = false)
-    @Column(name = "EMP_PRE_ RATE_ID")
+    @Column(name = "EMP_PRE_RATE_ID")
     public String empPreRateId;
     
 }

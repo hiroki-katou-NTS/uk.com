@@ -8,6 +8,7 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.b.start.js" />
 			<com:scriptfile path="qmm011.b.service.js" />
 			<com:scriptfile path="qmm011.b.vm.js" />
@@ -65,15 +66,15 @@
 						<tr class="bg-green">
 							<!--B3_2  個人負担率  -->
 							<th></th>
-							<th colspan="2" style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
+							<th  style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
 							<!--B3_3 端数処理  -->
-							<th colspan = "2">#{i18n.getText('QMM011_12')}</th>
+							<th>#{i18n.getText('QMM011_12')}</th>
 							<!--B3_4  事業主負担率  -->
-							<th colspan="2" >#{i18n.getText('QMM011_13')}</th>
+							<th>#{i18n.getText('QMM011_13')}</th>
 							<!--B3_5  端数処理  -->
-							<th colspan = "2" >#{i18n.getText('QMM011_12')}</th>
+							<th>#{i18n.getText('QMM011_12')}</th>
 						</tr>
-						<com:ko-foreach bind="listEmpInsurPreRate">
+					<com:ko-foreach bind="listEmpInsurPreRate">
 						<tr>
 							<td class="bg-green" style="border: 1px solid #CCC">
 								<label id= "B3_6">#{i18n.getText('QMM011_14')}</label>
@@ -86,8 +87,6 @@
 																value: indBdRation,
 																required: false
 																}"/>
-							</td>
-							<td>
 								<label id= "B3_8">#{i18n.getText('QMM011_15')}</label>
 							</td>
 							<td colspan = "2">
@@ -109,8 +108,7 @@
 																value: empContrRatio, 
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
-							</td>
-							<td width ="8px">
+
 								<label id= "B3_12">#{i18n.getText('QMM011_15')}</label>
 							</td>
 							<td colspan = "2">
@@ -128,9 +126,8 @@
 				</table>
 				</div>
 			</div>
-			
-	</div>
-</ui:define>
+		</div>
+	</ui:define>
 </ui:composition>
 </body>
 </html>

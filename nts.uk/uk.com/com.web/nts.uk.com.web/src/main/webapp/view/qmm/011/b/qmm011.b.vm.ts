@@ -5,12 +5,13 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
+    import model = qmm011.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         
-        listPerFracClass:       KnockoutObservableArray<ItemModel> = ko.observableArray(getListPerFracClass());
+        listPerFracClass:       KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());
         listEmpInsHis:          KnockoutObservableArray<IEmplInsurHis> = ko.observableArray([]);
-        listEmpInsurPreRate     KnockoutObservableArray<IEmpInsurPreRate> = ko.observableArray([]);
+        listEmpInsurPreRate:    KnockoutObservableArray<IEmpInsurPreRate> = ko.observableArray([]);
         selectedEmpInsHis:      KnockoutObservable<IEmplInsurHis> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
         index:                  KnockoutObservable<number> = ko.observable(0);
@@ -86,13 +87,29 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 }
             });
         }
+        
+        openFscreen(){
+            modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
+                let params = getShared('QMM011_B_Param');
+                if (params) {
+                    let override = params.overWrite;
+                    let destinationCode = params.copyDestinationCode;
+                    let destinationName = params.destinationName;
+                    let result = params.result;
+                    service.register().done(()=> {
+                    
+                    });
+                }
+            });
+        }
+    }
     
     class IEmplInsurHis{
         hisId: string
         startDate: string;
         endDate: string;
         between: string;
-      }
+    }
     
     class EmplInsurHis{
         hisId: string
@@ -133,22 +150,13 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         }
     }
     
-    export function getListPerFracClass(): Array<ItemModel> {
+    export function getListPerFracClass(): Array<model.ItemModel> {
         return [
-            new ItemModel(0, getText('CMF002_358')),
-            new ItemModel(1, getText('CMF002_359')),
-            new ItemModel(2, getText('CMF002_360')),
-            new ItemModel(3, getText('CMF002_361')),
-            new ItemModel(4, getText('CMF002_362'))
+            new model.ItemModel(0, getText('CMF002_358')),
+            new model.ItemModel(1, getText('CMF002_359')),
+            new model.ItemModel(2, getText('CMF002_360')),
+            new model.ItemModel(3, getText('CMF002_361')),
+            new model.ItemModel(4, getText('CMF002_362'))
         ];
-    }
-    export class ItemModel {
-        code: number;
-        name: string;
-
-        constructor(code: number, name: string) {
-            this.code = code;
-            this.name = name;
-        }
     }
 }
