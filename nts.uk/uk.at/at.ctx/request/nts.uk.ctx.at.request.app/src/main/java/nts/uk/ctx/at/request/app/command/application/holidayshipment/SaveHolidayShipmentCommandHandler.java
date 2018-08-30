@@ -387,7 +387,8 @@ public class SaveHolidayShipmentCommandHandler
 			WorkType wkType = wkTypeOpt.get();
 			if (wkType.getDailyWork().isHolidayWork()) {
 				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
-
+			} else {
+				result = HolidayAtr.NON_STATUTORY_HOLIDAYS;
 			}
 
 		}
@@ -503,13 +504,13 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
-		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
+		RecruitmentAppCommand recCmd = command.getRecCmd();
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
-		if (isSaveAbs(command.getComType()) && isCheck) {
-			String wkTypeCD = absCmd.getWkTypeCD();
+		if (isSaveRec(command.getComType()) && isCheck) {
+			String wkTypeCD = recCmd.getWkTypeCD();
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
-			GeneralDate appDate = absCmd.getAppDate();
+			GeneralDate appDate = recCmd.getAppDate();
 			// アルゴリズム「実績の取得」を実行する
 			AchievementOutput achievement = afinder.getAchievement(companyID, sID, appDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する

@@ -95,7 +95,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.currentCode = ko.observable();
             
             self.specialHolidayCode.subscribe(function(value) {
-                if(Number(value) >= 0 && self.selectedMethod() == 1) {
+                let isNewValue = _.find(self.sphdList(), ['specialHolidayCode', value]) ? false : true;
+                if(!isNewValue && self.selectedMethod() == 1) {
                     self.dialogDEnable(true);
                 } else {
                     self.dialogDEnable(false);
