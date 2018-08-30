@@ -455,12 +455,16 @@ module nts.uk.at.view.ksm005.c {
             /**
              * reload page 
              */
-            public reloadPage(): void {
+            public reloadPage(): JQueryPromise<void> {
                 var self = this;
+                var dfd =$.Deferred<void>();
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
                     self.alreadySettingList(data);
+                    self.applySelectEmployeeCode(self.selectedCode());
+                    dfd.resolve();
                 });
-                self.applySelectEmployeeCode(self.selectedCode());
+                
+                return dfd.promise();
             }
             
             /**
@@ -485,16 +489,18 @@ module nts.uk.at.view.ksm005.c {
                 var dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 blockUI.grayout();
                 service.saveMonthlyPatternSetting(dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload page
-                        self.reloadPage();
-                        self.enableCopy(true);
-                        self.enableDelete(true);
-                    });
+                    // reload page
+                    self.reloadPage().done(() => {
+                        // show message 15
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                            self.enableCopy(true);
+                            self.enableDelete(true);
+                        });
+                    }).always(()=> blockUI.clear());
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                }).always(()=> blockUI.clear());    
+                });
             }
             
             /**
