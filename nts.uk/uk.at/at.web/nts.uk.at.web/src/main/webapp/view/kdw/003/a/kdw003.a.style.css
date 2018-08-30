@@ -160,6 +160,12 @@
 	float: right;
 	/* margin-left: 120px; */
 	}
+	
+#fixed-table tr td {
+	border: none !important;
+	border-right: 1px solid #CCC !important;
+}
+
 #emp-component{
 	margin-top: -25px;
 	margin-left: -10px;
