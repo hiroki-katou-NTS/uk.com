@@ -563,7 +563,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog);
 			
 			/*
-			 * 対象社員を取得 
+			 * 対象社員を取得 TODO
 			 */
 			//List<String> sidList = new ArrayList<>();
 			//sidList.add(loginContext.employeeId()); // Add login SID to test, remove when implement this algorithm
@@ -586,6 +586,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				regulationInfoEmployeeAdapterImport.setDepartmentCodes(null);
 				// 職場で絞り込む → TRUE
 				regulationInfoEmployeeAdapterImport.setFilterByWorkplace(true);
+
 				List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope()
 						.getWorkplaceIdList();
 				List<String> workplaceIds = new ArrayList<String>();
@@ -2514,9 +2515,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
 			}
 			this.processExecLogManaRepo.update(processExecutionLogManage);
-			//ドメインモデル「更新処理自動実行ログ」を削除する
-			this.procExecLogRepo.remove(companyId, execItemCd, procExecLogOpt.get().getExecId());
-			
 			// [更新処理：スケジュールの作成、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
 			// [更新処理：日別作成、終了状態 ＝ 未実施]
@@ -2533,12 +2531,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
 			// [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			
-			procExecLog.setExecId(execId); 
-			
-			this.procExecLogRepo.insert(procExecLog);
-			
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);		
+			this.procExecLogRepo.update(procExecLog);
+
 		} else {
 			// アルゴリズム「更新処理自動実行ログ新規登録処理」を実行する
 			// 現在の実行状態 ＝ 実行

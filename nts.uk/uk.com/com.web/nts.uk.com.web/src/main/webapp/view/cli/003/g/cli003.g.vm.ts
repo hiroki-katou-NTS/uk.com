@@ -175,7 +175,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }
         }
 
-        getAllLogDisplaySet() { 
+        getAllLogDisplaySet() {
             var self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
@@ -184,13 +184,11 @@ module nts.uk.com.view.cli003.g.viewmodel {
             service.getAllLogDisplaySet().done(function(logDisplaySets: any) {
                 if (logDisplaySets && logDisplaySets.length > 0) {
                     self.logDisplaySets(logDisplaySets);
-                     var lstLogSet = [];
                     for (let i = 0; i < logDisplaySets.length; i++) {
                         var logDisplaySet = logDisplaySets[i];
-                        lstLogSet.push(new ItemLogSetModel(logDisplaySet.logSetId, logDisplaySet.code, logDisplaySet.name,
+                        self.logSets.push(new ItemLogSetModel(logDisplaySet.logSetId, logDisplaySet.code, logDisplaySet.name,
                             logDisplaySet.recordType, logDisplaySet.dataType, logDisplaySet.logSetOutputItems));
                     }
-                    self.logSets(lstLogSet);
 
                     self.mode(MODE.UPDATE);
                     if (self.selectCode()) {

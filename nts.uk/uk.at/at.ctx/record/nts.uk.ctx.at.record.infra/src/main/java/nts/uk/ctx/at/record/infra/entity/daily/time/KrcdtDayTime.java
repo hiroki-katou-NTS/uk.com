@@ -1313,11 +1313,6 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		return entity;
 	}
 	
-	public void setDateOverTime5() {
-		this.overTime5 = 99;
-	}
-	
-	
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime) {
 		/*----------------------日別実績の勤怠時間------------------------------*/
 		ActualWorkingTimeOfDaily actualWork = attendanceTime.getActualWorkingTimeOfDaily();

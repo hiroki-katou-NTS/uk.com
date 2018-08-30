@@ -221,7 +221,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	public Optional<LeaveManagementData> getByLeaveId(String leaveManaId) {
-		String QUERY_BY_ID = "SELECT s FROM KrcmtLeaveManaData s WHERE s.leaveID = :subOfHDID";
+		String QUERY_BY_ID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.subOfHDID = :subOfHDID";
 		Optional<KrcmtLeaveManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("subOfHDID", leaveManaId).getSingle();
 		if (entity.isPresent()) {
 			return Optional.ofNullable(toDomain(entity.get()));
