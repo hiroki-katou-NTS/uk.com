@@ -28,7 +28,7 @@ module nts.uk.at.view.kdp003.b {
                 self.items = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: getText('KDP003_17'), key: 'stampOutputSetCode', width: 90 },
-                    { headerText: getText('KDP003_18'), key: 'stampOutputSetName', width: 190 },
+                    { headerText: getText('KDP003_18'), key: 'stampOutputSetName', width: 190, formatter: _.escape },
                 ]);
                 self.currentId = ko.observable('');
                 self.stampCode = ko.observable('');
