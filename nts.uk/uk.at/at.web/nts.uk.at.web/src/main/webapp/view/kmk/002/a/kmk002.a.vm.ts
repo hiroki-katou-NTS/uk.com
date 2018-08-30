@@ -248,14 +248,12 @@ module nts.uk.at.view.kmk002.a {
                     // or new value == value in stash
                     // then do nothing
                     if (self.hasChanged || value == self.performanceAtrStash) {
-                        Formula.performanceAtr = value; // param for screen C
                         return;
                     }
 
                     // if has formulas
                     if (self.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_506' }).ifYes(() => {
-                            Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
                             self.removeAllFormulas();
@@ -487,7 +485,7 @@ module nts.uk.at.view.kmk002.a {
                     OptionalItem.selectedFormulas([]);
                 }
 
-                let f = new Formula();
+                let f = new Formula(self.performanceAtr);
 
                 // bind function
                 f.reCheckAll = self.reCheckAll.bind(self);
@@ -849,7 +847,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 let mapped: Array<Formula> = list.map(item => {
-                    let formula = new Formula();
+                    let formula = new Formula(self.performanceAtr);
 
                     // bind function
                     formula.reCheckAll = self.reCheckAll.bind(self);
@@ -1306,8 +1304,6 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                Formula.performanceAtr = self.optionalItem.performanceAtr(); // param for c screen
-
                 // wait for selected event done then block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
@@ -1360,7 +1356,7 @@ module nts.uk.at.view.kmk002.a {
             settingResult: KnockoutObservable<string>;
 
             // param for c screen
-            static performanceAtr: number;
+            performanceAtr: KnockoutObservable<number>;
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
@@ -1411,9 +1407,10 @@ module nts.uk.at.view.kmk002.a {
             timeMonthlyUnitStash: number;
             timeDailyUnitStash: number;
 
-            constructor() {
+            constructor(performanceAtr: KnockoutObservable<number>) {
                 this.formulaId = nts.uk.util.randomId();
                 this.optionalItemNo = '';
+                this.performanceAtr = performanceAtr;
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(0);
                 this.symbolValue = '';
@@ -1749,7 +1746,7 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = Formula.performanceAtr;
+                param.performanceAtr = self.performanceAtr();
                 param.formulaAtr = dto.formulaAtr;
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
