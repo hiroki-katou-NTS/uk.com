@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                 nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -87,7 +87,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});  
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -104,7 +104,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });
