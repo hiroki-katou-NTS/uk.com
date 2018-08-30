@@ -48,21 +48,21 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public void add(SpecialLeaveGrantRemainingData data) {
-
-		this.commandProxy().insert(toEntity(data));
+		if (data != null)
+			this.commandProxy().insert(toEntity(data));
 	}
 
 	@Override
 	public void update(SpecialLeaveGrantRemainingData data) {
-
-		Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
-				KrcmtSpecialLeaveReam.class);
-		if (entityOpt.isPresent()) {
-			KrcmtSpecialLeaveReam entity = entityOpt.get();
-			updateDetail(entity, data);
-			this.commandProxy().update(entity);
+		if (data != null) {
+			Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
+					KrcmtSpecialLeaveReam.class);
+			if (entityOpt.isPresent()) {
+				KrcmtSpecialLeaveReam entity = entityOpt.get();
+				updateDetail(entity, data);
+				this.commandProxy().update(entity);
+			}
 		}
-
 	}
 
 	@Override

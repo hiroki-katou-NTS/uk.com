@@ -36,7 +36,8 @@ public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveR
 				command.getNumberDayUse(), command.getTimeUse(),
 				null,
 				command.getNumberDaysOver(), command.getTimeOver(), 
-				command.getNumberDayRemain(),command.getTimeRemain());
+				command.getNumberDayRemain(),command.getTimeRemain(),
+				command.grantDateItemName, command.deadlineDateItemName);
 		repo.update(data);
 	}
 
