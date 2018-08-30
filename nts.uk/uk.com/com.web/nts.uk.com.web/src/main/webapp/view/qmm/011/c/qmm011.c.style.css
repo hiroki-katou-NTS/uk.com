@@ -13,18 +13,21 @@
 	float: left;
 	width: 350px;
 }
-.table{
+#C3_2{
 	margin: 20px 20px 0 0;
-	width: 800px;
+	width: 600px;
+	border: 1px solid #CCC;
 }
-.table th{
+#C3_2 th{
     border: 1px solid #CCC;
     height: 40px;
     text-align: center;
-    width: 10%;
+
 }
-.table td {
+
+#C3_2 td {
 	text-align: center;
-	height: 60px;
+	height: 40px;
+	border: 1px solid #CCC;
 }
 
