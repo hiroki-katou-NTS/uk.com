@@ -22,21 +22,12 @@ public enum ProcessExecutionTask {
 	/* 月別集計 */
 	MONTHLY_AGGR(4, "月別集計"),
 	
-//	/* アラーム抽出（個人別） */
-//	INDV_ALARM(5, "アラーム抽出（個人別）"),
-//	
-//	/* アラーム抽出（職場別） */
-//	WKP_ALARM(6, "アラーム抽出（職場別）");
+	/* アラーム抽出（個人別） */
+	INDV_ALARM(5, "アラーム抽出（個人別）"),
 	
-	/* アラーム抽出 */
+	/* アラーム抽出（職場別） */
+	WKP_ALARM(6, "アラーム抽出（職場別）");
 	
-	AL_EXTRACTION(5, "アラーム抽出"),
-	
-	/* 承認ルート更新（日次） */
-	APP_ROUTE_U_DAI(6, "承認ルート更新（日次）"),
-	
-	/* 承認ルート更新（月次） */
-	APP_ROUTE_U_MON(7, "承認ルート更新（月次）");
 	/** The value. */
 	public final int value;
 	
