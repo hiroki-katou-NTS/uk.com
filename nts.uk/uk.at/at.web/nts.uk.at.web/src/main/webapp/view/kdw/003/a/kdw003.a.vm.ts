@@ -2848,6 +2848,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "halign-right";
+                            } else if(header.constraint.cDisplayType == "TimeWithDay"){
+                                header.constraint["min"] = "-12:00";
+                                header.constraint["max"] = "71:59"
                             }
                             delete header.constraint.primitiveValue;
                         } else {
