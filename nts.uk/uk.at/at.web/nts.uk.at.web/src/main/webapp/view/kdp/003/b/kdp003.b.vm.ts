@@ -165,7 +165,6 @@ module nts.uk.at.view.kdp003.b {
             */
             public register() {
                 let self = this;
-                nts.uk.ui.block.grayout();
                 $('.nts-input').ntsError('check');
                 if (!self.stampCode()) {
                     $('#stampName').ntsError('clear');
@@ -173,6 +172,7 @@ module nts.uk.at.view.kdp003.b {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let data: StampingOutputItemSetDto = {
                     stampOutputSetCode: self.stampCode(),
                     stampOutputSetName: self.stampName(),
