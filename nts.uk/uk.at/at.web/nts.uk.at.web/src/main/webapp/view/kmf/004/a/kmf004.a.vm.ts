@@ -681,6 +681,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
+            $(".period-date-inp").trigger("validate");
             
             let dataItem = self.preData();
             
@@ -709,7 +710,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
                 
                 if(self.startDate() > self.endDate()) {
-                    $("#period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
+                    $(".period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
                     $('.end-date .ntsControl.nts-datepicker-wrapper').addClass('error');
                 }
             }
