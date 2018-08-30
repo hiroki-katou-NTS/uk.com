@@ -9,7 +9,7 @@
 			<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 360,
+					width : 362,
 					height : 500
 				};
 			</script>
@@ -22,7 +22,7 @@
 			
 			<ui:define name="content">
 				<div id="contents-area">
-					<table style="margin: 25px 0;">
+					<table style="margin-bottom : 15px;">
 					    <colgroup>
 					        <col width="160"/>
 					        <col width="180"/>
@@ -47,7 +47,7 @@
 					        <tr>
 					            <td class="inputLabel"><div data-bind = "text: taskName" /></td>
 					            <com:ko-if bind="taskId === 5">
-					            	<td colspan="2">clgt</td>
+					            	<td colspan="2">未実施</td>
 					            </com:ko-if>
 					            <com:ko-if bind="taskId !== 5">
 						            <td><div data-bind = "text: status" /></td>
