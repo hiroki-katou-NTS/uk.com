@@ -229,17 +229,17 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 strSpecify: self.strSelected(),
                 strPreviousDay: 0,
                 strMakeToDay: 0,
-                strDay: self.strSelected() == 0 ? Number(self.strDay()) : 0,
+                strDay: self.strSelected() == 0 ? self.strDay() : 0,
                 strPreviousMonth: 0,
                 strCurrentMonth: 1,
-                strMonth: self.strSelected() == 1 ? Number(self.strMonth()) : 0,
+                strMonth: self.strSelected() == 1 ? self.strMonth() : 0,
                 endSpecify: self.endSelected(),
                 endPreviousDay: 0,
                 endMakeToDay: 0,
-                endDay: self.endSelected() == 0 ? Number(self.endDay()) : 0,
+                endDay: self.endSelected() == 0 ? self.endDay() : 0,
                 endPreviousMonth: 0,
                 endCurrentMonth: 1,
-                endMonth: self.endSelected() == 1 ? Number(self.endMonth()) : 0
+                endMonth: self.endSelected() == 1 ? self.endMonth() : 0
             };
             let monthly2Share = {
                 extractionId: "",
@@ -248,12 +248,12 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 strSpecify: 1,
                 yearType: 2,
                 specifyMonth: 0,
-                strMonth: Number(self.strMonth2()),
+                strMonth: self.strMonth2(),
                 strCurrentMonth: 1,
                 strPreviousAtr: 0,
                 endSpecify: 2,
                 extractPeriod: 12,
-                endMonth: Number(self.endMonth2()),
+                endMonth: self.endMonth2(),
                 endCurrentMonth: 1,
                 endPreviousAtr: 0
             }
@@ -263,13 +263,13 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 unit: 1,
                 strSpecify: self.strSelected3() + 1,
                 yearType: 2,
-                specifyMonth: self.strSelected3() == 1 ? Number(self.strMonthy3()) : 0,
-                strMonth: self.strSelected3() == 0 ? Number(self.strMonth3()) : 0,
+                specifyMonth: self.strSelected3() == 1 ? self.strMonthy3() : 0,
+                strMonth: self.strSelected3() == 0 ? self.strMonth3() : 0,
                 strCurrentMonth: 1,
                 strPreviousAtr: 0,
                 endSpecify: 2,
                 extractPeriod: 12,
-                endMonth: Number(self.endMonth3()),
+                endMonth: self.endMonth3(),
                 endCurrentMonth: 1,
                 endPreviousAtr: 0
             }
@@ -280,12 +280,12 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 strSpecify: self.strSelected4() + 1,
                 yearType: 2,
                 specifyMonth: self.strSelected4() == 1 ? self.strMonthy4() : 0,
-                strMonth: self.strSelected4() == 0 ? Number(self.strMonth4()) : 0,
+                strMonth: self.strSelected4() == 0 ? self.strMonth4() : 0,
                 strCurrentMonth: 1,
                 strPreviousAtr: 0,
                 endSpecify: 2,
                 extractPeriod: 12,
-                endMonth: Number(self.endMonth4()),
+                endMonth: self.endMonth4(),
                 endCurrentMonth: 1,
                 endPreviousAtr: 0
             }
@@ -294,7 +294,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             let yearly36Share = {
                 extractionId: "",
                 extractionRange: 1,
-                year: self.strSelected5() == 0 ? Number(self.strYear5()) : 0,
+                year: self.strSelected5() == 0 ? self.strYear5() : 0,
                 thisYear: self.strSelected5()
             }
 
