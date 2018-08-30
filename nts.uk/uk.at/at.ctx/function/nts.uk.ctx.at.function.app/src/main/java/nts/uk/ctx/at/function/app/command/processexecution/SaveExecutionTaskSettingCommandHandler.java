@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.core.util.CronExpression;
 import org.eclipse.persistence.jpa.jpql.parser.WhenClause;
 
 import lombok.val;
@@ -356,20 +355,9 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 					}
 			}
 		}
-		
-		String scheduleId;
-		Optional<GeneralDateTime> nextFireTime;
-		
-		boolean isValid = CronExpression.isValidExpression(cron.getCronExpressions().get(0).toString());
-		if(isValid) {
-			scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
-			nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-		} else {
-			scheduleId = "";
-			nextFireTime = Optional.empty();
-		}
-		
+		String scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 		taskSetting.setScheduleId(scheduleId);
+		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 		taskSetting.setNextExecDateTime(nextFireTime);
 		/*
 		String endScheduleId=null;
@@ -843,14 +831,8 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				}
 			}
 			
-			if(repeatMonthDateList.contains(32) && repeatMonthDateList.size() == 1) {
-				cronExpress.append("L");
-			} else {
-				for (int dayOfMonth : repeatMonthDateList) {
-					if(dayOfMonth != 32) {
-						cronExpress.append(dayOfMonth+ ",");
-					}
-				}
+			for (int dayOfMonth : repeatMonthDateList) {
+				cronExpress.append(dayOfMonth+ ",");
 			}
 			
 			if(cronExpress.toString().endsWith(",")){

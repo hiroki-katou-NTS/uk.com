@@ -58,5 +58,5 @@ public interface InterimRemainRepository {
 	 * @param baseDate　対象日
 	 * @return
 	 */
-	List<InterimRemain> getDataBySidDate(String sid, GeneralDate baseDate);
+	List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates);
 }

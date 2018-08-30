@@ -68,6 +68,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmployeeService {
 
+	/** ドメインサービス：日別実績計算処理　（勤務情報を取得して計算） */
+	@Inject
+	private CalculateDailyRecordService calculateDailtRecordService;
+	
 	//*****（未）　以下、日別実績の勤怠情報など、日別計算のデータ更新に必要なリポジトリを列記。
 	/** リポジトリ：日別実績の勤怠時間 */
 	@Inject
@@ -165,23 +169,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter) {
-		//日別実績(WORK取得)
+		
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
 		
-		//締め一覧取得
 		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
 		
-		//計算処理を呼ぶ
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList);
-		
-		//実績が無い社員の数を検知
-		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
-		//実績が無い社員を成功としてカウントアップ
-		employeeId.forEach(tc ->{
-			if(!empIds.contains(tc)) {
-					counter.accept(ProcessState.SUCCESS);
-			}
-		});
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter));
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
 			// データ更新
@@ -203,21 +196,14 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @return　〆状態リスト
 	 */
 	private List<ClosureStatusManagement> getClosureList(List<String> employeeId, DatePeriod datePeriod) {
-		return closureStatusManagementRepository.getByIdListAndDatePeriod(employeeId, datePeriod);
+		//closureStatusManagementRepository.get
+		return Collections.emptyList();
 	}
 
 	public ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter) {
-		//実績取得
 		List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),datePeriod);
-		//実績が無かった時用のカウントアップ
-		if(createList.isEmpty()) 
-			return ProcessState.SUCCESS; 
 		
-		//締め一覧取得
-		List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),datePeriod);
-		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),counter,closureList);
-		
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),counter);
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
 			// データ更新

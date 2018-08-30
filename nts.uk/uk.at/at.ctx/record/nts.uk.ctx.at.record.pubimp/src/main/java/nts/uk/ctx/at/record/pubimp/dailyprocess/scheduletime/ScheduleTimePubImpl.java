@@ -30,7 +30,6 @@ import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -111,13 +110,8 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 			AttendanceTime weekDayTime = new AttendanceTime(0);
 			//休憩時間
 			AttendanceTime breakTime = new AttendanceTime(0);
-			//育児時間
-			AttendanceTime childTime = new AttendanceTime(0);
-			//介護時間
-			AttendanceTime careTime = new AttendanceTime(0);
-			//フレックス時間
-			AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
-			
+			//育児介護時間
+			AttendanceTime childCareTime = new AttendanceTime(0);
 			//人件費時間
 			List<AttendanceTime> personalExpenceTime = new ArrayList<>();
 		
@@ -142,16 +136,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 					}
 					//育児介護時間
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
-						if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().isCare()) {
-							childTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getTotalTime().getTotalTime().getTime();
-						}
-						else {
-							careTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getTotalTime().getTotalTime().getTime();
-						}
-					}
-					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
-					&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-						flexTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime();
+						childCareTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getTotalTime().getTotalTime().getTime();
 					}
 				
 					//平日時間
@@ -160,7 +145,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 						       					  - integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getVacationAddTime().valueAsMinutes());
 				}
 			}
-			returnList.add(ScheduleTimePubExport.of(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childTime, careTime, flexTime, personalExpenceTime));
+			returnList.add(ScheduleTimePubExport.of(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childCareTime, personalExpenceTime));
 		}
 		return returnList;
 	}

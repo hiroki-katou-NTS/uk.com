@@ -113,14 +113,13 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 			//休憩へ変換する
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(deductionItem.getTimeSheet(),
 																							  deductionItem.getCalcrange(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),
 																							  deductionItem.getBonusPayTimeSheet(),
 																							  deductionItem.getSpecBonusPayTimesheet(),
 																							  deductionItem.getMidNightTimeSheet(),
-																							  deductionItem.getWorkingBreakAtr(),
 																							  deductionItem.getGoOutReason(),
 																							  Finally.of(BreakClassification.BREAK_STAMP),
 																							  Optional.empty(),

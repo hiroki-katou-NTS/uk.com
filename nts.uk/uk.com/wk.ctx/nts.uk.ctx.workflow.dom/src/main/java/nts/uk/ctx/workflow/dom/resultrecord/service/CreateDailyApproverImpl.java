@@ -81,7 +81,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			break;
 		}
 		if(errorFlag!=ErrorFlag.NO_ERROR){
-			return new AppRootInstanceContent(appRootInstance, errorFlag, errorMsgID);
+			// create log
 		}
 		// ドメインモデル「承認ルート中間データ」を取得する
 		Optional<AppRootInstance> opAppRootInstanceConflict = appRootInstanceRepository.findByEmpDate(companyID, employeeID, recordDate, rootType);
