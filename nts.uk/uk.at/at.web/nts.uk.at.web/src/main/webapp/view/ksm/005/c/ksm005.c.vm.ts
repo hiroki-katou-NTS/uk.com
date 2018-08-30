@@ -355,7 +355,6 @@ module nts.uk.at.view.ksm005.c {
                             });
                             self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(true);
-                            self.enableSave(true);
                         } else {
                             self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(false);
