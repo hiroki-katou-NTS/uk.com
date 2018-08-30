@@ -185,7 +185,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		AnnualHoliday annualHoliday = acqRule.get().getAnnualHoliday();
 		//振休使用フラグをチェックする (Check restFlag)
-		if(annualHoliday.isPrioritySubstitute() && subVacaTypeUseFlg && isSubVacaManage){
+		//休暇の取得ルール．年休より優先する休暇．振休を優先＝ false OR 休暇申請対象勤務種類．休暇種類を利用しない（振休）＝ true OR 振休管理設定．管理区分＝管理しない
+		if(annualHoliday.isPrioritySubstitute() && !subVacaTypeUseFlg && isSubVacaManage){
 			//振休残数をチェックする (Check restRemaining)
 			if(numberSubVaca > 0){//振休残数>0(restRemaining >0)
 				if(pridigCheck.equals(AppliedDate.CHECK_IMPOSSIBLE)){//年休より優先消化チェック区分＝チェックする（登録不可）(pridigCheck == CHECK_IMPOSSIBLE)
@@ -197,8 +198,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				throw new BusinessException("Msg_1393");
 			}
 		}
-		//休暇の取得ルール．年休より優先する休暇．振休を優先＝ false OR 休暇申請対象勤務種類．休暇種類を利用しない（振休）＝ true OR 振休管理設定．管理区分＝管理しない
+		//休暇の取得ルール．年休より優先する休暇．代休を優先＝ false OR 休暇申請対象勤務種類．休暇種類を利用しない（代休）＝ true OR 代休管理設定．管理区分＝管理しない
 		//代休使用フラグをチェックする (Check substituteHolidayFlag)
+		if(!annualHoliday.isPriorityPause() || subHdTypeUseFlg || !isSubHdManage){
+			return;
+		}
 		if(numberSubHd <= 0){//代休残数<=0
 			return;
 		}
