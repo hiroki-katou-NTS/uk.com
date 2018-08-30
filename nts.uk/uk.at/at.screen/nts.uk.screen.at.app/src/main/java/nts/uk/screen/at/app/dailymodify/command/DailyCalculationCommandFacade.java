@@ -229,7 +229,8 @@ public class DailyCalculationCommandFacade {
 		for (IntegrationOfDaily d : dailyResults) {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
-				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D")) {
+				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") 
+						&& err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().contains("Msg_1298")) {
 					divergenceErrors.addAll(err.getAttendanceItemList().stream()
 							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
 							.collect(Collectors.toList()));
