@@ -716,14 +716,6 @@ module kcp.share.tree {
                     self.selectedWorkplaceIds(selecteds[0]);
                 }
             });
-            
-            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selecteds) => {
-                if (self.isMultiSelect) {
-                    self.selectedWorkplaceIds(selecteds);
-                } else {
-                    self.selectedWorkplaceIds(selecteds[0]);
-                }
-            });
 
             self.selectedWorkplaceIds.subscribe(ids => {
                 const grid = $('#' + self.getComIdSearchBox());

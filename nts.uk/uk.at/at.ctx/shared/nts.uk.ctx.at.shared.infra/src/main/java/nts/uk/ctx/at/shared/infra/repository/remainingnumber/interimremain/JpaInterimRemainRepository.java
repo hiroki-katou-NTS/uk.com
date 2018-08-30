@@ -36,11 +36,10 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			+ " AND c.ymd <= :endDate";
 	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.remainMngId = :remainMngId";
-	
-	private static final String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
+
+	private String QUERY_BY_SID_YMDs = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :sId"
-			+ " AND c.ymd = :ymd";
-	
+			+ " AND c.ymd IN :ymd";	
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
 		return this.queryProxy().query(QUERY_BY_SID_PRIOD, KrcmtInterimRemainMng.class)
@@ -118,11 +117,12 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			.setParameter("endDate", dateData.end())
 			.executeUpdate();
 	}
+
 	@Override
-	public List<InterimRemain> getDataBySidDate(String sid, GeneralDate baseDate) {
-		return this.queryProxy().query(QUERY_BY_SID_YMD, KrcmtInterimRemainMng.class)
+	public List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates) {
+		return this.queryProxy().query(QUERY_BY_SID_YMDs, KrcmtInterimRemainMng.class)
 				.setParameter("sId", sid)
-				.setParameter("ymd", baseDate)
+				.setParameter("ymd", baseDates)
 				.getList(c -> convertToDomainSet(c));
 	}
 }

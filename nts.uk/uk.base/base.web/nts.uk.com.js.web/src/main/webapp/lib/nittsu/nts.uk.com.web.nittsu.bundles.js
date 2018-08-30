@@ -17436,13 +17436,13 @@ var nts;
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
-                        var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {}, eOption = $.extend(this.getDefaultOption(), option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
+                        var option = ko.toJS(data.option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
                         // update editor option
                         $.extend(this.editorOption, {
                             required: required,
-                            decimallength: Number(eOption.decimallength),
-                            grouplength: Number(eOption.grouplength),
-                            decimalseperator: eOption.decimalseperator
+                            decimallength: Number(option.decimallength),
+                            grouplength: Number(option.grouplength),
+                            decimalseperator: option.decimalseperator
                         });
                         return new validation.NumberValidator(name, constraintName, this.editorOption);
                     };
@@ -19946,7 +19946,6 @@ var nts;
                                 this.resetOriginalDataSource();
                             }
                             this.bindData(this.originalDataSource);
-                            this.$searchBox.val('');
                         }
                     };
                     SwapPart.prototype.build = function () {
@@ -30075,13 +30074,9 @@ var nts;
                             });
                         }
                         else {
-                            if (selectedId.constructor === Array) {
-                                selectedId = selectedId[0];
-                            }
                             $tree.igTreeGridSelection('selectRowById', selectedId);
                             virtualScroll($tree, selectedId);
                         }
-                        $tree.trigger("ntstreeselectionchanged", [selectedId]);
                     }
                     function virtualScroll($tree, id) {
                         var virtualization = $tree.igTreeGrid("option", "virtualization");
@@ -31464,8 +31459,6 @@ var nts;
                 var REQUIRED = "required";
                 var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
                 var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
-                var IS_REMOVE_BY_VM = "remove-by-vm";
-                var IS_USER_SELECTED = "user-selected";
                 var SELECTED_FILE_NAME = "selected-file-name";
                 var STEREOTYPE = "stereotype";
                 var IMMEDIATE_UPLOAD = "immediate-upload";
@@ -31512,19 +31505,14 @@ var nts;
                             }
                             $container.ntsError("clear");
                             var selectedFilePath = $(this).val();
+                            // canceled on selecting file dialog
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                                if ($container.data(IS_REMOVE_BY_VM) === true) {
-                                    // canceled on selecting file dialog
-                                    $container.data(IS_REMOVE_BY_VM, false);
-                                    return;
-                                }
                                 if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
                                     $container.data(IS_RESTORED_BY_CANCEL, true);
                                     this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                                 }
                                 return;
                             }
-                            $container.data(IS_USER_SELECTED, true);
                             $container.data(FILES_CACHE_FOR_CANCEL, this.files);
                             var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                             $container.data(SELECTED_FILE_NAME, selectedFileName);
@@ -31585,12 +31573,6 @@ var nts;
                         var $fileNameLabel = $container.find(".filenamelabel");
                         // when change just only filename, file in input must be cleared
                         if ($container.data(SELECTED_FILE_NAME) !== fileName) {
-                            if ($container.data(IS_USER_SELECTED) !== true && !nts.uk.util.isNullOrUndefined($container.data(IS_USER_SELECTED))) {
-                                $container.data(IS_REMOVE_BY_VM, true);
-                            }
-                            else {
-                                $container.data(IS_REMOVE_BY_VM, false);
-                            }
                             $container.data(SELECTED_FILE_NAME, "");
                             $container.find("input[type='file']").val(null);
                         }
@@ -31608,7 +31590,6 @@ var nts;
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
                         $fileNameInput.prop("disabled", !enable);
-                        $container.data(IS_USER_SELECTED, false);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -31919,8 +31900,7 @@ var nts;
                         var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
                         var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
                         var croppable = false;
-                        var maxSize = nts.uk.util.isNullOrUndefined(data.maxSize) ? undefined : ko.unwrap(data.maxSize);
-                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile, undefined, maxSize);
+                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
                         var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
                         var constructSite = new ImageEditorConstructSite($element, helper);
                         var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
@@ -32148,26 +32128,8 @@ var nts;
                                 self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
-                            if (!self.validateFilesSize(this.files[0])) {
-                                // if file's size > maxSize, remove that file                    
-                                $(this).val('');
-                                return;
-                            }
                             self.validateFile(this.files);
                         });
-                    };
-                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
-                        var self = this;
-                        var MAX_SIZE = self.helper.maxSize;
-                        // if MAX_SIZE == undefined => do not check size
-                        if (!MAX_SIZE) {
-                            return true;
-                        }
-                        if (file.size > MAX_SIZE * 1048576) {
-                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
-                            return false;
-                        }
-                        return true;
                     };
                     ImageEditorConstructSite.prototype.validateFile = function (files) {
                         var self = this;
@@ -32204,7 +32166,7 @@ var nts;
                     return ImageEditorConstructSite;
                 }());
                 var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query, maxSize) {
+                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -32218,7 +32180,6 @@ var nts;
                                 self.IMAGE_EXTENSION.push(ex.toUpperCase());
                             });
                         }
-                        self.maxSize = maxSize;
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
                         return this.IMAGE_EXTENSION.join(", ");

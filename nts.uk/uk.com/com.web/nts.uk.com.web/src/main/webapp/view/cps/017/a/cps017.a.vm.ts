@@ -1,4 +1,4 @@
-﻿module nts.uk.com.view.cps017.a.viewmodel {
+module nts.uk.com.view.cps017.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -76,7 +76,7 @@
             //check insert/update
             self.checkCreateaaa = ko.observable(true);
 
-            //Subscribe: 頛�変更→雮のID変更
+            //Subscribe: 頛�変更→雮のID変更
             perInfoSelectionItem.selectionItemId.subscribe(id => {
                 if (id) {
 
@@ -101,7 +101,7 @@
                         // change form-label
                         self.changeLabelConstrain(selectedObject.characterType);
                     }
-                    // シスッ�管琀��かつ　選択してあ�選択雮の「選択雮区刀�＝社員のと�
+                    // シスッ�管琀��かつ　選択してあ�選択雮の「選択雮区刀�＝社員のと�
                     if (self.isGroupManager === true) {
                         self.showRefecToAll(true);
                     } else {
@@ -176,6 +176,8 @@
                         }
                     });
                 }else {
+                    self.enableRegister(false);
+                } else {
                     self.listSelection.removeAll();
                     self.createNewData();
                     self.enableRegister(false);
@@ -217,7 +219,7 @@
 
         }
 
-        //開�
+        //開�
         start(): JQueryPromise<any> {
             let self = this,
                 historySelection: HistorySelection = self.historySelection(),
@@ -230,7 +232,7 @@
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
 
-            // ドメインモッ�「個人惱の選択雮」をすべて取得す�
+            // ドメインモッ�「個人惱の選択雮」をすべて取得す�
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 if (itemList && itemList.length > 0) {
 
@@ -260,7 +262,7 @@
             }).fail(error => {
                 alertError({ messageId: "Msg_455" });
             });
- 
+
             return dfd.promise();
         }
         
@@ -313,7 +315,7 @@
             self.extenalLabelConstraint.valueHasMutated();
         }
 
-        //新規�タン
+        //新規�タン
         createNewData() {
             let self = this;
             let selection: Selection = self.selection();
@@ -368,7 +370,7 @@
             self.enableReflUnrComp(value);
         }
 
-        //検証チェヂ� 
+        //検証チェヂ� 
         validate() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -389,7 +391,7 @@
             }
         }
 
-        //新規モー�
+        //新規モー�
         add() {
             let self = this,
                 currentItem: Selection = self.selection(),
@@ -437,7 +439,7 @@
 
         }
 
-        //更新モー�
+        //更新モー�
         update() {
            
             let self = this,
@@ -508,7 +510,7 @@
             })
         }
 
-        // 履歴削除をす�
+        // 履歴削除をす�
         removeHistory() {
             let self = this;
             let perInfoSelectionItem = self.perInfoSelectionItem();
@@ -621,15 +623,15 @@
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
                 allValid = false;
-                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を超えない");
+                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を趁�な�);
             }
             if (selName.length > self.constraints.selectionName) {
                 allValid = false;
-                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を超えない");
+                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を趁�な�);
             }
             if (exCd.length > self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
-                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を超えない");
+                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を趁�な�);
             }
             return allValid;
         }
@@ -776,6 +778,6 @@
 
 function makeIcon(value, row) {
     if (value == 1)
-        return "●";
+        return "�;
     return '';
 }

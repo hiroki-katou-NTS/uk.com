@@ -1,28 +1,18 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closurestatus;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
-import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
-import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
-import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMng;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMngPk;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -63,48 +53,23 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 		return Optional.of(lstEntity.get(0).toDomain());
 	}
 	
-	@Override
 	public List<ClosureStatusManagement> getByIdListAndDatePeriod(List<String> employeeIds, DatePeriod span){
 		
-//		List<KrcdtClosureSttMng> results = new ArrayList<>();
-//		String sql = "SELECT * FROM KrcdtClosureSttMng ";
-//				//"a WHERE a.SID IN ?employeeId";
-//				//		String sql = "SELECT * FROM KrcdtClosureSttMng a WHERE a.SID IN ?employeeId AND"
-////				+ " (((a.START_DATE <= ?StartSpan ) AND (?StartSpan <= a.END_DATE)) OR"//実行期間が開始を含んでいる
-////				+ "  ((a.START_DATE <= ?EndSpan   ) AND (?EndSpan   <= a.END_DATE)) OR"//実行期間が終了を含んでいる
-////				+ "  ((?StartSpan   <= a.START_DATE) AND (a.END_DATE <= ?EndSpan )))";//実行期間がspanの中にある
-//		
-//		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
-//			@SuppressWarnings("unchecked")
-//			//Object subResults = this.getEntityManager().createNativeQuery(sql)
-//			List<ClosureStatusManagement> subResults = this.getEntityManager().createNativeQuery(sql)
-//					//.setParameter("employeeId", subEmployeeIds)
-////					.setParameter("StartSpan", Date.valueOf(span.start().toLocalDate()))
-////					.setParameter("EndSpan", Date.valueOf(span.end().toLocalDate()))
-//					.getResultList();
-//			subResults.toString();
-//			//results.addAll(subResults);
-//		});		
-//		return results.stream().map(tc -> tc.toDomain()).collect(Collectors.toList());
-//		//return Collections.emptyList();
+		List<KrcdtClosureSttMng> results = new ArrayList<>();
+		String sql = "SELECT * FROM KrcdtClosureSttMng a WHERE a.SID IN ?employeeId AND"
+				+ " (((a.START_DATE <= ?StartSpan ) AND (?StartSpan <= ?a.END_DATE)) OR"//実行期間が開始を含んでいる
+				+ "  ((a.START_DATE <= ?EndSpan   ) AND (?EndSpan   <= ?a.END_DATE)) OR"//実行期間が終了を含んでいる
+				+ "  ((?StartSpan   <= a.START_DATE) AND (a.END_DATE <= ?a.EndSpan )))";//実行期間がspanの中にある
 		
-		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
-		query.append("WHERE a.pk.employeeId IN :employeeId ");
-		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).getList());
-		});
-		return toDomainFromJoin(result);
-	}
-
-	private List<ClosureStatusManagement> toDomainFromJoin(List<Object[]> result) {
-		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.toList()))
-				.entrySet().stream().map(e -> {
-					KrcdtClosureSttMng closure = (KrcdtClosureSttMng) e.getKey();
-					return closure.toDomain();
-				})
-				.collect(Collectors.toList());		
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
+			@SuppressWarnings("unchecked")
+			List<KrcdtClosureSttMng> subResults = this.getEntityManager().createNativeQuery(sql, KrcdtClosureSttMng.class)
+					.setParameter("", subEmployeeIds)
+					.getResultList();
+			results.addAll(subResults);
+		});		
+		//return results;
+		return Collections.emptyList();
 	}
 
 }

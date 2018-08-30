@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
@@ -165,7 +164,6 @@ public class LogBasicInformationFinder {
 				// get persion info log
 				List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
 						.findByTargetAndDate(operationIds,logParams.getListTagetEmployeeId(), datePeriodTaget);
-				
 					if (!CollectionUtil.isEmpty(listPersonInfoCorrectionLog)) {
 						
 						String processAttr = "";
@@ -173,7 +171,6 @@ public class LogBasicInformationFinder {
 						String employeeIdTaget = "";
 						String remark = "";
 						List<LogPerCateCorrectRecordDto> lstLogPerCateCorrectRecordDto = new ArrayList<>();
-						
 						for(PersonInfoCorrectionLog personInfoCorrectionLog:listPersonInfoCorrectionLog){
 							// Convert log basic info to DTO
 							LogBasicInformation logBasicInformation = mapLogBasicInfo.get(personInfoCorrectionLog.getOperationId());
@@ -183,16 +180,14 @@ public class LogBasicInformationFinder {
 							if (userDto != null) {
 								logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
 							}
-							String parentKey = IdentifierUtil.randomUniqueId();
-							logBasicInfoDto.setParentKey(parentKey);
 							// get user login name
 							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
 							processAttr = this.getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value) ;
 							// get user name , employee code taget and remark
-							if (StringUtil.isNullOrEmpty(userNameTaget, true)) {
+							if ("".equals(userNameTaget)) {
 								userNameTaget = personInfoCorrectionLog.getTargetUser().getUserName();
 							}
-							if (StringUtil.isNullOrEmpty(employeeIdTaget, true)) {
+							if ("".equals(employeeIdTaget)) {
 								employeeIdTaget = personInfoCorrectionLog.getTargetUser().getEmployeeId();
 							}
 							if ("".equals(remark)) {
@@ -201,16 +196,16 @@ public class LogBasicInformationFinder {
 								
 							// Setting data child record
 							
-							List<CategoryCorrectionLog> rsListCategoryCorrectionLog = personInfoCorrectionLog.getCategoryCorrections();
+							List<CategoryCorrectionLog> rsListCategoryCorrectionLog=personInfoCorrectionLog.getCategoryCorrections();
 							if(!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)){
-								for(CategoryCorrectionLog categoryCorrectionLog : rsListCategoryCorrectionLog){
+								for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
 									List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
 									
 									// Setting tagetDate
 									String tagetDateStr = "";
-									GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey();
-									CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
-									if(tagetDate!=null){
+//									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey();
+										CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
 										if (calendarKeyType.value == CalendarKeyType.DATE.value) {
 											tagetDateStr = tagetDate.toString("yyyy/MM/dd");
 										}
@@ -219,8 +214,9 @@ public class LogBasicInformationFinder {
 										}
 										if (calendarKeyType.value == CalendarKeyType.YEAR.value) {
 											tagetDateStr = tagetDate.toString("yyyy");
+
 										}
-									}
+//									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
