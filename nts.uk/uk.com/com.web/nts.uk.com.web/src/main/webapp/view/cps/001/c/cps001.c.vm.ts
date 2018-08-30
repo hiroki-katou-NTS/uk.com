@@ -29,6 +29,8 @@ module cps001.c.vm {
             emp.id.subscribe(x => {
                 if (x) {
                     self.enableControl();
+                    
+                    nts.uk.ui.errors.clearAll();
 
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
