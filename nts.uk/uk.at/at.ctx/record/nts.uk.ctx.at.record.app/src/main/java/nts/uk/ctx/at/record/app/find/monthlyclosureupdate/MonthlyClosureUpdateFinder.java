@@ -42,7 +42,7 @@ public class MonthlyClosureUpdateFinder {
 
 	@Inject
 	private MonthlyClosureUpdateLogRepository monthlyClosureUpdateRepo;
-
+	
 	@Inject
 	private MonthlyClosureUpdatePersonLogRepository closureUpdatePersonLogRepo;
 
@@ -92,37 +92,33 @@ public class MonthlyClosureUpdateFinder {
 	public Kmw006aResultDto getClosureInfors(MonthlyClosureResponse response) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-
-		if (checkExecutionStatus(companyId).getStatus() == 2) { // running =>
-																// open dialog F
+		
+		if (checkExecutionStatus(companyId).getStatus() == 2) { // running => open dialog F
 			MonthlyClosureUpdateLog log = checkExecutionStatus(companyId).getOutputLog().get();
-			if (response.getMonthlyClosureUpdateLogId() != null) {
-
-				List<String> listEmpId = closureUpdatePersonLogRepo.getAll(log.getId()).stream()
-						.map(item -> item.getEmployeeId()).collect(Collectors.toList());
-				MonthlyClosureResponse resultClosurtLog = new MonthlyClosureResponse(log.getId(), listEmpId,
-						response.getClosureId(), response.getStartDT(), response.getEndDT(), response.getCurrentMonth(),
-						response.getClosureDay(), response.getIsLastDayOfMonth(),
-						response.getPeriodStart(), response.getPeriodEnd(), 2);
-				return new Kmw006aResultDto(false, log.getClosureId().value, null, resultClosurtLog);
+			if (response.getMonthlyClosureUpdateLogId() == log.getId()) {
+				MonthlyClosureResponse resultClosurtLog = new MonthlyClosureResponse(log.getId(), response.getListEmployeeId(), response.getClosureId(),
+						response.getStartDT(), response.getEndDT(), response.getCurrentMonth(),
+						response.getClosureDay(), response.getIsLastDayOfMonth(), response.getPeriodStart(),
+						response.getPeriodEnd());
+				new Kmw006aResultDto(false, log.getClosureId().value, null, resultClosurtLog);
 			} else {
 				MonthlyClosureUpdatePersonLog resultLog = new MonthlyClosureUpdatePersonLog(employeeId, log.getId(),
 						MonthlyClosureCompleteStatus.INCOMPLETE.value, MonthlyClosureExecutionStatus.RUNNING.value);
-				
+
 				List<String> listEmployeeId = closureUpdatePersonLogRepo
 						.getAll(resultLog.getMonthlyClosureUpdateLogId()).stream().map(item -> item.getEmployeeId())
 						.collect(Collectors.toList());
-				
-				MonthlyClosureResponse resultCloLog = new MonthlyClosureResponse(log.getId(), listEmployeeId,
-						log.getClosureId().value, log.getExecutionDateTime(), response.getEndDT(), log.getTargetYearMonth().v(),
-						log.getClosureDate().getClosureDay().v(), log.getClosureDate().getLastDayOfMonth(),
-						log.getExecutionPeriod().start(), null, 2);
+				MonthlyClosureResponse resultCloLog = new MonthlyClosureResponse(
+						log.getId(), listEmployeeId,  log.getClosureId().value,
+						response.getStartDT(), response.getEndDT(), response.getCurrentMonth(),
+						response.getClosureDay(), response.getIsLastDayOfMonth(), response.getPeriodStart(),
+						null);
 				return new Kmw006aResultDto(false, log.getClosureId().value, null, resultCloLog);
 			}
+			return null;
 		} else {
 			boolean executable = true;
-			if (checkExecutionStatus(companyId).getStatus() == 0) { // not
-																	// executable
+			if (checkExecutionStatus(companyId).getStatus() == 0) { // not executable
 				executable = false;
 			}
 			List<ClosureInforDto> listInforDto = new ArrayList<>();
