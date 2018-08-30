@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 @Data
 @NoArgsConstructor
@@ -100,9 +102,6 @@ public class SaveProcessExecutionCommand {
 	
 	/* 承認ルート更新（月次） */
 	private boolean appRouteUpdateMonthly;
-
-	/* 実行種別*/
-	private int processExecType;
 	
 
 }

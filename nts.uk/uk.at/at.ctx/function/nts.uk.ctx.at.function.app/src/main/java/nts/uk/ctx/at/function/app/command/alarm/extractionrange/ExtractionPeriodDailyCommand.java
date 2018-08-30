@@ -21,7 +21,7 @@ public class ExtractionPeriodDailyCommand {
 
 	private Integer strPreviousDay;
 
-	private int strDay;
+	private Integer strDay;
 
 	private Integer strPreviousMonth;
 
@@ -31,7 +31,7 @@ public class ExtractionPeriodDailyCommand {
 
 	private Integer endPreviousDay;
 
-	private int endDay;
+	private Integer endDay;
 
 	private Integer endPreviousMonth;
 
