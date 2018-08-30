@@ -205,6 +205,8 @@ module nts.uk.at.view.ksm005.c {
                         self.enableCopy(false);
                     } else {
                         self.enableSave(true);
+                        self.enableDelete(true);
+                        self.enableCopy(true);
                     }
                     self.findMonthlyPatternSetting(newValue);
                 });
@@ -395,9 +397,9 @@ module nts.uk.at.view.ksm005.c {
                                 return; 
                             }
                             self.selectedmonthlyPattern(data.monthlyPatternCode);                    
-                            self.enableDelete(true);
-                            self.enableSystemChange(true);
-                            self.enableCopy(true);
+//                            self.enableDelete(true);
+//                            self.enableSystemChange(true);
+//                            self.enableCopy(true);
                             //self.selectedHists(data.historyId);
                         } else {
                             self.selectedmonthlyPattern('000');
