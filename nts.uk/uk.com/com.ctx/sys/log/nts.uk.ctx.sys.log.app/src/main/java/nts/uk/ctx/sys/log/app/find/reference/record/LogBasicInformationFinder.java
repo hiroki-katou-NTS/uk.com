@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
@@ -203,8 +203,8 @@ public class LogBasicInformationFinder {
 									
 									// Setting tagetDate
 									String tagetDateStr = "";
-//									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
-										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey();
+									if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
+										GeneralDate tagetDate = categoryCorrectionLog.getTargetKey().getDateKey().get();
 										CalendarKeyType calendarKeyType = categoryCorrectionLog.getTargetKey().getCalendarKeyType();
 										if (calendarKeyType.value == CalendarKeyType.DATE.value) {
 											tagetDateStr = tagetDate.toString("yyyy/MM/dd");
@@ -216,7 +216,7 @@ public class LogBasicInformationFinder {
 											tagetDateStr = tagetDate.toString("yyyy");
 
 										}
-//									}
+									}
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for (ItemInfo itemInfo : rsItemInfo) {
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();

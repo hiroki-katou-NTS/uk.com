@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtDataHistoryLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtItemInfoLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -279,6 +279,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		}
 
 		pcl.remark = domain.getRemark();
+		pcl.employeeID = uif.getEmployeeId();
 
 		return pcl;
 	}
@@ -311,21 +312,21 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			dhl.stringKey = k;
 		});
 
-//		tdKey.getDateKey().ifPresent(d -> {
+		tdKey.getDateKey().ifPresent(d -> {
 			switch (tdKey.getCalendarKeyType()) {
 			case DATE:
-				dhl.targetKeyYMD = tdKey.getDateKey();
+				dhl.targetKeyYMD = d;
 				break;
 			case YEARMONTH:
-				dhl.targetKeyYM = tdKey.getDateKey().yearMonth().v().intValue();
+				dhl.targetKeyYM = d.yearMonth().v().intValue();
 				break;
 			case YEAR:
-				dhl.targetKeyY = tdKey.getDateKey().year();
+				dhl.targetKeyY = d.year();
 				break;
 			case NONE:
 				break;
 			}
-//		});
+		});
 
 		return dhl;
 	}
