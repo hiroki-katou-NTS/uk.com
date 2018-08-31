@@ -266,7 +266,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			msgId = MSG_END_TERMINATE_DEL_LOG;
 		}
 		GeneralDateTime logTime = GeneralDateTime.now();
-		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(0, domain.getDelId(),
+		int seqId = repoResultLogDel.getMaxSeqId(domain.getDelId()) + 1;
+		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(seqId, domain.getDelId(),
 				domain.getCompanyId(), logTime, TextResource.localize(msgId), null, null, null);
 		repoResultLogDel.add(resultLogDomain);
 	}
@@ -859,8 +860,8 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	private void saveErrorLogResult(ManualSetDeletion domain, String msgError) {
 		String msgId = MSG_DEL_ERROR_LOG;
 		GeneralDateTime logTime = GeneralDateTime.now();
-		
-		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(0, domain.getDelId(),
+		int seqId = repoResultLogDel.getMaxSeqId(domain.getDelId()) + 1;
+		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(seqId, domain.getDelId(),
 				domain.getCompanyId(), logTime, TextResource.localize(msgId), msgError, null, null);
 		repoResultLogDel.add(resultLogDomain);
 	}
