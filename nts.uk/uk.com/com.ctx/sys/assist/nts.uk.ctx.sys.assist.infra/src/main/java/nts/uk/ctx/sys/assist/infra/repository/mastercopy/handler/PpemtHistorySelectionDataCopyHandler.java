@@ -38,38 +38,38 @@ public class PpemtHistorySelectionDataCopyHandler extends DataCopyHandler {
 	@Override
 	public void doCopy() {
 		
-		// Get all company zero data
-		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
-				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
-		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
-		
-		if(zeroCompanyDatas.length == 0)
-			return;
-		this.entityManager.joinTransaction();
-		switch (copyMethod) {
-			case REPLACE_ALL:
-				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
-					.setParameter(1, this.companyId);
-				deleteQuery.executeUpdate();
-			case ADD_NEW:
-				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
-				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
-				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
-					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * 5 + 1, this.companyId);
-					insertQuery.setParameter(i * 5 + 2, UUID.randomUUID().toString());
-					insertQuery.setParameter(i * 5 + 3, dataArr[2]);
-					insertQuery.setParameter(i * 5 + 4, dataArr[3]);
-					insertQuery.setParameter(i * 5 + 5, dataArr[4]);
-				}
-				
-				// Run insert query
-				insertQuery.executeUpdate();
-			case DO_NOTHING:
-				// Do nothing
-			default: 
-				break;
-		}
+//		// Get all company zero data
+//		Query selectQuery = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY)
+//				.setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+//		Object[] zeroCompanyDatas = selectQuery.getResultList().toArray();
+//
+//		if(zeroCompanyDatas.length == 0)
+//			return;
+//		this.entityManager.joinTransaction();
+//		switch (copyMethod) {
+//			case REPLACE_ALL:
+//				Query deleteQuery = this.entityManager.createNativeQuery(DELETE_BY_CID_QUERY)
+//					.setParameter(1, this.companyId);
+//				deleteQuery.executeUpdate();
+//			case ADD_NEW:
+//				String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.length);
+//				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
+//				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
+//					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
+//					insertQuery.setParameter(i * 5 + 1, this.companyId);
+//					insertQuery.setParameter(i * 5 + 2, UUID.randomUUID().toString());
+//					insertQuery.setParameter(i * 5 + 3, dataArr[2]);
+//					insertQuery.setParameter(i * 5 + 4, dataArr[3]);
+//					insertQuery.setParameter(i * 5 + 5, dataArr[4]);
+//				}
+//
+//				// Run insert query
+//				insertQuery.executeUpdate();
+//			case DO_NOTHING:
+//				// Do nothing
+//			default:
+//				break;
+//		}
 		
 	}
 
