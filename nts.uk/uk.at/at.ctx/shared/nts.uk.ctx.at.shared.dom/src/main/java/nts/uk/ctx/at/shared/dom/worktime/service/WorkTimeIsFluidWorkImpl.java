@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -59,7 +60,7 @@ public class WorkTimeIsFluidWorkImpl implements WorkTimeIsFluidWork{
 				&& workTypeInfor.isPresent()) {
 			PredetemineTimeSetting timeSetting = pred.get();
 			WorkType workTypeData = workTypeInfor.get();
-			if(workTypeData.getDailyWork().IsLeaveForADay()) {
+			if(workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 				return timeSetting.getPredTime().getPredTime().getOneDay().v();
 			} else if (workTypeData.getDailyWork().IsLeaveForMorning()) {
 				return timeSetting.getPredTime().getPredTime().getMorning().v();
