@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
@@ -70,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -990,7 +992,7 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setComment(dailyPerformanceDto != null ? dailyPerformanceDto.getComment() : null);
 		screenDto.setTypeBussiness(dailyPerformanceDto != null ? dailyPerformanceDto.getSettingUnit().value : 1);
 		DisplayItem disItem = this.getItemIds(listEmployeeId, screenDto.getDateRange(), correct, formatCodes,
-				dailyPerformanceDto, companyId, showButton);
+				dailyPerformanceDto, companyId, showButton, screenDto);
 		return disItem;
 	}
 
@@ -1232,7 +1234,7 @@ public class DailyPerformanceCorrectionProcessor {
 	 */
 	public DisplayItem getItemIds(List<String> lstEmployeeId, DateRange dateRange,
 			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects,
-			OperationOfDailyPerformanceDto dailyPerformanceDto, String companyId, boolean showButton) {
+			OperationOfDailyPerformanceDto dailyPerformanceDto, String companyId, boolean showButton,  DailyPerformanceCorrectionDto screenDto) {
 		DisplayItem result = new DisplayItem();
 		if (lstEmployeeId.size() > 0) {
 			// 取得したドメインモデル「日別実績の運用」をチェックする | Check the acquired domain model
@@ -1316,7 +1318,14 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-				if(lstBusinessTypeCode.isEmpty()) throw new BusinessException("Msg_1403");
+				if(lstBusinessTypeCode.isEmpty()){
+					BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+					screenDto.getLstData().stream().filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x ->{
+						bundleExeption.addMessage(new BusinessException("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
+					});
+					throw bundleExeption;
+				}
+				
 				result.setAutBussCode(new HashSet<>(lstBusinessTypeCode));
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {

@@ -464,12 +464,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }).fail(function(error) {
                 if (error.messageId == "Msg_672") {
                     nts.uk.ui.dialog.info({ messageId: "Msg_672" });
-                } else if (error.messageId != "KDW/003/a") {
+                } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
                     });
 
-                } else {
+                } else if((error.messageId == undefined && error.errors.length > 0)){
+                     nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                }else {
                     nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
                     nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                         var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
@@ -495,9 +499,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 nts.uk.ui.block.clear();
                                 dfd.resolve({ bindDataMap: true, data: data });
                             }).fail(function(error) {
-                                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                                    nts.uk.request.jumpToTopPage();
-                                });
+                                if (error.messageId != undefined) {
+                                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                                        nts.uk.request.jumpToTopPage();
+                                    });
+
+                                } else if ((error.messageId == undefined && error.errors.length > 0)) {
+                                    nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                                        nts.uk.request.jumpToTopPage();
+                                    });
+                
                                 //nts.uk.ui.dialog.alert(error.message);
                                 nts.uk.ui.block.clear();
                             });
@@ -1536,9 +1547,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" })
                     } else {
-                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                            nts.uk.request.jumpToTopPage();
-                        });
+                         if (error.messageId != undefined) {
+                            nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                                nts.uk.request.jumpToTopPage();
+                            });
+    
+                        } else if ((error.messageId == undefined && error.errors.length > 0)) {
+                            nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                                nts.uk.request.jumpToTopPage();
+                            });
+    
+                        };
                     }
                     nts.uk.ui.block.clear();
                 });
