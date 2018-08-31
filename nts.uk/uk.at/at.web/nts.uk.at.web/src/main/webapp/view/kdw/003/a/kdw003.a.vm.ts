@@ -1581,6 +1581,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.isVisibleMIGrid()) {
                 //reload MiGrid
                 $('#miGrid').igGrid("destroy");
+                self.isVisibleMIGrid(false);
             }
             self.reloadScreen();
         }
