@@ -63,6 +63,8 @@ module nts.uk.com.view.kwr002.b {
         };
 
         onClose() {
+            let self = this;
+            setShared('currentARESCode', self.currentARESCode(), true);
             windows.close();
         };
 

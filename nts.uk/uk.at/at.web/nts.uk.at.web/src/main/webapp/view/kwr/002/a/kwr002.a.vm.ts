@@ -426,12 +426,18 @@ module nts.uk.com.view.kwr002.a {
                             // $('#print').attr("disabled", "disabled")
                             // $('#exportExcel').attr("disabled", "disabled")
                         } else {
+                            let ARESCode = getShared("currentARESCode");
                             var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                             _.map(sortArray, (item) => {
                                 item.code = _.padStart(item.code, 2, '0');
                             });
                             self.attendanceRecordList(sortArray);
-                            self.selectedCode(sortArray[0].code);
+                            if (ARESCode === undefined) {
+                                self.selectedCode(sortArray[0].code);
+                            }
+                            else {
+                                self.selectedCode(ARESCode);
+                            }
                             self.enableSave(true)
                         }
                         // console.log(self.attendanceRecordList());
