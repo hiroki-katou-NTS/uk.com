@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.adapter.checkresultmonthly;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAdapterDto;
@@ -10,7 +9,6 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCo
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface CheckResultMonthlyAdapter {
@@ -27,6 +25,6 @@ public interface CheckResultMonthlyAdapter {
 	// Process employee have many record alarm
 	List<Check36AgreementValueImport> check36AgreementConditions(String employeeId,List<MonthlyRecordValuesImport> monthlyRecords,AgreementCheckCon36FunImport agreementCheckCon36, Optional<Closure> closure);
 	
-	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, Optional<ClosureId> closureID,
-			Optional<ClosureDate> closureDate, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition, List<Integer> attendanceIds);
+	//HoiDD No.257
+	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition, List<Integer> attendanceIds);
 }
