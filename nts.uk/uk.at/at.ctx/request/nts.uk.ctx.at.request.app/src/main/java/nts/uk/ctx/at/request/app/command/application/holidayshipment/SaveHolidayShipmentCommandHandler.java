@@ -512,18 +512,27 @@ public class SaveHolidayShipmentCommandHandler
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
 					companyID);
-			if (absHolidayType == null && achievementHolidayType == null)
-				return ;
-			if(absHolidayType == null && achievementHolidayType != null)
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), achievementHolidayType.nameId);
-			if(absHolidayType != null && achievementHolidayType == null)
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), "設定なし");
-			if(!absHolidayType.equals(achievementHolidayType)){
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), achievementHolidayType.nameId);
-			}
+			boolean isError = compareHoliday(absHolidayType, achievementHolidayType);
 			
+			if (isError) {
+				String nameId = achievementHolidayType != null ? achievementHolidayType.nameId : "設定なし";
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), nameId);
+			}
+
 		}
 
+	}
+
+	private boolean compareHoliday(HolidayAtr absHolidayType, HolidayAtr achievementHolidayType) {
+		boolean isError = false;
+		if (absHolidayType == null && achievementHolidayType == null)
+			isError = true;
+		if (absHolidayType == null && achievementHolidayType != null)
+			isError = true;
+		if (!absHolidayType.equals(achievementHolidayType)) {
+			isError = true;
+		}
+		return isError;
 	}
 
 	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
