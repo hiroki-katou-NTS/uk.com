@@ -73,12 +73,6 @@ public class KshstHourPayAddSetDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			// Get all company zero data
-			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
-			List<Object> curentCompanyDatas = query.getResultList();
-
-			if (!curentCompanyDatas.isEmpty())
-				return;
 			// Create quuery string base on zero company data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			if (!StringUtils.isEmpty(insertQueryStr)) {

@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class KrqmtApprovalTempDataCopyHandler extends DataCopyHandler {
 	/** The current parameter. */
-	private static final int CURRENT_COLUMN = 2;
+	private final int CURRENT_COLUMN = 2;
 
 	/**
 	 * The insert query.
@@ -79,12 +79,6 @@ public class KrqmtApprovalTempDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			// Get all company zero data
-			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
-			List<Object> curentCompanyDatas = query.getResultList();
-
-			if (!curentCompanyDatas.isEmpty())
-				return;
 			// Create quuery string base on zero company data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			if (!StringUtils.isEmpty(insertQueryStr)) {
