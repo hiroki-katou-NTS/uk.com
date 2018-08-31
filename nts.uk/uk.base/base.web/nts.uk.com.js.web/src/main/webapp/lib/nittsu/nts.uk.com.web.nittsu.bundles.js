@@ -33042,7 +33042,9 @@ var nts;
                                 });
                             }
                             else {
-                                $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                                var $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                                $tree.igTree("select", $selectingNode);
+                                $tree.igTree("expandToNode", $selectingNode);
                             }
                         }
                     };
