@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.calctime;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -52,6 +54,8 @@ public class DailyCorrectCalcTimeService {
 				.workingDate(itemEdit.getDate()).items(Arrays.asList(itemValue)).completed();
 
 		String companyId = AppContexts.user().companyId();
+		
+		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemValue));
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();
