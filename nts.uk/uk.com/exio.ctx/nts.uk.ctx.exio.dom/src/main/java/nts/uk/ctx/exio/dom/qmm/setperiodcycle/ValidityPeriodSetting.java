@@ -22,9 +22,9 @@ public class ValidityPeriodSetting extends DomainObject {
 	 */
 	private YearPeriod yearPeriod;
 
-	public ValidityPeriodSetting(int periodAtr, YearPeriod yearPeriod) {
+	public ValidityPeriodSetting(int periodAtr, int endYear, int startYear) {
 		super();
 		this.periodAtr = EnumAdaptor.valueOf(periodAtr, PeriodAtr.class);
-		this.yearPeriod = yearPeriod;
+		this.yearPeriod = new YearPeriod(endYear, startYear);
 	}
 }

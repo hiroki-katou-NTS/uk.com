@@ -31,9 +31,9 @@ public class SetPeriodCycle extends AggregateRoot {
 			int periodAtr, int endYear, int startYear) {
 		super();
 		this.salaryItemId = salaryItemId;
-		this.cycleSetting = new CycleSetting(cycleSettingAtr, (new MonthlyList(january, february, march, april, may,
-				june, july, august, september, october, november, december)));
-		this.validityPeriodSetting = new ValidityPeriodSetting(periodAtr, (new YearPeriod(endYear, startYear)));
+		this.cycleSetting = new CycleSetting(cycleSettingAtr, january, february, march, april, may, june, july, august,
+				september, october, november, december);
+		this.validityPeriodSetting = new ValidityPeriodSetting(periodAtr, endYear, startYear);
 	}
 
 }

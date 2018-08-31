@@ -10,9 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.qmm.paymentItemset.FixedWage;
 import nts.uk.ctx.exio.dom.qmm.paymentItemset.PaymentItemSt;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;	
 
 /**
  * 支給項目設定

@@ -21,10 +21,12 @@ public class CycleSetting extends DomainObject {
 	 */
 	private MonthlyList monthlyList;
 
-	public CycleSetting(int cycleSettingAtr, MonthlyList monthlyList) {
+	public CycleSetting(int cycleSettingAtr, int january, int february, int march, int april, int may, int june,
+			int july, int august, int september, int october, int november, int december) {
 		super();
 		this.cycleSettingAtr = EnumAdaptor.valueOf(cycleSettingAtr, CycleSettingAtr.class);
-		this.monthlyList = monthlyList;
+		this.monthlyList = new MonthlyList(january, february, march, april, may, june, july, august, september, october,
+				november, december);
 	}
 
 }

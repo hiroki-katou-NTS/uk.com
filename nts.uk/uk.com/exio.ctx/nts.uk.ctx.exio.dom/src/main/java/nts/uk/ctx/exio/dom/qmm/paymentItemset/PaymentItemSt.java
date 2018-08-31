@@ -76,8 +76,7 @@ public class PaymentItemSt extends AggregateRoot {
 		this.salaryItemId = salaryItemId;
 		this.breakdownItemUseAtr = EnumAdaptor.valueOf(breakdownItemUseAtr, BreakdownItemUseAtr.class);
 		this.laborInsuranceCategory = EnumAdaptor.valueOf(laborInsuranceCategory, LaborInsuranceCategory.class);
-		this.fixedWage = new FixedWage(settingAtr, everyoneEqualSet,
-				(new PerSalaryContractType(monthlySalary, hourlyPay, dayPayee, monthlySalaryPerday)));
+		this.fixedWage = new FixedWage(settingAtr, everyoneEqualSet, monthlySalary, hourlyPay, dayPayee, monthlySalaryPerday);
 		this.averageWageAtr = EnumAdaptor.valueOf(averageWageAtr, AverageWageAtr.class);
 		this.socialInsuranceCategory = EnumAdaptor.valueOf(socialInsuranceCategory, SocialInsuranceCategory.class);
 		this.taxAtr = EnumAdaptor.valueOf(taxAtr, TaxAtr.class);
