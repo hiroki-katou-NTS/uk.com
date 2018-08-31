@@ -62,7 +62,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
-			result.setDayOfWeek(workInfo.getDayOfWeek());
+			result.setDayOfWeek(workInfo.getDayOfWeek() != null ? workInfo.getDayOfWeek().value : 0);
 			result.exsistData();
 		}
 		return result;
