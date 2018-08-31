@@ -37,7 +37,9 @@ module kdl021.a.viewmodel {
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //the fist item 
-            self.dataSoure.push(new ItemModel("", "選択なし"));
+            if(!self.isMulti){
+                self.dataSoure.push(new ItemModel("", "選択なし"));    
+            }
             //set source
             if (self.posibleItems.length > 0) {
                 if (self.isMonthly) {
