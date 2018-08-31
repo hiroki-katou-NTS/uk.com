@@ -4796,7 +4796,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(result.errorMessage, [self.name, self.constraint.maxLength]), result.errorCode);
                             return result;
                         }
-                        result.success(uk.text.toUpperCase(inputText));
+                        result.success(inputText);
                         return result;
                     };
                     return EmployeeCodeValidator;
@@ -17226,7 +17226,8 @@ var nts;
                                     if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                                         var formatter = self.getFormatter(data);
                                         var formatted = formatter.format(result.parsedValue);
-                                        $input.val(formatted);
+                                        //$input.val(formatted);
+                                        value(formatted);
                                     }
                                 }
                             }

@@ -295,7 +295,8 @@ module nts.uk.ui.koExtentions {
                         if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                             let formatter = self.getFormatter(data);
                             let formatted = formatter.format(result.parsedValue);
-                            $input.val(formatted);
+                            //$input.val(formatted);
+                            value(formatted);
                         }
                     }
                 }
