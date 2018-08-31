@@ -4796,7 +4796,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(result.errorMessage, [self.name, self.constraint.maxLength]), result.errorCode);
                             return result;
                         }
-                        result.success(uk.text.toUpperCase(inputText));
+                        result.success(inputText);
                         return result;
                     };
                     return EmployeeCodeValidator;
@@ -5673,6 +5673,12 @@ var nts;
         (function (ui) {
             var windows;
             (function (windows) {
+                windows.iframeNameCounter = 0;
+                // this is used for "name" attr of iframe for sub window
+                function createIframeName() {
+                    windows.iframeNameCounter++;
+                    return "window_" + windows.iframeNameCounter;
+                }
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
                 var DEFAULT_DIALOG_OPTIONS = {
                     autoOpen: false,
@@ -5825,7 +5831,9 @@ var nts;
                         })
                             .appendTo($('body'))
                             .dialog(options);
-                        this.$iframe = $('<iframe/>').css({
+                        this.$iframe = $('<iframe/>')
+                            .attr('name', createIframeName())
+                            .css({
                             width: '100%',
                             height: '100%'
                         }).appendTo(this.$dialog);
@@ -17218,7 +17226,8 @@ var nts;
                                     if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                                         var formatter = self.getFormatter(data);
                                         var formatted = formatter.format(result.parsedValue);
-                                        $input.val(formatted);
+                                        //$input.val(formatted);
+                                        value(formatted);
                                     }
                                 }
                             }
