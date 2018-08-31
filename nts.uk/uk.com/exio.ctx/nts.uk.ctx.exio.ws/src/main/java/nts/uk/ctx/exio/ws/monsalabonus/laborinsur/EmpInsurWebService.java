@@ -36,5 +36,11 @@ public class EmpInsurWebService extends WebService {
 	public List<EmpInsurHisDto> getEmpInsurHis() {
 		return empInsurHisFinder.getListEmplInsurHis();
 	}
+	@POST
+	@Path("getOccAccInsurBus")
+	public List<EmpInsurHisDto> getOccAccInsurBus() {
+		return empInsurHisFinder.getListEmplInsurHis();
+	}
+
 
 }

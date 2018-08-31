@@ -35,16 +35,15 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         // 「初期データ取得処理
         initScreen(hisId: string){
             let self = this;
-            // block.invisible();
-            // service.getEmpInsHis().done((listEmpInsHis: Array<EmploymentInsRate>) =>{
-            //     if (listEmpInsHis && listEmpInsHis.length > 0) {
-            //         self.listEmpInsHis(listEmpInsHis);
-            //         self.index(self.getIndex());
-            //         self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()]);
-            //     }
-            // }).always(() => {
-            //     block.clear();
-            // });
+            block.invisible();
+            service.getOccAccInsurBus().done(data =>{
+                    console.log("djasidiosad");
+                    console.log("djasidiosad");
+                    console.log("djasidiosad");
+                    console.log("djasidiosad");
+            }).always(() => {
+                block.clear();
+            });
         }
         setEmpInsRate(param: IEmplInsurHis){
             let self = this;
