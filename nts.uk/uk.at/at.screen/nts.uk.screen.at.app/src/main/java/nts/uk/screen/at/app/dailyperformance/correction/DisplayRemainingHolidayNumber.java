@@ -99,7 +99,7 @@ public class DisplayRemainingHolidayNumber {
 	
 	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
 		List<NextAnnualLeaveGrantImport> lstOutput = this.annualHolidayMng.acquireNextHolidayGrantDate(companyId, employeeId, date);
-		return lstOutput.get(0).grantDate;
+		return lstOutput.isEmpty() ? GeneralDate.today() : lstOutput.get(0).grantDate;
 	}
 	
 	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId) {

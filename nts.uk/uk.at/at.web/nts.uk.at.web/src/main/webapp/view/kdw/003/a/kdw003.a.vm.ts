@@ -32,9 +32,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         "183": "181", "187": "189", "189": "187",
         "193": "195", "195": "193", "199": "201",
         "201": "199", "205": "207", "207": "205",
-        "211": "213", "213": "211"
+        "211": "213", "213": "211",
+        "7": "8", "8": "7", "9": "10",
+        "10": "9", "11": "12", "12": "11",
+        "13": "14", "14": "13", "15": "16",
+        "16": "15",
+        "17": "18", "18": "17", "19": "20",
+        "20": "19", "21": "22", "22": "21",
+        "23": "24", "24": "23", "25": "26",
+        "26": "25"
     }
 
+    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44];
+    
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
     export class ScreenModel {
@@ -209,6 +219,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         showLock:  KnockoutObservable<boolean> = ko.observable(true);
         unLock:  KnockoutObservable<boolean> = ko.observable(false);
+        
+        itemChange:  any = [];
         
         constructor(dataShare: any) {
             var self = this;
@@ -1584,6 +1596,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.isVisibleMIGrid()) {
                 //reload MiGrid
                 $('#miGrid').igGrid("destroy");
+                self.isVisibleMIGrid(false);
             }
             self.reloadScreen();
         }
@@ -2668,7 +2681,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let transfer = {
                         appDate: dataShare.date,
                         uiType: 1,
-                        employeeIDs: [rowItemSelect.employeeId],
+                        employeeIDs: [],
                         stampRequestMode: 1,
                         screenMode: 0
                     };
@@ -2716,30 +2729,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         case 8:
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                             transfer.stampRequestMode = 1;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                             transfer.stampRequestMode = 2;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 11:
                             //KAF002-打刻申請（レコーダイメージ）
                             transfer.stampRequestMode = 3;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 12:
                             //KAF002-打刻申請（その他）
                             transfer.stampRequestMode = 4;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
@@ -3111,42 +3129,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any;
             __viewContext.vm.flagCalculation = false;
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
                     return data.columnKey == columnKey && data.rowId == rowId;
                 });
             } else {
-                keyId = columnKey.substring(1, columnKey.length);
+                if (columnKey.indexOf("NO") != -1) {
+                    keyId = columnKey.substring(2, columnKey.length);
+                } else {
+                    keyId = columnKey.substring(1, columnKey.length);
+                }
             }
             
-            if (valueError != undefined) {
-                dfd.resolve({ id: rowId, item: columnKey, value: value })
-            } else {
-                let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
-                    return item.id == rowId;
-                });
+            let itemChange = _.find(ITEM_CHANGE, function(o) { return o === Number(keyId); });
+            if (itemChange == undefined) {
+                dfd.resolve({ id: rowId, item: columnKey, value: value });
+            }
+            else {
+                if (valueError != undefined) {
+                    dfd.resolve({ id: rowId, item: columnKey, value: value })
+                } else {
+                    nts.uk.ui.block.invisible();
+                    nts.uk.ui.block.grayout();
+                    let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
+                        return item.id == rowId;
+                    });
 
-                let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
-                    return item.itemId == keyId;
-                });
-                let item = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
-                    return String(value.id) === keyId;
-                })
-                let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
-                let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
+                    let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
+                        return item.itemId == keyId;
+                    });
+                    let item = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
+                        return String(value.id) === keyId;
+                    })
+                    let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
+                    let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
-                let param = {
-                    dailyEdits: __viewContext.vm.lstDomainEdit,
-                    itemEdit: dataMap
-                };
-                service.calcTime(param).done((value) => {
-                    __viewContext.vm.lstDomainEdit = value.dailyEdits;
-                     nts.uk.ui.block.clear();
-                    dfd.resolve(value.cellEdits);
-                });
+                    let param = {
+                        dailyEdits: __viewContext.vm.lstDomainEdit,
+                        itemEdit: dataMap
+                    };
+                    service.calcTime(param).done((value) => {
+                        __viewContext.vm.lstDomainEdit = value.dailyEdits;
+                        nts.uk.ui.block.clear();
+                        dfd.resolve(value.cellEdits);
+                    });
+                }
             }
             return dfd.promise();
         }

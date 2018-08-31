@@ -1,5 +1,8 @@
 package nts.uk.screen.at.app.dailyperformance.correction.text;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DPText {
 	
 	public static final String CODE = "Code";
@@ -75,5 +78,7 @@ public class DPText {
 	public static final String COLOR_SUN ="mgrid-sunday"; 
 	
 	public static final String ITALIC_TEXT ="italic-text"; 
+	
+	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44);
 
 }
