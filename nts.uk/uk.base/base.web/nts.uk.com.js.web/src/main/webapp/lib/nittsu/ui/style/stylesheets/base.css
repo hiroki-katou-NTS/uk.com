@@ -4708,6 +4708,7 @@ div .ex-area-line.x-stay {
   border: solid 1px #b85;
   padding: 5px;
   z-index: 120100;
+  word-break: break-all;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */
