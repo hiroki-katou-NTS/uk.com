@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.ac.workrecord.erroralarm.condition.monthlycheckco
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,7 +28,6 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
@@ -147,11 +145,10 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 
 		return lstReturn;
 	}	
+	//HoiDD No.257
 	@Override
-	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, Optional<ClosureId> closureID,
-			Optional<ClosureDate> closureDate, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition,List<Integer> attendanceIds) {
-		// TODO Auto-generated method stub
-		return checkResultMonthlyPub.checkPerTimeMonActualResult(yearMonth, closureID, closureDate, employeeID, 
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition,List<Integer> attendanceIds) {
+		return checkResultMonthlyPub.checkPerTimeMonActualResult(yearMonth, employeeID, 
 				convertToAttendanceItemCon(attendanceItemCondition), attendanceIds);
 	}
 }
