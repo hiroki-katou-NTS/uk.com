@@ -330,12 +330,12 @@
 							</div>
 
 							<!-- layout start -->
-							<div class="form-group" data-bind="with: layout">
+							<div class="form-group">
 								<div
 									data-bind="ntsLayoutControl: { 
-											data: listItemCls,
+											data: $vm.listItemCls,
 											editAble: 2 ,
-											outData: $parent.layoutData
+											outData: $vm.layoutData
 											}"></div>
 							</div>
 							<!-- layout end -->
