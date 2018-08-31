@@ -1,14 +1,9 @@
-package nts.uk.ctx.at.function.dom.adapter.checkresultmonthly;
-
-/*
- * author : thuongtv
- */
-
+package nts.uk.ctx.at.record.dom.adapter.monthly;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -17,9 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Getter
 @Setter
-@NoArgsConstructor
-
-public class MonthlyRecordValuesImport {
+public class MonthlyRecordValueImport {
 	/** 年月 */
 	private YearMonth yearMonth;
 	/** 締めID */
@@ -32,13 +25,13 @@ public class MonthlyRecordValuesImport {
 	/**
 	 * コンストラクタ
 	 */
-	public MonthlyRecordValuesImport(YearMonth yearMonth,ClosureId closureId,ClosureDate closureDate){
+	public MonthlyRecordValueImport(YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
 		this.itemValues = new ArrayList<>();
 	}
-
+	
 	/**
 	 * ファクトリー
 	 * @param yearMonth 年月
@@ -47,9 +40,13 @@ public class MonthlyRecordValuesImport {
 	 * @param itemValues 項目値リスト
 	 * @return 月別実績データ値
 	 */
-	public static MonthlyRecordValuesImport of(YearMonth yearMonth,ClosureId closureId,ClosureDate closureDate, List<ItemValue> itemValues) {
-
-		MonthlyRecordValuesImport domain = new MonthlyRecordValuesImport(yearMonth,closureId,closureDate);
+	public static MonthlyRecordValueImport of(
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
+			List<ItemValue> itemValues){
+	
+		MonthlyRecordValueImport domain = new MonthlyRecordValueImport(yearMonth, closureId, closureDate);
 		domain.itemValues = itemValues;
 		return domain;
 	}
