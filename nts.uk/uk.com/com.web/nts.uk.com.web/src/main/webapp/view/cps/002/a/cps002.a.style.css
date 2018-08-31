@@ -346,29 +346,27 @@
 	float: none;
 	min-height: 100%;
 	height: auto;
-	display: inline-block;
+	display: inline-block !important;
 }
 
 #emp_reg_info_wizard.nts-wizard.vertical>.content{
 	margin: 0;
 	margin-left: 30px;
-	display: inline-block;
 	float: none;
 	height: auto;
 	min-height: 550px;
 	min-width: 960px;
-	position: relative;
+	display: inline-block !important;
 }
 
 #emp_reg_info_wizard.nts-wizard.vertical>.content>.body {
 	width: 100%;
 	height: auto;
-	visibility: inherit;
-	display: unset !important;
+	display: none !important;
 }
 
 #emp_reg_info_wizard.nts-wizard.vertical>.content>.body.current {
-	position: relative;
+	display: block !important;
 }
 
 #emp_reg_info_wizard #employeeAvatar,
