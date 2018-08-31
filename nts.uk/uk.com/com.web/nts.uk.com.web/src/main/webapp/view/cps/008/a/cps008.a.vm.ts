@@ -26,6 +26,7 @@ module cps008.a.viewmodel {
 
             layout.id.subscribe(id => {
                 if (id) {
+                    
 
                     // Gọi service tải dữ liệu ra layout
                     block();
@@ -43,6 +44,8 @@ module cps008.a.viewmodel {
                             unblock();
                         }
                     });
+                }else{
+                    layout.id(undefined);
                 }
             });
         }

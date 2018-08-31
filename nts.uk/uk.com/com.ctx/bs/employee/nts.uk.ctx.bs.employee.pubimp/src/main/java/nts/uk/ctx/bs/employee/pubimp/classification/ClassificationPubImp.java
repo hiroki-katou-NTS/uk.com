@@ -131,4 +131,19 @@ public class ClassificationPubImp implements SyClassificationPub {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub#
+	 * getClassificationMap(java.lang.String, java.util.List)
+	 */
+	@Override
+	public Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds) {
+		List<Classification> lstClassification = classificationRepository
+				.getClassificationByCodes(companyId, clsCds);
+		return lstClassification.stream()
+				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
+						item -> item.getClassificationName().v()));
+	}
+
 }

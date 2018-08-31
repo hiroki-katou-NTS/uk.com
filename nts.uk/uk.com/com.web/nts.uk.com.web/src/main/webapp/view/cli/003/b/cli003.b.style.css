@@ -84,6 +84,9 @@
 	width: 150px;
 	margin-top: 2px;
 }
+.ui-iggrid-filterrow.ui-widget > td {
+	border-width: 1px !important;
+}
  #ccgcomponent{
 	display:none; 
 	margin-left: 252px;
@@ -91,4 +94,8 @@
 
 #igGridLog {
 	white-space: nowrap;
+}
+
+div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	height: 340px !important;
 }

@@ -91,24 +91,6 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap,
 			Map<String, String> itemNameIdMap) {
 		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
-//		itemNewMap.forEach((key, value) -> {
-//			val itemOldValueMap = itemOldMap.get(key);
-//			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
-//			value.forEach((valueItemKey, valueItemNew) -> {
-//				val itemOld = itemOldValueMap.get(valueItemKey);
-//				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-//						&& !valueItemNew.getValue().equals(itemOld.getValue())) {
-//					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
-//							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-//							// TODO : convert Type ???
-//							convertType(valueItemNew.getValueType()), null,
-//							itemEdit.contains(valueItemNew.getItemId())
-//									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-//					daiTarget.getCorrectedItems().add(item);
-//				}
-//			});
-//			targets.add(daiTarget);
-//		});
 
 		// set correctionAttr
 		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,38,39,43,44,45,46,47,48,49,50,51,52);

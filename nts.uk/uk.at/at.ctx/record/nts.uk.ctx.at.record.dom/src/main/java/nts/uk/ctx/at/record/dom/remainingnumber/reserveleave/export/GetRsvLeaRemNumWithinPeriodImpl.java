@@ -47,7 +47,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：期間中の積立年休残数を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPeriod {
@@ -136,10 +136,11 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				param, companySets, monthlyCalcDailys, rsvGrantRemainingDatas);
 		
 		// 上限設定の期間を計算
-		val maxSetPeriods = this.calcMaxSettingPeriod(param, retentionYearlySet, emptYearlyRetentionSetMap);
+		List<MaxSettingPeriodWork> maxSetPeriods = this.calcMaxSettingPeriod(
+				param, retentionYearlySet, emptYearlyRetentionSetMap);
 		
 		// 積立年休付与を計算
-		List<GrantWork> calcGrant = this.calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet);
+		List<GrantWork> calcGrant = this.calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, maxSetPeriods);
 		
 		// 積立年休集計期間の作成
 		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = this.createAggregatePeriod(
@@ -372,35 +373,51 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	 * 積立年休付与を計算
 	 * @param lapsedAnnualLeaveInfos 年休付与消滅時リスト
 	 * @param annualLeaveSet 年休設定
+	 * @param maxSetPeriods 積立年休上限設定期間WORKリスト
 	 * @return 積立年休付与WORKリスト
 	 */
 	private List<GrantWork> calcGrant(
 			List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
-			AnnualPaidLeaveSetting annualLeaveSet){
+			AnnualPaidLeaveSetting annualLeaveSet,
+			List<MaxSettingPeriodWork> maxSetPeriods){
 	
 		List<GrantWork> results = new ArrayList<>();
 		
 		for (val annualLeaveInfo : lapsedAnnualLeaveInfos){
-			// 1回分の積立年休付与を計算
 			
-			// 付与日数
-			double grantDays = 0.0;
-			
-			// 付与残数データを取得
-			for (val grantRemaining : annualLeaveInfo.getGrantRemainingList()){
-				if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
-				if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
-				
-				// 付与日数に年休情報の残日数を加算
-				grantDays += grantRemaining.getDetails().getRemainingNumber().getDays().v();
+			// 対象の上限設定期間WORKを取得
+			MaxSettingPeriodWork targetMaxSet = null;
+			for (val maxSetPeriod : maxSetPeriods){
+				if (!maxSetPeriod.getPeriod().contains(annualLeaveInfo.getYmd())) continue;
+				targetMaxSet = maxSetPeriod;
+				break;
 			}
 			
-			// 積立年休付与WORKを作成　→　端数処理
-			GrantWork grantWork = GrantWork.of(annualLeaveInfo.getYmd(), new ReserveLeaveGrantDayNumber(grantDays));
-			grantWork.roundGrantDays(annualLeaveSet);
+			// 上限日数をチェック
+			if (targetMaxSet == null) continue;
+			if (targetMaxSet.getMaxSetting().getMaxDaysCumulation().v() == 0) continue;
 			
-			// 積立年休付与WORKを返す
-			results.add(grantWork);
+			// 1回分の積立年休付与を計算
+			{
+				// 付与日数
+				double grantDays = 0.0;
+				
+				// 付与残数データを取得
+				for (val grantRemaining : annualLeaveInfo.getGrantRemainingList()){
+					if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
+					if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
+					
+					// 付与日数に年休情報の残日数を加算
+					grantDays += grantRemaining.getDetails().getRemainingNumber().getDays().v();
+				}
+				
+				// 積立年休付与WORKを作成　→　端数処理
+				GrantWork grantWork = GrantWork.of(annualLeaveInfo.getYmd(), new ReserveLeaveGrantDayNumber(grantDays));
+				grantWork.roundGrantDays(annualLeaveSet);
+				
+				// 積立年休付与WORKを返す
+				results.add(grantWork);
+			}
 		}
 		
 		return results;

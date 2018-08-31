@@ -2754,6 +2754,10 @@ button.nts-switch-button[disabled].selected {
   background-color: #CCC;
 }
 
+.ui-iggrid tbody td {
+  white-space: pre;    
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
@@ -3564,6 +3568,7 @@ button.nts-switch-button[disabled].selected {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {

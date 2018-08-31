@@ -3,17 +3,17 @@ module nts.uk.at.view.kmw006.a.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        checkStatus: "at/record/monthlyclosure/checkStatus/{0}",
+        checkStatus: "at/record/monthlyclosure/checkStatus",
         getInfors: "at/record/monthlyclosure/getInfors"
     }
 
-    export function checkStatus(closureId: number): JQueryPromise<any> {
-        let _path = format(paths.checkStatus, closureId);
-        return ajax("at", _path);
+    export function checkStatus(data: any): JQueryPromise<any> {
+//        let _path = format(paths.checkStatus, data);
+        return ajax("at", paths.checkStatus, data);
     };
         
-    export function getInfors(): JQueryPromise<any> {
-        return ajax("at", paths.getInfors);
+    export function getInfors(data: any): JQueryPromise<any> {
+        return ajax("at", paths.getInfors, data);
     }
     
 }

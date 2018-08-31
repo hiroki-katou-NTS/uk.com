@@ -11,6 +11,7 @@ module nts.uk.at.view.kdr001.b {
             findCompensatory: "ctx/at/shared/vacation/setting/compensatoryleave/find",
             findSubstVacation: "ctx/at/shared/vacation/setting/substvacation/com/find",
             findAllSpecialHoliday: "shared/specialholiday/findByCid",
+            getVariousVacationControl: "at/function/holidaysremaining/getVariousVacationControl"
         };
 
         export function findAll(): JQueryPromise<any> {
@@ -54,6 +55,10 @@ module nts.uk.at.view.kdr001.b {
 
         export function findAllSpecialHoliday(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.findAllSpecialHoliday);
+        }
+        
+        export function getVariousVacationControl(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.getVariousVacationControl);
         }
     }
 }

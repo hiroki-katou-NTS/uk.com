@@ -13,7 +13,7 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
                 { code: '0', name: nts.uk.resource.getText('KAL004_112') },
                 { code: '1', name: nts.uk.resource.getText('KAL004_113') }
             ]);
-            self.selectedRuleCode = ko.observable(0);
+            self.selectedRuleCode = ko.observable(1);
             self.executionAuthor = ko.observable("");
             self.createMode =ko.observable(true);
             self.selectedRuleCode.subscribe((newV) =>{

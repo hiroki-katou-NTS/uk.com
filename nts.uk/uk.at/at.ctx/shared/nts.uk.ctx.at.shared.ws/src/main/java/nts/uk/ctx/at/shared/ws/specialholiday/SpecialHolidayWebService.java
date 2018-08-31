@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.app.command.specialholiday.SpecialHolidayCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.SpecialHolidayDeleteCommand;
 import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
+import nts.uk.ctx.at.shared.app.find.worktype.specialholidayframe.SpecialHolidayFrameDto;
 
 /**
  * 
@@ -25,38 +26,44 @@ import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
  */
 @Path("shared/specialholiday")
 @Produces("application/json")
-public class SpecialHolidayWebService extends WebService{
-	
+public class SpecialHolidayWebService extends WebService {
+
 	@Inject
 	private SpecialHolidayFinder sphdFinder;
-	
+
 	@Inject
 	private CreateSpecialHolidayCommandHandler add;
-	
+
 	@Inject
 	private EditSpecialHolidayCommandHandler update;
-	
+
 	@Inject
 	private DeleteSpecialHolidayCommandHandler deleteSphdHandler;
-	
+
 	@Path("findByCid")
 	@POST
 	public List<SpecialHolidayDto> findByCid() {
 		return sphdFinder.findByCompanyId();
 	}
-	
+
+	@Path("findForScreenJ")
+	@POST
+	public List<SpecialHolidayFrameDto> findForScreenJ() {
+		return sphdFinder.findForScreenJ();
+	}
+
 	@Path("getSpecialHoliday/{specialHolidayCode}")
 	@POST
 	public SpecialHolidayDto getSpecialHoliday(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return sphdFinder.getSpecialHoliday(specialHolidayCode);
 	}
-	
+
 	@Path("add")
 	@POST
 	public JavaTypeResult<List<String>> add(SpecialHolidayCommand command) {
 		return new JavaTypeResult<List<String>>(add.handle(command));
 	}
-	
+
 	@Path("update")
 	@POST
 	public JavaTypeResult<List<String>> update(SpecialHolidayCommand command) {

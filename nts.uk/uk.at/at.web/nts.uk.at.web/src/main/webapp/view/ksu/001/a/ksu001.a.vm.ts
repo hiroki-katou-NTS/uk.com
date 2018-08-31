@@ -90,8 +90,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
-            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' }
+//            { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -153,7 +153,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.isEnableInputHeight(false);
                 } else {
                     self.isEnableInputHeight(true);
-                    $('#input-heightExtable').focus();
+                    setTimeout(() =>{
+                        $('#input-heightExtable').focus();                        
+                    }, 1);
                 }
             });
 
@@ -669,7 +671,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     },
                 })
                     .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
                     .DetailHeader(detailHeader).DetailContent(detailContent)
                     //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
                     //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
@@ -833,7 +835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").find(".ex-body-detail").data("stick-history", null);
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
                 //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
                 //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
@@ -1281,13 +1283,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let state = stateWorkTypeCode.state;
                 if (state == 1 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-                }
-
-                if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                } else if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-                }
-
-                if (state == 0 || state == 3) {
+                } else {
+                    //                    if (state == 0 || state == 3) {
                     item.symbolName = symbolName;
                 }
             }

@@ -69,5 +69,14 @@ div[id^="tab"] {
 	width: 740px;
 }
 #combo-box{
-	width: 230px !important;
+	width: 250px !important;
+}
+
+[dropdown-for="combo-box"] .nts-combo-column-0 {
+  width: 240px !important;
+}
+
+.switchEnd{
+    float: right;
+    margin-right: -45px;
 }
