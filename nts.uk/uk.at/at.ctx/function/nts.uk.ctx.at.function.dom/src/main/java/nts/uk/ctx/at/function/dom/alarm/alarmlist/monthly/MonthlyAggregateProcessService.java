@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -40,9 +38,6 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -121,33 +116,13 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
-		GeneralDate lastDateInPeriod = period.end();
 		
 		for(EmployeeSearchDto employee : employees) {
 			Closure closure = null;
 			//Tightening ID: optional 
-			Optional<ClosureId> closureID = Optional.empty();
-			Optional<ClosureDate> closureDate = Optional.empty();
 			if (listFixed.get(5).isUseAtr()) {
 				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 				closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-				Optional<Closure> optclosure = Optional.ofNullable(closure);
-				if(optclosure.isPresent()){
-				closureID= Optional.ofNullable(optclosure.get().getClosureId());
-				List<ClosureHistory> listClosureHistory = closure.getClosureHistories();
-					for (ClosureHistory ClosureHistory :listClosureHistory ) {
-					String endYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0');
-					GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
-							+ endYM + '-' + String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
-					String startYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0');
-					GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-' 
-							+ startYM + '-' +"01", "yyyy-MM-dd");
-					if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
-						closureDate = Optional.ofNullable(ClosureHistory.getClosureDate());
-						break;
-						}
-					}
-				}
 			}
 			
 			//MinhVV
@@ -215,7 +190,6 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
-		GeneralDate lastDateInPeriod = period.end();
 		
 		GeneralDate tempStart = period.start();
 		GeneralDate tempEnd = period.end();
