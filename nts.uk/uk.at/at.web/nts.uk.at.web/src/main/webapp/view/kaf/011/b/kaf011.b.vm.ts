@@ -28,6 +28,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         prePostSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
+        prePostText: KnockoutObservable<string> = ko.observable('');
+
         appComItems = ko.observableArray([
             { code: 0, text: text('KAF011_19') },
             { code: 1, text: text('KAF011_20') },
@@ -49,6 +51,29 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
+            let self = this;
+
+            self.startPage(self.appID());
+
+            self.prePostSelectedCode.subscribe((newCd) => {
+                self.prePostText(_.find(self.prePostTypes(), { 'code': newCd }).text);
+            });
+
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
+        }
 
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
             let self = this, returnCmd: common.ISaveHolidayShipmentCommand = {
@@ -150,29 +175,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return appReason;
         }
 
-        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
-            super(listAppMetadata, currentApp);
-            let self = this;
-
-            self.startPage(self.appID());
-
-            self.appReasons.subscribe((appReasons) => {
-
-
-            });
-            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD && nts.uk.ui._viewModel) {
-                    $('#recTimeBtn').ntsError("clear");
-                }
-            });
-
-            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD && nts.uk.ui._viewModel) {
-                    $('#absTimeBtn').ntsError("clear");
-                }
-            });
-        }
-
         startPage(appID: string): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred(),
@@ -229,6 +231,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.appReasons(data.appReasonComboItems || []);
             self.appReasonSelectedID('');
             self.prePostSelectedCode(app.prePostAtr);
+            self.prePostSelectedCode.valueHasMutated();
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
         }

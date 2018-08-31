@@ -21,7 +21,9 @@ module cps002.a.service {
         getLayoutByCreateType: 'ctx/pereg/layout/getByCreateType',
         addNewEmployee: 'ctx/pereg/addemployee/addNewEmployee',
         getEmployeeInfo: 'basic/organization/employee/getoffselect',
-        permision: 'ctx/pereg/functions/auth/find-all'
+        permision: 'ctx/pereg/functions/auth/find-all',
+        licenseChecks: 'ctx/pereg/license/checkLicenseCPS002'
+          
     };
 
     export function getLayout() {
@@ -263,6 +265,9 @@ module cps002.a.service {
     export function getCurrentEmpPermision() {
         return ajax(paths.permision);
     }
-
+    
+     export function licenseCheck() {
+        return ajax(paths.licenseChecks);
+    }
 }
 

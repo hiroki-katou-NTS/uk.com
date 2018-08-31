@@ -39,7 +39,7 @@
 						<!-- G1_11 -->
 						<td><span data-bind="text:nameClosue"></span></td>
 					</tr>
-					<tr>
+					<tr  id = "period-date">
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+				<button class="large" data-bind="click: closeDialog, hasFocus: true" >#{i18n.getText('KDW001_38')}</button>
 			</div>
 			
 		</ui:define>

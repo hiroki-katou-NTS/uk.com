@@ -92,7 +92,6 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		//*****（未）　表示させるエラーが出た時は、HasErrorに任意のタイミングでメッセージを入れて返せばいいｊはず。画面側のエラー表示仕様の確認も要。
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCalculateCount", 0);
-		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR.nameId );
 
 		// 設定情報を取得　（日別計算を実行するかチェックする）

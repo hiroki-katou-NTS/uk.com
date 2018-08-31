@@ -1,6 +1,9 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    let _: any = window['_'],
+        $: any = window['$'],
+        ko: any = window['ko'];
 
     import count = nts.uk.text.countHalf;
 
@@ -53,17 +56,13 @@ module nts.uk.ui.koExtentions {
                 dropDownAttachedToBody: boolean = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false,
                 $show = $('<div>', {
                     'class': 'nts-toggle-dropdown',
-                    'style': 'padding-left: 2px; color: #000; height: 29px',
-                    click: (evt) => {
-                        if ($element.data(IGCOMB)) {
-                            if ($element.igCombo(OPENED)) {
-                                $element.igCombo(CLOSEDDL);
-                                evt.stopPropagation();
-                            } else {
-                                $element.igCombo(OPENDDL, () => { }, true, true);
-                                evt.stopPropagation();
-                            }
-                        }
+                    'css': {
+                        'color': '#000',
+                        'height': '30px',
+                        'padding-left': '3px',
+                        'position': 'absolute',
+                        'left': '0px',
+                        'right': '0px'
                     }
                 });
 
@@ -108,12 +107,20 @@ module nts.uk.ui.koExtentions {
                                 .css('width', `${cws[k] * WoC}px`);
 
                             $show.find(`.${k.toLowerCase()}`)
-                                .css('height', '31px')
-                                .css('line-height', '27px')
-                                .find('.nts-column:last-child').css('margin-right', 0);;
+                                .css({
+                                    'height': '31px',
+                                    'line-height': '27px'
+                                })
+                                .find('.nts-column:last-child')
+                                .css('margin-right', 0);
                         });
                     } else {
-                        $show.empty();
+                        // show text
+                        if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
+                            $show.html($('<div>', { 'class': 'nts-combo-column', text: ko.toJS(accessor.nullText), css: { 'line-height': '27px' } }));
+                        } else {
+                            $show.empty();
+                        }
                     }
                 })
                 // define event changed for save default data
@@ -166,7 +173,7 @@ module nts.uk.ui.koExtentions {
                     placeHolder: '',
                     textKey: 'nts_' + optionsText,
                     valueKey: optionsValue,
-                    mode: editable ? EDITABLE : DROPDOWN,
+                    mode: EDITABLE,
                     disabled: !ko.toJS(enable),
                     enableClearButton: false,
                     itemTemplate: template,
@@ -183,8 +190,38 @@ module nts.uk.ui.koExtentions {
                         $element
                             .find('.ui-igcombo-hidden-field')
                             .parent()
-                            .append($show)
-                            .css('overflow', 'hidden');
+                            .prepend($show)
+                            .css({
+                                'overflow': 'hidden',
+                                'position': 'relative'
+                            })
+                            .find('.ui-igcombo-button')
+                            .css({
+                                'float': 'none',
+                                'width': '100%',
+                                'border': '0px',
+                                'padding': '0px',
+                                'position': 'absolute',
+                                'box-sizing': 'border-box',
+                                'background-color': 'transparent'
+                            })
+                            .find('.ui-igcombo-buttonicon')
+                            .text('▼')
+                            .css({
+                                'right': '0px',
+                                'font-size': '0.85rem',
+                                'top': '0px',
+                                'bottom': '0px',
+                                'display': 'block',
+                                'background-color': '#ececec',
+                                'width': '30px',
+                                'text-align': 'center',
+                                'line-height': '30px',
+                                'margin': '0px',
+                                'border-left': '1px solid #ccc'
+                            })
+                            .removeClass('ui-icon')
+                            .removeClass('ui-icon-triangle-1-s');
                     },
                     itemsRendered: (evt, ui) => {
                         let data = $element.data(DATA) || {},
@@ -243,16 +280,21 @@ module nts.uk.ui.koExtentions {
 
                         // show searchbox if editable
                         let $input = ui.list
+                            .attr('dropdown-for', $element.attr('id'))
                             .find('.ui-igcombo-fieldholder')
-                            .css('height', !!data[EDITABLE] ? '' : '0px')
-                            .css('padding', !!data[EDITABLE] ? '3px' : '')
-                            .css('background-color', !!data[EDITABLE] ? '#f6f6f6' : '')
+                            .css({
+                                'height': !!data[EDITABLE] ? '' : '0px',
+                                'padding': !!data[EDITABLE] ? '3px' : '',
+                                'background-color': !!data[EDITABLE] ? '#f6f6f6' : ''
+                            })
                             .show()
                             .find('input')
-                            .css('width', '0px')
-                            .css('height', !!data[EDITABLE] ? '29px' : '0px')
-                            .css('text-indent', !!data[EDITABLE] ? '0' : '-99999px')
-                            .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
+                            .css({
+                                'width': '0px',
+                                'height': !!data[EDITABLE] ? '30px' : '0px',
+                                'text-indent': !!data[EDITABLE] ? '0' : '-99999px',
+                                'border': !!data[EDITABLE] ? '1px solid #ccc' : 'none'
+                            });
 
                         if (!$input.data('_nts_bind')) {
                             $input
@@ -283,7 +325,9 @@ module nts.uk.ui.koExtentions {
                             .css('margin-right', 0);
 
                         setTimeout(() => {
-                            $input.css('width', ($(ui.list).width() - 6) + 'px')
+                            $input.css({
+                                'width': ($(ui.list).width() - 6) + 'px'
+                            });
                         }, 25);
                     }
                 })
@@ -293,8 +337,10 @@ module nts.uk.ui.koExtentions {
                 .on('blur', () => { $element.css('box-shadow', ''); })
                 .on('focus', () => {
                     $element
-                        .css('outline', 'none')
-                        .css('box-shadow', '0 0 1px 1px #0096f2');
+                        .css({
+                            'outline': 'none',
+                            'box-shadow': '0 0 1px 1px #0096f2'
+                        });
                 });
         }
 
@@ -385,6 +431,11 @@ module nts.uk.ui.koExtentions {
                     }
                 } else {
                     value = undefined;
+
+                    //save old value
+                    if (!_.isNil(ko.toJS(accessor.value))) {
+                        $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
+                    }
                 }
                 accessor.value(value);
             }

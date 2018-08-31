@@ -30,7 +30,7 @@
 						<span data-bind="ntsCheckBox: { checked: selectFirstIfNull }">selectFirstIfNull</span>
 					</div>
 					<div class="control-group valign-center">
-						<div id="combo-box" tabindex="1"
+						<div id="combo-box"
 							data-bind="ntsComboBox: {
 												name: 'Sample List',
 												options: itemList,
@@ -41,6 +41,7 @@
 												editable: isEditable,
 												enable: isEnable,
 												required: isRequired,
+												nullText: 'Bypassed value',
 												selectFirstIfNull: selectFirstIfNull,
 												columns: [
 														{ prop: 'code', length: 4 },
@@ -241,6 +242,10 @@ class ItemModel {
 										<tr>
 											<td>value</td>
 											<td><b>Type:</b> any<br /> Current selected value</td>
+										</tr>
+										<tr>
+											<td>nullText<i>(optional)</i></td>
+											<td><b>Type:</b> string | KnockoutObservable&lt;string&gt;<br /> Text show when bypassed value.</td>
 										</tr>
 										<tr>
 											<td>editable<i>(optional)</i></td>

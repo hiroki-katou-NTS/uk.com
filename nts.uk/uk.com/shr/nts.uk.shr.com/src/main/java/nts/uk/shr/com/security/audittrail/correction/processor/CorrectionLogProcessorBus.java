@@ -11,6 +11,7 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.uk.shr.com.security.audittrail.AuditTrailTransaction;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
@@ -26,6 +27,10 @@ public class CorrectionLogProcessorBus implements AuditTrailTransaction, Initial
 		this.processorsMap = new HashMap<>();
 		
 		CDI.current().select(DataCorrectionLogProcessor.class).forEach(processorProxy -> {
+			this.addProcessorToMap(processorProxy);
+		});
+		
+		CDI.current().select(PeregCorrectionLogProcessor.class).forEach(processorProxy -> {
 			this.addProcessorToMap(processorProxy);
 		});
 		

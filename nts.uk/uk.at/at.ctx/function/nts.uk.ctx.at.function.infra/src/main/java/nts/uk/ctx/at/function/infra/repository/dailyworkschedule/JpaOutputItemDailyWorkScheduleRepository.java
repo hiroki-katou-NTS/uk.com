@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
@@ -125,10 +126,30 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code) {
-		KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
-		key.setCid(companyId);
-		key.setItemCode(code);
-		return this.queryProxy().find(key, KfnmtItemWorkSchedule.class).map(entity -> this.toDomain(entity));
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KfnmtItemWorkSchedule> cq = builder.createQuery(KfnmtItemWorkSchedule.class);
+
+		// From table
+		Root<KfnmtItemWorkSchedule> root = cq.from(KfnmtItemWorkSchedule.class);
+
+		// Add where condition
+		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId), 
+				 builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode),code));
+		// Get results
+		KfnmtItemWorkSchedule entity;
+		try {
+			entity = em.createQuery(cq).getSingleResult();
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
+		
+		return Optional.ofNullable(this.toDomain(entity));
 	}
 	
 	/**

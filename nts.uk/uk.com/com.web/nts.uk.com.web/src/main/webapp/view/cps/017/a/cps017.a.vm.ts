@@ -62,6 +62,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             name: ko.observable(false)
         };
         
+        enableReflUnrComp : KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             let historySelection: HistorySelection = self.historySelection();
@@ -86,7 +87,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
-                        perInfoSelectionItem.selectionItemClassification(selectedObject.shareChecked ? 0 : 1);
 
                         self.constraints.selectionCode = selectedObject.codeLength;
                         self.constraints.selectionName = selectedObject.nameLength;
@@ -101,7 +101,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.changeLabelConstrain(selectedObject.characterType);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.isGroupManager === true && perInfoSelectionItem.selectionItemClassification() === 1) {
+                    if (self.isGroupManager === true) {
                         self.showRefecToAll(true);
                     } else {
                         self.showRefecToAll(false);
@@ -121,6 +121,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         }
                     });
 
+                } else {
+                    self.createNewData();
+                    perInfoSelectionItem.selectionItemName('');
+                    self.listSelection.removeAll();
+                    self.historySelection().histId('');
+                    self.listHistorySelection.removeAll();
+                    self.enableAddUpdateHist(false);
+                    self.enableReflUnrComp(false);
                 }
 
             });
@@ -340,6 +348,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             self.enableAddUpdateHist(value);
             self.enableDelHist(value);
+            self.enableReflUnrComp(value);
         }
 
         //検証チェック 
@@ -379,9 +388,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 $('#code').ntsError('set', { messageId: "Msg_3" });
 
             } else {
+                
+                self.enableRegister(false);
                 service.saveDataSelection(command).done(function(newSelectionId) {
                     self.listSelection.removeAll();
-
+                    block.grayout();
                     service.getAllOrderItemSelection(histId)
                         .done((itemList: Array<ISelection>) => {
                             if (itemList && itemList.length) {
@@ -397,17 +408,21 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                     self.enableOpenDialogB(true);
                                     self.enableCreateNew(true);
                                     self.selection().selectionID(newSelectionId);
+                                    self.enableRegister(true);
                                 });
                                 
                             }
                         });
-                });
+                }).always(()=>block.clear());
+                self.enableRegister(true);
+                self.checkCreateaaa(false);
             }
 
         }
 
         //更新モード
         update() {
+           
             let self = this,
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
@@ -416,7 +431,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             if (!self.checkSelectionConstraints()) return;
             currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
-
+            block.grayout();
             service.updateDataSelection(command).done(function() {
                 self.listSelection.removeAll();
                 service.getAllOrderItemSelection(self.historySelection().histId()).done((itemList: Array<ISelection>) => {
@@ -431,7 +446,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.selection().selectionID.valueHasMutated();
                     });
                 });
-            });
+            }).always(()=> block.clear());
+           
         }
 
         //削除ボタン
@@ -575,9 +591,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selName = self.selection().selectionName(),
                 exCd = self.selection().externalCD(),
 
-                //fibux: 23.2.2018
-                selIteClass = self.perInfoSelectionItem().selectionItemClassification(),
-
                 allValid = true;
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
@@ -603,8 +616,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         formatSelection: any;
         reflectedToAllCompanies: number;
 
-        //fixbug: 23.2.2018
-        selectionItemClassification: number;
     }
 
     interface ISelectionItem1 {
@@ -616,8 +627,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         codeLength: number;
         nameLength: number;
         extraCodeLength: number;
-
-        shareChecked: boolean;
 
         integrationCode?: string;
         memo?: string;
@@ -634,8 +643,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         nameLength: KnockoutObservable<number> = ko.observable(null);
         extraCodeLength: KnockoutObservable<number> = ko.observable(null);
 
-        selectionItemClassification: KnockoutObservable<number> = ko.observable();
-
         constructor(param: ISelectionItem1) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
@@ -645,8 +652,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.codeLength(param.codeLength);
             self.nameLength(param.nameLength);
             self.extraCodeLength(param.extraCodeLength);
-
-            self.selectionItemClassification((param.shareChecked ? 0 : 1) || '');
         }
     }
 

@@ -93,12 +93,8 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		// 総労働時間の集計
 		this.aggregateTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap(), companySets);
 
-		// 「労働制」を確認する
-		if (workingSystem == WorkingSystem.FLEX_TIME_WORK){
-			
-			// フレックス時間の集計
-			this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
-		}
+		// フレックス時間の集計
+		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
 		
 		// 総労働時間を計算
 		int totalMinutes = this.aggregateTime.getTotalWorkingTargetTime().v() +

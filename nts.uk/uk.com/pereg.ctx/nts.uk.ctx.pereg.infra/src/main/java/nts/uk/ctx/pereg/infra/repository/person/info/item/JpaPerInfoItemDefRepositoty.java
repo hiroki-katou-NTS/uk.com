@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,6 +44,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -280,8 +282,28 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String SELECT_ALL_DISORDER__BY_CTC_ID_QUERY = String.join(" ",
 			"SELECT  o FROM PpemtPerInfoItemOrder o WHERE o.perInfoCtgId =:perInfoCtgId ");
+	
+	private final static String SELECT_ITEMDF_BY_CTGCD_ITEMCD_CID = String.join(" ",
+			SELECT_COMMON_FIELD,
+			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.categoryCd = :categoryCd AND c.cid = :cid AND i.itemCd = :itemCd");
 
 
+	private final static String CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd "
+			+ "AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 "
+			+ "AND i.requiredAtr = 1  ORDER BY io.disporder";
+
+	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
+			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
+	
+	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1 AND ic.itemType <> 1";
+	
+	
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -1035,6 +1057,68 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId) {
 		return this.queryProxy().query(SELECT_ALL_DISORDER__BY_CTC_ID_QUERY, PpemtPerInfoItemOrder.class)
 				.setParameter("perInfoCtgId", ctgId).getList( c -> toDomainItemOrder(c));
+	}
+
+	@Override
+	public Optional<PersonInfoItemDefinition> getPerInfoItemDefByCtgCdItemCdCid(String categoryCode, String itemCd, String cid , String contractCd) {
+		return this.queryProxy().query(SELECT_ITEMDF_BY_CTGCD_ITEMCD_CID, Object[].class)
+				.setParameter("categoryCd", categoryCode)
+				.setParameter("contractCd", contractCd)
+				.setParameter("itemCd", itemCd)
+				.setParameter("cid", cid).getSingle(i -> {
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
+	}
+
+	@Override
+	public Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd) {
+		List<Object[]> lstObj = this.queryProxy().query(SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		
+		// groupBy categoryId 
+		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[27])));
+		
+		// Map to List
+		Map<String, List<PersonInfoItemDefinition>> result = perInfoItemDefByList.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
+					List<Object[]> listItem = e.getValue();
+					return listItem.stream().map(item-> {
+						return createDomainFromEntity(item, getChildIds(AppContexts.user().contractCode(),
+								String.valueOf(item[27]), String.valueOf(item[1])));
+					}).collect(Collectors.toList());
+					
+				}));
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, List<String>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd) {
+		
+		Map<String, List<String>> result =  new HashMap<>();
+		
+		
+		if (lstPerInfoCategoryId.isEmpty()){
+			return result;
+		}
+		
+		List<Object[]> lstObj = this.queryProxy().query(SELECT_REQUIRED_ITEM, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		
+		// groupBy categoryId 
+		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
+		
+		// Map to List
+		result = perInfoItemDefByList.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
+					List<Object[]> listItem = e.getValue();
+					return listItem.stream().map(x-> String.valueOf(x[0])).collect(Collectors.toList());
+				}));
+
+		return result;
 	}
 }
 

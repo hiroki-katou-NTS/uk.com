@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet_;
  */
 @Stateless
 public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkTimeSettingRepository {
+	
+	private static final String SELECT_CODE_AND_NAME_BY_WORKTIME_CODE = "SELECT c.kshmtWorkTimeSetPK.worktimeCd, c.name FROM KshmtWorkTimeSet c"
+			+ " WHERE c.kshmtWorkTimeSetPK.cid = :companyId AND c.kshmtWorkTimeSetPK.worktimeCd IN :listWorkTimeCode";
 
 	/*
 	 * (non-Javadoc)
@@ -307,5 +311,12 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			// get first item of list have 1 element
 			return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(lstKwtstWorkTimeSet.get(0))));
 		}
+	}
+
+	@Override
+	public Map<String, String> getCodeNameByListWorkTimeCd(String companyId, List<String> listWorkTimeCode) {
+		List<Object[]> listObject = this.queryProxy().query(SELECT_CODE_AND_NAME_BY_WORKTIME_CODE, Object[].class)
+				.setParameter("companyId", companyId).setParameter("listWorkTimeCode", listWorkTimeCode).getList();
+		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
 }

@@ -58,4 +58,14 @@ public class AuthorityFomatDaily extends AggregateRoot {
 				attendanceItemId, sheetNo, displayOrder,
 				columnWidth);
 	}
+	
+	public AuthorityFomatDaily clone() {
+		return new AuthorityFomatDaily(companyId, dailyPerformanceFormatCode,attendanceItemId,sheetNo,displayOrder,columnWidth);
+	}
+
+	public void setSheetNo(BigDecimal sheetNo) {
+		this.sheetNo = sheetNo;
+	}
+	
+	
 }

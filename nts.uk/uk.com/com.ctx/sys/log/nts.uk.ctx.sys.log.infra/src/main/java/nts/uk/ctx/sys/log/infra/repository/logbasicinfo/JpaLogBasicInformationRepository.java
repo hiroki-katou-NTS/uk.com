@@ -31,11 +31,11 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 
 	@Override
 	public List<LogBasicInformation> findByOperatorsAndDate(String companyId, List<String> listEmployeeId,
-			DatePeriod period) {
-		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
+			GeneralDateTime start, GeneralDateTime end) {
+		/*GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
 				period.start().day(), 0, 0, 0);
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
-				59, 59);
+				59, 59);*/
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
 			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId"
 					+ " AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";

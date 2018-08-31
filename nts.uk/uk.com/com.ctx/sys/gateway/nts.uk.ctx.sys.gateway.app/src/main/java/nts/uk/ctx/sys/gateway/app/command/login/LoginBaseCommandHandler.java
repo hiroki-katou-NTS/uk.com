@@ -732,15 +732,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (!user.get().getAssociatePersonId().get().isEmpty()) {
 			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId().get()));
 
-			employees.forEach(empItem -> {
-				// アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm
-				// "社員が削除されたかを取得")
-				if (this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted()) {
-					// 社員（List）から当該社員を除く (Remove the employee from the employee
-					// (List))
-					employees.remove(empItem);
-				}
-			});
+			employees = employees.stream()
+				.filter(empItem -> !this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted())
+				.collect(Collectors.toList());
 		}
 
 		// imported（権限管理）「会社」を取得する (imported (authority management) Acquire

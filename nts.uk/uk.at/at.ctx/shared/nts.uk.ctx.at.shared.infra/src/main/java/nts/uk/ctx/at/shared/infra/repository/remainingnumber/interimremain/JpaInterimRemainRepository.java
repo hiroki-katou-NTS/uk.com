@@ -34,7 +34,8 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
-	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c.remainMngId = :remainMngId";
+	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c"
+			+ " WHERE c.remainMngId = :remainMngId";
 	
 	private static final String QUERY_BY_SID_YMD = "SELECT c FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :sId"
