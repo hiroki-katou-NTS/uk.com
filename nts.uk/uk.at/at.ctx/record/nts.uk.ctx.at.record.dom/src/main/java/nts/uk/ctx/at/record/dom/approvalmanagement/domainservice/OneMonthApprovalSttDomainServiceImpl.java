@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.domainservice;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
@@ -31,7 +31,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.ClosureDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.DateApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.OneMonthApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -98,54 +97,60 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	private List<ApprovalEmployeeDto> buildApprovalEmployeeData(List<RegulationInfoEmployeeQueryR> lstEmployee,
 			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport) {
+
 		List<ApprovalEmployeeDto> lstApprovalEmployee = new ArrayList<>();
-		for (int e = 0; e < lstEmployee.size(); e++) {
+		List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
+
+		for (RegulationInfoEmployeeQueryR empQ : lstEmployee) {
 			ApprovalEmployeeDto approvalEmployee = new ApprovalEmployeeDto();
-			approvalEmployee.setEmployeeId(lstEmployee.get(e).getEmployeeId());
-			approvalEmployee.setEmployeeCode(lstEmployee.get(e).getEmployeeCode());
-			approvalEmployee.setEmployeeName(lstEmployee.get(e).getEmployeeName());
-			List<DateApprovalStatusDto> lstDateApprovalStatusDto = new ArrayList<>();
-			List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
-			boolean isSameEmpId = false;
-			for (int a = 0; a < lstApproval.size(); a++) {
-				if (lstEmployee.get(e).getEmployeeId().equals(lstApproval.get(a).getTargetID())) {
-					DateApprovalStatusDto dateApprovalStatusDto = new DateApprovalStatusDto();
-					dateApprovalStatusDto.setDate(lstApproval.get(a).getAppDate());
-					dateApprovalStatusDto.setStatus(3);
-					if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
-						dateApprovalStatusDto.setStatus(0);
-					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVAL_REQUIRE
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
-						dateApprovalStatusDto.setStatus(1);
-					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_LESS) {
-						dateApprovalStatusDto.setStatus(2);
-					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
-						dateApprovalStatusDto.setStatus(2);
-					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
-						dateApprovalStatusDto.setStatus(0);
-					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
-							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.COMPLETE) {
-						dateApprovalStatusDto.setStatus(0);
-					}
-					lstDateApprovalStatusDto.add(dateApprovalStatusDto);
-					isSameEmpId = true;
-				}
-			}
-			if (isSameEmpId) {
+
+			approvalEmployee.setEmployeeId(empQ.getEmployeeId());
+			approvalEmployee.setEmployeeCode(empQ.getEmployeeCode());
+			approvalEmployee.setEmployeeName(empQ.getEmployeeName());
+
+			List<DateApprovalStatusDto> lstDateApprovalStatusDto = lstApproval.stream()
+					.filter(f -> empQ.getEmployeeId().equals(f.getTargetID())).map(apv -> {
+						ApprovalStatus status = apv.getApprovalStatus();
+						ApproverEmployeeState state = apv.getApprovalAtr();
+						ApprovalActionByEmpl aproval = status.getApprovalActionByEmpl();
+
+						DateApprovalStatusDto dateApvS = new DateApprovalStatusDto();
+
+						dateApvS.setStatus(3);
+						dateApvS.setDate(apv.getAppDate());
+
+						if (ApprovalActionByEmpl.APPROVALED.equals(aproval)
+								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+							dateApvS.setStatus(0);
+						} else if (ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval)
+								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+							dateApvS.setStatus(1);
+						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+								&& ApproverEmployeeState.PHASE_LESS.equals(state)) {
+							dateApvS.setStatus(2);
+						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+							dateApvS.setStatus(2);
+						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+								&& ApproverEmployeeState.PHASE_PASS.equals(state)) {
+							dateApvS.setStatus(0);
+						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+								&& ApproverEmployeeState.COMPLETE.equals(state)) {
+							dateApvS.setStatus(0);
+						} else if(ApprovalActionByEmpl.APPROVALED.equals(aproval)
+								&& ApproverEmployeeState.COMPLETE.equals(state)) {
+							dateApvS.setStatus(0);
+						}
+
+						return dateApvS;
+					}).collect(Collectors.toList());
+
+			if (!lstDateApprovalStatusDto.isEmpty()) {
 				approvalEmployee.setLstStatus(lstDateApprovalStatusDto);
 				lstApprovalEmployee.add(approvalEmployee);
 			}
 		}
+
 		return lstApprovalEmployee;
 	}
 
@@ -231,18 +236,16 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 				return closureEmployment.getEmploymentCD();
 			}).collect(Collectors.toList()));
 			/*
-			// しぼり込んだ社員一覧が0件の場合
-			if (lstEmployment.size() == 0) {
-				throw new BusinessException("Msg_875");
-			}
-			*/
+			 * // しぼり込んだ社員一覧が0件の場合 if (lstEmployment.size() == 0) { throw new
+			 * BusinessException("Msg_875"); }
+			 */
 			// 対応するすべての社員を取得する
 			// 【条件】 ・取得したドメインモデル「雇用に紐づく就業締め．雇用コード」に一致する基準日時点の所属雇用 ・在職している社員
 			List<RegulationInfoEmployeeQueryR> lstEmployee = regulationInfoEmployeeQueryAdapter
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
-			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee, approvalRootOfEmployeeImport);
-			oneMonthApprovalStatusDto
-			.setLstEmployee(buildApprovalEmployeeData);
+			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
+					approvalRootOfEmployeeImport);
+			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeData);
 			if (buildApprovalEmployeeData.isEmpty()) {
 				throw new BusinessException("Msg_875");
 			}

@@ -49,7 +49,8 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 	public UserInfo findByUserId(String userId) {
 
 		return this.userRepo.getByUserID(userId)
-				.map(u -> UserInfo.user(userId, u.getUserName().v()))
+				.map(u -> UserInfo.user(userId,
+						u.getUserName().isPresent() ? u.getUserName().get().v() : ""))
 				.get();
 	}
 
@@ -57,7 +58,8 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 	public List<UserInfo> findByUserId(List<String> userIds) {
 
 		return this.userRepo.getByListUser(userIds).stream()
-				.map(u -> UserInfo.user(u.getUserID(), u.getUserName().v()))
+				.map(u -> UserInfo.user(u.getUserID(),
+						u.getUserName().isPresent() ? u.getUserName().get().v() : ""))
 				.collect(Collectors.toList());
 	}
 

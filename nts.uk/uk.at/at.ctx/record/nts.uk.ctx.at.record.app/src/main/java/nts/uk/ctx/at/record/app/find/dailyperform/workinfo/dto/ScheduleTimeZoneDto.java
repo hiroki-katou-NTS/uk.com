@@ -19,11 +19,11 @@ public class ScheduleTimeZoneDto implements ItemConst {
 
 	/** 出勤 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTENDANCE)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer working;
 
 	/** 退勤 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
-	@AttendanceItemValue(type = ValueType.CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer leave;
 }

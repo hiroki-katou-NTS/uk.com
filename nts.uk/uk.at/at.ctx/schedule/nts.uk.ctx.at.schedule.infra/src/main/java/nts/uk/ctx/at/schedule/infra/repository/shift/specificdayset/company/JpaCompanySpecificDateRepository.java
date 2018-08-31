@@ -45,7 +45,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
 	
-	private final String DELETE_BY_DATE = "DELETE FROM KsmmtComSpecDateSet c"
+	private static final String DELETE_BY_DATE = "DELETE FROM KsmmtComSpecDateSet c"
 			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 	

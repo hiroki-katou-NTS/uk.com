@@ -58,7 +58,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
             self.residualDayDisplay(model.formatterDay(day));
             self.residualDay(day);
             _.each(self.currentList(), function (x) {
-                if (self.dateHoliday() === x.dayoffDate) {
+                if (self.dateHoliday() === x.dayoffDate && self.dateHoliday() != null && x.dayoffDate != null) {
                     $('#multi-list').ntsError('set', { messageId: "Msg_729" });
                 } else {                
                     sumNum = sumNum + x.remainDays;
@@ -129,10 +129,8 @@ module nts.uk.at.view.kdm001.e.viewmodel {
         
         private validate(): boolean{
             let self = this;
-            if (self.currentCodeList().length == 0){
-                $('#multi-list').ntsError('set', { messageId: "Msg_738" });
-                return false;
-            } else if (self.currentCodeList().length >= 3){
+
+            if (self.currentCodeList().length >= 3){
                 $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                 return false;
             } else if (self.currentCodeList().length == 1 && self.currentList()[0].remainDays > parseFloat(self.numberDay())){
@@ -144,7 +142,7 @@ module nts.uk.at.view.kdm001.e.viewmodel {
                     return false;
                 }
                 if (parseFloat(self.numberDay()) !== (self.currentList()[0].remainDays + self.currentList()[1].remainDays)){
-                    $('#multi-list').ntsError('set', { messageId: "Msg_731" });
+                    $('#multi-list').ntsError('set', { messageId: "Msg_739" });
                     return false;
                 }
             }

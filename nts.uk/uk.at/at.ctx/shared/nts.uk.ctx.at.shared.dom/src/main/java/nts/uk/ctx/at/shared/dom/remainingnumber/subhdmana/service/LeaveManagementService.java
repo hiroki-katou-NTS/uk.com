@@ -46,19 +46,17 @@ public class LeaveManagementService {
 						.setRemainDays(leaveMana.get().getOccurredDays().v().toString());
 			}
 		}
-		if (leaveManagementData.getLeaveMana().size() == 0) {
-			response.add("Msg_736");
-		} else if (leaveManagementData.getLeaveMana().size() == 1
+        if (leaveManagementData.getLeaveMana().size() == 1
 				&& Double.parseDouble(leaveManagementData.getLeaveMana().get(0).getRemainDays()) > Double
 						.parseDouble(leaveManagementData.getNumberDayParam())) {
 			response.add("Msg_734");
 		} else if (leaveManagementData.getLeaveMana().size() == 2) {
 			if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(HALF_DAY)) {
 				if (!leaveManagementData.getLeaveMana().get(1).getRemainDays().equals(HALF_DAY)) {
-					response.add("Msg_734");
+					response.add("Msg_743");
 				} else {
 					if (!leaveManagementData.getNumberDayParam().equals(ONE_DAY)) {
-						response.add("Msg_734");
+						response.add("Msg_743");
 					}
 				}
 			} else if (leaveManagementData.getLeaveMana().get(0).getRemainDays().equals(ONE_DAY)) {

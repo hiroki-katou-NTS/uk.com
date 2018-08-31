@@ -17,7 +17,7 @@ public class WorkplaceSpecificDateFinder {
 	@Inject
 	WorkplaceSpecificDateRepository workplaceSpecDateRepo;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	// WITH name
 	public List<WokplaceSpecificDateDto> getWpSpecByDateWithName(String workplaceId, String wpSpecDate) {

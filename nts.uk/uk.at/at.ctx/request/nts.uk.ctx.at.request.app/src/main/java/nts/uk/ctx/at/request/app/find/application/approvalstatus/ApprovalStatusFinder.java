@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -123,6 +124,7 @@ public class ApprovalStatusFinder {
 	
 	/**
 	 * アルゴリズム「承認状況指定締め日取得」を実行する Acquire approval situation designated closing
+	 * 承認状況起動
 	 * date
 	 * 
 	 * @return approval situation
@@ -166,7 +168,6 @@ public class ApprovalStatusFinder {
 		}
 		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmpCode);
 	}
-
 	/**
 	 * アルゴリズム「承認状況指定締め期間設定」を実行する
 	 * 
@@ -205,20 +206,44 @@ public class ApprovalStatusFinder {
 		}
 		return new ApprovalStatusPeriorDto(startDate, endDate, listEmpCode, processingYmNew, closureName);
 	}
-	
+	//EA2137 - hoatt
+	//※締めIDごとの最新状態を取得
+	//締め.当月＞＝締め変更履歴.開始年月
+	//締め.当月＜＝締め変更履歴.終了年月
+	//の締め変更履歴を取得
 	private List<ClosuresDto> getClosure(List<Closure> closureList) {
-		List<ClosuresDto> lstClosureDto = closureList.stream().map(x -> {
-			int closureId = x.getClosureId().value;
-			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
-				return new ClosureHistoryForComDto(x1.getClosureName().v(), x1.getClosureId().value,
-						x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(),
-						x1.getStartYearMonth().v().intValue());
-			}).collect(Collectors.toList());
-			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
-					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
-			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
-		}).collect(Collectors.toList());
-		return lstClosureDto;
+		List<ClosuresDto> lstResult = new ArrayList<>();
+		for (Closure closure : closureList) {
+			int closureId = closure.getClosureId().value;
+			List<ClosureHistoryForComDto> lstHistDto = new ArrayList<>();
+			List<ClosureHistory> closureHistoriesList = closure.getClosureHistories();
+			//for theo history
+			for (ClosureHistory hist : closureHistoriesList) {
+				if(hist.getStartYearMonth().lessThanOrEqualTo(closure.getClosureMonth().getProcessingYm()) &&
+						hist.getEndYearMonth().greaterThanOrEqualTo(closure.getClosureMonth().getProcessingYm())){
+					lstHistDto.add(new ClosureHistoryForComDto(hist.getClosureName().v(), hist.getClosureId().value,
+							hist.getEndYearMonth().v().intValue(), hist.getClosureDate().getClosureDay().v().intValue(),
+							hist.getStartYearMonth().v().intValue()));
+				}
+			}
+			if(!lstHistDto.isEmpty()){
+				lstResult.add(new ClosuresDto(closureId, lstHistDto.get(0).getCloseName(), lstHistDto.get(0).getClosureDate()));
+			}
+		}
+		return lstResult;
+		
+//		List<ClosuresDto> lstClosureDto = closureList.stream().map(x -> {
+//			int closureId = x.getClosureId().value;
+//			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+//				return new ClosureHistoryForComDto(x1.getClosureName().v(), x1.getClosureId().value,
+//						x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(),
+//						x1.getStartYearMonth().v().intValue());
+//			}).collect(Collectors.toList());
+//			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+//					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+//			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+//		}).collect(Collectors.toList());
+//		return lstClosureDto;
 	}
 	/**
 	 * アルゴリズム「承認状況職場別起動」を実行する

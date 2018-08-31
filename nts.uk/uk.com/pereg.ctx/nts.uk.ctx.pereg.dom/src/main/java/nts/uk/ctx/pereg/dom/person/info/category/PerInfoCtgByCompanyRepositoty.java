@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.dom.person.info.category;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,8 @@ public interface PerInfoCtgByCompanyRepositoty{
 	
 	boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId);
 	
-	List<PersonInfoCtgOrder> getOrderList(String companyId);
+	List<PersonInfoCtgOrder> getOrderList(String companyId, String contractCd, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr);
 	
+	HashMap<Integer, HashMap<String, Integer>> getOrderList(List<String> categoryIds, List<String> itemDefinitionIds);
 }

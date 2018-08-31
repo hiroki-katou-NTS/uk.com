@@ -17,12 +17,12 @@ import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
 @Stateless
 public class JpaAttendanceTypeRepository extends JpaRepository implements AttendanceTypeRepository{
 	
-	private final String SEL_ITEM_BY_TYPE = "SELECT a "
+	private static final String SEL_ITEM_BY_TYPE = "SELECT a "
 			+ "FROM KmnmtAttendanceType a "
 			+ "WHERE a.kmnmtAttendanceTypePK.companyId = :companyId "
 			+ "AND a.kmnmtAttendanceTypePK.screenUseAtr = :screenUseAtr";
 	
-	private final String SEL_ITEM_BY_TYPE_AND_ATR = SEL_ITEM_BY_TYPE
+	private static final String SEL_ITEM_BY_TYPE_AND_ATR = SEL_ITEM_BY_TYPE
 			+ " AND a.attendanctType = :attendanctType";
 	
 	@Override

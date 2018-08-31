@@ -11,10 +11,9 @@
 	width: 17.727px;
 	height: 17px;
 	background-size: 17px 17px;
-	margin-left: 23px;
 }
 
-.caret-right {
+.master-list-select .caret-right.caret-background {
 	width: 520px;
 	border-radius: 10px;
 }

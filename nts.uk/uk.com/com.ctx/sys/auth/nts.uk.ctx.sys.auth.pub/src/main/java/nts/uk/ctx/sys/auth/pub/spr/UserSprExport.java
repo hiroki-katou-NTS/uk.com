@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.pub.spr;
 
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 /**
@@ -9,8 +10,12 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+
 public class UserSprExport {
-	// ID
+	
+
+
+	// ID 
 	/** The user id. */
 	private String userID;
 	
@@ -20,17 +25,29 @@ public class UserSprExport {
 	
 	// ユーザ名
 	/** The user name. */
-	private String userName;
+	private Optional<String> userName;
 	
 	// 紐付け先個人ID
 	/** The associated employee id. */
-	private String associatedPersonID;
+	private Optional<String> associatedPersonID;
 	
 	// メールアドレス
 	/** The mail address. */
-	private String mailAddress;
+	private Optional<String> mailAddress;
 	
 	// パスワード
 	/** The password. */
 	private String password;
+	
+	public UserSprExport(String userID, String loginID,String userName, String associatedPersonID,
+			String mailAddress, String password) {
+		super();
+		this.userID = userID;
+		this.loginID = loginID;
+		this.userName = Optional.ofNullable(userName == null ? null : userName);
+		this.associatedPersonID = Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID);
+		this.mailAddress =  Optional.ofNullable(mailAddress == null ? null : mailAddress);
+		this.password = password;
+	}
+
 }

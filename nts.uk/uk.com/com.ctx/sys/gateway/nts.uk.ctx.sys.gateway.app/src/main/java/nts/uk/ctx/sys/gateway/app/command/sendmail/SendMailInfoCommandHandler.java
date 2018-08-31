@@ -69,16 +69,24 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 					command.getLoginId());
 	
 			if (user.isPresent()) {
-				List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.get().getUserId(), user.get().getAssociatePersonId());
-				//get Employee
-				Optional<EmployeeImport> employee = this.sysEmployeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-						user.get().getAssociatePersonId());
-				
-				if (user.get().getMailAddress().isEmpty()) {
+				if (user.get().getMailAddress().get().isEmpty()) {
 					throw new BusinessException("Msg_1129");
 				} else {
+					//get employeeId
+					String employeeId = null;
+					if (!user.get().getAssociatePersonId().get().isEmpty()){
+						List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.get().getUserId(), user.get().getAssociatePersonId().get());
+						//get Employee
+						Optional<EmployeeImport> employee = this.sysEmployeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
+								user.get().getAssociatePersonId().get());
+						
+						if (employee.isPresent()){
+							employeeId = employee.get().getEmployeeId();
+						}
+					}
+					
 					// Send Mail アルゴリズム「メール送信実行」を実行する
-					return this.sendMail(user.get().getMailAddress(), command, employee.get());
+					return this.sendMail(user.get().getMailAddress().get(), command, employeeId);
 				}
 			}
 		}
@@ -96,10 +104,17 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 	 * @return true, if successful
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
-	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command, EmployeeImport employee) {
+	private SendMailReturnDto sendMail(String mailto, SendMailInfoCommand command, String employeeId) {
+		//Set param input
+		String programId = "CCG007";
+		String screenId = "H";
+		int timePeriod = 3;
+		int numberPeriod = 24;
+		String employeeCode = null;
+		
 		// get URL from CCG033
-		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
-				command.getContractCode(), command.getLoginId(), employee.getEmployeeCode(), new ArrayList<>());
+		String url = this.registerEmbededURL.embeddedUrlInfoRegis(programId, screenId, timePeriod, numberPeriod, employeeId,
+				command.getContractCode(), command.getLoginId(), employeeCode, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
 

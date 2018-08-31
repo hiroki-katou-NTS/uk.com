@@ -8,6 +8,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
         //enum mode
@@ -63,8 +64,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             //event select change
             self.selectedCode.subscribe((code) => {
-                _.defer(() => { nts.uk.ui.errors.clearAll() });
-                nts.uk.ui.errors.clearAll();
+                _.defer(() => { errors.clearAll() });
+                errors.clearAll();
 
                 block.invisible();
                 if (code) {
@@ -120,7 +121,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         }
                     }).always(function() {
                         self.updateMode(code);
-                        nts.uk.ui.errors.clearAll();
+                        errors.clearAll();
                         block.clear();
                     });
                 } else {
@@ -167,19 +168,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             block.invisible();
             //fill data B2_2
-            
-            //get list value output format
-            service.getValueOutputFormat().done(data => {
+
+            let sv1 = service.getValueOutputFormat();
+            let sv2 = service.getOutItemSettingCode();
+
+            $.when(sv1, sv2).done((data1, data2) => {
+                // get list value output format
                 let listValOutFormat = [];
-                for(let i of data){
+                for (let i of data1) {
                     listValOutFormat.push(new model.ItemModel(i.value + '', i.localizedName));
                 }
                 self.valOutFormat(listValOutFormat);
-            });
-            
-            service.getOutItemSettingCode().done((data) => {
-                var dataSorted = _.sortBy(data, ['cd']);
-                for (let i = 0, count = data.length; i < count; i++) {
+
+                var dataSorted = _.sortBy(data2, ['cd']);
+                for (let i = 0, count = data2.length; i < count; i++) {
                     self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
                 }
             }).always(function() {
@@ -194,7 +196,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
                 block.clear();
             });
-
             return dfd.promise();
         }
 
@@ -214,10 +215,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //Open dialog KDW007
         openKDW007(sortBy) {
             let self = this;
-            nts.uk.ui.block.invisible();
+            block.invisible();
             let index = _.findIndex(self.outputItem(), (x) => { return x.sortBy() === sortBy(); });
             if (index == -1) {
-                nts.uk.ui.block.clear();
+                block.clear();
                 return;
             }
 
@@ -239,7 +240,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                     let resultData = nts.uk.ui.windows.getShared("KDW007CResults");
                     if (!resultData) {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                         return;
                     }
                     self.buildOutputItem(resultData, self.outputItem()[index]).done(() => {
@@ -316,8 +317,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (valOutFormat === 1) {
                 //With type 回数 - Times
-                service.getMonthlyAttendanceItemByAtr(2).done((lstAtdItem) => {
-                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -326,8 +327,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else if (valOutFormat === 0) {
                 //With type 時間 - Time
-                service.getMonthlyAttendanceItemByAtr(1).done((lstAtdItem) => {
-                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -336,13 +337,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else if (valOutFormat === 2) {
                 //With type 日数
-                service.getMonthlyAttendanceItemByAtr(4).done((lstAtdItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (valOutFormat === 3) {
                 //With type 金額 - AmountMoney
-                service.getMonthlyAttendanceItemByAtr(3).done((lstAtdItem) => {
-                    service.getOptItemByAtr(3).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -447,7 +448,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             }
             $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
+            if (errors.hasError()) {
                 block.clear();
                 return;
             }
@@ -505,16 +506,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
 
         isValidate(itemOut) {
-            if (itemOut.length < 2) {
-                return false;
-            }
-            let itemOutWithout36 = _.without(itemOut, itemOut[0]);
-            let itemOutUseClass: any = _.filter(itemOutWithout36, v => { return v.useClass(); });
-
-            if (!itemOutUseClass || itemOutUseClass.length == 0) {
-                return false;
-            }
-            return true;
+            let itemOutUseClass: any = _.filter(itemOut, v => { return v.useClass(); });
+            return itemOutUseClass.length > 0;
         }
 
         //do delete
@@ -668,4 +661,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         MONTHLY = 1
     }
 
+    enum MonthlyAttendanceItemAtr {
+        /** The time. */
+        TIME = 1,
+
+        /** The number. */
+        NUMBER = 2,
+
+        /** The days. */
+        DAYS = 3,
+
+        /** The amount. */
+        AMOUNT = 4
+    }
 }

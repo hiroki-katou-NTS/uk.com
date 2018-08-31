@@ -74,7 +74,7 @@ module nts.uk.at.view.kbt002.h {
                 var execItemCdHeader = '<button tabindex="5" class="setting small" style="margin-top: 0px !important;margin-bottom: 0px !important;"  {{if ${overallStatus}!= "異常終了" }}   disabled="true" {{/if}} onclick="openDialogG(this, \'${execItemCd}\',\'${execId}\')"  >' + getText("KBT002_159") + '</button>';
                 // var execItemCdHeader = '<button tabindex="5" class="setting small" style="margin: 0px !important;" data-bind="click: function(data, event) { openDialogG(data, event)}" data-code="${execItemCd}" >' + getText("KBT002_159") + '</button>';
                 $("#grid").igGrid({
-                    primaryKey: "execItemCd",
+                    primaryKey: "execId",
                     height: 520,
                     dataSource: self.execLogList(),
                     autoGenerateColumns: false,
@@ -116,9 +116,14 @@ module nts.uk.at.view.kbt002.h {
                             multipleCellSelectOnClick: false
                         }, {
                             name: 'Paging',
-                            pageSize: 15,
+                            pageSize: 20,
                             currentPageIndex: 0
-                        }
+                        },{
+                           
+                            name: "Sorting",
+                            persist: true
+                        }, 
+                        
                     ],
                     ntsControls: [{ name: 'execItemCd', text: 'execItemCd', click: function() { alert("Button!!"); }, controlType: 'button' }]
                 });

@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.classification;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplacePub.
@@ -23,4 +26,23 @@ public interface SyClassificationPub {
 	// RequestList32
 	Optional<SClsHistExport> findSClsHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 
+	/**
+	 * Find S cls hist by sid.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the optional
+	 */
+	// RequestList32-3
+	List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds, DatePeriod datePeriod);
+	
+	/**
+	 * Gets the classification map.
+	 *
+	 * @param companyId the company id
+	 * @param clsCds the cls cds
+	 * @return the classification map
+	 */
+	Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds);
 }

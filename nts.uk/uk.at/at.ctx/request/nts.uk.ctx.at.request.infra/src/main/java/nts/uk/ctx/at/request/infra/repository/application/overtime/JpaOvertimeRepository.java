@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,9 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 	private static final String FIND_BY_APPID;
 	
 	private static final String FIND_BY_ATR;
+	private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppOvertime a"
+			+ " WHERE a.krqdtAppOvertimePK.cid = :companyID"
+			+ " AND a.krqdtAppOvertimePK.appId IN :lstAppID";
 	static {
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
@@ -155,5 +160,27 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
 		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
 		return Optional.of(appOverTime);
+	}
+	/**
+	 * get list Application Over Time and Frame
+	 * @author hoatt 
+	 * @param companyID
+	 * @param lstAppID
+	 * @return map: key - appID, value - AppOverTime
+	 */
+	@Override
+	public Map<String, AppOverTime> getListAppOvertimeFrame(String companyID, List<String> lstAppID) {
+		Map<String, AppOverTime> lstMap = new HashMap<>();
+		if(lstAppID.isEmpty()){
+			return lstMap;
+		}
+		List<AppOverTime> lstOt =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppOvertime.class)
+			.setParameter("companyID", companyID)
+			.setParameter("lstAppID", lstAppID)
+			.getList(c -> c.toDomain());
+		for (AppOverTime ot : lstOt) {
+			lstMap.put(ot.getAppID(), ot);
+		}
+		return lstMap;
 	}
 }

@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchEmployeeByLogin: "basic/organization/employee/onlyemployeenew",
+            searchEmployeeByLogin: "query/employee/find/currentlogin",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
@@ -122,7 +122,7 @@ module nts.uk.com.view.ccg.share.ccg {
          * call service get employee by login
          */
         
-        export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
+        export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<model.EmployeeSearchDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
         }
 
@@ -176,9 +176,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 showQuickSearchTab?: boolean; // クイック検索
                 showAdvancedSearchTab?: boolean; // 詳細検索
                 showBaseDate?: boolean; // 基準日利用
+                showClosure?: boolean; // 就業締め日利用
                 showAllClosure?: boolean; // 全締め表示
                 showPeriod?: boolean; // 対象期間利用
                 periodFormatYM?: boolean; // 対象期間精度
+                maxPeriodRange?: string; // 最長期間
+                showSort?: boolean; // 並び順利用
+                nameType?: number; // 氏名の種類
 
                 /** Required parameter */
                 baseDate?: string; // 基準日
@@ -209,6 +213,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 isInDialog?: boolean;
                 showOnStart?: boolean;
                 isTab2Lazy?: boolean;
+                tabindex?: number;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;

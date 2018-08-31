@@ -207,7 +207,7 @@ module nts.uk.at.view.kal004.share.model {
             }
             
             
-            if(alarmCategory == 7 ){
+            if(alarmCategory == 7  || alarmCategory == 9){
                 if(listExtractionMonthly.length==0){
                     this.setDefaultMonthly(3);
                 }else{
@@ -263,14 +263,14 @@ module nts.uk.at.view.kal004.share.model {
                                                 strSpecify: 1,
                                                 strPreviousDay: null,
                                                 strMakeToDay: null,
-                                                strDay: null,
+                                                strDay: 0,
                                                 strPreviousMonth: 0,
                                                 strCurrentMonth: 1,
                                                 strMonth: 0,
                                                 endSpecify: 1,
                                                 endPreviousDay: null,
                                                 endMakeToDay: null,
-                                                endDay: null,
+                                                endDay: 0,
                                                 endPreviousMonth: 0,
                                                 endCurrentMonth: 1,
                                                 endMonth: 0

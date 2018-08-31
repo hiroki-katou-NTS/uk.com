@@ -81,8 +81,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 									x.sendMailWhenApprovalFlg, 
 									x.sendMailWhenRegisterFlg, 
 									x.displayReasonFlg, 
-									x.krqstAppTypeDiscretePK.appType, 
-									null))
+									x.krqstAppTypeDiscretePK.appType))
 							.collect(Collectors.toList()), 
 						AppLimitSetting.toDomain(
 								entity.appActLockFlg, 
@@ -103,7 +102,9 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				AppReflectionSetting.toDomain(
 						entity.scheReflectFlg, 
 						entity.priorityTimeReflectFlg, 
-						entity.attendentTimeReflectFlg), 
+						entity.attendentTimeReflectFlg,
+						entity.classScheAchi,
+						entity.reflecTimeofSche), 
 				ApprovalListDisplaySetting.toDomain(
 						entity.advanceExcessMessDispAtr, 
 						entity.hwAdvanceDispAtr, 
@@ -272,10 +273,10 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				temp.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
 				
 				// 時刻（早出残業）
-				temp.preOtTime = null;
+				temp.preOtTime = item.getBeforehandRestriction().getPreOtTime() == null ? null : item.getBeforehandRestriction().getPreOtTime().v();
 				
 				// 時刻（通常残業）
-				temp.normalOtTime = null;
+				temp.normalOtTime = item.getBeforehandRestriction().getNormalOtTime() == null ? null : item.getBeforehandRestriction().getNormalOtTime().v();
 				
 				// 日数 - 残業申請事前の受付制限
 				temp.otRestrictPreDay = item.getBeforehandRestriction().getOtRestrictPreDay().value;

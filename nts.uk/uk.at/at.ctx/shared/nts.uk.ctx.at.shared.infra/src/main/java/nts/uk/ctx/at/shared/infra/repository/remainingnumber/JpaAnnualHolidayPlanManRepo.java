@@ -11,22 +11,23 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHo
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnualPlanMana;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAnnualHolidayPlanManRepo extends JpaRepository implements AnnualHolidayPlanManRepository{
-	private String QUERY_BY_SID_WORKTYPE_PERIOD = "SELECT c FROM KrcdtAnnualPlanMana c"
+	private static final String QUERY_BY_SID_WORKTYPE_PERIOD = "SELECT c FROM KrcdtAnnualPlanMana c"
 			+ " WHERE c.pk.sId = :employeeId AND c.pk.workTypeCd = :workTypeCd "
 			+ " AND c.pk.ymd >= :startDate "
 			+ " AND c.pk.ymd <= :endDate"
 			+ " ORDER BY c.pk.ymd";
 	@Override
 	public List<AnnualHolidayPlanMana> getDataBySidWorkTypePeriod(String employeeid, String workTypeCd,
-			Period dateData) {
+			DatePeriod dateData) {
 		List<KrcdtAnnualPlanMana> entities = this.queryProxy().query(QUERY_BY_SID_WORKTYPE_PERIOD, KrcdtAnnualPlanMana.class)
 				.setParameter("employeeId", employeeid)
 				.setParameter("workTypeCd", workTypeCd)
-				.setParameter("startDate", dateData.getStartDate())
-				.setParameter("endDate", dateData.getEndDate())
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
 				.getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}

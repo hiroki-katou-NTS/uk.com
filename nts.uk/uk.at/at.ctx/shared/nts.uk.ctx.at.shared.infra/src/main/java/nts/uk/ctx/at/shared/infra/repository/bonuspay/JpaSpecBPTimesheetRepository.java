@@ -36,18 +36,22 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 	@Override
 	public void updateListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<SpecBonusPayTimesheet> lstTimesheet) {
-		lstTimesheet.forEach(c->{
-			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheetOptinal = this.queryProxy().find(new KbpmtSpecBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtSpecBPTimesheet.class);
+		lstTimesheet.forEach(c -> {
+			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheetOptinal = this.queryProxy().find(
+					new KbpmtSpecBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()),
+					KbpmtSpecBPTimesheet.class);
 			if (kbpmtSpecBPTimesheetOptinal.isPresent()) {
 				KbpmtSpecBPTimesheet kbpmtSpecBPTimesheet = kbpmtSpecBPTimesheetOptinal.get();
-				kbpmtSpecBPTimesheet.endTime= new BigDecimal(c.getEndTime().minute());
-				kbpmtSpecBPTimesheet.roundingAtr= new BigDecimal(c.getRoundingAtr().value);
-				kbpmtSpecBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
-				kbpmtSpecBPTimesheet.specialDateItemNO= new BigDecimal(c.getDateCode());
-				kbpmtSpecBPTimesheet.startTime= new BigDecimal(c.getStartTime().minute());
+				kbpmtSpecBPTimesheet.endTime = new BigDecimal(c.getEndTime().v());
+				kbpmtSpecBPTimesheet.roundingAtr = new BigDecimal(c.getRoundingAtr().value);
+				kbpmtSpecBPTimesheet.roundingTimeAtr = new BigDecimal(c.getRoundingTimeAtr().value);
+				kbpmtSpecBPTimesheet.specialDateItemNO = new BigDecimal(c.getDateCode());
+				kbpmtSpecBPTimesheet.startTime = new BigDecimal(c.getStartTime().v());
 				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId();
-				kbpmtSpecBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
+				kbpmtSpecBPTimesheet.useAtr = new BigDecimal(c.getUseAtr().value);
 				this.commandProxy().update(kbpmtSpecBPTimesheet);
+			} else {
+				this.commandProxy().insert(toSpecBPTimesheetEntity(companyId, bonusPaySettingCode.v(), c));
 			}
 		});
 	}
@@ -76,10 +80,9 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 			SpecBonusPayTimesheet specBonusPayTimesheet) {
 		return new KbpmtSpecBPTimesheet(
 				new KbpmtSpecBPTimesheetPK(companyId, specBonusPayTimesheet.getTimeSheetId(), bonusPaySettingCode),
-				new BigDecimal(specBonusPayTimesheet.getUseAtr().value),
-				specBonusPayTimesheet.getTimeItemId(),
-				new BigDecimal(specBonusPayTimesheet.getStartTime().minute()),
-				new BigDecimal(specBonusPayTimesheet.getEndTime().minute()),
+				new BigDecimal(specBonusPayTimesheet.getUseAtr().value), specBonusPayTimesheet.getTimeItemId(),
+				new BigDecimal(specBonusPayTimesheet.getStartTime().v()),
+				new BigDecimal(specBonusPayTimesheet.getEndTime().v()),
 				new BigDecimal(specBonusPayTimesheet.getRoundingTimeAtr().value),
 				new BigDecimal(specBonusPayTimesheet.getRoundingAtr().value),
 				new BigDecimal(specBonusPayTimesheet.getDateCode()));

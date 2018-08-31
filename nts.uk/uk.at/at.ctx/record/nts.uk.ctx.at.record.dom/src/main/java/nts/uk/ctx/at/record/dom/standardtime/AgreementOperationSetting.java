@@ -18,25 +18,32 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
 /**
- * 
+ * ３６協定運用設定
  * @author nampt
  *
  */
 @Getter
 public class AgreementOperationSetting extends AggregateRoot {
 
+	/**会社ID**/
 	private String companyId;
 
+	/** ３６協定起算月 **/
 	private StartingMonthType startingMonth;
 
+	/** ３６協定超過上限回数 **/
 	private TimeOverLimitType numberTimesOverLimitType;
 
+	/** ３６協定締め日 **/
 	private ClosingDateType closingDateType;
 
+	/** ３６協定締め日区分 **/
 	private ClosingDateAtr closingDateAtr;
 
+	/** ３６協定対象設定 - 年間勤務表 **/
 	private TargetSettingAtr yearlyWorkTableAtr;
 
+	/** ３６協定対象設定 - アラームリスト **/
 	private TargetSettingAtr alarmListAtr;
 
 	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,
@@ -76,38 +83,33 @@ public class AgreementOperationSetting extends AggregateRoot {
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
 		
 		// 集計期間を取得
-		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE){
-			aggrPeriod.setPeriod(period);
+		val startYMStart = GeneralDate.ymd(period.start().year(), period.start().month(), 1);
+		val startYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addMonths(1).addDays(-1);
+		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
+		if (this.closingDateType == ClosingDateType.LASTDAY){
+			// 開始月の末締め
+			aggrPeriod.setPeriod(new DatePeriod(startYMStart, startYMEnd));
 		}
-		if (this.closingDateAtr == ClosingDateAtr.DESIGNATEDATE){
-			val startYMStart = GeneralDate.ymd(period.start().year(), period.start().month(), 1);
-			val startYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addMonths(1).addDays(-1);
-			val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
-			if (this.closingDateType == ClosingDateType.LASTDAY){
-				// 開始月の末締め
-				aggrPeriod.setPeriod(new DatePeriod(startYMStart, startYMEnd));
+		else {
+			// 集計期間の開始月締め開始日～終了月締め日
+			int closureDay = this.closingDateType.value + 1;
+			GeneralDate closingStart = startYMEnd.addDays(1);
+			if (closureDay + 1 <= startYMEnd.day()){
+				closingStart = GeneralDate.ymd(startYMEnd.year(), startYMEnd.month(), closureDay + 1);
 			}
-			else {
-				// 集計期間の開始月締め開始日～終了月締め日
-				int closureDay = this.closingDateType.value + 1;
-				GeneralDate closingStart = startYMEnd.addDays(1);
-				if (closureDay + 1 <= startYMEnd.day()){
-					closingStart = GeneralDate.ymd(startYMEnd.year(), startYMEnd.month(), closureDay + 1);
-				}
-				GeneralDate closingEnd = endYMEnd;
-				if (closureDay <= endYMEnd.day()){
-					closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
+			GeneralDate closingEnd = endYMEnd;
+			if (closureDay <= endYMEnd.day()){
+				closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
+			}
+			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
+			if (aggrPeriod.getPeriod().isReversed()){
+				// 開始＞終了の時、開始を１か月前にずらす
+				val prevYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addDays(-1);
+				closingStart = prevYMEnd.addDays(1);
+				if (closureDay + 1 <= prevYMEnd.day()){
+					closingStart = GeneralDate.ymd(prevYMEnd.year(), prevYMEnd.month(), closureDay + 1);
 				}
 				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-				if (aggrPeriod.getPeriod().isReversed()){
-					// 開始＞終了の時、開始を１か月前にずらす
-					val prevYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addDays(-1);
-					closingStart = prevYMEnd.addDays(1);
-					if (closureDay + 1 <= prevYMEnd.day()){
-						closingStart = GeneralDate.ymd(prevYMEnd.year(), prevYMEnd.month(), closureDay + 1);
-					}
-					aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-				}
 			}
 		}
 		

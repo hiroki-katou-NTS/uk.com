@@ -21,10 +21,10 @@ import nts.uk.ctx.sys.portal.infra.entity.toppage.CcgmtTopPagePK;
 @Stateless
 public class JpaTopPageRepository extends JpaRepository implements TopPageRepository {
 
-	private final String GET_ALL_TOP_PAGE = "SELECT t FROM CcgmtTopPage t "
+	private static  final String GET_ALL_TOP_PAGE = "SELECT t FROM CcgmtTopPage t "
 			+ "WHERE t.ccgmtTopPagePK.cid = :companyId "
 			+ " ORDER BY t.ccgmtTopPagePK.topPageCode";
-	private final String GET_BY_CODE = "SELECT b FROM CcgmtTopPage b WHERE b.ccgmtTopPagePK.cid = :companyId AND b.ccgmtTopPagePK.topPageCode = :topPageCode";
+	private static final String GET_BY_CODE = "SELECT b FROM CcgmtTopPage b WHERE b.ccgmtTopPagePK.cid = :companyId AND b.ccgmtTopPagePK.topPageCode = :topPageCode";
 
 	/*
 	 * (non-Javadoc)

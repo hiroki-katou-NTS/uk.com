@@ -36,4 +36,13 @@ public interface RelationshipRepository {
 	 * author: Hoang Yen
 	 */
 	Optional<Relationship> findByCode(String companyId, String relationshipCd);
+	
+	/**
+	 * get all data with setting
+	 * @param companyId
+	 * @param sHENo 
+	 * @return
+	 */
+	
+	List<String> findSettingWithCds(String companyId, int sHENo, List<String> relpCds);
 }

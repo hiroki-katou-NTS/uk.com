@@ -36,7 +36,7 @@
 }
 
 #m5-div-a {
-	width: 822px;
+	width: 832px;
 	height: 370px;
 	outline-style: solid;
 	outline-color: #999999;
@@ -54,7 +54,7 @@
 	background-color: #CFF1A5;
 	height: 30px;
 }
-#m5-table-a td > *:FIRST-CHILD {
+#m5-table-a td > div > *:FIRST-CHILD {
 	margin-left: 3px;
 }
 #m5-table-a > thead > tr {
@@ -74,8 +74,8 @@
 #m5-table-a > tbody > tr > td:FIRST-CHILD {
 	background-color: #CFF1A5;
 	border-right: 1px solid #999999;
-	min-width: 100px;
-	width: 100px;
+	min-width: 110px;
+	width: 110px;
 }
 #m5-table-a > tbody > tr > td:NTH-CHILD(2) {
 	min-width: 360px;
@@ -293,8 +293,8 @@
 #m5-table-e > tbody > tr > td:FIRST-CHILD {
 	background-color: #CFF1A5;
 	border-right: 1px solid #999999;
-	min-width: 100px;
-	width: 100px;
+	min-width: 120px;
+	width: 120px;
 }
 #m5-table-e > tbody > tr > td:NTH-CHILD(2) {
 	min-width: 150px;
@@ -321,7 +321,7 @@
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 100px;
+	width: 110px;
 	height: 370px;
 	position: absolute;
 }
@@ -357,7 +357,7 @@
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 100px;
+	width: 120px;
 	height: 370px;
 	position: absolute;
 }

@@ -34,12 +34,12 @@
 			<div id="contents-area">
 				<table>
 					<tr>
-						<td style="vertical-align: top; width: 250px">
+						<td style="vertical-align: top; width: 280px">
 							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_25')}</div>
 
 							<table id="single-list"
 								data-bind="ntsGridList: {								
-									height: 240,
+									height: 370,
 									dataSource: businessTypeList,
 									primaryKey: 'businessTypeCode',
 									columns: columns1,
@@ -75,7 +75,7 @@
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
-										<button data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>																	   	  
+										<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>																	   	  
 									</div>
 									<!-- <div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div> -->
 									<BR />
@@ -83,13 +83,13 @@
 									<div style="margin-top: 10px" id="swap-list2"
 										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 400,
+											height: 371,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns2,
 											value: businessTypeFormatDailyValue,
 											searchMode: 'filter',
-											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 											draggable: true,
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
@@ -117,7 +117,7 @@
 											columns: columns3,
 											value: valuesMonthly,
 											searchMode: 'filter',
-											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 											draggable: true,
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
@@ -151,7 +151,7 @@
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
-										<button data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
+										<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
 									</div>
 									<!-- <div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div> -->
 									<div style="margin-top: 10px; margin-left: 465px" >#{i18n.getText('KDW008_29')}</div>
@@ -164,7 +164,7 @@
 											columns: columns5,
 											value: valuesMonth,
 											searchMode: 'filter',
-											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 											draggable: true,
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },

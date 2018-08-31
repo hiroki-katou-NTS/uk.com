@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw010.a.main.css" />
+			<com:scriptfile path="kdw010.a.start.js" />
+			<com:scriptfile path="kdw010.a.vm.js" />
+			<com:scriptfile path="kdw010.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="header-content" id="functions-area">
+				<button tabindex="1" class="proceed"
+					data-bind="hasFocus:true,click:registration">#{i18n.getText('KDW010_2')}</button>
+			</div>
+
+			<div class="contents-area">
+				<div id="right-content" class="fixed-flex-layout-right">
+					<table>
+						<colgroup>
+							<col width="135px" />
+							<col width="*" />
+						</colgroup>
+
+						<tr class="row">
+							<td>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_3')}</div>
+							</td>
+
+							<td>
+								<div tabindex="2" class="cf"
+									data-bind="ntsSwitchButton: {
+												options: useSet,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectUse,
+												required: true,
+												enable: true }"></div>
+							</td>
+						</tr>
+						<tr class="spacer"></tr>
+						<tr class="row">
+							<td>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_4')}</div>
+							</td>
+
+							<td>
+								<div data-bind="with:maxContinuousDay">
+									<input tabindex="3" class="nts-input"
+										data-bind="ntsNumberEditor:{
+										name: '#[KDW010_4]',
+										constraint:'ContinuousVacationDays',
+                                         value: value,
+                                         required: true,
+                                         enable: $parent.enableState,
+                                         option: {
+                                         	width : '80px',
+                                         	 unitID: 'DAYS'
+                                         }}" />
+								</div>
+
+							</td>
+						</tr>
+						<tr class="spacer"></tr>
+						<tr class="row">
+							<td>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_5')}</div>
+							</td>
+
+							<td><input class="nts-input"
+								data-bind="ntsTextEditor:{
+										 name: '#[KDW010_5]',
+                                         value: joinNameTargetWorkType,
+                                         required: true,
+                                         enable: enableState,
+                                         readonly:true,
+                                         option: {width: '180px'}}" />
+
+								<button tabindex="4"
+									data-bind="enable:enableState,click:function(data){openKDL002Dialog(targetType),data}">#{i18n.getText('KDW010_6')}</button></td>
+						</tr>
+						<tr class="spacer"></tr>
+						<tr class="row">
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW010_7')}</div>
+							</td>
+
+							<td><input tabindex="5" class="nts-input"
+								data-bind="ntsTextEditor:{
+                                         value: joinNameIgnoreWorkType,
+                                         enable: enableState,
+                                         readonly:true,
+                                         option: {width: '180px'}}" />
+
+								<button tabindex="5"
+									data-bind="enable:enableState, click:function(data){openKDL002Dialog(ignoreType),data}">#{i18n.getText('KDW010_6')}</button></td>
+						</tr>
+						<tr class="spacer"></tr>
+						<tr class="row">
+							<td style="padding-bottom: 95px">
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW010_8')}</div>
+							</td>
+							<td><textarea tabindex="6" rows="6" cols="31"
+									id="input-text"
+									data-bind="ntsMultilineEditor:{
+									name:'#[KDW010_8]',
+									value:displayMessege,
+									constraint:'DisplayMessage',
+									required:true,
+									enable:enableState
+								}" />
+
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

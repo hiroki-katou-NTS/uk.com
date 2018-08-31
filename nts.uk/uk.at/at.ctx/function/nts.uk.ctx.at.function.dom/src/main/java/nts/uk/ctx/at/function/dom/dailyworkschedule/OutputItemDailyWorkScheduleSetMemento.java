@@ -53,4 +53,11 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 * @param workTypeNameDisplay the new work type name display
 	 */
 	void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay);
+	
+	/**
+	 * Sets the remark input no.
+	 *
+	 * @param remarkInputNo the new remark input no
+	 */
+	void setRemarkInputNo(RemarkInputContent remarkInputNo);
 }

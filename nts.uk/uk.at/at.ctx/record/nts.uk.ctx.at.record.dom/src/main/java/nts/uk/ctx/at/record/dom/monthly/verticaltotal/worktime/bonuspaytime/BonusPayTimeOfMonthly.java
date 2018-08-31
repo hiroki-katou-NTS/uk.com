@@ -60,19 +60,16 @@ public class BonusPayTimeOfMonthly {
 		val bonusPayTimes = raiseSalaryTime.getRaisingSalaryTimes();
 		val specDayBonusPayTimes = raiseSalaryTime.getAutoCalRaisingSalarySettings();
 
-		//*****（未）　加給時間のクラス利用が不整合になっていて、正しいメンバが参照できない。
-		
 		// 加給時間ごとの集計
 		for (val bonusPayTime : bonusPayTimes){
 			val bonusPayNo = Integer.valueOf(bonusPayTime.getBonusPayTimeItemNo());
 			this.bonusPayTime.putIfAbsent(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
 			val targetBonusPayTime = this.bonusPayTime.get(bonusPayNo);
-			
 			if (isHolidayWork){
-
+				targetBonusPayTime.addMinutesToHolidayWorkBonusPayTime(bonusPayTime.getBonusPayTime().v());
 			}
 			else {
-
+				targetBonusPayTime.addMinutesToBonusPayTime(bonusPayTime.getBonusPayTime().v());
 			}
 		}
 		
@@ -81,12 +78,12 @@ public class BonusPayTimeOfMonthly {
 			val bonusPayNo = Integer.valueOf(specDayBonusPayTime.getBonusPayTimeItemNo());
 			this.bonusPayTime.putIfAbsent(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
 			val targetBonusPayTime = this.bonusPayTime.get(bonusPayNo);
-			
 			if (isHolidayWork){
-				
+				targetBonusPayTime.addMinutesToHolidayWorkSpecificBonusPayTime(
+						specDayBonusPayTime.getBonusPayTime().v());
 			}
 			else {
-				
+				targetBonusPayTime.addMinutesToSpecificBonusPayTime(specDayBonusPayTime.getBonusPayTime().v());
 			}
 		}
 	}

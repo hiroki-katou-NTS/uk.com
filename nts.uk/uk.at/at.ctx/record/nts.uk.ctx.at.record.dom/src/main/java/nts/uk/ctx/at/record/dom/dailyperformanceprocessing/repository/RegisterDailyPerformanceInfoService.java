@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
@@ -28,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDa
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class RegisterDailyPerformanceInfoService {
 
@@ -56,7 +60,7 @@ public class RegisterDailyPerformanceInfoService {
 	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
 
 	@Inject
-	private NCalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
@@ -73,6 +77,7 @@ public class RegisterDailyPerformanceInfoService {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
 			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
@@ -82,7 +87,7 @@ public class RegisterDailyPerformanceInfoService {
 
 		// 登録する - register - activity ⑤社員の日別実績を作成する
 		// ドメインモデル「日別実績の勤務情報」を更新する - update
-		// WorkInfoOfDailyPerformance
+		// WorkInfoOfDailyPerformance - JDBC
 		if (workInfoOfDailyPerformanceUpdate != null) {
 			this.insertWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId, employeeID, day,
 					workInfoOfDailyPerformanceUpdate);
@@ -119,7 +124,7 @@ public class RegisterDailyPerformanceInfoService {
 		}
 
 		// ドメインモデル「日別実績の特定日区分」を更新する (Update 「日別実績の特定日区分」)
-		// specificDateAttrOfDailyPerfor
+		// specificDateAttrOfDailyPerfor - JDBC - new wave
 		if (specificDateAttrOfDailyPerfor != null) {
 			if (this.specificDateAttrOfDailyPerforRepo.find(employeeID, day).isPresent()) {
 				this.specificDateAttrOfDailyPerforRepo.update(specificDateAttrOfDailyPerfor);
@@ -129,7 +134,7 @@ public class RegisterDailyPerformanceInfoService {
 		}
 
 		// ドメインモデル「日別実績の計算区分」を更新する (Update 「日別実績の計算区分」)
-		// calAttrOfDailyPerformance
+		// calAttrOfDailyPerformance - JDBC newwave
 		if (calAttrOfDailyPerformance != null) {
 			if (this.calAttrOfDailyPerformanceRepository.find(employeeID, day) != null) {
 				this.calAttrOfDailyPerformanceRepository.update(calAttrOfDailyPerformance);
@@ -140,7 +145,7 @@ public class RegisterDailyPerformanceInfoService {
 
 		if (stampOutput != null) {
 
-			// breakTimeOfDailyPerformance
+			// breakTimeOfDailyPerformance - JDBC only insert
 			if (stampOutput.getBreakTimeOfDailyPerformance() != null
 					&& !stampOutput.getBreakTimeOfDailyPerformance().getBreakTimeSheets().isEmpty()) {
 				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
@@ -150,7 +155,7 @@ public class RegisterDailyPerformanceInfoService {
 				}
 			}
 
-			// ドメインモデル「日別実績の外出時間帯」を更新する (Update 「日別実績の外出時間帯」)
+			// ドメインモデル「日別実績の外出時間帯」を更新する (Update 「日別実績の外出時間帯」) - JDBC only insert
 			if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
 				if (this.outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeID, day).isPresent()) {
 					this.outingTimeOfDailyPerformanceRepository.update(stampOutput.getOutingTimeOfDailyPerformance());
@@ -159,7 +164,7 @@ public class RegisterDailyPerformanceInfoService {
 				}
 			}
 
-			// ドメインモデル「日別実績の臨時出退勤」を更新する (Update 「日別実績の臨時出退勤」)
+			// ドメインモデル「日別実績の臨時出退勤」を更新する (Update 「日別実績の臨時出退勤」) - JDBC - tín
 			if (stampOutput.getTemporaryTimeOfDailyPerformance() != null) {
 				if (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
 					this.temporaryTimeOfDailyPerformanceRepository
@@ -170,7 +175,7 @@ public class RegisterDailyPerformanceInfoService {
 				}
 			}
 
-			// ドメインモデル「日別実績の出退勤」を更新する (Update 「日別実績の出退勤」)
+			// ドメインモデル「日別実績の出退勤」を更新する (Update 「日別実績の出退勤」) - JDBC only insert - tín
 			if (stampOutput.getTimeLeavingOfDailyPerformance() != null
 					&& stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks() != null
 					&& !stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks().isEmpty()) {
@@ -180,7 +185,7 @@ public class RegisterDailyPerformanceInfoService {
 					this.timeLeavingOfDailyPerformanceRepository.insert(stampOutput.getTimeLeavingOfDailyPerformance());
 				}
 			}
-
+			// - JDBC - newwave
 			if (stampOutput.getShortTimeOfDailyPerformance() != null) {
 				if (this.shortTimeOfDailyPerformanceRepository.find(employeeID, day).isPresent()) {
 					this.shortTimeOfDailyPerformanceRepository
@@ -190,14 +195,14 @@ public class RegisterDailyPerformanceInfoService {
 				}
 			}
 
-			// ドメインモデル「打刻」を更新する (Update 「打刻」)
+			// ドメインモデル「打刻」を更新する (Update 「打刻」) - JDBC
 			if (stampOutput.getLstStamp() != null && !stampOutput.getLstStamp().isEmpty()) {
 				stampOutput.getLstStamp().forEach(stampItem -> {
 					this.stampRepository.updateStampItem(stampItem);
 				});
 			}
 
-			// ドメインモデル「日別実績の入退門」を更新する (Update 「日別実績の入退門」)
+			// ドメインモデル「日別実績の入退門」を更新する (Update 「日別実績の入退門」) - JDBC only insert - tín
 			if (stampOutput.getAttendanceLeavingGateOfDaily() != null
 					&& stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates() != null
 					&& !stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates().isEmpty()) {
@@ -208,7 +213,7 @@ public class RegisterDailyPerformanceInfoService {
 				}
 			}
 
-			// ドメインモデル「日別実績のPCログオン情報」を更新する (Update 「日別実績のPCログオン情報」))
+			// ドメインモデル「日別実績のPCログオン情報」を更新する (Update 「日別実績のPCログオン情報」)) - JDBC only insert - tín
 			if (stampOutput.getPcLogOnInfoOfDaily() != null
 					&& stampOutput.getPcLogOnInfoOfDaily().getLogOnInfo() != null
 					&& !stampOutput.getPcLogOnInfoOfDaily().getLogOnInfo().isEmpty()) {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayPcLogonInfo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
@@ -122,7 +125,26 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 
 	@Override
 	public void add(PCLogOnInfoOfDaily domain) {
-		this.commandProxy().insertAll(KrcdtDayPcLogonInfo.from(domain));
+//		this.commandProxy().insertAll(KrcdtDayPcLogonInfo.from(domain));
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			Statement statementI = con.createStatement();
+			for(LogOnInfo logOnInfo : domain.getLogOnInfo()){
+				Integer logOff = logOnInfo.getLogOff().isPresent() ? logOnInfo.getLogOff().get().valueAsMinutes() : null;
+				Integer logOn = logOnInfo.getLogOn().isPresent() ? logOnInfo.getLogOn().get().valueAsMinutes() : null;
+				
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_PC_LOGON_INFO ( SID , YMD , PC_LOG_NO, LOGOFF_TIME , LOGON_TIME ) "
+						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
+						+ domain.getYmd() + "' , "
+						+ logOnInfo.getWorkNo().v() + " , "
+						+ logOff + " , "
+						+ logOn + " )";
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
+			}
+			
+		} catch (Exception e) {
+			
+		}
 	}
 
 	@Override

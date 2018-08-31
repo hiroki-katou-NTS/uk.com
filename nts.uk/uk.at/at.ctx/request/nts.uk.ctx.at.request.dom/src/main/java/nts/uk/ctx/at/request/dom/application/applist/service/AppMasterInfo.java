@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
+import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +29,6 @@ public class AppMasterInfo {
 	//ver14 + EA1360
 	//申請詳細設定.時刻計算利用区分
 	private Integer detailSet;
+	//EA2236
+	private String empSD;
 }

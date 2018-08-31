@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.portal.infra.entity.permissionsettingmenu.SptmtPerSettingM
 @Stateless
 public class JpaPermissionSettingMenuRepository extends JpaRepository implements PermissionSettingMenuRepository {
 
-	private final String FIND_BY_ROLE_TYPE = "SELECT s FROM SptmtPerSettingMenu s WHERE s.roleType = :roleType ";
+	private static final String FIND_BY_ROLE_TYPE = "SELECT s FROM SptmtPerSettingMenu s WHERE s.roleType = :roleType ";
 
 	@Override
 	public List<PermissionSettingMenu> findbyRoleType(int roleType) {

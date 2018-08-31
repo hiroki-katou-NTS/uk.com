@@ -36,7 +36,7 @@
 							<div class="pull-left" tabindex="8" style="width: 240px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
 								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
 						</div>
-						<table tabindex="-1" id="B3_4" data-bind="ntsGridList: {
+						<table id="B3_4" data-bind="ntsGridList: {
 								rows: 15,
 								name: '#[CMF001_39]', 
 								dataSource: listStandardImportSetting,
@@ -51,7 +51,7 @@
 					</div>
 				</div>
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
-					<div class="valign-center control-group">
+					<div class="valign-center control-group" style = "width:450px;">
 						<span class="label" style="padding: 0px 5px">#{i18n.getText('CMF001_35')}</span> 
 						<div tabindex="7" data-bind="ntsComboBox: {
 							options: systemTypes,

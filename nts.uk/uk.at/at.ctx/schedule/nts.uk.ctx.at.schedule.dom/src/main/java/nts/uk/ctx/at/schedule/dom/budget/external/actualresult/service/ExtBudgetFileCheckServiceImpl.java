@@ -36,10 +36,10 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     private FileStorage fileStorage;
 
     /** The max record. */
-    private final int MAX_RECORD = 999;
+    private static final int MAX_RECORD = 999;
     
     /** The lst extension. */
-    private final List<String> LST_EXTENSION = Arrays.asList("txt", "csv");
+    private static final List<String> LST_EXTENSION = Arrays.asList("txt", "csv");
 
     /*
      * (non-Javadoc)

@@ -20,9 +20,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ScheduleTimePubImport {
-
+	
 	//社員ID
 	String employeeId;
 	
@@ -52,4 +51,23 @@ public class ScheduleTimePubImport {
 	
 	//育児介護終了時刻 1~2 sorted ASC
 	List<Integer> childCareEndTime;
+
+	/**
+	 * Constructor
+	 */
+	public ScheduleTimePubImport(String employeeId, GeneralDate targetDate, WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode, List<Integer> startClock, List<Integer> endClock, List<Integer> breakStartTime,
+			List<Integer> breakEndTime, List<Integer> childCareStartTime, List<Integer> childCareEndTime) {
+		super();
+		this.employeeId = employeeId;
+		this.targetDate = targetDate;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.startClock = startClock;
+		this.endClock = endClock;
+		this.breakStartTime = breakStartTime;
+		this.breakEndTime = breakEndTime;
+		this.childCareStartTime = childCareStartTime;
+		this.childCareEndTime = childCareEndTime;
+	}
 }

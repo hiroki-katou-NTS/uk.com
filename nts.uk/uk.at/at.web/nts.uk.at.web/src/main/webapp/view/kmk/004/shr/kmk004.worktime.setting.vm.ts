@@ -30,6 +30,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             baseDate: KnockoutObservable<Date>;
+            groupYear: KnockoutObservable<number>;
 
             // Start month.
             startMonth: KnockoutObservable<number>;
@@ -60,9 +61,15 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 let userId = __viewContext.user.employeeId;
                 let year = nts.uk.sessionStorage.nativeStorage.getItem("nts-uk-" + userId + "-kmk004-worktime-year-selection");
                 if (!nts.uk.util.isNullOrEmpty(year) && "null" != year) {
-                    self.worktimeSetting.normalSetting().year(parseInt(year));
+                    year = parseInt(year);
+                    self.worktimeSetting.normalSetting().year(year);
+                } else {
+                	year = new Date().getFullYear();
                 }
-                self.worktimeSetting.normalSetting().year.subscribe((v) => {
+                self.groupYear = ko.observable(year);
+                
+                self.groupYear.subscribe((v) => {
+                    self.worktimeSetting.updateYear(v);
                     if (nts.uk.util.isNullOrEmpty(v) || $('#worktimeYearPicker').ntsError('hasError')) {
                         return;
                     } else {
@@ -98,6 +105,8 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 
                 self.processPrevTabHandler($('#worktime-tab-2'), 'tab-1');
                 self.processPrevTabHandler($('#worktime-tab-3'), 'tab-2');
+
+                $('#worktimeYearPicker').focus();
             }
             
             private processTabToContent(obj:any, tabId:any) {
@@ -242,12 +251,11 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                     new ItemModelNumber(ReferencePredTimeOfFlex.FROM_RECORD, nts.uk.resource.getText("KMK004_148"))
                 ]);
                 self.referenceFlexPred = ko.observable(ReferencePredTimeOfFlex.FROM_MASTER);
-    
             }
             
             public setReferenceFlexPred(value? : number) : void {
                 if(!nts.uk.util.isNullOrEmpty(value)) {
-                    this.referenceFlexPred = ko.observable(value);
+                    this.referenceFlexPred(value);
                 }    
             }
                         

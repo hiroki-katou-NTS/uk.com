@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -71,15 +72,48 @@ public class OutingTimeSheet extends DomainObject {
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
 		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay(), null),
 																			  new TimeSpanForCalc(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay()),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
 																			  Optional.empty(),
+																			  Finally.of(this.reasonForGoOut),
 																			  Finally.empty(),
-																			  Finally.of(BreakClassification.BREAK),
-																			  DeductionClassification.BREAK
+																			  Optional.empty(),
+																			  DeductionClassification.GO_OUT,
+																			  Optional.empty()
 																			  );
 	}
 	
+	/**
+	 * 自信が計算できる状態か判定うる
+	 * @return 計算可能である
+	 */
+	public boolean isCalcState() {
+		return isCalcGoOut() && isCalcComeBack();
+	}
+	
+	/**
+	 * 外出時刻が計算できる状態になっているか判定する
+	 * (nullになっていないか)
+	 * @return 計算可能である。
+	 */
+	private boolean isCalcGoOut() {
+		if(this.getGoOut() != null && this.getGoOut().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;
+	}
+	
+	/**
+	 * 戻り時刻が計算できる状態になっているか判定する
+	 * (null になっていないか)
+	 * @return　 計算可能である。
+	 */
+	private boolean isCalcComeBack() {
+		if(this.getComeBack() != null && this.getComeBack().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;		
+	}
 }

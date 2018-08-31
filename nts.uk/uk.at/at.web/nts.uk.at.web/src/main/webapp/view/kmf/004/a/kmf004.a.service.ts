@@ -1,42 +1,135 @@
 module nts.uk.at.view.kmf004.a.service {
-     var paths: any = {
-        findAllSpecialHoliday: "shared/specialholiday/findByCid/",
-        deleteSpecialHoliday: "shared/specialholiday/delete",
-        addSpecialHoliday: "shared/specialholiday/add",
-        updateSpecialHoliday: "shared/specialholiday/update",
-        findWorkType: "at/screen/worktype/findAllSpe",
-        findEmployment: "bs/employee/employment/findAll",
-        findClass: "bs/employee/classification/findAll",
-        findAllGrantRelationship: "at/shared/grantrelationship/findAll/"
+    import format = nts.uk.text.format;
+    import ajax = nts.uk.request.ajax;
+    var paths: any = {
+        findByCid: "shared/specialholiday/findByCid",
+        getSpecialHoliday: "shared/specialholiday/getSpecialHoliday/{0}",
+        add: "shared/specialholiday/add",
+        update: "shared/specialholiday/update",
+        remove: "shared/specialholiday/delete",
+        getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
+        getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
+        findEmpByCodes: "bs/employee/employment/findByCodes",
+        findClsByCodes: "bs/employee/classification/getClsNameByCds"
+    }
+ 
+    export function findByCid(): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.findByCid);
+        return nts.uk.request.ajax("at", path);
     }
     
-    export function findAllGrantRelationship(specialHolidayCode: any): JQueryPromise<any>{
-        return nts.uk.request.ajax(paths.findAllGrantRelationship+specialHolidayCode);    
-    } 
-
-    export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
-        return nts.uk.request.ajax("at",paths.findAllSpecialHoliday);
+    export function getSpecialHoliday(specialHolidayCode: number): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.getSpecialHoliday, specialHolidayCode);
+        return nts.uk.request.ajax("at", path);
+    }
+ 
+    export function add(data: SpecialHolidayItem): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.add);
+        return nts.uk.request.ajax("at", path, data);
+    }
+ 
+    export function update(data: SpecialHolidayItem): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.update);
+        return nts.uk.request.ajax("at", path, data);
+    }
+ 
+    export function remove(specialHolidayCode: number): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.remove);
+        return nts.uk.request.ajax("at", path, { specialHolidayCode: specialHolidayCode });
+    }
+ 
+    export function getAllAbsenceFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllAbsenceFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+ 
+    export function getAllSpecialHolidayFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllSpecialHolidayFrame;
+        return nts.uk.request.ajax("at", path);
     }
 
-    export function deleteSpecialHoliday(specialholiday: any) { 
-        return nts.uk.request.ajax("at",paths.deleteSpecialHoliday, specialholiday)
+    export function findEmpByCodes(codes): JQueryPromise<any> {
+        return ajax("com", paths.findEmpByCodes,codes);
     }
-
-    export function addSpecialHoliday(specialholiday: any) {
-        return nts.uk.request.ajax("at", paths.addSpecialHoliday, specialholiday);
+    export function findClsByCodes(codes): JQueryPromise<any> {
+        return ajax("com",paths.findClsByCodes,codes);
     }
-
-    export function updateSpecialHoliday(specialholiday: any) {
-        return nts.uk.request.ajax("at",paths.updateSpecialHoliday, specialholiday);
+ 
+    export interface SpecialHolidayItem {
+        companyId: string,
+        specialHolidayCode: number,
+        specialHolidayName: string,
+        regularCommand: GrantRegular,
+        periodicCommand: GrantPeriodic,
+        leaveResCommand: SpecialLeaveRestriction,
+        targetItemCommand: TargetItem,
+        memo: string
     }
-    
-     export function findWorkType(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at",paths.findWorkType);
+ 
+    export interface GrantRegular {
+        companyId: string,
+        specialHolidayCode: number,
+        typeTime: number,
+        grantDate: number,
+        allowDisappear: number,
+        grantTime: GrantTime
     }
-     export function findEmployment(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com",paths.findEmployment);
+ 
+    export interface GrantTime {
+        fixGrantDate: FixGrantDate,
+        grantDateTbl: any
     }
-    export function findClass(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com",paths.findClass);
+ 
+    export interface FixGrantDate {
+        interval: number,
+        grantDays: number
+    }
+ 
+    export interface GrantPeriodic {
+        companyId: string,
+        specialHolidayCode: number,
+        timeSpecifyMethod: number,
+        availabilityPeriod: AvailabilityPeriod,
+        expirationDate: SpecialVacationDeadline,
+        limitCarryoverDays: number
+    }
+ 
+    export interface AvailabilityPeriod {
+        startDate: string,
+        endDate: string
+    }
+ 
+    export interface SpecialVacationDeadline {
+        months: number,
+        years: number
+    }
+ 
+    export interface SpecialLeaveRestriction {
+        companyId: string,
+        specialHolidayCode: number,
+        restrictionCls: number,
+        ageLimit: number,
+        genderRest: number,
+        restEmp: number,
+        listCls: Array<string>,
+        ageStandard: AgeStandard,
+        ageRange: AgeRange,
+        gender: number,
+        listEmp: Array<string>
+    }
+ 
+    export interface AgeStandard {
+        ageCriteriaCls: number,
+        ageBaseDate: string
+    }
+ 
+    export interface AgeRange {
+        ageLowerLimit: number,
+        ageHigherLimit: number
+    }
+ 
+    export interface TargetItem {
+        absenceFrameNo: Array<number>,
+        frameNo: Array<number>
     }
 }

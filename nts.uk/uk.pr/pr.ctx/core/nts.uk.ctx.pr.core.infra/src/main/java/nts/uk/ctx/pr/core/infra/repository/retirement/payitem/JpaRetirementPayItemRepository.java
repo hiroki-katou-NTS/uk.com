@@ -23,7 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
 @Stateless
 @Transactional
 public class JpaRetirementPayItemRepository extends JpaRepository implements RetirementPayItemRepository{
-	private final String SEL_1 = "SELECT a FROM QremtRetirePayItem a WHERE a.qremtRetirePayItemPK.companyCode = :companyCode";
+	private static final String SEL_1 = "SELECT a FROM QremtRetirePayItem a WHERE a.qremtRetirePayItemPK.companyCode = :companyCode";
 	
 	@Override
 	public Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, String itemCode) {

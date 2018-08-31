@@ -10,9 +10,8 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -94,13 +93,13 @@ public class DPHeaderDto {
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			DPHeaderDto dtoG = new DPHeaderDto("コード", "Code" + getCode(key), "String", String.valueOf(withChild) + "px",
 					"", false, "", "code", "search", false, false);
-			dtoG.setConstraint(new Constraint("Primitive", false, getPrimitiveName(item)));
+			dtoG.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 			groups.add(dtoG);
 			groups.add(new DPHeaderDto("名称", "Name" + getCode(key), "String", String.valueOf(withChild) + "px", "",
 					false, "Link2", false, false));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
-		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
+		} else if (item.getTypeGroup() != null && attendanceAtr == DailyAttendanceAtr.Classification.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			groups.add(new DPHeaderDto("NO", "NO" + getCode(key), "number", String.valueOf(withChild) + "px", "", false,
@@ -126,15 +125,20 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
-			// dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Time.value) {
-			// dto.setNtsControl("TextEditorTimeShortHM");
-			dto.setConstraint(new Constraint("Clock", false, ""));
+			if(item.getPrimitive() != null && item.getPrimitive() == 1){
+				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("00:00", "48:00"));
+			}else{
+				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-48:00", "48:00"));
+			}
+			//dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumberOfTime.value) {
-			dto.setConstraint(new Constraint("Integer", false, ""));
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
+		} else if(attendanceAtr == DailyAttendanceAtr.Charater.value){
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		}
 		return dto;
 	}
@@ -190,31 +194,35 @@ public class DPHeaderDto {
 		return lstHeader;
 	}
 
-	private static String getPrimitiveName(DPAttendanceItem item) {
-		if (item.getTypeGroup() != null) {
-			switch (item.getTypeGroup()) {
-			case 1:
-				return "WorkTypeCode";
-			case 2:
-				return "WorkTimeCode";
-			case 3:
-				return "WorkLocationCD";
-			case 4:
-				return "DiverdenceReasonCode";
-			case 5:
-				return "WorkplaceCode";
-			case 6:
-				return "ClassificationCode";
-			case 7:
-				return "JobTitleCode";
-			case 8:
-				return "EmploymentCode";
-			default:
-				return "";
-			}
-		} else {
-			return "WorkTypeCode";
-		}
-	}
+//	private static String getPrimitiveName(DPAttendanceItem item) {
+//		if (item.getTypeGroup() != null) {
+//			switch (item.getTypeGroup()) {
+//			case 1:
+//				return "WorkTypeCode";
+//			case 2:
+//				return "WorkTimeCode";
+//			case 3:
+//				return "WorkLocationCD";
+//			case 4:
+//				return "DiverdenceReasonCode";
+//			case 5:
+//				return "WorkplaceCode";
+//			case 6:
+//				return "ClassificationCode";
+//			case 7:
+//				return "JobTitleCode";
+//			case 8:
+//				return "EmploymentCode";
+//			default:
+//				return "";
+//			}
+//		} else {
+//			return "WorkTypeCode";
+//		}
+//	}
 
+	private static String getPrimitiveAllName(DPAttendanceItem item) {
+		if(item.getPrimitive() == null) return "";
+		return PrimitiveValueDaily.mapValuePrimitive.get(item.getPrimitive());
+	}
 }

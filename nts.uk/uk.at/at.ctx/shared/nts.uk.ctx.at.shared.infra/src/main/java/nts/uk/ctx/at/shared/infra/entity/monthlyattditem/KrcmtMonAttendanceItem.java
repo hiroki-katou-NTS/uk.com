@@ -6,6 +6,7 @@
 package nts.uk.ctx.at.shared.infra.entity.monthlyattditem;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -55,6 +56,10 @@ public class KrcmtMonAttendanceItem extends UkJpaEntity implements Serializable 
 	/**
 	 * Instantiates a new krcmt mon attendance item.
 	 */
+	
+	@Column(name = "PRIMITIVE_VALUE")
+	public BigDecimal primitiveValue;
+	
 	public KrcmtMonAttendanceItem() {
 		super();
 	}

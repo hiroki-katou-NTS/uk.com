@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalT
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
@@ -152,6 +153,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public List<KrcdtMonAggrSpecDays> krcdtMonAggrSpecDays;
 	
+	/** 縦計：勤務日数：集計特別休暇日数 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public List<KrcdtMonAggrSpvcDays> krcdtMonAggrSpvcDays;
+	
 	/** 縦計：勤務日数：月別実績の休業 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public KrcdtMonLeave krcdtMonLeave;
@@ -256,6 +261,7 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 					this.krcdtMonLeave,
 					this.krcdtMonAggrAbsnDays,
 					this.krcdtMonAggrSpecDays,
+					this.krcdtMonAggrSpvcDays,
 					this.krcdtMonAggrBnspyTime,
 					this.krcdtMonAggrGoout,
 					this.krcdtMonAggrPremTime,

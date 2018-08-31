@@ -28,16 +28,23 @@
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay					
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus
+					nts.uk.ctx.at.record.dom.daily.WorkTimes
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
 					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
 					nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD
-					nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
-					nts.uk.shr.com.primitive.WorkplaceCode
+					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
 					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
-					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
-					nts.uk.shr.com.primitive.sample.SampleTimeDuration
-					nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay
+					nts.uk.shr.com.primitive.WorkplaceCode
+					nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
+					nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes
+					nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks
+					nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+					nts.uk.shr.com.time.TimeWithDayAttr
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -181,32 +188,33 @@
 						<table id="dpGrid"></table>
 						<div id="sample-component"></div>
 					</div>
-					<div style = "margin-top: 5px" data-bind = "visible: isVisibleMIGrid">
+					<div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">
 						<table id="miGrid"></table>
 					</div>
 					<span style="margin: 10px 0 0 18px; display: inline-block;"
 						data-bind="text: comment"></span>
-					<div id="flex" data-bind="visible : showFlex">
-						<div>
-							<table id="flex-table">
-								<thead>
-									<tr>
-										<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
-										<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
-										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
-										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr data-bind="let: { fst: flexShortage() }">
-										<td class="ui-widget-body" id = "short-time"><span class="text-holiday"
-											data-bind="text: fst.shortageTime()"></span></td>
-										<td class="text-holiday ui-widget-body" id="next-month"><span
-											data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
-										</td>
-										<td class="ui-widget-body"><span class="text-holiday">
-												<input style="width: 55px"
-												data-bind="ntsNumberEditor: { 
+					<div class="Row">
+						<div class="Column" data-bind="visible : showFlex">
+							<div id="flex" data-bind="visible : showFlex">
+								<table id="flex-table">
+									<thead>
+										<tr>
+											<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
+											<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
+											<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
+											<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr data-bind="let: { fst: flexShortage() }">
+											<td class="ui-widget-body" id="short-time"><span
+												class="text-holiday" data-bind="text: fst.shortageTime()"></span></td>
+											<td class="text-holiday ui-widget-body" id="next-month"><span
+												data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
+											</td>
+											<td class="ui-widget-body"><span class="text-holiday">
+													<input style="width: 55px"
+													data-bind="ntsNumberEditor: { 
 														name: fst.nameNoOfHolidays, 
 														value: fst.noOfHolidays, 
 														constraint: 'AnnualLeaveGrantDay', 
@@ -215,11 +223,11 @@
 														enable: canFlex, 
 														readonly: false 
 													} ">
-											</input>
-										</span></td>
-										<td class="ui-widget-body"><span class="text-holiday">
-												<input style="width: 55px"
-												data-bind="ntsTimeEditor: {
+												</input>
+											</span></td>
+											<td class="ui-widget-body"><span class="text-holiday">
+													<input style="width: 55px"
+													data-bind="ntsTimeEditor: {
 														name: fst.nameAbsentDeductionTime, 
 														constraint: 'SampleTimeDuration', 
 														value: fst.absentDeductionTime, 
@@ -229,19 +237,42 @@
 														readonly: false, 
 														required: true
 													}"></input>
-										</span></td>
+											</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div id="text-flex">
+								<div>
+									<span style="color: red"
+										data-bind="text: flexShortage().messageRed"></span>
+								</div>
+								<div>
+									<span data-bind="text: flexShortage().messageNoForward"></span>
+								</div>
+							</div>
+						</div>
+						<div class="Column"
+							data-bind="let: { fst: agreementInfomation() }">
+							<table id="agree-table" data-bind="visible : fst.showAgreement()">
+								<thead>
+									<tr>
+										<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_73')}</th>
+										<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_75')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="ui-widget-body"><div id="agree-time">
+												<span class="text-holiday"
+													data-bind="text: fst.agreementTime()"></span>
+											</div></td>
+										<td class="ui-widget-body"><div id="agree-excess">
+												<span data-bind="text: fst.agreementExcess()"></span>
+											</div></td>
 									</tr>
 								</tbody>
 							</table>
-						</div>
-						<div id="text-flex">
-							<div>
-								<span style="color: red"
-									data-bind="text: flexShortage().messageRed"></span>
-							</div>
-							<div>
-								<span data-bind="text: flexShortage().messageNoForward"></span>
-							</div>
 						</div>
 					</div>
 				</div>

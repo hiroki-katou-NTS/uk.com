@@ -16,15 +16,15 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
 @Stateless
 public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLeaveGrantRepository {
 
-	private String GET_ALL_BY_SID_SPECIALCODE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode order by a.grantDate DESC";
+	private static final String GET_ALL_BY_SID_SPECIALCODE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode order by a.grantDate DESC";
 
-	private String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.specialLeaID = :specialLeaId";
+	private static final String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.specialLeaID = :specialLeaId";
 
-	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
+	private static final String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 
-	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
+	private static final String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
 	
-	private String GET_BY_PERIOD_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a"
+	private static final String GET_BY_PERIOD_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a"
 			+ " WHERE a.employeeId = :employeeId"
 			+ " AND a.specialLeaCode = :specialLeaCode"
 			+ " AND a.expStatus = :expStatus"
@@ -48,21 +48,21 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public void add(SpecialLeaveGrantRemainingData data) {
-
-		this.commandProxy().insert(toEntity(data));
+		if (data != null)
+			this.commandProxy().insert(toEntity(data));
 	}
 
 	@Override
 	public void update(SpecialLeaveGrantRemainingData data) {
-
-		Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
-				KrcmtSpecialLeaveReam.class);
-		if (entityOpt.isPresent()) {
-			KrcmtSpecialLeaveReam entity = entityOpt.get();
-			updateDetail(entity, data);
-			this.commandProxy().update(entity);
+		if (data != null) {
+			Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
+					KrcmtSpecialLeaveReam.class);
+			if (entityOpt.isPresent()) {
+				KrcmtSpecialLeaveReam entity = entityOpt.get();
+				updateDetail(entity, data);
+				this.commandProxy().update(entity);
+			}
 		}
-
 	}
 
 	@Override
@@ -206,14 +206,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
-			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+			LeaveExpirationStatus expirationStatus, GeneralDate ymd) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
 				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", sid)
 				.setParameter("specialLeaCode", specialLeaveCode)
 				.setParameter("expStatus", expirationStatus.value)
-				.setParameter("grantDate", grantDate)
-				.setParameter("deadlineDate", deadlineDate)
+				.setParameter("grantDate", ymd)
+				.setParameter("deadlineDate", ymd)
 				.getList();
 
 		return entities.stream()

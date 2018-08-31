@@ -21,8 +21,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
@@ -40,6 +38,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalT
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
@@ -51,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：月別実績の勤怠時間
@@ -81,12 +81,18 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
 			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
+			+ "ORDER BY a.PK.employeeId, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.startYmd <= :endDate "
 			+ "AND a.endYmd >= :startDate ";
+	
+	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.endYmd >= :startDate "
+			+ "AND a.endYmd <= :endDate "
+			+ "ORDER BY a.startYmd ";
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -172,6 +178,17 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
+				.getList(c -> c.toDomain());
+	}
+	
+	/** 検索　（終了日を含む期間） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
+		
+		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(c -> c.toDomain());
 	}
 			
@@ -389,6 +406,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			else {
 				entityAggrSpecDays.fromDomainForPersist(domainKey, specificDays);
 				entityAggrSpecDaysList.add(entityAggrSpecDays);
+			}
+		}
+		
+		// 縦計：勤務日数：集計特別休暇日数
+		val spcVactDaysMap = vtWorkDays.getSpecialVacationDays().getSpcVacationDaysList();
+		if (entity.krcdtMonAggrSpvcDays == null) entity.krcdtMonAggrSpvcDays = new ArrayList<>();
+		val entityAggrSpvcDaysList = entity.krcdtMonAggrSpvcDays;
+		entityAggrSpvcDaysList.removeIf(a -> {return !spcVactDaysMap.containsKey(a.PK.specialVacationFrameNo);} );
+		for (val spcVactDays : spcVactDaysMap.values()){
+			KrcdtMonAggrSpvcDays entityAggrSpvcDays = new KrcdtMonAggrSpvcDays();
+			val entityAggrSpvcDaysOpt = entityAggrSpvcDaysList.stream()
+					.filter(c -> c.PK.specialVacationFrameNo == spcVactDays.getSpcVacationFrameNo()).findFirst();
+			if (entityAggrSpvcDaysOpt.isPresent()){
+				entityAggrSpvcDays = entityAggrSpvcDaysOpt.get();
+				entityAggrSpvcDays.fromDomainForUpdate(spcVactDays);
+			}
+			else {
+				entityAggrSpvcDays.fromDomainForPersist(domainKey, spcVactDays);
+				entityAggrSpvcDaysList.add(entityAggrSpvcDays);
 			}
 		}
 		

@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortage;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFunRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -47,7 +47,7 @@ public class FlexInfoDisplayChange {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private DaiPerformanceFunRepository daiPerformanceFunRepository;
+	private IFindData findData;
 
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
@@ -59,13 +59,12 @@ public class FlexInfoDisplayChange {
 	private CheckBeforeCalcFlexChange checkBeforeCalcFlex;
 
 	// <<Public>> フレックス情報を表示する
-	public FlexShortageDto flexInfo(String employeeId, GeneralDate baseDate, String roleId,
+	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
 			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results) {
-		String companyId = AppContexts.user().companyId();
 		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId,
 				closingPeriod.get().getClosureEndDate());
 		// 取得しているドメインモデル「日別実績の修正の機能．フレックス勤務者のフレックス不足情報を表示する」をチェックする
-		Optional<DaiPerformanceFun> daiFunOpt = daiPerformanceFunRepository.getDaiPerformanceFunById(companyId);
+		Optional<DaiPerformanceFun> daiFunOpt = findData.getDailyPerformFun(companyId);
 		if (!daiFunOpt.isPresent() || daiFunOpt.get().getFlexDispAtr() == 0) {
 			return new FlexShortageDto().createShowFlex(false);
 		}
@@ -93,10 +92,10 @@ public class FlexInfoDisplayChange {
 //		Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
 //				.findFirst();
 		calcFlex.createWCItem(workConditions);
-		String condition = checkBeforeCalcFlex.getConditionCalcFlex(calcFlex);
+		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex);
 		dataMonth.createRedConditionMessage(condition);
 		dataMonth.createNotForward("");
-		if (condition.equals("0:00")) {
+		if (!condition.equals("0:00")) {
 			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
 		}
 

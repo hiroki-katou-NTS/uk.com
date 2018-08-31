@@ -85,9 +85,9 @@ public class HolidayWorkTimeSheet{
 			}
 			//枠追加
 			else {
-				holidayWorkFrameTime.getFrameTime().addHolidayTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				
 				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
-										 holidayWorkFrameTime.getFrameTime()
+										 holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime)
 										 );
 			}
 		}
@@ -184,9 +184,8 @@ public class HolidayWorkTimeSheet{
 	 */
 	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
-		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
-			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}
@@ -269,10 +268,11 @@ public class HolidayWorkTimeSheet{
 			//時間の上限時間算出
 			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getTime());
 			//計算時間の上限算出
-			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime());
+//			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime());
 			//振替処理
 			loopHolidayTimeFrame = loopHolidayTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getTime():upperTime,
-																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime));
+//																														 upperCalcTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime())?loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime():upperCalcTime)
+																															   loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime()));
 			
 			returnList.add(loopHolidayTimeFrame);
 		}
@@ -334,8 +334,14 @@ public class HolidayWorkTimeSheet{
 			return Optional.of(eachWorkTimeSet.get().getSubHolTimeSet());
 		}
 		else {
-			if(eachCompanyTimeSet.isPresent())
-				return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+			if(eachCompanyTimeSet.isPresent()) {
+				if(eachCompanyTimeSet.get().getTransferSetting().isUseDivision()) {
+					return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+				}
+				else {
+					return Optional.empty();
+				}
+			}
 		}
 		return Optional.empty();
 	}

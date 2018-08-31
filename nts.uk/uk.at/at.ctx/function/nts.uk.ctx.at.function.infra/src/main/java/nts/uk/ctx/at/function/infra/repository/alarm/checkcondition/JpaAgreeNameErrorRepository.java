@@ -16,9 +16,9 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36A
 
 @Stateless
 public class JpaAgreeNameErrorRepository extends JpaRepository implements IAgreeNameErrorRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeName c ";
-	private final String SELECT_PERIOD = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeNamePK.period = :period ";
-	private final String SELECT_ERROR_ALARM = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeNamePK.errorAlarm = :errorAlarm ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeName c ";
+	private static final String SELECT_PERIOD = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeNamePK.period = :period ";
+	private static final String SELECT_ERROR_ALARM = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeNamePK.errorAlarm = :errorAlarm ";
 
 	/**
 	 * convert from entity to domain

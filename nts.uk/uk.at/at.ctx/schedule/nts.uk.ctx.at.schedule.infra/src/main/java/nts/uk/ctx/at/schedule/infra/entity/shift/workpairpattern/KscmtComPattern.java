@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -41,7 +42,7 @@ public class KscmtComPattern extends UkJpaEntity implements Serializable {
 	@Column(name = "NOTE")
 	public String note;
 
-	@OneToMany(targetEntity=KscmtComPatternItem.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPattern", orphanRemoval = true)
+	@OneToMany(targetEntity=KscmtComPatternItem.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPattern", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCMT_COM_PATTERN_ITEM")
 	public List<KscmtComPatternItem> kscmtComPatternItem;
 

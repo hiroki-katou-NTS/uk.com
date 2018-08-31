@@ -1,5 +1,8 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,12 +60,10 @@ public class OptionalWidgetInfoDto {
 	private YearlyHoliday yearlyHoliday = new YearlyHoliday();
 	
 	/** 16 Reserved Years Remain Number 積立年休残数 */
-	private int reservedYearsRemainNo = 0;
+	private RemainingNumber reservedYearsRemainNo = new RemainingNumber();
 	
 	/** 18 Remain Alternation Number 代休残数 */
 	private double remainAlternationNoDay = 0.0;
-	
-	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
 	private double remainsLeft = 0.0;
@@ -70,14 +71,14 @@ public class OptionalWidgetInfoDto {
 	/** Public Holiday Number 公休残数 */
 	private int publicHDNo = 0;
 	
-	/** 21 Holiday Remain Number 子の看護休暇残数 */
-	private int hDRemainNo = 0;
+	/** 21 Child nursing vacation remaining number 子の看護休暇残数 */
+	private RemainingNumber childRemainNo = new RemainingNumber();
 	
 	/** 22 Care Leave Number 介護休暇残数 */
-	private int careLeaveNo = 0;
+	private RemainingNumber careLeaveNo = new RemainingNumber();
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
-	private int sPHDRamainNo = 0;
+	private List<RemainingNumber> sPHDRamainNo = new ArrayList<>();
 	
 	/** ６０Ｈ超休残数 */
 	private TimeOT extraRest = new TimeOT(0, 0);

@@ -37,6 +37,9 @@ public class WkpAutoCalSetting extends BaseAutoCalSetting {
 		this.normalOTTime = memento.getNormalOTTime();
 		this.flexOTTime = memento.getFlexOTTime();
 		this.restTime = memento.getRestTime();
+		this.leaveEarly = memento.getLeaveEarly();
+		this.raisingSalary = memento.getRaisingSalary();
+		this.divergenceTime = memento.getDivergenceTime();
 	}
 
 	/**
@@ -51,6 +54,9 @@ public class WkpAutoCalSetting extends BaseAutoCalSetting {
 		memento.setFlexOTTime(this.flexOTTime);
 		memento.setNormalOTTime(this.normalOTTime);
 		memento.setRestTime(this.restTime);
+		memento.setLeaveEarly(this.leaveEarly);
+		memento.setRaisingSalary(this.raisingSalary);
+		memento.setDivergenceTime(this.divergenceTime);
 	}
 
 	/*

@@ -35,7 +35,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	public void insert(ContinuousHolCheckSet setting){
 		this.commandProxy().insert(KrcctOtkVacationCk.fromDomain(setting));
 		this.commandProxy().insertAll(toNonTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
-		this.commandProxy().insertAll(toTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
+		this.commandProxy().insertAll(toTarget(setting.getTargetWorkType(), setting.getCompanyId()));
 	}
 	
 	public void update(ContinuousHolCheckSet setting){
@@ -47,11 +47,13 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			if(!entity.krcctOtkWtTarget.isEmpty()){
 				this.commandProxy().removeAll(entity.krcctOtkWtTarget);
 			}
-			entity.continuousDays = setting.getMaxContinuousDays();
+			this.getEntityManager().flush();
+			entity.continuousDays = setting.getMaxContinuousDays().v();
 			entity.messageDisplay = setting.getDisplayMessege().v();
 			entity.useAtr = setting.isUseAtr() ? 1 : 0;
 			this.commandProxy().insertAll(toNonTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
-			this.commandProxy().insertAll(toTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
+			this.commandProxy().insertAll(toTarget(setting.getTargetWorkType(), setting.getCompanyId()));
+			this.getEntityManager().flush();
 		}
 	}
 	

@@ -107,6 +107,20 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "RE_TRANSFER")
 	public int recreateTransfers;
 	
+	/* 承認ルート更新（日次）.承認ルート更新区分 */
+	@Column(name = "APP_ROUTE_UPDATE_ATR_DAI")
+	public int appRouteUpdateAtr;
+	
+	/* 承認ルート更新（日次）.新入社員を作成する*/
+	@Column(name = "CREATE_NEW_EMP")
+	public Integer createNewEmp;
+	
+	/* 承認ルート更新（月次） */
+	@Column(name = "APP_ROUTE_UPDATE_ATR_MON")
+	public int appRouteUpdateAtrMon;
+	
+	
+	
 	@OneToOne
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
@@ -123,7 +137,8 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int indvAlarmCls, int indvMailPrin,
-			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int recreateTypeChangePerson, int recreateTransfers) {
+			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int recreateTypeChangePerson, int recreateTransfers,
+			int appRouteUpdateAtr,Integer createNewEmp,int appRouteUpdateAtrMon) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -147,5 +162,8 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.wkpMailMng = wkpMailMng;
 		this.recreateTypeChangePerson =recreateTypeChangePerson;
 		this.recreateTransfers = recreateTransfers;
+		this.appRouteUpdateAtr = appRouteUpdateAtr;
+		this.createNewEmp = createNewEmp;
+		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
 	}
 }

@@ -216,12 +216,8 @@ module nts.uk.com.view.cmf001.q {
                                 });
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
-                                    self.timeNow = new Date();
-                                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60);
-                                    let time = new Date(null);
-                                    time.setSeconds(over); // specify value for SECONDS here
-                                    let result = time.toISOString().substr(11, 8);
-
+                                    let timeNow = new Date();
+                                    let result = moment.utc(moment(timeNow, "HH:mm:ss").diff(moment(self.timeStart, "HH:mm:ss"))).format("HH:mm:ss");
                                     self.timeOver(result);
                                 }
                             }

@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay.QapmtAvePay;
 @Transactional
 public class JpaAveragePayRepository extends JpaRepository implements AveragePayRepository {
 	
-	private final String SEL_1 = "SELECT a FROM QapmtAvePay a WHERE a.companyCode = :companyCode";
+	private static final String SEL_1 = "SELECT a FROM QapmtAvePay a WHERE a.companyCode = :companyCode";
 	
 	@Override
 	public void register(AveragePay averagePay) {

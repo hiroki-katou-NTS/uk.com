@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.application.gobackdirectly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -20,6 +22,9 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	public static final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
 			+ " WHERE c.krqdtGoBackDirectlyPK.companyID =:companyID"
 			+ " AND c.krqdtGoBackDirectlyPK.appID =:appID ";
+	public static final String FIND_BY_LIST_APPID = SELECT_NO_WHERE 
+			+ " WHERE c.krqdtGoBackDirectlyPK.companyID = :companyID"
+			+ " AND c.krqdtGoBackDirectlyPK.appID IN :lstAppID ";
 
 	/**
 	 * @param krqdtGoBackDirectly
@@ -124,6 +129,23 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	@Override
 	public void delete(String companyID, String appID) {
 		this.commandProxy().remove(KrqdtGoBackDirectly.class, new KrqdtGoBackDirectlyPK(companyID, appID));
+	}
+	/**
+	 * @author hoatt
+	 * get List Application Go Back
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public List<GoBackDirectly> getListAppGoBack(String companyID, List<String> lstAppID) {
+		if(lstAppID.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtGoBackDirectly.class)
+				.setParameter("companyID", companyID)
+				.setParameter("lstAppID", lstAppID)
+                .getList(item -> toDomain(item));
 	}
 
 }

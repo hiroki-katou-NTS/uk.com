@@ -46,7 +46,7 @@ module a6 {
             var self = this;
             self.fixTableOptionFlow = {
                 maxRow: 5,
-                minRow: 1,
+                minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
@@ -209,6 +209,7 @@ module a6 {
                     defaultValue: ko.observable(0),
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
+                            name: '#[KMK003_174]',
                             constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',

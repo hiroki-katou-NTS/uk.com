@@ -218,7 +218,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             });
             if (selectedPublicHoliday !== undefined) {
                 self.isCreate(false);
-                self.selectedPublicHoliday(new PublicHolidayObs(selectedPublicHoliday.date, selectedPublicHoliday.holidayName));
+                self.selectedPublicHoliday(new PublicHolidayObs(selectedPublicHoliday.date, _.unescape(selectedPublicHoliday.holidayName)));
                 _.defer(() => { $("#name").focus(); });
             }
             else {
@@ -262,7 +262,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         }
 
         toPublicHoliday(): PublicHoliday {
-            return new PublicHoliday(this.date(), this.holidayName());
+            return new PublicHoliday(this.date(), _.escape(this.holidayName()));
         }
     }
 

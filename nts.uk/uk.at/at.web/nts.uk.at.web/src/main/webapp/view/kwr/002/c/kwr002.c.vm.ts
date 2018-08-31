@@ -59,7 +59,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealName6 = ko.observable('');
             self.currentCode = ko.observable(0);
 
-            console.log(self.attendanceCode());
+//            console.log(self.attendanceCode());
 
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KWR002_86'), key: 'attendanceItemId', width: 100 },
@@ -339,7 +339,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         }
                     }
 
-
                 });
 
                 service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
@@ -381,7 +380,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
             service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
                 if (listAttendanceItem.length > 0) {
-                    self.attendanceItemListMonthly(listAttendanceItem);
+                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
                 }
             });
 
@@ -392,6 +391,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.attendanceItemListDaily.push(item);
                     })
 
+                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
                     self.attendanceItemList(self.attendanceItemListDaily());
                 }
 

@@ -1,6 +1,7 @@
 module nts.uk.at.view.kwr001.d {
     
     import service = nts.uk.at.view.kwr001.d.service;
+    import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
         export class ScreenModel {
@@ -35,7 +36,10 @@ module nts.uk.at.view.kwr001.d {
                         arr.push(new ItemModel(value.code, value.name));
                     })
                     self.itemList(arr);
-                    dfd.resolve();      
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError({ messageId: err.messageId, messageParams: err.parameterIds });
+                    dfd.resolve();
                 })
                 return dfd.promise();
             }
@@ -55,6 +59,7 @@ module nts.uk.at.view.kwr001.d {
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
+                blockUI.grayout();
                 service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR001_D')).done(function(data: any) {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
@@ -62,8 +67,17 @@ module nts.uk.at.view.kwr001.d {
                     nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.alertError(err);
+                    if (err.messageId == "Msg_3") {
+                        $(".D1_6").ntsError('set', { messageId: "Msg_3"});
+                    } else {
+                        dataReturnScrC.error = err;
+                        nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
+                        nts.uk.ui.windows.close();
+                    }
+                }).always(function() {
+                    blockUI.clear();  
                 })
+                
             }
         };
         

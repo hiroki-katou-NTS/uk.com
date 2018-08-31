@@ -76,7 +76,7 @@ module nts.uk.com.view.cmm011.a {
                         return;
                     }
                     // load again tree workplace
-                    self.treeWorkplace().findLstWorkplace(newValue).done(() => {
+                    self.treeWorkplace().findLstWorkplace(newValue, false).done(() => {
                         if (self.treeWorkplace().lstWorkplace() && self.treeWorkplace().lstWorkplace().length > 0) {
                             
                             // reload workplace history
@@ -185,9 +185,9 @@ module nts.uk.com.view.cmm011.a {
                         
                         // show message notice
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            
+                           
                             // find list workplace
-                            self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
+                            self.treeWorkplace().findLstWorkplace(self.strDWorkplace(), true).done(() => {
                                 
                                 // set choose item first of list
                                 if (self.treeWorkplace().lstWorkplace().length > 0) {
@@ -234,7 +234,7 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         
                         // find list workplace
-                        self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
+                        self.treeWorkplace().findLstWorkplace(self.strDWorkplace(), false).done(() => {
                             
                             // check new mode
                             if (self.isNewMode()) {
@@ -541,9 +541,6 @@ module nts.uk.com.view.cmm011.a {
                     // convert tree to array
                     self.treeArray(self.convertTreeToArray(dataList));
                     
-                    // calculate with column name
-                    self.calWidthColText();
-                    
                     // existed workplace
                     self.parentModel.isNewMode(false);
                 });
@@ -584,7 +581,7 @@ module nts.uk.com.view.cmm011.a {
             /**
              * findLstWorkplace
              */
-            public findLstWorkplace(startDate: string): JQueryPromise<void> {
+            public findLstWorkplace(startDate: string, isRemove: boolean): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<any>();
 
@@ -598,6 +595,10 @@ module nts.uk.com.view.cmm011.a {
                 service.findLstWorkPlace(new Date(startDate)).done((res: Array<TreeWorkplace>) => {
                     nts.uk.ui.block.clear();
                     
+                    if (isRemove){
+                        self.selectedWpkId(null);
+                    }
+                     
                     // set data
                     self.lstWorkplace(res);
                     
@@ -607,9 +608,8 @@ module nts.uk.com.view.cmm011.a {
 
                     if (res.messageId == 'Msg_373') {
                         nts.uk.ui.dialog.info({messageId: res.messageId}).then(() => {
-                            self.lstWorkplace([]);
                             // reset selected workplace when list empty
-                            self.parentModel.treeWorkplace().selectedWpkId(null);
+                            self.newMode();
                         });
                     } else {
                         self.parentModel.showMessageError(res);
@@ -617,7 +617,19 @@ module nts.uk.com.view.cmm011.a {
                 });
                 return dfd.promise();
             }
-
+            
+            public newMode(){
+                let self = this;
+                
+                self.parentModel.treeWorkplace().selectedWpkId(null);
+                self.lstWorkplace([]);
+                self.parentModel.workplaceCode(null);
+                self.parentModel.externalCode(null);
+                self.parentModel.workplaceName(null);
+                self.parentModel.wkpDisplayName(null);
+                self.parentModel.wkpFullName(null);
+            }
+            
             /**
              * selectFirst
              */
@@ -671,7 +683,7 @@ module nts.uk.com.view.cmm011.a {
             /**
              * updateTree
              */
-            private updateTree(dataList: Array<TreeWorkplace>) {
+            public updateTree(dataList: Array<TreeWorkplace>) {
                 let self = this;
                 for (let item of dataList) {
                     item.nodeText = item.code + " " + item.name;
@@ -698,47 +710,6 @@ module nts.uk.com.view.cmm011.a {
                 return hierarchyCode;
             }
 
-            /**
-             * calWidthColText
-             */
-            private calWidthColText() {
-                let self = this;
-                
-                //  calculate max with column text 
-                let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
-                
-                // calculate height tree
-                self.calHeightTree(maxSizeNameCol);
-                
-                // set properties tree columns
-                self.treeColumns = [
-                    { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
-                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol,
-                        dataType: "string" }
-                ];
-                
-                // re-binding
-                let $treeGrid: any = $("#single-tree-grid");
-                ko.cleanNode($treeGrid[0]);
-                ko.applyBindings(self, $treeGrid[0]);
-            }
-
-            /**
-             * calHeightTree
-             */
-            private calHeightTree(widthColText: number) {
-                let self = this;
-                let heightRow = 24, heightScrollX = 0, maxRows = 20, heightHeader = 24;
-
-                // check has scroll-x
-                if (widthColText > self.treeStyle.width) {
-                    heightScrollX = 18;
-                }
-
-                // calculate height tree
-                self.treeStyle.height = heightRow * maxRows + heightHeader + heightScrollX;
-            }
-            
             /**
              * getMaxSizeOfTextList
              */
@@ -780,7 +751,7 @@ module nts.uk.com.view.cmm011.a {
             /**
              * convertTreeToArray
              */
-            private convertTreeToArray(dataList: Array<TreeWorkplace>): Array<any> {
+            public convertTreeToArray(dataList: Array<TreeWorkplace>): Array<any> {
                 let self = this;
                 let res: Array<any> = [];
                 _.forEach(dataList, function(item) {
@@ -844,6 +815,8 @@ module nts.uk.com.view.cmm011.a {
                     // reload workplace history
                     if (isModeAdd) {
                         self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                        console.log(self.lstWpkHistory());
+                        
                     }
                 });
             }
@@ -942,6 +915,7 @@ module nts.uk.com.view.cmm011.a {
                     endDate: nts.uk.resource.getText("CMM011_27")
                 };
                 self.lstWpkHistory([newHist]);
+                self.selectedHistoryId(newHist.historyId);
             }
 
             /**
@@ -966,7 +940,7 @@ module nts.uk.com.view.cmm011.a {
                         }
                         return 0;
                     });
-                    self.selectedHistoryId(result[0].historyId);
+                    self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                 }
                 
             }

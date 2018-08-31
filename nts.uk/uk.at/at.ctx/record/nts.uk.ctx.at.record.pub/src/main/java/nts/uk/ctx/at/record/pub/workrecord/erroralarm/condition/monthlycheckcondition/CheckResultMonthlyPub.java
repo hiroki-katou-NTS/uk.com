@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcon
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Check36AgreementValue;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.AttendanceItemConditionPubExport;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 public interface CheckResultMonthlyPub {
 	/**
@@ -29,7 +31,7 @@ public interface CheckResultMonthlyPub {
 	 * @param agreementCheckCon36
 	 * @return
 	 */
-	boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year,AgreementCheckCon36PubEx agreementCheckCon36);
+	Check36AgreementValue check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36PubEx agreementCheckCon36);
 	
 	/**
 	 * 月別実績をチェックする 
@@ -40,5 +42,5 @@ public interface CheckResultMonthlyPub {
 	 * @param attendanceItemCondition
 	 * @return
 	 */
-	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, Integer closureDate,String employeeID,AttendanceItemConditionPubExport attendanceItemCondition);
+	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemConditionPubExport attendanceItemCondition);
 }

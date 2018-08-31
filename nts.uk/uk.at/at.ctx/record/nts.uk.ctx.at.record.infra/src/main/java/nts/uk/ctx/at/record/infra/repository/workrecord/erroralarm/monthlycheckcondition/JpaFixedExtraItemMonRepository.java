@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 @Stateless
 public class JpaFixedExtraItemMonRepository extends JpaRepository implements FixedExtraItemMonRepository  {
 
-	private final String SELECT_FROM_FIXED_EXTRA_ITEM = " SELECT c FROM KrcmtFixedExtraItemMon c ";
+	private static final String SELECT_FROM_FIXED_EXTRA_ITEM = " SELECT c FROM KrcmtFixedExtraItemMon c ";
 	
 	@Override
 	public List<FixedExtraItemMon> getAllFixedExtraItemMon() {

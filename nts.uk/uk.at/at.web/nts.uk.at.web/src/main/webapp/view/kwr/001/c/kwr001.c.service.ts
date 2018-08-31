@@ -9,6 +9,8 @@ module nts.uk.at.view.kwr001.c {
            remove: "at/function/dailyworkschedule/delete",
            getEnumName: "at/function/dailyworkschedule/enumName",
            getEnumRemarkContentChoice: "at/function/dailyworkschedule/enumRemarkContentChoice",
+           getEnumRemarkInputContent: "at/function/dailyworkschedule/enumRemarkInputContent",
+           findByCode: "at/function/dailyworkschedule/findByCode",
         }
         
         export function getDataStartPage(): JQueryPromise<any> {
@@ -29,6 +31,14 @@ module nts.uk.at.view.kwr001.c {
         
         export function getEnumRemarkContentChoice(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getEnumRemarkContentChoice);
+        }
+        
+        export function getEnumRemarkInputContent(): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getEnumRemarkInputContent);
+        }
+        
+        export function findByCode(code: string): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.findByCode + SLASH + code);
         }
     }
 }

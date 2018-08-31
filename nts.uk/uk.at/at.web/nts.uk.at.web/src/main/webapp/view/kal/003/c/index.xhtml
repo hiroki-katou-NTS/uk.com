@@ -53,19 +53,20 @@
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_95')}</div>
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
 				 	<button data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KDW007_73')}</button>
-				 	<input id="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
+				 	<input style="width: 100px;" id="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
 					 	name: '#[KDW007_101]',
 					 	value: displayTargetAtdItems, 
 					 	readonly: true, 
 					 	required: true}" />
 				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
-					 	<div id="compareOperator-cbb" data-bind="ntsComboBox: {
+					 	<div id="compareOperator-cbb" data-bind=" ntsComboBox: {
 							options: enumCompareOperator,
 							optionsValue: 'code',
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
 							enable: true,
 							visibleItemsCount: 4,
+							width : 262,
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>

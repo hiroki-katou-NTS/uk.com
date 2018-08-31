@@ -1,18 +1,27 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.MonthlyRecordValuesImport;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
@@ -24,9 +33,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 /**
  * 月次の集計処理
  * @author tutk
@@ -53,6 +68,12 @@ public class MonthlyAggregateProcessService {
 	@Inject
 	private CheckResultMonthlyAdapter checkResultMonthlyAdapter;
 	
+	@Inject
+	private ClosureService closureService;
+	
+	@Inject
+	private AttendanceItemNameDomainService attdItemNameDomainService;
+	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
 		
 		
@@ -75,6 +96,7 @@ public class MonthlyAggregateProcessService {
 		DatePeriod endDatePerior = new DatePeriod(period.end(),period.end());
 		List<String> listEmployeeID = responseImprovementAdapter.reduceTargetResponseImprovement(employeeIds, endDatePerior, alCheckConByCategory.get().getExtractTargetCondition());
 		
+		
 		//対象者の件数をチェック : 対象者　≦　0
 		if(listEmployeeID.isEmpty()) {
 			return Collections.emptyList();
@@ -93,8 +115,29 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		GeneralDate lastDateInPeriod = period.end();
+		
+		
 		
 		for(EmployeeSearchDto employee : employees) {
+			//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+			if(closure == null)
+				continue;
+			int closureID= closure.getClosureId().value;
+			ClosureDate closureDate = null;
+			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
+				String endYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0');
+				GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
+						+ endYM + '-' + String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
+				String startYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0');
+				GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-' 
+						+ startYM + '-' +"01", "yyyy-MM-dd");
+				if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
+					closureDate = ClosureHistory.getClosureDate();
+					break;
+				}
+			}
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -115,8 +158,12 @@ public class MonthlyAggregateProcessService {
 							case 2 :break;//chua co
 							case 3 :break;//chua co
 							case 4 :
-								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue());
+								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID,closureDate);
 								if(agreement.isPresent()) {
+									agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
+									agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+									String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
+									agreement.get().setAlarmValueDate(dateAgreement);
 									listValueExtractAlarm.add(agreement.get());
 								}
 							break;
@@ -140,88 +187,453 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		GeneralDate lastDateInPeriod = period.end();
+		
+		GeneralDate tempStart = period.start();
+		GeneralDate tempEnd = period.end();
+		YearMonth startYearMonth = tempStart.yearMonth();
+		YearMonth endYearMonth = tempEnd.yearMonth();
+		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYearMonth, endYearMonth);
+		List<MonthlyRecordValuesImport> monthlyRecords;
+		List<Integer> itemIds = Arrays.asList(202,203,204,205,206);
+		
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
+			if(!extra.isUseAtr())
+				continue;
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
+					
+					//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+					Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+					if(closure == null)
+						continue;
+					int closureID= closure.getClosureId().value;
+					ClosureDate closureDate = null;
+					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
+						GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
+								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0')  + '-' 
+								+ String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
+						GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-'
+								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0') + '-'
+								+ "01", "yyyy-MM-dd");
+						if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
+							closureDate = ClosureHistory.getClosureDate();
+							break;
+						}
+					}
 					switch (extra.getTypeCheckItem()) {
 					case 0:
-						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
-								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon());
-						if(checkPublicHoliday) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_209"),
-									TextResource.localize("KAL010_210"),
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
+//						boolean checkPublicHoliday = checkResultMonthlyAdapter.checkPublicHoliday(companyId, employee.getCode(), employee.getId(),
+//								employee.getWorkplaceId(), true, yearMonth, extra.getSpecHolidayCheckCon());
+//						if(checkPublicHoliday) {
+//							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+//									employee.getWorkplaceId(),
+//									employee.getId(),
+//									this.yearmonthToString(yearMonth),
+//									TextResource.localize("KAL010_100"),
+//									TextResource.localize("KAL010_209"),
+//									TextResource.localize("KAL010_210"),
+//									extra.getDisplayMessage()
+//									);
+//							listValueExtractAlarm.add(resultMonthlyValue);
+//						}
 						break;
-					case 1:
-						//TODO : chua biet date là gì
-						GeneralDate date = GeneralDate.today();
-						boolean checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date, 
-								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-						if(checkAgreementError) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_204"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_205"),
-									
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						break;
-					case 2:
-						//TODO : chua biet date là gì
-						GeneralDate date2 = GeneralDate.today();
-						boolean checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(companyId, employee.getId(), date2, 
-								yearMonth,new Year(yearMonth.year()),extra.getAgreementCheckCon36());
-						if(checkAgreementAlarm) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_206"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_207"),
-									
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						if(true) {
+					case 1: // 36協定エラー時間  
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if(!CollectionUtil.isEmpty(monthlyRecords)){
+						if(closure == null){
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_204"),
+												TextResource.localize("KAL010_205",
+												this.timeToString(check36AgreementValueImport.getErrorValue())), 
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+						}else{
+							List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
+							for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
+								if (monthlyRecordValuesImport.getClosureId().value == closureID) {
+									monthlyFilterResult.add(monthlyRecordValuesImport);
+								}
+							}
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(), monthlyFilterResult ,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_204"),
+												TextResource.localize("KAL010_205",
+												this.timeToString(check36AgreementValueImport.getErrorValue())), 
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
 							
 						}
-						
+						}
 						break;
-					case 4 : 
-						//Chưa có, chưa thiết kế	
+					case 2: // 36協定アラーム時間 
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if(closure == null) {
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+												this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+						}else{
+							List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
+							for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
+								if (monthlyRecordValuesImport.getClosureId().value == closureID) {
+									monthlyFilterResult.add(monthlyRecordValuesImport);
+								}
+							}
+							List<Check36AgreementValueImport> lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(), monthlyFilterResult ,extra.getAgreementCheckCon36());
+							if(!CollectionUtil.isEmpty(lstReturnStatus)){
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if(check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(),
+												employee.getId(),
+												this.yearmonthToString(yearMonth),
+												TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+												this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage()
+												);
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
+							
+						}
+						break;
+					case 3 :
 						break;
 					default:
 						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
-								yearMonth, 1, 1, employee.getId(), extra.getCheckConMonthly());
+								yearMonth, closureID,closureDate, employee.getId(), extra.getCheckConMonthly());
+						//true
 						if(checkPerTimeMonActualResult) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									yearMonth.toString(),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_60"),
-									//TODO : còn thiếu
-									TextResource.localize("KAL010_207"),//fix tạm
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
+							if(extra.getTypeCheckItem() ==8) {
+								String alarmDescription1 = "";
+								String alarmDescription2 = "";
+								List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon();
+								
+								//group 1 
+								for(ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemCon ) {
+									int compare = erAlAtdItemCon.getCompareOperator();
+									String startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue());
+									String endValue= "";
+									String nameErrorAlarm = "";
+									//get name attdanceName 
+									if(!erAlAtdItemCon.getCountableAddAtdItems().isEmpty()) {
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), 0);
+										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+									}else {
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), 0);
+										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+									}
+									//if type = time
+									if(erAlAtdItemCon.getConditionAtr() == 1) {
+										startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
+									}
+									CompareOperatorText compareOperatorText = convertCompareType(compare);
+									//0 : AND, 1 : OR
+									String compareAndOr = "";
+									if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+										compareAndOr = "AND";
+									}else {
+										compareAndOr = "OR";
+									}
+									if(!alarmDescription1.equals("")) {
+										alarmDescription1 += compareAndOr +" ";
+									}
+									if(compare<=5) {
+										alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+//												startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
+									}else {
+										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
+										if(erAlAtdItemCon.getConditionAtr() == 1) {
+											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
+										}
+										else if(compare>5 && compare<=7) {
+											alarmDescription1 += startValue +" "+
+													compareOperatorText.getCompareLeft()+ " "+
+													nameErrorAlarm+ " "+
+													compareOperatorText.getCompareright()+ " "+
+													endValue+ " ";	
+										}else {
+											alarmDescription1 += nameErrorAlarm + " "+
+													compareOperatorText.getCompareLeft()+ " "+
+													startValue + ","+endValue+ " "+
+													compareOperatorText.getCompareright()+ " "+
+													nameErrorAlarm+ " " ;
+										}
+									}
+								}
+//								if(listErAlAtdItemCon.size()>1)
+//									alarmDescription1 = "("+alarmDescription1+")";
+								
+								if(extra.getCheckConMonthly().isGroup2UseAtr()) {
+									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon();
+									//group 2 
+									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
+										int compare = erAlAtdItemCon2.getCompareOperator();
+										String startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue());
+										String endValue= "";
+										String nameErrorAlarm = "";
+										//get name attdanceName 
+										if(!erAlAtdItemCon2.getCountableAddAtdItems().isEmpty()) {
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), 0);
+											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+										}else {
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), 0);
+											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+										}
+										//if type = time
+										if(erAlAtdItemCon2.getConditionAtr() == 1) {
+											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
+										}
+										CompareOperatorText compareOperatorText = convertCompareType(compare);
+										//0 : AND, 1 : OR
+										String compareAndOr = "";
+										if(extra.getCheckConMonthly().getGroup2().getConditionOperator() == 0) {
+											compareAndOr = "AND";
+										}else {
+											compareAndOr = "OR";
+										}
+										if(!alarmDescription2.equals("")) {
+											alarmDescription2 += compareAndOr +" ";
+										}
+										if(compare<=5) {
+											alarmDescription2 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+//													startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
+										}else {
+											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
+											if(erAlAtdItemCon2.getConditionAtr() == 1) {
+												endValue = this.timeToString(erAlAtdItemCon2.getCompareEndValue().intValue());
+											}
+											if(compare>5 && compare<=7) {
+												alarmDescription2 += startValue +" "+
+														compareOperatorText.getCompareLeft()+ " "+
+														nameErrorAlarm+ " "+
+														compareOperatorText.getCompareright()+ " "+
+														endValue+ " ";	
+											}else {
+												alarmDescription2 += nameErrorAlarm + " "+
+														compareOperatorText.getCompareLeft()+ " "+
+														startValue + ","+endValue+ " "+
+														compareOperatorText.getCompareright()+ " "+
+														nameErrorAlarm+ " " ;
+											}
+										}
+									}//end for
+//									
+//									if(listErAlAtdItemCon2.size()>1)
+//										alarmDescription2 = "("+alarmDescription2+")";
+								}
+								String alarmDescriptionValue= "";
+								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+									}
+								}else{
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") OR ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+								}
+								}
+									
+									
+								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+										employee.getWorkplaceId(),
+										employee.getId(),
+										this.yearmonthToString(yearMonth),
+										TextResource.localize("KAL010_100"),
+										TextResource.localize("KAL010_60"),
+										alarmDescriptionValue,	
+										extra.getDisplayMessage()
+										);
+								listValueExtractAlarm.add(resultMonthlyValue);
+							}else {
+								ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon().get(0);
+								int compare = erAlAtdItemConAdapterDto.getCompareOperator();
+								BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
+								BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
+								CompareOperatorText compareOperatorText = convertCompareType(compare);
+								String nameErrorAlarm = "";
+								//0 is monthly,1 is dayly
+								if(!erAlAtdItemConAdapterDto.getCountableAddAtdItems().isEmpty()) {
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), 0);
+									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+								}else {
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), 0);
+									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+								}
+								
+								
+								String nameItem = "";
+								String alarmDescription = "";
+								switch(extra.getTypeCheckItem()) {
+								case 4 ://時間
+									nameItem = TextResource.localize("KAL010_47");
+									String startValueTime = this.timeToString(startValue.intValue());
+									String endValueTime = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
+									}else {
+										endValueTime = this.timeToString(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueTime,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright()+
+													endValueTime
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueTime + ","+endValueTime,
+													compareOperatorText.getCompareright()+
+													nameErrorAlarm
+													);
+										}
+									}
+									
+									break;
+								case 5 ://日数
+									nameItem = TextResource.localize("KAL010_113");
+									String startValueDays = String.valueOf(startValue.intValue());
+									String endValueDays = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueDays);
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueDays,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright(),
+													endValueDays
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueDays + "," + endValueDays,
+													compareOperatorText.getCompareright(),
+													nameErrorAlarm
+													);
+										}
+									}
+									break;
+								case 6 ://回数
+									nameItem = TextResource.localize("KAL010_50");
+									String startValueTimes = String.valueOf(startValue.intValue());
+									String endValueTimes = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTimes);
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright()+
+													endValueTimes
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueTimes + "," + endValueTimes,
+													compareOperatorText.getCompareright()+
+													nameErrorAlarm
+													);
+										}
+									}
+									break;
+								case 7 ://金額 money
+									nameItem = TextResource.localize("KAL010_51");
+									String startValueMoney = String.valueOf(startValue.intValue());
+									String endValueMoney = "";
+									if(compare<=5) {
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney+".00");
+									}else {
+										endValueDays = String.valueOf(endValue.intValue());
+										if(compare>5 && compare<=7) {
+											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
+													compareOperatorText.getCompareLeft(),
+													nameErrorAlarm,
+													compareOperatorText.getCompareright()+
+													endValueMoney+".00"
+													);	
+										}else {
+											alarmDescription = TextResource.localize("KAL010_277",
+													nameErrorAlarm,
+													compareOperatorText.getCompareLeft(),
+													startValueMoney + ".00," + endValueMoney+".00",
+													compareOperatorText.getCompareright()+
+													nameErrorAlarm
+													);
+										}
+									}
+									break;
+								default : break;
+								}
+								
+								
+								
+								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+										employee.getWorkplaceId(),
+										employee.getId(),
+										this.yearmonthToString(yearMonth),
+										TextResource.localize("KAL010_100"),
+										nameItem,
+										//TODO : còn thiếu
+										alarmDescription,//fix tạm
+										
+										extra.getDisplayMessage()
+										);
+								listValueExtractAlarm.add(resultMonthlyValue);
+							}
 						}
 						
 						break;
@@ -233,6 +645,69 @@ public class MonthlyAggregateProcessService {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private String timeToString(int value ){
+		if(value%60<10){
+			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
+		}
+		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
+	}
+	
+	private String yearmonthToString(YearMonth yearMonth){
+		if(yearMonth.month()<10){
+			return  String.valueOf(yearMonth.year())+"/0"+  String.valueOf(yearMonth.month());
+		}
+		return String.valueOf(yearMonth.year())+"/"+  String.valueOf(yearMonth.month());
+	}
+	
+	private CompareOperatorText convertCompareType(int compareOperator) {
+		CompareOperatorText compare = new CompareOperatorText();
+		switch(compareOperator) {
+		case 0 :/* 等しい（＝） */
+			compare.setCompareLeft("＝");
+			compare.setCompareright("");
+			break; 
+		case 1 :/* 等しくない（≠） */
+			compare.setCompareLeft("≠");
+			compare.setCompareright("");
+			break; 
+		case 2 :/* より大きい（＞） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("");
+			break;
+		case 3 :/* 以上（≧） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("");
+			break;
+		case 4 :/* より小さい（＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("");
+			break;
+		case 5 :/* 以下（≦） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("");
+			break;
+		case 6 :/* 範囲の間（境界値を含まない）（＜＞） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
+			break;
+		case 7 :/* 範囲の間（境界値を含む）（≦≧） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
+			break;
+		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("＞");
+			break;
+		
+		default :/* 範囲の外（境界値を含む）（≧≦） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("≧");
+			break; 
+		}
+		
+		return compare;
 	}
 		
 

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -132,6 +133,17 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
+	
+	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DailyWork dailyWork) {
+		super();
+		this.workTypeCode = workTypeCode;
+		this.symbolicName = symbolicName;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+		this.memo = memo;
+		this.dailyWork = dailyWork;
+	}
 
 	/**
 	 * 
@@ -182,6 +194,31 @@ public class WorkType extends AggregateRoot {
 				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
+	}
+	
+	/**
+	 * 
+	 * @param workTypeCode
+	 * @param name
+	 * @param abbreviationName
+	 * @param symbolicName
+	 * @param memo
+	 * @param workTypeUnit
+	 * @param oneDay
+	 * @param morning
+	 * @param afternoon
+	 * @return
+	 */
+	public static WorkType createSimpleFromJavaType(String workTypeCode, String name, String abbreviationName,
+			String symbolicName, String memo, int workTypeUnit, int oneDay, int morning, int afternoon) {
+		DailyWork dailyWork = new DailyWork();
+		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
+		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
+		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
+		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
+		return new WorkType(new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
+				dailyWork);
 	}
 
 	/**
@@ -325,6 +362,15 @@ public class WorkType extends AggregateRoot {
 
 	public boolean getDecisionAttendanceHolidayAttr() {
 		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+	}
+	
+	public Optional<HolidayAtr> getHolidayAtr() {
+		if(this.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts ->ts.getHolidayAtr()).findFirst();
+		}
+		else {
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isAfterNoon()).map(ts ->ts.getHolidayAtr()).findFirst();
+		}
 	}
 	
 	

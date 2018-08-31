@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -51,12 +53,34 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	public static CommonDaysOfMonthlyDto from(SpcVacationDaysOfMonthly domain) {
+		CommonDaysOfMonthlyDto dto = new CommonDaysOfMonthlyDto();
+		if (domain != null) {
+			dto.setDaysList(ConvertHelper.mapTo(domain.getSpcVacationDaysList(),
+					c -> new CommonAggregateDaysDto(c.getValue().getSpcVacationFrameNo(),
+							c.getValue().getDays() == null ? 0 : c.getValue().getDays().v(),
+							c.getValue().getTime() == null ? 0 : c.getValue().getTime().v())));
+			dto.setTotalAbsenceDays(domain.getTotalSpcVacationDays() == null ? 0 : domain.getTotalSpcVacationDays().v());
+			dto.setTotalAbsenceTime(domain.getTotalSpcVacationTime() == null ? 0 : domain.getTotalSpcVacationTime().valueAsMinutes());
+		}
+		return dto;
+	}
 	
 	public AbsenceDaysOfMonthly toAbsenceDays() {
 		return AbsenceDaysOfMonthly.of(
 					new AttendanceDaysMonth(totalAbsenceDays),
 					new AttendanceTimeMonth(totalAbsenceTime),
 					ConvertHelper.mapTo(daysList, c -> AggregateAbsenceDays.of(c.getNo(),
+									new AttendanceDaysMonth(c.getDays()),
+									new AttendanceTimeMonth(c.getTime()))));
+	}
+	
+	public SpcVacationDaysOfMonthly toSpcVacationDays() {
+		return SpcVacationDaysOfMonthly.of(
+					new AttendanceDaysMonth(totalAbsenceDays),
+					new AttendanceTimeMonth(totalAbsenceTime),
+					ConvertHelper.mapTo(daysList, c -> AggregateSpcVacationDays.of(c.getNo(),
 									new AttendanceDaysMonth(c.getDays()),
 									new AttendanceTimeMonth(c.getTime()))));
 	}

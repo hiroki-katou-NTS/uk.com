@@ -94,6 +94,26 @@
 										enable: isManageCompen }">
 							</span></td>
 						</tr>
+						
+						<!-- F2_24 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_154')}</label></td>
+							<td class="pad_over_left_80">
+								<div tabindex="5" class="combo-box"
+									data-bind="ntsComboBox: {
+										options: deadlCheckMonthEnums,
+										optionsValue: 'value',
+										value: compenDeadlCheckMonth,
+										visibleItemsCount: 6,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: isManageCompen,
+										columns: [
+											{ prop: 'localizedName', length: 10 },
+										]}"></div>
+							</td>
+						</tr>
+						
 						<tr>
 							<td colspan="6">
 								<div class ="margin_right_50" data-bind="ntsFormLabel: {}">

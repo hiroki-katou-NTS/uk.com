@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 670, height: 720 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kdl009.a.start.js" />
+				<com:scriptfile path="kdl009.a.vm.js" />
+				<com:scriptfile path="kdl009.a.service.js" />
+				<com:stylefile path="kdl009.a.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<table>
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL009_3')}</div></td>
+							<td>
+								<label><span data-bind="text: employeeInfo"></span></label>
+							</td>
+						</tr>
+					</table>
+					
+					<hr />
+					
+					<button tabindex="1" class="inline" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KDL009_16')}</button>
+					
+					<div class="date-fixed-table">
+						<table id="date-fixed-table">
+							<colgroup>
+								<col width="220px"/>
+								<col width="220px"/>
+								<col width="150px"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">#{i18n.getText('KDL009_4')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KDL009_5')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KDL009_6')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<com:ko-foreach bind="dataItems">
+									<com:ko-if bind="isHalfDay">
+										<tr>
+											<td rowspan="2">
+												<span style="float: left; padding-left: 10px;" data-bind="text: issueDate"></span> 
+												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
+											</td> 
+		 									<td>
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: holidayDateTop"></span> 
+		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
+	 										</td>
+		 									<td rowspan="2"><span style="float: left; padding-left: 10px;" data-bind="text: expirationDate"></span></td>
+										</tr>
+										<tr>
+											<td>
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: holidayDateBot"></span> 
+		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Bot"></span>
+	 										</td>
+										</tr>
+									</com:ko-if>
+									
+									<com:ko-if bind="!isHalfDay">
+										<tr>
+											<td>
+												<span style="float: left; padding-left: 10px;" data-bind="text: issueDate"></span> 
+												<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays1"></span>
+											</td> 
+		 									<td>
+		 										<span style="float: left; padding-left: 10px;" data-bind="text: holidayDateTop"></span> 
+		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2Top"></span>
+	 										</td>
+		 									<td><span style="float: left; padding-left: 10px;" data-bind="text: expirationDate"></span></td>
+										</tr>
+									</com:ko-if>
+								</com:ko-foreach>
+							</tbody>
+						</table>
+						
+						<table class="summary-table">
+							<tr>
+								<td width="100px">#{i18n.getText('KDL009_7')}</td>
+								<td width="60px"><label><span data-bind="text: value01"></span></label></td>
+								<td width="80px"></td>
+							</tr>
+							<tr>
+								<td>#{i18n.getText('KDL009_8')}</td>
+								<td><label><span data-bind="text: value02"></span></label></td>
+								<td><label><span data-bind="text: hint02"></span></label></td>
+							</tr>
+							<tr>
+								<td>#{i18n.getText('KDL009_9')}</td>
+								<td><label><span data-bind="text: value03"></span></label></td>
+								<td><label><span data-bind="text: hint03"></span></label></td>
+							</tr>
+							<tr>
+								<td>#{i18n.getText('KDL009_10')}</td>
+								<td><label><span data-bind="text: value04"></span></label></td>
+								<td><label><span data-bind="text: hint04"></span></label></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div id="functions-area-bottom">
+					<button tabindex="3" id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KDL009_2')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

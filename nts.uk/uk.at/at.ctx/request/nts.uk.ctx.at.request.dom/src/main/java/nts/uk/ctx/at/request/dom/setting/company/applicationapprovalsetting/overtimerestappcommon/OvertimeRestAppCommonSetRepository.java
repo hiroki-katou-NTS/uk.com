@@ -10,5 +10,7 @@ public interface OvertimeRestAppCommonSetRepository {
 	 */
 	Optional<OvertimeRestAppCommonSetting> getOvertimeRestAppCommonSetting(String companyID, int appType);
 	
+	void update(OvertimeRestAppCommonSetting otRestAppCommonSet);
 	
+	void insert(OvertimeRestAppCommonSetting domain);
 }

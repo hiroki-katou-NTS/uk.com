@@ -15,8 +15,8 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit.QtxmtCommuNotax
 @Stateless
 public class JpaCommuteNoTaxLimitRepository extends JpaRepository implements CommuteNoTaxLimitRepository {
 
-	private final String SELECT_BY_COMPANYCODE = "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd";
-	private final String SELECT_BY_TAXLIMITCODE= "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd AND c.qtxmtCommuNotaxLimitPK.commuNotaxLimitCd = :commuNotaxLimitCd";
+	private static final String SELECT_BY_COMPANYCODE = "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd";
+	private static final String SELECT_BY_TAXLIMITCODE= "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd AND c.qtxmtCommuNotaxLimitPK.commuNotaxLimitCd = :commuNotaxLimitCd";
 
 	@Override
 	public List<CommuteNoTaxLimit> getCommuteNoTaxLimitByCompanyCode(String companyCode) {

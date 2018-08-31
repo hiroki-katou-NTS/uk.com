@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -119,7 +120,12 @@ public class IntegrationOfDaily {
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;
 		this.pcLogOnInfo = pcLogOnInfo;
-		this.employeeError = new ArrayList<>(employeeError);
+		if(employeeError != null) {
+			this.employeeError = new ArrayList<>(employeeError);
+		}
+		else {
+			this.employeeError = Collections.emptyList();
+		}
 		this.outingTime = outingTime;
 		this.breakTime = breakTime;
 		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
@@ -137,7 +143,7 @@ public class IntegrationOfDaily {
 	/**
 	 * 残業時間実績超過の取得
 	 * @param attendanceItemConverter 
-	 * @param integrationOfDaily
+//	 * @param integrationOfDaily
 	 */
 	public  List<EmployeeDailyPerError> getErrorList(String employeeId,
 			   											 GeneralDate targetDate,
@@ -147,6 +153,14 @@ public class IntegrationOfDaily {
 			return this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
 		return Collections.emptyList();
+	}
+	
+	public void stampReplaceFromPcLogInfo(List<LogOnInfo> pcLogOnInfo) {
+		if(this.getAttendanceLeave().isPresent()) {
+			this.getAttendanceLeave().get().getTimeLeavingWorks().forEach(tc ->{
+				tc.setStampFromPCLogOn(pcLogOnInfo.stream().filter(ts -> ts.getWorkNo().v().equals(tc.getWorkNo().v())).findFirst());
+			});
+		}
 	}
 	
 }

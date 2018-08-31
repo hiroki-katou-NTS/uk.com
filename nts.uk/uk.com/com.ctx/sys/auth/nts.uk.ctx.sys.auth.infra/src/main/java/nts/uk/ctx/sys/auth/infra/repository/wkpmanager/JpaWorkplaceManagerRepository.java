@@ -22,6 +22,10 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ " WHERE wm.workplaceId = :workplaceId ORDER BY wm.employeeId, wm.startDate";	
 	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWorkplaceManager wm"
 			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
+	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWorkplaceManager wm"
+			+ " WHERE wm.workplaceId = :workplaceId" 
+			+ " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
+			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 	
 
 	/**
@@ -80,6 +84,17 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		return this.queryProxy().query(SELECT_ALL_BY_SID_BASE_DATE, SacmtWorkplaceManager.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("baseDate", baseDate).getList(c -> c.toDomain());
+	}
+
+
+	@Override
+	public List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate,
+			List<String> wkpManagerIDLst) {
+		return this.queryProxy().query(FIND_BY_WKP_DATE_MANAGER, SacmtWorkplaceManager.class)
+				.setParameter("workplaceId", wkpID)
+				.setParameter("baseDate", baseDate)
+				.setParameter("wkpManagerLst", wkpManagerIDLst)
+				.getList(c -> c.toDomain());
 	}
 	
 }

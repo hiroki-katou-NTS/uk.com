@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.ejb.Stateless;
 
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
+import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -60,9 +62,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant REPORT_PAGE_ADDR. */
 	private static final String REPORT_PAGE_ADDR = "A1:AO";
 
-	/** The Constant PAGE_NUMBER_ADDR. */
-	private static final String PAGE_NUMBER_ADDR = "AD%d:AO%d";
-
 	/** The Constant MONTHLY_DATA_ADDR. */
 	private static final String MONTHLY_DATA_ADDR = "C%d:Z%d";
 
@@ -80,25 +79,28 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
-			.asList(new String[] { "AN6", "AL6", "AJ6", "AH6", "AF6", "AD6" });
-
+			.asList(new String[] { "AN1", "AL1", "AJ1", "AH1", "AF1", "AD1" });
+	
 	/** The Constant END_REPORT_COL2. */
-	private static final String END_REPORT_COL2 = "AO";
+	private static final String END_REPORT_PAGE_BREAK= "AP";
 
 	/** The Constant REPORT_LEFT_COL_ADDR. */
 	private static final String REPORT_LEFT_COL_ADDR = "A%d:T%d";
 
 	/** The Constant REPORT_RIGHT_COL_ADDR. */
 	private static final String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
+	
+	/** The Constant PRINT_TITLE_ROW. */
+	private static final String PRINT_TITLE_ROW = "$6:$7";
 
 	/** The Constant START_EMPLOYEE_DATA_ROW. */
-	private static final int START_EMPLOYEE_DATA_ROW = 11;
+	private static final int START_EMPLOYEE_DATA_ROW = 5;
 
 	/** The Constant START_REPORT_DATA_ROW. */
-	private static final int START_REPORT_DATA_ROW = 14;
+	private static final int START_REPORT_DATA_ROW = 8;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
-	private static final int MAX_ROW_PER_EMPL = 51;
+	private static final int MAX_ROW_PER_EMPL = 45;
 
 	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
@@ -118,11 +120,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant EMPL_YEARMONTH_INDEX. */
 	private static final int EMPL_YEARMONTH_INDEX = 16;
 
-	/** The Constant PAGE_NUMBER_START_ROW. */
-	private static final int PAGE_NUMBER_START_ROW = 3;
-
 	/** The Constant MONTHLY_DATA_START_ROW. */
-	private static final int MONTHLY_DATA_START_ROW = 8;
+	private static final int MONTHLY_DATA_START_ROW = 3;
 
 	/** The Constant REPORT_ROW_BG_WHITE. */
 	private static final int REPORT_ROW_BG_WHITE = 1;
@@ -203,13 +202,25 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
-
-					if (dataSource.getMode() == EXPORT_PDF) {
-						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-					}
-
+					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+					
+					// Set header value
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16" + dataSource.getData().getReportName());
+					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9&D　&T\npage&P");
+					
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
+					
+					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
+					if (dataSource.getMode() == EXPORT_EXCEL) {
+						pageSetup.setZoom(100);
+					} else if (dataSource.getMode() == EXPORT_PDF) {
+						pageSetup.setFitToPagesTall(1);
+						pageSetup.setFitToPagesWide(1);
+					}
+					
 				}
 			}
 
@@ -278,11 +289,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			AttendanceRecordReportEmployeeData employeeData, int page, Range pageTmpl, Range dailyWTmpl,
 			Range dailyBTmpl, Range weeklyRangeTmpl) throws Exception {
 
-		// Add page number
-		Range pageNumberRange = worksheet.getCells().createRange(String.format(PAGE_NUMBER_ADDR,
-				(startNewPage + PAGE_NUMBER_START_ROW), (startNewPage + PAGE_NUMBER_START_ROW + 1)));
-		pageNumberRange.get(0, 0).setValue(page + "" + pageNumberRange.get(0, 0).getValue());
-
 		// Add monthly data
 		Range monththDataRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
 				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
@@ -326,8 +332,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// update start page row value
 		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
 
+		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
+		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-		hPageBreaks.add(END_REPORT_COL2 + (startNewPage + 1));
+		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 
 		return startNewPage;
 	}

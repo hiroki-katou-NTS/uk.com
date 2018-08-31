@@ -22,7 +22,7 @@ public class DeletePublicHolidayCommandHandler extends CommandHandler<DeletePubl
 	@Inject
 	PublicHolidayService publicHolidayService;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<DeletePublicHolidayCommand> context) {

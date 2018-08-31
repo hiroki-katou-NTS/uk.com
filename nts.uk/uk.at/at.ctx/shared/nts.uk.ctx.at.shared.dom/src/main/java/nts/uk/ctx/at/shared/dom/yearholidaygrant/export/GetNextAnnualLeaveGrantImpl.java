@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -43,5 +46,19 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 				this.lengthServiceRepo,
 				this.grantYearHolidayRepo);
 		return proc.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay);
+	}
+	
+	/** 次回年休付与を取得する */
+	@Override
+	public List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
+			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
+			Optional<List<LengthServiceTbl>> lengthServiceTbls) {
+		
+		GetNextAnnualLeaveGrantProc proc = new GetNextAnnualLeaveGrantProc(
+				this.yearHolidayRepo,
+				this.lengthServiceRepo,
+				this.grantYearHolidayRepo);
+		return proc.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
+				grantHdTblSet, lengthServiceTbls);
 	}
 }

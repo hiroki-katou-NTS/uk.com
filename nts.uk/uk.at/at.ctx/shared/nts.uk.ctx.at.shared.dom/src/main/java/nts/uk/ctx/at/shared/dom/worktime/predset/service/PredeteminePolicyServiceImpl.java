@@ -79,9 +79,7 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	@Override
 	public void compareWithOneDayRange(BundledBusinessException be, PredetemineTimeSetting pred,
 			LateEarlyGraceTime lateEarlyGraceTime) {
-		if (lateEarlyGraceTime.valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
-			be.addMessage("Msg_517");
-		}
+		
 	}
 
 	/*

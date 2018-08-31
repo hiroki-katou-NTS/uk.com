@@ -142,7 +142,7 @@ module nts.uk.at.view.ksu007.a {
                 self.isEmployeeOfWorkplace = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
-                self.isSelectAllEmployee = ko.observable(true);
+                self.isSelectAllEmployee = ko.observable(false);
                 self.baseDate = ko.observable(moment());
                 self.periodStartDate = ko.observable(moment());
                 self.periodEndDate = ko.observable(moment());
@@ -155,7 +155,7 @@ module nts.uk.at.view.ksu007.a {
                 self.leaveOfAbsence = ko.observable(true); // 休職区分
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(true); // 退職区分
-                self.systemType = ko.observable(1);
+                self.systemType = ko.observable(2);
                 self.showClosure = ko.observable(false); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
@@ -301,11 +301,23 @@ module nts.uk.at.view.ksu007.a {
 
             }
             
+            private validate(): boolean {
+                var self = this;
+                let dfd = $.Deferred<void>();
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError'))
+                    return false;
+                return true;
+            }
+            
             /**
              * function call service save ScheduleBatchCorrectSetting by button is click
              */
             private saveScheduleBatchCorrectSettingProcess() {
                 var self = this;
+                if (!self.validate())
+                    return;
+                
                 //return if has error
                 if (nts.uk.ui.errors.hasError()) {
                     return;

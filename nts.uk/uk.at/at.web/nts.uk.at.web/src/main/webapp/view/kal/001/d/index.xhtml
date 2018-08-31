@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				    var dialogSize = {
+				        width : 550,
+				        height : 300
+				    };
+            </script>
+			<com:stylefile path="kal001.d.style.css" />
+			<com:scriptfile path="kal001.d.service.js" />
+			<com:scriptfile path="kal001.d.vm.js" />
+			<com:scriptfile path="kal001.d.start.js" />
+
+		</ui:define>
+
+		<ui:define name="content">
+		<div style="overflow-y: hidden;">
+			<!--D1_1-->
+			<div id="titleScreen">
+				<label>#{i18n.getText('KAL001_28')}</label>
+			</div>
+			<div id="bodyScreen">
+				<table>
+					<tr>
+						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_29')}</label></td>
+						<td class="columnRight"><label class="labeRight" data-bind="text: timeStartStr" /></td>
+					</tr>
+					<tr>
+						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_30')}</label></td>
+						<td><label class="labeRight" data-bind="text: timeEnd"/></td>
+					</tr>
+					<tr>
+						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_32')}</label></td>
+						<td><label class="labeRight" data-bind="text: timeProcess"/></td>
+					</tr>
+					<tr>
+						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_33')}</label></td>
+						<td>
+							<label class="labeRight" data-bind="text: numberEmpSuccess"/>
+							<label data-bind="text: strSlash"/>
+							<label data-bind="text: totalEmployees"/>
+							<label data-bind="text: strPersion"/>
+							<label class="labeRight" data-bind="text: strFinish, visible :displayStrFinish"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<hr />
+			<center>
+				<com:ko-if bind="(dialogMode() == true)">
+ 						<button tabindex="1" id="D3_1" data-bind="click : interrupt" class="danger">#{i18n.getText('KAL001_36')}</button> 
+ 				</com:ko-if>
+ 				<com:ko-if bind="(dialogMode() == false)">
+	 					<button tabindex="2" id="D3_2" data-bind="click : closePopup" >#{i18n.getText('KAL001_37')}</button> 
+				</com:ko-if>
+			</center>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -10,6 +10,9 @@ module nts.uk.ui {
     
     /** Event to notify ViewModel built to bind. */
     export var viewModelBuilt = $.Callbacks();
+    
+    /** Event to notify ViewModel applied bindings. */
+    export var viewModelApplied = $.Callbacks();
 
     
     // Kiban ViewModel
@@ -23,12 +26,12 @@ module nts.uk.ui {
             this.systemName = ko.observable("");
             this.programName = ko.observable("");
             this.title = ko.computed(() => {
-                let pgName = this.programName();
-                if (pgName === "" || pgName === undefined || pgName === null) {
-                    return this.systemName();
-                }
+//                let pgName = this.programName();
+//                if (pgName === "" || pgName === undefined || pgName === null) {
+                return this.systemName();
+//                }
                 
-                return this.programName() + " - " + this.systemName();
+//                return this.programName() + " - " + this.systemName();
             });
             this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
         }
@@ -64,9 +67,11 @@ module nts.uk.ui {
             
             ko.applyBindings(_viewModel);
             
+            viewModelApplied.fire(_viewModel);
+            
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
-            
+            nts.uk.cookie.remove("startfrommenu", {path: "/"});
             //avoid page content overlap header and function area
             var content_height=20;
             if ($("#header").length != 0) {
@@ -85,8 +90,7 @@ module nts.uk.ui {
         
         var startP = function(){
             _.defer(() => {
-                if (request.location.current.rawUrl.indexOf("view/common/error/sessiontimeout") === -1
-                    && request.location.current.rawUrl.indexOf("/view/ccg/007") === -1) {
+                if (cantCall()) {
                     loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
                 } else {
                     _start.call(__viewContext);
@@ -115,6 +119,20 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        const noSessionWebScreens = [
+            "/view/sample/",
+            "/view/common/error/",
+            "/view/spr/index.xhtml",
+            "/view/ccg/007/",
+            "/view/kdw/003/a/index.xhtml",
+            "/view/ccg/033/index.xhtml"
+        ];
+        
+        let cantCall = function() {
+            return !_.some(noSessionWebScreens, w => request.location.current.rawUrl.indexOf(w) > -1)
+                || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
+        };
         
         let loadEmployeeCodeConstraints = function() {
             let self = this,

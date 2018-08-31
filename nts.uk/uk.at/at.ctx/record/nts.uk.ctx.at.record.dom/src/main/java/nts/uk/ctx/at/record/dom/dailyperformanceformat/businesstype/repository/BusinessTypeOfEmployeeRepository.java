@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface BusinessTypeOfEmployeeRepository {
 	/**
@@ -41,5 +42,11 @@ public interface BusinessTypeOfEmployeeRepository {
 	 */
 	Optional<BusinessTypeOfEmployee> findByHistoryId(String historyId);
 	
-
+	/**
+	 * find all by list employeeId, date
+	 * 
+	 * @param businessTypeCodes
+	 * @return List BusinessTypeOfEmployee
+	 */
+	List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date);
 }

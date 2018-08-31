@@ -89,8 +89,11 @@ public class MailNoticeSetSaveCommandHandler extends CommandHandler<MailNoticeSe
 						throw bundledBusinessExceptions;
 					}
 				} else {
-					// Update password - Request List 384
-					this.passwordAdapter.updatePassword(userId, newPassword);
+					if (!StringUtil.isNullOrEmpty(oldPassword, true) && !StringUtil.isNullOrEmpty(newPassword, true)
+							&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
+						// Update password - Request List 384
+						this.passwordAdapter.updatePassword(userId, newPassword);
+					}
 				}
 			}
 		}

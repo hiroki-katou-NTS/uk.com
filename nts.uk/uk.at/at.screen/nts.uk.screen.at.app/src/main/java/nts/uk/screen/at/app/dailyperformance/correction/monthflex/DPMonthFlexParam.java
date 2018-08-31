@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 @NoArgsConstructor
 public class DPMonthFlexParam {
 
+	private String companyId;
 	private String employeeId;
 	private GeneralDate date;
 	private String employmentCode;

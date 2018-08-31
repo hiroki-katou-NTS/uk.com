@@ -25,7 +25,7 @@
 }
 
 .accordion {
-	width: 390px;
+	width: 450px;
 }
 
 .accordion label {
@@ -70,18 +70,6 @@
 
 .btn_small {
 	padding-bottom: 6px;
-}
-
-.caret-background.caret-bottom:after {
-	left: 36%;
-	color: #AEEE60;
-	border-width: 18px 52px;
-	margin-top: 4px;
-}
-
-#btn_apply {
-	margin-left: 15px;
-	width: 70px;
 }
 
 #workplaceList {
@@ -159,12 +147,6 @@
 	overflow: hidden;
 }
 
-#hor-scroll-button-hide {
-	z-index: 997;
-	position: fixed;
-	display: table;
-}
-
 .ccg001-icon-btn-big {
 	width: 40px;
 	height: 35px;
@@ -183,20 +165,6 @@
 	width: 25px;
 	height: 25px;
 	background-size: 25px 25px;
-}
-.icon-28-expand {
-	background: url(icon/28.png);
-	width: 22px;
-	height: 22px;
-	background-size: 22px 22px;
-	margin-right: 5px;
-}
-.icon-29-collapse {
-	background: url(icon/29.png);
-	width: 22px;
-	height: 22px;
-	background-size: 22px 22px;
-	margin-right: 5px;
 }
 .icon-47-white-check-mark {
 	background: url(icon/47.png);
@@ -232,16 +200,22 @@
 	border-width: 32px 16px;
 	margin-left: 5px;
 }
-.ccg-tabpanel #nts-component-list {
-	padding: 0px !important;
+#hor-scroll-button-hide > .ccg001-caret-vertical:after {
+	margin-left: 55px;
 }
-
 #ccg001-btn-apply-search-condition {
 	margin-bottom: 14px;
 	margin-left: 10px;
+	margin-right: 10px;
 }
 .margin-left-10 {
 	margin-left: 10px;
+}
+.position-mid {
+	position: fixed;
+	top: 50%;
+	transform: translate(0, -50%);
+	z-index: 997;
 }
 .ccg-tabpanel {
 	background-color: #F2F2F2;
@@ -261,4 +235,28 @@
 }
 .ccg001-cell.bot {
 	vertical-align: bottom;
+}
+
+#ccg001-btn-search-drawer {
+	height: 250px;
+	transition: height 100ms ease-in-out;
+}
+
+#sidebar .sidebar-content #ccg001-btn-search-drawer {
+	border-left: 8px solid #2ECC71;	
+}
+
+#sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
+	border-left-color: #2BBF6A;
+}
+.has-state.disabled .ccg001-btn {
+	background-color: #b0d3b5;
+	color: #888888;
+	cursor: default;
+}
+.has-state.disabled .ccg001-caret::after {
+	color: #b0d3b5;
+}
+.has-state.disabled .ccg-lbl-vertical, .has-state.disabled label {
+	cursor: default;
 }

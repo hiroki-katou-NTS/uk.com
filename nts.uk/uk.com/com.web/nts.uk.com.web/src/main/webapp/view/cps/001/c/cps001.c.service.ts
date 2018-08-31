@@ -3,10 +3,10 @@ module cps001.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getListEmployeeDataMngInfo': 'basic/organization/deleteempmanagement/getallemployeetodelete',
-        'getDetail': 'basic/organization/deleteempmanagement/getdetailemployeetodelete/{0}',
-        'restoreData': 'basic/organization/deleteempmanagement/restoredata',
-        'deleteEmp': 'basic/organization/deleteempmanagement/deleteemp/{0}'
+        'getListEmployeeDataMngInfo': 'ctx/pereg/deleteemployee/getallemployeetodelete',
+        'getDetail': 'ctx/pereg/deleteemployee/getdetailemployeetodelete/{0}',
+        'restoreData': 'ctx/pereg/deleteemployee/restoredata',
+        'deleteEmp': 'ctx/pereg/deleteemployee/deleteemp/{0}'
     };
 
     export function getData() {

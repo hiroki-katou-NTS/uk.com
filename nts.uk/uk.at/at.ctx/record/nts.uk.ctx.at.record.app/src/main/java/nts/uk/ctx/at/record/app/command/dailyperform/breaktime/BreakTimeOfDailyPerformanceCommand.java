@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -29,6 +28,7 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 			BreakTimeOfDailyPerformance d = (BreakTimeOfDailyPerformance) data;
 			this.data.removeIf(br -> br.getBreakType() == d.getBreakType());
 			this.data.add(d);
+			this.data.sort((e1, e2) -> e1.getBreakType().value - e2.getBreakType().value);
 		}
 	}
 

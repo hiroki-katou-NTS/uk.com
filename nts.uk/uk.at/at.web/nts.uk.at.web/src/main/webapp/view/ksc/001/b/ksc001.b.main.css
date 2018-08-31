@@ -65,7 +65,7 @@
 
 .buttonNext {
 	position: fixed;
-	top: 565px;
+	top: 591px;
 	left: 880px;
 }
 
@@ -175,16 +175,19 @@ button.nts-switch-button {
 .nts-wizard>.content>.body {
 	padding: 0;
 }
+.nts-wizard > .content{
+	min-height: 65em;
+}
 
 .buttonBeginNext {
 	position: fixed;
-	top: 565px;
+	top: 591px;
 	left: 880px;
 }
 
 .buttonBeginPrevious {
 	position: fixed;
-	top: 575px;
+	top: 597px;
 	left: 695px;
 }
 
@@ -231,3 +234,4 @@ button.nts-switch-button {
 	display: block;
 	margin: -15px 0px;
 }
+

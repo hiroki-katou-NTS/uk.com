@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -123,9 +123,9 @@ public class ComboBoxRetrieveFactory {
 	private YearHolidayRepository yearHolidayRepo;
 	
 	@Inject
-	private YearServicePerRepository yearServiceRepo;
+	private GrantDateTblRepository gdTblRepository;
 	
-	private static Map<String, Class<?>> enumMap;
+	private static final Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
 		// 性別
@@ -348,9 +348,9 @@ public class ComboBoxRetrieveFactory {
 		case "M00017":
 			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
 			if (specialHolidayCode == null ) return new ArrayList<>();
-			return yearServiceRepo.findAllPer(companyId, specialHolidayCode).stream()
-					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
-							yearServicePer.getYearServiceName().v()))
+			return gdTblRepository.findBySphdCd(companyId, specialHolidayCode).stream()
+					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getGrantDateCode().v(),
+							yearServicePer.getGrantDateName().v()))
 					.collect(Collectors.toList());
 		default:
 			break;
@@ -364,7 +364,7 @@ public class ComboBoxRetrieveFactory {
 				perEmplType);
 		List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 		for (SelectionInitDto selection : selectionList) {
-			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
+			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(" ", selection.getSelectionCode(), selection.getSelectionName())));
 		}
 
 		return lstComboBoxValue;

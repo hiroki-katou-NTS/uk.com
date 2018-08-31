@@ -12,8 +12,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.businesscalend
 @Stateless
 public class JpaCompanyStartDayRepository extends JpaRepository implements StartDayRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM KccmtCompanyStartDay c ";
-	private final String SELECT_BY_COM_ID = SELECT_NO_WHERE 
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KccmtCompanyStartDay c ";
+	private static final String SELECT_BY_COM_ID = SELECT_NO_WHERE 
 			+ " WHERE c.kccmtCompanyStartDayPK.companyId = :companyId";
 
 	private static StartDayItem toDomain(KccmtCompanyStartDay entity) {

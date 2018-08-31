@@ -18,15 +18,15 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTyi
 @Stateless
 public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitleTyingRepository {
 	
-	private final String SEL = "SELECT s FROM CcgstJobTitleTying s ";
+	private static final String SEL = "SELECT s FROM CcgstJobTitleTying s ";
 	
-	private final String FIND_WEB_MENU_CODE = SEL + "WHERE s.ccgstJobTitleTyingPK.companyId = :companyId "
+	private static final String FIND_WEB_MENU_CODE = SEL + "WHERE s.ccgstJobTitleTyingPK.companyId = :companyId "
 			+ "AND s.ccgstJobTitleTyingPK.jobId in :jobId ";
 	
-	private final String DELETE_WEB_MENU_CODE = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
+	private static final String DELETE_WEB_MENU_CODE = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
 			+ " AND s.webMenuCode = :webMenuCode ";
 	
-	private final String DELETE_BY_LIST_JOBID = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
+	private static final String DELETE_BY_LIST_JOBID = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
 			+ " AND s.ccgstJobTitleTyingPK.jobId IN :listJobId";
 
 

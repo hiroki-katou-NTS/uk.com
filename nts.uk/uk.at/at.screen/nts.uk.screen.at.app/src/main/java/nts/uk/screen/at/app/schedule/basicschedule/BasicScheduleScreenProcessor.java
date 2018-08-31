@@ -10,9 +10,11 @@ import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
@@ -33,10 +35,32 @@ public class BasicScheduleScreenProcessor {
 	private BasicScheduleScreenRepository bScheduleScreenRepo;
 
 	@Inject
-	private BasicScheduleService bScheduleService;
-
-	@Inject
 	private ShClosurePub shClosurePub;
+	
+	@Inject
+	private BasicScheduleService basicScheduleService;
+	
+	public DataInitScreenDto getDataInit() {
+		List<WorkTypeScreenDto> workTypeList = new ArrayList<WorkTypeScreenDto>();
+		List<StateWorkTypeCodeDto> listStateCheckState = new ArrayList<StateWorkTypeCodeDto>();
+		List<String> workTypeCodeList = new ArrayList<String>();
+		List<WorkTimeScreenDto> workTimeList = new ArrayList<WorkTimeScreenDto>();
+		List<String> workTimeCodeList = new ArrayList<String>();
+
+		PresentClosingPeriodExport obj = this.getPresentClosingPeriodExport();
+		// 勤務種類を取得する (Lấy dữ lieu loại làm việc)
+		this.acquireWorkType(workTypeList, listStateCheckState, workTypeCodeList);
+		// 就業時間帯を取得する (Lấy dữ liệu thời gian làm việc)
+		this.acquireWorkingTime(workTimeList, workTimeCodeList);
+		List<StateWorkTypeCodeDto> listStateCheckNeeded = this.checkNeededOfWorkTimeSetting1(workTypeCodeList,
+				workTypeList);
+		List<WorkEmpCombineScreenDto> listWorkEmpCombineScreenDto = this
+				.getListWorkEmpCombine(new ScheduleScreenSymbolParams(workTypeCodeList, workTimeCodeList));
+
+		return new DataInitScreenDto(workTypeList, workTimeList, obj.getClosureStartDate(), obj.getClosureEndDate(),
+				listStateCheckState, listStateCheckNeeded, listWorkEmpCombineScreenDto,
+				AppContexts.user().employeeId());
+	}
 
 	/**
 	 * @param params
@@ -73,22 +97,28 @@ public class BasicScheduleScreenProcessor {
 	 * 
 	 * @return List WorkTypeDto
 	 */
-	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls() {
+
+	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls1() {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.findByCIdAndDeprecateCls(companyId,
+		return this.bScheduleScreenRepo.findByCIdAndDeprecateCls1(companyId,
 				DeprecateClassification.NotDeprecated.value);
 	}
 
 	/**
+	 * EA修正履歴　No2281
+	 * 
 	 * Check state of list WorkTypeCode
 	 * 
 	 * @param lstWorkTypeCode
 	 * @return List StateWorkTypeCodeDto
 	 */
-	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
+
+	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode1(List<String> listWorkTypeCode,
+			List<WorkTypeScreenDto> workTypeList) {
 		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = new ArrayList<StateWorkTypeCodeDto>();
-		lstWorkTypeCode.forEach(workTypeCode -> {
-			WorkStyle workStyle = bScheduleService.checkWorkDay(workTypeCode);
+		List<WorkType> listWorkType = workTypeList.stream().map(x -> x.convertToDomain()).collect(Collectors.toList());
+		listWorkTypeCode.forEach(workTypeCode -> {
+			WorkStyle workStyle = this.basicScheduleService.checkWorkDayByList(workTypeCode, listWorkType);
 			if (workStyle != null) {
 				lstStateWorkTypeCode.add(new StateWorkTypeCodeDto(workTypeCode, workStyle.value));
 			}
@@ -102,11 +132,14 @@ public class BasicScheduleScreenProcessor {
 	 * @param lstWorkTypeCode
 	 * @return List StateWorkTypeCodeDto
 	 */
-	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {
-		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = lstWorkTypeCode.stream()
-				.map(workTypeCode -> new StateWorkTypeCodeDto(workTypeCode,
-						bScheduleService.checkNeededOfWorkTimeSetting(workTypeCode).value))
-				.collect(Collectors.toList());
+
+	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting1(List<String> lstWorkTypeCode, List<WorkTypeScreenDto> workTypeList) {
+		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = new ArrayList<StateWorkTypeCodeDto>();
+		List<WorkType> listWorkType = workTypeList.stream().map(x -> x.convertToDomain()).collect(Collectors.toList());
+		lstWorkTypeCode.forEach(workTypeCode -> {
+			SetupType setupType = this.basicScheduleService.checkNeedWorkTimeSetByList(workTypeCode, listWorkType);
+			lstStateWorkTypeCode.add(new StateWorkTypeCodeDto(workTypeCode, setupType.value));
+		});
 		return lstStateWorkTypeCode;
 	}
 
@@ -160,4 +193,43 @@ public class BasicScheduleScreenProcessor {
 		}
 		return this.bScheduleScreenRepo.getDataWkpPattern(workplaceId);
 	}
+
+	/**
+	 * 勤務種類を取得する (Lấy dữ lieu loại làm việc)
+	 * 
+	 * @param workTypeList
+	 * @param listStateWorkTypeCodeDto
+	 * @param workTypeCodeList
+	 */
+	private void acquireWorkType(List<WorkTypeScreenDto> workTypeList, List<StateWorkTypeCodeDto> listStateWorkTypeCodeDto, List<String> workTypeCodeList){
+		// ドメインモデル「勤務種類」を取得する (Lấy dữ liệu từ domain 「勤務種類」)
+		workTypeList.addAll(this.findByCIdAndDeprecateCls1());
+		// ドメインモデル「表示可能勤務種類制御」を取得する
+		// TODO- chua dung toi nen chua viet
+		
+		// EA修正履歴 No2281
+		workTypeList.forEach(x -> {
+			workTypeCodeList.add(x.getWorkTypeCode());
+		});
+		listStateWorkTypeCodeDto.addAll(this.checkStateWorkTypeCode1(workTypeCodeList, workTypeList));
+	}
+	
+	/**
+	 * 就業時間帯を取得する (Lấy dữ liệu thời gian làm việc)
+	 * 
+	 * @param workTimeList
+	 * @param workTimeCodeList
+	 */
+	private void acquireWorkingTime(List<WorkTimeScreenDto> workTimeList, List<String> workTimeCodeList){
+		// ドメインモデル「就業時間帯の設定」を取得する (Lấy dữ kiệu từ domain 「就業時間帯の設定」)
+		workTimeList.addAll(this.getListWorkTime());
+		workTimeList.forEach(x -> {
+			workTimeCodeList.add(x.getWorkTimeCode());
+		});
+		// ドメインモデル「並び順」を取得する (Lấy dữ kiệu từ domain 「並び順」)
+		// TODO- ben man master KMK003 khong co phan dang ki sort order nen co le khong can
+		// アラームチェック条件を取得する
+		// da goi o phan khac lien quan den buildTreeShiftCondition
+	}
+
 }

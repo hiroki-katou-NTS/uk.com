@@ -27,7 +27,7 @@ module nts.uk.at.view.ksc001.b {
             baseDate: KnockoutObservable<Date> = ko.observable(new Date());
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 
-            selectRebuildAtr: KnockoutObservableArray<RadioBoxModel>;  
+            selectRebuildAtr: KnockoutObservableArray<RadioBoxModel>;
             selectImplementAtr: KnockoutObservableArray<RadioBoxModel>;
             selectedImplementAtrCode: KnockoutObservable<number>;
             selectRebuildAtrCode: KnockoutObservable<number>;
@@ -84,62 +84,22 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 let lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
                 let lstRadioBoxModelRebuildAtr: RadioBoxModel[] = [];
-                
+
                 self.stepList = [
                     { content: '.step-1' },
                     { content: '.step-2' },
                     { content: '.step-3' },
                     { content: '.step-4' }
                 ];
+                self.reloadCcg001();
 
-                self.ccgcomponent = {
-                    /** Common properties */
-                    systemType: 2, // システム区分
-                    showEmployeeSelection: false, // 検索タイプ
-                    showQuickSearchTab: true, // クイック検索
-                    showAdvancedSearchTab: true, // 詳細検索
-                    showBaseDate: false, // 基準日利用
-                    showClosure: false, // 就業締め日利用
-                    showAllClosure: false, // 全締め表示
-                    showPeriod: true, // 対象期間利用
-                    periodFormatYM: false, // 対象期間精度
-
-                    /** Required parameter */
-                    baseDate: self.baseDate().toISOString(), // 基準日
-                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
-                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
-                    inService: true, // 在職区分
-                    leaveOfAbsence: true, // 休職区分
-                    closed: true, // 休業区分
-                    retirement: true, // 退職区分
-
-                    /** Quick search tab options */
-                    showAllReferableEmployee: true, // 参照可能な社員すべて
-                    showOnlyMe: true, // 自分だけ
-                    showSameWorkplace: true, // 同じ職場の社員
-                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
-                    /** Advanced search properties */
-                    showEmployment: true, // 雇用条件
-                    showWorkplace: true, // 職場条件
-                    showClassification: true, // 分類条件
-                    showJobTitle: true, // 職位条件
-                    showWorktype: true, // 勤種条件
-                    isMutipleCheck: true, // 選択モード
-
-                    /** Return data */
-                    returnDataFromCcg001: function(data: any) {
-                        self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
-                    }
-                }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-                    
+
                 lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.GENERALLY_CREATED, getText("KSC001_74")));
                 lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.RECREATE, getText("KSC001_75")));
                 lstRadioBoxModelRebuildAtr.push(new RadioBoxModel(ReBuildAtr.REBUILD_ALL, getText("KSC001_89")));
                 lstRadioBoxModelRebuildAtr.push(new RadioBoxModel(ReBuildAtr.REBUILD_TARGET_ONLY, getText("KSC001_90")));
-                    
+
                 self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
                 self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
                 self.selectRebuildAtr = ko.observableArray(lstRadioBoxModelRebuildAtr);
@@ -165,8 +125,15 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.periodDate.subscribe((newValue) => {
+                    let newDate = ({});
                     if (newValue.startDate) {
                         self.copyStartDate(newValue.startDate);
+                        newDate = {
+                            startDate: moment.utc(newValue.startDate),
+                            endDate: moment.utc(newValue.endDate)
+                        }
+                        self.periodStartDate(newDate.startDate);
+                        self.periodEndDate(newDate.endDate);
                     }
                 });
 
@@ -238,6 +205,56 @@ module nts.uk.at.view.ksc001.b {
             private toDate(strDate: string): Date {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
+
+            public reloadCcg001(): void {
+                let self = this;
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
+
+                self.ccgcomponent = {
+                    /** Common properties */
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: true, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: false, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: true, // 対象期間利用
+                    periodFormatYM: false, // 対象期間精度
+
+                    /** Required parameter */
+                    baseDate: self.baseDate().toISOString(), // 基準日
+                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
+                    inService: true, // 在職区分
+                    leaveOfAbsence: true, // 休職区分
+                    closed: true, // 休業区分
+                    retirement: true, // 退職区分
+
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true, // 参照可能な社員すべて
+                    showOnlyMe: true, // 自分だけ
+                    showSameWorkplace: true, // 同じ職場の社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: true, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: true, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: any) {
+                        self.selectedEmployee(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee);
+
+                    }
+                }
+            }
             /**
            * start page data 
            */
@@ -254,6 +271,7 @@ module nts.uk.at.view.ksc001.b {
                         startDate: data.startDate,
                         endDate: data.endDate
                     });
+                    self.reloadCcg001();
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -561,22 +579,22 @@ module nts.uk.at.view.ksc001.b {
                                 lstLabelInfomation.push("　　" + getText("KSC001_38")
                                     + getText("KSC001_91"));
                             }
-    
+
                             if (self.recreateEmployeeOffWork()) {
                                 lstLabelInfomation.push("　　" + getText("KSC001_38")
                                     + getText("KSC001_92"));
                             }
-    
+
                             if (self.recreateDirectBouncer()) {
                                 lstLabelInfomation.push("　　" + getText("KSC001_38")
                                     + getText("KSC001_93"));
                             }
-    
+
                             if (self.recreateShortTermEmployee()) {
                                 lstLabelInfomation.push("　　" + getText("KSC001_38")
                                     + getText("KSC001_94"));
                             }
-    
+
                             if (self.recreateWorkTypeChange()) {
                                 lstLabelInfomation.push("　　" + getText("KSC001_38")
                                     + getText("KSC001_95"));
@@ -606,7 +624,7 @@ module nts.uk.at.view.ksc001.b {
                                 + getText("KSC001_99"));
                         }
                     }
-                    
+
                     //NO2
                     if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
                         lstLabelInfomation.push(getText("KSC001_37")
@@ -616,7 +634,7 @@ module nts.uk.at.view.ksc001.b {
                         lstLabelInfomation.push(getText("KSC001_37")
                             + getText("KSC001_5"));
                     }
-                    
+
                 }
 
                 if (self.confirm()) {

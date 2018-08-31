@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 @Stateless
 public class JpaSpecHolidayCheckConRepository extends JpaRepository implements SpecHolidayCheckConRepository  {
 
-	private final String SELECT_SPEC_HOLIDAY_BY_ID = " SELECT c FROM KrcmtSpecHolidayCheckCon c"
+	private static final String SELECT_SPEC_HOLIDAY_BY_ID = " SELECT c FROM KrcmtSpecHolidayCheckCon c"
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 
 	@Override

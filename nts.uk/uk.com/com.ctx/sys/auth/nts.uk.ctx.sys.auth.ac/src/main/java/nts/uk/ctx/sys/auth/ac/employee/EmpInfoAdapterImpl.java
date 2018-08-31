@@ -13,9 +13,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonInfoAdapterImpl.
@@ -75,5 +77,18 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 				empBasicInfoExport.getRetiredDate()
 				);
 		return empBasicInfoImport;
+	}
+
+	@Override
+	public List<EmpInfoImport> getEmpInfo(List<String> lstSid) {
+		String companyID = AppContexts.user().companyId();
+		return syEmployeePub.getEmpInfo(lstSid).stream()
+			.map(x -> new EmpInfoImport(
+					companyID, 
+					x.getEmployeeCode(), 
+					x.getEmployeeId(), 
+					x.getPId(), 
+					x.getBusinessName()))
+			.collect(Collectors.toList());
 	}
 }

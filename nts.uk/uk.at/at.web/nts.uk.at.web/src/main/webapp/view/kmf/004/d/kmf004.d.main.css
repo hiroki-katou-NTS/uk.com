@@ -5,89 +5,91 @@
     width: 280px;
     height: 400px;
 }
+
 #right-content{
 	float: left;
     margin: 12px 0px 0 30px;
     height: 200px;
 }
-#label{
-	
-	overflow: inline-block;
-	margin-left: 0px;
-}
-.nts-input{
-	width: 45px;
-}
-#inpPattern{
-	width: 170px !important;
-}
-#label_caret{
-	float: left;
-	margin-left: 20px;
-	margin-top: 10px;
-}
-#label_down{
-	margin-top: 10px;
-}
-#help{
-	margin-left: 410px; 
+
+.provision-cbx {
+	padding-top: 15px;
+    padding-bottom: 10px;
 }
 
-table td.radio-text{
-    vertical-align: top;
+.mid-content {
+    width: 126%;
+    float: left;
+    display: inline-block;
+    padding-bottom: 15px;
 }
 
-div#button_radio{
-	    width: 310px;
-    margin: 12px 0;
+.text-lbl {
+    float: left;
+    line-height: 30px;
 }
-label.ntsRadioBox {
-    height: 27px;
-}	
+
+.ntsControl.ntsHelpButton {
+	left: 500px;
+}
+
+hr {
+    width: 100%;
+}
+
+.data-items{
+    width: 296px;
+    margin-left: 20px;
+}
+
 table.data-items thead {
-	background-color: #c7f391;
+    background-color: #c7f391;
 }
 
 table.data-items thead td {
-	text-align: left;
+    text-align: left;
 }
 
 table.data-items tr {
-	height: 32px;
+    height: 32px;
 }
 
 table.data-items td {
-	border-bottom: 1px solid #CCC;
-	border-top: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	padding: 4px 12px;
+    border-bottom: 1px solid #CCC;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    padding: 4px 12px;
     text-align: center;
 }
 
 table.data-items thead, table.data-items tbody {
-	display: block;
+    display: block;
 }
 
 table.data-items tbody {
-	height: 280px;
-	overflow-y: auto;
-	overflow-x: hidden;
-	border: 1px solid #CCC;
+    height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #CCC;
 }
 
-td.hidden-right-border{
-	/*border-right-style: hidden;*/
+table.grant-classification {
+    margin: 20px;
 }
 
-.data-items{
-	    width: 296px;
-	    margin-top: 10px;
+#btn_005 {
+    float: right;
+    margin-right: 600px;
+    margin-top: -33px;
 }
 
-#text{
-	margin-left: 0px;
+
+#btn_002 {
+    float: right;
+    margin-right: 790px;
 }
 
-.caret-helpbutton {
-	left: 316px !important;
+#btn_004 {
+    margin-top: -33px;
+    margin-left: 124px !important;
 }

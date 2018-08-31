@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.stamp;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 
 @AllArgsConstructor
 public enum GoOutReason {
@@ -16,4 +19,10 @@ public enum GoOutReason {
 	public final int value;
 	public final String name;
 
+	public static Optional<GoOutReason> corvert(int value) {
+		for(GoOutReason reason:GoOutReason.values()) {
+			if(reason.value == value) return Optional.of(reason);
+		}
+		return Optional.empty();
+	}
 }

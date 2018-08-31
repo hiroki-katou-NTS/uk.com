@@ -8,16 +8,20 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.arc.enums.EnumAdaptor;
 /**
  * 承認フェーズインスタンス
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
 @Builder
 public class ApprovalPhaseState extends DomainObject {
@@ -46,5 +50,13 @@ public class ApprovalPhaseState extends DomainObject {
 					.build();
 		}
 		return approvalPhaseState;
+	}
+	public static ApprovalPhaseState createFormTypeJava(String rootStateID, Integer phaseOrder,
+			int approvalAtr,int approvalForm, List<ApprovalFrame> listApprovalFrame){
+		return new ApprovalPhaseState(rootStateID,
+				phaseOrder,
+				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
+				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
+				listApprovalFrame);
 	}
 }

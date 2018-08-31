@@ -21,4 +21,6 @@ public class KbpstWPBonusPaySettingPK implements Serializable{
 	@DBCharPaddingAs(WorkplaceId.class)
 	@Column(name = "WKPID")
 	public String workplaceId;
+	@Column(name = "CID")
+	public String companyId;
 }

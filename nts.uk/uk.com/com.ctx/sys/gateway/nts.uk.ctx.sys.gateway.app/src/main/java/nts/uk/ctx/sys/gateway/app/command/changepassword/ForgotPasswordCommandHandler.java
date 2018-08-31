@@ -33,11 +33,8 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 		String newPassword = command.getNewPassword();
 		String confirmNewPassword = command.getConfirmNewPassword();
 		
-		//get URLID
-		String urlId = command.getUrl().substring(8, command.getUrl().length());
-		
 		//check PassLimitExpire
-		this.registerEmbededURL.checkPassLimitExpire(urlId);
+		this.registerEmbededURL.checkPassLimitExpire(command.getEmbeddedId());
 		
 		if (!StringUtil.isNullOrEmpty(newPassword, true)
 				&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {

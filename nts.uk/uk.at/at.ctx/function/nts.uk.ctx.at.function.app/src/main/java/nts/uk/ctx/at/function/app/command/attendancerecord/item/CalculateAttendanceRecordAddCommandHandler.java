@@ -30,10 +30,10 @@ public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<C
 	CalculateAttendanceRecordRepositoty calculateAttendanceRecordRepository;
 
 	/** The add formular type. */
-	final int ADD_FORMULAR_TYPE = 1;
+	private static final int ADD_FORMULAR_TYPE = 1;
 	
 	/** The sub formular type. */
-	final int SUB_FORMULAR_TYPE = 2;
+	private static final int SUB_FORMULAR_TYPE = 2;
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)

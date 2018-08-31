@@ -54,7 +54,7 @@ public class UpdateBusinessTypeMonthlyCommandHandler extends CommandHandler<Upda
 
 		// remove all of data has removed in list attendanceId from UI
 		if(!attendanceItemIdRemove.isEmpty()){
-			this.businessTypeFormatMonthlyRepository.deleteExistData(attendanceItemIdRemove);			
+			this.businessTypeFormatMonthlyRepository.deleteExistData(companyId,command.getBusinesstypeCode(), attendanceItemIdRemove);			
 		}
 
 		// List Data Update from UI compare DB (exist in DB)

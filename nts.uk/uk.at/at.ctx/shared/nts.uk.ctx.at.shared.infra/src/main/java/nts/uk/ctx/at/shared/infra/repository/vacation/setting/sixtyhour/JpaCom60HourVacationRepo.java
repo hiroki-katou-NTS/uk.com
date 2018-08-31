@@ -80,4 +80,13 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 
 		this.commandProxy().insert(entity);		
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository#copyMasterData(java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
 }

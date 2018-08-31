@@ -33,7 +33,7 @@ module nts.uk.com.view.cli001.a {
                 service.findAll().done((data: Array<LockOutDataUserDto>) => {
                     data = _.uniqBy(data, 'userId');
                     data.forEach(item => {
-                        item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                        item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD HH:mm:ss');
                     });
 
                     _self.items(_.sortBy(data, item => item.loginId));
@@ -58,8 +58,11 @@ module nts.uk.com.view.cli001.a {
                         $('#tableGrid').focus();
                         let userId = { userId: data.userID };
                         service.findByUserId(data.userID).done((dto: LockOutDataDto) => {
-                            _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: moment.utc(dto.logoutDateTime).format('YYYY/MM/DD hh:mm:ss')});
-                            _self.items(_.sortBy(_self.items(), item => item.loginId))
+                            _self.items.push({ logType: dto.lockType, loginId: data.loginID, userId: dto.userId, userName: data.userName, lockOutDateTime: moment.utc(dto.logoutDateTime).format('YYYY/MM/DD HH:mm:ss')});
+                            _self.items(_.sortBy(_self.items(), item => item.loginId));
+                            if (!_.isEmpty($('.ntsSearchBox ')[0].value)) {
+                                $('.search-btn').click();
+                            }
                         });
                     }
                     nts.uk.ui.block.clear();
@@ -92,7 +95,7 @@ module nts.uk.com.view.cli001.a {
                 }
                 else {
                     $('#tableGrid').focus();
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1347" })
                         .ifYes(() => {
                             let command = { lstUserId: self.currentCodeList() };
                             service.removeLockOutData(command).done(() => {
@@ -101,10 +104,13 @@ module nts.uk.com.view.cli001.a {
                                     service.findAll().done((data: Array<LockOutDataUserDto>) => {
                                         data = _.uniqBy(data, 'userId');
                                         data.forEach(item => {
-                                            item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD hh:mm:ss');
+                                            item.lockOutDateTime = moment.utc(item.lockOutDateTime).format('YYYY/MM/DD HH:mm:ss');
                                         });
                                         self.items(_.sortBy(data, item => item.loginId));
                                         self.currentCodeList([]);
+                                        if(_.isEmpty(self.items())){
+                                            $('#add-Lock').focus();
+                                        }
                                     });
                                 });
                             });

@@ -31,12 +31,12 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	
 	//Delete by Month 
 	
-	private final String DELETE_BY_YEAR_MONTH = "DELETE from KsmmtWpSpecDateSet c "
+	private static final String DELETE_BY_YEAR_MONTH = "DELETE from KsmmtWpSpecDateSet c "
 			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
 			+ " AND c.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
 			+ " AND c.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
-	private final String DELETE_BY_DATE = "DELETE FROM KsmmtWpSpecDateSet c"
+	private static final String DELETE_BY_DATE = "DELETE FROM KsmmtWpSpecDateSet c"
 			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
 			+ " AND c.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
 

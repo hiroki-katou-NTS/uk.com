@@ -10,14 +10,17 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 
 /**
  * 月別実績(Work)
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class IntegrationOfMonthly {
@@ -45,6 +48,13 @@ public class IntegrationOfMonthly {
 	/** 代休残数月別データ */
 	@Setter
 	private Optional<MonthlyDayoffRemainData> monthlyDayoffRemain;
+	/** 特別休暇残数月別データ */
+	@Setter
+	private Optional<SpecialHolidayRemainData> specialLeaveRemain;
+	/** 週別実績の勤怠時間 */
+	private List<AttendanceTimeOfWeekly> attendanceTimeOfWeekList;
+	/** 社員の月別実績エラー一覧 */
+	private List<EmployeeMonthlyPerError> employeeMonthlyPerErrorList;
 	
 	public IntegrationOfMonthly(){
 		this.attendanceTime = Optional.empty();
@@ -55,6 +65,9 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = Optional.empty();
 		this.absenceLeaveRemain = Optional.empty();
 		this.monthlyDayoffRemain = Optional.empty();
+		this.specialLeaveRemain = Optional.empty();
+		this.attendanceTimeOfWeekList = new ArrayList<>();
+		this.employeeMonthlyPerErrorList = new ArrayList<>();
 	}
 	
 	/**
@@ -67,6 +80,7 @@ public class IntegrationOfMonthly {
 	 * @param reserveLeaveRemain 積立年休月別残数データ
 	 * @param absenceLeaveRemain 振休月別残数データ
 	 * @param monthlyDayoffRemain 代休月別残数データ
+	 * @param specialLeaveRemain 特別休暇月別残数データ
 	 */
 	public IntegrationOfMonthly(
 			Optional<AttendanceTimeOfMonthly> attendanceTime,
@@ -76,7 +90,8 @@ public class IntegrationOfMonthly {
 			Optional<AnnLeaRemNumEachMonth> annualLeaveRemain,
 			Optional<RsvLeaRemNumEachMonth> reserveLeaveRemain,
 			Optional<AbsenceLeaveRemainData> absenceLeaveRemain,
-			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain){
+			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
+			Optional<SpecialHolidayRemainData> specialLeaveRemain){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -86,5 +101,6 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = reserveLeaveRemain;
 		this.absenceLeaveRemain = absenceLeaveRemain;
 		this.monthlyDayoffRemain = monthlyDayoffRemain;
+		this.specialLeaveRemain = specialLeaveRemain;
 	}
 }

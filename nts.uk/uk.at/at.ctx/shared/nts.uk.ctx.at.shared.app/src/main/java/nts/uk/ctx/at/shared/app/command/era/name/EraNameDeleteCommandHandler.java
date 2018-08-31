@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 public class EraNameDeleteCommandHandler extends CommandHandler<EraNameDeleteCommand>{
 	
 	/** The last end date. */
-	private final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
+	private static final GeneralDate LAST_END_DATE = GeneralDate.localDate(LocalDate.of(9999, Month.DECEMBER, 31));
 	
 	/** The repo. */
 	@Inject EraNameDomRepository repo;

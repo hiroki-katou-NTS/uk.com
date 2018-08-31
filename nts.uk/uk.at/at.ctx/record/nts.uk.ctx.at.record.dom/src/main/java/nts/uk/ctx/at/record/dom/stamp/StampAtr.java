@@ -20,22 +20,18 @@ public enum StampAtr {
 	GOINGOUT(4, "外出"),
 	// 5:戻り
 	RETURN(5, "戻り"),
-	// 6:解錠
-	UNLOCK(6, "解錠"),
-	// 7:解錠
-	LOCK(7, "解錠"),
-	// 8:開始
-	START(8, "開始"),
-	// 9:終了
-	END(9, "終了"),
-	// 10:行き
-	TOGO(10, "行き"),
-	// 11:帰り
-	GOBACK(11, "帰り"),
-	// 12: PCログオン
-	PCLOGON(12, "PCログオン"),
-	//13: PCログオフ
-	PCLOGOFF(13, "PCログオフ");
+	// 6:応援開始
+	SUPPORT_START(6, "応援開始"),
+	// 7:臨時開始
+	EMERGENCY_START(7, "臨時開始"),
+	// 8:応援終了
+	SUPPORT_END(8, "応援終了"),
+	// 9:臨時終了
+	EMERGENCY_END(9, "臨時終了"),
+	// 10: PCログオン
+	PCLOGON(10, "PCログオン"),
+	//11: PCログオフ
+	PCLOGOFF(11, "PCログオフ");
 
 	public final int value;
 	public final String name;
@@ -59,27 +55,21 @@ public enum StampAtr {
 			name = "戻り";
 			break;
 		case 6:
-			name = "解錠";
+			name = "応援開始";
 			break;
 		case 7:
-			name = "施錠";
+			name = "臨時開始";
 			break;
 		case 8:
-			name = "開始";
+			name = "応援終了";
 			break;
 		case 9:
-			name = "終了";
+			name = "臨時終了";
 			break;
 		case 10:
-			name = "行き";
-			break;
-		case 11:
-			name = "帰り";
-			break;
-		case 12:
 			name = "PCログオン";
 			break;
-		case 13:
+		case 11:
 			name = "PCログオフ";
 			break;
 		default:

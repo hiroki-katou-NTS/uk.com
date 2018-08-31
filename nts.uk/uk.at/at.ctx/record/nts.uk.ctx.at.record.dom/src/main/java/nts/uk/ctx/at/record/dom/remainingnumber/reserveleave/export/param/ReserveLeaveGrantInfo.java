@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
  * @author shuichu_ishida
  */
 @Getter
-public class ReserveLeaveGrantInfo {
+public class ReserveLeaveGrantInfo implements Cloneable {
 
 	/** 付与日数 */
 	private ReserveLeaveGrantDayNumber grantDays;
@@ -32,5 +32,17 @@ public class ReserveLeaveGrantInfo {
 		ReserveLeaveGrantInfo domain = new ReserveLeaveGrantInfo();
 		domain.grantDays = grantDays;
 		return domain;
+	}
+	
+	@Override
+	public ReserveLeaveGrantInfo clone() {
+		ReserveLeaveGrantInfo cloned = new ReserveLeaveGrantInfo();
+		try {
+			cloned.grantDays = new ReserveLeaveGrantDayNumber(this.grantDays.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("ReserveLeaveGrantInfo clone error.");
+		}
+		return cloned;
 	}
 }

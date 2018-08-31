@@ -8,7 +8,8 @@ module nts.uk.at.view.ksm005.c {
             getListHistory: "ctx/at/shared/pattern/monthly/setting/getListHistory",
             getListMonthlyPattern: "ctx/at/schedule/pattern/monthly/findAll",
             getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll",
-            getMonthlyPatternSettingBySid: "ctx/at/shared/pattern/monthly/setting/findBySId"
+            getMonthlyPatternSettingBySid: "ctx/at/shared/pattern/monthly/setting/findBySId",
+            filterSids: "ctx/at/shared/wcitem/filter/sids",
         }
         
         /**
@@ -56,6 +57,10 @@ module nts.uk.at.view.ksm005.c {
         
         export function findMonthlyPatternSettingBySid(employeeId: string[]): JQueryPromise<any> {
              return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeId});
+        }
+        
+        export function findWorkConditionBySids(employeeIds: string[]): JQueryPromise<any> {
+             return nts.uk.request.ajax('at', paths.filterSids,employeeIds);
         }
         
         export module model {

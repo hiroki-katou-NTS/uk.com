@@ -2,15 +2,18 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dail
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
+import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
@@ -27,10 +30,13 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -72,6 +78,11 @@ public class DailyPerformanceService {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
+	
+	@Inject
+	private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 	
 	
 
@@ -125,9 +136,47 @@ public class DailyPerformanceService {
 
 		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream().collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
 
+		//test reponse
+		Set<String> emps = new HashSet<String>(); 
+		Set<Integer> listItemIDs = new HashSet<Integer>();
+		
+		for(EmployeeDailyPerErrorImport employeeDailyPerErrorImport : employeeDailyList) {
+			listItemIDs.addAll(employeeDailyPerErrorImport.getAttendanceItemList());
+			emps.add(employeeDailyPerErrorImport.getEmployeeID());
+		}
+		DatePeriod periodNew =  new DatePeriod(period.getStartDate(), period.getEndDate());
+		List<AttendanceResultImport> attdResoult = attendanceItemAdapter.getValueOf( new ArrayList<>(emps), periodNew, new ArrayList<>(listItemIDs) );
+		
+		//get list dailyAttendanceItems
+		String companyId = AppContexts.user().companyId();
+		List<DailyAttendanceItemAdapterDto> dailyAttendanceItems = this.dailyAttendanceItemAdapter
+				.getDailyAttendanceItem(companyId, new ArrayList<>(listItemIDs)).stream().map(item -> {
+					String name = item.getAttendanceName();
+					if (name.indexOf("{#") >= 0) {
+						int startLocation = name.indexOf("{");
+						int endLocation = name.indexOf("}");
+						name = name.replace(name.substring(startLocation, endLocation + 1),
+								TextResource.localize(name.substring(startLocation + 2, endLocation)));
+					}
+					return new DailyAttendanceItemAdapterDto(item.getCompanyId(), item.getAttendanceItemId(), name,
+							item.getDisplayNumber(), item.getUserCanUpdateAtr(), item.getDailyAttendanceAtr(),
+							item.getNameLineFeedPosition());
+				}).collect(Collectors.toList());
+		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
+						.getFullDataByListAttdaId(new ArrayList<>(listItemIDs));
+		
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
 			
-			AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(eDaily, companyID, errorAlarmMap);
+			AttendanceResultImport attdResult = new AttendanceResultImport();
+			for(AttendanceResultImport attendanceResultImport :attdResoult) {
+				if(eDaily.getEmployeeID().equals(attendanceResultImport.getEmployeeId())) {
+					attdResult = attendanceResultImport;
+				}
+			}
+			
+			AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(eDaily, companyID, errorAlarmMap,
+					attdResult,
+					dailyAttendanceItems,attendanceItemAndFrameNos);
 						
 			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), eDaily.getDate().toString(), TextResource.localize("KAL010_1"),
 					alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
@@ -190,17 +239,54 @@ public class DailyPerformanceService {
 		List<MessageWRExtraConAdapterDto> messageList = workRecordExtraConAdapter.getMessageWRExtraConByListID(errorAlarmCheckIDs);
 
 		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream().collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
+		
+		//TEst reponse
+		Set<String> emps = new HashSet<String>(); 
+		employeeDailyList.stream().map(c->c.getEmployeeID()).collect(Collectors.toList());
+		Set<Integer> listItemIDs = new HashSet<Integer>();
 
+		
+		for(EmployeeDailyPerErrorImport employeeDailyPerErrorImport : employeeDailyList) {
+			listItemIDs.addAll(employeeDailyPerErrorImport.getAttendanceItemList());
+			emps.add(employeeDailyPerErrorImport.getEmployeeID());
+		}
+		
+		List<AttendanceResultImport> attdResoult = attendanceItemAdapter.getValueOf(new ArrayList<>(emps) , period, new ArrayList<>(listItemIDs));
+		
+		//get list dailyAttendanceItems
+		String companyId = AppContexts.user().companyId();
+		List<DailyAttendanceItemAdapterDto> dailyAttendanceItems = this.dailyAttendanceItemAdapter
+				.getDailyAttendanceItem(companyId, new ArrayList<>(listItemIDs)).stream().map(item -> {
+					String name = item.getAttendanceName();
+					if (name.indexOf("{#") >= 0) {
+						int startLocation = name.indexOf("{");
+						int endLocation = name.indexOf("}");
+						name = name.replace(name.substring(startLocation, endLocation + 1),
+								TextResource.localize(name.substring(startLocation + 2, endLocation)));
+					}
+					return new DailyAttendanceItemAdapterDto(item.getCompanyId(), item.getAttendanceItemId(), name,
+							item.getDisplayNumber(), item.getUserCanUpdateAtr(), item.getDailyAttendanceAtr(),
+							item.getNameLineFeedPosition());
+				}).collect(Collectors.toList());
+		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
+				.getFullDataByListAttdaId(new ArrayList<>(listItemIDs));
+		
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
-			
-			AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(eDaily, companyID, errorAlarmMap);
+			AttendanceResultImport attdResult = new AttendanceResultImport();
+			for(AttendanceResultImport attendanceResultImport :attdResoult) {
+				if(eDaily.getEmployeeID().equals(attendanceResultImport.getEmployeeId())) {
+					attdResult = attendanceResultImport;
+					break;
+				}
+			}
+			AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(eDaily, companyID, errorAlarmMap,attdResult,dailyAttendanceItems,attendanceItemAndFrameNos);
 			EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(eDaily.getEmployeeID())).findAny().get();
 			ValueExtractAlarm data = new ValueExtractAlarm(em.getWorkplaceId(), em.getId(), eDaily.getDate().toString(), TextResource.localize("KAL010_1"),
 					alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
 					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
 
 			valueExtractAlarmList.add(data);
-		}
+		}	
 
 		return valueExtractAlarmList;
 
@@ -213,12 +299,15 @@ public class DailyPerformanceService {
 	
 	
 	
-	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap) {
+	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap,
+			AttendanceResultImport attendanceResult,
+			List<DailyAttendanceItemAdapterDto> dailyAttendanceItems,List<AttendanceItemLinking> attendanceItemAndFrameNos) {
+		
 		// Attendance name
-		Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
+		Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItemNew(dailyAttendanceItems,attendanceItemAndFrameNos).stream()
 				.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
 		// Attendance value
-		AttendanceResultImport attendanceResult = attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
+		//AttendanceResultImport attendanceResult = attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
 		List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems() == null ? new ArrayList<AttendanceItemValueImport>() : attendanceResult.getAttendanceItems();
 		Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap(AttendanceItemValueImport::getItemId, x -> x));
 

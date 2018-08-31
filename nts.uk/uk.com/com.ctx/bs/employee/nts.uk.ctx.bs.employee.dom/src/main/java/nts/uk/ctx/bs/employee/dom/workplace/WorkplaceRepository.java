@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplaceRepository.
@@ -92,4 +93,13 @@ public interface WorkplaceRepository {
      * @return the list
      */
     List<Workplace> findWorkplaces(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+    
+    /**
+     * Find workplaces.
+     *
+     * @param workplaceIds the workplace ids
+     * @param datePeriod the date period
+     * @return the list
+     */
+    List<Workplace> findWorkplaces(List<String> workplaceIds, DatePeriod datePeriod);
 }

@@ -124,6 +124,10 @@ module nts.uk.pr.view.ccg007.e {
              * close dialog
              */
             public closeDialog(): void {
+                let returnedData = {
+                            submit: false
+                        };
+                nts.uk.ui.windows.setShared("childData", returnedData, false);
                 nts.uk.ui.windows.close();
             }
         }

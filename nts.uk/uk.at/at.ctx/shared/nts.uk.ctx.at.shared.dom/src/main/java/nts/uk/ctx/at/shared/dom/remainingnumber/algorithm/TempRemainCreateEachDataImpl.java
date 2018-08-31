@@ -29,11 +29,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
@@ -124,7 +128,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		if(occUseDetail.isPresent()) {
-			if(!occUseDetail.get().isUseAtr()) {
+			if(!inforData.isDayOffTimeIsUse()) {
 				String mngId = IdentifierUtil.randomUniqueId();
 				InterimRemain mngDataRemain = new InterimRemain(mngId, inforData.getSid(), inforData.getYmd(), 
 						inforData.getWorkTypeRemain().get().getCreateData(), RemainType.SUBHOLIDAY, RemainAtr.SINGLE);
@@ -147,33 +151,33 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	public DailyInterimRemainMngData createInterimRecData(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		// 残数作成元情報のアルゴリズム「分類を指定して発生使用明細を取得する」を実行する
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
-		if(!occUseDetail.isPresent()) {
-			return mngData;
-		}
-		//アルゴリズム「振休使用期限日の算出」を実行する
-		GeneralDate useDate = this.getUseDays(inforData);
-		String mngId = IdentifierUtil.randomUniqueId();
-		InterimRemain remainMng = new InterimRemain(mngId,
-				inforData.getSid(),
-				inforData.getYmd(),
-				inforData.getWorkTypeRemain().get().getCreateData(), 
-				RemainType.PICKINGUP, 
-				RemainAtr.SINGLE);
-		List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemain().get().getOccurrenceDetailData()
-				.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
-				.collect(Collectors.toList());
-		
-		InterimRecMng recMng = new InterimRecMng(mngId,
-				useDate,
-				new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
-				StatutoryAtr.NONSTATURORY,
-				new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
-		mngData.setRecData(Optional.of(recMng));
-		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
-		recAbsData.add(remainMng);
-		mngData.setRecAbsData(recAbsData);
-		return mngData;
+				Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
+				if(!occUseDetail.isPresent()) {
+					return mngData;
+				}
+				//アルゴリズム「振休使用期限日の算出」を実行する
+				GeneralDate useDate = this.getUseDays(inforData);
+				String mngId = IdentifierUtil.randomUniqueId();
+				InterimRemain remainMng = new InterimRemain(mngId,
+						inforData.getSid(),
+						inforData.getYmd(),
+						inforData.getWorkTypeRemain().get().getCreateData(), 
+						RemainType.PICKINGUP, 
+						RemainAtr.SINGLE);
+				List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemain().get().getOccurrenceDetailData()
+						.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
+						.collect(Collectors.toList());
+				
+				InterimRecMng recMng = new InterimRecMng(mngId,
+						useDate,
+						new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
+						StatutoryAtr.NONSTATURORY,
+						new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
+				mngData.setRecData(Optional.of(recMng));
+				List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
+				recAbsData.add(remainMng);
+				mngData.setRecAbsData(recAbsData);
+				return mngData;
 	}
 	/**
 	 * 振休使用期限日を取得する
@@ -212,7 +216,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	public DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		//代休振替情報をチェックする
-		if(!inforData.getDayOffTranfer().isPresent()) {
+		if(!inforData.getDayOffTranfer().isPresent()
+				|| (inforData.getDayOffTranfer().get().getTranferTimeInfor().getTranferTime() == 0
+						&& (!inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().isPresent())
+							|| inforData.getDayOffTranfer().get().getTranferTimeInfor().getDays().get() == 0)) {
 			return mngData;
 		}
 		//代休振替情報のアルゴリズム「振替時間情報を取得する」を実行する
@@ -228,9 +235,12 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 				RemainAtr.SINGLE);
 		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
 		lstRecAbsData.add(recAbsData);
-		mngData.setRecAbsData(lstRecAbsData);
+		
 		//時間代休を利用するかチェックする		
 		if(inforData.isDayOffTimeIsUse()) {
+			if(dataChange.getTranferTime() == 0) {
+				return mngData;
+			}
 			//振替時間をチェックする
 			InterimBreakMng breakMng = new InterimBreakMng(mngId,
 					new AttendanceTime(0),
@@ -242,16 +252,52 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 					new UnUsedDay(0.0));
 			mngData.setBreakData(Optional.of(breakMng));
 		} else {
+			if(!dataChange.getDays().isPresent()
+					|| dataChange.getDays().get() == 0) {
+				return mngData;
+			}
+			Double days = dataChange.getDays().get();
 			InterimBreakMng breakMng = new InterimBreakMng(mngId,
 					new AttendanceTime(0),
 					useDate,
 					new OccurrenceTime(0),
-					new OccurrenceDay(dataChange.getDays().isPresent() ? dataChange.getDays().get() : 0.0),
+					new OccurrenceDay(days),
 					new AttendanceTime(0),
 					new UnUsedTime(0), 
-					new UnUsedDay(dataChange.getDays().isPresent() ? dataChange.getDays().get() : 0.0));
+					new UnUsedDay(days));
 			mngData.setBreakData(Optional.of(breakMng));
 		}
+		mngData.setRecAbsData(lstRecAbsData);
+		return mngData;
+	}
+
+	@Override
+	public DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
+			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
+		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData()); 
+		if(inforData.getWorkTypeRemain().get().getSpeHolidayDetailData().isEmpty()) {
+			return mngData;
+		}
+		String mngId = IdentifierUtil.randomUniqueId();
+		InterimRemain recAbsData = new InterimRemain(mngId,
+				inforData.getSid(),
+				inforData.getYmd(),
+				inforData.getWorkTypeRemain().get().getCreateData(),
+				RemainType.SPECIAL,
+				RemainAtr.SINGLE);
+		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
+		lstRecAbsData.add(recAbsData);
+		mngData.setRecAbsData(lstRecAbsData);
+		for (SpecialHolidayUseDetail speHolidayDetail : inforData.getWorkTypeRemain().get().getSpeHolidayDetailData()) {
+			InterimSpecialHolidayMng holidayMng = new InterimSpecialHolidayMng();
+			holidayMng.setSpecialHolidayId(mngId);
+			holidayMng.setSpecialHolidayCode(speHolidayDetail.getSpecialHolidayCode());
+			holidayMng.setMngAtr(ManagermentAtr.DAYS);
+			holidayMng.setUseDays(Optional.of(new UseDay(speHolidayDetail.getDays())));
+			holidayMng.setUseTimes(Optional.of(new UseTime(0)));
+			specialHolidayData.add(holidayMng);
+		}
+		mngData.setSpecialHolidayData(specialHolidayData);
 		return mngData;
 	}
 	

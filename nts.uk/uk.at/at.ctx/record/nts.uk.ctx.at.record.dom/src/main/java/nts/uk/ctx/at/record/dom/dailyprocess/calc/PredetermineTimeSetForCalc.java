@@ -192,15 +192,6 @@ public class PredetermineTimeSetForCalc {
 											  master.getStartDateClock());
 	}
 	
-//	/**
-//	 * workNoに一致する所定時間を取得する
-//	 * @param workNo
-//	 * @return
-//	 */
-//	public Optional<TimezoneUse> getTimeSheets(int workNo) {
-//		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
-//	}
-	
 	/**
 	 * workNoに一致する所定時間を取得する
 	 * @param workNo
@@ -229,5 +220,14 @@ public class PredetermineTimeSetForCalc {
 		}
 		
 	}
+	
+	/**
+	 * 1日の範囲時間帯を作成する
+	 * @return　1日の範囲時間帯
+	 */
+	public TimeSpanForCalc getOneDayTimeSpan() {
+		return new TimeSpanForCalc(this.getStartOneDayTime(), this.getStartOneDayTime().forwardByMinutes(this.getOneDayRange().valueAsMinutes()));
+	}
+	
 	
 }

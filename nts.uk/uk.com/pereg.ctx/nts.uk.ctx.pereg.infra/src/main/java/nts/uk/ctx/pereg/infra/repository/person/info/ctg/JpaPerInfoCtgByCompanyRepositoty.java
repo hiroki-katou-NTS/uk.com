@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -32,7 +35,14 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String FIND_ALL_BY_COMPANY = "SELECT c FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
+	private final static String FIND_ALL_BY_COMPANY = String.join(" ", "SELECT po FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
+			"ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			"INNER JOIN PpemtPerInfoCtgOrder po",
+			"ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
+			"WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			"AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
+			"OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
+			"ORDER BY po.disporder");
 
 	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
@@ -40,6 +50,18 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
+	
+	private final static String SELECT_CTG_ORDER_BY_IDS = String.join(" ", 
+			"SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.disporder",
+			"FROM PpemtPerInfoCtgOrder c",
+			"WHERE c.ppemtPerInfoCtgPK.perInfoCtgId IN :ctgIds",
+			"AND c.cid = :cid");
+
+	private final static String SELECT_ITEMS_ORDER_BY_IDS = String.join(" ", 
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.disporder",
+			"FROM PpemtPerInfoItemOrder i",
+			"WHERE i.perInfoCtgId IN :ctgIds",
+			"AND i.ppemtPerInfoItemPK.perInfoItemDefId IN :itIds");
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -142,12 +164,46 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	}
 	
 	@Override
-	public List<PersonInfoCtgOrder> getOrderList(String companyId) {
+	public List<PersonInfoCtgOrder> getOrderList(String companyId,String contractCd, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr) {
 		List<PpemtPerInfoCtgOrder> entities = this.queryProxy().query(FIND_ALL_BY_COMPANY, PpemtPerInfoCtgOrder.class)
-				.setParameter("cid", companyId).getList();
+				.setParameter("cid", companyId)
+				.setParameter("contractCd", contractCd)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
+				.getList();
+		
 
 		return entities.stream().map(entity -> PersonInfoCtgOrder.createCategoryOrder(companyId,
 				entity.ppemtPerInfoCtgPK.perInfoCtgId, entity.disporder)).collect(Collectors.toList());
 	}
+	
+	public HashMap<Integer, HashMap<String, Integer>> getOrderList(List<String> categoryIds, List<String> itemDefinitionIds) {
+		HashMap<String, Integer> ctgs = new HashMap<>();
+		HashMap<String, Integer> items = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
 
+		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, PpemtPerInfoCtgOrder.class)
+			.setParameter("cid", companyId)
+			.setParameter("ctgIds", categoryIds)
+			.getList().stream().forEach(ctg -> {
+				ctgs.putIfAbsent(ctg.ppemtPerInfoCtgPK.perInfoCtgId, ctg.disporder);
+			});
+
+		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, PpemtPerInfoItemOrder.class)
+			.setParameter("ctgIds", categoryIds)
+			.setParameter("itIds", itemDefinitionIds)
+			.getList().forEach(it -> {
+				items.putIfAbsent(it.ppemtPerInfoItemPK.perInfoItemDefId, it.disporder);
+			});
+
+		return new HashMap<Integer, HashMap<String, Integer>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(0, ctgs);
+				put(1, items);
+			}
+		};
+	}
 }

@@ -162,3 +162,13 @@ div.form-label.broken {
 .fix-margin-left-kaf005{
 	margin-left:10px;
 }
+.kaf005_overtimeAgreement_header {
+	background-color: #CFF1A5;
+	text-align: center;
+	height: 25px;
+}
+#kaf005_overtimeAgreement_table td, #kaf005_overtimeAgreement_table th {
+	height: 25px;	
+	text-align: center;
+	border: 1px solid #CCC;
+}

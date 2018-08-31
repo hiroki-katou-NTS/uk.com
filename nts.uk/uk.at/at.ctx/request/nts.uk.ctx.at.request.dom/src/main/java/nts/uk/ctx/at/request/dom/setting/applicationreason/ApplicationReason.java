@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
@@ -31,7 +32,7 @@ public class ApplicationReason extends AggregateRoot {
 	public int dispOrder;
 	
 	/** 定型理由 */
-	public String reasonTemp;
+	public ReasonTemp reasonTemp;
 	/**
 	 * 既定
 	 */
@@ -45,7 +46,20 @@ public class ApplicationReason extends AggregateRoot {
 						EnumAdaptor.valueOf(appType, ApplicationType.class), 
 						reasonID,
 						dispOrder,
-						reasonTemp,
+						new ReasonTemp(reasonTemp),
+						EnumAdaptor.valueOf(defaultFlg, DefaultFlg.class));
+		
+	}
+	
+	public static ApplicationReason createNew(String companyId,
+			int appType,  
+			int dispOrder, String reasonTemp,
+			int defaultFlg) {
+				return new ApplicationReason(companyId, 
+						EnumAdaptor.valueOf(appType, ApplicationType.class), 
+						IdentifierUtil.randomUniqueId(),
+						dispOrder,
+						new ReasonTemp(reasonTemp),
 						EnumAdaptor.valueOf(defaultFlg, DefaultFlg.class));
 		
 	}

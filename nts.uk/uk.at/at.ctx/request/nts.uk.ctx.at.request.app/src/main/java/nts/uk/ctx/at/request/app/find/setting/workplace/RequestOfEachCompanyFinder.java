@@ -28,6 +28,7 @@ public class RequestOfEachCompanyFinder {
 		if(requestCom.isPresent()){
 			return new RequestOfEachCompanyDto(
 					requestCom.get().getCompanyID(), 
+					requestCom.get().getSelectionFlg().value,
 					requestCom.get().getListApprovalFunctionSetting().stream().map(x -> ApprovalFunctionSettingDto.convertToDto(x)).collect(Collectors.toList()));
 		}
 		return null;

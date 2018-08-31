@@ -130,11 +130,9 @@ public class WorkTimeOfMonthly {
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 		
 		// 加給時間の集計
-		//*****（未）　加給時間のクラス利用が不整合になっていて、正しいメンバが参照できない。
 		this.bonusPayTime.aggregate(workType, attendanceTimeOfDaily);
 		
 		// 外出時間の集計（回数・時間）
-		//*****（未）　日別実績の外出時間・短時間勤務時間のクラスの作成待ち。集計処理は、未実装。
 		this.goOut.aggregate(attendanceTimeOfDaily);
 		
 		// 割増時間の集計

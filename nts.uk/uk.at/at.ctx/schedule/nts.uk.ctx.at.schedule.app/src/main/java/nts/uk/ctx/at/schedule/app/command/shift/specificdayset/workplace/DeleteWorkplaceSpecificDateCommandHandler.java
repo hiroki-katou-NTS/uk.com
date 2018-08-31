@@ -14,7 +14,7 @@ public class DeleteWorkplaceSpecificDateCommandHandler extends CommandHandler<De
 	@Inject
 	private WorkplaceSpecificDateRepository repo;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteWorkplaceSpecificDateCommand> context) {

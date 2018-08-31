@@ -13,10 +13,10 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 public class JpaStampCardItemRepository extends JpaRepository implements StampCardtemRepository {
 
 
-	private final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
+	private static final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.sid = :employeeID";
 	
-	private final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
+	private static final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.sid IN :lstEmployeeId";
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {

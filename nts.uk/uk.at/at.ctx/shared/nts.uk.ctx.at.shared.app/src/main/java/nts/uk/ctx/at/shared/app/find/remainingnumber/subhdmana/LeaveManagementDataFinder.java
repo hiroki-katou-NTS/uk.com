@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -15,17 +16,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
 @Stateless
 public class LeaveManagementDataFinder {
-	
+
 	@Inject
 	private AddSubHdManagementService addSubHdManaService;
 
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
-	
+
 	/**
 	 * Ｌ．代休管理データの修正（休出設定）登録処理
 	 * 
-	 * @param command LeaveManagementDataCommand
+	 * @param command
+	 *            LeaveManagementDataCommand
 	 * @return errorList
 	 */
 	public List<String> leaveManagementProcess(LeaveManagementDataCommand command) {
@@ -51,7 +53,8 @@ public class LeaveManagementDataFinder {
 	/**
 	 * Ｌ．代休管理データの修正（休出設定）入力項目チェック処理
 	 * 
-	 * @param command LeaveManagementDataCommand
+	 * @param command
+	 *            LeaveManagementDataCommand
 	 * @return errorList
 	 */
 	private List<String> inputItemCheck(LeaveManagementDataCommand command) {
@@ -64,9 +67,11 @@ public class LeaveManagementDataFinder {
 					errorList.add("Msg_1212");
 				} else {
 					// 期限切れチェック
-					if (command.getLeaveDate().compareTo(command.getExpiredDate()) >= 0) {
-						// エラーメッセージ(Msg_825)エラーリストにセットする
-						errorList.add("Msg_825");
+					if (command.getUnknownDate() != 1 && !Objects.isNull(command.getLeaveDate())) {
+						if (command.getLeaveDate().compareTo(command.getExpiredDate()) >= 0) {
+							// エラーメッセージ(Msg_825)エラーリストにセットする
+							errorList.add("Msg_825");
+						}
 					}
 				}
 			}

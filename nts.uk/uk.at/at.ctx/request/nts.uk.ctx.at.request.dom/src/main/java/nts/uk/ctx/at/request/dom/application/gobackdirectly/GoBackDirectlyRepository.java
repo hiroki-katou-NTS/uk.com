@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface GoBackDirectlyRepository {
@@ -23,5 +24,12 @@ public interface GoBackDirectlyRepository {
 	 * @param goBackDirectly
 	 */
 	public void delete(String companyID, String appID);
-
+	/**
+	 * @author hoatt
+	 * get List Application Go Back
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public List<GoBackDirectly> getListAppGoBack(String companyID, List<String> lstAppID);
 }

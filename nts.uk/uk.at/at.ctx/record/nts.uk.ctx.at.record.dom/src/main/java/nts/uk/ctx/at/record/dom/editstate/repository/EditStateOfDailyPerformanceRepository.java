@@ -31,4 +31,6 @@ public interface EditStateOfDailyPerformanceRepository {
 	List<EditStateOfDailyPerformance> findByItems(String employeeId, GeneralDate ymd, List<Integer> ids);
 	
 	void updateByKeyFlush(List<EditStateOfDailyPerformance> editStates);
+
+	void deleteByListItemId(String employeeId, GeneralDate ymd, List<Integer> itemIdList);
 }

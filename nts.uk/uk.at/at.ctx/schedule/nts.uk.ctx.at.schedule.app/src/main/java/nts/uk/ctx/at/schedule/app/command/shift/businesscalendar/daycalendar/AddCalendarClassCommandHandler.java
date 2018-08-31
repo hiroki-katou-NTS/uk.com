@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AddCalendarClassCommandHandler extends CommandHandler<List<AddCalendarClassCommand>> {
 	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private CalendarClassRepository calendarClassRepo;

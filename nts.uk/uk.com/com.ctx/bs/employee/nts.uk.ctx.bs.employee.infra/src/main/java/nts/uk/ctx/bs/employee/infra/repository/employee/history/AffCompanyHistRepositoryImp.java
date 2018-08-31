@@ -232,7 +232,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid) {
 		String companyId = AppContexts.user().companyId();
 		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk(pId, sid, histItem.getHistoryId());
-		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, 0, histItem.start(), histItem.end(), null);
+		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, BooleanUtils.toInteger(histItem.isDestinationData()), histItem.start(), histItem.end(), null);
 	}
 
 	@Override

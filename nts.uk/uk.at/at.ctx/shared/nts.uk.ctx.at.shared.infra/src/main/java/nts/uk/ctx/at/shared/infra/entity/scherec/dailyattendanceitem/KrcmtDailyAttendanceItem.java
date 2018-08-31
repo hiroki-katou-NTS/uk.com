@@ -51,6 +51,9 @@ public class KrcmtDailyAttendanceItem extends UkJpaEntity implements Serializabl
 	/* Group */
 	@Column(name = "TYPE_OF_MASTER")
 	public BigDecimal typeOfMaster;
+	
+	@Column(name = "PRIMITIVE_VALUE")
+	public BigDecimal primitiveValue;
 
 	@Override
 	protected Object getKey() {

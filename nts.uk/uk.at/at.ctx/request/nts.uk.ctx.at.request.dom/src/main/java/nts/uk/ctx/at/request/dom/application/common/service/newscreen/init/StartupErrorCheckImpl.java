@@ -77,6 +77,9 @@ public class StartupErrorCheckImpl implements StartupErrorCheckService {
 		if(baseDateFlg.equals(RecordDate.APP_DATE)){
 			return;
 		}
+		if(approvalRootContentImport==null){
+			return;
+		}
 		switch (approvalRootContentImport.getErrorFlag()) {
 			case NO_APPROVER:
 				throw new BusinessException("Msg_324");

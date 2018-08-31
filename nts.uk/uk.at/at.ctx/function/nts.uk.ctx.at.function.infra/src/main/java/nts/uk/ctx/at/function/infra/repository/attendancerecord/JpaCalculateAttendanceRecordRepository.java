@@ -34,10 +34,10 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		implements CalculateAttendanceRecordRepositoty {
 
 	/** The add formula type. */
-	private final int ADD_FORMULA_TYPE = 1;
+	private static final int ADD_FORMULA_TYPE = 1;
 
 	/** The subtract formula type. */
-	private final int SUBTRACT_FORMULA_TYPE = 2;
+	private static final int SUBTRACT_FORMULA_TYPE = 2;
 
 	/*
 	 * (non-Javadoc)

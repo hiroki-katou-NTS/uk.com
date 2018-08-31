@@ -15,9 +15,9 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHea
 @Stateless
 public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMasterRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
 	// SEL_1
-	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+	private static final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
 	// anh Lam
 	// private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE
 	// c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
@@ -30,7 +30,7 @@ public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMast
 	// private final String SEL_4 = SELECT_NO_WHERE
 	// + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND
 	// c.endYm = 999912";
-	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
+	private static final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.strYm < :strYm" + " ORDER BY c.strYm DESC";
 	// private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
@@ -45,10 +45,10 @@ public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMast
 	// + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode" + " AND c.strYm <=
 	// :baseYearMonth "
 	// + " AND c.endYm >= :baseYearMonth ";
-	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+	private static final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode";
 	
-	private final String SEL_7 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+	private static final String SEL_7 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode";
 
 	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {

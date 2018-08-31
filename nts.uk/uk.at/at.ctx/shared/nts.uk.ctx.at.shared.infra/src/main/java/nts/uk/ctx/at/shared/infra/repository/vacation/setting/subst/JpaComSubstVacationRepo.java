@@ -92,4 +92,10 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 		return Optional.of(new ComSubstVacation(new JpaComSubstVacationGetMemento(results.get(0))));
 	}
 
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

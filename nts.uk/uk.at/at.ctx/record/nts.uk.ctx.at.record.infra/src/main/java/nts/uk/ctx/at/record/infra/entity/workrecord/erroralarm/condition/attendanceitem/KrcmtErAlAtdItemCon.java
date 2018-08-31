@@ -22,7 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -33,6 +32,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCond;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondAvg;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondCont;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondCosp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -52,21 +55,18 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	public KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK;
 
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CONDITION_ATR")
 	public int conditionAtr;
 
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "USE_ATR")
 	public int useAtr;
 	
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CONDITION_TYPE")
 	public int type;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", nullable = false) })
@@ -84,7 +84,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlSingleFixed erAlSingleFixed;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", nullable = false) })
@@ -94,6 +94,22 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false) })
 	public KrcstErAlConGroup krcstErAlConGroup;
 
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
+	public KrcmtMulMonCond krcmtMulMonCond;
+	
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
+	public KrcmtMulMonCondAvg krcmtMulMonCondAvg;
+	
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
+	public KrcmtMulMonCondCont krcmtMulMonCondCont;
+	
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
+	public KrcmtMulMonCondCosp krcmtMulMonCondCosp;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcmtErAlAtdItemConPK;
@@ -118,7 +134,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	
     
     public static KrcmtErAlAtdItemCon toEntity(String atdItemConditionGroup1,
-            ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
+            ErAlAttendanceItemCondition<?> erAlAtdItemCon, boolean isGroupOne) {
         KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
                 erAlAtdItemCon.getTargetNO());
         List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
@@ -164,7 +180,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
             } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
                 startValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v();
-            } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
+            } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES || erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
                 startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
             }
@@ -188,7 +204,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
                     fixedValue = 
                             ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
-                } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
+                } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES||  erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
                     fixedValue =
                             ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
                 }
@@ -205,7 +221,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
-				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
+				isGroupOne == true ? 1 : erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
     }
     
@@ -246,7 +262,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
                         (V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue),
                         (V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue));
-            } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+            } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value ||atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
                 atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
                         (V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue),
                         (V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue));
@@ -267,7 +283,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                             atdItemCon.erAlCompareSingle.compareAtr,
                             atdItemCon.erAlCompareSingle.conditionType,
                             (V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue));
-                } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+                } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value ||atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
                     atdItemConDomain.setCompareSingleValue(
                             atdItemCon.erAlCompareSingle.compareAtr,
                             atdItemCon.erAlCompareSingle.conditionType,

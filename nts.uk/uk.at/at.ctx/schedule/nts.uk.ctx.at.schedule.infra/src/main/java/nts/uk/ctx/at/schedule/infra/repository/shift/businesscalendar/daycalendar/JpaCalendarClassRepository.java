@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,20 +11,19 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClass;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClassPK;
 
 @Stateless
 public class JpaCalendarClassRepository extends JpaRepository implements CalendarClassRepository {
-	private final String SELECT_FROM_CLASS = "select l from KsmmtCalendarClass l";
-	private final String SELECT_ALL_CLASS = SELECT_FROM_CLASS
+	private static final String SELECT_FROM_CLASS = "select l from KsmmtCalendarClass l";
+	private static final String SELECT_ALL_CLASS = SELECT_FROM_CLASS
 			+ " where l.ksmmtCalendarClassPK.companyId = :companyId "
 			+ " and l.ksmmtCalendarClassPK.classId = :classId ";
-	private final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
+	private static final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
 			+ " and l.ksmmtCalendarClassPK.date = :date";
-	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
-	private final String DELETE_BY_YEAR_MONTH = "delete from KsmmtCalendarClass l where l.ksmmtCalendarClassPK.companyId = :companyId"
+	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
+	private static final String DELETE_BY_YEAR_MONTH = "delete from KsmmtCalendarClass l where l.ksmmtCalendarClassPK.companyId = :companyId"
 			+ " and l.ksmmtCalendarClassPK.classId = :classId "
 			+" and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	/**

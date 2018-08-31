@@ -15,6 +15,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumAfterCurrentMon;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
@@ -35,9 +38,9 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 	/** 集計期間を取得する */
 	@Inject
 	private GetClosurePeriod getClosurePeriod;
-	/** 期間中の積立年休を取得 */
-	//@Inject
-	//*****（未）　未実装。2018.5.29 shuichi_ishida
+	/** 期間中の年休積休残数を取得 */
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	
 	/** 当月以降の積立年休使用数・残数を取得する */
 	@Override
@@ -77,13 +80,35 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 			}
 		}
 		
+		Optional<AggrResultOfAnnualLeave> prevAnnualLeave = Optional.empty();
+		Optional<AggrResultOfReserveLeave> prevReserveLeave = Optional.empty();
 		List<YearMonth> keys = closurePeriods.keySet().stream().collect(Collectors.toList());
 		keys.sort((a, b) -> a.compareTo(b));
 		for (val key : keys){
+			val closurePeriod = closurePeriods.get(key);
 			
-			// 期間中の積立年休を取得
-			//*****（未）　処理未実装のため、空クラスを仮に返却。2018.5.29 shuichi_ishida
-			val aggrResultOfReserveOpt = Optional.of(new AggrResultOfReserveLeave());
+			// 期間中の年休積休残数を取得
+			val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
+					closure.getCompanyId().v(),
+					employeeId,
+					closurePeriod,
+					TempAnnualLeaveMngMode.OTHER,
+					closurePeriod.end(),
+					false,
+					false,
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty(),
+					prevAnnualLeave,
+					prevReserveLeave);
+			
+			prevAnnualLeave = aggrResult.getAnnualLeave();
+			prevReserveLeave = aggrResult.getReserveLeave();
+			
+			// 結果をListに追加
+			val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 			if (aggrResultOfReserveOpt.isPresent()){
 				val aggrResultOfReserve = aggrResultOfReserveOpt.get();
 				val withMinus =

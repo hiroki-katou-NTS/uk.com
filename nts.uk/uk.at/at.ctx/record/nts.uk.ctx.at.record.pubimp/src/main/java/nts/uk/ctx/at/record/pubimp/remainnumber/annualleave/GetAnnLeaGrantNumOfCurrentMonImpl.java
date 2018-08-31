@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.annualleave;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -35,7 +34,7 @@ public class GetAnnLeaGrantNumOfCurrentMonImpl implements GetAnnLeaGrantNumOfCur
 	@Override
 	public AnnLeaGrantNumberExport algorithm(String employeeId) {
 		
-		AnnLeaGrantNumberExport result = new AnnLeaGrantNumberExport(new GrantDays(BigDecimal.ZERO));
+		AnnLeaGrantNumberExport result = new AnnLeaGrantNumberExport(new GrantDays(0.0));
 		
 		//　社員に対応する締め開始日を取得する
 		val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
@@ -63,6 +62,6 @@ public class GetAnnLeaGrantNumOfCurrentMonImpl implements GetAnnLeaGrantNumOfCur
 		}
 		
 		// 合計した「付与日数」を返す
-		return new AnnLeaGrantNumberExport(new GrantDays(BigDecimal.valueOf(grantDays)));
+		return new AnnLeaGrantNumberExport(new GrantDays(grantDays));
 	}
 }

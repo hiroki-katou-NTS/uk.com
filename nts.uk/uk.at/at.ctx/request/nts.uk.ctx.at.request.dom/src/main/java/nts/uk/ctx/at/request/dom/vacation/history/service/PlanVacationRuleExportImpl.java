@@ -1,15 +1,23 @@
 package nts.uk.ctx.at.request.dom.vacation.history.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualHolidayPlanManaAdapter;
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
@@ -17,8 +25,16 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 	private VacationHistoryRepository vacationHisRepos;
 	@Inject
 	private AnnualHolidayPlanManaAdapter annualAdapter;
+	@Inject
+	private EmployeeRequestAdapter employmentAdapter;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentService;
+	@Inject
+	private ClosureRepository closureRepository;
+	@Inject
+	private ClosureService closureService;
 	@Override
-	public boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, Period dateData) {
+	public boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData) {
 		//指定する期間内の計画休暇のルールの履歴を取得する
 		//ドメインモデル「計画休暇のルールの履歴」を取得する
 		List<PlanVacationHistory> lstVactionPeriod = vacationHisRepos.findByWorkTypeAndPeriod(cid, workTypeCode, dateData);
@@ -38,7 +54,10 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 			}
 			//取得したドメインモデル「計画休暇のルールの履歴」を先頭から最後までループする
 			for (PlanVacationHistory data : lstVactionPeriod) {
-				if(this.checkMaxPlanSpecification(cid, employeeId, workTypeCode, new Period(data.start(), data.end()), data.getMaxDay().v(), dateData)) {
+				//指定期間の計画年休の上限チェック
+				DatePeriod dateCheck = new DatePeriod(data.start(), data.end());
+				CheckMaximumOfPlanParam planParam = new CheckMaximumOfPlanParam(cid, employeeId, workTypeCode, dateCheck, data.getMaxDay().v(), dateData);
+				if(this.checkMaxPlanSpecification(planParam)) {
 					return true;
 				}
 			}
@@ -48,14 +67,14 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		
 	}
 	@Override
-	public boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, Period dateData) {
+	public boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, DatePeriod dateData) {
 		boolean outData = true;
-		for(int i = 0; dateData.getStartDate().compareTo(dateData.getEndDate()) + i <= 0; i++){
-			GeneralDate loopDate = dateData.getStartDate().addDays(i);
+		for(int i = 0; dateData.start().daysTo(dateData.end()) - i >= 0; i++){
+			GeneralDate loopDate = dateData.start().addDays(i);
 			for (PlanVacationHistory planData : lstVactionPeriod) {
 				//ループする日は範囲内かチェックする
-				if(loopDate.after(planData.start())
-						&& loopDate.before(planData.end())) {
+				if(loopDate.afterOrEquals(planData.start())
+						&& loopDate.beforeOrEquals(planData.end())) {
 					outData = false;
 					break;
 				}
@@ -68,51 +87,108 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		return outData;
 	}
 	@Override
-	public boolean checkMaxPlanSpecification(String cid, String employeeId, String workTypeCode, Period checkDate,
-			int maxDay, Period appDate) {
+	public boolean checkMaxPlanSpecification(CheckMaximumOfPlanParam planParam) {
 		boolean outputData = false;
 		//チェック期間による申請期間を編集する
-		Period editDate = this.getEditDate(checkDate, appDate);
+		DatePeriod editDate = this.getEditDate(planParam.getDateCheck(), planParam.getAppDate());
+		//取得期間の算出
+		PeriodVactionCalInfor getCalByDate = this.calGetPeriod(planParam.getCid(), planParam.getEmployeeId(), planParam.getDateCheck());
 		//指定する期間の計画年休使用明細を取得する
-		List<GeneralDate> lstDateDetail = annualAdapter.lstDetailPeriod(employeeId, workTypeCode, checkDate);
+		List<GeneralDate> lstDateDetail = annualAdapter.lstDetailPeriod(planParam.getCid(), planParam.getEmployeeId(), planParam.getWorkTypeCode(), getCalByDate);
 		//使用済の計画年休日数を取得する
 		int useDay = this.getUseDays(lstDateDetail, editDate);
+		GeneralDate sD = editDate.start();
+		GeneralDate eD = editDate.end();
 		//申請する計画年休日数=申請終了日(編集後)-申請開始日(編集後) + 1日
-		//int appDays = application.getStartDate().get().compareTo(application.getEndDate().get())
-		int appDays = appDate.getEndDate().compareTo(appDate.getStartDate()) + 1;
+		Integer appDayCount = sD.daysTo(eD) + 1;
 		//(使用済の計画年休日数＋申請する計画年休日数)はINPUT．上限日数と比較する
-		if(useDay + appDays > maxDay) {
+		if(useDay + appDayCount > planParam.getMaxNumber()) {
 			outputData = true;
 		}
 		return outputData;
 	}
+	
 	@Override
-	public Period getEditDate(Period checkData, Period appDate) {
+	public DatePeriod getEditDate(DatePeriod checkData, DatePeriod appDate) {
 		//申請開始日(編集後)=申請開始日、申請終了日(編集後)=申請終了日(初期化)
-		Period outputData = new Period(appDate.getStartDate(), appDate.getEndDate());
+		GeneralDate startDate = appDate.start();
+		GeneralDate endDate = appDate.end();
 		//チェック期間、申請期間を比較する
-		if(appDate.getStartDate().before(checkData.getStartDate())) {
-			outputData.setStartDate(checkData.getStartDate());
+		if(appDate.start().before(checkData.start())) {
+			startDate = checkData.start();
 		}
-		if(appDate.getEndDate().after(checkData.getEndDate())) {
-			outputData.setEndDate(checkData.getEndDate());
+		if(appDate.end().after(checkData.end())) {
+			endDate = checkData.end();
 		}
-		return outputData;
+		return new DatePeriod(startDate, endDate);
 	}
 	@Override
-	public int getUseDays(List<GeneralDate> lstDate, Period dataDate) {
+	public int getUseDays(List<GeneralDate> lstDate, DatePeriod dataDate) {
 		int outputData = 0;
 		if(lstDate.isEmpty()) {
 			return outputData;
 		}
 		for (GeneralDate detailDate : lstDate) {
 			//INPUT．申請開始日 <= ループ中の「使用一覧」．使用日 <= INPUT．申請終了日 false
-			if(dataDate.getStartDate().after(detailDate)
-					|| dataDate.getEndDate().before(detailDate)) {
+			if(dataDate.start().after(detailDate)
+					|| dataDate.end().before(detailDate)) {
 				outputData += 1;
 			}
 		}
 		return outputData;
+	}
+	@Override
+	public PeriodVactionCalInfor calGetPeriod(String cid, String employeeId, DatePeriod dateCheck) {
+		//社員所属雇用履歴を取得
+		SEmpHistImport employmentBySid = employmentAdapter.getEmpHist(cid, employeeId, GeneralDate.today());
+		if(employmentBySid == null) {
+			return null;
+		}
+		//雇用に紐づく締めを取得する
+		Optional<ClosureEmployment> optClosureEmplInfor = closureEmploymentService.findByEmploymentCD(cid, employmentBySid.getEmploymentCode());
+		if(!optClosureEmplInfor.isPresent()) {
+			return null;
+		}
+		ClosureEmployment closureEmploy = optClosureEmplInfor.get();
+		//ドメインモデル「締め」を取得する
+		Optional<Closure> optClosureInfor = closureRepository.findById(cid, closureEmploy.getClosureId());
+		if(!optClosureInfor.isPresent()) {
+			return null;
+		}
+		Closure closureInfor = optClosureInfor.get();
+		//当月の期間を算出する
+		DatePeriod currentDate = closureService.getClosurePeriod(closureInfor.getClosureId().value, closureInfor.getClosureMonth().getProcessingYm());
+		if(currentDate == null) {
+			return null;
+		}
+		//INPUT．チェック開始日、INPUT．チェック終了日は締め期間の開始年月日、締め期間の終了年月日を比較する
+		if(dateCheck.start().afterOrEquals(currentDate.start())) {//INPUT．チェック開始日>=締め期間の開始年月日
+			//日別実績取得するフラグ=false、暫定データ取得するフラグ=true
+			//開始日（日別実績）=null、終了日（日別実績）=null
+			//開始日（暫定）=INPUT．チェック開始日、終了日（暫定）=INPUT．チェック終了日
+			return new PeriodVactionCalInfor(Optional.empty(),
+					Optional.of(dateCheck),
+					false,
+					true);
+		} else if (dateCheck.end().before(currentDate.start())) { //INPUT．チェック終了日<締め期間の開始年月日
+			//日別実績取得するフラグ=true、暫定データ取得するフラグ=false
+			//開始日（日別実績）=INPUT．チェック開始日、終了日（日別実績）=INPUT．チェック終了日
+			//開始日（暫定）=null、終了日（暫定）=null
+			return new PeriodVactionCalInfor(Optional.of(dateCheck),
+					Optional.empty(),
+					true, 
+					false);
+		} else {
+			//日別実績取得するフラグ=true、暫定データ取得するフラグ=true
+			//開始日（日別実績）=INPUT．チェック開始日、終了日（日別実績）=締め期間の開始年月日.AddDays(-1)
+			DatePeriod recordDate = new DatePeriod(dateCheck.start(), currentDate.start().addDays(-1));
+			//開始日（暫定）=締め期間の開始年月日、終了日（暫定）=INPUT．チェック終了日
+			DatePeriod interimDate = new DatePeriod(currentDate.start(), dateCheck.end());
+			return new PeriodVactionCalInfor(Optional.of(recordDate), 
+					Optional.of(interimDate),
+					true, 
+					true);
+		}
 	}
 	
 	

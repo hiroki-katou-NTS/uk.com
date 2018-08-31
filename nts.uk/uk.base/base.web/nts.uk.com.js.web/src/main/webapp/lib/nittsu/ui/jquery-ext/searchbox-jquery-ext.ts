@@ -105,10 +105,12 @@ module nts.uk.ui.jqueryExtentions {
             
             let minusWidth = 0;
             let fields = options.fields;
-            let searchText = (options.searchText !== undefined) ? options.searchText : "検索";
+            
             let placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・"; 
             
             let searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
+            let defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+            let searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
             let label = (options.label !== undefined) ? options.label : "";
             let enable = options.enable;
             let dataSource = options.items;
@@ -211,7 +213,7 @@ module nts.uk.ui.jqueryExtentions {
                             component.attr("filtered", "true");   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(options.items, function (item: any){
+                            let source = _.filter(srh.getDataSource(), function (item: any){
                                              return _.find(result.options, function (itemFilterd: any){
                                             return itemFilterd[primaryKey] === item[primaryKey];        
                                                 }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){

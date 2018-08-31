@@ -28,7 +28,7 @@ public class GrantHolidayTblDto {
 	private int grantNum;
 
 	/* 年休付与日数 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 
 	/* 時間年休上限日数 */
 	private Integer limitTimeHd;

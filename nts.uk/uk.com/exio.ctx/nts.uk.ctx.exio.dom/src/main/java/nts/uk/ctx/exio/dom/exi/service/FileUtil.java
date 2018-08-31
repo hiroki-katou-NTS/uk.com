@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 
+import nts.arc.error.BusinessException;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
@@ -28,24 +29,28 @@ public class FileUtil {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			count = csvParsedResult.getRecords().size();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			System.out.println(e.getStackTrace());
+			throw new BusinessException("Msg_1365");
 		}
 		return count;
 	}
 
 	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine, Integer endcoding) {
 		// get csv reader
-		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
+		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true).withColumnSizeDiffByRow()
 				.withChartSet(getCharset(endcoding)).withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(dataLineNum - 1);
 			NtsCsvRecord record = csvParsedResult.getRecords().get(startLine - 1);
-			for (int i = 0; i < record.columnLength(); i++) {
+			for (int i = 0; i < colHeader.columnLength(); i++) {
+				String h = (String) colHeader.getColumn(i);
+				String r = (String) record.getColumn(i);
+				if (h == null) continue;
 				List<String> data = new ArrayList<>();
-				data.add((String) colHeader.getColumn(i));
-				data.add((String) record.getColumn(i));
+				data.add(h);
+				data.add(r);
 				result.add(data);
 			}
 		} catch (IOException e) {

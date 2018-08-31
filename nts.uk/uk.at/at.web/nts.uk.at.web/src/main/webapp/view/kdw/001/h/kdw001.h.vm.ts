@@ -76,18 +76,22 @@ module nts.uk.at.view.kdw001.h {
                     self.listErrMessageInfo = ko.observableArray([]);
                     self.listTargetPerson = ko.observableArray([]);
                     
-
+                    if(param.executionContent == 3){
+                        self.feriodEnable = false;
+                    } else {
+                        self.feriodEnable = true;
+                    }
 
                 }
                 //list
                 self.currentSelectedRow = ko.observable(null);
                 self.listSid = [];
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDW001_33'), key: 'personCode', width: 200 },
-                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
-                    { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 },
-                    { headerText: getText('KDW001_37'), key: 'messageError', width: 199 },
-                    { headerText: '', key: 'GUID', width: 1 ,hirren :true },
+                    { headerText: getText('KDW001_33'), key: 'personCode', width: 100 , formatter: _.escape},
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 , formatter: _.escape},
+                    { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 , formatter: _.escape },
+                    { headerText: getText('KDW001_37'), key: 'messageError', width: 300 , formatter: _.escape},
+                    { headerText: '', key: 'GUID', width: 1 ,hidden :true },
                 ]);
             }
             printError(): void {
@@ -101,7 +105,6 @@ module nts.uk.at.view.kdw001.h {
                 let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
                 $.when(dfdGetAllErrMessageInfoByEmpID)
                     .done((dfdGetAllErrMessageInfoByEmpIDData) => {
-
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -163,6 +166,7 @@ module nts.uk.at.view.kdw001.h {
                             });
                         }); 
                     self.listErrMessageInfo.valueHasMutated();
+                    self.listErrMessageInfo(_.orderBy(self.listErrMessageInfo(), ["personCode", "disposalDay"], ["asc", "asc"]));
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();

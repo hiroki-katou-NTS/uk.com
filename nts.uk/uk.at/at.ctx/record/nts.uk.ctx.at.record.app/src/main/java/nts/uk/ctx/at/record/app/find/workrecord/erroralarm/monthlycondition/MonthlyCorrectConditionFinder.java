@@ -32,4 +32,9 @@ public class MonthlyCorrectConditionFinder {
 		return MonthlyCorrectConditionDto.fromDomain(null, timeItemCheckMonthly);
 	}
 
+	public List<MonthlyCorrectConditionDto> findUseMonthlyCorrectCondition() {
+		return monthlyCorrectConditionRepository.findUseMonthlyConditionByCompanyId().stream()
+				.map(domain -> MonthlyCorrectConditionDto.fromDomain(domain, null)).collect(Collectors.toList());
+	}
+	
 }

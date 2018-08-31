@@ -25,7 +25,7 @@ public class PublicHolidayFinder {
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	public List<PublicHolidayDto> getHolidaysByListDate(List<String> lstDate) {
 		List<GeneralDate> lstGeneralDate = lstDate.stream().map(x -> GeneralDate.fromString(x, DATE_FORMAT)).collect(Collectors.toList());

@@ -15,7 +15,7 @@ public interface BusinessTypeFormatMonthlyRepository {
 
 	void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeader, List<String> formatCodes);
 
-	void deleteExistData(List<Integer> attendanceItemIds);
+	void deleteExistData(String companyId, String businessTypeCode, List<Integer> attendanceItemIds);
 
 	void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds);
 

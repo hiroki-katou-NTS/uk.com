@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItem
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
@@ -42,11 +43,12 @@ public class UpdateMonthlyCorrectConCmd {
 	private boolean group2UseAtr;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2;
+	private int newMode;
 
 	public UpdateMonthlyCorrectConCmd(String companyId, String code, String name, int useAtr, int operatorBetweenGroups,
 			int operatorGroup1, int operatorGroup2, boolean group2UseAtr,
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1,
-			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2) {
+			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2, int newMode) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
@@ -58,6 +60,7 @@ public class UpdateMonthlyCorrectConCmd {
 		this.group2UseAtr = group2UseAtr;
 		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
 		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
+		this.newMode = newMode;
 	}
 
 	public UpdateMonthlyCorrectConCmd() {
@@ -70,7 +73,7 @@ public class UpdateMonthlyCorrectConCmd {
 				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr(),
 				atdItemCon.getConditionType());
 		// Set Target
-		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.getConditionAtr() == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
 		} else {
 			atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(),
@@ -113,7 +116,7 @@ public class UpdateMonthlyCorrectConCmd {
 					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
 						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
 								atdItemCon.getConditionType(),
-								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue() == null ? 0 : atdItemCon.getCompareStartValue().intValue()));
 					}
 				} else {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),

@@ -229,14 +229,19 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                             }
 
                         } else {
-                            self.rightItems(rightItems);
+                            
                             if (teamDivision == 1 && rank == 1) {
                                 _.remove(leftItem, function(newLItem) {
                                     return newLItem.code == 6 || newLItem.code == 5;
                                 })
+                                _.remove(rightItems, function(newLItem) {
+                                    return newLItem.code == 6 || newLItem.code == 5;
+                                })
                                 self.leftItems(leftItem);
+                                self.rightItems(rightItems);
                             } else {
                                 self.leftItems(leftItem);
+                                self.rightItems(rightItems);
                             }
 
                         }

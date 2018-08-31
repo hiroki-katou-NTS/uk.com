@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,34 +8,30 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.CheckAttendanceHolidayOutPut;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
@@ -52,6 +46,10 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.PClogOnOffLack
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrectOrderAlgorithm;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubleStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -60,11 +58,16 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -80,6 +83,36 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private BasicScheduleAdapter basicScheduleAdapter;
 
 	@Inject
+	private LackOfStampingAlgorithm lackOfStamping;
+
+	@Inject
+	private StampIncorrectOrderAlgorithm stampIncorrectOrderAlgorithm;
+
+	@Inject
+	private DoubleStampAlgorithm doubleStampAlgorithm;
+
+	@Inject
+	private MissingOfTemporaryStampChecking missingOfTemporaryStampChecking;
+
+	@Inject
+	private TemporaryStampOrderChecking temporaryStampOrderChecking;
+
+	@Inject
+	private TemporaryDoubleStampChecking temporaryDoubleStampChecking;
+
+	@Inject
+	private GoingOutStampLeakageChecking goingOutStampLeakageChecking;
+
+	@Inject
+	private GoingOutStampOrderChecking goingOutStampOrderChecking;
+
+	@Inject
+	private BreakTimeStampLeakageChecking breakTimeStampLeakageChecking;
+
+	@Inject
+	private BreakTimeStampIncorrectOrderChecking breakTimeStampIncorrectOrderChecking;
+
+	@Inject
 	private ReflectEmbossingDomainService ReflectEmbossingDomainService;
 
 	@Inject
@@ -89,6 +122,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private WorkingConditionItemService workingConditionItemService;
 
 	@Inject
+	private ExitStampCheck exitStampCheck;
+
+	@Inject
+	private ExitStampIncorrectOrderCheck exitStampIncorrectOrderCheck;
+
+	@Inject
+	private PClogOnOffLackOfStamp pClogOnOffLackOfStamp;
+
+	@Inject
+	private PCLogOnOffIncorrectOrderCheck pCLogOnOffIncorrectOrderCheck;
+
+	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 
 	@Inject
@@ -96,37 +141,68 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
-	
+
 	@Inject
-	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
-	
+	private WorkTimeSettingRepository workTimeSettingRepository;
+
 	@Inject
-	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
-	
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-	
-	
+	private WorkTypeRepository workTypeRepository;
+
 	@Override
-	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr,
-			Optional<CalAttrOfDailyPerformance> calcOfDaily ,Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily ,Optional<WorkTypeOfDailyPerformance> workTypeOfDaily) {
+			ExecutionType reCreateAttr, Optional<CalAttrOfDailyPerformance> calcOfDaily,
+			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily) {
+
+		NewReflectStampOutput newReflectStampOutput = new NewReflectStampOutput();
+
+		ReflectStampOutput reflectStamp = new ReflectStampOutput();
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
 
 		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode();
-		
-		
-		// 打刻反映時の出勤休日扱いチェック - 1日半日出勤・1日休日系の判定
+
+		// 1日半日出勤・1日休日系の判
 		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode.v());
+
+		if (workStyle == WorkStyle.ONE_DAY_REST) {
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			newReflectStampOutput.setReflectStampOutput(reflectStamp);
+			return newReflectStampOutput;
+		}
+
+		// ドメインモデル「就業時間帯の設定」を取得する
+		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyID,
+				workTimeCode.v(), AbolishAtr.NOT_ABOLISH);
+
+		if (!workTimeOpt.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+					new ErrMessageResource("016"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
+					new ErrMessageContent(TextResource.localize("Msg_591")));
+			errMesInfos.add(employmentErrMes);
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			return newReflectStampOutput;
+		}
 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		// after check 打刻反映時の出勤休日扱いチェック
-		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
-		if (workStyle == WorkStyle.ONE_DAY_REST) {
+		// 打刻反映時間帯を取得する
+		// 打刻反映時の出勤休日扱いチェック
+		CheckAttendanceHolidayOutPut attendanceHolidayOutPut = this.checkAttendanceHoliday(employeeID,
+				empCalAndSumExecLogID, companyID, workTypeCode.v(), processingDate);
+		if (attendanceHolidayOutPut.getErrMesInfos() != null && !attendanceHolidayOutPut.getErrMesInfos().isEmpty()) {
+			errMesInfos.addAll(attendanceHolidayOutPut.getErrMesInfos());
+			newReflectStampOutput.setErrMesInfos(errMesInfos);
+			return newReflectStampOutput;
+		}
+		boolean isAtWork = attendanceHolidayOutPut.isAtWork();
+
+		// 終了状態：休日扱い - る
+		if (isAtWork == false) {
 			stampReflectRangeOutput = this.holidayStampRange(companyID, workInfoOfDailyPerformance, processingDate,
 					employeeID);
 		}
@@ -140,12 +216,12 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// 外出の打刻反映範囲を取得する
 		stampReflectRangeOutput.setGoOut(stampReflectRangeOutput.getStampRange());
+		// 臨時の打刻反映範囲を作成する
 		stampReflectRangeOutput.setTemporary(stampReflectRangeOutput.getStampRange());
 
 		// 打刻を反映する - Dung code
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
-		ReflectStampOutput reflectStamp = new ReflectStampOutput();
 		if (lstStampItem == null) {
 			reflectStamp = null;
 		}
@@ -168,49 +244,27 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp.setBreakTimeOfDailyPerformance(breakTimeOfDailyPerformance);
 
 			// 短時間勤務時間帯を反映する
-			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = this.reflectShortWorkingTimeDomainService.reflect(
+			ReflectShortWorkingOutPut outPut = this.reflectShortWorkingTimeDomainService.reflect(empCalAndSumExecLogID,
 					companyID, processingDate, employeeID, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
-			reflectStamp.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+			if (outPut.getErrMesInfos() != null && !outPut.getErrMesInfos().isEmpty()) {
+				errMesInfos.addAll(outPut.getErrMesInfos());
+				newReflectStampOutput.setErrMesInfos(errMesInfos);
+				return newReflectStampOutput;
+			}
+			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
 
 			// エラーチェック
-			List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
-			if(calcOfDaily == null || !calcOfDaily.isPresent()) {
-				val getCalcAttr = calAttrOfDailyPerformanceRepository.find(employeeID, processingDate);
-				calcOfDaily = getCalcAttr == null?Optional.empty():Optional.of(getCalcAttr);
-			}
-			if(affInfoOfDaily  == null || !affInfoOfDaily.isPresent())
-				affInfoOfDaily = affiliationInforOfDailyPerforRepository.findByKey(employeeID, processingDate);
-			if(workTypeOfDaily == null || !workTypeOfDaily.isPresent())
-				workTypeOfDaily = workTypeOfDailyPerforRepository.findByKey(employeeID, processingDate);
-			
-			if(calcOfDaily.isPresent() && affInfoOfDaily.isPresent()) {
-				IntegrationOfDaily integarationOfDaily  = new IntegrationOfDaily(workInfoOfDailyPerformance, 
-															  					 calcOfDaily.get(), 
-															  					 affInfoOfDaily.get(), 
-															  					 workTypeOfDaily, 
-															  					 Optional.of(reflectStamp.getPcLogOnInfoOfDaily()), 
-															  					 reflectStamp.getEmployeeDailyPerErrorList(), 
-															  					 Optional.of(reflectStamp.getOutingTimeOfDailyPerformance()),
-															  					 Arrays.asList(breakTimeOfDailyPerformance), 
-															  					 Optional.empty(), 
-															  					 Optional.empty(),
-															  					 Optional.of(reflectStamp.getTimeLeavingOfDailyPerformance()), 
-															  					 Optional.of(reflectStamp.getShortTimeOfDailyPerformance()), 
-															  					 Optional.empty(), 
-															  					 Optional.of(reflectStamp.getAttendanceLeavingGateOfDaily()), 
-															  					 Optional.empty(), 
-															  					 Collections.emptyList(), 
-															  					 Optional.of(reflectStamp.getTemporaryTimeOfDailyPerformance()));
-			
-				calculateDailyRecordServiceCenter.errorCheck(Arrays.asList(integarationOfDaily))
-												 .forEach(tc -> {
-													 	employeeDailyPerErrorList.addAll(tc.getEmployeeError());
-												 });
+			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
+					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
 
-			}
-			reflectStamp.setEmployeeDailyPerErrorList(employeeDailyPerErrorList);
+			// calculateDailyRecordServiceCenter.errorCheck(integrationList);
 		}
-		return reflectStamp;
+		newReflectStampOutput.setErrMesInfos(errMesInfos);
+		newReflectStampOutput.setReflectStampOutput(reflectStamp);
+
+		return newReflectStampOutput;
 	}
 
 	/*
@@ -340,6 +394,43 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		}
 
 		return stampReflectRangeOutput;
+	}
+
+	/**
+	 * 打刻反映時の出勤休日扱いチェック
+	 * 
+	 * @param workTypeCode
+	 * @return
+	 */
+	private CheckAttendanceHolidayOutPut checkAttendanceHoliday(String employeeID, String empCalAndSumExecLogID,
+			String companyID, String workTypeCode, GeneralDate processingDate) {
+
+		CheckAttendanceHolidayOutPut outPut = new CheckAttendanceHolidayOutPut();
+
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+
+		// ドメインモデル「勤務種類」を取得する
+		Optional<WorkType> workTypeOpt = this.workTypeRepository.findByDeprecated(companyID, workTypeCode);
+
+		if (!workTypeOpt.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+					new ErrMessageResource("015"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
+					new ErrMessageContent(TextResource.localize("Msg_590")));
+			errMesInfos.add(employmentErrMes);
+			outPut.setErrMesInfos(errMesInfos);
+			return outPut;
+		}
+
+		// 1日半日出勤・1日休日系の判定
+		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode);
+
+		if (workStyle == WorkStyle.ONE_DAY_REST) {
+			outPut.setAtWork(false);
+		} else {
+			outPut.setAtWork(true);
+		}
+
+		return outPut;
 	}
 
 	/*
@@ -509,6 +600,83 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		TimeZoneOutput temporary = new TimeZoneOutput(earliestTime, lastestTime);
 
 		stampReflectRangeOutput.setStampRange(temporary);
+	}
+
+	/*
+	 * エラーチェック
+	 */
+	private void errorCheck(String companyID, String employeeID, GeneralDate processingDate,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
+			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance,
+			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance,
+			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily, PCLogOnInfoOfDaily pcLogOnInfoOfDaily) {
+
+		// 出勤系打刻漏れをチェックする
+		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+				timeLeavingOfDailyPerformance);
+
+		// 出勤系打刻順序不正をチェックする
+		this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID, employeeID, processingDate,
+				timeLeavingOfDailyPerformance);
+
+		// 出勤系二重打刻をチェックする
+		this.doubleStampAlgorithm.doubleStamp(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);
+
+		// TODO: ドメインモデル「臨時勤務管理」を取得する
+		// get data from domain : 臨時勤務管理, this domain, now haven't created
+		// fake data :
+		UseAtr useAtr = UseAtr.USE;
+		if (useAtr == UseAtr.USE) {
+
+			// 臨時系打刻漏れをチェックする
+			missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate,
+					temporaryTimeOfDailyPerformance);
+
+			// 臨時系打刻順序不正をチェックする
+			temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate,
+					temporaryTimeOfDailyPerformance);
+
+			// 臨時系二重打刻をチェックする
+			temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate,
+					temporaryTimeOfDailyPerformance);
+		}
+		// 外出系打刻漏れをチェックする
+		goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate,
+				outingTimeOfDailyPerformance);
+
+		// 外出系打刻順序不正をチェックする
+		goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate,
+				outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
+
+		// 休憩系打刻漏れをチェックする
+		breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate,
+				breakTimeOfDailyPerformance);
+
+		// 休憩系打刻順序不正をチェックする
+		breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate,
+				breakTimeOfDailyPerformance);
+		UseAtr useAtr2 = UseAtr.USE;
+		if (useAtr2 == UseAtr.USE) {
+			// 入退門の打刻漏れをチェックする
+			exitStampCheck.exitStampCheck(companyID, employeeID, processingDate, attendanceLeavingGateOfDaily,
+					workInfoOfDailyPerformance);
+			// 入退門の打刻順序不正をチェックする
+			exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID, employeeID, processingDate,
+					attendanceLeavingGateOfDaily, timeLeavingOfDailyPerformance);
+		}
+
+		UseAtr useAtr3 = UseAtr.USE;
+		if (useAtr3 == UseAtr.USE) {
+			// PCログオンログオフの打刻漏れをチェックする
+			this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID, employeeID, processingDate, pcLogOnInfoOfDaily,
+					workInfoOfDailyPerformance);
+
+			// PCログオンログオフの打刻順序不正をチェックする
+			this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID, employeeID, processingDate,
+					pcLogOnInfoOfDaily, timeLeavingOfDailyPerformance);
+		}
 	}
 
 	/*

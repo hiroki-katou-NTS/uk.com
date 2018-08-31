@@ -7,11 +7,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.service.export.AppRootStateConfirmExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateParam;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -149,10 +151,10 @@ public interface ApprovalRootStatePub {
 	public ApproverApprovedExport getApproverApproved(String rootStateID, Integer rootType); 
 	
 	/**
+	 * RequestList No.484
 	 * 承認代行情報の取得処理
 	 * @param companyID 会社ID
-	 * @param listApprover 承認者リスト
-　							※[承認者の社員ID]の一覧
+	 * @param listApprover 承認者リスト-[承認者の社員ID]の一覧
 	 * @return
 	 */
 	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover);
@@ -207,6 +209,7 @@ public interface ApprovalRootStatePub {
 	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
+	 * RequestList No.482
 	 * 差し戻しする(承認者まで)
 	 * @param companyID
 	 * @param rootStateID
@@ -215,6 +218,7 @@ public interface ApprovalRootStatePub {
 	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order, Integer rootType);
 	
 	/**
+	 * RequestList No.480
 	 * 差し戻しする(本人まで)
 	 * @param companyID
 	 * @param rootStateID
@@ -242,5 +246,27 @@ public interface ApprovalRootStatePub {
 	public void cleanApprovalRootState(String rootStateID, Integer rootType);
 	
 	public void deleteConfirmDay(String employeeID, GeneralDate date);
+	/**
+	 * RequestList No.483
+	 * 1.承認フェーズ毎の承認者を取得する
+	 * @param phase
+	 * @return
+	 */
+	public List<String> getApproverFromPhase(ApprovalPhaseStateParam phase);
+	/**
+	 * RequestList 479
+	 * 差し戻し対象者一覧を取得
+	 * @param appID
+	 * @return
+	 */
+	public List<ApproverRemandExport> getListApproverRemand(String appID);
 	
+	/**
+	 * 1.指定する承認フェーズの承認が完了したか
+	 * @param approvalPhaseState ドメインモデル「承認フェーズインスタンス」
+	 * @return 承認完了フラグ(true, false)
+　				true：指定する承認フェーズの承認が完了
+　				false：指定する承認フェーズの承認がまだ未完了
+	 */
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
 }

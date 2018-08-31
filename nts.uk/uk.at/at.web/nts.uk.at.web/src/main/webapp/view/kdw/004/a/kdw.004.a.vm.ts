@@ -1,80 +1,99 @@
 module nts.uk.at.view.kdw004.a.viewmodel {
-    var SATURDAY_BACKGROUND_COLOR = "#8BD8FF";
-    var SUNDAY_BACKGROUND_COLOR = "#FABF8F";
-    var SATURDAY_TEXT_COLOR = "#0031FF";
-    var SUNDAY_TEXT_COLOR = "#FF0000";
-    var TEMPLATE_EMPLOYEE_NAME_HEADER = "<span class='limited-label' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind=\"click: clickNameJumpToKdw003.bind($data, '${employeeId}')\">${employeeName}</span>";
+    import text = nts.uk.resource.getText;
+
     enum ApprovalStatus {
         Approved = 0,
         UnApproved = 1,
         CannotApproved = 2,
         Disable = 3
     }
-    var getTemplateDisplayStt = (headerTxtId,startDate) => {
-        return "{{if ${" + headerTxtId + "} == '" + ApprovalStatus.Approved + "' }}" +
-            "<a class='approved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}','"+startDate+"')\">○</a>" +
-            "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.UnApproved + "' }}" +
-            "<a class='unapproved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}','"+startDate+"')\">！</a>" +
-            "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.CannotApproved + "' }}" +
-            "<a class='cannotApproved'>＿</a>" +
-            "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.Disable + "' }}" +
-            "<span class='disable'></span>" +
-            "{{/if}}";
-    };
-    export class ScreenModelKDW004A {
 
+    let SATURDAY_BACKGROUND_COLOR = "#8BD8FF",
+        SUNDAY_BACKGROUND_COLOR = "#FABF8F",
+        SATURDAY_TEXT_COLOR = "#0031FF",
+        SUNDAY_TEXT_COLOR = "#FF0000",
+        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
+        getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
+            <a class='approved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
+            {{elseif \${${headerTxtId}} == '${ApprovalStatus.UnApproved}' }}
+            <a class='unapproved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
+            {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
+            <a class='cannotApproved' href='void(0);'>＿</a>
+            {{elseif \${${headerTxtId}} == '${ApprovalStatus.Disable}' }}
+            <span class='disable'></span>
+            {{/if}}`;
+
+    export class ScreenModelKDW004A {
         legendOptions: any = {
             items: [
-                { className: 'approved-img', labelText: nts.uk.resource.getText('KDW004_8') },
-                { className: 'cannotApproved-img', labelText: nts.uk.resource.getText('KDW004_9') },
-                { className: 'unapproved-img', labelText: nts.uk.resource.getText('KDW004_10') },
-                { className: 'disable-img', labelText: nts.uk.resource.getText('KDW004_11') },
-                { className: 'nodata-img', labelText: nts.uk.resource.getText('KDW004_12') }
+                { className: 'approved-img', labelText: text('KDW004_8') },
+                { className: 'cannotApproved-img', labelText: text('KDW004_9') },
+                { className: 'unapproved-img', labelText: text('KDW004_10') },
+                { className: 'disable-img', labelText: text('KDW004_11') },
+                { className: 'nodata-img', labelText: text('KDW004_12') }
             ],
             template: '<div class="#{className}"></div><div class="legend-item-label">#{labelText}</div>'
         };
-        lstClosure: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedClosure: KnockoutObservable<any> = ko.observable(null);
-        datePeriod: KnockoutObservable<any> = ko.observable(null);
-        lstColumns: Array<any> = [];
+
         lstData: Array<any> = [];
+        lstColumns: Array<any> = [];
         lstHeaderColor: Array<any> = [];
+
+        datePeriod: KnockoutObservable<any> = ko.observable(null);
         currentPageSize: KnockoutObservable<any> = ko.observable(12);
+        selectedClosure: KnockoutObservable<any> = ko.observable(null);
+        lstClosure: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
-            var self = this;
-            self.selectedClosure.subscribe((val) => {
+            let self = this;
+
+            self.selectedClosure.subscribe(val => {
                 if (val) {
-                  let currentYearMonth;
-                  let closures = self.lstClosure();
-                   closures.forEach(x=>{
-                       if(x.closureId==val){
-                        currentYearMonth =  x.currentYearMonth;  
-                       }
-                   });
-                    service.getDateRange(val,currentYearMonth).done((dateRange) => {
-                        self.datePeriod({ startDate: moment(dateRange.startDate).format("YYYY/MM/DD"), endDate: moment(dateRange.endDate).format("YYYY/MM/DD") });
+                    let currentYearMonth,
+                        closures = self.lstClosure();
+
+                    _.each(closures, x => {
+                        if (x.closureId == val) {
+                            currentYearMonth = x.currentYearMonth;
+                        }
+                    });
+
+                    service.getDateRange(val, currentYearMonth).done((dateRange) => {
+                        self.datePeriod({
+                            startDate: moment(dateRange.startDate).format("YYYY/MM/DD"),
+                            endDate: moment(dateRange.endDate).format("YYYY/MM/DD")
+                        });
+
                         //disable tabIndex button date range
-                        document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
-                        document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
+                        $(".ntsDateRangeButton").prop('tabindex', -1);
                     });
                 }
             });
         }
 
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+        startPage = (): JQueryPromise<any> => {
+            let self = this,
+                dfd = $.Deferred();
+
             nts.uk.ui.block.grayout();
+
             service.startscreen().done((result: OneMonthApprovalStatus) => {
                 self.lstClosure(result.lstClosure);
+
                 self.selectedClosure(result.lstClosure[0].closureId);
-                self.datePeriod({ startDate: moment(result.startDate).format("YYYY/MM/DD"), endDate: moment(result.endDate).format("YYYY/MM/DD") });
+
+                self.datePeriod({
+                    startDate: moment(result.startDate).format("YYYY/MM/DD"),
+                    endDate: moment(result.endDate).format("YYYY/MM/DD")
+                });
+
                 self.lstData = self.convertToGridData(result.lstEmployee);
                 self.generateColumns();
                 self.loadGrid();
                 self.addClickEventDateHeader();
+
                 dfd.resolve();
+
                 nts.uk.ui.block.clear();
             }).fail((error) => {
                 nts.uk.ui.block.clear();
@@ -83,76 +102,153 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             return dfd.promise();
         }
 
-        extract() {
-            var self = this;
-            let param = {
-                closureIdParam: self.selectedClosure(),
-                startDateParam: moment(self.datePeriod().startDate).utc().toISOString(),
-                endDateParam: moment(self.datePeriod().endDate).utc().toISOString(),
-            };
+        extract = () => {
+            let self = this,
+                param = {
+                    closureIdParam: self.selectedClosure(),
+                    startDateParam: moment(self.datePeriod().startDate).utc().toISOString(),
+                    endDateParam: moment(self.datePeriod().endDate).utc().toISOString(),
+                };
+
             nts.uk.ui.block.grayout();
+
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
-                var igridContent = $("#approvalSttGrid")[0];
-                ko.cleanNode(igridContent) ;
+                let approvalSttGrid = document.getElementById('approvalSttGrid'),
+                    approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+
+                ko.cleanNode(approvalSttGrid);
+                ko.cleanNode(approvalSttGrid_headers);
+
                 self.lstData = self.convertToGridData(result.lstEmployee);
                 self.generateColumns();
                 self.loadGrid();
                 self.setHeadersColor();
                 self.addClickEventDateHeader();
-                ko.applyBindings(self,igridContent);
-                ko.applyBindings(self,approvalSttGrid_headers);
+
+                ko.applyBindings(self, approvalSttGrid);
+                ko.applyBindings(self, approvalSttGrid_headers);
+
                 nts.uk.ui.block.clear();
             }).fail((error) => {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
             });
         }
-        clickDateJumpToKdw003(date) {
-            var self = this;
-            let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, self.lstData.map((data) => { return data.employeeId; }), false, false, self.selectedClosure());
-            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.DATE, date, date, self.lstData.map((data) => { return data.employeeId; }));
-            extractionParam.dateTarget = moment(date).format("YYYY/MM/DD");
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+
+        clickDateJumpToKdw003 = (date) => {
+            let self = this,
+                initParam: DPCorrectionInitParam = {
+                    //画面モード
+                    screenMode: DPCorrectionScreenMode.APPROVAL,
+                    //社員一覧
+                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //エラー参照を起動する
+                    errorRefStartAtr: false,
+                    //期間を変更する
+                    changePeriodAtr: false,
+                    //処理締め
+                    targetClosue: self.selectedClosure(),
+                    //Optional
+                    //打刻初期値
+                    initClock: undefined,
+                    //遷移先の画面
+                    transitionDesScreen: '/view/kdw/004/a/index.xhtml'
+                },
+                extractionParam: DPCorrectionExtractionParam = {
+                    //表示形式
+                    displayFormat: DPCorrectionDisplayFormat.DATE,
+                    //期間
+                    startDate: date,
+                    endDate: date,
+                    //抽出した社員一覧
+                    lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
+                    //Optional
+                    //日付別で起動
+                    dateTarget: moment(date).format("YYYY/MM/DD"),
+                    individualTarget: undefined
+                };
+
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
+                initParam: initParam,
+                extractionParam: extractionParam
+            });
         }
 
-        clickStatusJumpToKdw003(employeeId,startDate) {
-            var self = this;
-            let lstEmpId =[];
-            lstEmpId.push(employeeId);
-            let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, lstEmpId, false, false, self.selectedClosure());
-            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, startDate, startDate, employeeId);
-            extractionParam.individualTarget = employeeId;
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+        clickStatusJumpToKdw003 = (employeeId, startDate) => {
+            let self = this,
+                initParam: DPCorrectionInitParam = {
+                    screenMode: DPCorrectionScreenMode.APPROVAL,
+                    lstEmployee: [employeeId],
+                    errorRefStartAtr: false,
+                    changePeriodAtr: false,
+                    targetClosue: self.selectedClosure(),
+                    initClock: undefined,
+                    transitionDesScreen: '/view/kdw/004/a/index.xhtml'
+                },
+                extractionParam: DPCorrectionExtractionParam = {
+                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
+                    startDate: startDate,
+                    endDate: startDate,
+                    lstExtractedEmployee: [employeeId],
+                    dateTarget: undefined,
+                    individualTarget: employeeId
+                };
+
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
+                initParam: initParam,
+                extractionParam: extractionParam
+            });
         }
 
-        clickNameJumpToKdw003(employeeId) {
-            var self = this;
-            let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, self.lstData.map((data) => { return data.employeeId; }), false, false, self.selectedClosure());
-            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
-            extractionParam.individualTarget = employeeId;
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+        clickNameJumpToKdw003 = (employeeId) => {
+            let self = this,
+                initParam: DPCorrectionInitParam = {
+                    //画面モード
+                    screenMode: DPCorrectionScreenMode.APPROVAL,
+                    //社員一覧
+                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //エラー参照を起動する
+                    errorRefStartAtr: false,
+                    //期間を変更する
+                    changePeriodAtr: false,
+                    //処理締め
+                    targetClosue: self.selectedClosure(),
+                    //Optional
+                    //打刻初期値
+                    initClock: undefined,
+                    //遷移先の画面
+                    transitionDesScreen: '/view/kdw/004/a/index.xhtml'
+                }, extractionParam: DPCorrectionExtractionParam = {
+                    //表示形式
+                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
+                    //期間
+                    startDate: self.datePeriod().startDate,
+                    endDate: self.datePeriod().endDate,
+                    //抽出した社員一覧
+                    lstExtractedEmployee: employeeId,
+                    'dateTarget': undefined,
+                    individualTarget: employeeId
+                };
+
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {
+                initParam: initParam,
+                extractionParam: extractionParam
+            });
         }
 
-        convertToGridData(lstEmployee: Array<ApprovalEmployee>): Array<any> {
-            let results = [];
-            for (let i = 0; i < lstEmployee.length; i++) {
-                let data = {};
-                data['employeeId'] = lstEmployee[i].employeeId;
-                data['employeeCode'] = lstEmployee[i].employeeCode;
-                data['employeeName'] = lstEmployee[i].employeeName;
-                for (let j = 0; j < lstEmployee[i].lstStatus.length; j++) {
-                    data[moment(lstEmployee[i].lstStatus[j].date).format('YYYYMMDD')] = lstEmployee[i].lstStatus[j].status;
-                }
-                results.push(data);
-            }
-            return results;
+        convertToGridData = (lstEmployee: Array<ApprovalEmployee>): Array<any> => {
+            return _.map(lstEmployee, m => {
+                _.each(m.lstStatus, s => {
+                    m[moment(s.date).format('YYYYMMDD')] = s.status;
+                });
+
+                return m;
+            });
         }
 
-        loadGrid(index? : any,pageIndex? : any) {
-            var self = this;
+        loadGrid = (index?: any, pageIndex?: any) => {
+            let self = this;
+
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
@@ -166,96 +262,153 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 rowVirtualization: false,
                 virtualizationMode: "fixed",
                 columns: self.lstColumns,
-                features: [
-                    {
-                        name: 'MultiColumnHeaders'
-                    },
-                    {
+                features: [{
+                    name: 'MultiColumnHeaders'
+                }, {
                         name: 'Paging',
-                        type: "local",
-                        currentPageIndex:pageIndex||0,  
-                        pageSize: index||12,
-                        pageSizeChanging: (ui, args)=>{
-                            ko.cleanNode(approvalSttGrid) ;
+                        'type': "local",
+                        currentPageIndex: pageIndex || 0,
+                        pageSize: index || 12,
+                        pageSizeChanging: (ui, args) => {
+                            let approvalSttGrid = document.getElementById('approvalSttGrid'),
+                                approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+
+                            ko.cleanNode(approvalSttGrid);
+
                             self.currentPageSize(args.newPageSize);
-                             self.loadGrid(args.newPageSize);
-                             self.setHeadersColor();
-                             self.addClickEventDateHeader();
-                             ko.applyBindings(self,approvalSttGrid);
-                            ko.applyBindings(self,approvalSttGrid_headers);
+                            self.loadGrid(args.newPageSize);
+
+                            self.setHeadersColor();
+                            self.addClickEventDateHeader();
+
+                            ko.applyBindings(self, approvalSttGrid);
+                            ko.applyBindings(self, approvalSttGrid_headers);
                         },
-                        pageIndexChanging:(ui, args)=>{
-                            ko.cleanNode(approvalSttGrid) ;
-                             self.loadGrid(self.currentPageSize(),args.newPageIndex);
-                             self.setHeadersColor();
-                             self.addClickEventDateHeader();
-                             ko.applyBindings(self,approvalSttGrid);
-                            ko.applyBindings(self,approvalSttGrid_headers);
-                        } 
+                        pageIndexChanging: (ui, args) => {
+                            let approvalSttGrid = document.getElementById('approvalSttGrid'),
+                                approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+
+                            ko.cleanNode(approvalSttGrid);
+
+                            self.loadGrid(self.currentPageSize(), args.newPageIndex);
+                            self.setHeadersColor();
+                            self.addClickEventDateHeader();
+
+                            ko.applyBindings(self, approvalSttGrid);
+                            ko.applyBindings(self, approvalSttGrid_headers);
+                        }
                     }
                 ]
             });
         }
 
-        generateColumns() {
-            var self = this;
-            self.lstColumns = [
-                { key: "employeeId", width: "115px", headerText: nts.uk.resource.getText('KDW004_7'), dataType: "string", hidden: true },
-                { key: "employeeCode", width: "115px", headerText: nts.uk.resource.getText('KDW004_13'), dataType: "string" },
-                { key: "employeeName", width: "200px", headerText: nts.uk.resource.getText('KDW004_14'), dataType: "string", template: TEMPLATE_EMPLOYEE_NAME_HEADER }
+        generateColumns = () => {
+            let self = this,
+                period = self.datePeriod(),
+                index = moment(period.startDate);
+
+            self.lstColumns = [{
+                key: "employeeId",
+                width: "115px",
+                headerText: text('KDW004_7'),
+                dataType: "string",
+                hidden: true
+            },
+                {
+                    key: "employeeCode",
+                    width: "115px",
+                    headerText: text('KDW004_13'),
+                    dataType: "string"
+                },
+                {
+                    key: "employeeName",
+                    width: "200px",
+                    headerText: text('KDW004_14'),
+                    dataType: "string",
+                    template: TEMPLATE_EMPLOYEE_NAME_HEADER
+                }
             ];
+
             self.lstHeaderColor = [];
-            let index = moment(self.datePeriod().startDate);
-            while (!index.isAfter(self.datePeriod().endDate)) {
-                let dayName = index.format("dd");
-                let headerNoId = index.format("YYYYMMDD" + 'i');
-                let headerTxtId = index.format("YYYYMMDD");
+
+            while (!index.isAfter(period.endDate)) {
+                let dayName = index.format("dd"),
+                    headerNoId = index.format("YYYYMMDD" + 'i'),
+                    headerTxtId = index.format("YYYYMMDD");
+
                 // if Saturday
                 if (index.format("d") == "6") {
-                    self.lstHeaderColor.push(
-                        { id: headerNoId, background_color: SATURDAY_BACKGROUND_COLOR, text_color: SATURDAY_TEXT_COLOR }
-                    );
-                    self.lstHeaderColor.push(
-                        { id: headerTxtId, background_color: SATURDAY_BACKGROUND_COLOR, text_color: SATURDAY_TEXT_COLOR }
-                    );
+                    self.lstHeaderColor.push({
+                        id: headerNoId,
+                        background_color: SATURDAY_BACKGROUND_COLOR,
+                        text_color: SATURDAY_TEXT_COLOR
+                    });
+
+                    self.lstHeaderColor.push({
+                        id: headerTxtId,
+                        background_color: SATURDAY_BACKGROUND_COLOR,
+                        text_color: SATURDAY_TEXT_COLOR
+                    });
                     // if Sunday
                 } else if (index.format("d") == "0") {
-                    self.lstHeaderColor.push(
-                        { id: headerNoId, background_color: SUNDAY_BACKGROUND_COLOR, text_color: SUNDAY_TEXT_COLOR }
-                    );
-                    self.lstHeaderColor.push(
-                        { id: headerTxtId, background_color: SUNDAY_BACKGROUND_COLOR, text_color: SUNDAY_TEXT_COLOR }
-                    );
+                    self.lstHeaderColor.push({
+                        id: headerNoId,
+                        background_color: SUNDAY_BACKGROUND_COLOR,
+                        text_color: SUNDAY_TEXT_COLOR
+                    });
+
+                    self.lstHeaderColor.push({
+                        id: headerTxtId,
+                        background_color: SUNDAY_BACKGROUND_COLOR,
+                        text_color: SUNDAY_TEXT_COLOR
+                    });
                 }
-                self.lstColumns.push(
-                    {
-                        key: headerNoId, width: "30px", headerText: index.format("D"), dataType: "string", group: [
-                            { key: headerTxtId, width: "30px", headerText: dayName, dataType: "string", template: getTemplateDisplayStt(headerTxtId,index.format("YYYY/MM/DD")) }
-                        ]
-                    }
-                );
+
+                self.lstColumns.push({
+                    key: headerNoId,
+                    width: "30px",
+                    headerText: index.format("D"),
+                    dataType: "string",
+                    group: [
+                        {
+                            key: headerTxtId,
+                            width: "30px",
+                            headerText: dayName,
+                            dataType: "string",
+                            template: getTemplateDisplayStt(headerTxtId, index.format("YYYY/MM/DD"))
+                        }
+                    ]
+                });
+
                 index = index.add(1, "d");
             }
         }
 
-        setHeadersColor() {
-            var self = this;
-            _.forEach(self.lstHeaderColor, (headerColor) => {
-                let header = document.getElementById("approvalSttGrid_" + headerColor.id);
-                header.style.backgroundColor = headerColor.background_color;
-                header.style.color = headerColor.text_color;
+        setHeadersColor = () => {
+            let self = this;
+
+            _.each(self.lstHeaderColor, color => {
+                $(`#approvalSttGrid_${color.id}`)
+                    .css('color', color.text_color)
+                    .css('background-color', color.background_color);
             });
         }
 
-        addClickEventDateHeader() {
-            var self = this;
+        addClickEventDateHeader = () => {
+            let self = this,
+                approvalSttGrid = document.getElementById('approvalSttGrid'),
+                approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+
             ko.cleanNode(approvalSttGrid_headers);
+
             let index = moment(self.datePeriod().startDate);
+
             while (!index.isAfter(self.datePeriod().endDate)) {
-                let header = document.getElementById("approvalSttGrid_" + moment(index).format("YYYYMMDD") + "i").firstChild;
-                header.style.textDecoration = "underline";
-                header.style.cursor = "pointer";
-                header.setAttribute("data-bind", "click: clickDateJumpToKdw003.bind($data, '" + moment(index).format("YYYY/MM/DD") + "')");
+                $(`#approvalSttGrid_${moment(index).format("YYYYMMDD")}i`)
+                    .css('cursor', 'pointer')
+                    .css('text-decoration', 'underline')
+                    .attr('data-bind', `click: clickDateJumpToKdw003.bind($data, '${moment(index).format("YYYY/MM/DD")}')`);
+
                 index = index.add(1, "d");
             }
         }
@@ -286,7 +439,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         status: number;
     }
 
-    export class DPCorrectionInitParam {
+    export interface DPCorrectionInitParam {
         //画面モード
         screenMode: DPCorrectionScreenMode;
         //社員一覧
@@ -302,18 +455,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         initClock: any;
         //遷移先の画面
         transitionDesScreen: any;
-
-        constructor(screenMode, lstEmployee, errorRefStartAtr, changePeriodAtr, targetClosue) {
-            var self = this;
-            self.screenMode = screenMode;
-            self.lstEmployee = lstEmployee;
-            self.errorRefStartAtr = errorRefStartAtr;
-            self.changePeriodAtr = changePeriodAtr;
-            self.targetClosue = targetClosue;
-        }
     }
 
-    export class DPCorrectionExtractionParam {
+    export interface DPCorrectionExtractionParam {
         //表示形式
         displayFormat: DPCorrectionDisplayFormat;
         //期間
@@ -325,14 +469,6 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         //日付別で起動
         dateTarget: any;
         individualTarget: any;
-
-        constructor(displayFormat, startDate, endDate, lstExtractedEmployee) {
-            var self = this;
-            self.displayFormat = displayFormat;
-            self.startDate = startDate;
-            self.endDate = endDate;
-            self.lstExtractedEmployee = lstExtractedEmployee;
-        }
     }
 
     export enum DPCorrectionScreenMode {

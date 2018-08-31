@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.workplace;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,5 +49,20 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 					.workplaceId(wp.get().getWorkplaceId()).workplaceName(wp.get().getWorkplaceName()).build();
 		}).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<WorkplaceImport> getWorlkplaceHistoryByIDs(List<String> employeeIds) {
+		List<SWkpHistExport> data = workplacePub.findBySId(employeeIds);
+		if(data.isEmpty())
+			return Collections.emptyList();
+		List<WorkplaceImport> dataConvert = data.stream().map(c->convertToSWkpHistExport(c)).collect(Collectors.toList());
+		return dataConvert;
+	}
+	private WorkplaceImport convertToSWkpHistExport(SWkpHistExport wp) {
+		return WorkplaceImport.builder().dateRange(wp.getDateRange()).employeeId(wp.getEmployeeId())
+				.wkpDisplayName(wp.getWkpDisplayName()).workplaceCode(wp.getWorkplaceCode())
+				.workplaceId(wp.getWorkplaceId()).workplaceName(wp.getWorkplaceName()).build();
+	}
+	
 
 }

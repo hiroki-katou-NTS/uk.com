@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,13 +110,77 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 	@Override
 	public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-		StringBuilder builderString = new StringBuilder();		
+		StringBuilder builderString = new StringBuilder();	
+		if(attendanceItemIds.isEmpty())
+			return Collections.emptyList();
 		builderString.append("SELECT b");
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
 		
 		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("attendanceItemIds", attendanceItemIds)
+				.setParameter("companyId", companyId)
+				.getList(f -> toDomain(f));
+	}
+
+	@Override
+	public List<MonthlyAttendanceItem> findByAtrPrimitiveValue(String companyId, MonthlyAttendanceItemAtr itemAtr) {
+		List<Integer> listAttdID = new ArrayList<>();
+		switch(itemAtr) {
+		case TIME ://時間 1,2,16,17,20,22,24,40,48,49
+			listAttdID.add(1);
+			listAttdID.add(2);
+			listAttdID.add(16);
+			listAttdID.add(17);
+			listAttdID.add(20);
+			listAttdID.add(22);
+			listAttdID.add(24);
+			listAttdID.add(40);
+			listAttdID.add(48);
+			listAttdID.add(49);
+			
+			
+		break;
+		case NUMBER ://回数 12,19,32,33,34,43
+			listAttdID.add(12);
+			listAttdID.add(19);
+			listAttdID.add(32);
+			listAttdID.add(33);
+			listAttdID.add(34);
+			listAttdID.add(43);
+		break;
+		case DAYS ://日数 18,23,28,29,30,37,38,39,45,46,47,50,51,52,53
+			listAttdID.add(18);
+			listAttdID.add(23);
+			listAttdID.add(28);
+			listAttdID.add(29);
+			listAttdID.add(30);
+			listAttdID.add(37);
+			listAttdID.add(38);
+			listAttdID.add(39);
+			listAttdID.add(45);
+			listAttdID.add(46);
+			listAttdID.add(47);
+			listAttdID.add(50);
+			listAttdID.add(51);
+			listAttdID.add(52);
+			listAttdID.add(53);
+			break;
+		case AMOUNT ://金額 54,55
+			listAttdID.add(54);
+			listAttdID.add(55);
+			break;
+		default:break;
+		}
+		
+		StringBuilder builderString = new StringBuilder();	
+		if(listAttdID.isEmpty())
+			return Collections.emptyList();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE b.primitiveValue IN :listAttdID");
+		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
+		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("listAttdID", listAttdID)
 				.setParameter("companyId", companyId)
 				.getList(f -> toDomain(f));
 	}

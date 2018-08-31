@@ -18,16 +18,16 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaTopPagePartRepository extends JpaRepository implements TopPagePartRepository {
 
-	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
-	private final String SELECT_SINGLE_BY_KEY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID AND c.ccgmtTopPagePartPK.companyID = :cID";
-	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
-	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
-	private final String SELECT_BY_TYPES = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
+	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
+	private static final String SELECT_SINGLE_BY_KEY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID AND c.ccgmtTopPagePartPK.companyID = :cID";
+	private static final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
+	private static final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
+	private static final String SELECT_BY_TYPES = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
 										+ "AND c.topPagePartType IN :topPagePartTypes";
-	private final String SELECT_BY_TYPE_AND_IDS = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
+	private static final String SELECT_BY_TYPE_AND_IDS = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
 												+ "AND c.ccgmtTopPagePartPK.topPagePartID IN :topPagePartIDs "
 												+ "AND c.topPagePartType IN :topPagePartTypes";
-	private final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
+	private static final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
 
 	@Override
 	public Optional<TopPagePart> find(String topPagePartID) {

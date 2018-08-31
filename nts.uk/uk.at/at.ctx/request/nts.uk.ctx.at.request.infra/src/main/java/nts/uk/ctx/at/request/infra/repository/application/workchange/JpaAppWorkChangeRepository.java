@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.workchange;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,10 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
     
     private static final String SELECT_BY_KEY_STRING =SELECT_ALL_QUERY_STRING + " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ";
+    
+    private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppWorkChange a"
+    		+ " WHERE a.appWorkChangePk.cid = :companyID"
+    		+ " AND a.appWorkChangePk.appId IN :lstAppId";
 
     @Override
     public List<AppWorkChange> getAllAppWorkChange(){
@@ -87,6 +92,23 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 				domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(),
 				domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(),
 				domain.getBackHomeAtr2());
+	}
+	/**
+     * @author hoatt
+     * get list application work change by list appID
+     * @param companyID
+     * @param lstAppId
+     * @return
+     */
+	@Override
+	public List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId) {
+		if(lstAppId.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange.class)
+				.setParameter("companyID", companyID)
+				.setParameter("lstAppId", lstAppId)
+                .getList(item -> toDomain(item));
 	}
 
 }

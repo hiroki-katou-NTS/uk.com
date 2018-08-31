@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 @Data
@@ -27,7 +28,7 @@ public class MonthlyPerformanceParam {
 	/**
 	 * 起動モード
 	 * 0: 通常モードで起動する
-	 * 1: 承認モードで起動する
+	 * 2: 承認モードで起動する
 	 */
 	private int initMenuMode;
 	/**
@@ -50,4 +51,6 @@ public class MonthlyPerformanceParam {
 	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
 	
 	private Integer yearMonth;
+	
+	private  ActualTime actualTime;
 }

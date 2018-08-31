@@ -1,165 +1,242 @@
 module nts.uk.at.view.kmf022.m.viewmodel {
-    var lstWkp = [];
+    import flat = nts.uk.util.flatArray;
+    import text = nts.uk.resource.getText;
+    import clearError = nts.uk.ui.errors.clearAll;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        // update ver27enumVer27z
+        enumVer27 = ko.observableArray([
+            { code: 0, name: text("KAF022_378") },
+            { code: 1, name: text("KAF022_379") }
+        ]);
 
         enumUseAtr = ko.observableArray([
-            { code: 1, name: nts.uk.resource.getText("KAF022_100") },
-            { code: 0, name: nts.uk.resource.getText("KAF022_101") }
+            { code: 1, name: text("KAF022_100") },
+            { code: 0, name: text("KAF022_101") }
         ]);
+
         prerequisiteUseAtr = ko.observableArray([
-            { code: 0, name: nts.uk.resource.getText("KAF022_291") },
-            { code: 1, name: nts.uk.resource.getText("KAF022_292") }
+            { code: 0, name: text("KAF022_291") },  
+            { code: 1, name: text("KAF022_292") }
         ]);
+
         otAppSettingFlgAtr = ko.observableArray([
-            { code: 0, name: nts.uk.resource.getText("KAF022_291") },
-            { code: 1, name: nts.uk.resource.getText("KAF022_292") }
+            { code: 0, name: text("KAF022_291") },
+            { code: 1, name: text("KAF022_292") }
         ]);
+
         timeCalculationUseAtr = ko.observableArray([
-            { code: 0, name: nts.uk.resource.getText("KAF022_295") },
-            { code: 1, name: nts.uk.resource.getText("KAF022_296") }
+            { code: 0, name: text("KAF022_295") },
+            { code: 1, name: text("KAF022_296") }
         ]);
+
         atWorkAtr = ko.observableArray([
-            { code: 0, name: nts.uk.resource.getText("KAF022_37") },
-            { code: 1, name: nts.uk.resource.getText("KAF022_301") },
-            { code: 2, name: nts.uk.resource.getText("KAF022_302") },
-            { code: 3, name: nts.uk.resource.getText("KAF022_303") }
+            { code: 0, name: text("KAF022_37") },
+            { code: 1, name: text("KAF022_301") },
+            { code: 2, name: text("KAF022_302") },
+            { code: 3, name: text("KAF022_303") }
         ]);
+
         timeInputUseAtr = ko.observableArray([
-            { code: 1, name: nts.uk.resource.getText("KAF022_308") },
-            { code: 0, name: nts.uk.resource.getText("KAF022_309") }
+            { code: 1, name: text("KAF022_308") },
+            { code: 0, name: text("KAF022_309") }
+        ]);
+
+        listM23 = ko.observableArray([
+            { code: 1, name: text("KAF022_305") },
+            { code: 0, name: text("KAF022_306") }
         ]);
 
         lateOrLeaveAppCancelAtr = ko.observableArray([
-            { code: 1, name: nts.uk.resource.getText("KAF022_311") },
-            { code: 0, name: nts.uk.resource.getText("KAF022_312") }
+            { code: 1, name: text("KAF022_311") },  
+            { code: 0, name: text("KAF022_312") }
         ]);
 
         lateOrLeaveAppSettingAtr = ko.observableArray([
-            { code: 0, name: nts.uk.resource.getText("KAF022_313") },
-            { code: 1, name: nts.uk.resource.getText("KAF022_314") }
+            { code: 1, name: text("KAF022_313") },
+            { code: 0, name: text("KAF022_314") }
         ]);
-        isUpdateMode: KnockoutObservable<any>;
-        kcp004WorkplaceListOption: any;
-        baseDate: KnockoutObservable<Date>;
-        selectedWorkplaceId: KnockoutObservableArray<String>;
-        alreadySettingList: KnockoutObservableArray<any>;
-        lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp>;
-        selectedSetting: ApplicationApprovalSettingWkp;
+
+        kcp004WorkplaceListOption: any = {
+            maxRows: 10,
+            treeType: 1,
+            tabindex: 1,
+            systemType: 2,
+            selectType: 3,
+            isDialog: false,
+            isMultipleUse: false,
+            isMultiSelect: false,
+            isShowAlreadySet: true,
+            isShowSelectButton: true
+        };
+
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+        selectedWorkplaceId: KnockoutObservableArray<String> = ko.observableArray([]);
+        alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
+        selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
+        hasLoadedKcp004: boolean = false;
+        allowRegister: KnockoutObservable<boolean> = ko.observable(true);
+
+        // update ver27
+        selectVer27: KnockoutObservable<number> = ko.observable(0);
+
+        isUpdateMode: KnockoutComputed<boolean> = ko.computed(() => {
+            let self = this,
+                asl = self.alreadySettingList(),
+                swid = self.selectedWorkplaceId();
+
+            return !!_.find(asl, f => f.workplaceId === swid);
+        });
+
+        copyAble: KnockoutComputed<boolean> = ko.computed(() => {
+            let self = this,
+                isUpdate = self.isUpdateMode;
+
+            return !!self.selectVer27() && isUpdate();
+        });
 
         constructor() {
             var self = this;
-            self.baseDate = ko.observable(new Date());
-            self.selectedWorkplaceId = ko.observableArray([]);
-            self.alreadySettingList = ko.observableArray([]);
-            self.lstAppApprovalSettingWkp = [];
-            self.selectedSetting = new ApplicationApprovalSettingWkp(null);
-            self.kcp004WorkplaceListOption = {
-                isShowAlreadySet: true,
-                isMultipleUse: false,
-                isMultiSelect: false,
-                selectedWorkplaceId: self.selectedWorkplaceId,
+
+            _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
-                selectType: 3,
-                isShowSelectButton: true,
-                isDialog: false,
                 alreadySettingList: self.alreadySettingList,
-                maxRows: 10,
-                tabindex: 1,
-                systemType: 2,
-                treeType: 1
-            };
+                selectedWorkplaceId: self.selectedWorkplaceId
+            });
+
+            self.selectVer27.subscribe(v => {
+                self.allowRegister(true);
+                if (v == 1 && !self.hasLoadedKcp004) {
+                    $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
+                        $('#wkp-list').focusTreeGridComponent();
+                        self.reloadData();
+                        self.hasLoadedKcp004 = true;
+                    });
+                } else {
+                    self.reloadData();
+                }
+            });
+
             self.selectedWorkplaceId.subscribe((val) => {
+                if(val){
+                    self.allowRegister(true);    
+                }else{
+                    self.allowRegister(false);    
+                }
+                
                 let exsistedSetting = _.find(self.lstAppApprovalSettingWkp, (setting: IApplicationApprovalSettingWkp) => {
                     return val === setting.wkpId;
                 });
+
                 if (exsistedSetting) {
                     self.selectedSetting.update(exsistedSetting);
                 } else {
                     self.selectedSetting.update(null);
+                    self.selectedSetting.wkpName("");
                 }
+
                 self.selectedSetting.wkpId(val);
             });
-            self.isUpdateMode = ko.computed(() => {
-                for (let i = 0; i < self.alreadySettingList().length; i++) {
-                    if (self.alreadySettingList()[i].workplaceId === self.selectedWorkplaceId()) {
-                        return true;
-                    }
-                }
-                return false;
-            });
+
             $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
                 self.reloadData();
                 $('#wkp-list').focusTreeGridComponent();
             });
-            $("#fixed-table-wkp-setting").ntsFixedTable({});
         }
 
         reloadData() {
-            var self = this;
-            lstWkp = self.flattenWkpTree(_.cloneDeep($('#wkp-list').getDataList()));
-            self.selectedSetting.wkpId.valueHasMutated();
-            nts.uk.ui.block.invisible();
-            service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<IApplicationApprovalSettingWkp>) => {
-                self.lstAppApprovalSettingWkp = dataResults;
-                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true }; }));
-                self.selectedWorkplaceId.valueHasMutated();
-                nts.uk.ui.block.clear();
-            });
-        }
+            let self = this,
+                s27 = self.selectVer27(),
+                lwps = $('#wkp-list').getDataList(),
+                flwps = flat(_.cloneDeep(lwps), "childs");
 
-        flattenWkpTree(wkpTree) {
-            return wkpTree.reduce((wkp, x) => {
-                wkp = wkp.concat(x);
-                if (x.childs && x.childs.length > 0) {
-                    wkp = wkp.concat(this.flattenWkpTree(x.childs));
-                    x.childs = [];
-                }
-                return wkp;
-            }, []);
-        }
+            // clear all msg when reload data.
+            clearError();
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+            if (!!s27) {
+                self.selectedSetting.wkpId.valueHasMutated();
+                nts.uk.ui.block.invisible();
+
+                service.getAll(flwps.map((wkp) => { return wkp.workplaceId; }))
+                    .done((dataResults: Array<IApplicationApprovalSettingWkp>) => {
+                        self.lstAppApprovalSettingWkp = dataResults;
+
+                        self.alreadySettingList(dataResults.map((data) => ({
+                            workplaceId: data.wkpId,
+                            isAlreadySetting: true
+                        })));
+
+                        self.selectedWorkplaceId.valueHasMutated();
+
+                        nts.uk.ui.block.clear();
+                    });
+            } else {
+
+                //nts.uk.ui.block.invisible();
+                service.getCom().done(config => {
+                    if (config) {
+                        _.extend(config, {
+                            companyId: config.companyID
+                        });
+                    }
+
+                    self.selectedSetting.update(config);
+                });
+            }
         }
 
         openDialogCopy() {
-            let self = this;
-            let wkp = _.find(lstWkp, (wkp) => { return wkp.workplaceId == $('#wkp-list').getRowSelected()[0].workplaceId; });
-            let param = {
-                code: $('#wkp-list').getRowSelected()[0].workplaceCode,
-                name: wkp ? wkp.name : '',
-                targetType: 4,
-                itemListSetting: nts.uk.ui._viewModel.content.viewmodelM.alreadySettingList().map((alreadySetting) => { return alreadySetting.workplaceId; }),
-                baseDate: nts.uk.ui._viewModel.content.viewmodelM.baseDate()
-            };
-            nts.uk.ui.windows.setShared("CDL023Input", param);
+            let self = this,
+                lwps = $('#wkp-list').getDataList(),
+                rstd = $('#wkp-list').getRowSelected(),
+                flwps = flat(_.cloneDeep(lwps), "childs"),
+                wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId),
+                param = {
+                    targetType: 4,
+                    name: wkp ? wkp.name : '',
+                    code: wkp ? wkp.workplaceCode : '',
+                    baseDate: ko.toJS(self.baseDate),
+                    itemListSetting: _.map(self.alreadySettingList(), m => m.workplaceId)
+                };
+
+            setShared("CDL023Input", param);
 
             // open dialog CDL023
             nts.uk.ui.windows.sub.modal('com', '/view/cdl/023/a/index.xhtml').onClosed(() => {
                 // get data respond
-                let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                let lstCommand = [];
-                if (lstSelection && lstSelection.length > 0) {
+                let lstSelection: Array<string> = getShared("CDL023Output");
+
+                if (_.size(lstSelection)) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
-                        _.forEach(lstSelection, (wkpIdToCopy) => {
-                            let copySetting = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
-                            copySetting.approvalFunctionSettingDtoLst.forEach((setting) => {
-                                setting.breakInputFieldDisFlg = setting.breakInputFieldDisFlg ? 1 : 0;
-                                setting.goOutTimeBeginDisFlg = setting.goOutTimeBeginDisFlg ? 1 : 0;
-                                setting.requiredInstructionFlg = setting.requiredInstructionFlg ? 1 : 0;
+                        let cps = ko.mapping.toJS(self.selectedSetting),
+                            commands: Array<any> = _.map(lstSelection, wkpId => _.extend(_.clone(cps), {
+                                wkpId: wkpId
+                            }));
+
+                        _.each(commands, cmd => {
+                            _.unset(cmd, ["update"]);
+                            _.unset(cmd, ["initSettingList"]);
+
+                            _.each(cmd.approvalFunctionSettingDtoLst, afs => {
+                                _.unset(afs, ["update"]);
+
+                                _.extend(afs, {
+                                    goOutTimeBeginDisFlg: Number(afs.goOutTimeBeginDisFlg),
+                                    breakInputFieldDisFlg: Number(afs.breakInputFieldDisFlg),
+                                    requiredInstructionFlg: Number(afs.requiredInstructionFlg)
+                                });
                             });
-                            copySetting.wkpId = wkpIdToCopy;
-                            lstCommand.push(copySetting);
                         });
-                        nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
+
+                        nts.uk.at.view.kmf022.m.service.update(commands).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                                self.reloadData();
                             });
-                        })
+                        });
                     });
                 } else if (lstSelection && lstSelection.length == 0) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_888" })
@@ -168,34 +245,81 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
-            let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
-            command.approvalFunctionSettingDtoLst.forEach((setting) => {
-                setting.breakInputFieldDisFlg = setting.breakInputFieldDisFlg ? 1 : 0;
-                setting.goOutTimeBeginDisFlg = setting.goOutTimeBeginDisFlg ? 1 : 0;
-                setting.requiredInstructionFlg = setting.requiredInstructionFlg ? 1 : 0;
+            let self = this;
+            if(!self.allowRegister()){
+                return;
+            }
+            $('.memo').trigger("validate");
+            
+            let command = ko.mapping.toJS(self.selectedSetting);
+            
+            _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
+                // remove private function
+                delete setting.update;   
+
+                // convert boolean type to number type
+                setting.breakInputFieldDisFlg = Number(setting.breakInputFieldDisFlg);
+                setting.goOutTimeBeginDisFlg = Number(setting.goOutTimeBeginDisFlg);
+                setting.requiredInstructionFlg = Number(setting.requiredInstructionFlg);
             });
-            let lstCommand = [];
-            lstCommand.push(command);
-            nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                    nts.uk.ui._viewModel.content.viewmodelM.reloadData();
-                });
-            }).fail(() => {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
-            });
+
+            command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
+
+            if (nts.uk.ui.errors.hasError() === false) {
+                nts.uk.ui.block.grayout();
+                if (!!self.selectVer27()) {
+                    service.update([command]).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.clear();
+                            self.reloadData();
+                        });
+                    }).fail(msg => {
+                        debugger;
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
+                    });
+                } else {
+                    _.extend(command, {
+                        comAppConfigDetails: _.clone(command.approvalFunctionSettingDtoLst)
+                    });
+
+                    command = _.omit(command, ["wkpId", "approvalFunctionSettingDtoLst"]);
+
+                    service.saveCom(command).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.clear();
+                            self.reloadData();
+                        });
+                    }).fail(() => {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
+                    });
+                }
+            }
         }
 
         remove() {
-            let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
+            let self = this,
+                command = ko.toJS(self.selectedSetting);
+
+            _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
+                // remove private function
+                delete setting.update;
+
+                // convert boolean type to number type
+                setting.breakInputFieldDisFlg = Number(setting.breakInputFieldDisFlg);
+                setting.goOutTimeBeginDisFlg = Number(setting.goOutTimeBeginDisFlg);
+                setting.requiredInstructionFlg = Number(setting.requiredInstructionFlg);
+            });
+
+            command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
+
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.at.view.kmf022.m.service.remove(command).done(() => {
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
-                       nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(() => {
+                        self.reloadData();
                     });
                 });
             });
         }
-
     }
 
     export interface IApplicationApprovalSettingWkp {
@@ -212,49 +336,53 @@ module nts.uk.at.view.kmf022.m.viewmodel {
     export class ApplicationApprovalSettingWkp {
 
         // 会社ID
-        companyId: KnockoutObservable<string>;
+        companyId: KnockoutObservable<string> = ko.observable('');
         // 職場ID
-        wkpId: KnockoutObservable<string>;
+        wkpId: KnockoutObservable<string> = ko.observable('');
         // 職場Name
         wkpName: KnockoutObservable<string> = ko.observable('');
         // 選択
-        selectionFlg: KnockoutObservable<number>;
+        selectionFlg: KnockoutObservable<number> = ko.observable(0);
         // 申請承認機能設定
-        approvalFunctionSettingDtoLst: KnockoutObservableArray<ApprovalFunctionSetting>;
+        approvalFunctionSettingDtoLst: KnockoutObservableArray<ApprovalFunctionSetting> = ko.observableArray([]);
 
         constructor(param: IApplicationApprovalSettingWkp) {
             let self = this;
-            self.companyId = ko.observable(param ? param.companyId : __viewContext.user.companyId);
-            self.wkpId = ko.observable(param ? param.wkpId : '');
+
             self.wkpId.subscribe((val) => {
-                let wkp = _.find(lstWkp, (wkp) => { return wkp.workplaceId == $('#wkp-list').getRowSelected()[0].workplaceId; });
-                self.wkpName(wkp ? wkp.name : '');
-            });
-            self.selectionFlg = ko.observable(param ? param.selectionFlg : 0);
-            self.approvalFunctionSettingDtoLst = ko.observableArray(this.initSettingList());
-            if (param) {
-                _.forEach(param.approvalFunctionSettingDtoLst, (setting: IApprovalFunctionSetting) => {
-                    let foundSetting = _.find(self.approvalFunctionSettingDtoLst(), (targetSetting: ApprovalFunctionSetting) => {
-                        return targetSetting.appType() == setting.appType;
-                    });
-                    if (foundSetting) {
-                        foundSetting.update(setting);
+                if(val){
+                    let $wkpl = $('#wkp-list');
+
+                    if ($wkpl.getDataList && $wkpl.getRowSelected) {
+                        let lwps = $wkpl.getDataList(),
+                            rstd = $wkpl.getRowSelected(),
+                            flwps = flat(_.cloneDeep(lwps), "childs"),
+                            wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
+    
+                        self.wkpName(wkp ? wkp.name : '');
                     }
-                });
-            }
+                }
+            });
+
+            self.update(param);
         }
 
         update(param: IApplicationApprovalSettingWkp) {
             let self = this;
-            self.companyId(param ? param.companyId : __viewContext.user.companyId);
+
+            self.approvalFunctionSettingDtoLst(this.initSettingList());
+
             self.wkpId(param ? param.wkpId : '');
             self.selectionFlg(param ? param.selectionFlg : 0);
-            self.approvalFunctionSettingDtoLst(this.initSettingList());
+
+            self.companyId(param ? param.companyId : __viewContext.user.companyId);
+
             if (param) {
-                _.forEach(param.approvalFunctionSettingDtoLst, (setting: IApprovalFunctionSetting) => {
+                _.each(param.approvalFunctionSettingDtoLst, (setting: IApprovalFunctionSetting) => {
                     let foundSetting = _.find(self.approvalFunctionSettingDtoLst(), (targetSetting: ApprovalFunctionSetting) => {
                         return targetSetting.appType() == setting.appType;
                     });
+
                     if (foundSetting) {
                         foundSetting.update(setting);
                     }
@@ -262,21 +390,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             }
         }
 
-        initSettingList() {
-            let settingList = [];
-            settingList.push(new ApprovalFunctionSetting(null, 0));
-            settingList.push(new ApprovalFunctionSetting(null, 1));
-            settingList.push(new ApprovalFunctionSetting(null, 2));
-            settingList.push(new ApprovalFunctionSetting(null, 3));
-            settingList.push(new ApprovalFunctionSetting(null, 4));
-            settingList.push(new ApprovalFunctionSetting(null, 6));
-            settingList.push(new ApprovalFunctionSetting(null, 8));
-            settingList.push(new ApprovalFunctionSetting(null, 9));
-            settingList.push(new ApprovalFunctionSetting(null, 7));
-            settingList.push(new ApprovalFunctionSetting(null, 10));
-            settingList.push(new ApprovalFunctionSetting(null, 14));
-            return settingList;
-        }
+        // initial new setting list
+        initSettingList = () => _.map([0, 1, 2, 3, 4, 6, 8, 9, 7, 10, 14], m => new ApprovalFunctionSetting(null, m));
     }
 
     export interface IApprovalFunctionSetting {

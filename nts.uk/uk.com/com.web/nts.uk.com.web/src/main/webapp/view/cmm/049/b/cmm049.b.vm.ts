@@ -60,7 +60,6 @@ module nts.uk.com.view.cmm049.b {
                 let _self = this;
                 if (list) {
                     let mapped = _.map(list.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
-                    mapped = _.sortBy(mapped, item => item.name);
                     _self.items(mapped);
 
                     //compare and check items in list

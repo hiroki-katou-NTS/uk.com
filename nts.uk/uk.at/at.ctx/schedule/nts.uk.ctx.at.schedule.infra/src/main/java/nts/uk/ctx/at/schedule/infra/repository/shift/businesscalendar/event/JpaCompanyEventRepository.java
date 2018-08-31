@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtCom
 @Stateless
 public class JpaCompanyEventRepository extends JpaRepository implements CompanyEventRepository {
 
-	private final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtCompanyEvent a WHERE a.ksmmtCompanyEventPK.companyId = :companyId AND a.ksmmtCompanyEventPK.date IN :lstDate";
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtCompanyEvent a WHERE a.ksmmtCompanyEventPK.companyId = :companyId AND a.ksmmtCompanyEventPK.date IN :lstDate";
 
 	@Override
 	public List<CompanyEvent> getCompanyEventsByListDate(String companyId, List<GeneralDate> lstDate) {

@@ -32,7 +32,6 @@ public class UnApprovalPersonAndResult {
 	
 	public void setResult(boolean result) 
 	{
-		result = false;
 		this.result = result;
 	}
 	

@@ -13,15 +13,15 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.input.PprmtPerso
 
 @Stateless
 public class JpaPersonResiTaxRepository extends JpaRepository implements PersonResiTaxRepository {
-	private final String SEL_1 = "SELECT c FROM PprmtPersonResiTax c "
+	private static final String SEL_1 = "SELECT c FROM PprmtPersonResiTax c "
 			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.pprmtPersonResiTaxPK.personId = :PID"
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
-	private final String SEL_5 = "SELECT c.pprmtPersonResiTaxPK.personId FROM PprmtPersonResiTax c "
+	private static final String SEL_5 = "SELECT c.pprmtPersonResiTaxPK.personId FROM PprmtPersonResiTax c "
 			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.residenceCode = :RESIDENCE_CD"
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
-	private final String UPD_2 = "UPDATE PprmtPersonResiTax c SET c.residenceCode = :RESIDENCE_CD WHERE  c.pprmtPersonResiTaxPK.companyCode = :CCD"
+	private static final String UPD_2 = "UPDATE PprmtPersonResiTax c SET c.residenceCode = :RESIDENCE_CD WHERE  c.pprmtPersonResiTaxPK.companyCode = :CCD"
 			+ " AND c.pprmtPersonResiTaxPK.personId = :PID AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
 	private PprmtPersonResiTax toEntity(PersonResiTax domain) {

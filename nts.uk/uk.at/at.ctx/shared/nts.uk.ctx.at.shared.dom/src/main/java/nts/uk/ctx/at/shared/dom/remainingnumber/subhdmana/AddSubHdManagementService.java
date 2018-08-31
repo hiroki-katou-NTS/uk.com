@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -28,6 +31,9 @@ public class AddSubHdManagementService {
 
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private ClosureRepository closureRepo;
 
 	@Inject
 	private LeaveManaDataRepository repoLeaveManaData;
@@ -206,7 +212,7 @@ public class AddSubHdManagementService {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
 		// 休出（年月日）と締め日をチェックする
-		if (!closureDate.get().after(holidayDate)) {
+		if (closureDate.isPresent() && holidayDate != null && !closureDate.get().after(holidayDate)) {
 			errorList.add("Msg_745");
 			return errorList;
 		}
@@ -233,20 +239,20 @@ public class AddSubHdManagementService {
 			closureDate = this.getClosureDate(closureId, processYearMonth);
 		}
 		// 代休（年月日）と締め日をチェックする
-		if (closureDate.isPresent() && !closureDate.get().after(subHolidayDate)) {
+		if (closureDate.isPresent() && subHolidayDate != null && !closureDate.get().after(subHolidayDate)) {
 			errorList.add("Msg_746");
 		}
 
 		// 休出（年月日）と代休（年月日）をチェックする
 		if (checkHoliday) {
-			if (holidayDate.isPresent() && subHolidayDate.compareTo(holidayDate.get()) == 0) {
+			if (holidayDate.isPresent() && subHolidayDate != null && subHolidayDate.compareTo(holidayDate.get()) == 0) {
 				errorList.add("Msg_730");
 			}
 		}
 		// チェックボタン「分割消化」をチェックする
 		if (checkSplit && splitDate.isPresent()) {
 			// 代休（年月日）と分割消化.代休（年月日）をチェックする
-			if (subHolidayDate.compareTo(splitDate.get()) == 0) {
+			if (subHolidayDate != null && subHolidayDate.compareTo(splitDate.get()) == 0) {
 				errorList.add("Msg_744");
 			}
 			// 分割消化.代休（年月日）と締め日をチェックする
@@ -320,7 +326,20 @@ public class AddSubHdManagementService {
 	 * @return
 	 */
 	public Optional<GeneralDate> getClosureDate(int closureId, YearMonth processYearMonth) {
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processYearMonth);
+		Optional<Closure> optClosure = closureRepo.findById(AppContexts.user().companyId(), closureId);
+
+		// Check exist and active
+		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
+				.equals(UseClassification.UseClass_NotUse)) {
+			return Optional.empty();
+		}
+
+		Closure closure = optClosure.get();
+
+		// Get Processing Ym 処理年月
+		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
 		if (Objects.isNull(closurePeriod)) {
 			return Optional.empty();
 		}

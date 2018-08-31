@@ -98,4 +98,37 @@ public class PersonEmpBasicInfoPubImpl implements PersonEmpBasicInfoPub {
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<PersonEmpBasicInfoDto> getEmpBasicInfo(String companyId, List<String> employeeIds) {
+		List<EmployeeDataMngInfo> employeeDataInfoList = empDataRepo.findByListEmployeeId(companyId, employeeIds);
+		if (employeeDataInfoList.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		Map<String, DatePeriod> employeeHistMap = new HashMap<>();
+		List<AffCompanyHist> affCompanyHistList = affComHisRepo.getAffCompanyHistoryOfEmployees(employeeIds);
+		for (AffCompanyHist affComHist : affCompanyHistList) {
+			List<AffCompanyHistByEmployee> lstAffCompanyHistByEmployee = affComHist.getLstAffCompanyHistByEmployee();
+			for (AffCompanyHistByEmployee employeeHist : lstAffCompanyHistByEmployee) {
+				employeeHistMap.put(employeeHist.getSId(), employeeHist.getLatestPeriod());
+			}
+		}
+
+		List<String> personIds = employeeDataInfoList.stream().map(e -> e.getPersonId()).collect(Collectors.toList());
+
+		Map<String, Person> personMap = personRepo.getPersonByPersonIds(personIds).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+
+		return employeeDataInfoList.stream()
+				.filter(emp -> employeeHistMap.get(emp.getEmployeeId()) != null)
+				.filter(emp -> personMap.get(emp.getPersonId()) != null)
+				.map(emp -> {
+					DatePeriod period = employeeHistMap.get(emp.getEmployeeId());
+					Person person = personMap.get(emp.getPersonId());
+					return new PersonEmpBasicInfoDto(emp.getPersonId(), emp.getEmployeeId(),
+							person.getPersonNameGroup().getBusinessName().v(), person.getGender().value,
+							person.getBirthDate(), emp.getEmployeeCode().v(), period.start(), period.end());
+				}).collect(Collectors.toList());
+	}
+
 }

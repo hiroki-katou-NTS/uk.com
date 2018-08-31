@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.classification;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,10 +17,12 @@ import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClassificationPubImp.
@@ -79,6 +84,66 @@ public class ClassificationPubImp implements SyClassificationPub {
 				.classificationCode(classification.getClassificationCode().v())
 				.classificationName(classification.getClassificationName().v())
 				.period(dateHistoryItem.get().span()).build());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub#
+	 * findSClsHistBySid(java.lang.String, java.lang.String,
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds,
+			DatePeriod datePeriod) {
+		
+		List<AffClassHistory> dateHistoryItem = affClassHistoryRepository
+				.getByEmployeeListWithPeriod(employeeIds, datePeriod);
+
+		Map<String, DatePeriod> histPeriodMap = dateHistoryItem.stream()
+				.map(AffClassHistory::getPeriods).flatMap(listContainer -> listContainer.stream())
+				.collect(Collectors.toMap(DateHistoryItem::identifier, DateHistoryItem::span));
+
+		List<String> histIds = dateHistoryItem.stream().map(AffClassHistory::getPeriods)
+				.flatMap(listContainer -> listContainer.stream()).map(DateHistoryItem::identifier)
+				.collect(Collectors.toList());
+
+		List<AffClassHistItem> affClassHistItems = affClassHistItemRepository
+				.getByHistoryIds(histIds);
+
+		List<String> clsCds = affClassHistItems.stream()
+				.map(item -> item.getClassificationCode().v()).collect(Collectors.toList());
+
+		// Find emp by empCd
+		List<Classification> lstClassification = classificationRepository
+				.getClassificationByCodes(companyId, clsCds);
+
+		Map<String, String> mapCls = lstClassification.stream()
+				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
+						item -> item.getClassificationName().v()));
+
+		// Return
+		return affClassHistItems.stream()
+				.map(item -> SClsHistExport.builder().employeeId(item.getEmployeeId())
+						.classificationCode(item.getClassificationCode().v())
+						.classificationName(mapCls.get(item.getClassificationCode().v()))
+						.period(histPeriodMap.get(item.getHistoryId())).build())
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub#
+	 * getClassificationMap(java.lang.String, java.util.List)
+	 */
+	@Override
+	public Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds) {
+		List<Classification> lstClassification = classificationRepository
+				.getClassificationByCodes(companyId, clsCds);
+		return lstClassification.stream()
+				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
+						item -> item.getClassificationName().v()));
 	}
 
 }

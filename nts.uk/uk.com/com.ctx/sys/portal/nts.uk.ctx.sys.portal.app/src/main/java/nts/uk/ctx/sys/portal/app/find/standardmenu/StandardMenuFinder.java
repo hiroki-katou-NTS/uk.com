@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -96,5 +98,14 @@ public class StandardMenuFinder {
 		String companyID = AppContexts.user().companyId();
 		return this.standardMenuRepository.findAllDisplay(companyID).stream()
 				.map(item -> StandardMenuDto.fromDomain(item)).collect(Collectors.toList());
+	}
+	
+	public String getProgramName(String programId, String screenId) {
+		String companyId = AppContexts.user().companyId();
+		List<StandardMenu> standardMenuLst = standardMenuRepository.getProgram(companyId, programId, screenId);
+		if(CollectionUtil.isEmpty(standardMenuLst)){
+			return null;
+		}
+		return programId + screenId + " " + standardMenuLst.get(0).getDisplayName().v();
 	}
 }

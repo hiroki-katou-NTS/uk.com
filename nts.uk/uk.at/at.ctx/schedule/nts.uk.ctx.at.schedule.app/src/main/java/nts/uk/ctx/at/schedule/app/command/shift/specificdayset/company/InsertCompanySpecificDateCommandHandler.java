@@ -19,7 +19,7 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 	@Inject
 	private CompanySpecificDateRepository repo;
 	
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<List<CompanySpecificDateCommand>> context) {

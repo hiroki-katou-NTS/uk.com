@@ -11,6 +11,6 @@ public interface VacationHistoryPolicy {
 	 * @param isCreated the is created
 	 * @param vacationHistory the vacation history
 	 */
-	void validate(Boolean isCreated, PlanVacationHistory vacationHistory);
+	void validate(Boolean isCreated, PlanVacationHistory vacationHistory, Boolean isCheck);
 
 }

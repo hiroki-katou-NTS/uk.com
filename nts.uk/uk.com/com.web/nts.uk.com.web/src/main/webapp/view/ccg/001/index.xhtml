@@ -35,10 +35,13 @@
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<note style="width:500px;">
-						<b>Update 2018/05/23</b> <br />
+						<b>Update 2018/08/07</b> <br />
+						- Add tabindex property<br /><br />
+						<b>Update 2018/07/23</b> <br />
 						- Add lazyload for tab 2 <br /><br />
-						<b>Important note: </b>
-						$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel)
+						<b>Important note: </b> <br />
+						- $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel). <br />
+						- The component container must be placed right after content-area div and must not have custom style.
 					</note>
 					<div class="table" style="margin-left: 100px; margin-bottom:  30px;">
 					<br/>
@@ -50,6 +53,7 @@
 						<div style="display: flex; padding: 5px;">
 							<div data-bind="ntsFormLabel: {}">SystemType (システム区分):</div>
 							<div data-bind="ntsComboBox: {
+										width: 120,
 										name: '#[CCG001_28]',
 										options: systemTypes,
 										optionsValue: 'value',
@@ -64,9 +68,24 @@
 						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show QuickSearch (クイック検索)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show AdvancedSearch (詳細検索タブ)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showBaseDate}">Show BaseDate (基準日利用)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showClosure}">Show Closure (就業締め日利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showAllClosure}">Show All Closure (全締め表示)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showPeriod}">Show Period (対象期間利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: periodFormatYM}">Show period format: YM(対象期間精度)</div><br/>
+						<div style="display: flex; padding: 5px;">
+							<div data-bind="ntsFormLabel: {}">Maximum period range (最長期間):</div>
+							<div data-bind="ntsComboBox: {
+										width: 80,
+										options: periodRanges,
+										optionsValue: 'value',
+										value: maxPeriodRange,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 },
+										]}"></div>
+						</div>
 						<div data-bind="ntsCheckBox:{checked: lazyLoad}">Enable lazy load</div><br/>
 						</div>
 						<div class="cell" style="width: 500px">
@@ -180,7 +199,7 @@
 </ui:define>
 
 <div id="contents-area">
-	<!--The component container-->
+	<!--The component container must be placed right after content-area div and must not have custom style-->
 	<div id="com-ccg001"></div>
 </div>]]>
 </pre>
@@ -194,6 +213,7 @@ const ccg001ComponentOption: GroupOption = {
 	showQuickSearchTab: true,
 	showAdvancedSearchTab: true,
 	showBaseDate: true,
+	showClosure: true,
 	showAllClosure: true,
 	showPeriod: true,
 	periodFormatYM: false,
@@ -241,6 +261,7 @@ export interface GroupOption {
     showQuickSearchTab?: boolean; // クイック検索
     showAdvancedSearchTab?: boolean; // 詳細検索
     showBaseDate?: boolean; // 基準日利用
+    showClosure?: boolean; // 就業締め日利用
     showAllClosure?: boolean; // 全締め表示
     showPeriod?: boolean; // 対象期間利用
     periodFormatYM?: boolean; // 対象期間精度
@@ -307,8 +328,8 @@ export interface Ccg001ReturnedData {
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Show KCP005</td>
 										</tr>
 										<tr>
-											<td>systemType</td>
-											<td><b>Type:</b> number<br /> Current system type</td>
+											<td>systemType<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br /><b>Default:</b> = 1 (個人情報)<br /> Current system type</td>
 										</tr>
 										<tr>
 											<td>showQuickSearchTab<br/><i>(optional)</i></td>
@@ -316,11 +337,15 @@ export interface Ccg001ReturnedData {
 										</tr>
 										<tr>
 											<td>showAdvancedSearchTab<br/><i>(optional)</i></td>
-											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Show advanced search tab</td>
+											<td><b>Type:</b> boolean<br /><b>Default:</b> = true<br/> Show advanced search tab</td>
 										</tr>
 										<tr>
 											<td>showBaseDate<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = true<br/> Show reference date</td>
+										</tr>
+										<tr>
+											<td>showClosure<br/><i>(optional)</i></td>
+											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Show closure selection</td>
 										</tr>
 										<tr>
 											<td>showAllClosure<br/><i>(optional)</i></td>
@@ -333,6 +358,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>showPeriodYM<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/> Search period format is year/month(true) or year/month/date(false)</td>
+										</tr>
+										<tr>
+											<td>maxPeriodRange<br/><i>(optional)</i></td>
+											<td><b>Type:</b> string<br /><b>Default:</b> = none (なし)<br /> Maximum period range</td>
 										</tr>
 										<tr>
 											<td>baseDate<br/><i>(required if showBaseDate = true)</i></td>
@@ -417,6 +446,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>isTab2Lazy<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/>Enable lazyload for tab2</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br /><b>Default:</b> = 1<br/>Set tabindex for CCG001</td>
 										</tr>
 										<tr>
 											<td>returnDataFromCcg001</td>

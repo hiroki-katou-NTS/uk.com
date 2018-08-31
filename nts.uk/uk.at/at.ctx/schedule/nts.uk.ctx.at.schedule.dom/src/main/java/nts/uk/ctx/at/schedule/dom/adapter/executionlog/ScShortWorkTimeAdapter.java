@@ -4,22 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.adapter.executionlog;
 
-import java.util.Optional;
+import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface ScShortWorkTimeAdapter.
  */
 public interface ScShortWorkTimeAdapter {
 
-	/**
-	 * Find short work time.
-	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
-	 * @return the optional
-	 */
-	Optional<ShortWorkTimeDto> findShortWorkTime(String employeeId, GeneralDate baseDate);
+	List<ShortWorkTimeDto> findShortWorkTimes(List<String> empIds, DatePeriod period);
 }

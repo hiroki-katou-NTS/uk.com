@@ -19,11 +19,11 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaAgreeConditionErrorRepository extends JpaRepository implements IAgreeConditionErrorRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondErr c ";
-	private final String SELECT_CODE = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondErrPK.companyId = :companyId AND c.kfnmt36AgreeCondErrPK.code = :code AND c.kfnmt36AgreeCondErrPK.category = :category ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondErr c ";
+	private static final String SELECT_CODE = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondErrPK.companyId = :companyId AND c.kfnmt36AgreeCondErrPK.code = :code AND c.kfnmt36AgreeCondErrPK.category = :category ";
 	
-	private final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondErr c ";
-	private final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondErrPK.companyId = :companyId AND c.kfnmt36AgreeCondErrPK.category = :category AND c.kfnmt36AgreeCondErrPK.code = :code ";
+	private static final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondErr c ";
+	private static final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondErrPK.companyId = :companyId AND c.kfnmt36AgreeCondErrPK.category = :category AND c.kfnmt36AgreeCondErrPK.code = :code ";
 	/**
 	 * convert from AgreeConditionError domain to Kfnmt36AgreeCondErr entity
 	 * @param entity

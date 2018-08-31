@@ -1,21 +1,24 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * 特別休暇
+ * 
+ * @author tanlv
+ *
+ */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class SpecialHoliday extends AggregateRoot {
 
 	/** 会社ID */
@@ -26,92 +29,79 @@ public class SpecialHoliday extends AggregateRoot {
 
 	/** 特別休暇名称 */
 	private SpecialHolidayName specialHolidayName;
+	
+	/** 付与情報 */
+	private GrantRegular grantRegular;
+	
+	/** 期限情報 */
+	private GrantPeriodic grantPeriodic;
+	
+	/** 特別休暇利用条件 */
+	private SpecialLeaveRestriction specialLeaveRestriction;
 
-	/** 定期付与 */
-	private GrantMethod grantMethod;
-
+	/** 対象項目 */
+	private TargetItem targetItem;
+	
 	/** メモ */
 	private Memo memo;
-
-	/** 作業タイプリスト */
-	private List<String> workTypeList;
-
-	/** 定期的な付与日 */
-	private GrantRegular grantRegular;
-
-	/** 付与日数定期 */
-	private GrantPeriodic grantPeriodic;
-
-	/** 特別休暇の期限 */
-	private SphdLimit sphdLimit;
-
-	/**/
-	private SubCondition subCondition;
-
-	/** シングル付与 */
-	private GrantSingle grantSingle;
 
 	@Override
 	public void validate() {
 		super.validate();
 	}
 
-	/**
-	 * Check Work Type
-	 */
-	public void validateInput() {
-		if (CollectionUtil.isEmpty(workTypeList)) {
-			throw new BusinessException("Msg_93");
-		}
-
-		if (this.isMethodManageRemainNumber()) {
-			this.grantSingle.validate();
-		} else {
-			this.grantRegular.validate();
-			this.grantPeriodic.validate();
-			this.sphdLimit.validate();
-			this.subCondition.validate();
-		}
+	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
+			SpecialHolidayName specialHolidayName, Memo memo) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.specialHolidayName = specialHolidayName;
+		this.memo = memo;
 	}
 
-	/**
-	 * Create from Java Type
-	 * 
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @param specialHolidayName
-	 * @param grantPeriodicCls
-	 * @param memo
-	 * @param workTypeList
-	 * @param grantRegular
-	 * @param grantPeriodic
-	 * @param sphdLimit
-	 * @param subCondition
-	 * @param grantSingle
-	 * @return
-	 */
-	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode,
-			String specialHolidayName, int grantPeriodicCls, String memo, List<String> workTypeList,
-			GrantRegular grantRegular, GrantPeriodic grantPeriodic, SphdLimit sphdLimit, SubCondition subCondition,
-			GrantSingle grantSingle) {
-		return new SpecialHoliday(companyId, new SpecialHolidayCode(specialHolidayCode),
-				new SpecialHolidayName(specialHolidayName), EnumAdaptor.valueOf(grantPeriodicCls, GrantMethod.class),
-				new Memo(memo), workTypeList, grantRegular, grantPeriodic, sphdLimit, subCondition, grantSingle);
-	}
-
-	/**
-	 * Check Grant Method
-	 * 
-	 * @return
-	 */
-	public boolean isMethodManageRemainNumber() {
-		return this.grantMethod == GrantMethod.DoNot_ManageRemainNumber;
+	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
+			SpecialHolidayName specialHolidayName, GrantRegular grantRegular, GrantPeriodic grantPeriodic,
+			SpecialLeaveRestriction specialLeaveRestriction, Memo memo) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.specialHolidayName = specialHolidayName;
+		this.grantRegular = grantRegular;
+		this.grantPeriodic = grantPeriodic;
+		this.specialLeaveRestriction = specialLeaveRestriction;
+		this.memo = memo;
 	}
 	
-	public void publishEvent(boolean flag) {
-		SpecialHolidayEvent event = new SpecialHolidayEvent(flag,
-				this.specialHolidayCode,
-				this.specialHolidayName);
-		event.toBePublished();
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, TargetItem targetItem, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				grantRegular,
+				grantPeriodic,
+				specialLeaveRestriction,
+				targetItem,
+				new Memo(memo));
 	}
+
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				new Memo(memo));
+	}
+	
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				grantRegular,
+				grantPeriodic,
+				specialLeaveRestriction,
+				new TargetItem(),
+				new Memo(memo));
+	}
+	
+	
 }

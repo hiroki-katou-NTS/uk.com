@@ -14,10 +14,13 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.model.employee.RegularSortingType;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.query.model.employee.SortingConditionOrder;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
+import nts.uk.query.pub.employee.SortingConditionOrderDto;
 
 /**
  * The Class RegulationInfoEmployeePubImpl.
@@ -108,5 +111,34 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
 			Integer nameType, GeneralDateTime referenceDate) {
 		return this.regInfEmpRepo.sortEmployees(comId, sIds, systemType, orderNo, nameType, referenceDate);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.query.pub.employee.RegulationInfoEmployeePub#sortEmployee(java.
+	 * lang.String, java.util.List, java.util.List,
+	 * nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderDto> orders,
+			GeneralDateTime referenceDate) {
+		return this.regInfEmpRepo.sortEmployees(comId, sIds, this.convertToQueryModel(orders), referenceDate);
+	}
+
+	/**
+	 * Convert to query model.
+	 *
+	 * @param orders the orders
+	 * @return the list
+	 */
+	private List<SortingConditionOrder> convertToQueryModel(List<SortingConditionOrderDto> orders) {
+		return orders.stream().map(dto -> {
+			SortingConditionOrder order = new SortingConditionOrder();
+			order.setOrder(dto.getOrder());
+			order.setType(RegularSortingType.valueOf(dto.getType().value));
+			return order;
+		}).collect(Collectors.toList());
 	}
 }

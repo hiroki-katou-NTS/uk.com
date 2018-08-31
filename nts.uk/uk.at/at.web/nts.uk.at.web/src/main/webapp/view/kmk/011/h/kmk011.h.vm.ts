@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk011.h {
 
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import blockUI = nts.uk.ui.block;
 
     import DivergenceReferenceTimeUsageUnitDto = nts.uk.at.view.kmk011.h.model.DivergenceReferenceTimeUsageUnit;
     export module viewmodel {
@@ -10,30 +11,27 @@ module nts.uk.at.view.kmk011.h {
 
             constructor() {
                 let _self = this;
-                _self.selectWorkTypeCheck = ko.observable(true);
+                _self.selectWorkTypeCheck = ko.observable(getShared("selectWorkTypeCheck") != undefined ? getShared("selectWorkTypeCheck") : false);
             }
 
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                
-                service.find().done(function(value: any) {
-                    if (value != null) {
-                        _self.selectWorkTypeCheck(value.workTypeUseSet)
-                        $("#selectWorkTypeCheck").focus();
-                    }
-                });
+                $("#selectWorkTypeCheck").focus();
+
                 dfd.resolve();
                 return dfd.promise();
             }
 
             private closeSaveDialog(): JQueryPromise<any> {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 var workTypeUseSet = _self.convertBoolToNum(_self.selectWorkTypeCheck())
                 var data = new DivergenceReferenceTimeUsageUnitDto(workTypeUseSet);
 
                 service.save(data).done(() => {
+                    blockUI.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         dfd.resolve();
                         nts.uk.ui.windows.close();

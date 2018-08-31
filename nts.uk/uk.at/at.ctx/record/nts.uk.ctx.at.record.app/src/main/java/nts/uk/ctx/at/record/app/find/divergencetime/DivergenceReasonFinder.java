@@ -14,14 +14,12 @@ public class DivergenceReasonFinder {
 
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
-	//user contexts
-	String companyId = AppContexts.user().companyId();
-	
-	public List<DivergenceReasonDto> getAllDivReasonByCode(String divTimeId){
-		List<DivergenceReasonDto> lst = this.divTimeRepo.getDivReasonByCode(companyId,Integer.valueOf(divTimeId))
-				.stream()
-				.map(c->DivergenceReasonDto.fromDomain(c))
-				.collect(Collectors.toList());
+
+	public List<DivergenceReasonDto> getAllDivReasonByCode(String divTimeId) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+		List<DivergenceReasonDto> lst = this.divTimeRepo.getDivReasonByCode(companyId, Integer.valueOf(divTimeId))
+				.stream().map(c -> DivergenceReasonDto.fromDomain(c)).collect(Collectors.toList());
 		return lst;
 	}
 }

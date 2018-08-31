@@ -28,7 +28,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	private static final String GETALLCOMPANY;
 
-	public final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
+	public static final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
+	
+	public static final String GET_COMPANY_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid ";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
@@ -41,18 +44,23 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	/**
 	 * Bcmmt Company Infor author: Hoang Yen
 	 */
-	private final String SELECT_NO_WHERE = "SELECT c FROM BcmmtCompanyInfor c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM BcmmtCompanyInfor c ";
 	// bcmmt add infor
-	private final String COUNT_ALL = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c ";
-	private final String COUNT_ABOLISH = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c WHERE c.isAbolition = 1 AND c.bcmmtCompanyInforPK.companyId != :companyId ";
+	private static final String COUNT_ALL = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c ";
+	private static final String COUNT_ABOLISH = "SELECT COUNT(c.bcmmtCompanyInforPK.companyId) FROM BcmmtCompanyInfor c WHERE c.isAbolition = 1 AND c.bcmmtCompanyInforPK.companyId != :companyId ";
 	
 //	private final String SELECT_ADD_NO_WHERE = "SELECT  c FROM BcmmtAddInfor c ";
 //	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
 	
-	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
+	private static final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
 	
-	private final String GET_ALL_COMPANY_BY_CONTRACT_CD = SELECT_NO_WHERE + " WHERE c.contractCd = :contractCd ORDER BY c.companyCode ASC ";
+	private static final String GET_ALL_COMPANY_BY_CONTRACT_CD = SELECT_NO_WHERE + " WHERE c.contractCd = :contractCd ORDER BY c.companyCode ASC ";
+	
+	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR = SELECT_NO_WHERE
+			+ " WHERE c.contractCd = :contractCd "
+			+ " AND c.isAbolition = :isAbolition "
+			+ " ORDER BY c.companyCode ASC ";
 	
 //	/**
 //	 * @param entity
@@ -313,4 +321,30 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.setParameter("contractCd", contractCd)
 				.getList(c -> toDomainCom(c));
 	}
+
+	@Override
+	public List<Company> getAllCompanyByContractCdandAboAtr(String contractCd, int isAbolition) {
+
+		return this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR, BcmmtCompanyInfor.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("isAbolition", isAbolition)
+				.getList(c -> toDomainCom(c));
+		
+	}
+
+	@Override
+	public Optional<Company> getCompany(String cid) {
+		BcmmtCompanyInfor entity = this.queryProxy().query(GET_COMPANY_BY_CID, BcmmtCompanyInfor.class)
+				.setParameter("cid", cid).getSingleOrNull();
+
+		Company company = new Company();
+		if (entity != null) {
+			company = toDomainCom(entity);
+			return Optional.of(company);
+
+		} else {
+			return Optional.empty();
+		}
+	}
+
 }

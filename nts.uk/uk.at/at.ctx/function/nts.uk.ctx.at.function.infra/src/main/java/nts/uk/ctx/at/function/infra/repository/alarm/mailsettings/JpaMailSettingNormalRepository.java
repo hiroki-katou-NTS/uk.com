@@ -14,9 +14,9 @@ import nts.uk.ctx.at.function.infra.entity.alarm.mailsettings.KfnmtMailSettingNo
 @Stateless
 public class JpaMailSettingNormalRepository extends JpaRepository implements MailSettingNormalRepository {
 
-	private final String FIND_BY_COMPANY = "SELECT a FROM KfnmtMailSettingNormal a WHERE a.companyID = :companyId";
-	private final String FIND_MAIL_LIST = "SELECT a.mailAddress FROM KfnmtMailSettingList a WHERE a.listMailId = :listMailId";
-	private final String DEL_MAIL_LIST = "DELETE FROM KfnmtMailSettingList m "
+	private static final String FIND_BY_COMPANY = "SELECT a FROM KfnmtMailSettingNormal a WHERE a.companyID = :companyId";
+	private static final String FIND_MAIL_LIST = "SELECT a.mailAddress FROM KfnmtMailSettingList a WHERE a.listMailId = :listMailId";
+	private static final String DEL_MAIL_LIST = "DELETE FROM KfnmtMailSettingList m "
 			+ "WHERE m.listMailId = :listMailId1 "
 			+ "OR m.listMailId = :listMailId2 "
 			+ "OR m.listMailId = :listMailId3 "

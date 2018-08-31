@@ -19,11 +19,11 @@ import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPers
 @Stateless
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		implements PersonalEmploymentContractRepository {
-	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract c"
+	private static final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract c"
 			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :ccd" + " and c.pclmtPersonEmpContractPK.pId IN :pIds"
 			+ " and c.pclmtPersonEmpContractPK.strD <= :baseYmd" + " and c.endD >= :baseYmd";
 	
-	private final String SEL_2 = "SELECT c FROM PclmtPersonEmpContract c"
+	private static final String SEL_2 = "SELECT c FROM PclmtPersonEmpContract c"
 			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :ccd" 
 			+ " and c.pclmtPersonEmpContractPK.pId = :pId"
 			+ " and c.pclmtPersonEmpContractPK.strD <= :baseYmd" 

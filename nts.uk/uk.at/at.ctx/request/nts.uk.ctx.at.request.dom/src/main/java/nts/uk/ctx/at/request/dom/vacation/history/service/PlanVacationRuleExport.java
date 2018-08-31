@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.計画休暇のルール.Export
  * @author do_dt
@@ -21,7 +22,7 @@ public interface PlanVacationRuleExport {
 	 * @return 	true：上限エラーあり
 	 * 			false：上限エラーなし
 	 */
-	boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, Period dateData);
+	boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData);
 	/**
 	 * 申請期間が利用可能な期間外かチェックする
 	 * @param lstVactionPeriod ・ドメインモデル「計画休暇のルールの履歴」一覧
@@ -31,7 +32,7 @@ public interface PlanVacationRuleExport {
 	 * true：期間外
 	 * false：期間内
 	 */
-	boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, Period dateData);
+	boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, DatePeriod dateData);
 	/**
 	 * 指定期間の計画年休の上限チェック
 	 * @param cid 
@@ -42,19 +43,27 @@ public interface PlanVacationRuleExport {
 	 * @param appDate ・申請開始日 ・申請終了日
 	 * @return
 	 */
-	boolean checkMaxPlanSpecification(String cid, String employeeId, String workTypeCode, Period checkDate, int maxDay, Period appDate);
+	boolean checkMaxPlanSpecification(CheckMaximumOfPlanParam planParam);
 	/**
 	 * チェック期間による申請期間を編集する
 	 * @param checkData
 	 * @param appDate
 	 * @return
 	 */
-	Period getEditDate(Period checkData, Period appDate);
+	DatePeriod getEditDate(DatePeriod checkData, DatePeriod appDate);
 	/**
 	 * 使用済の計画年休日数を取得する
 	 * @param lstDate
 	 * @param dataDate
 	 * @return
 	 */
-	int getUseDays(List<GeneralDate> lstDate, Period dataDate);
+	int getUseDays(List<GeneralDate> lstDate, DatePeriod dataDate);
+	/**
+	 * 取得期間の算出
+	 * @param cid
+	 * @param employeeId
+	 * @param dateCheck
+	 * @return
+	 */
+	PeriodVactionCalInfor calGetPeriod(String cid, String employeeId, DatePeriod dateCheck);
 }

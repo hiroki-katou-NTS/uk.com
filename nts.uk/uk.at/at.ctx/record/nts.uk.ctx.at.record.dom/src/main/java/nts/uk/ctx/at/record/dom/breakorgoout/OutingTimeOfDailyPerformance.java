@@ -78,19 +78,24 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return 不要な項目を削除した時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,Optional<FlowWorkRestSettingDetail> flowDetail) {
-		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-		List<TimeSheetOfDeductionItem> loopList = (dedAtr.isDeduction())?
+		List<TimeSheetOfDeductionItem> returnList = (dedAtr.isDeduction())?
+														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
 														this.outingTimeSheets.stream()
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
+																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList()):
+														//全ての時は、全外出時間帯が対象
 														this.outingTimeSheets.stream()
+																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList());
+		//流動化
 		if(workTimeMethodSet.isFluidWork()) {
+			//外出を休憩として扱うか
 			if((flowDetail.get().getFlowFixedRestSetting().getCalculateMethod().isStampWithoutReference() && fluRestTime.get().isFixRestTime())
 					||(!fluRestTime.get().isFixRestTime()  && flowDetail.get().getFlowFixedRestSetting().isReferRestTime())) {
-					returnList.addAll(convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),loopList));
+					returnList = convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),returnList);
 			}
 		}
 			
@@ -108,7 +113,7 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 			//休憩へ変換する
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(deductionItem.getTimeSheet(),
 																							  deductionItem.getCalcrange(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),
@@ -117,7 +122,8 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 																							  deductionItem.getMidNightTimeSheet(),
 																							  deductionItem.getGoOutReason(),
 																							  Finally.of(BreakClassification.BREAK_STAMP),
-																							  DeductionClassification.BREAK));
+																							  Optional.empty(),
+																							  DeductionClassification.BREAK,deductionItem.getChildCareAtr()));
 			}
 			//修正しない
 			else {
@@ -132,6 +138,9 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
-		return this.outingTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
+		return this.outingTimeSheets.stream()
+									.filter(ts -> ts.isCalcState())
+									.map(tc -> tc.toTimeSheetOfDeductionItem())
+									.collect(Collectors.toList());
 	}
 }

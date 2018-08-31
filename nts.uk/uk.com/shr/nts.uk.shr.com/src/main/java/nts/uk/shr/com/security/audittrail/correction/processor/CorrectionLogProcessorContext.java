@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrection;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
@@ -13,23 +14,27 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 public class CorrectionLogProcessorContext {
-
-	@Getter
-	private final String operationId;
 	
+	@Getter
+	private final LogBasicInformation basicInfo;
+
 	private final Object parameter;
 	
 	@Getter
 	private final List<DataCorrectionLog> corrections;
 
-	private CorrectionLogProcessorContext(String operationId, Object parameter) {
-		this.operationId = operationId;
+	private CorrectionLogProcessorContext(LogBasicInformation basicInfo, Object parameter) {
+		this.basicInfo = basicInfo;
 		this.parameter = parameter;
 		this.corrections = new ArrayList<>();
 	}
 	
-	public static CorrectionLogProcessorContext newContext(String operationId, Object parameter) {
-		return new CorrectionLogProcessorContext(operationId, parameter);
+	public static CorrectionLogProcessorContext newContext(LogBasicInformation basicInfo, Object parameter) {
+		return new CorrectionLogProcessorContext(basicInfo, parameter);
+	}
+	
+	public String getOperationId() {
+		return this.basicInfo.getOperationId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -38,7 +43,7 @@ public class CorrectionLogProcessorContext {
 	}
 	
 	public void addCorrection(DataCorrection correction) {
-		this.addCorrection(DataCorrectionLog.of(this.operationId, correction));
+		this.addCorrection(DataCorrectionLog.of(this.getOperationId(), correction));
 	}
 	
 	public void addCorrection(
@@ -50,7 +55,7 @@ public class CorrectionLogProcessorContext {
 			int showOrder) {
 		
 		this.addCorrection(new DataCorrectionLog(
-				this.operationId, targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder));
+				this.getOperationId(), targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder));
 	}
 	
 	public void addCorrection(
@@ -63,7 +68,7 @@ public class CorrectionLogProcessorContext {
 			String remark) {
 		
 		this.addCorrection(new DataCorrectionLog(
-				this.operationId, targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder, remark));
+				this.getOperationId(), targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder, remark));
 	}
 	
 	private void addCorrection(DataCorrectionLog correction) {

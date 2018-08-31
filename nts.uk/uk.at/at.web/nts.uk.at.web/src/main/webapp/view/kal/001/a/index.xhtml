@@ -47,7 +47,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL001_4')}</div>
 									</td>
 									<td>
-										<div tabindex="3" id="combo-box" data-bind="ntsComboBox: {
+										<div tabindex="2" id="combo-box" data-bind="ntsComboBox: {
 											options: alarmCombobox,
 											optionsValue: 'alarmCode',
 											visibleItemsCount: 10,
@@ -72,39 +72,41 @@
 								<tr>
 									<td>
 									</td>
-									<td>
-										<table tabindex="4" id="fixed-table">
+									<td tabindex="3">
+										<table id="fixed-table">
 											<colgroup>
 												<col width="50px"/>
 												<col width="150px"/>
 												<col width="280px"/>
 											</colgroup>
-											<thead>
+											<thead >
 												<tr>
-													<th class="ui-widget-header check_column" data-bind="click: clickCheckAll" ><div data-bind="ntsCheckBox: {checked: checkAll}"></div></th>
+													<th  class="ui-widget-header check_column" data-bind="click: clickCheckAll" ><div tabindex="-1" data-bind="ntsCheckBox: {checked: checkAll}"></div></th>
 													<th class="ui-widget-header" >#{i18n.getText('KAL001_6')}</th>
 													<th class="ui-widget-header" >#{i18n.getText('KAL001_7')}</th>
 
 												</tr>
 											</thead>
-											<tbody>
+											<tbody >
 												<com:ko-foreach bind="periodByCategory">
-													<tr data-bind="attr:{ categorynumber: id}">
-														<td  class ="check_column"  data-bind="click: setClick"><div data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
-														<td data-bind ="text: categoryName "></td>
+													<tr  data-bind="attr:{ categorynumber: id}">
+														<td   class ="check_column"  data-bind="click: setClick"><div tabindex="-1" data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
+														<td tabindex="-1" data-bind ="text: categoryName "></td>
 														
-														<td   class ='periodTime'>
-															<div class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
+														<td  tabindex="-1" class ='periodTime'>
+															<div tabindex="-1" class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
 																			 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}, 
 																			 visible: !visible()"/>
 																			 
-															<div class ='nts-custom' data-bind="visible: visible">
-															 	<input  data-bind="ntsTimeEditor: {
-															 									inputFormat: 'YYYY',
+															<div  class ='nts-custom ntsControl nts-datepicker-wrapper' data-bind="visible: visible">
+															 	<div tabindex="-1" data-bind="ntsDatePicker: {
+															 									dateFormat: 'YYYY', 
+															 									valueFormat: 'YYYY',
 															 									value: year,
 																								name: '#[KAL004_73]',															 									
 															 									required: required,
 															 									constraint: 'YearOfAgreement',
+															 									showJumpButtons: false,
 															 									option: {textalign: 'left',
 															 											 width: '86px',
 															 											 }

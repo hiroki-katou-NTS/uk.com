@@ -71,6 +71,7 @@
 
 						<div style="float: left" id="combo-box" tabindex="6"
 							data-bind="ntsComboBox: {
+								name: comboboxName,
 								options: attendanceRecordList,
 								optionsValue: 'code',
 								visibleItemsCount: 10,
@@ -85,7 +86,7 @@
 						</div>
 						<div style="float: left; margin-left: 20px">
 							<button id="openBDialog" tabindex="7" class="group-button-1"
-								data-bind="click: openBDialog, disable: false">#{i18n.getText('KWR002_20')}</button>
+								data-bind="click: openBDialog, disable: permission">#{i18n.getText('KWR002_20')}</button>
 						</div>
 					</div>
 

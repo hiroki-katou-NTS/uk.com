@@ -59,22 +59,18 @@ module nts.uk.at.view.kmk004.d {
                 self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
-                self.selectedWorkplaceId.subscribe(function(workPlaceId) {
-                    if (nts.uk.text.isNullOrEmpty(workPlaceId)) {
-                        self.workplaceCode('');
-                        self.workplaceName('');
-                    }
-                });
                 self.setWorkplaceComponentOption();
                 self.workplaceCode = ko.observable('');
                 self.workplaceName = ko.observable('');
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadWorkplaceSetting();
                     }
                 });
@@ -120,10 +116,14 @@ module nts.uk.at.view.kmk004.d {
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                     
-                    let wkpId = self.selectedWorkplaceId();
+//                    let wkpId = self.selectedWorkplaceId();
                     self.loadWorkplaceSetting();
                     
-                    self.selectedWorkplaceId.subscribe(wkpId => {
+                    self.selectedWorkplaceId.subscribe((v) => {
+                        if (nts.uk.text.isNullOrEmpty(v)) {
+                            self.workplaceCode('');
+                            self.workplaceName('');
+                        };
                         self.loadWorkplaceSetting();
                     });
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
@@ -237,6 +237,7 @@ module nts.uk.at.view.kmk004.d {
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
+                    nts.uk.ui.block.grayout();
                     service.removeWorkplaceSetting(command).done((res) => {
 
                         // new mode.
@@ -264,6 +265,7 @@ module nts.uk.at.view.kmk004.d {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
                         self.clearError();
+                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
@@ -323,14 +325,14 @@ module nts.uk.at.view.kmk004.d {
                 
                 let saveCommand: WorkspaceWorktimeSettingDtoSaveCommand = new WorkspaceWorktimeSettingDtoSaveCommand();
                 saveCommand.updateData(self.selectedWorkplaceId(), self.worktimeVM.worktimeSetting);
-                
+                nts.uk.ui.block.grayout();
                 service.saveWorkplaceSetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     self.addAlreadySettingWorkplace(self.selectedWorkplaceId());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
-                });
+                }).always(() => nts.uk.ui.block.clear());
             }
             
             /**
@@ -358,9 +360,6 @@ module nts.uk.at.view.kmk004.d {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    if ($('#worktimeYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }

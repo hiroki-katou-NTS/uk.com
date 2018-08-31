@@ -36,7 +36,12 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label">Demo</span>	
+									<div class="cell" data-bind="if: !($index()>1)">
+										<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_65',[$index()+1])"></span>
+									</div>
+									<div class="cell" data-bind="if: $index()>1">
+										<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_66',[$index()-1])"></span>
+									</div>
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -98,7 +103,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '外出時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_67',[$index()+1])"></span>	
 								</td>
 								<td>
 									<span class="m5-combo-box" data-bind="ntsComboBox: {
@@ -169,7 +174,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '育児時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_68',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -214,7 +219,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '介護時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_69',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -242,7 +247,7 @@
 				</div>
 			</div>
 			<div data-bind="if: stampAtr() == 4">
-				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '874px' : '653px' }">
+				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '894px' : '673px' }">
 					<div id="m5-backgroud-e"></div>
 					<table id="m5-table-e">
 						<thead>
@@ -265,7 +270,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '応援時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_70',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">

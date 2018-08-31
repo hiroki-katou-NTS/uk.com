@@ -23,9 +23,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click:processExcel">#{i18n.getText('KWR001_5')}</button>
+				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click:processExcel, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_5')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf">#{i18n.getText('KWR001_6')}</button>
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_6')}</button>
 			</div>
 			
 			<div id="content-area">
@@ -134,7 +134,8 @@
 												<!-- A10_4 -->
 												<div tabindex="12" data-bind="ntsCheckBox: { checked: checkedA10_4 }">#{i18n.getText('KWR001_22')}</div>
 												<!-- A10_5 -->
-												<div tabindex="13" data-bind="ntsCheckBox: { checked: checkedA10_5, enable: enableByOutputFormat }">#{i18n.getText('KWR001_23')}</div>
+												<!-- update spec ver 25, only hidden temporary -->
+												<!-- <div tabindex="13" data-bind="ntsCheckBox: { checked: checkedA10_5, enable: enableByOutputFormat }">#{i18n.getText('KWR001_23')}</div> -->
 												<!-- A10_6 -->
 												<div tabindex="14" data-bind="ntsCheckBox: { checked: checkedA10_6 }">#{i18n.getText('KWR001_24')}</div>
 											</td>

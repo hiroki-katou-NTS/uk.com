@@ -175,7 +175,7 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
@@ -223,7 +223,7 @@ public class DailyPerformanceSelectItemProcessor {
 										.map(x -> new DPAttendanceItem(x.getId(),
 												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
 												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
+												x.getTypeGroup(), x.getPrimitive()))
 										.collect(Collectors.toList());
 						Map<Integer, Integer> optionalItemOpt = AttendanceItemIdContainer.optionalItemIdsToNos(lstAtdItemUnique, AttendanceItemType.DAILY_ITEM);
 						Map<Integer, OptionalItemAtr> optionalItemAtrOpt= optionalItemOpt.isEmpty() ? Collections.emptyMap()
@@ -295,7 +295,7 @@ public class DailyPerformanceSelectItemProcessor {
 			List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-
+        String companyId = AppContexts.user().companyId();
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
@@ -316,7 +316,7 @@ public class DailyPerformanceSelectItemProcessor {
 			screenDto.setAuthorityDto(dailyPerformans);
 		}
 		// get employmentCode
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
 		getHolidaySettingData(screenDto);
@@ -365,7 +365,7 @@ public class DailyPerformanceSelectItemProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
 				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
@@ -373,7 +373,8 @@ public class DailyPerformanceSelectItemProcessor {
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
-		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
 		/// Confirmation Information Corresponding to Target Date"
 		// アルゴリズム「就業確定情報を取得する」を実行する

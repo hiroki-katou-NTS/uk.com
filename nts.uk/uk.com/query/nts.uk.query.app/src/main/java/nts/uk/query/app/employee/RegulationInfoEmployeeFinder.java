@@ -22,6 +22,7 @@ import nts.uk.query.model.employee.EmployeeRoleRepository;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.model.employee.RoleWorkPlaceAdapter;
+import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
@@ -78,29 +79,24 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> find(RegulationInfoEmpQueryDto queryDto) {
-		
-		//Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
-		boolean isSearchOnlyMe = this.changeWorkplaceListByRole(queryDto);
-		
-		if(isSearchOnlyMe) {
-			// Find login employee info.
-			String loginEmployeeId = AppContexts.user().employeeId();
-			String companyId = AppContexts.user().companyId();
-			RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId,
-					GeneralDateTime.now());
-			return Arrays.asList(RegulationInfoEmployeeDto.builder()
-					.employeeCode(loginEmployee.getEmployeeCode())
-					.employeeId(loginEmployee.getEmployeeID())
-					.employeeName(loginEmployee.getName().orElse(""))
-					.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
-					.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
-					.workplaceName(loginEmployee.getWorkplaceName().orElse(""))
-					.build());
+		// Do not change workplace when system type = admin or searchReferenceRange = DO_NOT_CONSIDER_REFERENCE_RANGE
+		if (queryDto.getSystemType() == CCG001SystemType.ADMINISTRATOR.value
+				|| queryDto.getReferenceRange() == SearchReferenceRange.DO_NOT_CONSIDER_REFERENCE_RANGE.value) {
+			return this.findEmployeesInfo(queryDto);
 		}
-		
-		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
-				.map(model -> this.toDto(model))
-				.collect(Collectors.toList());
+
+		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
+			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
+					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
+							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT)));
+		}
+
+		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
+		if (role != null) {
+			this.changeWorkplaceListByRole(queryDto, role);
+		}
+		return this.findEmployeesInfo(queryDto);
 	}
 
 	/**
@@ -168,6 +164,22 @@ public class RegulationInfoEmployeeFinder {
 		return this.repo.findInfoBySIds(sIds, referenceDate).stream().map(item -> this.toDto(item))
 				.collect(Collectors.toList());
 	}
+
+	/**
+	 * Gets the role.
+	 *
+	 * @param systemType the system type
+	 * @return the role
+	 */
+	private EmployeeRoleImported getRole(int systemType) {
+		if (systemType == CCG001SystemType.ADMINISTRATOR.value) {
+			return null;
+		}
+		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(systemType);
+
+		// Find Role by roleId
+		return roleId == null ? null : this.roleRepo.findRoleById(roleId);
+	}
 	
 	/**
 	 * Change workplace list by role.
@@ -176,39 +188,18 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
-	private boolean changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto) {
-		if (queryDto.getReferenceRange() == null) {
-			return false;
-		}
+	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
+		EmployeeReferenceRange employeeReferenceRange = role.getEmployeeReferenceRange(); // employee's reference authority
+		SearchReferenceRange searchReferenceRange = SearchReferenceRange.valueOf(queryDto.getReferenceRange());
 
-		// get RoleId
-		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
-		boolean isSearchOnlyMe = false;
-
-		// check RoleId
-		if (roleId == null) {
-			throw new RuntimeException("Invalid Role");
-		}
-
-		// Find Role by roleId;
-		EmployeeRoleImported role = this.roleRepo.findRoleById(roleId);
-
-		// Check Role.
-		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-			isSearchOnlyMe = true;
-		}
-
-		// check param referenceRange
-		switch (EmployeeReferenceRange.valueOf(queryDto.getReferenceRange())) {
-		case ONLY_MYSELF:
-			isSearchOnlyMe = true;
-			break;
+		// An employee's search reference range depends on his reference authority
+		switch (searchReferenceRange) {
 		case ALL_EMPLOYEE:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				// not change workplaceCodes
 				break;
 			} else {
-				// Get list String Workplace
+				queryDto.setReferenceRange(employeeReferenceRange.value);
 				this.changeListWorkplaces(queryDto);
 			}
 			break;
@@ -217,7 +208,8 @@ public class RegulationInfoEmployeeFinder {
 			this.changeListWorkplaces(queryDto);
 			break;
 		case DEPARTMENT_AND_CHILD:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+					|| employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
 				this.changeListWorkplaces(queryDto);
 				break;
@@ -230,7 +222,6 @@ public class RegulationInfoEmployeeFinder {
 		default:
 			throw new RuntimeException("Invalid enum value");
 		}
-		return isSearchOnlyMe;
 	}
 	
 	/**
@@ -270,7 +261,7 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = this.empDataMngInfoAdapter.findNotDeletedBySCode(AppContexts.user().companyId(),
 				sCd);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+		return this.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 
 	/**
@@ -285,7 +276,7 @@ public class RegulationInfoEmployeeFinder {
 
 		List<String> sIds = this.empDataMngInfoAdapter.findByListPersonId(AppContexts.user().companyId(), pIds);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+		return this.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 
 	/**
@@ -298,7 +289,7 @@ public class RegulationInfoEmployeeFinder {
 	public List<String> searchByEntryDate(DatePeriod period, Integer systemType) {
 		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(AppContexts.user().companyId(), period);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+		return this.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 
 	/**
@@ -311,7 +302,7 @@ public class RegulationInfoEmployeeFinder {
 	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType) {
 		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(AppContexts.user().companyId(), period);
 
-		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+		return this.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 
 	/**
@@ -348,6 +339,51 @@ public class RegulationInfoEmployeeFinder {
 				.workplaceName(model.getWorkplaceName().orElse(""))
 				.build();
 	}
+
+	/**
+	 * Find current login employee info.
+	 *
+	 * @return the list
+	 */
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate) {
+		String loginEmployeeId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
+		return RegulationInfoEmployeeDto.builder()
+				.employeeCode(loginEmployee.getEmployeeCode())
+				.employeeId(loginEmployee.getEmployeeID())
+				.employeeName(loginEmployee.getName().orElse(""))
+				.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
+				.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
+				.workplaceName(loginEmployee.getWorkplaceName().orElse("")).build();
+	}
+
+	/**
+	 * Find employees info.
+	 *
+	 * @param queryDto the query dto
+	 * @return the list
+	 */
+	private List<RegulationInfoEmployeeDto> findEmployeesInfo(RegulationInfoEmpQueryDto queryDto) {
+		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
+				.map(model -> this.toDto(model)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Narrow emp list by reference range.
+	 *
+	 * @param sIds the s ids
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	private List<String> narrowEmpListByReferenceRange(List<String> sIds, Integer systemType) {
+		// Do not narrowEmpListByReferenceRange when system type = admin
+		if (systemType == CCG001SystemType.ADMINISTRATOR.value) {
+			return sIds;
+		}
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds,
+				this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value);
+	}
 	
 	// ・ロール種類：
 	// ※パラメータ「システム区分」＝「個人情報」の場合
@@ -374,8 +410,6 @@ public class RegulationInfoEmployeeFinder {
 			return RoleType.SALARY;
 		case HUMAN_RESOURCES:
 			return RoleType.HUMAN_RESOURCE;
-		case ADMINISTRATOR:
-			// TODO: Confirm.
 		default:
 			throw new RuntimeException();
 		}

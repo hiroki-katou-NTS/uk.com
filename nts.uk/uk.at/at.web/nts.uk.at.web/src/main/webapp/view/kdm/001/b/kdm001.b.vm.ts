@@ -226,13 +226,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     if (occurredDays != 0) {
                         occurredDays = occurredDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? getText('KDM001_130') : "", null, null, null, remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? getText('KDM001_130') : "", null, null, null, remain, expired, data.linked, 0));
                 } else {
                     requireDays = data.requireDays;
                     if (requireDays != 0) {
                         requireDays = requireDays.toFixed(1) + getText('KDM001_27');
                     }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked));
+                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked, 1));
                 }
             });
             if (self.listExtractData.length == 0) {
@@ -266,6 +266,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'dataType', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '102px' },
@@ -400,7 +401,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         pegSetting(value) {
             let self = this, rowDataInfo;
-            if (value.substituedWorkingDate.length > 0) {
+            if (value.dataType == 0) {
                 rowDataInfo = _.find(self.listExtractData, x => {
                     return x.id === value.id;
                 });
@@ -433,7 +434,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         doCorrection(value) {
             let self = this, rowDataInfo;
-            if (value.substituedWorkingDate.length > 0) {
+            if (value.dataType == 0) {
                 rowDataInfo = _.find(self.listExtractData, x => {
                     return x.id === value.id;
                 });
@@ -476,9 +477,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         remainHolidayHours: string;
         expiredHolidayHours: string;
         isLinked: number;
+        dataType: number;
         constructor(id: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string,
             substituedHolidayDate: string, substituteHolidayHours: string, substituedHolidayPeg: string, remainHolidayHours: string,
-            expiredHolidayHours: string, isLinked: number) {
+            expiredHolidayHours: string, isLinked: number, dataType: number) {
             this.id = id;
             this.substituedWorkingDate = substituedWorkingDate;
             this.substituedWorkingHours = substituedWorkingHours;
@@ -489,6 +491,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.remainHolidayHours = remainHolidayHours;
             this.expiredHolidayHours = expiredHolidayHours;
             this.isLinked = isLinked;
+            this.dataType = dataType;
         }
     }
 

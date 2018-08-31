@@ -20,11 +20,14 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         // check enable delete button
         checkDelete: KnockoutObservable<boolean>;
         isSelected: KnockoutObservable<boolean> = ko.observable(true);
+        threeParentOrLess: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape }
+                //H2_3
+                { headerText: nts.uk.resource.getText("KMF004_5"), key: 'relationshipCode', width: 100 },
+                //H2_4
+                { headerText: nts.uk.resource.getText("KMF004_6"), key: 'relationshipName', width: 200, formatter: _.escape }
             ]);
             self.lstRelationship = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -44,8 +47,12 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.checkDelete(true);
                     self.selectedOption(foundItem);
                     self.selectedName(self.selectedOption().relationshipName);
-                    self.codeObject(self.selectedOption().relationshipCode)
+                    self.threeParentOrLess(self.selectedOption().threeParentOrLess);
+                    self.codeObject(self.selectedOption().relationshipCode);
                     self.check(false);
+                    if (nts.uk.ui._viewModel) {
+                        $("#inpCode").ntsError('clear');
+                    }
                 }
             });
 
@@ -106,7 +113,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                 return;
             }
             code = self.codeObject();
-            let updateOption = new Relationship(self.selectedCode(), self.selectedName());
+            let updateOption = new Relationship(self.selectedCode(), self.selectedName(), self.threeParentOrLess());
             // update item to list  
             if (self.checkUpdate() == true) {
                 service.update(updateOption).done(function() {
@@ -119,7 +126,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             }
             else {
                 self.selectedOption(null);
-                let obj = new Relationship(self.codeObject(), self.selectedName());
+                let obj = new Relationship(self.codeObject(), self.selectedName(), self.threeParentOrLess());
                 // insert item to list
                 service.insert(obj).done(function() {
                     self.getData().done(function() {
@@ -148,6 +155,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
+            self.threeParentOrLess(false);
             $("#inpCode").focus();
             nts.uk.ui.errors.clearAll();
         }
@@ -164,30 +172,34 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.remove(self.selectedOption()).done(function() {
-                    self.getData().done(function() {
-                        // if number of item from list after delete == 0 
-                        if (self.lstRelationship().length == 0) {
-                            self.newMode();
-                            self.checkDelete(false);
-                            return;
-                        }
-                        // delete the last item
-                        if (count == ((self.lstRelationship().length))) {
-                            self.selectedCode(self.lstRelationship()[count - 1].relationshipCode);
-                            return;
-                        }
-                        // delete the first item
-                        if (count == 0) {
-                            self.selectedCode(self.lstRelationship()[0].relationshipCode);
-                            return;
-                        }
-                        // delete item at mediate list 
-                        else if (count > 0 && count < self.lstRelationship().length) {
-                            self.selectedCode(self.lstRelationship()[count].relationshipCode);
-                            return;
-                        }
-                    })
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.getData().done(function() {
+                            // if number of item from list after delete == 0 
+                            if (self.lstRelationship().length == 0) {
+                                self.newMode();
+                                self.checkDelete(false);
+                                return;
+                            }
+                            // delete the last item
+                            if (count == ((self.lstRelationship().length))) {
+                                self.selectedCode(self.lstRelationship()[count - 1].relationshipCode);
+                                return;
+                            }
+                            // delete the first item
+                            if (count == 0) {
+                                self.selectedCode(self.lstRelationship()[0].relationshipCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if (count > 0 && count < self.lstRelationship().length) {
+                                self.selectedCode(self.lstRelationship()[count].relationshipCode);
+                                return;
+                            }
+                        })
+
+                    });
+
+
                 })
             }).ifNo(() => {
             });
@@ -202,9 +214,11 @@ module nts.uk.at.view.kmf004.h.viewmodel {
     export class Relationship {
         relationshipCode: string;
         relationshipName: string;
-        constructor(relationshipCode: string, relationshipName: string) {
+        threeParentOrLess: boolean;
+        constructor(relationshipCode: string, relationshipName: string, threeParentOrLess: boolean) {
             this.relationshipCode = relationshipCode;
             this.relationshipName = relationshipName;
+            this.threeParentOrLess = threeParentOrLess ;
         }
     }
 }

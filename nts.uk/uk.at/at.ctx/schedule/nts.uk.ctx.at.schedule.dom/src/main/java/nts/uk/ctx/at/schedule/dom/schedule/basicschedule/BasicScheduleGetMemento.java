@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
  * The Interface BasicScheduleGetMemento.

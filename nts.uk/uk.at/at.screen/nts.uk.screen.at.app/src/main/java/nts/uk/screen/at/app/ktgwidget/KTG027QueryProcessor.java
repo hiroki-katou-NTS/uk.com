@@ -2,21 +2,22 @@ package nts.uk.screen.at.app.ktgwidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTimeImpl;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
@@ -110,61 +111,64 @@ public class KTG027QueryProcessor {
 
 		String employeeID = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
-		// �め期間を取得す�
 		// (Lấy closing period) tu domain Closure
 		/*
 		 * ouput: Closing period start date End date
 		 */
 		Optional<DatePeriod> datePeriod = getDatePeriod(targetMonth, closureID);
 		if (!datePeriod.isPresent()) {
-			return new OvertimeHours("Msg_1134", null);
+			throw new BusinessException("Msg_1134");
 		}
-		// ログイン�権限篛��職場を取得す�
-		// (Lấy workplace trong phạm vi quyền login) = Request List 334
+		// (Lấy workplace trong phạm vi quyền login) = Request List 478
 		// referenceDate lấy theo baseDate �xử lý 1
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
-		List<String> listWorkPlaceID = authWorkPlaceAdapter.getListWorkPlaceID(employeeID, referenceDate);
-		if (listWorkPlaceID.isEmpty()) {
-			return new OvertimeHours("Msg_1135", null);
+		//全社員参照　＝　しない
+		// referEmployee = false
+		WorkplaceInfoImport workplaceInfoImport = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
+		List<String> listWorkPlaceID = workplaceInfoImport.getLstWorkPlaceID();
+		Integer employeeRange = workplaceInfoImport.getEmployeeRange(); 
+		if (listWorkPlaceID == null ) {
+			throw new BusinessException("Msg_1135");
 		}
-		// �めに紐づく雇用を取得す�
 		// (lấy employeement ứng với closing)
-		// Ch�n�y lấy dữ liệu lâu vcl
 		List<ClosureEmployment> listClosureEmployment = closureEmploymentRepo.findByClosureId(companyID, closureID);
-		if (listClosureEmployment.isEmpty()) {
-			return new OvertimeHours("Msg_1136", null);
+		if (listClosureEmployment == null || listClosureEmployment.isEmpty()) {
+			throw new BusinessException("Msg_1136");
 		}
-		// 対象耂�取得す�
+		
 		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
 		// (Lấy target) Lấy request list 335
-		// imported�権限管琼�「所属�場履歴」を取得す�
+		
 		List<AgreementTimeList36> data = new ArrayList<>();
 		// for (DatePeriod datePeriod : listDatePeriod) {
-		long startTime = System.nanoTime();
+		
 		//List<String> listEmpID = empEmployeeAdapter.getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
-
-		if (listEmpID.isEmpty()) {
-			return new OvertimeHours("Msg_1137", null);
+		if (listEmpID == null || listEmpID.isEmpty() ) {
+			throw new BusinessException("Msg_1137");
 		}
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime) / 1000000; // ms;
-		System.out.println("RequestList335:" + duration);
-		// 対象�時間外労働時間を取得す�
-		// (Lấy worktime ngo�i period) lấy RequestList 333
-		startTime = System.nanoTime();
+		
+		if(employeeRange == EmployeeReferenceRange.ONLY_MYSELF.value){
+			//取得した対象者にログイン者がい含まれているか判定する
+			if(listEmpID.contains(employeeID) == false){
+				//含まれていない
+				throw new BusinessException("Msg_1137");
+			}else{
+				listEmpID = new ArrayList<>();
+				listEmpID.add(employeeID);
+			}
+		}
+		
+		// (Lấy worktime ngoài period) lấy RequestList 333
 		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
-		endTime = System.nanoTime();
-		duration = (endTime - startTime) / 1000000; // ms
-		System.out.println("RequestList333:" + duration);
+		
 		if (listAgreementTimeDetail.isEmpty()) {
-			return new OvertimeHours("Msg_1138", null);
+			throw new BusinessException("Msg_1138");
 		}
-		// 取得した時間外労働情報をセッ�
-		// (Set thông tin công việc ngo�i gi�đã lấy)
+		
+		// (Set thông tin công việc ngoài giờ đã lấy)
 		List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		// Imported�就業�「社員」を取得す�
-		// (Lấy Imported�就業�「employee� Lay Request61
+		// Lay Request61
 		List<PersonEmpBasicInfoImport> listEmpBasicInfoImport = empEmployeeAdapter.getPerEmpBasicInfo(lstEmpID);
 		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
 			Optional<PersonEmpBasicInfoImport> personInfor = listEmpBasicInfoImport.stream().filter(c -> c.getEmployeeId().equals(agreementTimeDetail.getEmployeeId())).findFirst();
@@ -175,7 +179,7 @@ public class KTG027QueryProcessor {
 					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getConfirmed().isPresent()? 0 : agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
-							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v() :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getStatus().value),
 					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getAfterAppReflect().isPresent()? 0 : agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),
@@ -302,8 +306,8 @@ public class KTG027QueryProcessor {
 		List<ClosureResultModel> listClosureResultModel = workClosureQueryProcessor.findClosureByReferenceDate(referenceDate);
 		// 時間外労働時間を取得す�
 		// (Lấy work time )
-		OvertimeHours overtimeHours = buttonPressingProcess(targetMonth, 1);
-		OvertimeHoursDto reusult = new OvertimeHoursDto(listClosureResultModel, overtimeHours);
+		OvertimeHours overtimeHours = buttonPressingProcess(targetMonth, closureIDInit);
+		OvertimeHoursDto reusult = new OvertimeHoursDto(closureIDInit, listClosureResultModel, overtimeHours);
 		return reusult;
 	}
 }

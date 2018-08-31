@@ -10,6 +10,10 @@ module nts.uk.pr.view.ccg007.h {
             userId: KnockoutObservable<string>;
             passwordNew: KnockoutObservable<string>;
             passwordNewConfirm: KnockoutObservable<string>;
+            embeddedId: KnockoutObservable<string>;
+            loginId: KnockoutObservable<string>;
+            contractCode: KnockoutObservable<string>;
+            contractPassword: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
@@ -18,6 +22,10 @@ module nts.uk.pr.view.ccg007.h {
                 self.userId = ko.observable(null);
                 self.passwordNew = ko.observable(null);
                 self.passwordNewConfirm = ko.observable(null);
+                self.embeddedId = ko.observable(null);
+                self.loginId = ko.observable(null);
+                self.contractCode = ko.observable(null);
+                self.contractPassword = ko.observable(null);
             }
 
             /**
@@ -26,16 +34,19 @@ module nts.uk.pr.view.ccg007.h {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                let url = _.toLower($(location).attr('href'));
+                self.embeddedId(url.substring(url.indexOf("=") + 1, url.length));
 
                 // block ui
                 nts.uk.ui.block.invisible();
 
                 //get userName
-                service.getUserNameByLoginId(localStorage.getItem('contractCode'), localStorage.getItem('loginId')).done(function(data) {
+                service.getUserNameByURL(self.embeddedId()).done(function(data: any) {
                     self.userName(data.userName);
                     self.userId(data.userId);
-                    //remove loginId and contractCode in LocalStorage
-                    
+                    self.loginId(data.loginId);
+                    self.contractCode(data.contractCode);
                 });
 
                 dfd.resolve();
@@ -65,31 +76,38 @@ module nts.uk.pr.view.ccg007.h {
                 blockUI.invisible();
 
                 //add command
-                let command: ForgotPasswordCommand = new ForgotPasswordCommand(localStorage.getItem('url'), self.userId(), self.passwordNew(), self.passwordNewConfirm());
+                let command: ForgotPasswordCommand = new ForgotPasswordCommand(self.embeddedId(), self.userId(), self.passwordNew(), self.passwordNewConfirm());
 
                 service.submitForgotPass(command).done(function() {
-                    localStorage.removeItem('url');
                     
                     var submitData = <SubmitData>{};
                     
-                    //Set SubmitData
-                    submitData.loginId = nts.uk.text.padRight(_.escape(localStorage.getItem('loginId')), " ", 12);
-                    submitData.password = _.escape(self.passwordNew());
-                    submitData.contractCode = _.escape(localStorage.getItem('contractCode'));
-                    submitData.contractPassword = _.escape(localStorage.getItem('contractPassword'));
-                    
-                    localStorage.removeItem('loginId');
-                    localStorage.removeItem('contractCode');
-                    localStorage.removeItem('contractPassword');
-                    
-                    //login
-                    service.submitLogin(submitData).done(function(messError) {
-                        //Remove LoginInfo
-                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
-                        blockUI.clear();
+                    nts.uk.characteristics.restore("contractInfo").done(function(loginInfo:any) {
+                        //Set SubmitData
+                        if (loginInfo) {
+                            submitData.contractPassword = _.escape(loginInfo.contractPassword);
+                        }
+                        
+                        submitData.loginId = nts.uk.text.padRight(_.escape(self.loginId()), " ", 12);
+                        submitData.password = _.escape(self.passwordNew());
+                        submitData.contractCode = _.escape(self.contractCode());
+                        
+                        //login
+                        service.submitLogin(submitData).done(function(messError: any) {
+                            //Remove LoginInfo
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                            blockUI.clear();
+                        }).fail(function(res:any) {
+                            //Return Dialog Error
+                            if (!nts.uk.util.isNullOrEmpty(res.parameterIds)){
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                            } else {
+                               nts.uk.ui.dialog.alertError(res.messageId);
+                            }
+                            blockUI.clear();
+                        });
                     });
-                    
-                }).fail(function(res) {
+                }).fail(function(res: any) {
                     //Return Dialog Error
                     self.showMessageError(res);
                     blockUI.clear();

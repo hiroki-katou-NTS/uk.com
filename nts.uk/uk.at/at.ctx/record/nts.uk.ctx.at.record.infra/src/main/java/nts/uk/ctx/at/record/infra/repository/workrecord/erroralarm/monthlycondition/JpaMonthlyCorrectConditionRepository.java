@@ -101,4 +101,12 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 		}
 	}
 
+	@Override
+	public List<MonthlyCorrectExtractCondition> findUseMonthlyConditionByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY + " AND m.useAtr = 1", KrcmtMonthlyCorrectCon.class)
+				.setParameter("companyId", companyId).getList().stream()
+				.map(entity -> KrcmtMonthlyCorrectCon.toDomain(entity)).collect(Collectors.toList());
+	}
+
 }

@@ -25,6 +25,7 @@
 
 #noticed-label {
 	margin-bottom: 10px;
+	width: auto;
 }
 
 #boldAtr {
@@ -39,7 +40,7 @@
 }
 
 .table-template td {
-	padding: 3px;
+	padding: 2px;
 }
 
 .display-list-label {
@@ -51,7 +52,7 @@
 }
 
 .formula-list {
-	margin: 10px 0 10px 0;
+	margin: 7px 0 7px 0;
 }
 
 .formula-list th {
@@ -66,4 +67,11 @@
 
 div[id^="tab"] {
 	width: 740px;
+}
+#combo-box{
+	width: 250px !important;
+}
+
+[dropdown-for="combo-box"] .nts-combo-column-0 {
+  width: 240px !important;
 }

@@ -28,7 +28,6 @@ import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistor
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK_;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory_;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -273,7 +272,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	}
 
 	@Override
-	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, Period dateData) {
+	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, DatePeriod dateData) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -298,11 +297,11 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.worktypeCd),
 				workTypeCode));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KrqmtVacationHistory_.startDate),
-				dateData.getStartDate()));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KrqmtVacationHistory_.endDate),
-				dateData.getStartDate()));
+				dateData.start()));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KrqmtVacationHistory_.startDate),
+				dateData.end()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
@@ -115,7 +116,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 
 		// get employmentCode
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		List<String> listEmployeeId = lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList());
 		List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId, errorCodes);
@@ -143,8 +144,9 @@ public class DailyPerformanceErrorCodeProcessor {
 				.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getAttendanceItemId()), "|",
 						x.getEmployeeId(), "|", dailyProcessor.converDateToString(x.getProcessingYmd())),
 						x -> x.getEditState()));
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
 		Map<String, DatePeriod> employeeAndDateRange = dailyProcessor.extractEmpAndRange(dateRange, companyId,
-				listEmployeeId);
+				employmentWithSidMap);
 		// No 19, 20 show/hide button
 		boolean showButton = true;
 		if (displayFormat == 0) {
@@ -172,7 +174,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
@@ -192,7 +194,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}

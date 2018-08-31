@@ -12,10 +12,6 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit.QtxmtCommuNotax
 
 @Stateless
 public class JpaCommuNotaxLimitRepository extends JpaRepository implements CommuNotaxLimitRepository {
-
-	private final String SELECT_ITEM = " SELECT c FROM QtxmtCommuNotaxLimit c "
-									+ " WHERE c.ccd = :CCD" + " AND c.commuNotaxLimitCd = :COMMU_NOTAX_LIMIT_CD";
-	
 	@Override
 	public Optional<CommuNotaxLimit> find(String ccd, String commuNotaxLimitCode) {
 		

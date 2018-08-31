@@ -27,8 +27,8 @@ import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
 @Stateless
 public class JpaEraNameRepository extends JpaRepository implements EraNameDomRepository{
 	
-	private final String GET_BY_STR_DATE = "select c from CisdtEraName c where c.startDate = :startDate";
-	private final String GET_BY_END_DATE = "select c from CisdtEraName c where c.endDate = :endDate";
+	private static final String GET_BY_STR_DATE = "select c from CisdtEraName c where c.startDate = :startDate";
+	private static final String GET_BY_END_DATE = "select c from CisdtEraName c where c.endDate = :endDate";
 	
 	@Override
 	public List<EraNameDom> getAllEraName(){

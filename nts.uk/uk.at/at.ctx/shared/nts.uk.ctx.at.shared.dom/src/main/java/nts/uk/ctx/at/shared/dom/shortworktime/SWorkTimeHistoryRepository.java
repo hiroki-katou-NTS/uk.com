@@ -53,6 +53,15 @@ public interface SWorkTimeHistoryRepository {
 	 * @param date the date
 	 * @return the map
 	 */
-	Map<String, ShortWorkTimeHistory> findByEmpAndPeriod(List<String> empIdList, DatePeriod date);
+	Map<String, ShortWorkTimeHistory> findByEmpAndPeriod(List<String> empIdList, DatePeriod period);
+	
+	/**
+	 * Find lst by emp and period.
+	 *
+	 * @param empIdList the emp id list
+	 * @param date the date
+	 * @return the list
+	 */
+	List<ShortWorkTimeHistory> findLstByEmpAndPeriod(List<String> empIdList, DatePeriod period);
 	
 }

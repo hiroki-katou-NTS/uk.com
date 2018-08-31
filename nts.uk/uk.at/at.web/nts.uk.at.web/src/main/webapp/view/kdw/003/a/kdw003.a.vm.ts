@@ -56,7 +56,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         //data grid
         displayFormatOptions: KnockoutObservableArray<any>;
         displayFormat: KnockoutObservable<number> = ko.observable(null);
-        headersGrid: KnockoutObservableArray<any>;
+        headersGrid: any = [];
         columnSettings: KnockoutObservableArray<any> = ko.observableArray([]);
         sheetsGrid: KnockoutObservableArray<any> = ko.observableArray([]);
         fixColGrid: KnockoutObservableArray<any>;
@@ -189,13 +189,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         isVisibleMIGrid: KnockoutObservable<boolean> = ko.observable(false);
         listAttendanceItemId: KnockoutObservableArray<any> = ko.observableArray([]);
         monthYear: KnockoutObservable<string> = ko.observable(null);
+        
+        agreementInfomation: KnockoutObservable<AgreementInfomation> =  ko.observable(new AgreementInfomation());
 
         constructor(dataShare: any) {
             var self = this;
             self.initLegendButton();
             self.initDateRanger();
             self.initDisplayFormat();
-            self.headersGrid = ko.observableArray(self.employeeModeHeader);
+            self.headersGrid = self.employeeModeHeader;
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
@@ -287,12 +289,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
 
                     var elementDate = dateRange.startDate;
-                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
-                            self.lstDate.push({ date: elementDate });
-                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                        }
-                    }
+//                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+//                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
+//                            self.lstDate.push({ date: elementDate });
+//                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+//                        }
+//                    }
                     if (self.displayFormat() == 1) {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate;
@@ -421,9 +423,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     //self.selectDisplayItem();
                     nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
                     nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                        var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
+                        var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                         if (dataTemp != undefined) {
-                            let data = [dataTemp.dailyPerformanceFormatCode()];
+                            let data = [dataTemp];
 
                             let param = {
                                 dateRange: dateRangeParam ? {
@@ -457,6 +459,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processMapData(data) {
             var self = this;
+            let startTime: number = performance.now();
             console.log(data);
             if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                 localStorage.removeItem(window.location.href + '/dpGrid');
@@ -510,14 +513,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.employIdLogin = __viewContext.user.employeeId;
             self.selectedEmployee(_.isEmpty(self.shareObject()) ? self.employIdLogin : (self.shareObject().displayFormat == 0 ? self.shareObject().individualTarget : (self.lstEmployee().length == 0 ? "" : self.lstEmployee()[0].id)));
             self.extractionData();
+            console.log("khoi tao Object: "+ (performance.now() - startTime));
             self.loadGrid();
-            
+            console.log("thoi gian load grid: "+ (performance.now() - startTime));
             //  self.extraction();
             self.initCcg001();
             self.loadCcg001();
+            console.log("thoi gian load ccg: "+ (performance.now() - startTime));
             // no20
             self.dPErrorDto(data.dperrorDto);
-            self.displayNumberZero();
+            //self.displayNumberZero();
+              console.log("thoi gian load 0: "+ (performance.now() - startTime));
             //set SPR
             if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
                 if (data.showQuestionSPR == SPRCheck.SHOW_CONFIRM) {
@@ -576,6 +582,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
+            //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
         convertMinute(value): string {
@@ -586,23 +593,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred(),
                 self = this;
             if(data.monthResult != null){
+                // set agreementInfo
+                self.agreementInfomation().mapDataAgreement(data.monthResult.agreementInfo);
                 self.autBussCode(data.autBussCode);
                 let listFormatDaily :any[] = data.monthResult.formatDaily;
                 self.listAttendanceItemId((data.monthResult.results != null && data.monthResult.results.length != 0) ? data.monthResult.results[0].items : []);
                 
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
-                    formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
-                    formatDailyItem['order'] = item.order
+                    if(formatDailyItem){
+                        formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
+                        formatDailyItem['order'] = item.order;
+                    }
                 });
                 let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
                 self.listAttendanceItemId(arr);
-                self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
                 // reload MiGrid
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
-                self.getNameMonthly();
+                self.isVisibleMIGrid(data.monthResult.hasItem);
+                //
+            }else{
+                self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -868,7 +881,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: lstData[0].date,
                     endDate: lstData[lstData.length - 1].date
                 },
-                mode: 0,
+                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive
@@ -892,7 +905,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                  dataSourceRow = dataRowTemp;
                 }
-                self.dailyPerfomanceData()
                 dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
                     let val = _.find(dataSourceRow, (item) => {
@@ -901,7 +913,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return val != undefined ? val : value;
                 })
                 //get source old 
-                self.dailyPerfomanceData();
                 _.each(self.dailyPerfomanceData(), (valueT, index) =>{
                     let dataTemp  =  _.find(data.lstData , valueRow =>{
                         return valueT.id == valueRow.id;
@@ -1117,93 +1128,133 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.hideComponent();
             self.removeErrorRefer();
+            $.when(self.findEmployee()).done(data => {
+                let lstEmployee = data;
+                //            if (self.displayFormat() === 0) {
+                //                let lst = _.find(self.lstEmployee(), (employee) => {
+                //                    return employee.id === self.selectedEmployee();
+                //                });
+                //                
+                //                if (lst != undefined) lstEmployee.push(lst);
+                //            } else {
+                //                lstEmployee = self.lstEmployee();
+                //            }
+                if (self.displayFormat() === 1) {
+                    if (self.datePicker().startDate !== self.dateRanger().startDate &&
+                        self.datePicker().endDate !== self.dateRanger().endDate) {
+                        self.datePicker().startDate = self.dateRanger().startDate;
+                        self.datePicker().endDate = self.dateRanger().endDate;
+                        self.datePicker.valueHasMutated();
+                    }
+                }
+                let param = {
+                    dateRange: {
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    },
+                    displayFormat: self.displayFormat(),
+                    initScreen: 1,
+                    mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
+                    lstEmployee: lstEmployee,
+                    formatCodes: self.formatCodes(),
+                    objectShare: null
+                };
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+
+                service.startScreen(param).done((data) => {
+                    self.initScreenSPR = 1;
+                    if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
+                        localStorage.removeItem(window.location.href + '/dpGrid');
+                    }
+                    localStorage.setItem('kdw003_type', data.typeBussiness);
+                    self.dataAll(data);
+                    self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    //let idC = self.createKeyLoad();
+                    //TO Thanh: set data for list attendance item after load by extract click
+                    self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
+                    self.itemValueAll(data.itemValues);
+                    self.createSumColumn(data);
+                    self.columnSettings(data.lstControlDisplayItem.columnSettings);
+                    self.showPrincipal(data.showPrincipal);
+                    self.showSupervisor(data.showSupervisor);
+                    self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
+                    self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
+                    if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
+                    if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
+                        self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                    } else {
+                        self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                    }
+                    if (self.showSupervisor()) {
+                        self.employeeModeHeader.push(self.fixHeaders()[8]);
+                        self.dateModeHeader.push(self.fixHeaders()[8]);
+                        self.errorModeHeader.push(self.fixHeaders()[8]);
+                    }
+                    self.receiveData(data);
+                    self.extraction();
+                    // no20
+                    self.dPErrorDto(data.dperrorDto);
+                    // flex
+                    self.processFlex(data, false);
+                    // self.displayNumberZero     
+                    //check visable MIGrid
+                    if (self.displayFormat() != 0) {
+                        self.isVisibleMIGrid(false);
+                    }
+
+                    nts.uk.ui.block.clear();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                    nts.uk.ui.block.clear();
+                });
+             });
+    }
+
+        findEmployee(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred()
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 let lst = _.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 });
-                if (lst != undefined) lstEmployee.push(lst);
+
+                if (lst != undefined) {
+                    lstEmployee.push(lst);
+                    dfd.resolve(lstEmployee);
+                }
+                else if (self.selectedEmployee() != undefined) {
+                    //let dfd2 = $.Deferred();
+                    service.searchEmployee(self.selectedEmployee()).done(data => {
+                        let emp = {
+                            id: data.employeeId,
+                            code: data.employeeCode,
+                            businessName: data.businessName,
+                            workplaceName: data.orgName,
+                            workplaceId: "",
+                            depName: '',
+                            isLoginUser: false
+                        }
+                        lstEmployee.push(emp);
+                        dfd.resolve(lstEmployee);
+                      //  dfd2.resolve();
+                    });
+                   // dfd2.promise();
+                }
             } else {
                 lstEmployee = self.lstEmployee();
+                dfd.resolve(lstEmployee);
             }
-            if (self.displayFormat() === 1) {
-                if (self.datePicker().startDate !== self.dateRanger().startDate &&
-                    self.datePicker().endDate !== self.dateRanger().endDate) {
-                    self.datePicker().startDate = self.dateRanger().startDate;
-                    self.datePicker().endDate = self.dateRanger().endDate;
-                    self.datePicker.valueHasMutated();
-                }
-            }
-            let param = {
-                dateRange: {
-                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
-                },
-                displayFormat: self.displayFormat(),
-                initScreen: 1,
-                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
-                lstEmployee: lstEmployee,
-                formatCodes: self.formatCodes(),
-                objectShare: null
-            };
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            service.startScreen(param).done((data) => {
-                self.initScreenSPR = 1;
-                if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
-                    localStorage.removeItem(window.location.href + '/dpGrid');
-                }
-                localStorage.setItem('kdw003_type', data.typeBussiness);
-                self.dataAll(data);
-                self.formatCodes(data.lstControlDisplayItem.formatCode);
-                //let idC = self.createKeyLoad();
-                //TO Thanh: set data for list attendance item after load by extract click
-                self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                self.itemValueAll(data.itemValues);
-                self.createSumColumn(data);
-                self.columnSettings(data.lstControlDisplayItem.columnSettings);
-                self.showPrincipal(data.showPrincipal);
-                self.showSupervisor(data.showSupervisor);
-                self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
-                self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
-                if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
-                if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
-                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
-                } else {
-                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
-                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
-                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
-                }
-                if (self.showSupervisor()) {
-                    self.employeeModeHeader.push(self.fixHeaders()[8]);
-                    self.dateModeHeader.push(self.fixHeaders()[8]);
-                    self.errorModeHeader.push(self.fixHeaders()[8]);
-                }
-                self.receiveData(data);
-                self.extraction();
-                // no20
-                self.dPErrorDto(data.dperrorDto);
-                // flex
-                self.processFlex(data);
-                self.displayNumberZero();
-                
-                //check visable MIGrid
-                if (self.displayFormat() !=0) {
-                    self.isVisibleMIGrid(false);
-                }
-                
-                nts.uk.ui.block.clear();
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                    nts.uk.request.jumpToTopPage();
-                });
-                nts.uk.ui.block.clear();
-            });
-            //   }
+            return dfd.promise();
         }
- 
+        
         removeErrorRefer(){
             var self = this;
             self.listCareError([]);
@@ -1458,9 +1509,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", self.formatCodes());
                 nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                    var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
+                    var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
-                        let data = [dataTemp.dailyPerformanceFormatCode()];
+                        let data = [dataTemp];
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
@@ -1625,7 +1676,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         extractionData() {
             var self = this;
-            self.headersGrid([]);
+            self.headersGrid = [];
             self.fixColGrid([]);
             if (self.displayFormat() == 0) {
                 self.fixColGrid(self.employeeModeFixCol);
@@ -1649,19 +1700,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (sign == undefined) self.fixColGrid.push({ columnKey: 'approval', isFixed: true });
             }
             self.loadHeader(self.displayFormat());
-            let start = performance.now();
-            self.dailyPerfomanceData(self.dpData);
-            console.log("tg load filter :" + (performance.now() - start));
+            self.dailyPerfomanceData(_.cloneDeep(self.dpData));
         }
 
         extraction() {
             var self = this;
-            let start = performance.now();
             self.destroyGrid();
-            console.log("destroy grid :" + (start - performance.now()));
-            start = performance.now();
             self.extractionData();
-            console.log("calc load extractionData :" + (start - performance.now()));
             self.loadGrid();
         }
 
@@ -1735,7 +1780,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         setHeaderColor() {
             var self = this;
             self.headerColors([]);
-            _.forEach(self.headersGrid(), (header) => {
+            _.forEach(self.headersGrid, (header) => {
                 if (header.color) {
                     self.headerColors.push({
                         key: header.key,
@@ -1757,7 +1802,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         formatDate(lstData) {
             var self = this;
-            let start = performance.now();
+            let checkZero: boolean = self.displayWhenZero()
             let data = lstData.map((data) => {
                 var object = {
                     id: "_" + data.id,
@@ -1774,10 +1819,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dateDetail: moment(data.date, "YYYY/MM/DD"),
                     typeGroup: data.typeGroup
                 }
-                _.each(data.cellDatas, function(item) { object[item.columnKey] = item.value });
+                _.each(data.cellDatas, function(item) {
+                    object[item.columnKey] = !checkZero && (item.value == "0" || item.value == "0:00") ? "" : item.value;
+                });
                 return object;
             });
-            console.log("calc load source :" + (start - performance.now()));
             return data;
         }
 
@@ -2001,9 +2047,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.setHeaderColor();
             self.setColorWeekend();
             //console.log(self.formatDate(self.dailyPerfomanceData()));
-            let start = performance.now();
-            let dataSource = self.formatDate(self.dailyPerfomanceData());
-            
+            let dataSource = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
+            let startTime = performance.now();
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
@@ -2034,7 +2079,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',  
                 autoFitWindow: false,
                 preventEditInError: false,
-                columns: self.headersGrid(),
+                columns: self.headersGrid,
                 hidePrimaryKey: true,
                 userId: self.employIdLogin,
                 getUserId: function(primaryKey) {
@@ -2086,6 +2131,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 for (let i = 1; i < lock.length; i++) {
                                     if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
                                     if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
+                                    if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
                                     if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
                                     $('#textLock').html(tempD);
                                 }
@@ -2107,7 +2153,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 ]
             });
-//            console.log("load grid ALL" + (performance.now() - start));
+           // alert("load grid detail:" + (performance.now() - startTime));
         }
         
         loadMIGrid(data: any): void {
@@ -2129,7 +2175,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
                 totalWidthColumn += id.columnWidth;
             });
             
@@ -2150,7 +2196,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         convertToCDisplayType(value: string): string {
             switch (value) {
-                case "TIME": return "Clock";
+                case "TIME":
+                case "CLOCK":
+                    return "Clock";
                 case "DAYS": return "Decimal";
                 case "COUNT": return "Integer";
                 case "CURRENCY": return "Currency";
@@ -2227,30 +2275,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         case 8:
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                              transfer.stampRequestMode = 1;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                              transfer.stampRequestMode = 2;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
 
                         case 11:
                             //KAF002-打刻申請（レコーダイメージ）
                              transfer.stampRequestMode = 3;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                          
                         case 12:
                             //KAF002-打刻申請（その他）
                              transfer.stampRequestMode = 4;
+                            transfer.screenMode = 1;
                             nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
                             break;
                             
@@ -2286,14 +2339,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 /**承認状況＿取消*/
                 cancelStatus: true,//true
                 /**申請表示対象*/
-                appDisplayAtr: true,//0
+                appDisplayAtr: 0,//0
                 /**社員IDリスト*/
                 listEmployeeId: [],//[]
                 /**社員絞込条件*/
-                empRefineCondition: ""//''
+                empRefineCondition: "",//'' ,
+                startDate:  __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment( __viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
+                endDate:  __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment( __viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
                 
             }
-            nts.uk.request.jump("/view/cmm/045/a/index.xhtml?search=0", dataShareCmm); 
+            nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
+            nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm);
+            nts.uk.request.jump("/view/cmm/045/a/index.xhtml"); 
             
         }
         
@@ -2390,8 +2447,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 header.constraint["max"] = "9999999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "100:30"
+                                header.constraint["min"] = header.constraint.min;
+                                header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
                             }
@@ -2399,16 +2456,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
 
                             if (header.constraint.cDisplayType == "Primitive") {
-                                delete header.group[0].constraint.cDisplayType
+                                if(header.group == undefined || header.group.length == 0){
+                                    delete header.constraint.cDisplayType;
+                                    if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
+                                        header["columnCssClass"] = "right-align";
+                                    }
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes") {
+                                        header["columnCssClass"] = "right-align";
+                                    }
+                                }else{
+                                  delete header.group[0].constraint.cDisplayType;
+                                  delete header.constraint;
+                                  delete header.group[1].constraint;
+                                }
                             } else if (header.constraint.cDisplayType == "Combo") {
                                 header.group[0].constraint["min"] = 0;
                                 header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
                                 header.group[0].constraint["cDisplayType"] = header.group[0].constraint.cdisplayType;
                                 delete header.group[0].constraint.cdisplayType
                                 delete header.group[0].constraint.primitiveValue;
+                                delete header.constraint;
+                                delete header.group[1].constraint;
                             }
-                            delete header.constraint;
-                            delete header.group[1].constraint;
                         }
                     }
                     if (header.constraint != undefined) delete header.constraint.cdisplayType;
@@ -2445,7 +2514,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 tempList.push(header);
             });
-            return self.headersGrid(tempList);
+            self.headersGrid = tempList;
+            return self.headersGrid;
         }
 
         pushDataEdit(evt, ui): InfoCellEdit {
@@ -3426,5 +3496,40 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         INSERT = 1,
         SHOW_CONFIRM = 2
 
+    }
+    
+     class AgreementInfomation {
+        agreementTime:  KnockoutObservable<string> = ko.observable("");
+        cssAgree: any;
+         
+        agreementExcess:  KnockoutObservable<string> = ko.observable("");
+        cssFrequency: any;
+         
+        showAgreement: KnockoutObservable<boolean> = ko.observable(false);
+                
+        constructor() {
+           // this.agreementTime = "";
+            this.cssAgree = "";
+            
+           // this.agreementExcess = "";
+            this.cssFrequency = "";
+            
+        }
+         
+        mapDataAgreement(data: any) : void{
+            this.showAgreement(data.showAgreement);
+            if(!data.showAgreement) return;
+            this.agreementTime(nts.uk.resource.getText("KDW003_74", [data.agreementTime36, data.maxTime]));
+            this.cssAgree = data.cssAgree;
+            this.agreementExcess(nts.uk.resource.getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
+            this.cssFrequency = data.cssFrequency;
+            
+            this.processState(data.cssAgree, data.cssFrequency);
+        }
+         
+        processState(cssAgree: any, cssFrequency: any){
+            $("#agree-time").addClass(cssAgree);
+            $("#agree-excess").addClass(cssFrequency);
+        }
     }
 }

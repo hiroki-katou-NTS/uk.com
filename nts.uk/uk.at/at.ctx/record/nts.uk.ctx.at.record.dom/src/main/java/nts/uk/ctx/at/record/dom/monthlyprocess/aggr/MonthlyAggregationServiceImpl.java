@@ -7,6 +7,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -63,6 +65,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, String companyId, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
@@ -73,7 +76,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 実行状態　初期設定
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("monthlyAggregateCount", 0);
-		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 
 		// 月次集計を実行するかチェックする
@@ -131,14 +133,15 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		
 		// 社員の数だけループ　（並列処理）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
-		employeeIds.parallelStream().forEach(employeeId -> {
-			if (stateHolder.isInterrupt()) return;
+		for (val employeeId : employeeIds){
+			if (stateHolder.isInterrupt()) break;
 		
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
-			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
+			MonthlyAggrEmpServiceValue aggrStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+			ProcessState coStatus = aggrStatus.getState();
 			stateHolder.add(coStatus);
 
 			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);
@@ -155,10 +158,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			if (coStatus == ProcessState.INTERRUPTION){
 				
 				// 中断時
-				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
-		});
+		}
 		
 		ConcurrentStopwatches.printAll();
 		ConcurrentStopwatches.STOPWATCHES.clear();
@@ -166,10 +168,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 処理を完了する
-		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
-		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
+		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		return success;
 	}
 	

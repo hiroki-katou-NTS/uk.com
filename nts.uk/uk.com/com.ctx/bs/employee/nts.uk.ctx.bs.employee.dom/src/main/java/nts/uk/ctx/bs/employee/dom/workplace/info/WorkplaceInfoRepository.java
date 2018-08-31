@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -121,6 +122,14 @@ public interface WorkplaceInfoRepository {
 	List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId);
 	
 	/**
+	 * Find by history.
+	 *
+	 * @param historyList the history list
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByHistory(List<String> historyList);
+	
+	/**
 	 * Find by wkp ids and hist ids.
 	 *
 	 * @param companyId the company id
@@ -130,4 +139,13 @@ public interface WorkplaceInfoRepository {
 	 */
 	List<WorkplaceInfo> findByWkpIdsAndHistIds(String companyId, List<String> wkpIds, List<String> histIds);
 	
+	/**
+	 * Find by wkp cds.
+	 *
+	 * @param companyId the company id
+	 * @param wpkCodes the wpk codes
+	 * @param baseDates the base dates
+	 * @return the map
+	 */
+	Map<GeneralDate, List<WorkplaceInfo>> findByWkpIds(String companyId, List<String> wpkIds, List<GeneralDate> baseDates);
 }

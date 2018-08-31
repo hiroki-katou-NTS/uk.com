@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkS
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
@@ -44,6 +45,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -101,6 +103,9 @@ public class OutputItemDailyWorkScheduleFinder {
 	/** The Constant SHEET_NO_1. */
 	private static final int SHEET_NO_1 = 1;
 	
+	private static final String AUTHORITY_DEFINE = "権限";
+	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
+	
 	/**
 	 * Find by cid.
 	 *
@@ -121,6 +126,11 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
 																	.filter(domainOptionItem -> {
+																			// 実績区分　=　日別実績 
+																			if (domainOptionItem.getPerformanceAtr().value != PerformanceAtr.DAILY_PERFORMANCE.value) {
+																				return false;
+																			}
+																		
 																			// 出勤簿時間　=　時間
 																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value)) {
 																				return true;
@@ -163,15 +173,14 @@ public class OutputItemDailyWorkScheduleFinder {
 			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
 					.map(domain -> {
 						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-						dto.setCode(String.valueOf(domain.getAttendanceItemId()));
+						dto.setCode(domain.getAttendanceItemDisplayNumber());
 						dto.setName(domain.getAttendanceItemName());
+						dto.setId(domain.getAttendanceItemId());
 						return dto;
-					}).collect(Collectors.toList()));
+					}).sorted(Comparator.comparing(DailyAttendanceItemDto::getCode)).collect(Collectors.toList()));
 		} else {
 			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
 		}		
-		
-		Map<String, String> mapCodeManeAttendance = convertListToMapAttendanceItem((List<DailyAttendanceItemDto>) mapDtoReturn.get("dailyAttendanceItem"));
 		
 		// get all domain 日別勤務表の出力項目
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
@@ -183,9 +192,6 @@ public class OutputItemDailyWorkScheduleFinder {
 										OutputItemDailyWorkScheduleDto dto = new OutputItemDailyWorkScheduleDto();
 										dto.setItemCode(domain.getItemCode().v());
 										dto.setItemName(domain.getItemName().v());
-										dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
-										dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
-										dto.setWorkTypeNameDisplay(domain.getWorkTypeNameDisplay().value);
 										return dto;
 									})
 									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))
@@ -207,6 +213,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
+		List<DataInforReturnDto> lstData;
+		
 		if (!optFormatPerformanceImport.isPresent()) {
 			return new ArrayList<>();
 		}
@@ -215,10 +223,17 @@ public class OutputItemDailyWorkScheduleFinder {
 			case AUTHORITY: // In case of authority
 				// Get domain 会社の日別実績の修正のフォーマット
 				List<AuthorityDailyPerformanceFormat> lstAuthorityDailyPerformanceFormat = authorityDailyPerformanceFormatRepository.getListCode(companyId);
-				return lstAuthorityDailyPerformanceFormat.stream()
+				lstData = lstAuthorityDailyPerformanceFormat.stream()
 							.map(obj -> {
-								return new DataInforReturnDto(obj.getDailyPerformanceFormatCode().v(), obj.getDailyPerformanceFormatName().v());
+								DataInforReturnDto dto = new DataInforReturnDto();
+								dto.setCode(obj.getDailyPerformanceFormatCode().v());
+								dto.setName(obj.getDailyPerformanceFormatName().v());
+								return dto;
 							}).collect(Collectors.toList());
+				if (lstData.isEmpty()) {
+					throw new BusinessException("Msg_1140", new String[]{AUTHORITY_DEFINE});
+				} 
+				return lstData;
 			case BUSINESS_TYPE: // In case of work type
 				// Get doamin 勤務種別日別実績の修正のフォーマット
 				List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatByCompanyId(companyId);
@@ -230,12 +245,21 @@ public class OutputItemDailyWorkScheduleFinder {
 				// businessTypeCode get from doamin 勤務種別日別実績の修正のフォーマット
 				List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
 	
-				return lstBusinessType.stream()
+				lstData = lstBusinessType.stream()
 					.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
-					.map(domain -> new DataInforReturnDto(domain.getBusinessTypeCode().v(), domain.getBusinessTypeName().v()))
+					.map(domain -> {
+						DataInforReturnDto dto = new DataInforReturnDto();
+						dto.setCode(domain.getBusinessTypeCode().v());
+						dto.setName(domain.getBusinessTypeName().v());
+						return dto;
+					})
 				.collect(Collectors.toList());
-				default:
-					return new ArrayList<>();
+				if (lstData.isEmpty()) {
+					throw new BusinessException("Msg_1140", new String[]{BUSINESS_TYPE_DEFINE});
+				}
+				return lstData;
+			default:
+				return new ArrayList<>();
 		}
 	}
 	
@@ -249,7 +273,11 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (optOutputItemDailyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			return getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
+			List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
+			if (lstData.isEmpty()) {
+				throw new BusinessException("Msg_1411");
+			} 
+			return lstData;
 		}
 	}
 	
@@ -269,7 +297,11 @@ public class OutputItemDailyWorkScheduleFinder {
 					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(codeSourceSerivce), new BigDecimal(SHEET_NO_1));
 					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
 					lstDataReturn = lstAuthorityFomatDaily.stream()
-															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
+															.map(domain -> {
+																DataInforReturnDto dto = new DataInforReturnDto();
+																dto.setId(domain.getAttendanceItemId());
+																return dto;
+															})
 															.collect(Collectors.toList());
 					break;
 				case BUSINESS_TYPE:
@@ -278,7 +310,11 @@ public class OutputItemDailyWorkScheduleFinder {
 					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(codeSourceSerivce).v(), new BigDecimal(SHEET_NO_1));
 					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
 					lstDataReturn = lstBusinessTypeFormatDaily.stream()
-															.map(domain -> new DataInforReturnDto(domain.getAttendanceItemId()+"", ""))
+															.map(domain -> {
+																DataInforReturnDto dto = new DataInforReturnDto();
+																dto.setId(domain.getAttendanceItemId());
+																return dto;
+															})
 															.collect(Collectors.toList());
 					break;
 				default:
@@ -286,13 +322,13 @@ public class OutputItemDailyWorkScheduleFinder {
 			}
 		}
 		
-		Map<String, String> mapCodeName =  lstCommandCopy.stream()
-				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getCode, 
+		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
+				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
 										  OutputItemDailyWorkScheduleCopyCommand::getName));
 		lstDataReturn = lstDataReturn.stream()
-				.filter(domain -> mapCodeName.containsKey(domain.getCode()))
+				.filter(domain -> mapIdName.containsKey(domain.getId()))
 				.map(domain -> {
-					domain.setName(mapCodeName.get(domain.getCode()));
+					domain.setName(mapIdName.get(domain.getCode()));
 					return domain;
 				}).collect(Collectors.toList());
 		
@@ -311,13 +347,13 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @param lstDomainObject the lst domain object
 	 * @return the list
 	 */
-	private List<TimeitemTobeDisplayDto> toDtoTimeitemTobeDisplay(List<AttendanceItemsDisplay> lstDomainObject, Map<String, String> mapCodeManeAttendance) {
+	private List<TimeitemTobeDisplayDto> toDtoTimeitemTobeDisplay(List<AttendanceItemsDisplay> lstDomainObject, Map<Integer, String> mapCodeManeAttendance) {
 		return lstDomainObject.stream()
 									.map(domain -> {
 										TimeitemTobeDisplayDto dto = new TimeitemTobeDisplayDto();
 										dto.setAttendanceDisplay(domain.getAttendanceDisplay());
 										dto.setOrderNo(domain.getOrderNo());
-										dto.setAttendanceName(mapCodeManeAttendance.get(String.valueOf(domain.getAttendanceDisplay())));
+										dto.setAttendanceName(mapCodeManeAttendance.get(domain.getAttendanceDisplay()));
 										return dto;
 									})
 									.sorted(Comparator.comparing(TimeitemTobeDisplayDto::getOrderNo))
@@ -342,14 +378,24 @@ public class OutputItemDailyWorkScheduleFinder {
 								.collect(Collectors.toList());
 	} 
 	
-	/**
-	 * Convert list to map attendance item.
-	 *
-	 * @param lst the lst
-	 * @return the map
-	 */
-	private Map<String, String> convertListToMapAttendanceItem(List<DailyAttendanceItemDto> lst) {
-		return lst.stream().collect(
-                Collectors.toMap(DailyAttendanceItemDto::getCode, DailyAttendanceItemDto::getName));
+	public OutputItemDailyWorkScheduleDto findByCodeId(String code) {
+		String companyId = AppContexts.user().companyId();
+		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
+		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByCidAndCode(companyId, code).get();
+		
+		Map<Integer, String> mapIdNameAttendance = dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(domainOIDW.getLstDisplayedAttendance()
+																					.stream()
+																					.map(atdId -> atdId.getAttendanceDisplay())
+																					.collect(Collectors.toList()))
+											.stream()
+											.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, DailyAttendanceItem::getAttendanceItemName));
+		
+		dtoOIDW.setItemCode(domainOIDW.getItemCode().v());
+		dtoOIDW.setItemName(domainOIDW.getItemName().v());
+		dtoOIDW.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domainOIDW.getLstDisplayedAttendance(), mapIdNameAttendance));
+		dtoOIDW.setLstRemarkContent(toDtoPrintRemarksContent(domainOIDW.getLstRemarkContent()));
+		dtoOIDW.setWorkTypeNameDisplay(domainOIDW.getWorkTypeNameDisplay().value);
+		dtoOIDW.setRemarkInputNo(domainOIDW.getRemarkInputNo().value);
+		return dtoOIDW;
 	}
 }

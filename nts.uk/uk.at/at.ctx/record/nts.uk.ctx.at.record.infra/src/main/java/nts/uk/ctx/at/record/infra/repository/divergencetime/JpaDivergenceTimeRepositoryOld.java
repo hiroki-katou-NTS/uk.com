@@ -20,23 +20,23 @@ import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTimePK;
 @Stateless
 public class JpaDivergenceTimeRepositoryOld extends JpaRepository implements DivergenceTimeRepository {
 
-	private final String SELECT_FROM_DIVTIME = "SELECT c FROM KmkmtDivergenceTime c";
-	private final String SELECT_ALL_DIVTIME = SELECT_FROM_DIVTIME
+	private static final String SELECT_FROM_DIVTIME = "SELECT c FROM KmkmtDivergenceTime c";
+	private static final String SELECT_ALL_DIVTIME = SELECT_FROM_DIVTIME
 			+ " WHERE c.kmkmtDivergenceTimePK.companyId = :companyId";
 	/**
 	 * NamPT getDivergenceTimeName for mapping AttendanceItemName
 	 */
-	private final String SELECT_DIVTIME_NAME = SELECT_ALL_DIVTIME
+	private static final String SELECT_DIVTIME_NAME = SELECT_ALL_DIVTIME
 			+ " AND c.kmkmtDivergenceTimePK.divTimeId IN :divTimeIds";
-	private final String SELECT_FROM_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c";
-	private final String SELECT_ALL_DIVREASON = SELECT_FROM_DIVREASON
+	private static final String SELECT_FROM_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c";
+	private static final String SELECT_ALL_DIVREASON = SELECT_FROM_DIVREASON
 			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId"
 			+ " AND c.kmkmtDivergenceReasonPK.divTimeId = :divTimeId";
-	private final String SELECT_FROM_DIVERGENCEITEM = "SELECT c FROM KmkmtDivergenceItemSet c";
-	private final String SELECT_ALL_DIVERGENCEITEM = SELECT_FROM_DIVERGENCEITEM
+	private static final String SELECT_FROM_DIVERGENCEITEM = "SELECT c FROM KmkmtDivergenceItemSet c";
+	private static final String SELECT_ALL_DIVERGENCEITEM = SELECT_FROM_DIVERGENCEITEM
 			+ " WHERE c.kmkmtDivergenceItemSetPK.companyId = :companyId"
 			+ " AND c.kmkmtDivergenceItemSetPK.divTimeId = :divTimeId";
-	private final String SELECT_DIVREASON_BY_CODE = SELECT_ALL_DIVREASON
+	private static final String SELECT_DIVREASON_BY_CODE = SELECT_ALL_DIVREASON
 			+ " AND c.kmkmtDivergenceReasonPK.divReasonCode = :divReasonCode";
 
 	private static DivergenceTime toDomainDivTime(KmkmtDivergenceTime entity) {

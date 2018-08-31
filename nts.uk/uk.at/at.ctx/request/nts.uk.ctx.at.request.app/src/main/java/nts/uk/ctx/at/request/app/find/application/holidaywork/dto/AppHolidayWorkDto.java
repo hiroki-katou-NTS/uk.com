@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
@@ -227,6 +228,8 @@ public class AppHolidayWorkDto {
 	 */
 	private boolean sendMailWhenRegisterFlg;
 	
+	private AgreeOverTimeDto agreementTimeDto;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -274,7 +277,8 @@ public class AppHolidayWorkDto {
 				false,
 				false, 
 				null,
-				null,false, false, false);
+				null,false, false, false,
+				null);
 	}
 	
 }

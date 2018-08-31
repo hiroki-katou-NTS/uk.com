@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.user;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -26,19 +28,19 @@ public class UserExport {
 	private String loginID;
 	
 	/** The mail address. */
-	private String mailAddress;
+	private Optional<String> mailAddress;
 
 	/** The contract code. */
 	private String contractCode;
 	
 	/** The user name. */
-	private String userName;
+	private Optional<String> userName;
 	
 	/** The expiration date. */
 	private GeneralDate expirationDate;
 
 	/** The associated person ID. */
-	private String associatedPersonID;
+	private Optional<String> associatedPersonID;
 	
 	/** The associated person ID. */
 	private int passStatus;
@@ -60,16 +62,16 @@ public class UserExport {
 		this.userID = userID;
 		this.loginID = loginID;
 		this.contractCode = contractCode;
-		this.userName = userName;
+		this.userName = Optional.ofNullable(userName == null ? null : userName);
 		this.password = password;
-		this.mailAddress = mailAddress;
-		this.associatedPersonID = associatedPersonID;
+		this.mailAddress =Optional.ofNullable(mailAddress == null ? null : mailAddress);
+		this.associatedPersonID = Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID);
 		this.expirationDate = expirationDate;
 		this.passStatus = passStatus;
 	}	
 	
 	public boolean isExistAssociatedPersonID(String associatedPersonID){
-		return !StringUtil.isNullOrEmpty(this.associatedPersonID, false);
+		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
 	
 }

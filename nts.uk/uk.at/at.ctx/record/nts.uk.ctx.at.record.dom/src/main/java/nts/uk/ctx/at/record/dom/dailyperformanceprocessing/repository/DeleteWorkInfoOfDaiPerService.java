@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDail
 import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalStaOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
@@ -30,6 +33,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
  * @author nampt
  *
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class DeleteWorkInfoOfDaiPerService {
 
@@ -70,7 +74,7 @@ public class DeleteWorkInfoOfDaiPerService {
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 	
 	@Inject
-	private NCalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 	
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
@@ -90,6 +94,7 @@ public class DeleteWorkInfoOfDaiPerService {
 	@Inject
 	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
 		this.workInformationRepository.delete(employeeId, day);
 		this.deleteApprovalStaOfDailyPerforService.deleteApprovalStaOfDailyPerforService(employeeId, day);
@@ -112,7 +117,7 @@ public class DeleteWorkInfoOfDaiPerService {
 		this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
 		// remove approval State from workflow
-		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
+//		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
 	}
 
 }

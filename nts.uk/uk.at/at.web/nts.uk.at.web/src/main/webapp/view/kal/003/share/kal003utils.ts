@@ -173,6 +173,41 @@ module nts.uk.at.view.kal003.share {
                 timeValue: ''
             });
         }
+        //MinhVV MulMonCheckCondSet
+        export function getDefaultMulMonCheckCondSet(typeCheckItem: number): model.MulMonCheckCondSet {
+            let mulMonCheckCondSet = new model.MulMonCheckCondSet({
+                errorAlarmCheckID: '',
+                nameAlarmMulMon : '',
+                useAtr : false,
+                typeCheckItem: typeCheckItem|| 0,
+                messageBold: false,
+                messageColor: '',
+                displayMessage : '',
+                erAlAtdItem: null,
+                continuonsMonths : 0,
+                times : 0,
+                compareOperator: 0, 
+                rowId : 0
+            });
+            return mulMonCheckCondSet;
+        }
+        
+        export function convertTransferDataToMulMonCheckCondSet(mulMonCheckCondSet): model.MulMonCheckCondSet {
+            let convertMulMonCheckCondSet = new model.MulMonCheckCondSet(mulMonCheckCondSet);
+            //ErAlAtdItemCondition
+            convertMulMonCheckCondSet.erAlAtdItem(new model.ErAlAtdItemCondition(0, convertMulMonCheckCondSet.erAlAtdItem()));
+            return convertMulMonCheckCondSet;
+        }
+
+
+        export function convertArrayOfMulMonCheckCondSetToJS(dataJS: any, mulMonCheckCondSet: model.MulMonCheckCondSet): any {
+            let erAlAtdItemMulMon = mulMonCheckCondSet.erAlAtdItem();
+            dataJS.erAlAtdItem = ko.toJS(erAlAtdItemMulMon);
+            dataJS.erAlAtdItem.countableAddAtdItems = _.values(erAlAtdItemMulMon.countableAddAtdItems());
+            dataJS.erAlAtdItem.countableSubAtdItems = _.values(erAlAtdItemMulMon.countableSubAtdItems());
+            return dataJS;
+        }
+        //MinhVV End
 
 
         /**
@@ -229,7 +264,7 @@ module nts.uk.at.view.kal003.share {
                         compareRangeExValue = null;
                     }
                     let  listItemID = [];
-                    listItemID.push(con.listItemID());
+                    listItemID.push(con.listItemID()[0] != undefined?con.listItemID()[0]:con.listItemID());
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
                     convertExtraResultMonthly["agreementCheckCon36"] = null;
                     convertExtraResultMonthly["checkConMonthly"] = null;
@@ -255,20 +290,31 @@ module nts.uk.at.view.kal003.share {
                 } else {
                     let checkConMonthly = {};
                     if (con.typeCheckItem() === 4||con.typeCheckItem() === 5 || con.typeCheckItem() === 6 || con.typeCheckItem() === 7){
+                       if(typeof con.group1 === "function"){
                         con.group1().lstErAlAtdItemCon()[0].compareStartValue(
                             con.inputs()[0].value()
                             );
                         con.group1().lstErAlAtdItemCon()[0].compareEndValue(
                             con.inputs()[1].value()
                             );
-                        con.group1().lstErAlAtdItemCon()[0].compareOperator(con.extractType());
+                        con.group1().lstErAlAtdItemCon()[0].compareOperator(con.extractType());  
+                       }else{
+                        con.group1.lstErAlAtdItemCon()[0].compareStartValue(
+                            con.inputs()[0].value()
+                            );
+                        con.group1.lstErAlAtdItemCon()[0].compareEndValue(
+                            con.inputs()[1].value()
+                            );
+                        con.group1.lstErAlAtdItemCon()[0].compareOperator(con.extractType());
+                       }
+                      
                     }
                     
-                    checkConMonthly["group1"] = mapGroup(con.group1());
+                    checkConMonthly["group1"] = mapGroup(ko.toJS(con.group1));
                     if (con.typeCheckItem() === 8){
                         checkConMonthly["operatorBetweenGroups"] = con.operator();
                         
-                        checkConMonthly["group2"] = mapGroup(con.group2());
+                        checkConMonthly["group2"] = mapGroup(ko.toJS(con.group2));
                         checkConMonthly["group2UseAtr"] = con.group2UseAtr();
                     }else{
                         checkConMonthly["operatorBetweenGroups"] = 0;
@@ -289,7 +335,7 @@ module nts.uk.at.view.kal003.share {
             let group = {};
             group["atdItemConGroupId"] = groupX.atdItemConGroupId;
             group["conditionOperator"] = groupX.conditionOperator;
-            group["lstErAlAtdItemCon"] = mapEralConAttd(groupX.lstErAlAtdItemCon());
+            group["lstErAlAtdItemCon"] = mapEralConAttd(groupX.lstErAlAtdItemCon);
             return group;
             
         }
@@ -303,16 +349,16 @@ module nts.uk.at.view.kal003.share {
                 }
                 let erAlAtdItemCon = {};
                 erAlAtdItemCon["targetNO"] = i;
-                erAlAtdItemCon["conditionAtr"] = value.conditionAtr(); 
-                erAlAtdItemCon["useAtr"] = value.useAtr(); 
+                erAlAtdItemCon["conditionAtr"] = value.conditionAtr; 
+                erAlAtdItemCon["useAtr"] = value.useAtr; 
                 erAlAtdItemCon["uncountableAtdItem"] = value.uncountableAtdItem; 
-                erAlAtdItemCon["countableAddAtdItems"] = value.countableAddAtdItems(); 
-                erAlAtdItemCon["countableSubAtdItems"] = value.countableSubAtdItems(); 
-                erAlAtdItemCon["conditionType"] = value.conditionType(); 
-                erAlAtdItemCon["compareOperator"] = value.compareOperator(); 
+                erAlAtdItemCon["countableAddAtdItems"] = value.countableAddAtdItems; 
+                erAlAtdItemCon["countableSubAtdItems"] = value.countableSubAtdItems; 
+                erAlAtdItemCon["conditionType"] = value.conditionType; 
+                erAlAtdItemCon["compareOperator"] = value.compareOperator; 
                 erAlAtdItemCon["singleAtdItem"] = value.singleAtdItem; 
-                erAlAtdItemCon["compareStartValue"] = value.compareStartValue(); 
-                erAlAtdItemCon["compareEndValue"] = value.compareEndValue(); 
+                erAlAtdItemCon["compareStartValue"] = value.compareStartValue; 
+                erAlAtdItemCon["compareEndValue"] = value.compareEndValue; 
                 
                 lstErAlAtdItemConNew.push(erAlAtdItemCon);
             }
@@ -324,7 +370,7 @@ module nts.uk.at.view.kal003.share {
         function mapCheckConValueRemain( daysValue : number,timeValue : number) : any{
             let checkConValueRemainValue = {}; 
             checkConValueRemainValue["daysValue"] = daysValue;
-            checkConValueRemainValue["timeValue"] = timeValue;
+            checkConValueRemainValue["timeValue"] = timeValue ;
             
             return checkConValueRemainValue;
         }

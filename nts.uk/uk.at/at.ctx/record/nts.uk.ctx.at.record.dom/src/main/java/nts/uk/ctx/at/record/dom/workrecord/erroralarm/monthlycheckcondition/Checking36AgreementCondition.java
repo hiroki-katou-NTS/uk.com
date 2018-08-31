@@ -4,10 +4,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 public interface Checking36AgreementCondition {
 	//36協定チェック条件をチェックする
-	boolean check36AgreementCondition(String companyId,String employeeId,GeneralDate date,YearMonth yearMonth, Year year,AgreementCheckCon36 agreementCheckCon36);
-	//36協定特例設定を取得する
+	Check36AgreementValue check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36 agreementCheckCon36);
+	//36協定特例設定を取得する 
 	void acquire36AgreementExceptionSetting(String companyId, String employeeId, GeneralDate criteriaDate,YearMonth yearMonth,Year year,BasicAgreementSetting basicSet);
+	
 }

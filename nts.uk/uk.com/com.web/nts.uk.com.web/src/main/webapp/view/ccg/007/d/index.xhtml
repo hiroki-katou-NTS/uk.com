@@ -15,15 +15,15 @@
 		</ui:define>
 		<ui:define name="content">
 			<div style="background-color: white;" id="contents-area">
-				<div style="position: relative; top: 20%; margin: 0 auto auto 40%;">
+				<div style="position: relative; top: 20%; margin: 0 auto auto 35%;">
 					<table>
 						<tr>
-							<td style="padding-bottom: 30px; padding-left: 50px" colspan="2"
+							<td style="padding-bottom: 30px; padding-left: 60px" colspan="2"
 								class="pad_5"><img src="kin.gif" /></td>
 						</tr>
 						<tr style="height: 40px">
 							<td></td>
-							<td class="pad_5">
+							<td class="pad_5" style="padding-left: 10px">
 								<div tabindex="1" id="combo-box"
 									data-bind="ntsComboBox: {
 										width: '250px',
@@ -43,8 +43,8 @@
 							</td>
 						</tr>
 						<tr style="height: 80px">
-							<td><div data-bind="text: 'ID'"></div></td>
-							<td class="pad_5"><div>
+							<td><div data-bind="text: '#{i18n.getText('CCG007_8')}'"></div></td>
+							<td class="pad_5" style="padding-left: 10px"><div>
 									<input tabindex="2" id="employee-code-inp"
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_8')}',
@@ -58,7 +58,7 @@
 						</tr>
 						<tr>
 							<td><div data-bind="text: '#{i18n.getText('CCG007_2')}'"></div></td>
-							<td class="pad_5"><div>
+							<td class="pad_5" style="padding-left: 10px"><div>
 									<input tabindex="3" id="password-input"
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
@@ -73,19 +73,19 @@
 						<tr>
 							<td class="pad_5 align_right"><div tabindex="4"
 									data-bind="ntsCheckBox: { checked: isSaveLoginInfo }"></div></td>
-							<td class="pad_5"><label
+							<td class="pad_5" style="padding-left: 10px"><label
 								data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
 						</tr>
 						<tr>
 							<td></td>
-							<td class="pad_5"><button tabindex="5" id="login-btn"
+							<td class="pad_5" style="padding-left: 10px"><button tabindex="5" id="login-btn"
 									data-bind="click: submitLogin" class="full_width proceed large">
 									<div data-bind="text: '#{i18n.getText('CCG007_3')}'"></div>
 								</button></td>
 						</tr>
 						<tr>
 							<td></td>
-							<td class="pad_5">
+							<td class="pad_5" style="padding-left: 10px">
 									<button tabindex="4"
 										data-bind="click: account" class="full_width proceed large">
 										<span>Get Windows Account</span>

@@ -102,5 +102,11 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;
     }
+
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

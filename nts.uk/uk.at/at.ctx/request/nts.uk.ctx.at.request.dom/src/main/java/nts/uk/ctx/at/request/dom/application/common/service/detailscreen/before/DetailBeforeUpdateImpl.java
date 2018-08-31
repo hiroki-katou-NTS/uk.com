@@ -30,7 +30,10 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 
 		exclusiveCheck(companyID, appID, version);
 	}
-
+	
+	/**
+	 * 11-1.詳細画面差し戻し前の処理
+	 */
 	public void exclusiveCheck(String companyID, String appID, Long version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
 			Application_New application = applicationRepository.findByID(companyID, appID).get();

@@ -62,10 +62,9 @@
 										</com:ko-if>
 										<!-- FlowMenu -->
 										<com:ko-if bind="isFlowMenu()">
-											<com:ko bind="topPagePart limited-label" tag="with">
+											<com:ko bind="topPagePart" tag="with">
 												<ui:include src="/view/ccg/common/flowmenu.xhtml" />
 											</com:ko>
-											
 										</com:ko-if>
 										<!-- Standard Widget-->
 										<com:ko-if bind="isStandardWidget()">

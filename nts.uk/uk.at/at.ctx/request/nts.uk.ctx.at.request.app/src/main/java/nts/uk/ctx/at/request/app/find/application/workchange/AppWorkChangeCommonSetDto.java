@@ -44,6 +44,8 @@ public class AppWorkChangeCommonSetDto {
 	DataWorkDto dataWorkDto;
 
 	List<EmployeeInfoImport> employees;
+	
+	boolean isTimeRequired;
 
 	public static AppWorkChangeCommonSetDto fromDomain(WorkChangeBasicData domain) {
 		return new AppWorkChangeCommonSetDto(AppWorkChangeSetDto.fromDomain(domain.getWorkChangeCommonSetting().get()),
@@ -51,6 +53,7 @@ public class AppWorkChangeCommonSetDto {
 				domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x)).collect(
 						Collectors.toList()),
 				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
-				DataWorkDto.fromDomain(domain.getWorkingData()), domain.getEmployees());
+				DataWorkDto.fromDomain(domain.getWorkingData()), domain.getEmployees(),
+				domain.isTimeRequired());
 	}
 }

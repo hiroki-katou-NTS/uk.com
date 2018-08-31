@@ -15,10 +15,10 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 
 @Stateless
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
-	private final String SEL = "SELECT c FROM QcamtItemSalary c";
-	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
-	private final String SEL_3 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
-	private final String UPD_2 = "UPDATE QcamtItemSalary c SET c.avePayAtr = :avePayAtr WHERE  c.qcamtItemSalaryPK.ccd = :companyCode AND c.qcamtItemSalaryPK.itemCd IN :itemCodeList";
+	private static final  String SEL = "SELECT c FROM QcamtItemSalary c";
+	private static final  String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
+	private static final  String SEL_3 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
+	private static final  String UPD_2 = "UPDATE QcamtItemSalary c SET c.avePayAtr = :avePayAtr WHERE  c.qcamtItemSalaryPK.ccd = :companyCode AND c.qcamtItemSalaryPK.itemCd IN :itemCodeList";
 
 	@Override
 	public Optional<ItemSalary> find(String companyCode, String itemCode) {

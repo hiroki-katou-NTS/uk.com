@@ -232,5 +232,18 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		}).collect(Collectors.toList());
 		return treeMenus;
 	}
+	
+	private static final String DELETE_TREE_MENU = "DELETE FROM CcgstTreeMenu t "
+			+ "WHERE t.ccgstTreeMenuPK.companyID = :companyID "
+			+ "AND t.ccgstTreeMenuPK.webMenuCd = :code "
+			+ "AND t.classification = :classification ";
+	@Override
+	public void removeTreeMenu(String companyId, int classification, String code) {
+		this.getEntityManager().createQuery(DELETE_TREE_MENU, CcgstTreeMenu.class)
+		.setParameter("companyID", companyId)
+		.setParameter("code", code)
+		.setParameter("classification", classification)
+		.executeUpdate();
+	}
 
 }

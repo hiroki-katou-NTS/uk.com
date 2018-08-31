@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.vacationusetime;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 日別実績の休暇
@@ -39,6 +40,15 @@ public class HolidayOfDaily {
 		this.overSalary = overSalary;
 		this.specialHoliday = specialHoliday;
 		this.annual = annual;
+	}
+	
+	public AttendanceTime calcTotalHolTime() {
+		return new AttendanceTime(this.getAnnual().getUseTime().valueAsMinutes()
+								+ this.getSubstitute().getUseTime().valueAsMinutes()
+								+ this.getSpecialHoliday().getUseTime().valueAsMinutes()
+								+ this.getOverSalary().getUseTime().valueAsMinutes()
+								+ this.getYearlyReserved().getUseTime().valueAsMinutes());
+			 
 	}
 	
 	

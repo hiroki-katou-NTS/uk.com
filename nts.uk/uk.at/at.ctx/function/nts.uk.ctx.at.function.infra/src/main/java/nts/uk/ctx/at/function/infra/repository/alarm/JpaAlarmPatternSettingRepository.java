@@ -16,7 +16,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;
 @Stateless
 public class JpaAlarmPatternSettingRepository extends JpaRepository implements AlarmPatternSettingRepository {
 
-	private final String SELECT_BASE = "SELECT a, b, b1 FROM KfnmtAlarmPatternSet a"
+	private static final String SELECT_BASE = "SELECT a, b, b1 FROM KfnmtAlarmPatternSet a"
 			+ " JOIN KfnmtAlarmPerSet b ON a.pk.companyID = b.pk.companyID AND a.pk.alarmPatternCD = b.pk.alarmPatternCD"
 			+ " JOIN KfnmtAlarmPerSetItem b1 ON b.pk.companyID = b1.pk.companyID AND b.pk.alarmPatternCD = b1.pk.alarmPatternCD"
 			+ " JOIN KfnmtCheckCondition c ON a.pk.companyID = c.pk.companyID AND a.pk.alarmPatternCD = c.pk.alarmPatternCD"
@@ -24,9 +24,9 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 			+ " JOIN KfnmtExtractionPeriodDaily d ON c.extractionId = d.kfnmtExtractionPeriodDailyPK.extractionId AND c.extractionRange = d.kfnmtExtractionPeriodDailyPK.extractionRange";
 	
 	
-	private final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = :companyId";
+	private static final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = :companyId";
 	
-	private final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = :companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
+	private static final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = :companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
 	
 	
 	@Override

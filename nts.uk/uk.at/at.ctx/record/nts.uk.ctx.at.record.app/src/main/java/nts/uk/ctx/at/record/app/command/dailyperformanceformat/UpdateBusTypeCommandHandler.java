@@ -69,7 +69,7 @@ public class UpdateBusTypeCommandHandler extends CommandHandler<UpdateBusTypeCom
 
 		// remove all of data has removed in list attendanceId from UI
 		if (!attendanceItemIdRemove.isEmpty()) {
-			this.businessTypeFormatDailyRepository.deleteExistData(attendanceItemIdRemove);
+			this.businessTypeFormatDailyRepository.deleteExistDataByCode(command.getBusTypeDailyCommand().getBusinesstypeCode(),companyId,command.getBusTypeDailyCommand().getSheetNo().intValue(), attendanceItemIdRemove);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)
@@ -135,7 +135,7 @@ public class UpdateBusTypeCommandHandler extends CommandHandler<UpdateBusTypeCom
 
 		// remove all of data has removed in list attendanceId from UI
 		if (!attendanceItemIdMonthlyRemove.isEmpty()) {
-			this.businessTypeFormatMonthlyRepository.deleteExistData(attendanceItemIdMonthlyRemove);
+			this.businessTypeFormatMonthlyRepository.deleteExistData(companyId,command.getBusTypeDailyCommand().getBusinesstypeCode(),attendanceItemIdMonthlyRemove);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)

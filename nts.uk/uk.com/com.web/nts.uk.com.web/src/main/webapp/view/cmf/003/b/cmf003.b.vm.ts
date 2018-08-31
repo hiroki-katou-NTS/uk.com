@@ -373,7 +373,7 @@ module nts.uk.com.view.cmf003.b {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };
@@ -472,7 +472,11 @@ module nts.uk.com.view.cmf003.b {
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee).done(() => {
+                            setTimeout(function() {
+                                $("#employeeSearch div[id *= 'scrollContainer']").scrollTop(0);
+                            }, 1000);
+                        });
                         self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
                     }
                 }
@@ -491,12 +495,14 @@ module nts.uk.com.view.cmf003.b {
             /**
             * apply ccg001 search data to kcp005
             */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): JQueryPromise<any> {
                 var self = this;
-
+                var dfd = $.Deferred();
                 var employeeSearchs: TargetEmployee[] = [];
-                for (var employeeSearch of dataList) {
-                    var employee: TargetEmployee = {
+                self.selectedEmployeeCode([]);
+                for (var i = 0; i < dataList.length; i++) {
+                    let employeeSearch = dataList[i];
+                    let employee : UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName,
@@ -505,10 +511,14 @@ module nts.uk.com.view.cmf003.b {
                         businessname: employeeSearch.employeeName
                     };
                     employeeSearchs.push(employee);
+                    self.selectedEmployeeCode.push(employee.code);
+                    
+                    if (i == (dataList.length - 1)) {
+                        dfd.resolve();
+                    }
                 }
                 self.employeeList(employeeSearchs);
-                
-                $("#nts-component-list button:nth-child(3)").trigger( "click" );
+                return dfd.promise();
             }
 
             /**
@@ -581,13 +591,13 @@ module nts.uk.com.view.cmf003.b {
                 self.monthRequired(false);
                 self.yearRequired(false);
                 for (var i = 0; i < self.categorys().length; i++) {
-                    if (self.categorys()[i].timeStore == 3) {
+                    if (self.categorys()[i].timeStore == 1) {
                         self.dayRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 2) {
                         self.monthRequired(true);
                     }
-                    else if (self.categorys()[i].timeStore == 1) {
+                    else if (self.categorys()[i].timeStore == 3) {
                         self.yearRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 0) {
@@ -621,13 +631,18 @@ module nts.uk.com.view.cmf003.b {
             private setTargetEmployee(): void {
                 let self = this;
                 let tempEmployee;
-
-                tempEmployee = _.filter(self.employeeList(), function(o) {
-                    return _.includes(self.selectedEmployeeCode(), o.code); 
-                });
                 
-                tempEmployee = _.sortBy(tempEmployee, ["code"]);
-                self.targetEmployee(tempEmployee);
+                if(self.selectedTitleAtr() == 0) {
+                     self.targetEmployee([]);
+                }
+                else {
+                    tempEmployee = _.filter(self.employeeList(), function(o) {
+                        return _.includes(self.selectedEmployeeCode(), o.code);
+                    });
+
+                    tempEmployee = _.sortBy(tempEmployee, ["code"]);
+                    self.targetEmployee(tempEmployee);
+                }
             }
 
             private validateB(): boolean {
@@ -883,11 +898,11 @@ module nts.uk.com.view.cmf003.b {
             if (value && value === '0') {
                 return getText('Enum_TimeStore_FULL_TIME');
             } else if (value && value === '1') {
-                return getText('Enum_TimeStore_ANNUAL');
+                return getText('Enum_TimeStore_DAILY');
             } else if (value && value === '2') {
                 return getText('Enum_TimeStore_MONTHLY');
             } else if (value && value === '3') {
-                return getText('Enum_TimeStore_DAILY');
+                return getText('Enum_TimeStore_ANNUAL');
                 
             }
         }

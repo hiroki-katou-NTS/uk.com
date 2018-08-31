@@ -11,10 +11,10 @@ import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 import nts.uk.ctx.sys.auth.dom.user.LoginID;
+import nts.uk.ctx.sys.auth.dom.user.PassStatus;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublisher {
@@ -44,6 +44,7 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 		User user = userRepository.getByUserID(userId).get();
 		user.setPassword(new HashPassword(newPassHash));
 		user.setLoginID(new LoginID(user.getLoginID().v().trim()));
+		user.setPassStatus(PassStatus.Official);
 		userRepository.update(user);
 	}
 

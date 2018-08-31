@@ -333,7 +333,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00069 打刻カード番号
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){},
 			//CS00070  労働条件2
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){});
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
+			);
 	
 	
 	/** Delete handlers */

@@ -36,19 +36,21 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 		val entity = new KrqstWithDrawalAppSet();
 		entity.companyId = domain.getCompanyId();
 		entity.appSimul = domain.getAppSimul();
-		entity.bounSeg = domain.getBounSeg().value;
-		entity.breakTime = domain.getBreakTime().value;
 		entity.checkHdTime = domain.getCheckHdTime().value;
 		entity.checkOut = domain.getCheckOut().value;
 		entity.directDivi = domain.getDirectDivi().value;
-		entity.prefixLeave = domain.getPrefixLeave().value;
 		entity.prePerflex = domain.getPrePerflex().value;
 		entity.restTime = domain.getRestTime().value;
 		entity.timeInit = domain.getTimeInit().value;
 		entity.typePaidLeave = domain.getTypePaidLeave().value;
 		entity.unitTime = domain.getUnitTime().value;
 		entity.workChange = domain.getWorkChange().value;
+		entity.calStampMiss = domain.getCalStampMiss().value;
+		entity.overrideSet = domain.getOverrideSet().value;
+		entity.restTime = domain.getRestTime().value;
 		entity.workTime = domain.getWorkTime().value;
+		entity.breakTime = domain.getBreakTime().value;
+		entity.timeInit = domain.getTimeInit().value;
 		return entity;
 	}
 	/**
@@ -67,22 +69,25 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 	@Override
 	public void update(WithdrawalAppSet with) {
 		KrqstWithDrawalAppSet entity = toEntity(with);
-		KrqstWithDrawalAppSet oldEntity = this.queryProxy().find(entity.companyId, KrqstWithDrawalAppSet.class).get();
-		oldEntity.appSimul = oldEntity.appSimul;
-		oldEntity.bounSeg = entity.bounSeg;
-		oldEntity.breakTime = entity.breakTime;
-		oldEntity.checkHdTime = entity.checkHdTime;
-		oldEntity.checkOut = entity.checkOut;
-		oldEntity.directDivi = entity.directDivi;
-		oldEntity.prefixLeave = entity.prefixLeave;
-		oldEntity.prePerflex = oldEntity.prePerflex;
-		oldEntity.restTime = entity.restTime;
-		oldEntity.timeInit = entity.timeInit;
-		oldEntity.typePaidLeave = entity.typePaidLeave;
-		oldEntity.unitTime = oldEntity.unitTime;
-		oldEntity.workChange = entity.workChange;
-		oldEntity.workTime = entity.workTime;
-		this.commandProxy().update(oldEntity);
+		Optional<KrqstWithDrawalAppSet> oldEntity = this.queryProxy().find(entity.companyId, KrqstWithDrawalAppSet.class);
+		
+		if (oldEntity.isPresent()) {
+			KrqstWithDrawalAppSet wdAppSet = oldEntity.get();
+			wdAppSet.workTime = entity.workTime;
+			wdAppSet.restTime = entity.restTime;
+			wdAppSet.checkHdTime = entity.checkHdTime;
+			wdAppSet.typePaidLeave = entity.typePaidLeave;
+			wdAppSet.workChange = entity.workChange;
+			wdAppSet.checkOut = entity.checkOut;
+			wdAppSet.directDivi = entity.directDivi;
+			wdAppSet.overrideSet = entity.overrideSet;
+			wdAppSet.calStampMiss = entity.calStampMiss;
+			wdAppSet.breakTime = entity.breakTime;
+			wdAppSet.timeInit = entity.timeInit;
+			this.commandProxy().update(wdAppSet);
+		} else {
+			this.commandProxy().insert(entity);
+		}
 	}
 	/**
 	 * insert with drawal app set
