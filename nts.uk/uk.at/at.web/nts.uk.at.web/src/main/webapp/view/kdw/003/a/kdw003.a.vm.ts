@@ -648,6 +648,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
+            if(data.showErrorDialog){
+               self.showErrorDialog(); 
+            }
+            //alert("time load ALL: "+ (performance.now() - startTime));
+        }
+        
+        loadRemainNumberTable() {
+            let self = this;
             service.getRemainNum(self.selectedEmployee()).done((data: any) => {
                 self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
                 self.referenceVacation(
@@ -659,10 +667,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         data.com60HVacation == null ? false : data.com60HVacation.manageAtr, 
                         self.showButton()));
             });
-            if(data.showErrorDialog){
-               self.showErrorDialog(); 
-            }
-            //alert("time load ALL: "+ (performance.now() - startTime));
         }
 
         updateCellSpr(rowId: any, item: any, value: any) {
@@ -688,6 +692,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processFlex(data, showListError): JQueryPromise<any> {
             let dfd = $.Deferred(),
                 self = this;
+            if (self.displayFormat() === 0) {
+                self.loadRemainNumberTable();
+            }
             let monthResult = data.monthResult;
             if (monthResult != null) {
                 // set agreementInfo
@@ -3762,7 +3769,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispNextGrantDate: string;
         
         constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any) {
-            this.dispNextGrantDate = getText("KDW003_122", [nextGrantDate]);
+            this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
             this.dispCompensationTime = compensatoryLeave == null ? false : compensatoryLeave.manageTimeOff;
             this.dispSubstitute = substitutionLeave == null ? false : substitutionLeave.manageAtr;
