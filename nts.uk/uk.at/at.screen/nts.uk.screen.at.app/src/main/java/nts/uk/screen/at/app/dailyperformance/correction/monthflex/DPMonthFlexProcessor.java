@@ -16,6 +16,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFo
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -35,6 +38,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -66,6 +70,9 @@ public class DPMonthFlexProcessor {
     
     @Inject
     private DailyPerformanceScreenRepo repo;
+    
+    @Inject
+    private MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
@@ -108,21 +115,33 @@ public class DPMonthFlexProcessor {
 						.collect(Collectors.toList());
 			}
 		}
-		
+		// フォーマット．月次の勤怠項目一覧が存在するかチェックする
 		itemIds = formatDaily.stream().map(x-> x.getAttendanceItemId()).collect(Collectors.toList());
 		
 		if (!itemIds.isEmpty()) {
-			hasItem = true;
-			// itemIds.addAll(DAFAULT_ITEM);
+			// 対応するドメインモデル「権限別月次項目制御」を取得する
+			MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder
+					.getMonthlyItemControlByToUse(companyId, AppContexts.user().roles().forAttendance(), itemIds, 1);
+			// 取得したドメインモデル「権限別月次項目制御」の件数をチェックする
+			if (monthlyItemAuthDto != null) {
+				List<DisplayAndInputMonthlyDto> listDisplayAndInputMonthly = monthlyItemAuthDto
+						.getListDisplayAndInputMonthly();
+				if (!listDisplayAndInputMonthly.isEmpty()) {
+					hasItem = true;
+					// itemIds.addAll(DAFAULT_ITEM);
+					itemIds = listDisplayAndInputMonthly.stream().map(x -> x.getItemMonthlyId())
+							.collect(Collectors.toList());
+					// 対応する「月別実績」をすべて取得する
 
-			// 対応する「月別実績」をすべて取得する
+					itemMonthResults = monthlyModifyQueryProcessor.initScreen(
+							new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), itemIds,
+							closingPeriod.get().getProcessingYm(),
+							ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+							new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+									closingPeriod.get().getClosureDate().getLastDayOfMonth()));
 
-			itemMonthResults = monthlyModifyQueryProcessor.initScreen(
-					new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), itemIds,
-					closingPeriod.get().getProcessingYm(),
-					ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
-					new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
-							closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+				}
+			}
 		}
 		// ドメインモデル「月の本人確認」を取得する
 		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
