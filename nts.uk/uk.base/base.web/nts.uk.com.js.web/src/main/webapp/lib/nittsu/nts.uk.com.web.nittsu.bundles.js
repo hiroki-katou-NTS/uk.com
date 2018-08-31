@@ -112,6 +112,8 @@ var nts;
             KeyCodes.Tab = 9;
             KeyCodes.Enter = 13;
             KeyCodes.Ctrl = 17;
+            KeyCodes.NotValueKeys = [9, 16, 17, 18, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39,
+                40, 91, 92, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 144, 145];
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
@@ -4796,7 +4798,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(result.errorMessage, [self.name, self.constraint.maxLength]), result.errorCode);
                             return result;
                         }
-                        result.success(uk.text.toUpperCase(inputText));
+                        result.success(inputText);
                         return result;
                     };
                     return EmployeeCodeValidator;
@@ -5607,7 +5609,7 @@ var nts;
                                 my: 'left top',
                                 at: 'left bottom',
                                 of: $label,
-                                collision: 'flip'
+                                collision: 'flipfit'
                             });
                             $label.bind('mouseleave.limitedlabel', function () {
                                 $label.unbind('mouseleave.limitedlabel');
@@ -8116,6 +8118,10 @@ var nts;
                             }
                         }
                         if ($childCells.length > 0) {
+                            var fieldArr_1;
+                            if (gen.painter.options.updateMode === STICK) {
+                                fieldArr_1 = viewFn(viewMode);
+                            }
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $childCells[i];
@@ -8137,9 +8143,19 @@ var nts;
                                             $c.classList.remove(cStyle.class);
                                         }
                                     }
+                                    if (fieldArr_1) {
+                                        fields = [fieldArr_1[i]];
+                                    }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                                     var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
-                                    if (!touched || !touched.dirty)
+                                    if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
+                                        touched = mTouch;
+                                        touched.idx = i;
+                                    }
+                                    else if (touched && touched.dirty && mTouch && mTouch.dirty) {
+                                        touched.idx = -1;
+                                    }
+                                    else
                                         touched = mTouch;
                                     if (updateMode === EDIT) {
                                         validation.validate($grid, $c, rowIdx, columnKey, i, val);
@@ -8229,8 +8245,12 @@ var nts;
                                         makeUp($grid, rowIdx, key, style_2);
                                     }
                                     if (childCells_1.length > 0) {
+                                        var fieldArr_2;
                                         if (_.isFunction(viewFn)) {
                                             cData = helper.viewData(viewFn, viewMode, data[key]);
+                                            if (gen.painter.options.updateMode === STICK) {
+                                                fieldArr_2 = viewFn(viewMode);
+                                            }
                                         }
                                         if (cData.constructor === Array) {
                                             _.forEach(cData, function (d, i) {
@@ -8239,8 +8259,14 @@ var nts;
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
+                                                if (fieldArr_2) {
+                                                    fields = [fieldArr_2[i]];
+                                                }
                                                 cellObj_1 = new selection.Cell(rowIdx, key, data[key], i);
-                                                touched = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                var mTouch = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
+                                                    touched = mTouch;
+                                                }
                                             });
                                             return false;
                                         }
@@ -9349,7 +9375,11 @@ var nts;
                             changedData = cData;
                             gen.dataSource[rowIdx][columnKey] = value;
                         }
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
+                        var sm, sticker = $.data($grid, internal.STICKER);
+                        if (sticker) {
+                            sm = sticker.styleMaker;
+                        }
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, sm);
                         if (touched && touched.dirty) {
                             var cellObj = new selection.Cell(rowIdx, columnKey, changedData);
                             cellObj.setTarget(touched.updateTarget);
@@ -9398,7 +9428,11 @@ var nts;
                                 delete origData[k];
                             }
                         });
-                        var touched = render.gridRow($grid, rowIdx, origData);
+                        var sm, sticker = $.data($grid, internal.STICKER);
+                        if (sticker) {
+                            sm = sticker.styleMaker;
+                        }
+                        var touched = render.gridRow($grid, rowIdx, origData, sm);
                         if (changedCells.length > 0) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushHistory($grid, changedCells, txId);
@@ -9425,12 +9459,15 @@ var nts;
                         var changedData = _.cloneDeep(cData);
                         gen.dataSource[rowIdx][columnKey] = value;
                         var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
-                        if (touched && touched.dirty) {
-                            var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
-                            cellObj.setTarget(touched.updateTarget);
-                            pushStickHistory($grid, [cellObj]);
-                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        if (!touched || !touched.dirty)
+                            return;
+                        if (!_.isNil(touched.idx) && touched.idx !== -1) {
+                            innerIdx = touched.idx;
                         }
+                        var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
+                        cellObj.setTarget(touched.updateTarget);
+                        pushStickHistory($grid, [cellObj]);
+                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
                     }
                     update.stickGridCellOw = stickGridCellOw;
                     /**
@@ -9447,7 +9484,7 @@ var nts;
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
-                        var opt = gen.options;
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode);
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
@@ -9456,8 +9493,17 @@ var nts;
                                 src[key] = objVal;
                                 return objVal;
                             }
-                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
-                                changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                            if (!uk.util.isNullOrUndefined(src[key])) {
+                                if (fieldArr && _.isObject(srcVal)) {
+                                    _.forEach(fieldArr, function (f, i) {
+                                        if (!helper.isEqual(srcVal[f], objVal[f])) {
+                                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal), i));
+                                        }
+                                    });
+                                }
+                                else if (!helper.isEqual(src[key], obj[key])) {
+                                    changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                }
                             }
                             else {
                                 delete origData[key];
@@ -12828,6 +12874,8 @@ var nts;
                         if (body) {
                             _.assignIn(exTable.detailContent, body);
                             var $body = $container.find("." + BODY_PRF + DETAIL);
+                            if (!keepStates)
+                                internal.clearStates($body[0]);
                             if (keepStruct) {
                                 render.begin($body[0], body.dataSource, exTable.detailContent);
                             }
@@ -12835,8 +12883,6 @@ var nts;
                                 $body.empty();
                                 render.process($body[0], exTable.detailContent, true);
                             }
-                            if (!keepStates)
-                                internal.clearStates($body[0]);
                         }
                     }
                     /**
@@ -13142,7 +13188,8 @@ var nts;
                             return;
                         var items = histories.pop();
                         _.forEach(items, function (i) {
-                            update.gridCell($grid[0], i.rowIndex, i.columnKey, -1, i.value, true);
+                            var innerIdx = _.isNil(i.innerIdx) ? -1 : i.innerIdx;
+                            update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
                             internal.removeChange($grid[0], i);
                         });
                     }
@@ -16850,7 +16897,7 @@ var nts;
                                 while (!mainD.isRoot) {
                                     mainD = mainD.parent;
                                 }
-                                nts.uk.ui.errors.clearAll();
+                                //nts.uk.ui.errors.clearAll();
                                 mainD.globalContext.nts.uk.ui.dialog.error({ message: totalMes, messageId: totalMesCode }).then(function () {
                                 });
                             }
@@ -17192,15 +17239,19 @@ var nts;
                             }
                         });
                         $input.on("keyup", function (e) {
+                            if ($input.attr('readonly')) {
+                                return;
+                            }
                             var code = e.keyCode || e.which;
-                            if (!$input.attr('readonly') && _.toString(code) !== '9') {
-                                var validator = self.getValidator(data);
-                                var newText = $input.val();
-                                var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
-                                if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                }
+                            if (_.includes(uk.KeyCodes.NotValueKeys, code)) {
+                                return;
+                            }
+                            var validator = self.getValidator(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText, { isCheckExpression: true });
+                            $input.ntsError('clear');
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         });
                         // Format on blur
@@ -17226,7 +17277,8 @@ var nts;
                                     if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                                         var formatter = self.getFormatter(data);
                                         var formatted = formatter.format(result.parsedValue);
-                                        $input.val(formatted);
+                                        //$input.val(formatted);
+                                        value(formatted);
                                     }
                                 }
                             }
@@ -17236,7 +17288,7 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
+                                //$input.ntsError('clear');
                                 if (result.isValid) {
                                     if (value() === result.parsedValue) {
                                         $input.val(result.parsedValue);
@@ -17247,7 +17299,16 @@ var nts;
                                     }
                                 }
                                 else {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    var oldError = $input.ntsError('getError');
+                                    if (nts.uk.util.isNullOrEmpty(oldError)) {
+                                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    }
+                                    else {
+                                        var inListError = _.find(oldError, function (o) { return o.errorCode === result.errorCode; });
+                                        if (nts.uk.util.isNullOrUndefined(inListError)) {
+                                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                        }
+                                    }
                                     if ($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)) {
                                         valueChanging.markUserChange($input);
                                     }
@@ -17444,13 +17505,13 @@ var nts;
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
-                        var option = ko.toJS(data.option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
+                        var option = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {}, eOption = $.extend(this.getDefaultOption(), option), required = (data.required !== undefined) ? ko.unwrap(data.required) : false, constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "", name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
                         // update editor option
                         $.extend(this.editorOption, {
                             required: required,
-                            decimallength: Number(option.decimallength),
-                            grouplength: Number(option.grouplength),
-                            decimalseperator: option.decimalseperator
+                            decimallength: Number(eOption.decimallength),
+                            grouplength: Number(eOption.grouplength),
+                            decimalseperator: eOption.decimalseperator
                         });
                         return new validation.NumberValidator(name, constraintName, this.editorOption);
                     };
@@ -19954,6 +20015,7 @@ var nts;
                                 this.resetOriginalDataSource();
                             }
                             this.bindData(this.originalDataSource);
+                            this.$searchBox.val('');
                         }
                     };
                     SwapPart.prototype.build = function () {
@@ -30082,9 +30144,13 @@ var nts;
                             });
                         }
                         else {
+                            if (selectedId.constructor === Array) {
+                                selectedId = selectedId[0];
+                            }
                             $tree.igTreeGridSelection('selectRowById', selectedId);
                             virtualScroll($tree, selectedId);
                         }
+                        $tree.trigger("ntstreeselectionchanged", [selectedId]);
                     }
                     function virtualScroll($tree, id) {
                         var virtualization = $tree.igTreeGrid("option", "virtualization");
@@ -31908,7 +31974,8 @@ var nts;
                         var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
                         var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
                         var croppable = false;
-                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
+                        var maxSize = nts.uk.util.isNullOrUndefined(data.maxSize) ? undefined : ko.unwrap(data.maxSize);
+                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile, undefined, maxSize);
                         var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
                         var constructSite = new ImageEditorConstructSite($element, helper);
                         var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
@@ -31922,6 +31989,7 @@ var nts;
                             constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
                         }
                         constructSite.buildActionArea();
+                        constructSite.$imageInfomation.width(width - 110);
                         constructSite.buildUploadAction();
                         constructSite.buildImagePreviewArea();
                         constructSite.buildFileChangeHandler();
@@ -31976,18 +32044,20 @@ var nts;
                         }, allBindingsAccessor, viewModel, bindingContext);
                     };
                     ImageEditorConstructSite.prototype.buildActionArea = function () {
-                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+                        var self = this;
+                        self.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        self.$imageInfomation = $("<div>", { "class": "image-editor-component inline-container" });
+                        self.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label limited-label" })
+                            .appendTo(self.$imageInfomation);
+                        self.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                            .appendTo(self.$imageInfomation);
+                        self.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": self.helper.toStringExtension() })
                             .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                            .appendTo(this.$imageNameLbl.parent());
-                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        var $uploadArea = this.$root.find(".image-upload-container");
-                        $uploadArea.append(this.$uploadBtn.parent());
-                        $uploadArea.append(this.$imageNameLbl.parent());
-                        $uploadArea.append(this.$inputFile.parent());
+                        var $uploadArea = self.$root.find(".image-upload-container");
+                        $uploadArea.append(self.$uploadBtn.parent());
+                        $uploadArea.append(self.$imageInfomation);
+                        $uploadArea.append(self.$inputFile.parent());
                     };
                     ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
                         this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
@@ -32136,8 +32206,26 @@ var nts;
                                 self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                                 return;
                             }
+                            if (!self.validateFilesSize(this.files[0])) {
+                                // if file's size > maxSize, remove that file                    
+                                $(this).val('');
+                                return;
+                            }
                             self.validateFile(this.files);
                         });
+                    };
+                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
+                        var self = this;
+                        var MAX_SIZE = self.helper.maxSize;
+                        // if MAX_SIZE == undefined => do not check size
+                        if (!MAX_SIZE) {
+                            return true;
+                        }
+                        if (file.size > MAX_SIZE * 1048576) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
+                            return false;
+                        }
+                        return true;
                     };
                     ImageEditorConstructSite.prototype.validateFile = function (files) {
                         var self = this;
@@ -32174,7 +32262,7 @@ var nts;
                     return ImageEditorConstructSite;
                 }());
                 var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
+                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query, maxSize) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -32188,6 +32276,7 @@ var nts;
                                 self.IMAGE_EXTENSION.push(ex.toUpperCase());
                             });
                         }
+                        self.maxSize = maxSize;
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
                         return this.IMAGE_EXTENSION.join(", ");
@@ -32939,7 +33028,9 @@ var nts;
                                 });
                             }
                             else {
-                                $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                                var $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                                $tree.igTree("select", $selectingNode);
+                                $tree.igTree("expandToNode", $selectingNode);
                             }
                         }
                     };
