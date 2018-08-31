@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErAlConditi
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.AgreementCheckCon36PubEx;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -131,16 +132,26 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}
 	
 	@Override
-	public List<Check36AgreementValueImport> check36AgreementConditions(String employeeId, List<MonthlyRecordValuesImport> monthlyRecordValues,AgreementCheckCon36FunImport agreementCheckCon36) {
+	public List<Check36AgreementValueImport> check36AgreementConditions(String employeeId, List<MonthlyRecordValuesImport> monthlyRecordValues,AgreementCheckCon36FunImport agreementCheckCon36, Optional<Closure> closure) {
 		List<Check36AgreementValueImport> lstReturn = new ArrayList<>();
+		List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
+		// Process Close is not null 
+		if(closure.isPresent()){
+			for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecordValues) {
+				if (monthlyRecordValuesImport.getClosureId().value == closure.get().getClosureId().value) {
+					monthlyFilterResult.add(monthlyRecordValuesImport);
+				}
+			}
 		
+		}else{
+			monthlyFilterResult = monthlyRecordValues;
+		}
 		if(!CollectionUtil.isEmpty(monthlyRecordValues)){
 			for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecordValues) {
 				YearMonth yearMonth = monthlyRecordValuesImport.getYearMonth();
 				int closureId = monthlyRecordValuesImport.getClosureId().value;
 				Check36AgreementValueImport checkAgreementError = convertToCheck36AgreementValue(checkResultMonthlyPub.check36AgreementCondition(employeeId, yearMonth, 
 						closureId, monthlyRecordValuesImport.getClosureDate(),convertToAgreementCheckCon36Import(agreementCheckCon36)));
-				
 				lstReturn.add(checkAgreementError);
 			}
 		}

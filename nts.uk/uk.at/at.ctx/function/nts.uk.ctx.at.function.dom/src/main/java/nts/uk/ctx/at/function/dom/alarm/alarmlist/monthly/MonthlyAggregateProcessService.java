@@ -254,18 +254,9 @@ public class MonthlyAggregateProcessService {
 						// Call RQ 436
 						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
 						if (!CollectionUtil.isEmpty(monthlyRecords)) {
-							List<Check36AgreementValueImport> lstReturnStatus;
-							if (optClosure.isPresent()) {
-								lstReturnStatus = checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords, extra.getAgreementCheckCon36());
-							} else {
-								List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
-								for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
-									if (monthlyRecordValuesImport.getClosureId().value == closureID.get().value) {
-										monthlyFilterResult.add(monthlyRecordValuesImport);
-									}
-								}
-								lstReturnStatus = checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyFilterResult, extra.getAgreementCheckCon36());
-							}
+							List<Check36AgreementValueImport> lstReturnStatus = checkResultMonthlyAdapter
+									.check36AgreementConditions(employee.getId(), monthlyRecords,
+											extra.getAgreementCheckCon36(), Optional.empty());
 							if (!CollectionUtil.isEmpty(lstReturnStatus)) {
 								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
 									if (check36AgreementValueImport.isCheck36AgreementCon()) {
@@ -285,32 +276,22 @@ public class MonthlyAggregateProcessService {
 					case 2: // 36協定アラーム時間 
 						// Call RQ 436
 						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
-						List<Check36AgreementValueImport> lstReturnStatus;
-						if(optClosure.isPresent()) {
-							lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(),monthlyRecords,extra.getAgreementCheckCon36());
-						}else{
-							List<MonthlyRecordValuesImport> monthlyFilterResult = new ArrayList<>();
-							for (MonthlyRecordValuesImport monthlyRecordValuesImport : monthlyRecords) {
-								if (monthlyRecordValuesImport.getClosureId().value == closureID.get().value) {
-									monthlyFilterResult.add(monthlyRecordValuesImport);
-								}
-							}
-							lstReturnStatus= checkResultMonthlyAdapter.check36AgreementConditions(employee.getId(), monthlyFilterResult ,extra.getAgreementCheckCon36());
-						}
-						if(!CollectionUtil.isEmpty(lstReturnStatus)){
-							for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
-								if(check36AgreementValueImport.isCheck36AgreementCon()) {
-									ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-											employee.getWorkplaceId(),
-											employee.getId(),
-											this.yearmonthToString(yearMonth),
-											TextResource.localize("KAL010_100"),
-											TextResource.localize("KAL010_206"),
-											TextResource.localize("KAL010_207",
-											this.timeToString(check36AgreementValueImport.getAlarmValue())),
-											extra.getDisplayMessage()
-											);
-									listValueExtractAlarm.add(resultMonthlyValue);
+						if (!CollectionUtil.isEmpty(monthlyRecords)) {
+							List<Check36AgreementValueImport> lstReturnStatus = checkResultMonthlyAdapter
+									.check36AgreementConditions(employee.getId(), monthlyRecords,
+											extra.getAgreementCheckCon36(), Optional.empty());
+							if (!CollectionUtil.isEmpty(lstReturnStatus)) {
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if (check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(), employee.getId(),
+												this.yearmonthToString(yearMonth), TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+														this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage());
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
 								}
 							}
 						}
