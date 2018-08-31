@@ -78,12 +78,25 @@ public class KshstFlexWorkSettingDataCopyHandler extends DataCopyHandler {
 					this.companyId);
 			deleteQuery.executeUpdate();
 		case ADD_NEW:
-			// Get all company zero data
-			Query query = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1, this.companyId);
-			List<Object> curentCompanyDatas = query.getResultList();
-
-			if (!curentCompanyDatas.isEmpty())
-				return;
+			if (copyMethod == CopyMethod.ADD_NEW) {
+				// get old data target by cid
+				Query selectQueryTarget = this.entityManager.createNativeQuery(SELECT_BY_CID_QUERY).setParameter(1,
+						this.companyId);
+				List<Object> oldDatas = selectQueryTarget.getResultList();
+				// ignore data existed
+				for (int i = 0; i < zeroCompanyDatas.size(); i++) {
+					Object[] dataAttr = (Object[]) zeroCompanyDatas.get(i);
+					for (int j = 0; j < oldDatas.size(); j++) {
+						Object[] targetAttr = (Object[]) oldDatas.get(j);
+						// compare keys and remove
+						if (dataAttr[1].equals(targetAttr[1])) {
+							zeroCompanyDatas.remove(i);
+							i -= 1;
+							break;
+						}
+					}
+				}
+			}
 			// Create quuery string base on zero company data
 			String insertQueryStr = StringUtils.repeat(INSERT_QUERY, zeroCompanyDatas.size());
 			if (!StringUtils.isEmpty(insertQueryStr)) {
