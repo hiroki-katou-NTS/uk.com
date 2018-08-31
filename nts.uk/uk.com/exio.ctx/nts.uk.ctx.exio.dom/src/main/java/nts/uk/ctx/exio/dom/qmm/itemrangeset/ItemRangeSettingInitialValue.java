@@ -1,0 +1,57 @@
+package nts.uk.ctx.exio.dom.qmm.itemrangeset;
+
+import java.math.BigDecimal;
+
+import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+
+/**
+ * 項目範囲設定初期値
+ */
+@Getter
+public class ItemRangeSettingInitialValue extends AggregateRoot {
+
+	/**
+	 * 会社ID
+	 */
+	private String cid;
+
+	/**
+	 * 給与項目ID
+	 */
+	private String salaryItemId;
+
+	/**
+	 * 範囲値の属性
+	 */
+	private RangeValueEnum rangeValueAtr;
+
+	/**
+	 * エラー範囲設定
+	 */
+	private ErrorRangeSetting errorRangeSetting;
+
+	/**
+	 * アラーム範囲設定
+	 */
+	private AlarmRangeSetting alarmRangeSetting;
+
+	public ItemRangeSettingInitialValue(String cid, String salaryItemId, int rangeValueAtr, int errorUpperLimitSetAtr,
+			BigDecimal errorUpRangeValAmount, Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum,
+			int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount, Integer errorLoRangeValTime,
+			BigDecimal errorLoRangeValNum, int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount,
+			Integer alarmUpRangeValTime, BigDecimal alarmUpRangeValNum, int alarmLowerLimitSetAtr,
+			BigDecimal alarmLoRangeValAmount, Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
+		this.cid = cid;
+		this.salaryItemId = salaryItemId;
+		this.rangeValueAtr = EnumAdaptor.valueOf(rangeValueAtr, RangeValueEnum.class);
+		this.errorRangeSetting = new ErrorRangeSetting(errorUpperLimitSetAtr, errorUpRangeValAmount,
+				errorUpRangeValTime, errorUpRangeValNum, errorLowerLimitSetAtr, errorLoRangeValAmount,
+				errorLoRangeValTime, errorLoRangeValNum);
+		this.alarmRangeSetting = new AlarmRangeSetting(alarmUpperLimitSetAtr, alarmUpRangeValAmount,
+				alarmUpRangeValTime, alarmUpRangeValNum, alarmLowerLimitSetAtr, alarmLoRangeValAmount,
+				alarmLoRangeValTime, alarmLoRangeValNum);
+	}
+
+}
