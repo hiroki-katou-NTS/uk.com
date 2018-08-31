@@ -463,6 +463,7 @@ public class AppHolidayWorkFinder {
 		}
 		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if(otRestAppCommonSet.isPresent()&&(otRestAppCommonSet.get().getExtratimeDisplayAtr()==UseAtr.USE)){
+			appHolidayWorkDto.setExtratimeDisplayFlag(overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
 			Map<String,AppHolidayWork> appHolidayWorkDetailMap = appHolidayWorkRepository.getListAppHdWorkFrame(companyID, Arrays.asList(appID));
 			if(!appHolidayWorkDetailMap.isEmpty()){
 				Optional<AppOvertimeDetail> appOvertimeDetail = appHolidayWorkDetailMap.entrySet().stream().findFirst().get().getValue().getAppOvertimeDetail();
