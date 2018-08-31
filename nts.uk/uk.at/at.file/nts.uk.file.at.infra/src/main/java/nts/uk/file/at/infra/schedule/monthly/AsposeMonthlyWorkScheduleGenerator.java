@@ -892,14 +892,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Optional<WorkplaceMonthlyReportData> optDailyWorkplaceData = reportData.getMonthlyReportData().getLstMonthlyReportData().stream().filter(x -> x.getYearMonth().compareTo(date) == 0).findFirst();
 				MonthlyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), endDate, lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
 				if (dailyWorkplaceData != null) {
-					MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
-					if (optEmployeeDto.isPresent())
-						personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
-					dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
+					
 					
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getYearMonth().compareTo(date) == 0) && 
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
 						YearMonth workingDate = x.getYearMonth();
+						
+						MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
+						if (optEmployeeDto.isPresent())
+							personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
+						dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
 						
 						// Closure date
 						ClosureDate closureDate = x.getClosureDate();
@@ -1404,6 +1406,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							sheet.getHorizontalPageBreaks().add(currentRow);
 							rowPageTracker.resetRemainingRow();
 						}
+						
+						// A5_1
+						Cell dateCell = cells.get(currentRow, 0);
+						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
+						String yearMonthStr = yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month());
+						Cell prevYearMonthCell = cells.get(currentRow - dataRowCount, 0);
+						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
+							colorWhite = !colorWhite;
+						}
+						
 						if (colorWhite) // White row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
 						else // Light blue row
@@ -1419,16 +1431,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							rowPageTracker.useRemainingRow(dataRowCount);
 						}
 						
-						// A5_1
-						Cell dateCell = cells.get(currentRow, 0);
-						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
-						String yearMonthStr = yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month());
-						
-						 
-						Cell prevYearMonthCell = cells.get(currentRow - dataRowCount, 0);
 						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
-							Range yearMonthRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
-							yearMonthRange.merge();
+							Range yearMonthRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+							yearMonthRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 						}
 						else {
 							dateCell.setValue(yearMonthStr);
@@ -1943,6 +1948,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.resetRemainingRow();
 				}
 				
+				// B5_1
+				Cell employeeCell = cells.get(currentRow, 0);
+				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
+				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
+					colorWhite = !colorWhite;
+				}
+				
 				Range dateRangeTemp;
 				if (colorWhite) // White row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -1959,13 +1971,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.useRemainingRow(dataRowCount);
 				}
 				
-				// B5_1
-				Cell employeeCell = cells.get(currentRow, 0);
-				// Perform merge cell if prev data row belong to same employee
-				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
 				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
-					Range employeeRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
-					employeeRange.merge();
+					Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+					employeeRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 				}
 				else {
 					employeeCell.setValue(employee.getEmployeeName());
