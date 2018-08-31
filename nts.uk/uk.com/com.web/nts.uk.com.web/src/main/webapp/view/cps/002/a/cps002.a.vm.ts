@@ -775,7 +775,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                    alertError({ messageId: error.messageId, messageParams: error.parameterIds });
 
                 })
             }
