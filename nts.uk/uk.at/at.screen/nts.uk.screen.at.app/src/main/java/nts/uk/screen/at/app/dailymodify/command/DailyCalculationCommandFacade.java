@@ -20,13 +20,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -40,14 +39,18 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -101,6 +104,7 @@ public class DailyCalculationCommandFacade {
 
 		// check error truoc khi tinh toan
 		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues());
+		FlexShortageRCDto flexShortage = null;
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
 			editedDomains = calcService.calculate(editedDomains);
@@ -117,7 +121,9 @@ public class DailyCalculationCommandFacade {
 			}
 
 			// check error sau khi tinh toan
-			resultError = errorCheckAfterCalculation(editedDomains, monthlyResults);
+			DataResultAfterIU afterError = errorCheckAfterCalculation(editedDomains, monthlyResults, dataParent.getMonthValue(), dataParent.getDateRange());
+			resultError = afterError.getErrorMap();
+			flexShortage = afterError.getFlexShortage();
 
 			if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 				// update lai daily results gui ve client
@@ -141,7 +147,7 @@ public class DailyCalculationCommandFacade {
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, null, resultError);
+		return new DailyPerformanceCalculationDto(null, null, new DataResultAfterIU(resultError, flexShortage));
 	}
 
 	/**
@@ -220,8 +226,8 @@ public class DailyCalculationCommandFacade {
 	/**
 	 * 計算後エラーチェック
 	 */
-	private Map<Integer, List<DPItemValue>> errorCheckAfterCalculation(List<IntegrationOfDaily> dailyResults,
-			List<IntegrationOfMonthly> monthlyResults) {
+	private DataResultAfterIU errorCheckAfterCalculation(List<IntegrationOfDaily> dailyResults,
+			List<IntegrationOfMonthly> monthlyResults, DPMonthValue monthlyParam, DateRange dateRange) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
 		
 		// 乖離エラーのチェック
@@ -240,18 +246,33 @@ public class DailyCalculationCommandFacade {
 		resultError.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
 
 		// フレックス繰越時間が正しい範囲で入力されているかチェックする
-		
-
-		// 残数系のエラーチェック
-		for (IntegrationOfMonthly m : monthlyResults) {
-			for (EmployeeMonthlyPerError e : m.getEmployeeMonthlyPerErrorList()) {
-				if (e.getErrorType() != ErrorType.FLEX) {
-					// add error to display
-					// cho confirm
-				}
+		UpdateMonthDailyParam monthParam = null;
+		if (monthlyParam != null) {
+			val month = monthlyParam;
+			if (month != null && month.getItems() != null) {
+				MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+						month.getClosureDate());
+				IntegrationOfMonthly domainMonth = monthModifyCommandFacade.toDto(monthQuery).toDomain(month.getEmployeeId(), new YearMonth(month.getYearMonth()), month.getClosureId(), month.getClosureDate());
+				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.of(domainMonth);
+				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
+						month.getClosureId(), month.getClosureDate(), domainMonthOpt, new DatePeriod(
+								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage());
+			}else{
+				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
+						month.getClosureId(), month.getClosureDate(), Optional.empty(), new DatePeriod(
+								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage());
 			}
 		}
-		return resultError;
+		FlexShortageRCDto flexError = validatorDataDaily.errorCheckFlex(monthlyResults, monthParam);
+
+		// 残数系のエラーチェック
+		List<DPItemValue> errorMonth = validatorDataDaily.errorMonth(monthlyResults, null).get(TypeError.ERROR_MONTH.value);
+		resultError.put(TypeError.ERROR_MONTH.value, errorMonth == null ? Collections.emptyList() : errorMonth);
+		
+		return new DataResultAfterIU(resultError, flexError);
 	}
 
 	private Map<String, List<GeneralDate>> dtoToMapParam(List<DailyRecordDto> dtos) {
