@@ -50,6 +50,9 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);
 		});
+		if(lstInterimDate.isEmpty()) {
+			return;
+		}
 		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);
