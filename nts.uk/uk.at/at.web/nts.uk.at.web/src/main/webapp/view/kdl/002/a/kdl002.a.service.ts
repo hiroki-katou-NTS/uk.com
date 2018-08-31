@@ -5,7 +5,7 @@ module kdl002.a.service {
     /**
     * get all item (item co the duoc chon)
     */
-    export function getItemSelected(lstPossible: Array<string>): JQueryPromise<Array<viewmodel.model.ItemModel>> {
+    export function getItemSelected(lstPossible: Array<string>): JQueryPromise<Array<viewmodel.model.WorkTypeInfor>> {
         return nts.uk.request.ajax("at", paths.getPossibleWorkType, lstPossible);
     }
 }

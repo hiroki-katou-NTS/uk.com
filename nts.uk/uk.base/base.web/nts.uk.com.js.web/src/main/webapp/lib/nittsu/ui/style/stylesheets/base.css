@@ -2754,6 +2754,10 @@ button.nts-switch-button[disabled].selected {
   background-color: #CCC;
 }
 
+.ui-iggrid tbody td {
+  white-space: pre;    
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;

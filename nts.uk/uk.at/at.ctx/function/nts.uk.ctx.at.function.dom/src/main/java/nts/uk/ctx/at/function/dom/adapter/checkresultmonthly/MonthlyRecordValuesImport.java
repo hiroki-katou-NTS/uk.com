@@ -29,6 +29,9 @@ public class MonthlyRecordValuesImport {
 	/** 項目値リスト */
 	private List<ItemValue> itemValues;
 	
+	/**
+	 * コンストラクタ
+	 */
 	public MonthlyRecordValuesImport(YearMonth yearMonth,ClosureId closureId,ClosureDate closureDate){
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
@@ -36,6 +39,14 @@ public class MonthlyRecordValuesImport {
 		this.itemValues = new ArrayList<>();
 	}
 
+	/**
+	 * ファクトリー
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param itemValues 項目値リスト
+	 * @return 月別実績データ値
+	 */
 	public static MonthlyRecordValuesImport of(YearMonth yearMonth,ClosureId closureId,ClosureDate closureDate, List<ItemValue> itemValues) {
 
 		MonthlyRecordValuesImport domain = new MonthlyRecordValuesImport(yearMonth,closureId,closureDate);
