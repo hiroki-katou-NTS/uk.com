@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -38,6 +39,8 @@ public class HdRemainManageFinder {
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+	@Inject
+	private VariousVacationControlService variousVacationControlService;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
@@ -111,6 +114,10 @@ public class HdRemainManageFinder {
 						permissionOfEmploymentForm.getFunctionNo(), permissionOfEmploymentForm.isAvailable()))
 				.orElseGet(() -> new PermissionOfEmploymentFormDto(companyId, employeeRoleId, 1, false));
 
+	}
+
+	public VariousVacationControlDto getVariousVacationControl() {
+		return VariousVacationControlDto.fromDomain(variousVacationControlService.getVariousVacationControl());
 	}
 
 }

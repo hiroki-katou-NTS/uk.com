@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,10 +13,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -305,28 +310,41 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 *            the company id
 	 * @return the list
 	 */
+	@SuppressWarnings("unchecked")
 	private List<DivergenceTime> findByCompanyId(String companyId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDvgcTime> cq = criteriaBuilder.createQuery(KrcstDvgcTime.class);
-		Root<KrcstDvgcTime> root = cq.from(KrcstDvgcTime.class);
+		CriteriaQuery<?> cq = criteriaBuilder.createQuery();
 
-		// Build query
-		cq.select(root);
+		Root<KrcstDvgcTime> root = cq.from(KrcstDvgcTime.class);
+		Join<KrcstDvgcTime, KrcstDvgcAttendance> joinRoot = root
+				.join(KrcstDvgcTime_.krcstDvgcAttendances, JoinType.LEFT);
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid),
+				companyId));
 
 		// add where to query
+		cq.multiselect(root, joinRoot);
 		cq.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KrcstDvgcTime> KrcstDvgcTime = em.createQuery(cq).getResultList();
+		List<Object[]> results = (List<Object[]>) em.createQuery(cq).getResultList();
 
-		// return
-		return KrcstDvgcTime.isEmpty() ? new ArrayList<DivergenceTime>()
-				: KrcstDvgcTime.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+
+		Map<KrcstDvgcTime, List<KrcstDvgcAttendance>> mapItem = results.stream()
+				.collect(Collectors.groupingBy(item -> (KrcstDvgcTime) item[0],
+						Collectors.mapping(x -> (KrcstDvgcAttendance) x[1], Collectors.toList())));
+
+		return mapItem.entrySet().stream()
+				.map(item -> new DivergenceTime(
+						new JpaDivergenceTimeGetMemento(item.getKey(), item.getValue())))
+				.collect(Collectors.toList());
 	}
 
 	/**

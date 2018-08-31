@@ -352,7 +352,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalHolidayWorkTime, new AttendanceTime(0)));
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							holidayWorkTime, new AttendanceTime(0)));
+							holidayWorkTime, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -372,7 +372,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, new AttendanceTime(0)));
+							transferTimeWork, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
 					break;
 				}
 				break;
@@ -475,7 +475,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
-	 * 休日出勤の集計
+	 * 休日出勤の集計　（期間別集計用）
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param roleHolidayWorkFrameMap 休出枠の役割

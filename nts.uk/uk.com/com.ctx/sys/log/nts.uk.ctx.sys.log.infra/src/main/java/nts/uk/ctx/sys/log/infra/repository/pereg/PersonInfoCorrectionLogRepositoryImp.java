@@ -266,21 +266,21 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			dhl.stringKey = k;
 		});
 
-		tdKey.getDateKey().ifPresent(d -> {
+//		tdKey.getDateKey().ifPresent(d -> {
 			switch (tdKey.getCalendarKeyType()) {
 			case DATE:
-				dhl.targetKeyYMD = d;
+				dhl.targetKeyYMD = tdKey.getDateKey();
 				break;
 			case YEARMONTH:
-				dhl.targetKeyYM = d.yearMonth().v().intValue();
+				dhl.targetKeyYM = tdKey.getDateKey().yearMonth().v().intValue();
 				break;
 			case YEAR:
-				dhl.targetKeyY = d.year();
+				dhl.targetKeyY = tdKey.getDateKey().year();
 				break;
 			case NONE:
 				break;
 			}
-		});
+//		});
 
 		return dhl;
 	}

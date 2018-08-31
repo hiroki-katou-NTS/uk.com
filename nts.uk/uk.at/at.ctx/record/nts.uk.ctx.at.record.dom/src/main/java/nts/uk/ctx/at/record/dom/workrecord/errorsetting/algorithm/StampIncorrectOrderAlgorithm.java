@@ -127,10 +127,12 @@ public class StampIncorrectOrderAlgorithm {
 			if (timeLeavingWorking.getLeaveStamp() != null && timeLeavingWorking.getLeaveStamp().isPresent()
 					&& timeLeavingWorking.getLeaveStamp().get().getStamp() != null
 					&& timeLeavingWorking.getLeaveStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
 					&& timeLeavingWorking.getAttendanceStamp() != null
 					&& timeLeavingWorking.getAttendanceStamp().isPresent()
 					&& timeLeavingWorking.getAttendanceStamp().get().getStamp() != null
-					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()) {
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
 				if (timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 						.greaterThanOrEqualTo(timeLeavingWorking.getAttendanceStamp().get().getStamp().get()
 								.getTimeWithDay())) {

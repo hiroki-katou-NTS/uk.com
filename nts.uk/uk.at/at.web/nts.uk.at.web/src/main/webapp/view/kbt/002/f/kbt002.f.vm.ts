@@ -75,9 +75,8 @@ module nts.uk.at.view.kbt002.f {
             private getProcExecLogList(savedExecItemCd? : string) : JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
-                self.execLogList([]);
-                service.getProcExecLogList().done(function(execLogList) {
+                self.execLogList([]); 
+                service.getProcExecLogList().done(function(execLogList) {  
                     if (execLogList && execLogList.length > 0) {
                         self.execLogList(execLogList);
                         if (nts.uk.text.isNullOrEmpty(savedExecItemCd)) {
