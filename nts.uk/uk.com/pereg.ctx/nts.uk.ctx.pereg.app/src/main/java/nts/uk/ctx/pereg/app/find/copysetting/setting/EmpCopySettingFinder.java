@@ -19,8 +19,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
-import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstalledProduct;
 
@@ -38,38 +36,25 @@ public class EmpCopySettingFinder {
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
-	
-	@Inject
-	private PersonRoleRepository personRoleRepo;
 
 	public List<SettingCtgDto> getEmpCopySetting() {
 
 		String companyId = AppContexts.user().companyId();
 		Optional<EmployeeCopySetting> employeeCopySettingOpt = this.empCopyRepo.findSetting(companyId);
-		// check permission
-		String roleId = AppContexts.user().roles().forPersonnel();
 		if (!employeeCopySettingOpt.isPresent()) {
-			if (roleId == "" || roleId == null) {
-				throw new BusinessException(new RawErrorMessage("Msg_348"));
-			} else {
-				throw new BusinessException(new RawErrorMessage("Msg_347"));
-			}
-		}
-		
-		List<SettingCtgDto> settingDtos =  this.PerInfoCtgRepo
-				.getAllCategoryByCtgIdList(companyId, employeeCopySettingOpt.get().getCopySettingCategoryIdList())
-				.stream().map(p -> new SettingCtgDto(p.getCategoryCode(), p.getCategoryName()))
-				.collect(Collectors.toList());
-		if (settingDtos.isEmpty()) {
 			// check permission
-			String role = AppContexts.user().roles().forPersonnel();
+			String role = AppContexts.user().roles().forPersonalInfo();
 			if (role == "" || role == null) {
 				throw new BusinessException(new RawErrorMessage("Msg_348"));
 			} else {
 				throw new BusinessException(new RawErrorMessage("Msg_347"));
 			}
 		}
-		return settingDtos;
+
+		return this.PerInfoCtgRepo
+				.getAllCategoryByCtgIdList(companyId, employeeCopySettingOpt.get().getCopySettingCategoryIdList())
+				.stream().map(p -> new SettingCtgDto(p.getCategoryCode(), p.getCategoryName()))
+				.collect(Collectors.toList());
 
 	}
 

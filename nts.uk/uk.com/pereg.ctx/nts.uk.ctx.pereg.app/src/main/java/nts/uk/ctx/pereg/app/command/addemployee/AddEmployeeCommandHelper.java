@@ -45,7 +45,8 @@ public class AddEmployeeCommandHelper {
 
 	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
 			String companyId) {
-		List<ItemsByCategory> inputs = commandFacade.createData(command);
+		AddEmployeeCommand cmd = command;
+		List<ItemsByCategory> inputs = commandFacade.createData(cmd);
 		Optional<ItemsByCategory> affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
 		// add newPerson
 

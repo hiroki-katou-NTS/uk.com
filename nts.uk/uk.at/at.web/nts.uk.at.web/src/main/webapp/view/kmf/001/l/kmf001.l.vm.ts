@@ -136,6 +136,8 @@ module nts.uk.pr.view.kmf001.l {
                 // 管理しない
                 if (self.nursingSetting().selectedManageNursing() == 0 && self.backupNursingSetting()) {
                     self.backupNursingSetting().selectedManageNursing(self.nursingSetting().selectedManageNursing());
+                    self.backupNursingSetting().nursingLeaveSpecialHoliday(self.nursingSetting().nursingLeaveSpecialHoliday());
+                    self.backupNursingSetting().nursingLeaveWorkAbsence(self.nursingSetting().nursingLeaveWorkAbsence());
                     command.nursingSetting = self.convertObjectCmd(self.backupNursingSetting, 0);
                 }
                 // 管理する
@@ -145,6 +147,8 @@ module nts.uk.pr.view.kmf001.l {
                 // 管理しない
                 if (self.childNursingSetting().selectedManageNursing() == 0 && self.backupChildNursingSetting()) {
                     self.backupChildNursingSetting().selectedManageNursing(self.childNursingSetting().selectedManageNursing());
+                    self.backupChildNursingSetting().nursingLeaveSpecialHoliday(self.childNursingSetting().nursingLeaveSpecialHoliday());
+                    self.backupChildNursingSetting().nursingLeaveWorkAbsence(self.childNursingSetting().nursingLeaveWorkAbsence());
                     command.childNursingSetting = self.convertObjectCmd(self.backupChildNursingSetting, 1);
                 }
                 // 管理する

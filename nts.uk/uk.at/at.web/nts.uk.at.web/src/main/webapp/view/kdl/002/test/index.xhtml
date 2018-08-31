@@ -21,6 +21,10 @@
 					<button class="btnMenu" data-bind="click: OpenDialog002" >002 Single</button>
 					<button class="btnMenu" data-bind="click: OpenDialog0022" >002 Multiple</button>
 				</div>
+				<p>
+					<b>Unselection Item</b>
+				</p>
+				<div data-bind="ntsCheckBox:{checked: isShowNoSelectRow}">Show/Hide</div>
 				<div>選択可能な勤務種類コード</div>
 				<!-- A1_2 -->
 				<TEXTAREA rows="7" cols="31" data-bind="value: SelectableCode"></TEXTAREA>

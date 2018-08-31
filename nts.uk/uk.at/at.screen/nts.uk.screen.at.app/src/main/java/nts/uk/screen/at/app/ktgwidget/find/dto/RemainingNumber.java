@@ -9,8 +9,6 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class RemainingNumber {
 
-	private String name = "";
-	
 	private double before = 0.0;
 	
 	private double after = 0.0;

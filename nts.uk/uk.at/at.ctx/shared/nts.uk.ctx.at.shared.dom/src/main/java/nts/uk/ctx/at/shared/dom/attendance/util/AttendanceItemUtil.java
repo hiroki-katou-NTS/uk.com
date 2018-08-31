@@ -106,7 +106,7 @@ public class AttendanceItemUtil implements ItemConst {
 								x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 							).entrySet().stream().map(idx -> {
 									boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
-         								T idxValue = isNotHaveData ? null : list.get(idx.getKey() - DEFAULT_NEXT_IDX);
+         								T idxValue = isNotHaveData ? null : getItemWith(list, layout, idx.getKey(), className);
 									return getItemValues(
 												fieldValue(className, idxValue),  layoutIdx + DEFAULT_NEXT_IDX,
 												layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
@@ -163,8 +163,8 @@ public class AttendanceItemUtil implements ItemConst {
 					currentLayout = mergeLayout(layoutCode, layout.layout());
 			if (isList) {
 				boolean listNoIdx = layout.listNoIndex();
-				String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
-				Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
+				
+				Field idxField = getIdxField(layout, className, listNoIdx);
 				
 				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
 						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
@@ -179,7 +179,7 @@ public class AttendanceItemUtil implements ItemConst {
 				
 				list.stream().forEach(eVal -> {
 					Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
-					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx);
+					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(idx);
 					if (subList != null) {
 						fromItemValues(
 								eVal, 
@@ -229,6 +229,21 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 
 		return attendanceItems;
+	}
+	
+	private static <T> T getItemWith(List<T> list, AttendanceItemLayout layout, int targetIdx, Class<T> className){
+		return list.stream().filter(t -> {
+			Field idxField = getIdxField(layout, className, layout.listNoIndex());
+			
+			Integer currentIdx = ReflectionUtil.getFieldValue(idxField, t);
+			
+			return currentIdx == null ? false : currentIdx == targetIdx;
+		}).findFirst().orElse(null);
+	}
+
+	private static <T> Field getIdxField(AttendanceItemLayout layout, Class<T> className, boolean listNoIdx) {
+		String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
+		return idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
 	}
 
 	private static <T> List<T> getOriginalList(T attendanceItems, Field field) {
@@ -293,7 +308,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 	private static Integer getEValAsIdxPlus(String path) {
 		Integer enumValue = AttendanceItemIdContainer.getEnumValue(getExConditionFromString(path));
-		return enumValue == null ? DEFAULT_NEXT_IDX : enumValue + DEFAULT_NEXT_IDX;
+		return enumValue == null ? DEFAULT_IDX : enumValue;
 	}
 
 	private static String getEnumTextFromList(List<ItemValue> c) {

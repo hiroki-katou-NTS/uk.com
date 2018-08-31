@@ -563,7 +563,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog);
 			
 			/*
-			 * 対象社員を取得 TODO
+			 * 対象社員を取得 
 			 */
 			//List<String> sidList = new ArrayList<>();
 			//sidList.add(loginContext.employeeId()); // Add login SID to test, remove when implement this algorithm
@@ -586,7 +586,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				regulationInfoEmployeeAdapterImport.setDepartmentCodes(null);
 				// 職場で絞り込む → TRUE
 				regulationInfoEmployeeAdapterImport.setFilterByWorkplace(true);
-
 				List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope()
 						.getWorkplaceIdList();
 				List<String> workplaceIds = new ArrayList<String>();

@@ -289,38 +289,32 @@ module nts.uk.at.view.kwr001.c {
             */
             openScreenD () {
                 var self = this;
-                let dataScrD: any;
                 nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
-                    dataScrD = nts.uk.ui.windows.getShared('KWR001_D');
-                    if (!_.isEmpty(dataScrD)) {
-                        if (!_.isEmpty(dataScrD.error)) {
-                            nts.uk.ui.dialog.alertError(dataScrD.error);   
+                    if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D'))) {
+                        self.currentCodeList('');
+                        if (!_.isUndefined(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose) && !_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose)) {
+                            $('#C3_3').focus();                            
                         } else {
-                            self.currentCodeList('');
-                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose)) {
-                                $('#C3_3').focus();                            
-                            } else {
-                                $('#C3_2').focus();
-                            }
-                            
-                            let arrTemp: any[] = [];
-                            _.forEach(self.outputItemPossibleLst(), function(value) {
-                                arrTemp.push(value);
-                            })
-                            _.forEach(dataScrD.lstAtdChoose, (value) => {
-                                value.code = self.mapIdCodeAtd[value.id];    
-                            })
-                            self.currentCodeListSwap(dataScrD.lstAtdChoose);
-                            self.items(arrTemp);
-                            self.C3_2_value(dataScrD.codeCopy);
-                            self.C3_3_value(dataScrD.nameCopy);
-                            self.saveData();    
+                            $('#C3_2').focus();
                         }
+                        
+                        let arrTemp: any[] = [];
+                        _.forEach(self.outputItemPossibleLst(), function(value) {
+                            arrTemp.push(value);
+                        })
+                        _.forEach(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose, (value) => {
+                            value.code = self.mapIdCodeAtd[value.id];    
+                        })
+                        self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
+                        self.items(arrTemp);
+                        self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
+                        self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
+                        self.saveData();
                     } else {
                         self.currentCodeList(self.storeCurrentCodeBeforeCopy());
                     }
@@ -385,7 +379,7 @@ module nts.uk.at.view.kwr001.c {
                     if (err.messageId == "Msg_3") {
                         $("#C3_2").ntsError('set', { messageId: "Msg_3"});
                     } else {
-                       nts.uk.ui.dialog.alertError(err);
+                       nts.uk.ui.dialog.alertError(err);     
                     }
                     dfd.reject();
                 })

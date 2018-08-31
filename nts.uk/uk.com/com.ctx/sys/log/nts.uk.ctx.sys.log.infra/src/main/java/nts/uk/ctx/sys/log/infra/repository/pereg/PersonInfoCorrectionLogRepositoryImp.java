@@ -74,34 +74,9 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		List<PersonalInfoCorrectionLogQuery> query = new ArrayList<PersonalInfoCorrectionLogQuery>();
 
 		CollectionUtil.split(operationIds, MAX_WHERE_IN, (subOpts) -> {
-			if (listEmployeeId != null) {
-				CollectionUtil.split(listEmployeeId, MAX_WHERE_IN, (subEmpIds) -> {
-					List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
-							.setParameter("operationIDs", subOpts)
-							.setParameter("empIdNULL",
-									subEmpIds == null || subEmpIds.size() == 0 ? "ISNULL" : "ISNOTNULL")
-							.setParameter("employeeIDs",
-									subEmpIds == null || subEmpIds.size() == 0 ? new ArrayList<String>() {
-										private static final long serialVersionUID = 1L;
-										{
-											add("");
-										}
-									} : subEmpIds)
-							.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
-								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-								SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-								SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
-
-								return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
-										perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
-							}).collect(Collectors.toList());
-
-					query.addAll(_query);
-				});
-			} else {
+			CollectionUtil.split(listEmployeeId, MAX_WHERE_IN, (subEmpIds) -> {
 				List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
-						.setParameter("operationIDs", subOpts)
+						.setParameter("operationIDs", operationIds)
 						.setParameter("empIdNULL",
 								listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
 						.setParameter("employeeIDs",
@@ -120,9 +95,9 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 									perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
 						}).collect(Collectors.toList());
-
+				
 				query.addAll(_query);
-			}
+			});
 		});
 
 		return query.stream().map(m -> m.getPerCorrectionLogID()).distinct().map(m -> {
