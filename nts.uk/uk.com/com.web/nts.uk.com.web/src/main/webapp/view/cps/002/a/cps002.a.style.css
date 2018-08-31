@@ -265,6 +265,7 @@
 	padding: 10px;
 	box-sizing: border-box;
     height: calc(100vh - 141px) !important;
+    min-width: 1280px;
 }
 
 #emp_reg_info_wizard.nts-wizard {
