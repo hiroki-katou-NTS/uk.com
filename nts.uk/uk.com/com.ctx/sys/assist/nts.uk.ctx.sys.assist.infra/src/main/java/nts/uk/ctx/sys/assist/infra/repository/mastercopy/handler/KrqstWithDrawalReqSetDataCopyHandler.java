@@ -23,11 +23,11 @@ public class KrqstWithDrawalReqSetDataCopyHandler extends DataCopyHandler {
 	
 	/** The insert query. */
 	private final String INSERT_QUERY = "INSERT INTO KRQST_WITHDRAWAL_REQ_SET(CID, PERMISSION_DIVISION, APPLI_DATE_CONTRAC, USE_ATR, CHECK_UPLIMIT_HALFDAY_HD, PICKUP_COMMENT, PICKUP_BOLD, "
-			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE,SIMULTAN_APP_REQUIRED,LETTER_SUSPENSION_LEAVE) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	/** The select by cid query. */
 	private final String SELECT_BY_CID_QUERY = "SELECT CID, PERMISSION_DIVISION, APPLI_DATE_CONTRAC, USE_ATR, CHECK_UPLIMIT_HALFDAY_HD, PICKUP_COMMENT, PICKUP_BOLD, "
-			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE "
+			+ "PICKUP_LETTER_COLOR, DEFERRED_COMMENT, DEFERRED_BOLD, DEFERRED_LETTER_COLOR, DEFERRED_WORKTIME_SELECT, SIMUL_APPLI_REQUIRE, LETTER_SUPER_LEAVE,SIMULTAN_APP_REQUIRED,LETTER_SUSPENSION_LEAVE "
 			+ "FROM KRQST_WITHDRAWAL_REQ_SET WHERE CID = ?";
 
 	/** The delete by cid query. */
@@ -66,20 +66,22 @@ public class KrqstWithDrawalReqSetDataCopyHandler extends DataCopyHandler {
 				Query insertQuery = this.entityManager.createNativeQuery(insertQueryStr);
 				for (int i = 0, j = zeroCompanyDatas.length; i < j; i++) {
 					Object[] dataArr = (Object[]) zeroCompanyDatas[i];
-					insertQuery.setParameter(i * 14 + 1, this.companyId);
-					insertQuery.setParameter(i * 14 + 2, dataArr[1]);
-					insertQuery.setParameter(i * 14 + 3, dataArr[2]);
-					insertQuery.setParameter(i * 14 + 4, dataArr[3]);
-					insertQuery.setParameter(i * 14 + 5, dataArr[4]);
-					insertQuery.setParameter(i * 14 + 6, dataArr[5]);
-					insertQuery.setParameter(i * 14 + 7, dataArr[6]);
-					insertQuery.setParameter(i * 14 + 8, dataArr[7]);
-					insertQuery.setParameter(i * 14 + 9, dataArr[8]);
-					insertQuery.setParameter(i * 14 + 10, dataArr[9]);
-					insertQuery.setParameter(i * 14 + 11, dataArr[10]);
-					insertQuery.setParameter(i * 14 + 12, dataArr[11]);
-					insertQuery.setParameter(i * 14 + 13, dataArr[12]);
-					insertQuery.setParameter(i * 14 + 14, dataArr[13]);
+					insertQuery.setParameter(i * 16 + 1, this.companyId);
+					insertQuery.setParameter(i * 16 + 2, dataArr[1]);
+					insertQuery.setParameter(i * 16 + 3, dataArr[2]);
+					insertQuery.setParameter(i * 16 + 4, dataArr[3]);
+					insertQuery.setParameter(i * 16 + 5, dataArr[4]);
+					insertQuery.setParameter(i * 16 + 6, dataArr[5]);
+					insertQuery.setParameter(i * 16 + 7, dataArr[6]);
+					insertQuery.setParameter(i * 16 + 8, dataArr[7]);
+					insertQuery.setParameter(i * 16 + 9, dataArr[8]);
+					insertQuery.setParameter(i * 16 + 10, dataArr[9]);
+					insertQuery.setParameter(i * 16 + 11, dataArr[10]);
+					insertQuery.setParameter(i * 16 + 12, dataArr[11]);
+					insertQuery.setParameter(i * 16 + 13, dataArr[12]);
+					insertQuery.setParameter(i * 16 + 14, dataArr[13]);
+					insertQuery.setParameter(i * 16 + 15, dataArr[14]);
+					insertQuery.setParameter(i * 16 + 16, dataArr[15]);
 				}
 				
 				// Run insert query
