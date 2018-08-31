@@ -971,7 +971,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 	}
 
-	private void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
+	@Override
+	public void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
 		if (listWorkScheduleState == null || listWorkScheduleState.size() == 0) {
 			return;
 		}
