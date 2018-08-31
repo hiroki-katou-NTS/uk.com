@@ -385,15 +385,11 @@ public class SaveHolidayShipmentCommandHandler
 		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (wkTypeOpt.isPresent()) {
 			WorkType wkType = wkTypeOpt.get();
-			if (wkType.getDailyWork().isHolidayWork()) {
+			if (wkType.getDailyWork().isHolidayType()) {
 				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
-			} else {
-				result = HolidayAtr.NON_STATUTORY_HOLIDAYS;
 			}
-
 		}
 		return result;
-
 	}
 
 	private GeneralDate DemOfexpDate(GeneralDate refDate, String companyID, String sID) {
@@ -504,24 +500,28 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
-		RecruitmentAppCommand recCmd = command.getRecCmd();
+		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
-		if (isSaveRec(command.getComType()) && isCheck) {
-			String wkTypeCD = recCmd.getWkTypeCD();
+		if (isSaveAbs(command.getComType()) && isCheck) {
+			String wkTypeCD = absCmd.getWkTypeCD();
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
-			GeneralDate appDate = recCmd.getAppDate();
+			GeneralDate appDate = absCmd.getAppDate();
 			// アルゴリズム「実績の取得」を実行する
 			AchievementOutput achievement = afinder.getAchievement(companyID, sID, appDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
 					companyID);
-			if (absHolidayType == null || achievementHolidayType == null) {
-				return;
+			if (absHolidayType == null && achievementHolidayType == null)
+				return ;
+			if(absHolidayType == null && achievementHolidayType != null)
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), achievementHolidayType.nameId);
+			if(absHolidayType != null && achievementHolidayType == null)
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), "設定なし");
+			if(!absHolidayType.equals(achievementHolidayType)){
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), achievementHolidayType.nameId);
 			}
-			if (!absHolidayType.equals(achievementHolidayType)) {
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), absHolidayType.nameId);
-			}
+			
 		}
 
 	}

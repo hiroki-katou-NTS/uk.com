@@ -1,15 +1,18 @@
 module nts.uk.at.view.kmf004.a.viewmodel {
     export class ScreenModel {
-        sphdList: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        specialHolidayCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isDisable: KnockoutObservable<boolean>;
-        editMode: KnockoutObservable<boolean>;
-        specialHolidayName: KnockoutObservable<string>;
-        targetItemsName: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
+        sphdList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        columns: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
+            { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
+        ]);
+        currentCode: KnockoutObservable<any> = ko.observable();
+        specialHolidayCode: KnockoutObservable<string> = ko.observable("");
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isDisable: KnockoutObservable<boolean> = ko.observable(true);
+        editMode: KnockoutObservable<boolean> = ko.observable(false);
+        specialHolidayName: KnockoutObservable<string> = ko.observable("");
+        targetItemsName: KnockoutObservable<string> = ko.observable("");
+        memo: KnockoutObservable<string> = ko.observable("");
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         grantDateOptions: KnockoutObservableArray<any>;
@@ -19,9 +22,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         allowDisappear: KnockoutObservable<boolean>;
         years: KnockoutObservable<number>;
         days: KnockoutObservable<number>;
-        dialogDEnable: KnockoutObservable<boolean>;
-        yearEnable: KnockoutObservable<boolean>;
-        dayEnable: KnockoutObservable<boolean>;
+        dialogDEnable: KnockoutObservable<boolean> = ko.observable(false);
+        yearEnable: KnockoutObservable<boolean> = ko.observable(true);
+        dayEnable: KnockoutObservable<boolean> = ko.observable(true);
         timeMethods: KnockoutObservableArray<any>;
         selectedTimeMethod: KnockoutObservable<number>;
         limitedDays: KnockoutObservable<number>;
@@ -42,7 +45,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         genderOptionEnable: KnockoutObservable<boolean>;
         selectedGender: any;
         empLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        clsLst: KnockoutObservableArray<any>= ko.observableArray([]);
+        clsLst: KnockoutObservableArray<any> = ko.observableArray([]);
         empLstEnable: KnockoutObservable<boolean>;
         clsLstEnable: KnockoutObservable<boolean>;
         startAge: KnockoutObservable<number>;
@@ -55,44 +58,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageBaseDate: KnockoutObservable<string> = ko.observable("");
         ageBaseDateEnable: KnockoutObservable<boolean>;
         selectedTargetItems: any;
-        targetItems: KnockoutObservableArray<any>; 
-        cdl002Name: KnockoutObservable<String>;
-        cdl003Name: KnockoutObservable<String>;
+        targetItems: KnockoutObservableArray<any> = ko.observableArray([]);
+        cdl002Name: KnockoutObservable<String> = ko.observableArray([]);
+        cdl003Name: KnockoutObservable<String> = ko.observableArray([]);
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
-        newModeEnable: KnockoutObservable<boolean>;
+        newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         ageBaseDateReq: KnockoutObservable<boolean>;
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
-            
-            self.sphdList = ko.observableArray([]);
-            
-           
-            self.targetItems = ko.observableArray([]);
-            
-            self.cdl002Name = ko.observableArray([]);
-            self.cdl003Name = ko.observableArray([]);
-            self.newModeEnable = ko.observable(true);
-
-            self.specialHolidayCode = ko.observable("");
-            self.isEnable = ko.observable(true);
-            self.isDisable = ko.observable(true);
-            self.editMode = ko.observable(false);
-            self.specialHolidayName = ko.observable("");
-            self.targetItemsName = ko.observable("");
-            self.memo = ko.observable("");
-            self.dialogDEnable = ko.observable(false);
-            self.yearEnable = ko.observable(true);
-            self.dayEnable = ko.observable(true);
-                
-            self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
-                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
-            ]);
-            
-            self.currentCode = ko.observable();
             
             self.specialHolidayCode.subscribe(function(value) {
                 let isNewValue = _.find(self.sphdList(), ['specialHolidayCode', value]) ? false : true;
