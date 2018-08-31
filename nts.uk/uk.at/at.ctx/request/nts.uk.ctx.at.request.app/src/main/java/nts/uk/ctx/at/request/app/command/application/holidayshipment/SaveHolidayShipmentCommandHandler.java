@@ -122,6 +122,7 @@ public class SaveHolidayShipmentCommandHandler
 	private NewAfterRegister_New newAfterReg;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
+	@Inject
 	private UseDateDeadlineFromDatePeriod dateDeadline;
 
 	@Override
