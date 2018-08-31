@@ -4102,8 +4102,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         processState(cssAgree: any, cssFrequency: any) {
-            $("#agree-time").addClass(cssAgree);
-            $("#agree-excess").addClass(cssFrequency);
+            if (cssAgree != "" && cssAgree != null) {
+               $("#agree-time").addClass(cssAgree);
+            }else{
+               $('#agree-time').removeClass(); 
+            }
+            
+            if (cssFrequency != "" &&  cssFrequency != null) {
+                $("#agree-excess").removeClass();
+            } else {
+                $("#agree-excess").addClass(cssFrequency);
+            }
         }
     }
 }
