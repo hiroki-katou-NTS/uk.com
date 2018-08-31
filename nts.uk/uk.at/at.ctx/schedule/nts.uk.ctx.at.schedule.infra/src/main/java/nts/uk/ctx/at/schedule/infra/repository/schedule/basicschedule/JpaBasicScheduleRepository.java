@@ -715,7 +715,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	private BasicSchedule toDomain(KscdtBasicSchedule entity) {
 		return new BasicSchedule(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date, entity.workTypeCode,
-				entity.workTypeCode, ConfirmedAtr.valueOf(entity.confirmedAtr));
+				entity.workTimeCode, ConfirmedAtr.valueOf(entity.confirmedAtr));
 	}
 
 	/**
