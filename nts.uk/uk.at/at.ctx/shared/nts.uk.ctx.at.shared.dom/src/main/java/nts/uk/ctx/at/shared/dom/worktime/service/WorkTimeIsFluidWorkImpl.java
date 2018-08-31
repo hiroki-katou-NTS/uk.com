@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
@@ -62,9 +63,9 @@ public class WorkTimeIsFluidWorkImpl implements WorkTimeIsFluidWork{
 			WorkType workTypeData = workTypeInfor.get();
 			if(workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 				return timeSetting.getPredTime().getPredTime().getOneDay().v();
-			} else if (workTypeData.getDailyWork().IsLeaveForMorning()) {
+			} else if (workTypeData.getDailyWork().decisionNeedPredTime() == AttendanceHolidayAttr.MORNING) {
 				return timeSetting.getPredTime().getPredTime().getMorning().v();
-			} else if (workTypeData.getDailyWork().IsLeaveForAfternoon()) {
+			} else if (workTypeData.getDailyWork().decisionNeedPredTime() == AttendanceHolidayAttr.AFTERNOON) {
 				return timeSetting.getPredTime().getPredTime().getAfternoon().v();
 			} else {
 				return 0;
