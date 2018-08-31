@@ -8,6 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +28,9 @@ public class DeleteRegistrationUserCommandHandler
 	/** The registration user service. */
 	@Inject
 	RegistrationUserService registrationUserService;
+	
+	@Inject
+	RoleIndividualGrantRepository roleIndividualGrantRepo;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -49,6 +53,7 @@ public class DeleteRegistrationUserCommandHandler
 		}
 
 		userRepo.delete(userId);
+		roleIndividualGrantRepo.removeByUserId(userId);
 	}
 
 }
