@@ -296,7 +296,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result.success(text.toUpperCase(inputText));
+            result.success(inputText);
             return result;
         }
     }
