@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetComm
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
@@ -35,6 +37,9 @@ public class ImplementationResultWebService extends WebService {
 
 	@Inject
 	private AddEmpCalSumAndTargetCommandHandler addEmpCalSumAndTargetCommandHandler;
+	
+	@Inject
+	private UpdateExecutionTimeCommandHandler updateExecutionTimeCommandHandler;
 
 	@POST
 	@Path("addEmpCalSumAndTarget")
@@ -53,6 +58,12 @@ public class ImplementationResultWebService extends WebService {
 	public List<PersonInfoErrMessageLogDto> getByEmpCalAndSumExecLogID(ScreenImplementationResultDto screenImplementationResultDto) {
 		List<PersonInfoErrMessageLogDto> data = implementationResultFinder.getScreenImplementationResult(screenImplementationResultDto); 
 		return data;
+	}
+	
+	@POST
+	@Path("updateExcutionTime")
+	public void updateExcutionTime(UpdateExecutionTimeCommand command) {
+		this.updateExecutionTimeCommandHandler.handle(command);
 	}
 
 }
