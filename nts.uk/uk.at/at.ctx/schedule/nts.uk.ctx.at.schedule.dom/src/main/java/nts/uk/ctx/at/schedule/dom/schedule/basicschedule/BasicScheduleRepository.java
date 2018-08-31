@@ -173,6 +173,4 @@ public interface BasicScheduleRepository {
 	
 	void removeScheState(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleState> listWorkScheduleState);
-	
-	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
 }
