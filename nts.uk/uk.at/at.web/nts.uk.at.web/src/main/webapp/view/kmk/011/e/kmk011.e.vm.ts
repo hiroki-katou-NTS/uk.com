@@ -173,7 +173,12 @@ module nts.uk.at.view.kmk011.e {
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail((res: any) => {
-                    _self.showMessageError(res);
+//                    _self.showMessageError(res);
+                    _.forEach((res.errors),(error) => {
+                        _.forEach(error.supplements, function(value, key) {
+                            $('#workType_alarm_time_' + key).ntsError('set', {messageId:value});
+                        });
+                    })
                 });
             }
 

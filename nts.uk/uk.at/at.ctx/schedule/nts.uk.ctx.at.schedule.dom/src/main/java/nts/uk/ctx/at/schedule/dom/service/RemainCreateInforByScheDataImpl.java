@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
@@ -20,9 +21,21 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 	private BasicScheduleRepository scheRepos;
 	@Override
 	public List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, DatePeriod dateData) {
-		List<ScheRemainCreateInfor> lstOutputData = new ArrayList<>();
 		//ドメインモデル「勤務予定基本情報」を取得する
 		List<BasicSchedule> lstScheData = scheRepos.getBasicScheduleBySidPeriodDate(sid, dateData);
+		
+		return this.lstResult(lstScheData, sid);
+	}
+	@Override
+	public List<ScheRemainCreateInfor> createRemainInfor(String cid, String sid, List<GeneralDate> dates) {
+
+		//ドメインモデル「勤務予定基本情報」を取得する
+		List<BasicSchedule> lstScheData = scheRepos.getBasicScheduleBySidPeriodDate(sid, dates);
+		return this.lstResult(lstScheData, sid);
+	}
+
+	private List<ScheRemainCreateInfor> lstResult(List<BasicSchedule> lstScheData, String sid){
+		List<ScheRemainCreateInfor> lstOutputData = new ArrayList<>();
 		for (BasicSchedule scheData : lstScheData) {
 			ScheRemainCreateInfor outData = new ScheRemainCreateInfor(sid,
 					scheData.getDate(),
@@ -35,5 +48,4 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		}
 		return lstOutputData;
 	}
-
 }
