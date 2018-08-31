@@ -90,8 +90,6 @@
 								primaryText: 'nodeText',
 								multiple: false,
 								enable: true,
-								maxDeepLeaf: 2,
-								maxChildInNode: 3,
 								extColumns: treeColumns,
 								initialExpandDepth: 0,
 								showCheckBox: false}"
@@ -138,7 +136,7 @@
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_11')}</button>
 								</div>
 								<div style="margin-top: 8px;">
-									<button tabindex="12"
+									<button tabindex="12" class="danger"
 										data-bind="click: deleteWkpHistory,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_12')}</button>
 								</div>
