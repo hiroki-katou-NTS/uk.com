@@ -336,8 +336,16 @@ module nts.uk.com.view.kwr002.a {
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
-                    self.showMessageError(res);
                     nts.uk.ui.block.clear();
+                    if (res.message !== "") {
+                        nts.uk.ui.dialog.caution(res).then(() => {
+                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                        });
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+
+                    }
+
                 });
             }
 
@@ -357,8 +365,19 @@ module nts.uk.com.view.kwr002.a {
                     }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
-                    self.showMessageError(res);
                     nts.uk.ui.block.clear();
+                    if (res.message !== "") {
+                        nts.uk.ui.dialog.caution(res).then(() => {
+                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                        });
+
+
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+
+                    }
+
+
                 });
             }
 

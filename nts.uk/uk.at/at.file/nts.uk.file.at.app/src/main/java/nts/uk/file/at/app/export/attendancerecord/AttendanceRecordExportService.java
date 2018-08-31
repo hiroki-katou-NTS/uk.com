@@ -847,14 +847,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				} else {
 					// If closure not found
 					invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
-					
+
 				}
 
 			} else {
 
 				// If closure is wrong
 				invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
-				
+
 			}
 
 			if (realDataOfEmployee == 0) {
@@ -868,10 +868,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 		if (employeeListAfterSort.size() <= nullDataEmployeeList.size()) {
 			// If real data of employee isn't exist
-			exceptions.addMessage("Msg_37");
+			if (!invidual.isEmpty()) {
+				exceptions.addMessage("Msg_1269", invidual);
+			}
+			exceptions.throwExceptions();
 
 		} else {
 			employeeListAfterSort.removeAll(nullDataEmployeeList);
+
 		}
 		for (Employee employee : employeeListAfterSort) {
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
