@@ -226,7 +226,7 @@ public class AttendanceItemUtil implements ItemConst {
 					}
 				});
 
-				// correctList(listNoIdx, idxField, itemsForIdx, originalIdx,  list);
+				 correctList(listNoIdx, idxField, itemsForIdx, originalIdx,  list);
 
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 
