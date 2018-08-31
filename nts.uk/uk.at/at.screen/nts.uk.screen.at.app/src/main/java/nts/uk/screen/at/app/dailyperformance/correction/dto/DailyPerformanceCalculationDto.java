@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Setter;
 import lombok.Value;
@@ -21,6 +20,6 @@ public class DailyPerformanceCalculationDto {
 	
 	private List<DailyModifyResult> resultValues;
 	
-	private Map<Integer, List<DPItemValue>> resultError;
+	private DataResultAfterIU resultError;
 	
 }
