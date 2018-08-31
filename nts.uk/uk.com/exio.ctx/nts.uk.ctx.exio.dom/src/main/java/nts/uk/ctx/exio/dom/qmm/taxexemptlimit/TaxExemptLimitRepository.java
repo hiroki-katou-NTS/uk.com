@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 非課税限度額の登録
+ * 
+ * @author thanh.tq 非課税限度額の登録
+ *
  */
 public interface TaxExemptLimitRepository {
 

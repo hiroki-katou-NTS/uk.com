@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 限度金額指定区分
+ * @author thanh.tq 限度金額指定区分
  *
  */
 public enum LimitAmountClassification {

@@ -2,8 +2,8 @@ package nts.uk.ctx.exio.dom.qmm.deductionItemset;
 
 /**
  * 
- * 控除項目区分
- *
+ * @author thanh.tq 控除項目区分
+ * 
  */
 public enum DeductionItemAtr {
 

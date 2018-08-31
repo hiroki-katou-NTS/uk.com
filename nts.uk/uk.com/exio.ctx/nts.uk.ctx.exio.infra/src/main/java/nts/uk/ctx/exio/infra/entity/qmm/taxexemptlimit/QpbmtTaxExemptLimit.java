@@ -62,9 +62,9 @@ public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable {
 
 	public static QpbmtTaxExemptLimit toEntity(TaxExemptLimit domain) {
 		return new QpbmtTaxExemptLimit(new QpbmtTaxExemptLimitPk(domain.getCid()),
-				domain.getTaxExemptionName() != null ? domain.getTaxExemptionName().v() : null,
-				domain.getTaxFreeamountCode() != null ? domain.getTaxFreeamountCode().v() : null,
-				domain.getTaxExemption() != null ? domain.getTaxExemption().v() : null);
+				domain.getTaxExemptionName().v(),
+				domain.getTaxFreeamountCode().v(),
+				domain.getTaxExemption().v());
 	}
 
 }

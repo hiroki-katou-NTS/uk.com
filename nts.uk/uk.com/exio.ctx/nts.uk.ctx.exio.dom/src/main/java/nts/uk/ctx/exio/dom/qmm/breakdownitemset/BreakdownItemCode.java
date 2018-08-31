@@ -6,7 +6,9 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 内訳項目コード
+ * 
+ * @author thanh.tq 内訳項目コード
+ *
  */
 @IntegerMaxValue(99)
 @IntegerMinValue(1)
@@ -17,7 +19,7 @@ public class BreakdownItemCode extends IntegerPrimitiveValue<PrimitiveValue<Inte
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Contructor
+	 * Constructor
 	 * 
 	 * @param rawValue
 	 */

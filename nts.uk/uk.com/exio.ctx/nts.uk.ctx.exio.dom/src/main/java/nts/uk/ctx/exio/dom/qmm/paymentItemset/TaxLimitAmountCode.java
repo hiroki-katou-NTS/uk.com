@@ -8,7 +8,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
- * 非課税限度額コード
+ * 
+ * @author thanh.tq 非課税限度額コード
  *
  */
 @StringCharType(CharType.NUMERIC)
@@ -22,7 +23,7 @@ public class TaxLimitAmountCode extends StringPrimitiveValue<PrimitiveValue<Stri
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Contructor
+	 * Constructor
 	 * 
 	 * @param rawValue
 	 */

@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.setperiodcycle;
 
 /**
  * 
- * サイクル設定区分
+ * @author thanh.tq サイクル設定区分
  *
  */
 public enum CycleSettingAtr {

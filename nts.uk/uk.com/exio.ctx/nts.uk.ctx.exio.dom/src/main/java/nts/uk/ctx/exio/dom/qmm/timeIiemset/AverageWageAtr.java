@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.timeIiemset;
 
 /**
  * 
- * 平均賃金区分
+ * @author thanh.tq 平均賃金区分
  *
  */
 public enum AverageWageAtr {

@@ -5,7 +5,9 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.qmm.paymentItemset.TaxLimitAmountCode;
 
 /**
- * 非課税限度額の登録
+ * 
+ * @author thanh.tq 非課税限度額の登録
+ *
  */
 @Getter
 public class TaxExemptLimit extends AggregateRoot {

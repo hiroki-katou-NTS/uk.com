@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 固定的賃金の設定区分
+ * @author thanh.tq 固定的賃金の設定区分
  *
  */
 public enum SettingClassification {

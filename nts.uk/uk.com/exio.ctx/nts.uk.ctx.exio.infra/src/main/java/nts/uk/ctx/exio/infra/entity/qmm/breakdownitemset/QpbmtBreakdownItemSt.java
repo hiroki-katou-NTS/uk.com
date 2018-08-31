@@ -48,9 +48,8 @@ public class QpbmtBreakdownItemSt extends UkJpaEntity implements Serializable {
 
 	public static QpbmtBreakdownItemSt toEntity(BreakdownItemSt domain) {
 		return new QpbmtBreakdownItemSt(
-				new QpbmtBreakdownItemStPk(domain.getSalaryItemId(),
-						domain.getBreakdownItemCode() != null ? domain.getBreakdownItemCode().v() : null),
-				domain.getBreakdownItemName() != null ? domain.getBreakdownItemName().v() : null);
+				new QpbmtBreakdownItemStPk(domain.getSalaryItemId(), domain.getBreakdownItemCode().v()),
+				domain.getBreakdownItemName().v());
 	}
 
 }

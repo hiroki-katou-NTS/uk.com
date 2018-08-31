@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.List;
 
 /**
- * 有効期間とサイクルの設定
+ * 
+ * @author thanh.tq 有効期間とサイクルの設定
+ *
  */
 public interface SetPeriodCycleRepository {
 

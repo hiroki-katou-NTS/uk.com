@@ -41,84 +41,84 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "JANUARY")
-	public int january;
+	public Integer january;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "FEBRUARY")
-	public int february;
+	public Integer february;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "MARCH")
-	public int march;
+	public Integer march;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "APRIL")
-	public int april;
+	public Integer april;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "MAY")
-	public int may;
+	public Integer may;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "JUNE")
-	public int june;
+	public Integer june;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "JULY")
-	public int july;
+	public Integer july;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "AUGUST")
-	public int august;
+	public Integer august;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "SEPTEMBER")
-	public int september;
+	public Integer september;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "OCTOBER")
-	public int october;
+	public Integer october;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "NOVEMBER")
-	public int november;
+	public Integer november;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
 	@Column(name = "DECEMBER")
-	public int december;
+	public Integer december;
 
 	/**
 	 * 有効期間設定区分
@@ -132,14 +132,14 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_YEAR")
-	public int endYear;
+	public Integer endYear;
 
 	/**
 	 * 開始年
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_YEAR")
-	public int startYear;
+	public Integer startYear;
 
 	@Override
 	protected Object getKey() {
@@ -154,13 +154,22 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 
 	public static QpbmtSetPeriodCycle toEntity(SetPeriodCycle domain) {
 		return new QpbmtSetPeriodCycle(new QpbmtSetPeriodCyclePk(domain.getSalaryItemId()),
-				domain.getCycleSettingAtr() != null ? domain.getCycleSettingAtr().value : null,
-				domain.getJanuary().orElse(null), domain.getFebruary().orElse(null), domain.getMarch().orElse(null),
-				domain.getApril().orElse(null), domain.getMay().orElse(null), domain.getJune().orElse(null),
-				domain.getJuly().orElse(null), domain.getAugust().orElse(null), domain.getSeptember().orElse(null),
-				domain.getOctober().orElse(null), domain.getNovember().orElse(null), domain.getDecember().orElse(null),
-				domain.getPeriodAtr() != null ? domain.getPeriodAtr().value : null, domain.getEndYear().orElse(null),
-				domain.getStartYear().orElse(null));
+				domain.getCycleSetting().getCycleSettingAtr().value,
+				domain.getCycleSetting().getMonthlyList().getJanuary().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getFebruary().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getMarch().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getApril().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getMay().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getJune().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getJuly().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getAugust().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getSeptember().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getOctober().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getNovember().orElse(null),
+				domain.getCycleSetting().getMonthlyList().getDecember().orElse(null),
+				domain.getValidityPeriodSetting().getPeriodAtr().value,
+				domain.getValidityPeriodSetting().getYearPeriod().getEndYear().orElse(null),
+				domain.getValidityPeriodSetting().getYearPeriod().getStartYear().orElse(null));
 	}
 
 }

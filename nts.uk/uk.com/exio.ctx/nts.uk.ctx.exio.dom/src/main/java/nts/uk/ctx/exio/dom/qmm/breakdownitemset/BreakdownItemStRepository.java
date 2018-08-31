@@ -4,19 +4,20 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 内訳項目設定
-*/
-public interface BreakdownItemStRepository
-{
+ * 
+ * @author thanh.tq 内訳項目設定
+ *
+ */
+public interface BreakdownItemStRepository {
 
-    List<BreakdownItemSt> getAllBreakdownItemSt();
+	List<BreakdownItemSt> getAllBreakdownItemSt();
 
-    Optional<BreakdownItemSt> getBreakdownItemStById(String salaryItemId, int breakdownItemCode);
+	Optional<BreakdownItemSt> getBreakdownItemStById(String salaryItemId, int breakdownItemCode);
 
-    void add(BreakdownItemSt domain);
+	void add(BreakdownItemSt domain);
 
-    void update(BreakdownItemSt domain);
+	void update(BreakdownItemSt domain);
 
-    void remove(String salaryItemId, int breakdownItemCode);
+	void remove(String salaryItemId, int breakdownItemCode);
 
 }

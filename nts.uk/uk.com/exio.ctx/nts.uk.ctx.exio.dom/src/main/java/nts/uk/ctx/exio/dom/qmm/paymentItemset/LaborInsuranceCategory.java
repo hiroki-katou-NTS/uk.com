@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 労働保険区分
+ * @author thanh.tq 労働保険区分
  *
  */
 public enum LaborInsuranceCategory {

@@ -34,21 +34,21 @@ public class QpbmtTimeItemSt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "AVERAGE_WAGE_ATR")
-	public int averageWageAtr;
+	public Integer averageWageAtr;
 
 	/**
 	 * 年間所定労働日数区分
 	 */
 	@Basic(optional = true)
 	@Column(name = "WORKING_DAYS_PER_YEAR")
-	public int workingDaysPerYear;
+	public Integer workingDaysPerYear;
 
 	/**
 	 * 時間回数区分
 	 */
 	@Basic(optional = false)
 	@Column(name = "TIME_COUNT_ATR")
-	public int timeCountAtr;
+	public Integer timeCountAtr;
 
 	/**
 	 * 備考
@@ -70,8 +70,7 @@ public class QpbmtTimeItemSt extends UkJpaEntity implements Serializable {
 	public static QpbmtTimeItemSt toEntity(TimeItemSt domain) {
 		return new QpbmtTimeItemSt(new QpbmtTimeItemStPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getAverageWageAtr().map(i -> i.value).orElse(null),
-				domain.getWorkingDaysPerYear().map(i -> i.value).orElse(null),
-				domain.getTimeCountAtr() != null ? domain.getTimeCountAtr().value : null,
+				domain.getWorkingDaysPerYear().map(i -> i.value).orElse(null), domain.getTimeCountAtr().value,
 				domain.getNote().orElse(null));
 	}
 

@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.List;
 
 /**
- * 支給項目設定
+ * 
+ * @author thanh.tq 支給項目設定
+ *
  */
 public interface PaymentItemStRepository {
 

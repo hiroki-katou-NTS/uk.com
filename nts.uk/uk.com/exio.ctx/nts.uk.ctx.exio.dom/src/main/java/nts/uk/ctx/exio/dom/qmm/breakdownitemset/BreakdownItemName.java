@@ -5,7 +5,9 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 内訳項目名称
+ * 
+ * @author thanh.tq 内訳項目名称
+ *
  */
 @StringMaxLength(30)
 public class BreakdownItemName extends StringPrimitiveValue<PrimitiveValue<String>> {
@@ -16,7 +18,7 @@ public class BreakdownItemName extends StringPrimitiveValue<PrimitiveValue<Strin
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Contructor
+	 * Constructor
 	 * 
 	 * @param rawValue
 	 */

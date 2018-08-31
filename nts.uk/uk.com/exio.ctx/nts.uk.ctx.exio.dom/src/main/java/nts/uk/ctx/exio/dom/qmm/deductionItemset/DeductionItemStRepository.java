@@ -4,19 +4,20 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 控除項目設定
-*/
-public interface DeductionItemStRepository
-{
+ * 
+ * @author thanh.tq 控除項目設定
+ *
+ */
+public interface DeductionItemStRepository {
 
-    List<DeductionItemSt> getAllDeductionItemSt();
+	List<DeductionItemSt> getAllDeductionItemSt();
 
-    Optional<DeductionItemSt> getDeductionItemStById(String cid, String salaryItemId);
+	Optional<DeductionItemSt> getDeductionItemStById(String cid, String salaryItemId);
 
-    void add(DeductionItemSt domain);
+	void add(DeductionItemSt domain);
 
-    void update(DeductionItemSt domain);
+	void update(DeductionItemSt domain);
 
-    void remove(String cid, String salaryItemId);
+	void remove(String cid, String salaryItemId);
 
 }

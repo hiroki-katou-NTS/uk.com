@@ -2,8 +2,8 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 固定的賃金の対象区分
- *
+ * @author thanh.tq 固定的賃金の対象区分
+ * 
  */
 public enum CategoryFixedWage {
 

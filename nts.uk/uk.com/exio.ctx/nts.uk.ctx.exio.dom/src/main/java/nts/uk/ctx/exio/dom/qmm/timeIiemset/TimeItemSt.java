@@ -7,7 +7,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 勤怠項目設定
+ * 
+ * @author thanh.tq 勤怠項目設定
+ *
  */
 @Getter
 public class TimeItemSt extends AggregateRoot {

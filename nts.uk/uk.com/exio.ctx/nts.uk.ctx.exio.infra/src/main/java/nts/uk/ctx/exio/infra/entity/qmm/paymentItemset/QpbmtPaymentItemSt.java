@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.qmm.paymentItemset.FixedWage;
 import nts.uk.ctx.exio.dom.qmm.paymentItemset.PaymentItemSt;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -55,35 +56,35 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "EVERYONE_EQUAL_SET")
-	public int everyoneEqualSet;
+	public Integer everyoneEqualSet;
 
 	/**
 	 * 月給者
 	 */
 	@Basic(optional = true)
 	@Column(name = "MONTHLY_SALARY")
-	public int monthlySalary;
+	public Integer monthlySalary;
 
 	/**
 	 * 時給者
 	 */
 	@Basic(optional = true)
 	@Column(name = "HOURLY_PAY")
-	public int hourlyPay;
+	public Integer hourlyPay;
 
 	/**
 	 * 日給者
 	 */
 	@Basic(optional = true)
 	@Column(name = "DAY_PAYEE")
-	public int dayPayee;
+	public Integer dayPayee;
 
 	/**
 	 * 日給月給者
 	 */
 	@Basic(optional = true)
 	@Column(name = "MONTHLY_SALARY_PERDAY")
-	public int monthlySalaryPerday;
+	public Integer monthlySalaryPerday;
 
 	/**
 	 * 平均賃金区分
@@ -111,21 +112,21 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "TAXABLE_AMOUNT_ATR")
-	public int taxableAmountAtr;
+	public Integer taxableAmountAtr;
 
 	/**
 	 * 限度金額
 	 */
 	@Basic(optional = true)
 	@Column(name = "LIMIT_AMOUNT")
-	public int limitAmount;
+	public Integer limitAmount;
 
 	/**
 	 * 限度金額区分
 	 */
 	@Basic(optional = true)
 	@Column(name = "LIMIT_AMOUNT_ATR")
-	public int limitAmountAtr;
+	public Integer limitAmountAtr;
 
 	/**
 	 * 非課税限度額コード
@@ -147,29 +148,28 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 	}
 
 	public PaymentItemSt toDomain() {
-		return new PaymentItemSt(this.paymentItemStPk.cid, this.paymentItemStPk.salaryItemId, this.breakdownItemUseAtr,
-				this.laborInsuranceCategory, this.settingAtr, this.everyoneEqualSet, this.monthlySalary, this.hourlyPay,
-				this.dayPayee, this.monthlySalaryPerday, this.averageWageAtr, this.socialInsuranceCategory, this.taxAtr,
-				this.taxableAmountAtr, this.limitAmount, this.limitAmountAtr, this.taxLimitAmountCode, this.note);
+		return new PaymentItemSt(paymentItemStPk.cid, paymentItemStPk.salaryItemId, breakdownItemUseAtr,
+				laborInsuranceCategory, settingAtr, everyoneEqualSet, monthlySalary, hourlyPay, dayPayee,
+				monthlySalaryPerday, averageWageAtr, socialInsuranceCategory, taxAtr, taxableAmountAtr, limitAmount,
+				limitAmountAtr, taxLimitAmountCode, note);
 	}
 
 	public static QpbmtPaymentItemSt toEntity(PaymentItemSt domain) {
 		return new QpbmtPaymentItemSt(new QpbmtPaymentItemStPk(domain.getCid(), domain.getSalaryItemId()),
-				domain.getBreakdownItemUseAtr() != null ? domain.getBreakdownItemUseAtr().value : null,
-				domain.getLaborInsuranceCategory() != null ? domain.getLaborInsuranceCategory().value : null,
-				domain.getSettingAtr() != null ? domain.getSettingAtr().value : null,
-				domain.getEveryoneEqualSet().map(i -> i.value).orElse(null),
-				domain.getMonthlySalary().map(i -> i.value).orElse(null),
-				domain.getHourlyPay().map(i -> i.value).orElse(null),
-				domain.getDayPayee().map(i -> i.value).orElse(null),
-				domain.getMonthlySalaryPerday().map(i -> i.value).orElse(null),
-				domain.getAverageWageAtr() != null ? domain.getAverageWageAtr().value : null,
-				domain.getSocialInsuranceCategory() != null ? domain.getSocialInsuranceCategory().value : null,
-				domain.getTaxAtr() != null ? domain.getTaxAtr().value : null,
-				domain.getTaxableAmountAtr().map(i -> i.value).orElse(null),
-				domain.getLimitAmount().map(i -> i.v()).orElse(null),
-				domain.getLimitAmountAtr().map(i -> i.value).orElse(null),
-				domain.getTaxLimitAmountCode().map(i -> i.v()).orElse(null), domain.getNote().orElse(null));
+				domain.getBreakdownItemUseAtr().value, domain.getLaborInsuranceCategory().value,
+				domain.getFixedWage().getSettingAtr().value,
+				domain.getFixedWage().getEveryoneEqualSet().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getMonthlySalary().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getHourlyPay().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getDayPayee().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getMonthlySalaryPerday().map(i -> i.value)
+						.orElse(null),
+				domain.getAverageWageAtr().value, domain.getSocialInsuranceCategory().value, domain.getTaxAtr().value,
+				domain.getLimitAmountSetting().getTaxableAmountAtr().map(i -> i.value).orElse(null),
+				domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null),
+				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
+				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
+				domain.getNote().orElse(null));
 	}
 
 }

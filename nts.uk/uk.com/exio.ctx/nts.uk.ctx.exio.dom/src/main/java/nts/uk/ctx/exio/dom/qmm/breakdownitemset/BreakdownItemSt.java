@@ -4,7 +4,9 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 内訳項目設定
+ * 
+ * @author thanh.tq 内訳項目設定
+ *
  */
 @Getter
 public class BreakdownItemSt extends AggregateRoot {

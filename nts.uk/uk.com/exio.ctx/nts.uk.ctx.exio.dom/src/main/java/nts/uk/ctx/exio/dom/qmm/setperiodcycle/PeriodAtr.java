@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.setperiodcycle;
 
 /**
  * 
- * 有効期間設定区分
+ * @author thanh.tq 有効期間設定区分
  *
  */
 public enum PeriodAtr {

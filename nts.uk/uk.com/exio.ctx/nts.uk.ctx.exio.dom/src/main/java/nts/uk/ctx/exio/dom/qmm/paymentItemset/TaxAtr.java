@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 課税区分
+ * @author thanh.tq 課税区分
  *
  */
 public enum TaxAtr {

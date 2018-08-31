@@ -5,7 +5,9 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 非課税限度額名称
+ * 
+ * @author thanh.tq 非課税限度額名称
+ *
  */
 @StringMaxLength(20)
 public class TaxExemptionName extends StringPrimitiveValue<PrimitiveValue<String>> {
@@ -16,7 +18,7 @@ public class TaxExemptionName extends StringPrimitiveValue<PrimitiveValue<String
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Contructor
+	 * Constructor
 	 * 
 	 * @param rawValue
 	 */

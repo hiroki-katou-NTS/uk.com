@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 勤怠項目設定
+ * 
+ * @author thanh.tq 勤怠項目設定
+ *
  */
 public interface TimeItemStRepository {
 

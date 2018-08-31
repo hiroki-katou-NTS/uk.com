@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.timeIiemset;
 
 /**
  * 
- * 年間所定労働日数区分
+ * @author thanh.tq 年間所定労働日数区分
  *
  */
 public enum ClassifiedWorkingDaysPerYear {

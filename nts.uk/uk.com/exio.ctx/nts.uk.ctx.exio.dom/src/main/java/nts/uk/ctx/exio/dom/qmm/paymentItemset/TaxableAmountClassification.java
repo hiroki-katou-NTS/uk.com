@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.qmm.paymentItemset;
 
 /**
  * 
- * 課税金額区分
+ * @author thanh.tq  課税金額区分
  *
  */
 public enum TaxableAmountClassification {

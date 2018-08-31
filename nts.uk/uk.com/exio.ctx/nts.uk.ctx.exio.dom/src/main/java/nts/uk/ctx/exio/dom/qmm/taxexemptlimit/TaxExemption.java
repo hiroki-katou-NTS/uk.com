@@ -6,7 +6,9 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 非課税限度額
+ * 
+ * @author thanh.tq 非課税限度額
+ *
  */
 @IntegerMaxValue(999999999)
 @IntegerMinValue(1)
@@ -17,7 +19,7 @@ public class TaxExemption extends IntegerPrimitiveValue<PrimitiveValue<Integer>>
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Contructor
+	 * Constructor
 	 * 
 	 * @param rawValue
 	 */
