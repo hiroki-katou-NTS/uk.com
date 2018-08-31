@@ -1,8 +1,8 @@
 module nts.uk.at.view.kdl003.a {
     export module service {
         var paths: any = {
-            findAllWorkType: "at/share/worktype/findNotDeprecated",
-            findWorkTypeByCodes: "at/share/worktype/findNotDeprecatedByListCode",
+            findAllWorkType: "at/share/worktype/findAllByOrder",
+            findWorkTypeByCodes: "at/share/worktype/getpossibleworktype",
             findAllWorkTime: "at/shared/worktimesetting/findAll",
             findWorkTimeByCodes: "at/shared/worktimesetting/findByCodes",
             findByTime: "at/shared/worktimesetting/findByTime",
