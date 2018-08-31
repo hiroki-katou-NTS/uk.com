@@ -546,13 +546,13 @@ module nts.uk.at.view.kaf010.share {
                 
                 overtimeWork.yearMonth(nts.uk.time.formatYearMonth(appOvertimeDetailDto.yearMonth));
                 if(appOvertimeDetailDto.exceptionLimitErrorTime > 0){
-                    overtimeWork.limitTime(appOvertimeDetailDto.exceptionLimitErrorTime);    
+                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.exceptionLimitErrorTime));    
                 } else {
-                    overtimeWork.limitTime(appOvertimeDetailDto.limitErrorTime);    
+                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.limitErrorTime));    
                 }
-                overtimeWork.actualTime(appOvertimeDetailDto.actualTime);
-                overtimeWork.appTime(appOvertimeDetailDto.applicationTime);
-                overtimeWork.totalTime(appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime);
+                overtimeWork.actualTime(Process.convertTime(appOvertimeDetailDto.actualTime));
+                overtimeWork.appTime(Process.convertTime(appOvertimeDetailDto.applicationTime));
+                overtimeWork.totalTime(Process.convertTime(appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime));
                 switch(status){
                     case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
                         overtimeWork.backgroundColor(common.Color.ALARM);
