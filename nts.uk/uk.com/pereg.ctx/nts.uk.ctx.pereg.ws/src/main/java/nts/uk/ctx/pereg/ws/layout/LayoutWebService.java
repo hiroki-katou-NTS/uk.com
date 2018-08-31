@@ -11,8 +11,6 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformation;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.SpecialleaveInformationFinder;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
@@ -22,6 +20,8 @@ import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.ctx.pereg.app.find.common.GetSPHolidayNextGrantDate;
+import nts.uk.ctx.pereg.app.find.common.SpecialleaveInformation;
 
 /**
  * @author sonnlb
@@ -43,8 +43,8 @@ public class LayoutWebService extends WebService {
 	@Inject
 	private ResvLeaRemainNumberFinder resvLeaNumberFinder;
 	
-	@Inject
-	private SpecialleaveInformationFinder specialleaveInformationFinder;
+	@Inject 
+	private GetSPHolidayNextGrantDate getSPHolidayNextGrantDate;
 	
 	@Path("getByCreateType")
 	@POST
@@ -109,7 +109,7 @@ public class LayoutWebService extends WebService {
 	@POST
 	@Path("getSPHolidayGrantDate")
 	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation specialLeaveInfo){
-		return specialleaveInformationFinder.getSPHolidayGrantDate(specialLeaveInfo);
+		return getSPHolidayNextGrantDate.getSPHolidayGrantDate(specialLeaveInfo);
 	}
 	
 }
