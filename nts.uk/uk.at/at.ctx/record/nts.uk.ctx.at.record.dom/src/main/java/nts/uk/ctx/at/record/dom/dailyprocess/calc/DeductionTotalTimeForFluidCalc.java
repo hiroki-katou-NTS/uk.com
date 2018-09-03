@@ -317,9 +317,12 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
+					  ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
-					 ,DeductionClassification.BREAK));
+					 ,Optional.empty()
+					 ,DeductionClassification.BREAK
+					 ,deductionItem.getChildCareAtr()));
 			//後ろを外出のままに
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
 					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
@@ -329,9 +332,12 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
+					  ,deductionItem.getWorkingBreakAtr()
 					  ,deductionItem.getGoOutReason()
 					  ,deductionItem.getBreakAtr()
-					  ,deductionItem.getDeductionAtr()));
+					  ,Optional.empty()
+					  ,deductionItem.getDeductionAtr()
+					  ,deductionItem.getChildCareAtr()));
 		}
 		//分割しない場合
 		else {
@@ -344,9 +350,12 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.bonusPayTimeSheet
 					 ,deductionItem.specBonusPayTimesheet
 					 ,deductionItem.midNightTimeSheet
+					 ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
-					 ,DeductionClassification.BREAK));
+					 ,Optional.empty()
+					 ,DeductionClassification.BREAK
+					 ,deductionItem.getChildCareAtr()));
 		}
 		return returnList;
 	}

@@ -19,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -42,6 +44,8 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 	private EmploymentSettingRepository repoEmpSet;
 	@Inject
 	private AnnualPaidLeaveSettingRepository repoAnnualSet;
+	@Inject
+	private RetentionYearlySettingRepository retentionYearlySetRepo;
 	// 10-1.年休の設定を取得する
 	public AnnualHolidaySetOutput getSettingForAnnualHoliday(String companyID){
 		AnnualHolidaySetOutput annualHoliday = new AnnualHolidaySetOutput();
@@ -225,10 +229,11 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 				return empRet.get().getManagementCategory().equals(ManageDistinct.YES) ? true : false;
 			}
 			//０件(0 dữ liệu)
-			//ドメインモデル「年休設定」を取得する(lấy domain 「年休設定」)
-			AnnualPaidLeaveSetting annualPaidLeave = repoAnnualSet.findByCompanyId(companyID);
-			if(annualPaidLeave != null){
-				return annualPaidLeave.isManaged();
+			//RedMine#98195　EA修正履歴No.2406
+			//ドメインモデル「積立年休設定」を取得する(lấy domain 「積立年休設定」)
+			Optional<RetentionYearlySetting> retYearSet = retentionYearlySetRepo.findByCompanyId(companyID);
+			if(retYearSet.isPresent()){
+				return retYearSet.get().getManagementCategory().value == 1 ? true : false;
 			}
 		}
 		return false;

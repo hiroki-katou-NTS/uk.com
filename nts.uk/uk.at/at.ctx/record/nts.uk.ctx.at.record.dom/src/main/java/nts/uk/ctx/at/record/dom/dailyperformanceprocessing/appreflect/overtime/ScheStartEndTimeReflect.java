@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 予定開始終了時刻の反映(事前事後共通部分)
@@ -14,7 +15,8 @@ public interface ScheStartEndTimeReflect {
 	 * @param timeTypeData
 	 * @return
 	 */
-	public ScheStartEndTimeReflectOutput reflectScheStartEndTime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData);
+	public WorkInfoOfDailyPerformance reflectScheStartEndTime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData
+			, WorkInfoOfDailyPerformance dailyInfor);
 	/**
 	 * 反映する開始終了時刻を求める
 	 * @param para

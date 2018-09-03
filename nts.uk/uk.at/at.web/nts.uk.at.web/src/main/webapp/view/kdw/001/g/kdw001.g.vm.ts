@@ -16,6 +16,7 @@ module nts.uk.at.view.kdw001.g {
             listTargetPerson: KnockoutObservableArray<any>;
             executionContent : number;
             executionContentName :string;
+            showPeriod :boolean;
             
             constructor() {
                 let self = this;
@@ -29,7 +30,19 @@ module nts.uk.at.view.kdw001.g {
                     self.listPeson = param.listTargetPerson;
                     self.listTargetPerson = ko.observableArray([]);
                     self.executionContent = param.executionContent;
+                    if(param.executionContent == 3){
+                        self.showPeriod = false;
+                    } else {
+                        self.showPeriod = true;
+                    }
+                    
                     self.executionContentName = param.executionContentName;
+                    
+                    if(self.executionContentName == "日別計算" || self.executionContentName == "承認結果反映" || self.executionContentName == "日別作成"){
+                        $("#period-date").show();
+                    } else {
+                        $("#period-date").hide();
+                    }
                     
                     for(let i = 0;i<self.listPeson.length;i++){
                         self.listTargetPerson().push({employeeCode: self.listPeson[i].employeeId,
@@ -42,13 +55,15 @@ module nts.uk.at.view.kdw001.g {
                          
                          });
                     }
+                        self.listTargetPerson(_.orderBy(self.listTargetPerson(), ['personCode'], ['asc']));
+                   
                 }
                 
                 
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'employeeCode', width: 1, hidden: true},
                     { headerText: getText('KDW001_33'), key: 'personCode', width: 100 },
-                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 200 },
                     { headerText: getText('KDW001_51'), key: 'status', width: 100 }
                 ]);
             }
@@ -56,6 +71,7 @@ module nts.uk.at.view.kdw001.g {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                $(".large").focus();
                 dfd.resolve();
                 return dfd.promise();
             }//end start page

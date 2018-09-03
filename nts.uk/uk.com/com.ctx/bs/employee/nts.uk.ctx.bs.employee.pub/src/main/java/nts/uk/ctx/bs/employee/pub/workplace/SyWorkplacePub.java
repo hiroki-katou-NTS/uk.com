@@ -5,7 +5,10 @@
 package nts.uk.ctx.bs.employee.pub.workplace;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -198,4 +201,27 @@ public interface SyWorkplacePub {
 	// RequestList422
 	// 職場ID（List）と期間から職場情報を取得する
 	List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period);
+	
+	
+	/**
+	 * Gets the lst period.
+	 *
+	 * @param companyId the company id
+	 * @param period the period
+	 * @return the lst period
+	 */
+	//RequestList485
+	//会社IDと期間から期間内の職場構成を取得する
+	List<DatePeriod> getLstPeriod(String companyId, DatePeriod period);
+	
+	/**
+	 * Gets the workplace map code base date name.
+	 *
+	 * @param companyId the company id
+	 * @param wpkCodes the wpk codes
+	 * @param baseDates the base dates
+	 * @return the workplace map code base date name
+	 */
+	Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+			List<String> wpkCodes, List<GeneralDate> baseDates);
 }

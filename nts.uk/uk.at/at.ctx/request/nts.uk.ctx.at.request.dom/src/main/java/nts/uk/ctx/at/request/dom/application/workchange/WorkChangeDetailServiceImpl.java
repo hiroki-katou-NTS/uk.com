@@ -57,6 +57,10 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private IWorkChangeRegisterService workChangeRegisterService;
+	
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
@@ -85,7 +89,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 			appWorkChange.setWorkTypeName(workType.get().getName().v());
 		}
 		workChangeDetail.setAppWorkChange(appWorkChange);
-		
+		workChangeDetail.setTimeRequired(workChangeRegisterService.isTimeRequired(appWorkChange.getWorkTypeCd()));
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
 		workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
 		// Setting application property

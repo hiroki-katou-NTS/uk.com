@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPub;
+import nts.uk.ctx.sys.portal.pub.webmenu.ProgramNameDto;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuExport;
 
 /**
@@ -24,6 +26,9 @@ public class WebMenuPubImp implements WebMenuPub {
     /** The WebMenuRepository. */
     @Inject
     private WebMenuRepository webMenuRepository;
+    
+    @Inject
+    private StandardMenuRepository standardMenuRepository;
 
     @Override
     public List<WebMenuExport> findByCompanyId(String companyId) {
@@ -35,5 +40,13 @@ public class WebMenuPubImp implements WebMenuPub {
                         , item.isDefault())
                         )
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<ProgramNameDto> findProgramNames(String companyId) {
+    	return standardMenuRepository.findAll(companyId).stream()
+    			.map(item -> new ProgramNameDto(companyId, item.getProgramId(), 
+    					item.getScreenId(), item.getQueryString(), item.getDisplayName().v()))
+    			.collect(Collectors.toList());
     }
 }

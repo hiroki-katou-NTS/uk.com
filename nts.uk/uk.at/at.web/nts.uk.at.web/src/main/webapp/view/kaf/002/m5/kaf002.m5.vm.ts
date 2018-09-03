@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf002.m5 {
             employeeID: string;
             
             start(appStampData: any, data: vmbase.AppStampNewSetDto, listWorkLocation: Array<vmbase.IWorkLocation>, 
-                editable: any, screenMode: any, employeeID: string){
+                editable: any, screenMode: any, employeeID: string, appDate: any){
                 var self = this;   
                 let stampRequestSetDto = data.appStampSetDto.stampRequestSettingDto;
                 self.employeeID = employeeID;
@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf002.m5 {
                 if(stampRequestSetDto.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
                 if(stampRequestSetDto.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
                 if(stampRequestSetDto.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
-                self.getAttendanceItem(data.appCommonSettingDto.generalDate, [self.employeeID]).done(()=>{
+                self.getAttendanceItem(appDate, [self.employeeID]).done(()=>{
                     if(!nts.uk.util.isNullOrUndefined(appStampData)){
                         self.stampAtr(appStampData[0].stampAtr);
                         _.forEach(appStampData, item => {

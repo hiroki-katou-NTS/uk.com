@@ -33,7 +33,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.itemTitleAtr = ko.observableArray([
                 { value: 0, titleAtrName: resource.getText('CCG013_34') },
                 { value: 1, titleAtrName: resource.getText('CCG013_35') }]);
-            self.selectedTitleAtr = ko.observable(0);
+            self.selectedTitleAtr = ko.observable(0);  
             self.enableGrid = ko.observable(false);
             $("#titleSeach").prop("disabled", true);
             _.defer(function() {
@@ -55,7 +55,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.isDelete = ko.observable(false);
             //image upload
             self.filename = ko.observable(''); //file name
-            self.imageName = ko.observable('未設定。');
+            self.imageName = ko.observable(nts.uk.resource.getText("CCG013_127"));
             self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
             self.textId = ko.observable("CCG013_42"); // file browser button text id
@@ -127,7 +127,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         private deleteFile(): void {
             var self = this;
-            self.imageName('未設定。');
+            self.imageName(nts.uk.resource.getText("CCG013_127"));
             self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             $("#liveview").html('');
             self.isDelete(false);

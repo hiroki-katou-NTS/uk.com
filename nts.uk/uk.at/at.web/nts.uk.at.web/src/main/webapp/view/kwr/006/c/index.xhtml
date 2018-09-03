@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1200,
+					height : 810
+				};
+			</script>
+
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+			</com:ValidatorScript>
+
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kwr006.c.service.js" />
+			<com:scriptfile path="kwr006.c.vm.js" />
+			<com:scriptfile path="kwr006.c.start.js" />
+			<com:stylefile path="kwr006.c.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- C1_1 -->
+				<button tabindex="1" class=" btn-control" data-bind="click: newMode">#{i18n.getText('KWR006_34')}</button>
+				<!-- C1_2 -->
+				<button tabindex="2" id="save" class="proceed btn-control"
+					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KWR006_35')}</button>
+				<!-- C1_3 -->
+				<button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR006_36')}</button>
+				<!-- C1_4 -->
+				<button tabindex="4" id="delete" class="danger C1_4 btn-control"
+					data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR006_37')}</button>
+				<!-- C1_5 -->
+				<button tabindex="5" class="btn-control"
+					data-bind="click: closeScreenC">#{i18n.getText('KWR006_38')}</button>
+				
+				<!-- C1_6 -->
+				<hr/>
+			</div>
+
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<table>
+					<tr>
+						<td class="td-left">
+							<!-- C2_1 -->
+							<div class="panel"
+								data-bind="ntsPanel:{width: '260px', height: '360px', direction: 'right', showIcon: true, visible: true}">
+								<!-- C2_2 -->
+								<div style="width: 250px"
+									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+											items: outputItemList, selected: selectedCodeC2_3, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+								<!-- C2_3 -->
+								<table tabindex="6" id="multi-list"
+									data-bind="ntsGridList: {
+										height: 300,
+										options: outputItemList,
+										optionsValue: 'code', 
+										columns: columns,
+										multiple: false,
+										value: selectedCodeC2_3
+									}"></table>
+							</div>
+						</td>
+						<td class="td-right">
+							<div class="right">
+								<div class="row">
+									<!-- C3_1 -->
+									<div class="label-name"
+										data-bind="ntsFormLabel: { constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], 
+																					   required: true,
+																					   name: '#[KWR006_42]'}">#{i18n.getText('KWR006_42')}</div>
+									<!-- C3_2 -->
+									<input id="C3_2" tabindex="7" class="C3_2 save-error"
+										data-bind="ntsTextEditor:{
+											name: '#[KWR006_43]',
+											required: true,
+											value: C3_2_value,
+											constraint: 'OutputItemSettingCode',
+											enable: enableCodeC3_2}" />
+									<!-- C3_3 -->
+									<input id="C3_3" class="C3_3 save-error" tabindex="8"
+										data-bind="ntsTextEditor:{
+											name: '#[KWR006_44]',
+											required: true,
+											value: C3_3_value,
+											constraint: 'OutputItemSettingName'}" />
+								</div>
+								<div class="row">
+									<div>
+										<div class="C5">
+											<!-- C5_1 -->
+											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_48')}</div>
+											<!-- C5_2 -->
+											<hr />
+										</div>
+										<div class="C6">
+											<!-- C6_1 -->
+											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_49')}</div>
+											<!-- C6_2 -->
+											<hr />
+										</div>
+									</div>
+
+									<div>
+										<!-- C7_1 -->
+										<div tabindex="10" id="swap-list"
+											data-bind="ntsSwapList: {
+											showSearchBox: { showLeft : true, showRight: true},
+											height: 300,
+											dataSource: items,
+											disableMoveButton: false,
+											primaryKey: 'code',
+											columns: columns,
+											value: currentCodeListSwap,
+											searchMode: 'filter',
+											searchCriterion: ['code'],
+											draggable: true,
+											enableRowNumbering: false,
+											multipleDrag: { left: true, right: false },
+											innerDrag: { left: false, right: true },
+											outerDrag: { left: true, right: true },
+											afterMoveRight: sortCurrentCodeListSwap,
+											afterMoveLeft: sortItems,
+											itemsLimit: { right: 39 }
+										}"></div>
+										<!--Updown Button-->
+										<div id="up-down"
+											data-bind="ntsUpDown: {
+													targetSource: currentCodeListSwap,
+													primaryKey: 'code',
+													comId: '#swap-list',
+													type: 'swap',
+													swapTarget: 'right'
+												}"></div>
+									</div>
+								</div>
+
+								<!-- C7_13 -->
+								<div class="label C7_13">#{i18n.getText('KWR006_53')}</div>
+
+								<div class="C8">
+									<!-- C8_1 -->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_54')}</div>
+									<!-- C8_2 -->
+									<div class="c8_2" tabindex="11"
+										data-bind="ntsRadioBoxGroup: {
+														name: '#[KWR006_55]',
+														options: itemListConditionSet,
+														optionsValue: 'code',
+														optionsText: 'name',
+														enable: true,
+														value: selectedCodeA8_2}">
+
+									</div>
+									<div tabindex="13" id="combo-box-remarkInput"
+										style="margin-top: 30px; margin-left: 35px"
+										data-bind="ntsComboBox: {
+														name: '#[#KWR006_78]',
+														options: remarkInputContents,
+														optionsValue: 'value',
+														optionsText: 'localizedName',
+														visibleItemsCount: 5,
+														value: currentRemarkInputContent,
+														required: true,
+														enable: isEnableRemarkInputContents,
+														columns: [
+															{ prop: 'localizedName'}
+														]}">
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

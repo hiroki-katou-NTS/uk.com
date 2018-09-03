@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface SubstitutionOfHDManaDataRepository {
@@ -13,6 +14,14 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	// ドメインモデル「振休管理データ」を作成する
 	void create(SubstitutionOfHDManagementData domain);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd 振休日<INPUT．集計開始日
+	 * @return
+	 */
+	List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
 	
@@ -30,6 +39,7 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);
 	
 	List<SubstitutionOfHDManagementData> getBySidRemainDayAndInPayout(String sid);
+	
 	List<SubstitutionOfHDManagementData> getBySidPeriodAndInPayout(String sid, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * ドメインモデル「振休管理データ」を取得する
@@ -47,4 +57,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	 * @return
 	 */
 	List<SubstitutionOfHDManagementData> getByRemainDays(String sid, double remainDays);
+	
+	List<SubstitutionOfHDManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayoffDate);
+	
+	void deleteById(List<String> subOfHDID);
 }

@@ -214,7 +214,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                             }
 
                             block.clear();
-
+                            $('#itemName').focus();
                         });
                     });
                 }).fail(function(res) {
@@ -463,6 +463,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                     if (!getShared('CDL020_VALUES')) {
                         block.clear();
+                        $("#itemName").focus();
                         return;
                     }
 
@@ -474,18 +475,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     service.SetOrder(command).done(function() {
 
                         self.loadDataForGrid().done(function() {
-
+                            $("#itemName").focus();
                             block.clear();
                         });
-
                     });
-
-
                 });
-
             });
-
-
         }
 
         settingSelection() {
@@ -497,7 +492,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
             setShared('CPS017_PARAMS', params);
 
-            modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+            modal('/view/cps/017/a/index.xhtml', { title: ''}).onClosed(function(): any {
                 self.currentItem().selectionLst([]);
                 service.getAllSelByHistory(params.selectionItemId, self.currentCategory.personEmployeeType).done(function(data) {
                     self.currentItem().selectionLst(data);

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 600,
+					height : 440
+				};
+			</script>
+
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+			</com:ValidatorScript>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kwr006.d.main.css" />
+			<com:scriptfile path="kwr006.d.service.js" />
+			<com:scriptfile path="kwr006.d.vm.js" />
+			<com:scriptfile path="kwr006.d.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<div class="row">
+					<!-- D1_1 -->
+					<div class="D1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_58')}</div>
+					<!-- D1_2 -->
+					<div tabindex="1" id="combo-box-scrD"
+						data-bind="ntsComboBox: {
+						name: '#[KWR006_58]',
+						options: itemList,
+						optionsValue: 'code',
+						visibleItemsCount: 10,
+						value: selectedCode,
+						optionsText: 'name',
+						selectFirstIfNull: true,
+						columns: [
+							{ prop: 'code', length: 6 },
+							{ prop: 'name', length: 8 },
+						]}"></div>
+				</div>
+				<div class="row">
+					<!-- D1_5 -->
+					<div class="name"
+						data-bind="ntsFormLabel: {constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], required: true}">#{i18n.getText('KWR006_59')}</div>
+					<!-- D1_6 -->
+					<input tabindex="2" class="D1_6 save-error"
+						data-bind="ntsTextEditor:{
+																	name: '#[KWR006_60]',
+																	value: D1_6_value,
+																	required: true,
+																	constraint: 'OutputItemSettingCode'}" />
+					<!-- D1_7 -->
+					<input tabindex="3" class="D1_7 save-error"
+						data-bind="ntsTextEditor:{
+																	name: '#[KWR006_61]',
+																	value: D1_7_value,
+																	required: true,
+																	constraint: 'OutputItemSettingName'}" />
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- D1_9 -->
+				<button data-bind="click: executeCopy" tabindex="4" class="proceed">#{i18n.getText('KWR006_62')}</button>
+				<!-- D1_10 -->
+				<button data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KWR006_63')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

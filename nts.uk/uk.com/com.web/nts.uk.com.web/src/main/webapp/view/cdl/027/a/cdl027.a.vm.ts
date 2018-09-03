@@ -203,7 +203,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             this.valueBefore = valueBefore;
             this.valueAfter = valueAfter;
             this.modifiedPerson = modifiedPerson;
-            this.modifiedDateTime = moment.utc(modifiedDateTime).format("YYYY/MM/DD HH:mm:ss");
+            this.modifiedDateTime = modifiedDateTime == null ? "" : moment.utc(modifiedDateTime).format("YYYY/MM/DD HH:mm:ss");
             switch (correctionAttr) {
                 case CORRECTION_ATTR.EDIT: 
                     this.correctionAttr = getText("Enum_CorrectionAttr_EDIT");

@@ -6,6 +6,7 @@ module cps002.f.vm {
     import alert = nts.uk.ui.dialog.alert;
     import alertError = nts.uk.ui.dialog.alertError;
     import dialog = nts.uk.ui.dialog.info;
+	import block = nts.uk.ui.block;
 
 
     export class ViewModel {
@@ -65,12 +66,15 @@ module cps002.f.vm {
                 }
 
             });
+			block.grayout();
             service.updatePerInfoItemCopy(categoryId, self.lstItem()).done(() => {
 
                 dialog({ messageId: "Msg_15" }).then(() => {
                     self.start(self.selectedCtgId());
                 });
-            })
+            }).always(() => {
+				block.clear();
+			});
 
 
         }
@@ -79,10 +83,8 @@ module cps002.f.vm {
         }
         start(ctgid?) {
             let self = this;
-            //let dataArr = self.data.listPerCtg;
-            //self.lstCategory(dataArr);
-            //self.currentPerInfoCtg(dataArr[0].id);
             let ctgName = "";
+			block.grayout();
             service.getPerInfoCtgHasItems(ctgName).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.lstCategory(data);
@@ -91,8 +93,13 @@ module cps002.f.vm {
                 } else {
                     alertError({ messageId: "Msg_352" });
                 }
-            })
-
+				 block.clear();
+            }).fail((error) => {
+                    if (error.messageId == "Msg_352") {
+                       alertError({ messageId: "Msg_352" });     
+                    }
+					 block.clear();
+                });
         }
 
         searchByName() {

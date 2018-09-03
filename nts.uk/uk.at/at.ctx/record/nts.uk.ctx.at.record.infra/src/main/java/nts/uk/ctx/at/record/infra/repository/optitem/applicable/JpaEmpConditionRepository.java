@@ -6,6 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
@@ -100,11 +103,44 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList) {
-		List<EmpCondition> result = new ArrayList<>();
-		for(Integer optionalItemNo:optionalItemNoList) {
-			result.add(this.find(companyId, optionalItemNo));
-		}
-		return result;
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KrcstApplEmpCon> cq = builder.createQuery(KrcstApplEmpCon.class);
+
+		// From table
+		Root<KrcstApplEmpCon> root = cq.from(KrcstApplEmpCon.class);
+
+		List<KrcstApplEmpCon> result = new ArrayList<>();
+		CollectionUtil.split(optionalItemNoList, 1000, subList -> {
+			List<Predicate> predicateList = new ArrayList<Predicate>();
+
+			// Add where condition
+			predicateList.add(builder.equal(
+					root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.cid),
+					companyId));
+			predicateList.add(root.get(KrcstApplEmpCon_.krcstApplEmpConPK)
+					.get(KrcstApplEmpConPK_.optionalItemNo).in(subList));
+
+			cq.where(predicateList.toArray(new Predicate[] {}));
+
+			// Get results
+			result.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		// Group by item NO
+		Map<Integer, List<KrcstApplEmpCon>> mapEmpCondition = result.stream().collect(
+				Collectors.groupingBy(item -> item.getKrcstApplEmpConPK().getOptionalItemNo()));
+
+		// Return
+		return mapEmpCondition.entrySet().stream()
+				.map(item -> new EmpCondition(
+						new JpaEmpConditionGetMemento(companyId, item.getKey(), item.getValue())))
+				.collect(Collectors.toList());
 	}
 	
 }

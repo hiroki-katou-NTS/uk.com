@@ -1,18 +1,25 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import lombok.val;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
@@ -24,9 +31,12 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -35,6 +45,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyRecordServiceCenter{
 	//休暇加算設定
 	@Inject
@@ -76,51 +87,67 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private EmpConditionRepository empConditionRepository;
 
+	@Inject
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository; 
 	
 	@Inject
 	private WorkInformationRepository workInformationRepository;
 	
+	@Inject
+	private ZeroTimeRepository zeroTimeRepository;
+	
 	@Override
-	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
-		
-		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
-		
-		Map<GeneralDate,IntegrationOfDaily> mapIntegration = convertMap(integrationOfDaily);
+	//old_process. Don't use!
+	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList()).getIntegrationOfDailyList();
+	}
+	
+	@Override
+	//会社共通の設定を他のコンテキストで取得できる場合に呼び出す窓口
+	public List<IntegrationOfDaily> calculatePassCompanySetting(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),companySet,Collections.emptyList()).getIntegrationOfDailyList();
+	}
+	
+	@Override
+	//更新処理自動実行から呼び出す窓口
+	public List<IntegrationOfDaily> calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),closureList).getIntegrationOfDailyList();
+	}
+	
+	@Override
+	//就業計算と集計から呼び出す時の窓口
+	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
+	}
+	
+	/**
+	 * 会社共通の処理達
+	 * @param integrationOfDaily 実績データたち
+	 * @param companySet 
+	 * @param closureList 
+	 * @return 計算後実績データ
+	 */
+	private CalcStatus commonPerCompany(List<IntegrationOfDaily> integrationOfDaily,boolean isManageState,
+													  Optional<AsyncCommandHandlerContext> asyncContext
+													 ,Optional<Consumer<ProcessState>> counter, 
+													 Optional<ManagePerCompanySet> companySet, 
+													 List<ClosureStatusManagement> closureList) {
+		/***会社共通処理***/
+		if(integrationOfDaily.isEmpty()) return new CalcStatus(ProcessState.SUCCESS, integrationOfDaily);
+		//社員毎の実績に纏める
+		Map<String,List<IntegrationOfDaily>> recordPerEmpId = getPerEmpIdRecord(integrationOfDaily);
 		String comanyId = AppContexts.user().companyId();
 		//会社共通の設定を
 		MasterShareContainer shareContainer = MasterShareBus.open();
-		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(AppContexts.user().companyId(), true));
-
+		ManagePerCompanySet companyCommonSetting = companySet.orElse(new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(comanyId),
+				   																			 holidayAddtionRepository.findByCId(comanyId),
+				   																			 specificWorkRuleRepository.findCalcMethodByCid(comanyId),
+				   																			 compensLeaveComSetRepository.find(comanyId),
+				   																			 divergenceTimeRepository.getAllDivTime(comanyId),
+				   																			 errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(comanyId, true),
+				   																			 bPUnitUseSettingRepository.getSetting(comanyId),
+				   																			 zeroTimeRepository.findByCId(comanyId)));
 		companyCommonSetting.setShareContainer(shareContainer);
-		//社員毎の期間取得
-		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationOfDaily);
-		
-		List<GeneralDate> sortedymd = integrationOfDaily.stream()
-								  					 	.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
-								  					 	.map(tc -> tc.getAffiliationInfor().getYmd())
-								  					 	.collect(Collectors.toList());
-		
-		val maxGeneralDate = sortedymd.get(0);
-		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
-		//労働制マスタ取得
-		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
-		
-
-		//前日計算したboolean(必要な設定がそろっているか判断するためのもの)
-//		calCalc = false;
-//		//初期値
-//		//返値用のリスト
-		List<IntegrationOfDaily> returnList = new ArrayList<>();
-//		//法定労働時間
-//		DailyUnit dailyUnit = new DailyUnit();
-//		//労働制
-//		//雇用コード
-//		//雇用ID
 		
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		String companyId = AppContexts.user().companyId();
@@ -134,83 +161,142 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		//適用する雇用条件の取得
 		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
-		
-		for(Map.Entry<GeneralDate,IntegrationOfDaily> entity:mapIntegration.entrySet()) {
+		/***会社共通処理***/
+		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		//社員ごとの処理
+		for(Entry<String, List<IntegrationOfDaily>> record: recordPerEmpId.entrySet()) {
+			//対象社員の締め取得
+			List<ClosureStatusManagement> closureByEmpId = getclosure(record.getKey(), closureList);
+			//日毎の処理
+			val returnValue = calcOnePerson(comanyId,record.getValue(),companyCommonSetting,asyncContext,closureByEmpId);
+			// 中断処理　（中断依頼が出されているかチェックする）
+			if (asyncContext.isPresent() 
+				&& asyncContext.get().hasBeenRequestedToCancel()) {
+				asyncContext.get().finishedAsCancelled();
+				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
+			}
+			returnList.addAll(returnValue.getIntegrationOfDailyList());
+			//人数カウントアップ
+			if(counter.isPresent()) {
+				counter.get().accept(ProcessState.SUCCESS);
+			}
+		}
 
+		shareContainer.clearAll();
+		shareContainer= null;
+		return new CalcStatus(ProcessState.SUCCESS,returnList);
+		
+	}
+
+	/**
+	 * 対象者の締め一覧を取得する
+	 * @param empId 対象者
+	 * @param closureList 締め一覧
+	 * @return 対象者の締め一覧
+	 */
+	private List<ClosureStatusManagement> getclosure(String empId,List<ClosureStatusManagement> closureList){
+		return closureList.stream().filter(tc -> tc.getEmployeeId() == empId).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 日毎のメイン処理
+	 * @param comanyId 会社 ID
+	 * @param recordList 実績データのリスト
+	 * @param companyCommonSetting 会社共通の設定
+	 * @param closureByEmpId 
+	 * @return　実績データ
+	 */
+	private CalcStatus calcOnePerson(String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
+									Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureByEmpId){
+		
+		//社員の期間取得
+		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(recordList);
+		val map = convertMap(recordList);
+		List<GeneralDate> sortedymd = recordList.stream()
+								  			.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
+								  			.map(tc -> tc.getAffiliationInfor().getYmd())
+								  			.collect(Collectors.toList());
+		
+		val maxGeneralDate = sortedymd.get(0);
+		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		
+		
+		//労働制マスタ取得
+		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
+		
+		//日ごとループ(1人社員の)
+		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		for(IntegrationOfDaily record:recordList) {
+			// 中断処理　（中断依頼が出されているかチェックする）
+			if (asyncContext.isPresent() 
+				&& asyncContext.get().hasBeenRequestedToCancel()) {
+				asyncContext.get().finishedAsCancelled();
+				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
+			}
+			
+			//締め一覧から、ymdが計算可能な日かを判定する
+			if(!isCalc(closureByEmpId, record.getAffiliationInfor().getYmd())) {
+				returnList.add(record);
+				continue;
+			}
+			
 			//nowIntegrationの労働制取得
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(entity.getValue().getAffiliationInfor().getYmd(),entity.getValue().getAffiliationInfor().getEmployeeId());
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getAffiliationInfor().getYmd(),record.getAffiliationInfor().getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
 				companyCommonSetting.setPersonInfo(Optional.of(nowWorkingItem.get().getValue()));
 				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(comanyId,
-																		entity.getValue().getAffiliationInfor().getEmploymentCode().toString(),
-																		entity.getValue().getAffiliationInfor().getEmployeeId(),
-																		entity.getValue().getAffiliationInfor().getYmd(),
+																		record.getAffiliationInfor().getEmploymentCode().toString(),
+																		record.getAffiliationInfor().getEmployeeId(),
+																		record.getAffiliationInfor().getYmd(),
 																		nowWorkingItem.get().getValue().getLaborSystem());
 				if(dailyUnit == null) {
-					returnList.add(entity.getValue());
+					returnList.add(record);
 				}
 				else {
 					companyCommonSetting.setDailyUnit(dailyUnit);
-					returnList.add(calculate.calculate(entity.getValue(), 
+					//実績計算
+					returnList.add(calculate.calculate(record, 
 													   companyCommonSetting,
-													   findAndGetWorkInfo(entity.getValue().getAffiliationInfor().getEmployeeId(),mapIntegration,entity.getKey().addDays(-1)),
-													   findAndGetWorkInfo(entity.getValue().getAffiliationInfor().getEmployeeId(),mapIntegration,entity.getKey().addDays(1))));
+													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(-1)),
+													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1))));
 				}
 			}
 			else {
-				returnList.add(entity.getValue());
+				returnList.add(record);
 			}
 		}
-		shareContainer.clearAll();
-		shareContainer= null;
-		return returnList;
+
+		return new CalcStatus(ProcessState.SUCCESS,returnList);
 	}
+	
+	
+	/**
+	 * 計算可能な日かを判定する
+	 * @param closureList　締め一覧
+	 * @param ymd　対象年月日
+	 * @return　計算してもよい
+	 */
+	public boolean isCalc(List<ClosureStatusManagement> closureList, GeneralDate ymd) {
+		for(ClosureStatusManagement closure : closureList) {
+			if(closure.getPeriod().contains(ymd))
+				return false;
+		}
+		return true;
+	}
+	
 
-//			if(calCalc) {
-//				if(nowWorkingItemがNotOptional) {
-//					if(nowIntegration.getAffiliationInfor().getYmd()が、現在取得している労働制の期間に含まれているか) {
-//						今の状態の設定とnowIntegrationを使って計算処理呼ぶ
-//						returnList.add(calculate.calculate(nowIntegration, companyCommonSetting));
-//						前日計算区分 = true
-//					}
-//					
-//					else{
-//						新たに労働制を取得
-//
-//						if(新たに取得した労働制がNotOptional) {
-//							companyCommonSetting.setPersonInfo();
-//							val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
-//																					nowIntegration.getAffiliationInfor().getEmploymentCode().toString(),
-//																					nowIntegration.getAffiliationInfor().getEmployeeId(),
-//																					nowIntegration.getAffiliationInfor().getYmd(),
-//																					nowWorkingItem.get().getValue().getLaborSystem());
-//							if(dailyUnit != null) {
-//								//今の状態の設定とnowIntegrationを使って計算処理呼ぶ
-//								companyCommonSetting.setDailyUnit(dailyUnit);
-//								returnList.add(calculate.calculate(nowIntegration, companyCommonSetting));
-//							}
-//							else {
-//								//法定労働時間が取得できない　＝ 設定不足で計算できないと判断する
-//								returnList.add(nowIntegration);
-//							}
-//							
-//						}
-//						else {
-//							//労働制が取得できない　＝ 設定不足で計算できないと判断する
-//							returnList.add(nowIntegration);
-//						}
-//					}
-//				}
-//				else {
-//					今の状態の設定とnowIntegrationを使って計算処理呼ぶ
-//					returnList.add(calculate.calculate(nowIntegration, companyCommonSetting));
-//					前日計算区分 = true
-//				}
-//			}
-//			else {
-//				returnList.add(nowIntegration);
-//			}
-
+	//社員毎の実績にまとめる
+	private Map<String, List<IntegrationOfDaily>> getPerEmpIdRecord(List<IntegrationOfDaily> integrationOfDaily) {
+		List<String> empIdList = integrationOfDaily.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
+		Map<String, List<IntegrationOfDaily>> returnMap = new HashMap<>();
+		for(String empId : empIdList) {
+			val integrations = integrationOfDaily.stream().filter(tc -> tc.getAffiliationInfor().getEmployeeId().equals(empId)).collect(Collectors.toList());
+			returnMap.put(empId, integrations);
+		}
+		return returnMap;
+	}
+	
+	
 	/**
 	 * List→Mapへの変換クラス
 	 * @param integrationOfDaily 日別実績(Work)
@@ -291,7 +377,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
 														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()));
+														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()),
+														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()),
+														   zeroTimeRepository.findByCId(AppContexts.user().companyId()));
 
 		//社員毎の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationList);

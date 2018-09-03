@@ -5,30 +5,30 @@ module nts.uk.at.view.kdw008.c {
             idList: KnockoutObservable<string>;
             businessTypeSortedList: KnockoutObservableArray<BusinessTypeSortedModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            testSingle: KnockoutObservable<any>;
+            testSingle: KnockoutObservableArray<any>;
             isDaily: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
-                this.idList = ko.observable('');
-                this.businessTypeSortedList = ko.observableArray([]);
+                self.idList = ko.observable('');
+                self.businessTypeSortedList = ko.observableArray([]);
                 let param  = nts.uk.ui.windows.getShared("openC");
-                this.isDaily = ko.observable(param);
-
+                self.isDaily = ko.observable(param);
+                self.columns = ko.observableArray([]);
                 if (self.isDaily()) {
-                    this.columns = ko.observableArray([
+                    self.columns([
                         { headerText: getText('KDW008_7'), key: 'dislayNumber', width: 60 },
                         { headerText: '', key: 'attendanceItemId', hidden: true, width: 120 },
-                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220 }
+                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220, formatter: _.escape }
                     ]);
                 } else {
-                    this.columns = ko.observableArray([
+                    self.columns([
                         { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 60 },
                         { headerText: '', key: 'attendanceItemId', hidden: true, width: 120 },
-                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220 }
+                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220, formatter: _.escape }
                     ]);
                 }
-                this.testSingle = ko.observable(null);
+                self.testSingle = ko.observableArray([]);
             }
 
             update(): void {
@@ -44,7 +44,7 @@ module nts.uk.at.view.kdw008.c {
                         //self.findAll();
                         nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            nts.uk.ui.windows.close();
+                            //nts.uk.ui.windows.close();
                         });
                         //                                    
                     });
@@ -63,7 +63,7 @@ module nts.uk.at.view.kdw008.c {
                         //self.findAll();
 
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            nts.uk.ui.windows.close();
+                            //nts.uk.ui.windows.close();
                         });
                         //                                    
                     }).fail(function(res) {

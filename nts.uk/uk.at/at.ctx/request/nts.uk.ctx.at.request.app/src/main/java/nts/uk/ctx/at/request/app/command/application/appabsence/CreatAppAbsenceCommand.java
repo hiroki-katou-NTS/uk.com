@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
@@ -37,9 +38,14 @@ public class CreatAppAbsenceCommand {
 	 * 申請.申請者
 	 */
 	private String employeeID;
+	
+	/**
+	 * 定型理由
+	 */
+	private String appReasonID;
 
 	/**
-	 * 申請.申請理由 = 申請.申請定型理由 + \n + 申請.申請理由
+	 * 申請理由	
 	 */
 	private String applicationReason;
 	/**
@@ -109,4 +115,7 @@ public class CreatAppAbsenceCommand {
 	 * displayEndDateFlg
 	 */
 	private boolean displayEndDateFlg;
+	//specHoliday
+	private SpecHolidayCommand specHd;
+	
 }

@@ -158,8 +158,8 @@ public class DailyCorrectEventServiceCenter {
 				if(breakTimeCorrected.action == EventHandleAction.DELETE){
 					dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 					dailyRecord.getBreakTime().shouldDeleteIfNull();
-				} else if(breakTimeCorrected.action == EventHandleAction.INSERT || breakTimeCorrected.action == EventHandleAction.INSERT) {
-					dailyRecord.getBreakTime().updateData(breakTimeCorrected);
+				} else if(breakTimeCorrected.action == EventHandleAction.INSERT || breakTimeCorrected.action == EventHandleAction.UPDATE) {
+					dailyRecord.getBreakTime().updateData(breakTimeCorrected.data);
 				}
 			}
 			

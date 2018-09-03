@@ -76,7 +76,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 実行状態　初期設定
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("monthlyAggregateCount", 0);
-		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 
 		// 月次集計を実行するかチェックする
@@ -140,8 +139,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
-			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
+			MonthlyAggrEmpServiceValue aggrStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+			ProcessState coStatus = aggrStatus.getState();
 			stateHolder.add(coStatus);
 
 			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);
@@ -158,7 +158,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			if (coStatus == ProcessState.INTERRUPTION){
 				
 				// 中断時
-				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		}
@@ -171,7 +170,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
-		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		return success;
 	}

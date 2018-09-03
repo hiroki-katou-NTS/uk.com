@@ -82,10 +82,12 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
 														this.outingTimeSheets.stream()
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
+																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList()):
 														//全ての時は、全外出時間帯が対象
 														this.outingTimeSheets.stream()
+																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList());
 		//流動化
@@ -118,9 +120,11 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 																							  deductionItem.getBonusPayTimeSheet(),
 																							  deductionItem.getSpecBonusPayTimesheet(),
 																							  deductionItem.getMidNightTimeSheet(),
+																							  deductionItem.getWorkingBreakAtr(),
 																							  deductionItem.getGoOutReason(),
 																							  Finally.of(BreakClassification.BREAK_STAMP),
-																							  DeductionClassification.BREAK));
+																							  Optional.empty(),
+																							  DeductionClassification.BREAK,deductionItem.getChildCareAtr()));
 			}
 			//修正しない
 			else {
@@ -135,6 +139,9 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
-		return this.outingTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
+		return this.outingTimeSheets.stream()
+									.filter(ts -> ts.isCalcState())
+									.map(tc -> tc.toTimeSheetOfDeductionItem())
+									.collect(Collectors.toList());
 	}
 }

@@ -66,10 +66,10 @@
 								</td>
 								<td>
 									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, 
-																	enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
+																	enable: enableButton">#{i18n.getText('KAF022_280')}</button>
 									<input  class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes,
 																								name: optionName, 
-																								enable: displayFlag, 
+																								enable: enableButton, 
 																								readonly: true,
 																								required: true},
 																								attr: { NameID: optionName }

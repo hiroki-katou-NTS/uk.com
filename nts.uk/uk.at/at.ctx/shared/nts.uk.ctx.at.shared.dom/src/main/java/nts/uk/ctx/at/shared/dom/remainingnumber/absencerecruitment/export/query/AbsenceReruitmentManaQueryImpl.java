@@ -19,10 +19,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.ClosureRemainPeriodOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
@@ -128,8 +130,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		}
 		AbsRecInterimOutputPara absRecInterimData = optAbsRecInterimData.get();
 		//振出履歴を作成する
-		List<RecruitmentHistoryOutPara> lstHisRecData = this.createRecruitmentHis(absRecInterimData.getInterimRecMngInfor(), absRecConfirmData.getLstRecConfirm(),
-				absRecInterimData.getInterimRecAbsMngInfor());
+		List<RecruitmentHistoryOutPara> lstHisRecData = this.createRecruitmentHis(absRecInterimData.getInterimRecMngInfor(), 
+				absRecConfirmData.getLstRecConfirm(), absRecInterimData.getInterimRecAbsMngInfor());
 		//振休履歴を作成する
 		List<AbsenceHistoryOutputPara> lstHisAbsData = this.createAbsenceHis(absRecInterimData.getInterimAbsMngInfor(), 
 				absRecConfirmData.getLstAbsConfirm(), absRecInterimData.getInterimRecAbsMngInfor());
@@ -147,12 +149,13 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		if(adjustDate == null) {
 			return Optional.empty();
 		}
+		AbsRecInterimOutputPara outputData = new AbsRecInterimOutputPara(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		//指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する		
 		Optional<AbsRecInterimOutputPara> optOutputData = this.getInterimAbsMng(sid, adjustDate);
-		if(!optOutputData.isPresent()) {
-			return Optional.empty();
+
+		if(optOutputData.isPresent()) {
+			outputData = optOutputData.get();
 		}
-		AbsRecInterimOutputPara outputData = optOutputData.get();
 		//指定期間内に使用した暫定振休を取得する  ドメインモデル「暫定振休管理データ」を取得する
 		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.PAUSE);
 		List<InterimAbsMng> interimAbsMngInfor = new ArrayList<>(outputData.getInterimAbsMngInfor());
@@ -198,7 +201,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		return Optional.of(new AbsRecInterimOutputPara(lstAbsData, lstRecAbsMng, lstRecData));
 	}
 	@Override
-	public AbsRecInterimOutputPara getNotInterimAbsMng(String sid, DatePeriod dateData, AbsRecInterimOutputPara absRecData, AbsRecConfirmOutputPara confirmData) {
+	public AbsRecInterimOutputPara getNotInterimAbsMng(String sid, DatePeriod dateData, AbsRecInterimOutputPara absRecData,
+			AbsRecConfirmOutputPara confirmData) {
 		//振出管理データをチェックする
 		List<String> lstConfirmRecId = confirmData.lstRecConfirm.stream().map(x -> x.getPayoutId())
 				.collect(Collectors.toList());
@@ -231,7 +235,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		confirmData.stream().forEach(x -> {
 			RecruitmentHistoryOutPara hisData = new RecruitmentHistoryOutPara();
 			hisData.setRecId(x.getPayoutId());
-			hisData.setDataAtr(MngDataAtr.CONFIRMED);
+			hisData.setDataAtr(MngHistDataAtr.CONFIRMED);
 			hisData.setRecDate(x.getPayoutDate());
 			hisData.setHolidayAtr(x.getLawAtr().value);
 			hisData.setExpirationDate(x.getExpiredDate());
@@ -239,7 +243,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			hisData.setUnUseDays(x.getUnUsedDays().v());
 			hisData.setChkDisappeared(x.getStateAtr() == DigestionAtr.EXPIRED ? true : false);
 			//確定振出に紐付いた暫定振出振休紐付け管理を抽出する		
-			List<InterimRecAbsMng> lstTmp = lstInterimData.stream().filter(a -> a.getRecruitmentMngAtr() == DataManagementAtr.CONFIRM && a.getRecruitmentMngId().equals(x.getPayoutId()))
+			List<InterimRecAbsMng> lstTmp = lstInterimData.stream().filter(a -> a.getRecruitmentMngAtr() == DataManagementAtr.CONFIRM 
+					&& a.getRecruitmentMngId().equals(x.getPayoutId()))
 					.collect(Collectors.toList());
 			lstTmp.stream().forEach(b -> {
 				hisData.setUnUseDays(hisData.getUnUseDays() - b.getUseDays().v());
@@ -255,10 +260,16 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			hisData.setUnUseDays(y.getUnUsedDays().v());
 			hisData.setChkDisappeared(false);
 			Optional<InterimRemain> optRemainData = remainRepo.getById(y.getRecruitmentMngId());
-			if(optRemainData.isPresent()) {
-				hisData.setDataAtr(EnumAdaptor.valueOf(optRemainData.get().getCreatorAtr().value, MngDataAtr.class));
-				hisData.setRecDate(new CompensatoryDayoffDate(false, Optional.of(optRemainData.get().getYmd())));
-			}
+			optRemainData.ifPresent(z -> {
+				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+				if(z.getCreatorAtr() == CreateAtr.RECORD) {
+					atr = MngHistDataAtr.RECORD;
+				} else if (z.getCreatorAtr() == CreateAtr.SCHEDULE) {
+					atr = MngHistDataAtr.SCHEDULE;
+				}
+				hisData.setDataAtr(atr);
+				hisData.setRecDate(new CompensatoryDayoffDate(false, Optional.of(z.getYmd())));
+			});			
 			lstOutputData.add(hisData);
 		});	
 		
@@ -274,11 +285,12 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			AbsenceHistoryOutputPara hisData = new AbsenceHistoryOutputPara();
 			hisData.setAbsId(a.getSubOfHDID());
 			hisData.setAbsDate(a.getHolidayDate());
-			hisData.setCreateAtr(MngDataAtr.CONFIRMED);
+			hisData.setCreateAtr(MngHistDataAtr.CONFIRMED);
 			hisData.setRequeiredDays(a.getRequiredDays().v());
 			hisData.setUnOffsetDays(a.getRemainDays().v());
 			//確定振休に紐付いた暫定振出振休紐付け管理を抽出す
-			List<InterimRecAbsMng> tmp = lstInterimData.stream().filter(b -> b.getAbsenceMngId().equals(a.getSubOfHDID()) && b.getAbsenceMngAtr() == DataManagementAtr.CONFIRM).collect(Collectors.toList());
+			List<InterimRecAbsMng> tmp = lstInterimData.stream().filter(b -> b.getAbsenceMngId().equals(a.getSubOfHDID())
+					&& b.getAbsenceMngAtr() == DataManagementAtr.CONFIRM).collect(Collectors.toList());
 			tmp.stream().forEach(c -> {
 				hisData.setUnOffsetDays(hisData.getUnOffsetDays() - c.getUseDays().v());
 			});
@@ -288,11 +300,17 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		interimData.stream().forEach(x -> {
 			AbsenceHistoryOutputPara hisData = new AbsenceHistoryOutputPara();
 			Optional<InterimRemain> optRemainData = remainRepo.getById(x.getAbsenceMngId());
-			if(optRemainData.isPresent()) {
-				CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(optRemainData.get().getYmd()));
+			optRemainData.ifPresent(z -> {
+				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+				if(z.getCreatorAtr() == CreateAtr.RECORD) {
+					atr = MngHistDataAtr.RECORD;
+				} else if (z.getCreatorAtr() == CreateAtr.SCHEDULE) {
+					atr = MngHistDataAtr.SCHEDULE;
+				}
+				CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(z.getYmd()));
 				hisData.setAbsDate(date);				
-				hisData.setCreateAtr(EnumAdaptor.valueOf(optRemainData.get().getCreatorAtr().value, MngDataAtr.class));
-			}
+				hisData.setCreateAtr(atr);
+			});
 			hisData.setAbsId(x.getAbsenceMngId());
 			hisData.setRequeiredDays(x.getRequeiredDays().v());
 			hisData.setUnOffsetDays(x.getUnOffsetDays().v());
@@ -374,7 +392,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		if(!lstInterim.isEmpty()) {
 			lstOutputPara.addAll(lstInterim);
 		}
-		lstOutputPara = lstOutputPara.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().get())
+		lstOutputPara = lstOutputPara.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() 
+				? a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() : GeneralDate.max())
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
 		return lstOutputPara;
 	}
@@ -382,36 +401,44 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	public AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis,
 			List<AbsenceHistoryOutputPara> lstAbsHis) {
 		AsbRemainTotalInfor outPutData = new AsbRemainTotalInfor(0, 0, 0, 0, 0);
-		List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
+		List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngHistDataAtr.RECORD)
+				.collect(Collectors.toList());
 		lstAbsHisRecord.stream().forEach(x -> {
 			//実績使用日数を算出する
 			outPutData.setRecordUseDays(outPutData.getRecordUseDays() + x.getRequeiredDays());			
 		});
-		List<RecruitmentHistoryOutPara> lstRechisRecord = lstRecHis.stream().filter(x -> x.getDataAtr() == MngDataAtr.RECORD).collect(Collectors.toList());
+		List<RecruitmentHistoryOutPara> lstRechisRecord = lstRecHis.stream().filter(x -> x.getDataAtr() == MngHistDataAtr.RECORD)
+				.collect(Collectors.toList());
 		lstRechisRecord.stream().forEach(x -> {
 			//実績発生日数を算出する
 			outPutData.setRecordOccurrenceDays(outPutData.getRecordOccurrenceDays() + x.getOccurrenceDays());
 		});
 		
-		List<AbsenceHistoryOutputPara> lstAbsHisSche = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.SCHEDULE).collect(Collectors.toList());
+		List<AbsenceHistoryOutputPara> lstAbsHisSche = lstAbsHis.stream()
+				.filter(x -> x.getCreateAtr() == MngHistDataAtr.SCHEDULE || x.getCreateAtr() == MngHistDataAtr.NOTREFLECT)
+				.collect(Collectors.toList());
 		lstAbsHisSche.stream().forEach(x -> {
 			//予定使用日数を算出する
 			outPutData.setScheUseDays(outPutData.getScheUseDays() + x.getRequeiredDays());
 		});
-		List<RecruitmentHistoryOutPara> lstRechisSche = lstRecHis.stream().filter(x -> x.getDataAtr() == MngDataAtr.SCHEDULE).collect(Collectors.toList());
+		List<RecruitmentHistoryOutPara> lstRechisSche = lstRecHis.stream()
+				.filter(x -> x.getDataAtr() == MngHistDataAtr.SCHEDULE || x.getDataAtr() == MngHistDataAtr.NOTREFLECT)
+				.collect(Collectors.toList());
 		lstRechisSche.stream().forEach(x -> {
 			//予定発生日数を算出する
 			outPutData.setScheOccurrenceDays(outPutData.getScheOccurrenceDays() + x.getOccurrenceDays());
 		});
 		//振出履歴.状態＝確定済
 		double unUseDay = 0;
-		List<RecruitmentHistoryOutPara> lstRecHisConfirm = lstRecHis.stream().filter(x -> x.getDataAtr() == MngDataAtr.CONFIRMED).collect(Collectors.toList());
+		List<RecruitmentHistoryOutPara> lstRecHisConfirm = lstRecHis.stream().filter(x -> x.getDataAtr() == MngHistDataAtr.CONFIRMED)
+				.collect(Collectors.toList());
 		for (RecruitmentHistoryOutPara confirmData : lstRecHisConfirm) {
 			unUseDay += confirmData.getUnUseDays();
 		}
 		//・振休履歴.状態＝確定済
 		double unOffsetDays = 0;
-		List<AbsenceHistoryOutputPara> lstAbsHisConfirm = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngDataAtr.CONFIRMED).collect(Collectors.toList());
+		List<AbsenceHistoryOutputPara> lstAbsHisConfirm = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngHistDataAtr.CONFIRMED)
+				.collect(Collectors.toList());
 		for (AbsenceHistoryOutputPara confirmData : lstAbsHisConfirm) {
 			unOffsetDays += confirmData.getUnOffsetDays();
 		}

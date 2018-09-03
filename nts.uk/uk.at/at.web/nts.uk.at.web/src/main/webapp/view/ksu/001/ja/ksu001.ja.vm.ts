@@ -238,7 +238,7 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
 
             nts.uk.ui.block.grayout();
             let listInsertPatternItemCommand = [];
-            for (var i = 0; i < self.source().length; i++) {
+            for (let i = 0; i < self.source().length; i++) {
                 if (!_.isEmpty(self.source()[i])) {
                     let listInsertWorkPairSetCommand = [];
                     _.each(self.source()[i].data, (dt) => {

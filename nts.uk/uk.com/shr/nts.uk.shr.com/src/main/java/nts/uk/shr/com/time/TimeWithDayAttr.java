@@ -80,6 +80,12 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 		return rawHour() + ":" + (rawMinutes < 10 ? "0" + rawMinutes : rawMinutes);
 	}
 	
+	public String getFullText() {
+		// とりあえず日本語のみに対応
+		// 英語等の場合にどうなるか、まだ仕様が決まっていない
+		return this.dayAttr().description + this.getInDayTimeWithFormat();
+	}
+	
 	/**
 	 * Returns shifted time instance but min="12:00 at previous day" max="23:59 at two days later".
 	 * @param minutesToShift

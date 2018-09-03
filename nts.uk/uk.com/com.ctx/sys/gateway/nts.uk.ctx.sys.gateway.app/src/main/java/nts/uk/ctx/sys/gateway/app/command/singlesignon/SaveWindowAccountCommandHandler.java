@@ -22,6 +22,7 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
@@ -51,39 +52,28 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 						
-			// TODO: need refactor
 			if (command.getWinAcc1() != null) {
-				if (command.getWinAcc1().getIsChange()) {
 					this.validate(command.getWinAcc1());
-				}
 				
 				listWinAccDto.add(command.getWinAcc1());
 			}
 			if (command.getWinAcc2() != null) {
-				if (command.getWinAcc2().getIsChange()) {
 					this.validate(command.getWinAcc2());
-				}
 
 				listWinAccDto.add(command.getWinAcc2());
 			}
 			if (command.getWinAcc3() != null) {
-				if (command.getWinAcc3().getIsChange()) {
 					this.validate(command.getWinAcc3());
-				}
 
 				listWinAccDto.add(command.getWinAcc3());
 			}
 			if (command.getWinAcc4() != null) {
-				if (command.getWinAcc4().getIsChange()) {
 					this.validate(command.getWinAcc4());
-				}
 
 				listWinAccDto.add(command.getWinAcc4());
 			}
 			if (command.getWinAcc5() != null) {
-				if (command.getWinAcc5().getIsChange()) {
 					this.validate(command.getWinAcc5());
-				}
 
 				listWinAccDto.add(command.getWinAcc5());
 			}
@@ -140,13 +130,16 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 	 *            the dto
 	 */
 	private void validate(WindowAccountDto dto) {
+		if (dto.getUseAtr() == UseAtr.NotUse) {
+			return;
+		}
 		// check error domain
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		if (!StringUtils.isEmpty(dto.getHostName().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
 			Optional<WindowsAccount> opWindowAccount = windowAccountRepository
-					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
+					.findbyUserNameAndHostNameAndIsUsed(dto.getUserName().v(), dto.getHostName().v());
 
 			// Check condition
 			if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().equals(dto.getUserId())) {

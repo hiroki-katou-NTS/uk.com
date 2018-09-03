@@ -57,7 +57,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
                 self.elapseTime.start();
-                if (self.params)
+                if (self.params.check != 2 || !self.params.check)
                     self.processMonthlyUpdate();
                 else {
                     self.taskId(localStorage.getItem("MonthlyClosureTaskId"));
@@ -76,6 +76,18 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private processMonthlyUpdate(): void {
             var self = this;
             var command = self.params;
+//            var command = {
+//                    closureDay : self.params.closureDay,
+//                    closureId: self.params.closureId,
+//                    currentMonth: self.params.currentMonth,
+//                    endDT: self.params.endDT,
+//                    isLastDayOfMonth: self.params.isLastDayOfMonth,
+//                    listEmployeeId: self.params.listEmployeeId,
+//                    monthlyClosureUpdateLogId: self.params.monthlyClosureUpdateLogId,
+//                    periodEnd: self.params.periodEnd,
+//                    periodStart: moment(self.params.periodStart).format("yyyy-MM-dd hh:mm:ss.SSS"),
+//                    startDT: self.params.startDT
+//                }
             service.executeMonthlyClosure(command).done(res => {
                 self.taskId(res.id);
                 localStorage.setItem("MonthlyClosureTaskId", res.id);
@@ -90,7 +102,10 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
                         self.processedCount(self.getAsyncData(info.taskDatas, "processed").valueAsNumber);
                         if (!info.pending && !info.running) {
-                            if (info.status == "COMPLETED") self.processedCount(self.totalCount());
+                            if (info.status == "COMPLETED" || localStorage.getItem("MCUdpStatus") == "COMPLETED") {
+                                localStorage.setItem("MCUdpStatus", info.status);
+                                self.processedCount(self.totalCount());
+                            }
                             self.checkResult(info);
                             if (info.error) {
                                 alertError(info.error);
@@ -125,6 +140,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.isComplete(true);
                 $("#F3_2").focus();
                 self.endTime(taskInfor.finishedAt);
+                localStorage.setItem("MonthlyClosureExecutionEndDate", self.endTime());
                 self.elapseTime.end();
                 self.completeStatus(result.updateLog.completeStatus);
             }).fail((error) => {
@@ -143,6 +159,13 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 localStorage.removeItem("MonthlyClosureId");
                 localStorage.removeItem("MonthlyClosureExecutionDateTime");
                 localStorage.removeItem("MonthlyClosureTaskId");
+//                localStorage.removeItem("MonthlyClosureStartDT");
+//                localStorage.removeItem("MonthlyClosureEndDT");
+//                localStorage.removeItem("MonthlyClosureCurrentMonth");
+//                localStorage.removeItem("MonthlyClosureDay");
+//                localStorage.removeItem("MonthlyClosureDayOfMonth");
+//                localStorage.removeItem("MonthlyClosurePeriodStart");
+//                localStorage.removeItem("MonthlyClosurePeriodEnd");
                 setShared("kmw006fConfirm", {check: true});
                 nts.uk.ui.windows.close();
             }).fail((error) => {
@@ -163,7 +186,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                     { headerText: getText('KMW006_16'), key: 'employeeCode', dataType: 'string', width: '160px' },
                     { headerText: getText('KMW006_17'), key: 'employeeName', dataType: 'string', width: '160px' },
                     { headerText: getText('KMW006_39'), key: 'atr', dataType: 'string', width: '120px' },
-                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '300px' }
+                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '400px' }
                 ],
                 features: [
                     {

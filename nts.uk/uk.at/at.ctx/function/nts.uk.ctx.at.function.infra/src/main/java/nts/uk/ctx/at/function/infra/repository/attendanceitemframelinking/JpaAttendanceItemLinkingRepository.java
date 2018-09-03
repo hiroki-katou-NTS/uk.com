@@ -84,4 +84,22 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
 	}
 
+	@Override
+	public List<AttendanceItemLinking> getFullDataByListAttdaId(List<Integer> attendanceItemIds) {
+		if(attendanceItemIds.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
+				.setParameter("attendanceItemIds", attendanceItemIds).getList(c->c.toDomain());
+	}
+
+	@Override
+	public List<AttendanceItemLinking> getFullDataByAttdIdAndType(List<Integer> attendanceItemIds, TypeOfItem type) {
+		if(attendanceItemIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+				.setParameter("attendanceItemIds", attendanceItemIds)
+				.setParameter("typeOfItem", type.value).getList(f -> f.toDomain());
+	}
+
 }

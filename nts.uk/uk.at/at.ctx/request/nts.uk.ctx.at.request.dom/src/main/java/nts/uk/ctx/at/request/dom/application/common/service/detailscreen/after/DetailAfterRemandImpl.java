@@ -99,8 +99,8 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				//Imported（承認申請）「差し戻しする（承認者まで）」-(Imported（approvalApplication）「trả về（đến  approver）」)
 				//RequestList482
 				List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
-				//ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(check sendMailWhenRegister trong domain Applicationsetting)
-				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				//承認処理時に自動でメールを送信するが　trueの場合(check sendMailWhenApprove trong domain Applicationsetting)
+				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//「申請種類別設定」．新規登録時に自動でメールを送信するがtrue
 					mailResult = this.getMailSenderResult(application, employeeList, returnReason, isSendMail);
 				}
@@ -114,7 +114,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				//「反映情報」．予定反映状態を「差し戻し」にする
 				application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
-				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
 					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), returnReason, isSendMail);
 				}

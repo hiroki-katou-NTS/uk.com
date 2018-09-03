@@ -89,26 +89,26 @@ public class PersonContactDto extends PeregDomainDto {
 		if (emerContact1Opt.isPresent()) {
 			EmergencyContact emerContact1 = emerContact1Opt.get();
 			if (emerContact1.getContactName() != null) {
-				perContact.setEmerContactName1(emerContact1.getContactName().v());
+				perContact.setEmerContactName1(emerContact1.getContactName().map(i->i.v()).orElse(null));
 			}
 			if (emerContact1.getPhoneNumber() != null) {
-				perContact.setEmerPhoneNumber1(emerContact1.getPhoneNumber().v());
+				perContact.setEmerPhoneNumber1(emerContact1.getPhoneNumber().map(i->i.v()).orElse(null));
 			}
 			if (emerContact1.getMemo() != null) {
-				perContact.setEmerMemo1(emerContact1.getMemo().v());
+				perContact.setEmerMemo1(emerContact1.getMemo().map(i->i.v()).orElse(null));
 			}
 		}
 		Optional<EmergencyContact> emerContact2Opt = domain.getEmergencyContact2();
 		if (emerContact2Opt.isPresent()) {
 			EmergencyContact emerContact2 = emerContact2Opt.get();
 			if (emerContact2.getContactName() != null) {
-				perContact.setEmerContactName2(emerContact2.getContactName().v());
+				perContact.setEmerContactName2(emerContact2.getContactName().map(i->i.v()).orElse(null));
 			}
 			if (emerContact2.getPhoneNumber() != null) {
-				perContact.setEmerPhoneNumber2(emerContact2.getPhoneNumber().v());
+				perContact.setEmerPhoneNumber2(emerContact2.getPhoneNumber().map(i->i.v()).orElse(null));
 			}
 			if (emerContact2.getMemo() != null) {
-				perContact.setEmerMemo2(emerContact2.getMemo().v());
+				perContact.setEmerMemo2(emerContact2.getMemo().map(i->i.v()).orElse(null));
 			}
 		}
 		return perContact;

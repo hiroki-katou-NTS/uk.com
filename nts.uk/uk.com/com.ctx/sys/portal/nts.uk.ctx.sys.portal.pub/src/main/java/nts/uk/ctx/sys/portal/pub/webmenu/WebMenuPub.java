@@ -17,4 +17,11 @@ public interface WebMenuPub {
      * @return
      */
     List<WebMenuExport> findByCompanyId(String companyId);
+    
+    /**
+     * Find program names.
+     * @param companyId
+     * @return name list
+     */
+    List<ProgramNameDto> findProgramNames(String companyId);
 }

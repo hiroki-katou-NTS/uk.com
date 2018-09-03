@@ -57,4 +57,6 @@ public class OvertimeAppPubParameter {
 	private Integer flexExessTime;
 	
 	private OverTimeRecordPubAtr overTimeAtr;
+	
+	private String appReason;
 }

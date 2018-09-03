@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf002.cm {
             stampRequestMode: KnockoutObservable<number> = ko.observable(0);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             resultDisplay: KnockoutObservable<number> = ko.observable(0);
-            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'',moment(new Date()).format("YYYY/MM/DD"),'','','',0));
+            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'','','','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
             currentReason: KnockoutObservable<string> = ko.observable('');
             currentReasonText: KnockoutObservable<string> = ko.observable('');
@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf002.cm {
             textC4_2: KnockoutObservable<string> = ko.observable("");
             editable: KnockoutObservable<boolean> = ko.observable(true);
             employeeID: string;
+            appDate: any;
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -40,8 +41,9 @@ module nts.uk.at.view.kaf002.cm {
                     default: break;
                 }    
             }
-            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, editable: any, employeeID: string){
+            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, editable: any, employeeID: string, appDate: any){
                 var self = this;
+                self.appDate = appDate;
                 self.employeeID = employeeID;
                 self.editable(editable);
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
@@ -64,19 +66,19 @@ module nts.uk.at.view.kaf002.cm {
                     $('.cm-memo').focus();
                     switch(self.stampRequestMode()){
                         case 0: 
-                            self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID, self.appDate);
                             break;    
                         case 1: 
-                            self.m2.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            self.m2.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID, self.appDate);
                             break;  
                         case 2: 
-                            self.m3.start(appStampData, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            self.m3.start(appStampData, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID, self.appDate);
                             break; 
                         case 3: 
-                            self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());
+                            self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode(), self.appDate);
                             break; 
                         case 4: 
-                            self.m5.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            self.m5.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID, self.appDate);
                             break; 
                         default: 
                             break;
@@ -106,7 +108,7 @@ module nts.uk.at.view.kaf002.cm {
                     }
                     self.textC4_2(nts.uk.resource.getText("KAF002_39",[appStampData.appDate,appStampData.inputDate]));
                 } else {//new screen
-                    self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
+                    self.application().appDate(appDate);    
                     self.employeeName(commonSet.employeeName);
                 }
             }

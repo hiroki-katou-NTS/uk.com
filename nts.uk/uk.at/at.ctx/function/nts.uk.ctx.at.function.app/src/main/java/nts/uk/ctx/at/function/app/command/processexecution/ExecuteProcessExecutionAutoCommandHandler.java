@@ -14,13 +14,13 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
+import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.AppRouteUpdateDailyService;
+import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
@@ -55,15 +55,12 @@ import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
@@ -107,6 +104,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -223,6 +221,10 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 	private DivergenceTimeRepository divergenceTimeRepo;
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
+
+	@Inject
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
+
 	@Inject
 	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
 	
@@ -311,7 +313,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		//if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
 			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
-					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
+					ExecutedMenu.SELECT_AND_RUN, GeneralDateTime.now(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
 		//}
@@ -420,6 +422,13 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		this.lastExecDateTimeRepo.update(lastExecDateTime);
 	}
 
+	@Inject
+	private AppRouteUpdateDailyService appRouteUpdateDailyService;
+	
+	@Inject
+	private AppRouteUpdateMonthlyService appRouteUpdateMonthlyService;
+	
+	
 	/**
 	 * 各処理を実行する
 	 * 
@@ -455,10 +464,10 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
 			// 各処理の終了状態 ＝ [月別集計、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（個人別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDV_ALARM, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（職場別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.WKP_ALARM, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
 		} else if (!this.createDailyData(context, empCalAndSumExeLog, execId, procExec, procExecLog)) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -470,10 +479,10 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
 			// 各処理の終了状態 ＝ [月別集計、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（個人別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDV_ALARM, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（職場別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.WKP_ALARM, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
 		} else if (this.reflectApprovalResult(execId, procExec, procExecLog, companyId)) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -481,20 +490,25 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.FORCE_END);
 			// 各処理の終了状態 ＝ [月別集計、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（個人別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDV_ALARM, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（職場別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.WKP_ALARM, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
 		} else if (this.monthlyAggregation(execId, procExec, procExecLog, companyId, context)) {
 			// 各処理の終了状態 ＝ [月別集計、強制終了]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.FORCE_END);
-			// 各処理の終了状態 ＝ [アラーム抽出（個人別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDV_ALARM, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態 ＝ [アラーム抽出（職場別）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.WKP_ALARM, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
 		}
+		
+		//承認ルート更新（日次）
+		this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
+		//承認ルート更新（月次）
+		this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
 		return false;
 	}
 
@@ -2481,6 +2495,10 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
 			}
 			this.processExecLogManaRepo.update(processExecutionLogManage);
+			
+			//ドメインモデル「更新処理自動実行ログ」を削除する
+			this.procExecLogRepo.remove(companyId, execItemCd, procExecLogOpt.get().getExecId());
+			
 			// [更新処理：スケジュールの作成、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
 			// [更新処理：日別作成、終了状態 ＝ 未実施]
@@ -2491,7 +2509,15 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
 			// [更新処理：月別集計、終了状態 ＝ 未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-			this.procExecLogRepo.update(procExecLog);
+			// [更新処理：アラーム抽出、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+			
+			procExecLog.setExecId(execId); 
+			this.procExecLogRepo.insert(procExecLog);
 
 		} else {
 			// アルゴリズム「更新処理自動実行ログ新規登録処理」を実行する
@@ -2516,6 +2542,12 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI,
+					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+			taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON,
 					Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 			procExecLog = new ProcessExecutionLog(new ExecutionCode(execItemCd), companyId, null, taskLogList, execId);
 			this.procExecLogRepo.insert(procExecLog);
@@ -2729,12 +2761,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			}
 		} else {
 			try {
-				ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-				MasterShareContainer shareContainer = MasterShareBus.open();
-				companyCommonSetting.setShareContainer(shareContainer);
-				processState = this.dailyCalculationEmployeeService.calculate(asyContext, employeeId, period,
-						empCalAndSumExeLog.getEmpCalAndSumExecLogID(), ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
-				shareContainer.clearAll();
+				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(asyContext, employeeId, period,Optional.empty());
 			} catch (Exception e) {
 				throw new DailyCalculateException();
 			}
@@ -2970,13 +2997,8 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		ProcessState ProcessState2;
 		
 		try {
-			ManagePerCompanySet companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepo.findByCompanyId(companyId), holidayAddtionRepo.findByCId(companyId), specificWorkRuleRepo.findCalcMethodByCid(companyId), compensLeaveComSetRepo.find(companyId), divergenceTimeRepo.getAllDivTime(companyId), errorAlarmWorkRecordRepo.getListErrorAlarmWorkRecord(companyId));
-			MasterShareContainer shareContainer = MasterShareBus.open();
-			companyCommonSetting.setShareContainer(shareContainer);
 			// 社員の日別実績を計算
-			 ProcessState2 = this.dailyCalculationEmployeeService.calculate(asyncContext, empId, period,
-					empCalAndSumExeLogId, ExecutionType.NORMAL_EXECUTION, companyCommonSetting);
-			 shareContainer.clearAll();
+			 ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(asyncContext, empId, period,Optional.empty());
 		} catch (Exception e) {
 			throw new DailyCalculateException();
 		}

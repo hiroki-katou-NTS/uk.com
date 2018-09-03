@@ -313,7 +313,7 @@ module nts.uk.com.view.cmm018.a {
                                             //can lay thong tin work place name
                                             servicebase.getWpName().done(function(wpName){
                                                 self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
                                             });
                                             
                                         });
@@ -435,7 +435,11 @@ module nts.uk.com.view.cmm018.a {
             openDialogCDL008(){
                 let self = this;
                 block.grayout();
-                setShared('inputCDL008', {baseDate: moment(new Date()).toDate(), isMultiple: false,selectedCodes: self.workplaceId()});
+                setShared('inputCDL008', {baseDate: moment(new Date()).toDate(),
+                                isMultiple: false,
+                                selectedCodes: self.workplaceId(),
+                                selectedSystemType: 2,
+                                isrestrictionOfReferenceRange: true});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                     block.clear();
                     let data = getShared('outputCDL008');
@@ -483,7 +487,7 @@ module nts.uk.com.view.cmm018.a {
                         //can lay thong tin work place name
                         servicebase.getWpName().done(function(wpName){
                             self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                            employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                            employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
                         });
                     });
                 }

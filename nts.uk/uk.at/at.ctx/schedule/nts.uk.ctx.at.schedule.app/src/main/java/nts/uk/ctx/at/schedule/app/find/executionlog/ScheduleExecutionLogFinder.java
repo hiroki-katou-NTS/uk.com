@@ -82,7 +82,7 @@ public class ScheduleExecutionLogFinder {
 		
 		// fixbug #88257
 		List<String> employeeIds = scheduleExecutionLogs.stream().map(x -> x.getExecutionEmployeeId()).collect(Collectors.toList());
-		List<EmployeeDto> employeeList = employeeAdapter.findByEmployeeIds(employeeIds);
+		List<EmployeeDto> employeeList = employeeAdapter.findByEmployeeIds(employeeIds).stream().distinct().collect(Collectors.toList());
 		Map<String, EmployeeDto> employeeMap = employeeList.stream()
 				.collect(Collectors.toMap(EmployeeDto::getEmployeeId, x->x));
 		// return full by map

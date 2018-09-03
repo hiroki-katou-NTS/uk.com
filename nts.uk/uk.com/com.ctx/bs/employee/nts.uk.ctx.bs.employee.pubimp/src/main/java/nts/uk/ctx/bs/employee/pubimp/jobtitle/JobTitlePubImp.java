@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
@@ -78,25 +80,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public List<JobTitleExport> findJobTitleBySid(String employeeId) {
 		// Query
-		/*
-		 * List<AffJobTitleHistory> affJobTitleHistories =
-		 * this.jobTitleHistoryRepository .findBySid(employeeId);
-		 * 
-		 * String companyId = AppContexts.user().companyId();
-		 * 
-		 * // Return return affJobTitleHistories.stream().map(item -> { JobTitleInfo
-		 * jobTitleInfo = this.jobTitleInfoRepository.find(companyId,
-		 * mapMerge.get(item.getEmployeeId()).get(1),
-		 * mapMerge.get(item.getEmployeeId()).get(0)).get(); return
-		 * JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
-		 * .jobTitleId(jobTitleInfo.getJobTitleId())
-		 * .jobTitleCode(jobTitleInfo.getJobTitleCode().v())
-		 * .jobTitleName(jobTitleInfo.getJobTitleName().v())
-		 * .sequenceCode(jobTitleInfo.getSequenceCode().v())
-		 * .startDate(item.getPeriod().start()).endDate(item.getPeriod().end()).build();
-		 * }).collect(Collectors.toList());
-		 */
-
 		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHisRepo.getAllBySid(employeeId);
 		List<AffJobTitleHistoryItem> affJobTitleHistoryItem = this.affJobTitleHisItemRepo
 				.getAllBySid(employeeId);
@@ -127,9 +110,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository
 					.find(companyId, e.getValue().get(1).toString(), (GeneralDate) e.getValue().get(0)).get();
 			return JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
-					.jobTitleId(jobTitleInfo.getJobTitleId()).jobTitleCode(jobTitleInfo.getJobTitleCode().v())
-					.jobTitleName(jobTitleInfo.getJobTitleName().v()).sequenceCode(jobTitleInfo.getSequenceCode().v())
-					.startDate((GeneralDate) e.getValue().get(0)).endDate((GeneralDate) e.getValue().get(2)).build();
+					.jobTitleId(jobTitleInfo.getJobTitleId())
+					.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
+					.jobTitleName(jobTitleInfo.getJobTitleName().v())
+					.sequenceCode(jobTitleInfo.getSequenceCode().v())
+					.startDate((GeneralDate) e.getValue().get(0))
+					.endDate((GeneralDate) e.getValue().get(2))
+					.isManager(jobTitleInfo.isManager())
+					.build();
 		}).collect(Collectors.toList());
 		return lstJobTitleExport;
 	}
@@ -201,11 +189,13 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistories().get(FIRST_ITEM_INDEX);
 
 		// Return
-		return Optional
-				.of(JobTitleExport.builder().companyId(jobInfo.getCompanyId().v()).jobTitleId(jobInfo.getJobTitleId())
-						.jobTitleCode(jobInfo.getJobTitleCode().v()).jobTitleName(jobInfo.getJobTitleName().v())
-						.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
-						.startDate(jobTitleHistory.span().start()).endDate(jobTitleHistory.span().end()).build());
+		return Optional.of(JobTitleExport.builder().companyId(jobInfo.getCompanyId().v())
+				.jobTitleId(jobInfo.getJobTitleId()).jobTitleCode(jobInfo.getJobTitleCode().v())
+				.jobTitleName(jobInfo.getJobTitleName().v())
+				.sequenceCode(
+						jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
+				.startDate(jobTitleHistory.span().start()).endDate(jobTitleHistory.span().end())
+				.isManager(jobInfo.isManager()).build());
 	}
 
 	/*
@@ -227,7 +217,8 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			return JobTitleExport.builder().companyId(jobInfo.getCompanyId().v()).jobTitleId(jobInfo.getJobTitleId())
 					.jobTitleCode(jobInfo.getJobTitleCode().v()).jobTitleName(jobInfo.getJobTitleName().v())
 					.sequenceCode(jobInfo.getSequenceCode() != null ? jobInfo.getSequenceCode().v() : null)
-					.startDate(jobTitleHistory.span().start()).endDate(jobTitleHistory.span().end()).build();
+					.startDate(jobTitleHistory.span().start()).endDate(jobTitleHistory.span().end())
+					.isManager(jobInfo.isManager()).build();
 		}).collect(Collectors.toList());
 	}
 
@@ -346,6 +337,31 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		
 		return Optional.of(new AffJobTitleBasicExport(jobTitleInfo.getJobTitleId(), jobTitleInfo.getJobTitleCode().v(), jobTitleInfo.getJobTitleName().v()));
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub#
+	 * getJobTitleMapIdBaseDateName(java.lang.String, java.util.List,
+	 * java.util.List)
+	 */
+	@Override
+	public Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId,
+			List<String> jobIds, List<GeneralDate> baseDates) {
+		// Query infos
+		Map<GeneralDate, List<JobTitleInfo>> mapJobTitleInfos = this.jobTitleInfoRepository
+				.findByIds(companyId, jobIds, baseDates);
+
+		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		mapJobTitleInfos.entrySet().forEach(item -> {
+			item.getValue().forEach(jobTitleInfo -> {
+				mapResult.put(Pair.of(jobTitleInfo.getJobTitleId(), item.getKey()),
+						jobTitleInfo.getJobTitleName().v());
+			});
+		});
+
+		return mapResult;
 	}
 
 }
