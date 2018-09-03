@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +20,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister{
 	@Inject
@@ -27,6 +35,13 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private AbsenceReruitmentMngInPeriodQuery absRecMngService;
 	@Inject
 	private InterimRemainOffPeriodCreateData interimCreateData;
+	@Inject
+	private ComSubstVacationRepository subRepos;
+	@Inject
+	private CompensLeaveComSetRepository leaveSetRepos;
+	@Inject
+	private SpecialLeaveManagementService speLeaveSevice;
+	
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
 		//代休不足区分、振休不足区分、年休不足区分、積休不足区分、特休不足区分、公休不足区分、超休不足区分をfalseにする(初期化)
@@ -39,7 +54,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				inputParam.getScheData(),
 				inputParam.getAppData(),
 				false);
-		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = interimCreateData.createInterimRemainDataMng(inputPara);
+		Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
+		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
+		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
+		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = interimCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
 		List<InterimRemain> interimMngAbsRec = new ArrayList<>();
 		List<InterimAbsMng> useAbsMng = new ArrayList<>();
 		List<InterimRecMng> useRecMng = new ArrayList<>();
@@ -105,6 +123,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				outputData.setChkPause(true);
 			}
 		}
+
 		return outputData;
 	}
 

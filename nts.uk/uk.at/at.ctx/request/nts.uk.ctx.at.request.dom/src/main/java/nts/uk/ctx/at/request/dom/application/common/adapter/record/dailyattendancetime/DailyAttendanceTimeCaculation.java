@@ -11,6 +11,4 @@ public interface DailyAttendanceTimeCaculation {
 																	Integer workEndTime,
 																	Integer breakStartTime,
 																	Integer breakEndTime);
-	
-	public DailyAttenTimeLateLeaveImport calcDailyLateLeave(DailyAttenTimeParam dailyAttenTimeParam);
 }

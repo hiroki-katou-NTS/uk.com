@@ -81,6 +81,7 @@ public class ComPubImp implements SyCompanyPub {
 		if (affComHis == null){
 			return new AffCompanyHistExport(null, Collections.emptyList());
 		}
+		
 		AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(sid);
 		
 		AffCompanyHistExport affComHostEx = new AffCompanyHistExport();

@@ -62,7 +62,7 @@ public class EmpCopySettingFinder {
 				.collect(Collectors.toList());
 		if (settingDtos.isEmpty()) {
 			// check permission
-			String role = AppContexts.user().roles().forPersonnel();
+			String role = AppContexts.user().roles().forPersonalInfo();
 			if (role == "" || role == null) {
 				throw new BusinessException(new RawErrorMessage("Msg_348"));
 			} else {

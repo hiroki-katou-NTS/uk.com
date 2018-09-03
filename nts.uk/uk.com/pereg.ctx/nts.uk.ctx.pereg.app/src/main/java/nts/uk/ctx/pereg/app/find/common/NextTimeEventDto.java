@@ -10,6 +10,7 @@ import nts.uk.shr.com.i18n.TextResource;
 @Data
 @NoArgsConstructor
 public class NextTimeEventDto {
+	
 	/**
 	 * 次回年休付与日
 	 */
