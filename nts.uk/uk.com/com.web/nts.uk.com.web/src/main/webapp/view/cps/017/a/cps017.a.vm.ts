@@ -495,9 +495,15 @@
                             }
                         });
                         if (self.listSelection().length > 1) {
-                           self.checkCreateaaa(false);
+                            self.checkCreateaaa(false);
                         } else {
-                            self.createNewData();
+                            let selection: Selection = self.selection();
+                            self.enableSelectionCd(true);
+                            selection.externalCD('');
+                            selection.selectionCD('');
+                            selection.selectionName('');
+                            selection.memoSelection('');
+                            self.focus.code(true);
                             self.checkCreateaaa(true);
                         }
                     });
