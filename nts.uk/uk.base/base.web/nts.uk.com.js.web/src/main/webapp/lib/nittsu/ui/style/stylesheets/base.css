@@ -3596,12 +3596,13 @@ button.nts-switch-button[disabled]:hover {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
-/* line 29, ../sass/components/_searchbox.scss */
+/* line 30, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
 }
-/* line 32, ../sass/components/_searchbox.scss */
+/* line 33, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div {
   vertical-align: middle !important;
 }
