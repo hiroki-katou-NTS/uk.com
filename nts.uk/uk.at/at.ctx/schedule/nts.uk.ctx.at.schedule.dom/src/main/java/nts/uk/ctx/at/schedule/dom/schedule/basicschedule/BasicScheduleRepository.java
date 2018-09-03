@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -160,7 +161,7 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
-	
+	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
 	/**
 	 * 検索
 	 * @param employeeId 社員ID
@@ -168,4 +169,7 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates);
+	
+	void removeScheState(String employeeId, GeneralDate baseDate,
+			List<WorkScheduleState> listWorkScheduleState);
 }

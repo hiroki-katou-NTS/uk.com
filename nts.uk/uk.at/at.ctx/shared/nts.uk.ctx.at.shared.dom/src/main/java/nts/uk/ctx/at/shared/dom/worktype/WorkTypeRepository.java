@@ -23,6 +23,23 @@ public interface WorkTypeRepository {
 	 * @return the possible work type
 	 */
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
+	
+	/**
+	 * Gets the possible work type and order.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type and order
+	 */
+	List<WorkTypeInfor> getPossibleWorkTypeAndOrder(String companyId, List<String> lstPossible);
+	
+	/**
+	 * Find all by order.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkTypeInfor> findAllByOrder(String companyId);
 
 	/**
 	 * Gets the possible work type with join.

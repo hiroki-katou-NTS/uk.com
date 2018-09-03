@@ -76,8 +76,8 @@ public class DataCorrectionLogExportService extends ExportService<DataCorrection
 			row.put(headers.get(2), d.getItem());
 			row.put(headers.get(3), d.getValueBefore());
 			row.put(headers.get(4), d.getValueAfter());
-			row.put(headers.get(5), d.getModifiedDateTime());
-			row.put(headers.get(6), d.getModifiedPerson());
+			row.put(headers.get(5), d.getModifiedPerson());
+			row.put(headers.get(6), d.getModifiedDateTime());
 			row.put(headers.get(7), getCorrectionAttr(d.getCorrectionAttr()));
 			dataSource.add(row);
 		}

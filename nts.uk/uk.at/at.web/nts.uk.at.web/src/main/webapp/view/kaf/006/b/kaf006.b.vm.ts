@@ -104,6 +104,12 @@ module nts.uk.at.view.kaf006.b{
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
+            
+        displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
+        displayReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableReason: KnockoutObservable<boolean> = ko.observable(false);
+        displayReasonLst: Array<common.DisplayReason> = []; 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -382,6 +388,9 @@ module nts.uk.at.view.kaf006.b{
         }
         initData(data: any){
             let self = this;
+            _.forEach(data.displayReasonDtoLst, (o) => {
+                self.displayReasonLst.push(new common.DisplayReason(o.typeOfLeaveApp, o.displayFixedReason==1?true:false, o.displayAppReason==1?true:false));     
+            });
             self.version = data.application.version;
             self.manualSendMailAtr(data.manualSendMailFlg);
             self.employeeName(data.employeeName);
@@ -389,6 +398,17 @@ module nts.uk.at.view.kaf006.b{
             self.prePostSelected(data.application.prePostAtr);
             self.convertListHolidayType(data.holidayAppTypeName);
             self.holidayTypeCode(data.holidayAppType);
+            let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==self.holidayTypeCode());
+            if(nts.uk.util.isNullOrUndefined(currentDisplay)){
+                self.typicalReasonDisplayFlg(false);
+                self.displayAppReasonContentFlg(false);
+            } else {
+                self.typicalReasonDisplayFlg(currentDisplay.displayFixedReason);
+                self.displayAppReasonContentFlg(self.typicalReasonDisplayFlg()||
+                    (currentDisplay.displayAppReason)); 
+                self.enbReasonCombo(currentDisplay.displayFixedReason);
+                self.enbContentReason(currentDisplay.displayAppReason);
+            }
             self.displayPrePostFlg(data.prePostFlg);
             self.requiredReason(data.appReasonRequire);
             self.workTimeCode(data.workTimeCode);
@@ -457,8 +477,6 @@ module nts.uk.at.view.kaf006.b{
                      self.eblTimeEnd1(false);
                     self.enbbtnWorkTime(false);
                 }
-                self.enbReasonCombo(true);
-                self.enbContentReason(true);
             }
         }
          update(): JQueryPromise<any> {
@@ -470,18 +488,20 @@ module nts.uk.at.view.kaf006.b{
             }
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
+             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
              let appReason: string;
-             appReason = self.getReason(
-                self.selectedReason(),
-                self.reasonCombo(),
-                self.multilContent()
-            );
-             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
-             if (appReasonError) {
-                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-                 return;
-             }
-             if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
+//             appReason = self.getReason(
+//                self.selectedReason(),
+//                self.reasonCombo(),
+//                self.multilContent()
+//            );
+//             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
+//             if (appReasonError) {
+//                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
+//                 return;
+//             }
+             if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                  return;
              }
              let specHd = null;
@@ -498,7 +518,8 @@ module nts.uk.at.view.kaf006.b{
                 startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : self.startAppDate(),
                 endDate:  nts.uk.util.isNullOrEmpty(self.endAppDate()) ? self.startAppDate() : self.endAppDate(),
                 employeeID: self.employeeID(),
-                applicationReason: appReason,
+                appReasonID: comboBoxReason,
+                applicationReason: textAreaReason,
                 holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
                 workTypeCode: self.selectedTypeOfDuty(),
                 workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),

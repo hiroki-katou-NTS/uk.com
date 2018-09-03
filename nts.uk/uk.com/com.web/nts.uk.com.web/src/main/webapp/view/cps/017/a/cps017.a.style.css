@@ -2,9 +2,6 @@
 /* 	width: 1405px; */
 /* } */
 
-#contents-area{
-	height: calc(100vh - 21px) !important;
-}
 
 body {
 	overflow: hidden;
@@ -119,7 +116,7 @@ body {
 }
 
 #memoSelection {
-	width: 200px;
 	height: 75px;
 	margin-top: 5px;
+	width: 300px;
 }

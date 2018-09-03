@@ -196,7 +196,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
-				asyncContext.finishedAsCancelled();
+				//asyncContext.finishedAsCancelled();
 				status.setState(ProcessState.INTERRUPTION);
 				return status;
 			}
@@ -219,7 +219,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				
 				// 中断するエラーがある時、中断処理をする
 				if (value.isInterruption()){
-					asyncContext.finishedAsCancelled();
+					//asyncContext.finishedAsCancelled();
 					status.setState(ProcessState.INTERRUPTION);
 					return status;
 				}

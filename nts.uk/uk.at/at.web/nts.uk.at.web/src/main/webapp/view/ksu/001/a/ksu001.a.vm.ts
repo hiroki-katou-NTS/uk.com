@@ -1456,18 +1456,43 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     
                 let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
                     arrNewCellIsUnlocked: any[] = _.differenceWith(self.arrLockCellInit(), arrLockCellAfterSave, _.isEqual);
-
+                
+                // neu o mode time thi can merge cac object giong nhau vao thanh 1
                 if (self.selectedModeDisplay() == 2) {
                     _.each(arrTmp, (item) => {
                         let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
                         if (arrFilter.length > 1) {
+                            let sTime: any = '', eTime: any = '';
                             _.each(arrFilter, (data) => {
-                                if ((data.value.startTime == "" && data.value.endTime != "") || (data.value.startTime != "" && data.value.endTime == "")) {
-                                    _.remove(arrCell, data);
+                                if (data.innerIdx == 0) {
+                                    sTime = data.value.startTime;
+                                } 
+                                if (data.innerIdx == 1) {
+                                    eTime = data.value.endTime;
                                 }
+                                _.remove(arrCell, data);
                             });
-                        };
+                            // set innerIdx = -1: do sua cua startTime va endTime trong mode Time
+                            arrCell.push(new Cell({
+                                rowIndex: item.rowIndex,
+                                columnKey: item.columnKey,
+                                value: new ksu001.common.viewmodel.ExCell ({
+                                    workTypeCode: item.value.workTypeCode,
+                                    workTypeName: item.value.workTypeName,
+                                    workTimeCode: item.value.workTimeCode,
+                                    workTimeName: item.value.workTimeName,
+                                    symbolName: item.value.symbolName,
+                                    startTime: sTime,
+                                    endTime: eTime,
+                                }),
+                                innerIdx: -1,    
+                            }));
+                        }
                     });
+                    //distinct arrCell
+                    arrCell = _.uniqBy(arrCell, (x) => {
+                        return x.rowIndex && x.columnKey;
+                    });    
                 }
                 arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
                 arrCell.push.apply(arrCell, arrNewCellIsUnlocked);

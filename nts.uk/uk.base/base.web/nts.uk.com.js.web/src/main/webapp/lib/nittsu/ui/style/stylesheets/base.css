@@ -110,6 +110,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
+}
+
 /* line 1, ../sass/base/_menu.scss */
 #header #menu-header {
   background-color: #fff;
@@ -1034,17 +1042,17 @@ div.label {
   white-space: pre-wrap;
 }
 
+/* line 234, ../sass/components/_commons.scss */
 *.unselectable {
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
-   -ms-user-select: none;
-   user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  /*
+    Introduced in IE 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /*****************************
@@ -1523,6 +1531,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /* line 24, ../sass/base/_clearfix.scss */
 .cf {
   *zoom: 1;
+}
+
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
 }
 
 /* line 15, ../sass/components/_button.scss */
@@ -2237,6 +2253,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
+}
+
 /* line 6, ../sass/components/_switchbutton.scss */
 button.nts-switch-button {
   font-size: 14px;
@@ -2268,9 +2292,11 @@ button.nts-switch-button.selected:hover {
 button.nts-switch-button[disabled] {
   background-color: #d9d9d9;
 }
-button.nts-switch-button[disabled].selected {
-  background-color: #7b8;
+/* line 46, ../sass/components/_switchbutton.scss */
+button.nts-switch-button[disabled]:hover {
+  background-color: #d9d9d9;
 }
+
 /* line 52, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper {
   display: inline-block;
@@ -2753,6 +2779,11 @@ button.nts-switch-button[disabled].selected {
 /* line 18, ../sass/components/_gridlist.scss */
 .ui-iggrid table .row-disable {
   background-color: #CCC;
+}
+
+/* line 22, ../sass/components/_gridlist.scss */
+.ui-iggrid tbody td {
+  white-space: pre;
 }
 
 /* line 1, ../sass/components/_tabpanel.scss */
@@ -3565,7 +3596,6 @@ button.nts-switch-button[disabled].selected {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
-  padding: 3px;
 }
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
@@ -4678,6 +4708,7 @@ div .ex-area-line.x-stay {
   border: solid 1px #b85;
   padding: 5px;
   z-index: 120100;
+  word-break: break-all;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */

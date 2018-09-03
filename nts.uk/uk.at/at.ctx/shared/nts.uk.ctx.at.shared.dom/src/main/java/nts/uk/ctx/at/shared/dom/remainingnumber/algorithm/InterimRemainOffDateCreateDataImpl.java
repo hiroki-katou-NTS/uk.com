@@ -322,7 +322,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-		if(!inforData.getWorkTypeRemain().isPresent()) {
+		if(!inforData.getWorkTypeRemain().isPresent()
+				|| inforData.getWorkTypeRemain().get().getWorkTypeClass() == null) {
 			return null;
 		}	
 		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
@@ -506,7 +507,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		String workTimeCode = appInfor.getWorkTimeCode().isPresent() ? appInfor.getWorkTimeCode().get() : "000";
 		
 		
-		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, null, dayOffTimeIsUse);
+		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, 0, dayOffTimeIsUse);
 	}
 
 	@Override
