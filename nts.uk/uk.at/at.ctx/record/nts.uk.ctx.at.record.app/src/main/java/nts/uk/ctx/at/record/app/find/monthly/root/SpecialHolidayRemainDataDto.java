@@ -101,13 +101,18 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	
 	@Override
 	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return new SpecialHolidayRemainData(employeeId, closureID, 
+		return new SpecialHolidayRemainData(
+				employeeId,
+				ym,
+				closureID, 
+				closureDate == null ? null : closureDate.toDomain(),
 				datePeriod == null ? null : datePeriod.toDomain(), 
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
-				closureDate == null ? null : closureDate.toDomain(), ym, closureID, 
+				ConvertHelper.getEnum(closureStatus, ClosureStatus.class),
+				specialHolidayCd,
 				actualSpecial == null ? null : actualSpecial.toActualDomain(), 
 				specialLeave == null ? null : specialLeave.toDomain(), 
-				grantAtr, Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)),
+				grantAtr);
 	}
 	@Override
 	public YearMonth yearMonth() {

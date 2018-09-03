@@ -85,6 +85,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Temporar
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
@@ -4595,7 +4596,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new SpcVacationDaysOfMonthly()); // avoid compile error
 		
 		// 月別実績の勤務時間
-		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val workTime = WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						krcdtMonAggrBnspyTime),
 				GoOutOfMonthly.of(
