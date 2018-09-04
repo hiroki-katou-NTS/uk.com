@@ -94,10 +94,18 @@ public class AgreementTimeOfWeekly implements Cloneable {
 			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
+		// 年度の確認
+		int calcedYear = yearMonth.year();
+		if (companySets.getAgreementOperationSet().isPresent()){
+			val agreementOpeSet = companySets.getAgreementOperationSet().get();
+			int startingMonth = agreementOpeSet.getStartingMonth().value + 1;
+			if (yearMonth.month() < startingMonth) calcedYear--;
+		}
+		
 		// 管理期間の36協定時間の作成
 		val agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(
 				weeklyCalculation.getEmployeeId(), yearMonth);
-		agreementTimeOfManagePeriod.aggregateForWeek(new Year(yearMonth.year()),
+		agreementTimeOfManagePeriod.aggregateForWeek(new Year(calcedYear),
 				weekPeriod.end(), aggregateAtr, weeklyCalculation, companySets, repositories);
 		
 		// 週別の36協定時間へ値を移送

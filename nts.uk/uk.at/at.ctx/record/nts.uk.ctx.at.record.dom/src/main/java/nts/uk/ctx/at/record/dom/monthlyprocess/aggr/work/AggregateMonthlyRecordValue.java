@@ -206,9 +206,7 @@ public class AggregateMonthlyRecordValue {
 		MonthlyDayoffRemainData monthlyDayoffRemain = null;
 		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
 		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
-		SpecialHolidayRemainData specialLeaveRemain = null;
-		if (this.specialLeaveRemainList.size() > 0) specialLeaveRemain = this.specialLeaveRemainList.get(0);
-		result.setSpecialLeaveRemain(Optional.ofNullable(specialLeaveRemain));
+		result.getSpecialLeaveRemainList().addAll(this.specialLeaveRemainList);
 		result.getAttendanceTimeOfWeekList().addAll(this.attendanceTimeWeeks);
 		result.getEmployeeMonthlyPerErrorList().addAll(this.perErrors);
 		return result;
