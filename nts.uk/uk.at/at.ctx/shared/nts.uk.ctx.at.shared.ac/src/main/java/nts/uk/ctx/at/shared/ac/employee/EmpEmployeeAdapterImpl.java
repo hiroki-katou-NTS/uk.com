@@ -154,4 +154,10 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySidAndBaseDate(sid, baseDate));
 		return importList;
 	}
+	
+	@Override
+	public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid){
+		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySid(cid,sid));
+		return importList;
+	}
 }
