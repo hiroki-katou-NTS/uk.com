@@ -732,8 +732,8 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
-                // focus worktime atr
-                $('#search-daily-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
             }
 
             /**
