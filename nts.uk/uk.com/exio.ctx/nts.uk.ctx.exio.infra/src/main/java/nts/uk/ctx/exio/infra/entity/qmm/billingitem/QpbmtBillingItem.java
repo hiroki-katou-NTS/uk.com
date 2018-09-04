@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.qmm.billingitem.BillingItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -17,6 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "QPBMT_BILLING_ITEM")
 public class QpbmtBillingItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
