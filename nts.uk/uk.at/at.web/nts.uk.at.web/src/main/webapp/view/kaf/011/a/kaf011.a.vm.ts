@@ -62,6 +62,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         totalEmployeeText = ko.observable('');
 
         transferDate: KnockoutObservable<string> = ko.observable(null);
+        
+        firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
 

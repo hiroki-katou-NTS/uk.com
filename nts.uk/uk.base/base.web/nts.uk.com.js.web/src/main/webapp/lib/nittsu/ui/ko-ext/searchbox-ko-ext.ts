@@ -130,6 +130,12 @@ module nts.uk.ui.koExtentions {
         }
     }
     
+    export interface SelectionChangingData {
+        selected: Array<any>;
+        searchMode: string;
+        options?: Array<any>;
+    }
+    
     class NtsSearchBoxBindingHandler implements KnockoutBindingHandler {
         /**
          * Init.
@@ -243,6 +249,8 @@ module nts.uk.ui.koExtentions {
                     }
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
+                    
+                    component.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result.options })
                     
                     if (targetMode === 'igGrid') {  
                         component.ntsGridList("setSelected", selectedProperties);
