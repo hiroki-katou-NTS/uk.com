@@ -233,6 +233,8 @@ module nts.uk.at.view.kmk003.a {
                         self.settingEnum.workTimeMethodSet = self.backupOptions;
                         // focus worktime atr
                         $('#search-daily-atr').focus();
+                        //update value model tab 2
+                        self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated();
                     }
                     else {
                         if (self.screenMode() != 2) {

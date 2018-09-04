@@ -119,7 +119,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	
 	@Override
 	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList,
-			List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode, RegistrationListDateSchedule registrationListDateSchedule) {
+			List<BasicSchedule> basicScheduleListBefore, List<BasicSchedule> basicScheduleListAfter,  boolean isInsertMode, RegistrationListDateSchedule registrationListDateSchedule) {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> errList = new ArrayList<>();
 		
@@ -177,12 +177,24 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if(modeDisplay.intValue() != 2) {
 				// 勤務種類のマスタチェック (Kiểm tra phan loại ngày làm việc)
 				if (!checkWorkType(errList, workType)) {
+					// find and remove in listBefore because this data is not insert/update to DB
+					Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
+					if(bsBefOpt.isPresent()){
+						basicScheduleListBefore.remove(bsBefOpt.get());
+					}
+					
 					continue;
 				}
 
 				if (!StringUtil.isNullOrEmpty(workTimeCode, true)) {
 					// 就業時間帯のマスタチェック (Kiểm tra giờ làm việc)
 					if (!checkWorkTime(errList, workTimeSetting)) {
+						// find and remove in listBefore because this data is not insert/update to DB
+						Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
+						if(bsBefOpt.isPresent()){
+							basicScheduleListBefore.remove(bsBefOpt.get());
+						}
+						
 						continue;
 					}
 				}
@@ -195,6 +207,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeSetting.getWorktimeCode().v());
 					}
 				} catch (BusinessException ex) {
+					// find and remove in listBefore because this data is not insert/update to DB
+					Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
+					if(bsBefOpt.isPresent()){
+						basicScheduleListBefore.remove(bsBefOpt.get());
+					}
+					
 					addMessage(errList, ex.getMessageId());
 					continue;
 				}
@@ -209,9 +227,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					.findFirst();
 
 			if (basicSchedule.isPresent()) {
+				// UPDATE
 				BasicSchedule basicSche = basicSchedule.get();
 				isInsertMode = false;
-				// UPDATE
+				
 				if (workTimeSetting != null) {
 					// add scheTimeZone
 					if (modeDisplay.intValue() == 2) {
@@ -224,6 +243,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 							// update
 							// start time, end time (mode show time)
 							if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
+								// find and remove in listBefore because this data is not insert/update to DB
+								Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
+								if(bsBefOpt.isPresent()){
+									basicScheduleListBefore.remove(bsBefOpt.get());
+								}
+								
 								continue;
 							}
 
@@ -276,7 +301,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				bSchedule.setWorkScheduleMaster(basicSche.getWorkScheduleMaster());
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
-
+				
 				basicScheduleRepo.update(bSchedule);
 			} else {
 				// INSERT
@@ -318,6 +343,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 				basicScheduleRepo.insert(bSchedule); 
 			}
+			
+			basicScheduleListAfter.add(bSchedule);
 			
 			// 修正ログ情報を作成する (Tạo thông tin log chỉnh sửa)
 			// Lam ben ngoai vong lap, phần (đăng ký record chỉnh sử data)

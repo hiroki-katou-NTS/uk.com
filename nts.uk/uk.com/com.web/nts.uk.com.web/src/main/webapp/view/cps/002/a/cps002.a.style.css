@@ -57,6 +57,18 @@
 	position: absolute;
 	top: 0;
 	right: 0;
+    max-width: 440px;
+}
+#step1_content_top_right .form-group>div {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#step1_content_top_right  hr+.form-group>div {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .nts-wizard.vertical>.steps {
@@ -253,6 +265,7 @@
 	padding: 10px;
 	box-sizing: border-box;
     height: calc(100vh - 141px) !important;
+    min-width: 1280px;
 }
 
 #emp_reg_info_wizard.nts-wizard {
@@ -333,16 +346,27 @@
 	float: none;
 	min-height: 100%;
 	height: auto;
-	display: inline-block;
+	display: inline-block !important;
 }
 
 #emp_reg_info_wizard.nts-wizard.vertical>.content{
 	margin: 0;
 	margin-left: 30px;
-	display: inline-block;
 	float: none;
 	height: auto;
 	min-height: 550px;
+	min-width: 960px;
+	display: inline-block !important;
+}
+
+#emp_reg_info_wizard.nts-wizard.vertical>.content>.body {
+	width: 100%;
+	height: auto;
+	display: none !important;
+}
+
+#emp_reg_info_wizard.nts-wizard.vertical>.content>.body.current {
+	display: block !important;
 }
 
 #emp_reg_info_wizard #employeeAvatar,

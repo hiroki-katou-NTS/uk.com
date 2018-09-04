@@ -111,19 +111,16 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            
-            self.interval = setInterval(() => self.countTime(), 1000);
+            self.interval = setInterval(self.countTime, 1000, self);
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
         }
         
-         public countTime(): void {
-            let self = this;
-                
+         public countTime(self): void {
             // F2_1_2 set time over 
-            self.timeNow = new Date();
-            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+            let timeNow = new Date();
+            let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60); 
             let time = new Date(null);
             time.setSeconds(over); // setting value for SECONDS here
             let result = time.toISOString().substr(11, 8);

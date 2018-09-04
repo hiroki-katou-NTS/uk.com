@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.D
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -58,12 +59,15 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
+				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyID, appOverTime.getAppID()));
 		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
 		String applicationReason = command.getApplicationReason().replaceFirst(":", System.lineSeparator());
 		appOverTime.setDivergenceReason(divergenceReason);
 		appOverTime.setFlexExessTime(command.getFlexExessTime());
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
+		appOverTime.setAppOvertimeDetail(appOvertimeDetailOtp);
 		appOverTime.setOverTimeShiftNight(command.getOverTimeShiftNight());
 		appOverTime.setSiftCode(command.getSiftTypeCode() == null ? null : new WorkTimeCode(command.getSiftTypeCode()));
 		appOverTime.setWorkClockFrom1(command.getWorkClockFrom1());

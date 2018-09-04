@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
@@ -504,6 +504,24 @@ public class ReserveLeaveInfo implements Cloneable {
 				
 				// 積立年休情報残数を更新
 				this.updateRemainingNumber();
+			}
+		}
+		
+		// 残数不足エラーをチェックする
+		{
+			// 残数がマイナスかチェック
+			val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
+			if (withMinus.getRemainingNumber().getTotalRemainingDays().v() < 0.0){
+				if (this.afterGrantAtr){
+					
+					// 「積立年休不足エラー（付与後）」を追加
+					aggrResult.addError(ReserveLeaveError.SHORTAGE_RSVLEA_AFTER_GRANT);
+				}
+				else {
+					
+					// 「積立年休不足エラー（付与前）」を追加
+					aggrResult.addError(ReserveLeaveError.SHORTAGE_RSVLEA_BEFORE_GRANT);
+				}
 			}
 		}
 		

@@ -21,8 +21,8 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;

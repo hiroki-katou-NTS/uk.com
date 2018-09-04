@@ -69,15 +69,15 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
-		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly, application_New);
+		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly);
 		//直行直帰遅刻早退のチェック
 		//TODO: chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
 		if(goBackLateEarly.isError) {
 			//直行直帰申請共通設定.早退遅刻設定がチェックする
 			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
-				goBackDirectlyRegisterService.createThrowMsg("Msg_297", goBackLateEarly.msgLst);
+				throw new BusinessException("Msg_297");
 			}else if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKNOTREGISTER) {
-				goBackDirectlyRegisterService.createThrowMsg("Msg_298", goBackLateEarly.msgLst);	
+				throw new BusinessException("Msg_298");	
 			}
 		}
 	}

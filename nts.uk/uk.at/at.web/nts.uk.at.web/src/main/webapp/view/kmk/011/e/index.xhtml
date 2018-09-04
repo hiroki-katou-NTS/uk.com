@@ -14,7 +14,7 @@
 				data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK011_48')}</a>
 			<!-- E1_2 -->
 			<button class="proceed" tabindex="2"
-				data-bind="click: saveDivergenceRefSetting, enable: enableSaveDivergenceRefSetting">#{i18n.getText('KMK011_3')}</button>
+				data-bind="click: saveDivergenceRefSetting, enable: enableSaveDivergenceRefSetting, timeClick: 500">#{i18n.getText('KMK011_3')}</button>
 			<!-- E1_3 -->
 			<button tabindex="3" data-bind="click: openRegisterErrMsgDialog">#{i18n.getText('KMK011_75')}</button>
 		</div>
@@ -36,9 +36,9 @@
 				</div>
 				<div class="history_setting" style="margin-left: 25px; margin-top: 40px">
 					<div class ="functions" style="padding-left: 2px;">
-						<button id="save-hist-wkType" tabindex="5" data-bind="click: createMode, enable: enable_button_creat">#{i18n.getText('KMK011_50')}</button>
-						<button tabindex="6" data-bind="click: editMode, enable: enable_button_edit">#{i18n.getText('KMK011_51')}</button>
-						<button class="danger" tabindex="7" data-bind="click: deleteMode, enable: enable_button_delete">#{i18n.getText('KMK011_74')}</button>
+						<button id="save-hist-wkType" tabindex="5" data-bind="click: createMode, enable: enable_button_creat, timeClick: 500">#{i18n.getText('KMK011_50')}</button>
+						<button tabindex="6" data-bind="click: editMode, enable: enable_button_edit, timeClick: 500">#{i18n.getText('KMK011_51')}</button>
+						<button class="danger" tabindex="7" data-bind="click: deleteMode, enable: enable_button_delete, timeClick: 500">#{i18n.getText('KMK011_74')}</button>
 					</div>
 					<div class="list_hist">
 						<div id="list-box-2" tabindex="8" data-bind="ntsListBox: {
