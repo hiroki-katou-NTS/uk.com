@@ -13,7 +13,7 @@ module nts.custombinding {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
-    import modal = nts.uk.ui.windows.sub.modal;sa
+    import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import parseTime = nts.uk.time.parseTime;
@@ -140,6 +140,17 @@ module nts.custombinding {
 
                     .layout-control .ui-iggrid-scrolldiv {
                         background-color: #fff;
+                    }
+
+                    .layout-control #cps007_lst_header {
+                        display: block;
+                        line-height: 23px;
+                        background-color: #CFF1A5;
+                        box-sizing: border-box;
+                        border: 1px solid gray;
+                        border-bottom: none;
+                        width: calc(100% - 1px);
+                        padding-left: 3px;
                     }
 
                     .layout-control .add-buttons {
@@ -639,6 +650,7 @@ module nts.custombinding {
                             <div id="cps007_sch_control" class="search-control ntsControl"></div>
                         </div>
                         <div class="form-group">
+                            <div id="cps007_lst_header"></div>
                             <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
                         </div>
                     </div>
@@ -2997,13 +3009,8 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 
-
-            /*if ($(ctrls.listbox).find('[id$="_grid"]').data('igGrid')) {
-                $(ctrls.listbox).find('[id$="_grid"]').igGrid("option", "columns", [
-                    { key: 'id', headerText: '', hidden: true },
-                    { key: 'itemName', headerText: text('CPS007_9') }
-                ]);
-            }*/
+            // fix header off listbox
+            $('#cps007_lst_header').text(text('CPS007_9'));
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
