@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
@@ -89,6 +91,8 @@ public class FlexTimeOfMonthly {
 	private AttendanceTimeMonth annualLeaveTimeBeforeDeduct;
 	/** エラー情報リスト */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
+	/** 社員の月別実績のエラー詳細リスト */
+	private List<Flex> perErrors; 
 	
 	/**
 	 * コンストラクタ
@@ -112,6 +116,7 @@ public class FlexTimeOfMonthly {
 				new AttendanceDaysMonth(0.0), new AttendanceTimeMonth(0));
 		this.annualLeaveTimeBeforeDeduct = new AttendanceTimeMonth(0);
 		this.errorInfos = new ArrayList<>();
+		this.perErrors = new ArrayList<>();
 	}
 
 	/**
@@ -222,8 +227,7 @@ public class FlexTimeOfMonthly {
 				
 				// 日別実績を集計する　（フレックス時間勤務用）
 				val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily,
-						companyId, workplaceId, employmentCd, workingSystem, aggregateAtr,
-						this.flexAggrSet, this.monthlyAggrSetOfFlexOpt);
+						companyId, workplaceId, employmentCd, workingSystem, aggregateAtr, settingsByFlex);
 
 				ConcurrentStopwatches.stop("12222.3:日別実績の集計：");
 				
@@ -388,6 +392,9 @@ public class FlexTimeOfMonthly {
 		
 		// 欠勤控除する
 		this.deductAbsence();
+		
+		// フレックス補填のエラーチェック
+		this.checkErrorForInsufficientFlex(settingsByFlex.getInsufficientFlexOpt());
 	}
 	
 	/**
@@ -1187,6 +1194,32 @@ public class FlexTimeOfMonthly {
 			// 引いた分を欠勤控除時間から引く
 			this.deductDaysAndTime.minusMinutesToAbsenceDeductTime(subtractTime.v());
 		}
+	}
+	
+	/**
+	 * フレックス補填のエラーチェック
+	 * @param insufficientFlexOpt フレックス不足の年休補填管理
+	 */
+	private void checkErrorForInsufficientFlex(
+			Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt){
+		
+		// フレックス不足の年休補填管理を取得
+		if (insufficientFlexOpt.isPresent()){
+			val insufficientFlex = insufficientFlexOpt.get();
+			
+			// 年休補填時間のエラーチェック
+			val deductDays = new nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth(
+					this.flexShortDeductTime.getAnnualLeaveDeductDays().v());
+			if (insufficientFlex.checkErrorForSupplementableDays(deductDays)){
+				
+				// 社員の月別実績のエラーを作成する
+				if (!this.perErrors.contains(Flex.FLEX_YEAR_HOLIDAY_DEDUCTIBLE_DAYS)){
+					this.perErrors.add(Flex.FLEX_YEAR_HOLIDAY_DEDUCTIBLE_DAYS);
+				}
+			}
+		}
+		
+		// フレックス不足時間のエラーチェック
 	}
 	
 	/**

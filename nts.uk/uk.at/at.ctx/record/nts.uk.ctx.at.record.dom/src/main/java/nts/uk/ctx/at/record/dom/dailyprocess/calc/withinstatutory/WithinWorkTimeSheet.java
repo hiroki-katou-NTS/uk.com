@@ -1556,7 +1556,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			int forLateAddTime = 0;
 			int forLeaveAddTime = 0;
 			//遅刻が保持する控除時間の合計取得
-			if(decisionGetLateLeaveHaveChild(premiumAtr,holidayCalcMethodSet,commonSetting)) {
+			if(decisionGetLateLeaveHaveChild(premiumAtr,holidayCalcMethodSet,commonSetting,atr)) {
 				if(frameTime.getLateTimeSheet().isPresent()) {
 					if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
 						forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
@@ -1580,10 +1580,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param premiumAtr
 	 * @param holidayCalcMethodSet
 	 * @param commonSetting
+	 * @param atr 
 	 * @return
 	 */
-	private boolean decisionGetLateLeaveHaveChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	private boolean decisionGetLateLeaveHaveChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting, ConditionAtr atr) {
 		boolean decisionGetChild = false;
+		if(!(atr.isCare() || atr.isChild()))
+				return false;
 		if(premiumAtr.isRegularWork()) {			
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
 				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
