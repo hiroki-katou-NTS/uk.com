@@ -62,6 +62,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceFinder;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -212,6 +214,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
 	
+	@Inject
+	private OptionalItemRepository optionalItemRepo;
+	
 	/** The filename. */
 	private final String filename = "report/KWR001.xlsx";
 	
@@ -224,6 +229,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 16;
 	
+	/** The Constant LIMIT_DATA_PACK. */
+	private static final int LIMIT_DATA_PACK = 5;
+	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
 	
@@ -234,11 +242,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int[] ATTENDANCE_ID_WORK_TIME = {2, 29};
 	private static final int[] ATTENDANCE_ID_WORK_LOCATION = {30, 33, 36, 38, 40, 43, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 87, 90, 94, 97, 
 			101, 104, 108, 111, 115, 118, 122, 125, 129, 132, 136, 139, 143, 146, 150, 153, 156, 158, 162, 164, 168, 170, 174, 176, 180, 182, 186, 188, 192, 194, 198, 200, 204, 206, 210, 212};
-	private static final int[] ATTENDANCE_ID_REASON = {438, 443, 448, 453, 458};
+	private static final int[] ATTENDANCE_ID_REASON = {438, 443, 448, 453, 458, 801, 806, 811, 816, 821};
 	private static final int ATTENDANCE_ID_WORKPLACE = 623;
 	private static final int ATTENDANCE_ID_CLASSIFICATION = 624;
 	private static final int ATTENDANCE_ID_POSITION = 625;
 	private static final int ATTENDANCE_ID_EMPLOYMENT = 626;
+	// All attendance ID which has value type = ATTR
+	private static final int[] ATTENDANCE_ID_USE_MAP = {};
+	private static final int[] ATTENDANCE_ID_CALCULATION_MAP = {627, 628, 629, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640};
+	private static final int[] ATTENDANCE_ID_OVERTIME_MAP = {824, 825, 826, 827, 828, 829, 830, 831, 832};
+	private static final int[] ATTENDANCE_ID_OUTSIDE_MAP = {86, 93, 100, 107, 114, 121, 128, 135, 142, 149};
+	
+	// Attendance id with optional item from KMK002, for workaround
+	private static final int ATTENDANCE_ID_OPTIONAL_START = 641;
+	private static final int ATTENDANCE_ID_OPTIONAL_END = 740;
+	
 	
 	/** The font family. */
 	private final String FONT_FAMILY = "ＭＳ ゴシック";
@@ -449,12 +467,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		if (!lstEmployeeNoWorkplace.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
@@ -535,12 +553,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
 		if (!lstEmployeeIdNoData.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * LIMIT_DATA_PACK;
+	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
@@ -568,19 +586,25 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
-		// Collect all data which uses value type = code
+		/*
+		 *  Collect all data which uses value type = code
+		 */
+		// 勤務種類を取得する
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(y -> x == y)).count() > 0) {
 			List<WorkType> lstWorkType = worktypeRepo.findByCompanyId(companyId);
 			queryData.setLstWorkType(lstWorkType);
 		}
+		// 就業時間帯を取得する
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(y -> x == y)).count() > 0) {
 			List<WorkTimeSetting> lstWorkTime = workTimeRepo.findByCompanyId(companyId);
 			queryData.setLstWorkTime(lstWorkTime);
 		}
+		// 職場を取得する
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_WORKPLACE == x).count() > 0) {
 			List<CodeName> lstWorkplaceInfo = dataProcessor.getWorkPlace(companyId, endDate).getCodeNames();
 			queryData.setLstWorkplaceInfo(lstWorkplaceInfo);
 		}
+		// 勤務場所を取得する
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstWorkLocation = dataProcessor.getServicePlace(companyId).getCodeNames();
 			queryData.setLstWorkLocation(lstWorkLocation);
@@ -589,17 +613,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> lstReason = dataProcessor.getReason(companyId).getCodeNames();
 			queryData.setLstReason(lstReason);
 		}
+		// 分類を取得する
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_CLASSIFICATION).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstClassification = dataProcessor.getClassification(companyId).getCodeNames();
 			queryData.setLstClassification(lstClassification);
 		}
+		// 職位を取得する
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_POSITION == x).count() > 0) {
 			List<CodeName> lstPosition = dataProcessor.getPossition(companyId, endDate).getCodeNames();
 			queryData.setLstPosition(lstPosition);
 		}
+		// 雇用を取得する
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_EMPLOYMENT == x).count() > 0) {
 			List<CodeName> lstEmployment = dataProcessor.getEmployment(companyId).getCodeNames();
 			queryData.setLstEmployment(lstEmployment);
+		}
+		
+		// Collect optional item from KMK002 if there is at least 1 attendance id fall into id 641 -> 740
+		List<Integer> lstOptionalAttendanceId = itemsId.stream()
+				.filter(x -> x >= ATTENDANCE_ID_OPTIONAL_START && x <= ATTENDANCE_ID_OPTIONAL_END)
+				.map(x -> x - 640)
+				.collect(Collectors.toList());
+		if (!lstOptionalAttendanceId.isEmpty()) {
+			List<OptionalItem> lstOptionalItem = optionalItemRepo.findByListNos(companyId, lstOptionalAttendanceId);
+			queryData.setLstOptionalItem(lstOptionalItem);
 		}
 		
 		// Sort attendance display
@@ -699,6 +736,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
 		List<WkpHistImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
+		List<OptionalItem> lstOptionalItem = queryData.getLstOptionalItem();
 		
 		// Get all error alarm code
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
@@ -828,15 +866,32 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if (optItemValue.isPresent()) {
 								AttendanceItemValueImport itemValue = optItemValue.get();
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+								int attendanceId = itemValue.getItemId();
 								if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
-									int attendanceId = itemValue.getItemId();
 									String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 									itemValue.setValue(value);
+								}
+								// Workaround for optional attendance item from KMK002
+								if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
+									Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+									optOptionalItem.ifPresent(optionalItem -> {
+										switch(optionalItem.getOptionalItemAtr()) {
+										case TIME:
+											itemValue.setValueType(ValueType.TIME.value);
+											break;
+										case NUMBER:
+											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+											break;
+										case AMOUNT:
+											itemValue.setValueType(ValueType.AMOUNT.value);
+											break;
+										}
+									});
 								}
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
 							else {
-								personalPerformanceDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+								personalPerformanceDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 							}
 						});
 					});
@@ -872,6 +927,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
 		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
+		List<OptionalItem> lstOptionalItem = queryData.getLstOptionalItem();
 		String employeeId = employeeDto.getEmployeeId();
 		
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
@@ -1022,15 +1078,34 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
+					int attendanceId = itemValue.getItemId();
 					if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
-						int attendanceId = itemValue.getItemId();
+						
 						String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 						itemValue.setValue(value);
 					}
-					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
+					// Workaround for optional attendance item from KMK002
+					if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
+						Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+						optOptionalItem.ifPresent(optionalItem -> {
+							switch(optionalItem.getOptionalItemAtr()) {
+							case TIME:
+								itemValue.setValueType(ValueType.TIME.value);
+								break;
+							case NUMBER:
+								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+								break;
+							case AMOUNT:
+								itemValue.setValueType(ValueType.AMOUNT.value);
+								break;
+							}
+						});
+					}
+					
+					detailedDate.actualValue.add(new ActualValue(attendanceId, itemValue.getValue(), itemValue.getValueType()));
 				}
 				else {
-					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 			});
 		});
@@ -2133,7 +2208,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, WorkplaceReportData> mapChildWorkplace = workplaceReportData.getLstChildWorkplaceReportData();
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
-				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) {
+				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) { /* Trick to not page break between detailed data and total data */
 			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         	rowPageTracker.resetRemainingRow();
@@ -2147,7 +2222,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
-					&& it.hasNext() && entry.getValue().getParent().level != 0) {
+					&& it.hasNext()/* && entry.getValue().getParent().level != 0*/) {
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}

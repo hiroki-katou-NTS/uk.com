@@ -125,6 +125,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		int size = timeLeavingWorks.size();
 		for (int i = 0; i < size; i++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
+			
 			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
@@ -203,6 +204,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 			outPut.setErrMesInfos(errMesInfos);
 			return outPut;
 		}
+		outPut.setReflect(true);
 		return outPut;
 	}
 

@@ -601,17 +601,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
-                    formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
-                    formatDailyItem['order'] = item.order
+                    if(formatDailyItem){
+                        formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
+                        formatDailyItem['order'] = item.order;
+                    }
                 });
                 let arr: any[] = _.orderBy(self.listAttendanceItemId(), ['order'], ['asc']);
                 self.listAttendanceItemId(arr);
-                self.isVisibleMIGrid(data.monthResult.hasItem);
                 self.monthYear(nts.uk.time.formatYearMonth(data.monthResult.month));
                 // reload MiGrid
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
-                self.getNameMonthly();
+                self.isVisibleMIGrid(data.monthResult.hasItem);
                 //
             }else{
                 self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
@@ -2174,7 +2175,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] =  cDisplayType == 'Clock' ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
                 totalWidthColumn += id.columnWidth;
             });
             
@@ -2195,7 +2196,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         convertToCDisplayType(value: string): string {
             switch (value) {
-                case "TIME": return "Clock";
+                case "TIME":
+                case "CLOCK":
+                    return "Clock";
                 case "DAYS": return "Decimal";
                 case "COUNT": return "Integer";
                 case "CURRENCY": return "Currency";

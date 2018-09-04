@@ -367,8 +367,13 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                let a = self.findDataModeAppByID(id, self.items());
-                let lstAppId = self.findListAppType(a.appType);
+                //Bug #97203 - EA2540
+//                let a = self.findDataModeAppByID(id, self.items());
+//                let lstAppId = self.findListAppType(a.appType);
+                let lstAppId = [];
+                _.each(self.items(), function(app){
+                    lstAppId.push(app.appId);
+                });
                 nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
@@ -539,8 +544,13 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                let a = self.findDataModeAppByID(id, self.items());
-                let lstAppId = self.findListAppType(a.appType);
+                //Bug #97203 - EA2540
+//                let a = self.findDataModeAppByID(id, self.items());
+//                let lstAppId = self.findListAppType(a.appType);
+                let lstAppId = [];
+                _.each(self.items(), function(app){
+                    lstAppId.push(app.appId);
+                });
                 nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
@@ -940,7 +950,7 @@ module cmm045.a.viewmodel {
         //※特別休暇申請.続柄コード　＝　入力ありの場合
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
+            let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : absence.day + getText('CMM045_278');
             //hdAppSet.specialVaca
             let result = getText('CMM045_279') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
             return result;

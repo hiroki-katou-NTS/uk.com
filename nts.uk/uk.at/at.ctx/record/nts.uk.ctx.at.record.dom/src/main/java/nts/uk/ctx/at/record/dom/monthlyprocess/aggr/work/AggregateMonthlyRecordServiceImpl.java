@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -41,6 +43,12 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 出勤率計算用日数を取得する */
 	@Inject
 	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 特別休暇 */
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepo;
+	/** 期間内の特別休暇残を集計する */
+	@Inject
+	private SpecialLeaveManagementService specialLeaveMng;
 	/** 月別実績の編集状態 */
 	@Inject
 	private EditStateOfMonthlyPerRepository editStateRepo;
@@ -60,6 +68,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.absenceRecruitMng,
 				this.breakDayoffMng,
 				this.getDaysForCalcAttdRate,
+				this.specialHolidayRepo,
+				this.specialLeaveMng,
 				this.editStateRepo);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,

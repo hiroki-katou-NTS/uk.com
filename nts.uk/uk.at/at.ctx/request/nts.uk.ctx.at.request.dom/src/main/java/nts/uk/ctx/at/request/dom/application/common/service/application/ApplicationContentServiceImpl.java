@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.i18n.I18NText;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -257,11 +259,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							}
 							case NORMALOVERTIME: {
 								type = "残業時間";
-								List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-								if (!lstFramOt.isEmpty()){
-									type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+								List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+								if(!CollectionUtil.isEmpty(normalLst)){
+									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+									if (!lstFramOt.isEmpty()){
+										type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+										break;
+									}
 								}
-								break;
+								if(plusNo11.isPresent()){
+									type = "時間外深夜時間";
+									break;
+								}
+								if(plusNo12.isPresent()){
+									type = "ﾌﾚｯｸｽ超過";
+									break;
+								}
 							}
 							case RESTTIME: {
 								type = "休憩時間";
@@ -338,9 +353,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								}
 								case NORMALOVERTIME: {
 									type = "残業時間";
-									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-									type = lstFramOt.get(0).getOvertimeWorkFrName().v();
-									break;
+									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									if(!CollectionUtil.isEmpty(normalLst)){
+										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+										if (!lstFramOt.isEmpty()){
+											type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+											break;
+										}
+									}
+									if(plusNo11.isPresent()){
+										type = "時間外深夜時間";
+										break;
+									}
+									if(plusNo12.isPresent()){
+										type = "ﾌﾚｯｸｽ超過";
+										break;
+									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
@@ -412,9 +442,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								}
 								case NORMALOVERTIME: {
 									type = "残業時間";
-									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-									type = lstFramOt.get(0).getOvertimeWorkFrName().v();
-									break;
+									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									if(!CollectionUtil.isEmpty(normalLst)){
+										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+										if (!lstFramOt.isEmpty()){
+											type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+											break;
+										}
+									}
+									if(plusNo11.isPresent()){
+										type = "時間外深夜時間";
+										break;
+									}
+									if(plusNo12.isPresent()){
+										type = "ﾌﾚｯｸｽ超過";
+										break;
+									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
@@ -662,9 +707,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 										}
 										case NORMALOVERTIME: {
 											type = "残業時間";
-											List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-											type = lstFramOt.get(0).getOvertimeWorkFrName().v();
-											break;
+											List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+											Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+											Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+											if(!CollectionUtil.isEmpty(normalLst)){
+												List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+												if (!lstFramOt.isEmpty()){
+													type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+													break;
+												}
+											}
+											if(plusNo11.isPresent()){
+												type = "時間外深夜時間";
+												break;
+											}
+											if(plusNo12.isPresent()){
+												type = "ﾌﾚｯｸｽ超過";
+												break;
+											}
 										}
 										case RESTTIME: {
 											type = "休憩時間";
@@ -745,9 +805,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											}
 											case NORMALOVERTIME: {
 												type = "残業時間";
-												List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-												type = lstFramOt.get(0).getOvertimeWorkFrName().v();
-												break;
+												List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+												Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+												Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+												if(!CollectionUtil.isEmpty(normalLst)){
+													List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+													if (!lstFramOt.isEmpty()){
+														type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+														break;
+													}
+												}
+												if(plusNo11.isPresent()){
+													type = "時間外深夜時間";
+													break;
+												}
+												if(plusNo12.isPresent()){
+													type = "ﾌﾚｯｸｽ超過";
+													break;
+												}
 											}
 											case RESTTIME: {
 												type = "休憩時間";
@@ -819,9 +894,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 										}
 										case NORMALOVERTIME: {
 											type = "残業時間";
-											List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-											type = lstFramOt.get(0).getOvertimeWorkFrName().v();
-											break;
+											List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
+											Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+											Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+											if(!CollectionUtil.isEmpty(normalLst)){
+												List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
+												if (!lstFramOt.isEmpty()){
+													type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+													break;
+												}
+											}
+											if(plusNo11.isPresent()){
+												type = "時間外深夜時間";
+												break;
+											}
+											if(plusNo12.isPresent()){
+												type = "ﾌﾚｯｸｽ超過";
+												break;
+											}
 										}
 										case RESTTIME: {
 											type = "休憩時間";

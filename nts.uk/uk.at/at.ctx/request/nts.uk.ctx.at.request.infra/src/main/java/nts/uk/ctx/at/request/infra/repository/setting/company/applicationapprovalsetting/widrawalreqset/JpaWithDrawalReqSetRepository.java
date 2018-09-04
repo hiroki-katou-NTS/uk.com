@@ -78,10 +78,10 @@ public class JpaWithDrawalReqSetRepository extends JpaRepository implements With
 		entity.setAppliDateContrac(withDrawalReqSet.getAppliDateContrac().value);
 		entity.setUseAtr(withDrawalReqSet.getUseAtr().value);
 		entity.setCheckUpLimitHalfDayHD(withDrawalReqSet.getCheckUpLimitHalfDayHD().value);
-		entity.setPickUpComment(withDrawalReqSet.getPickUpComment());
+		entity.setPickUpComment(withDrawalReqSet.getPickUpComment().isPresent() ? withDrawalReqSet.getPickUpComment().get().v() : null);
 		entity.setPickUpBold(withDrawalReqSet.getPickUpBold().value);
 		entity.setPickUpLettleColor(withDrawalReqSet.getPickUpLettleColor());
-		entity.setDeferredComment(withDrawalReqSet.getDeferredComment());
+		entity.setDeferredComment(withDrawalReqSet.getDeferredComment().isPresent() ? withDrawalReqSet.getDeferredComment().get().v() : null);
 		entity.setDeferredBold(withDrawalReqSet.getDeferredBold().value);
 		entity.setDeferredLettleColor(withDrawalReqSet.getDeferredLettleColor());
 		entity.setDeferredWorkTimeSelect(withDrawalReqSet.getDeferredWorkTimeSelect().value);

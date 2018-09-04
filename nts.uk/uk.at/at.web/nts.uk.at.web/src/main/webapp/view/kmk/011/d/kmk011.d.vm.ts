@@ -122,18 +122,20 @@ module nts.uk.at.view.kmk011.d {
              * save divergence reference setting
              */
             public saveDivergenceRefSetting() {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
-                for (let i = 1; i <= 10; i++) {
-                    if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#com_alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
-                        //                        $('#com_error_time_' + i).ntsEditor("validate");   
-                    }
-
-                }
+//                for (let i = 1; i <= 10; i++) {
+//                    if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
+//                        $('#com_alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
+//                        //                        $('#com_error_time_' + i).ntsEditor("validate");   
+//                    }
+//
+//                }
 
                 if (_self.hasError()) {
+                    blockUI.clear();
                     return;
                 }
 
@@ -158,7 +160,14 @@ module nts.uk.at.view.kmk011.d {
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail((res: any) => {
-                    _self.showMessageError(res);
+//                    _self.showMessageError(res);
+                    _.forEach((res.errors),(error) => {
+                        _.forEach(error.supplements, function(value, key) {
+                            $('#com_alarm_time_' + key).ntsError('set', {messageId:value});
+                        });
+                    })
+                }).always(() => {
+                    blockUI.clear();    
                 });
             }
 

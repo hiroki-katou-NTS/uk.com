@@ -28,7 +28,7 @@
 				<!-- I1_1: Button Registration -->
 				<button style="margin-left: 45px;" tabindex="2" id="btn_001"
 					class="button proceed separate-button fix-button"
-					data-bind="click: registrationErrMsg, enable: $root.errors.isEmpty">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: registrationErrMsg, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('KMK011_3')}</button>
 				<!-- I1_2: Button Close -->
 				<button tabindex="3" id="btn_005"
 					class="button separate-button fix-button"
@@ -67,13 +67,14 @@
 						<tr class="row">
 							<td style="padding-bottom: 35px">
 								<!--I4-1 -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_76')}</div>
+								<div data-bind="ntsFormLabel: {constraint: 'ErrorAlarmMessage'}">#{i18n.getText('KMK011_76')}</div>
 							</td>
 							<td style="padding-left: 5px">
 								<!-- I4_2 -->
 								<div data-bind="with: multilineeditorErr">
-									<textarea
+									<textarea id="errorMessage"
 										data-bind="ntsMultilineEditor: {
+											name: '#[KMK011_76]',
 											value: errorMessage,
 											option: option,
 											enable: enable,
@@ -87,13 +88,14 @@
 						<tr class="row">
 							<td style="padding-bottom: 35px">
 								<!--I5-1 -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_77')}</div>
+								<div data-bind="ntsFormLabel: {constraint: 'ErrorAlarmMessage'}">#{i18n.getText('KMK011_77')}</div>
 							</td>
 							<td style="padding-left: 5px">
 								<!-- I5_2 -->
 								<div data-bind="with: multilineeditorAlarm">
-									<textarea
+									<textarea id="alarmMessage"
 										data-bind="ntsMultilineEditor: {
+											name: '#[KMK011_77]',
 											value: alarmMessage,
 											option: option,
 											enable: enable,

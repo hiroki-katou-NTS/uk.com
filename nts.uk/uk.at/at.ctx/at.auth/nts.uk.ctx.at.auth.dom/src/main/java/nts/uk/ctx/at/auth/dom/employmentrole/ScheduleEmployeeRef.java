@@ -8,11 +8,11 @@ public enum ScheduleEmployeeRef {
 	/**
 	 * 所属部門全員（配下含む）(allIncludeSubor)
 	 */
-	ALL_INCLUDE_SUBOR(1,"所属部門全員（配下含む）"),
+	ALL_INCLUDE_SUBOR(1,"部門（配下含む）"),
 	/**
 	 * 所属部門全員（配下含まず）(allExcludeSubor)
 	 */
-	ALL_EXCLUDE_SUBOR(2,"所属部門全員（配下含まず）"),
+	ALL_EXCLUDE_SUBOR(2,"部門（配下含まない）"),
 	/**
 	 * 所属チーム全員(allTeams)
 	 */

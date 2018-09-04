@@ -72,6 +72,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("dailyCreateHasError", " ");
 		
+
+		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 //		String employeeID = AppContexts.user().employeeId();
@@ -134,6 +138,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		// 日別実績の計算　実行
 		if (logsMap.containsKey(ExecutionContent.DAILY_CALCULATION)
 				&& finalStatus == ProcessState.SUCCESS) {
+			dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
 			
 			Optional<ExecutionLog> dailyCalculationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CALCULATION));
@@ -144,6 +149,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		// 月別実績の集計　実行
 		if (logsMap.containsKey(ExecutionContent.MONTHLY_AGGREGATION)
 				&& finalStatus == ProcessState.SUCCESS) {
+
+			dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 			
 			Optional<ExecutionLog> monthlyAggregationLog =
 					Optional.of(logsMap.get(ExecutionContent.MONTHLY_AGGREGATION));

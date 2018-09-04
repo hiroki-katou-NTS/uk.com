@@ -251,8 +251,8 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, DatePeriod datePeriod) {
-		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, datePeriod.end());
+	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date) {
+		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, date);
 		 
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();

@@ -966,7 +966,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 	}
 
-	private void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
+	@Override
+	public void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
 		if (listWorkScheduleState == null || listWorkScheduleState.size() == 0) {
 			return;
 		}
@@ -1036,7 +1037,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 	}
 	
-	private void removeScheState(String employeeId, GeneralDate baseDate,
+	@Override
+	public void removeScheState(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleState> listWorkScheduleState) {
 		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
 		String listItemIdString = "(";

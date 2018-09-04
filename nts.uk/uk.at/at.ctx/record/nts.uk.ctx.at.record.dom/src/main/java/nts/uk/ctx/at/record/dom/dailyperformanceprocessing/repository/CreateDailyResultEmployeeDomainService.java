@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -40,7 +41,8 @@ public interface CreateDailyResultEmployeeDomainService {
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Optional<EmploymentHistoryImported> employmentHisOptional,
 			String employmentCode,
-			PeriodInMasterList periodInMasterList);
+			PeriodInMasterList periodInMasterList,
+			Optional<ClosureStatusManagement> closureStatusManagement);
 
 	/**
 	 * create method for kbt002 call
