@@ -197,19 +197,20 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
                 
                 for(var j = data.length; j < 20; j++) {
+                    let nullData  = '';
                     var item : IItem = {
                         grantYearHolidayNo: j + 1,
                         conditionNo: self.conditionData.conditionNo,
                         yearHolidayCode: self.conditionData.code,
-                        lengthOfServiceYears: null,
-                        lengthOfServiceMonths: null,
-                        grantDays: null,
-                        limitedTimeHdDays: null,
-                        limitedHalfHdCnt: null,
+                        lengthOfServiceYears: nullData,
+                        lengthOfServiceMonths: nullData,
+                        grantDays: nullData,
+                        limitedTimeHdDays: nullData,
+                        limitedHalfHdCnt: nullData,
                         grantReferenceDate: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? 1 : 0) : 0,
                         grantReferenceDateEnable: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? false : true) : true,
                         grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
-                        grantDate: "",
+                        grantDate: nullData,
                         ltdEnable: flagYear,
                         lthEnable: flagDay 
                     };
@@ -410,7 +411,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     service.addYearHolidayGrant(data).done(function(){
                         nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                         self.checkDataExisted(true);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.start();
+                        });
                     }).fail(function(error){
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
                             if(error.messageId === "Msg_266") {

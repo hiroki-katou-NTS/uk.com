@@ -169,15 +169,17 @@
 				<td>
 					<!-- A4_1 -->
 					<div class="lblTitle-kaf006 cm-column2-kaf006 control-group-kaf006"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_15')}</div>
+						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF006_15')}</div>
 				</td>
 				<td class="thut">
 					<!-- A4_2 -->
-					<div data-bind="ntsSwitchButton: {
+					<div id = "hdType" data-bind="ntsSwitchButton: {
+								name: '#{i18n.getText('KAF006_15')}',
 								options: holidayTypes,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: holidayTypeCode,
+								required: true,
 								enable: screenModeNew }"></div>
 				</td>
 			</tr>
