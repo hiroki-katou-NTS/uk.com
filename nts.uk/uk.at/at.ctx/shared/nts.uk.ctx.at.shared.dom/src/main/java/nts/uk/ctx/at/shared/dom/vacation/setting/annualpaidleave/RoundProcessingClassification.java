@@ -10,10 +10,10 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 public enum RoundProcessingClassification {
 	
 	/** Round up to the day. */
-	RoundUpToTheDay(0, "0日に切り捨てる", "0日に切り捨てる"),
+	TruncateOnDay0(0, "0日に切り捨てる", "0日に切り捨てる"),
 	
 	/** Truncate on day 0. */
-	TruncateOnDay0(1, "1日に切り上げる", "1日に切り上げる"),
+	RoundUpToTheDay(1, "1日に切り上げる", "1日に切り上げる"),
 
 	/** Do not perform fractional processing. */
 	FractionManagementNo(2, "端数処理をしない", "端数処理をしない");
