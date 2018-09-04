@@ -504,12 +504,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                             if (data.length > 0) {
                                 // order by list
-                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
-                                 }
-                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
-                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
-                                 }
+                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
+
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
