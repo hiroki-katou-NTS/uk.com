@@ -1047,6 +1047,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	@Override
 	public void removeScheState(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleState> listWorkScheduleState) {
+		
+		if(CollectionUtil.isEmpty(listWorkScheduleState)){
+			return;
+		}
+		
 		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
 		String listItemIdString = "(";
 		for(int i = 0; i < listItemId.size(); i++){
