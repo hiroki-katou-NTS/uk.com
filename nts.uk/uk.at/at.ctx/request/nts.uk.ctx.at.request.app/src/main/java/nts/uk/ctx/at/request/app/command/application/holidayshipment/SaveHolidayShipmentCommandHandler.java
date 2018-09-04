@@ -45,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -507,6 +507,7 @@ public class SaveHolidayShipmentCommandHandler
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
+
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
 		if (isSaveAbs(command.getComType()) && isCheck) {
 			String wkTypeCD = absCmd.getWkTypeCD();
@@ -639,20 +640,20 @@ public class SaveHolidayShipmentCommandHandler
 		// 休暇使用期限をチェックする
 		GeneralDate resultDate;
 		switch (expTime) {
-		
+
 		case END_OF_YEAR:
 			resultDate = GeneralDate.ymd(recDate.year(), 12, 31);
 			break;
-			
+
 		case UNLIMITED:
 			resultDate = GeneralDate.max();
 			break;
-			
+
 		default:
 			// 期限指定のある使用期限日を作成する
 			resultDate = this.dateDeadline.useDateDeadline(employmentCd, expTime, recDate);
 			break;
-			
+
 		}
 		return resultDate;
 	}
