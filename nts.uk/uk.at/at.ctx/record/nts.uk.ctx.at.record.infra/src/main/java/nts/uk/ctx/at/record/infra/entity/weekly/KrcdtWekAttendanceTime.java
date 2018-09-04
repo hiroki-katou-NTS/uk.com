@@ -659,7 +659,7 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		}
 		
 		// 月別実績の勤務時間
-		val vtWorkTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val vtWorkTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						this.krcdtWekAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				GoOutOfMonthly.of(

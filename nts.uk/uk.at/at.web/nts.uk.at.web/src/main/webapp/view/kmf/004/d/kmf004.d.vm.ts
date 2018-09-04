@@ -321,7 +321,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         remove() {
             let self = this;
             
-            nts.uk.ui.block.invisible();
             
             let count = 0;
             for (let i = 0; i <= self.lstGrantDate().length; i++){
@@ -373,9 +372,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();      
-                });
+                })
             }
         } 
         

@@ -170,4 +170,7 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates);
+	
+	void removeScheState(String employeeId, GeneralDate baseDate,
+			List<WorkScheduleState> listWorkScheduleState);
 }

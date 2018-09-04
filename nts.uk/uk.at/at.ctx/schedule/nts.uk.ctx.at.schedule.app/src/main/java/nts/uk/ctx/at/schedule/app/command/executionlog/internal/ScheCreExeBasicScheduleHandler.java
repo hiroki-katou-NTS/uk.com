@@ -695,6 +695,7 @@ public class ScheCreExeBasicScheduleHandler {
 
 		saveBasicSchedule(basicScheduleSaveCommand);
 		
+		this.basicScheduleRepository.removeScheState(employeeId, baseDate, lstWorkScheduleState);
 		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
 		
 		
