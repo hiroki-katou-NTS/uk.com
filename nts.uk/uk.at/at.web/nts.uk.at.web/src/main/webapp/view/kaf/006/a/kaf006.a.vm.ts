@@ -126,6 +126,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         constructor(transferData :any) {
 
             let self = this;
+            $(document).ajaxStart(function() {
+                nts.uk.ui.block.invisible();
+            }).ajaxStop(function() {
+                nts.uk.ui.block.clear();
+            });
             if(transferData != null){
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
@@ -299,6 +304,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.findChangeDisplayHalfDay(value);
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
+                    if(nts.uk.util.isNullOrUndefined(value)){
+                        return;    
+                    }
                     self.findChangeWorkType(value);
                 });
                 self.displayWorkTimeName.subscribe((value) => {
