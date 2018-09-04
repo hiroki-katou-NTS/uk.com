@@ -55,7 +55,6 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 		}
 		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
 		interimDataMng.forEach((x, y) -> {
-			lstInterimDate.add(x);
 			//ドメインモデル「暫定残数管理データ」を取得する
 			List<InterimRemain> lstBeforInterimData = lstBeforInterimDataAlls.stream()
 					.filter(z -> z.getYmd() == x).collect(Collectors.toList());
