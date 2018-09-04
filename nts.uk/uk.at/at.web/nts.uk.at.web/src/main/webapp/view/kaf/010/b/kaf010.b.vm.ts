@@ -255,7 +255,7 @@ module nts.uk.at.view.kaf010.b {
                 if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
                     self.indicationOvertimeFlg(false);    
                 } else {
-                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self);    
+                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);    
                 }
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
 //                // preAppOvertime
