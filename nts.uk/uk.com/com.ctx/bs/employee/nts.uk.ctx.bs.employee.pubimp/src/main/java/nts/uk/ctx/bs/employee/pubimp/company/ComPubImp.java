@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pubimp.company;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +77,30 @@ public class ComPubImp implements SyCompanyPub {
 	public AffCompanyHistExport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
 		
 		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployeeAndBaseDate(sid, baseDate);
+		
+		if (affComHis == null){
+			return new AffCompanyHistExport(null, Collections.emptyList());
+		}
+		
+		AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(sid);
+		
+		AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
+		affComHostEx.setEmployeeId(sid);
+
+		affComHostEx.setLstAffComHistItem(affComBySid.getLstAffCompanyHistoryItem().stream()
+				.map(item -> new AffComHistItem(item.getHistoryId(), item.isDestinationData(), item.getDatePeriod()))
+				.collect(Collectors.toList()));
+
+		return affComHostEx;
+	}
+
+	@Override
+	public AffCompanyHistExport GetAffComHisBySid(String cid, String sid) {
+		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sid);
+		
+		if (affComHis == null){
+			return new AffCompanyHistExport(null, Collections.emptyList());
+		}
 		
 		AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(sid);
 		

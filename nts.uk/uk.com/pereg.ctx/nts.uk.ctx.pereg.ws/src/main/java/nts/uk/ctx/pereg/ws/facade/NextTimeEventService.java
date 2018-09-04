@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.remaingnumber;
+package nts.uk.ctx.pereg.ws.facade;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -7,17 +7,17 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.nexttime.NextTimeEventDto;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.nexttime.NextTimeEventParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaEmpBasicInfo;
+import nts.uk.ctx.pereg.app.find.common.AnnLeaEmpBasicInfo;
+import nts.uk.ctx.pereg.app.find.common.GetYearHolidayInfo;
+import nts.uk.ctx.pereg.app.find.common.NextTimeEventDto;
+import nts.uk.ctx.pereg.app.find.common.NextTimeEventParam;
 
 @Path("at/record/remainnumber/annlea/event")
 @Produces("application/json")
 public class NextTimeEventService extends WebService{
 	
 	@Inject 
-	private AnnLeaEmpBasicInfoDomService annLeaEmpBasicInfoDomService;
+	private GetYearHolidayInfo getYearHolidayInfo;
 	
 	/**
 	 * Category: CS00024
@@ -40,7 +40,7 @@ public class NextTimeEventService extends WebService{
 		AnnLeaEmpBasicInfo annLea = new AnnLeaEmpBasicInfo(param.getEmployeeId(),
 				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(), null, null, null,
 				null);
-		return NextTimeEventDto.fromDomain(annLeaEmpBasicInfoDomService.getYearHolidayInfo(annLea));
+		return NextTimeEventDto.fromDomain(getYearHolidayInfo.getYearHolidayInfo(annLea));
 	}
 
 }

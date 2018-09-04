@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
@@ -47,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -521,6 +524,19 @@ public class AppOvertimeFinder {
 			overTimeDto.setWorkTypeChangeFlg(false);
 			if(appOvertimeSettingRepository.getAppOver().get().getWorkTypeChangeFlag().equals(Changeable.CHANGEABLE)){
 				overTimeDto.setWorkTypeChangeFlg(true);
+			}
+		}
+		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		if(otRestAppCommonSet.isPresent()&&(otRestAppCommonSet.get().getExtratimeDisplayAtr()==UseAtr.USE)){
+			Map<String, AppOverTime> appOverTimeDetailMap = overtimeRepository.getListAppOvertimeFrame(companyID, Arrays.asList(appID));
+			if(!appOverTimeDetailMap.isEmpty()){
+				Optional<AppOvertimeDetail> appOvertimeDetail = appOverTimeDetailMap.entrySet().stream().findFirst().get().getValue().getAppOvertimeDetail();
+				overTimeDto.setAppOvertimeDetailDto(AppOvertimeDetailDto.fromDomain(appOvertimeDetail));
+				if(!appOvertimeDetail.isPresent()){
+					overTimeDto.setAppOvertimeDetailStatus(null);
+				} else {
+					overTimeDto.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()));
+				}
 			}
 		}
 		return overTimeDto;

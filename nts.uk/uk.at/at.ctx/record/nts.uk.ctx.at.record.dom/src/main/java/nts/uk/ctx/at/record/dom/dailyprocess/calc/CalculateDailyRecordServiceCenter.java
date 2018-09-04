@@ -23,7 +23,7 @@ public interface CalculateDailyRecordServiceCenter{
 	public List<IntegrationOfDaily> calculatePassCompanySetting(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet);
 	
 	//計算(就業計算と集計用)
-	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, Optional<Consumer<ProcessState>> counter);
+	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, Optional<Consumer<ProcessState>> counter, List<ClosureStatusManagement> closureList);
 	
 	//エラーチェック
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);

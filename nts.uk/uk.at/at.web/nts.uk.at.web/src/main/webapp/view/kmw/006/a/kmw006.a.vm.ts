@@ -191,8 +191,14 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 monthlyClosureUpdateLogId: localStorage.getItem("MonthlyClosureUpdateLogId"),
                 listEmployeeId: listEmpId,
                 closureId: localStorage.getItem("MonthlyClosureId"),
-                startDT: localStorage.getItem("MonthlyClosureExecutionDateTime"),
-                endDT: localStorage.getItem("MonthlyClosureExecutionEndDate")
+                startDT: localStorage.getItem("MonthlyClosureStartDT")
+//                endDT: localStorage.getItem("MonthlyClosureEndDT"),
+//                currentMonth: localStorage.getItem("MonthlyClosureCurrentMonth"),
+//                closureDay: localStorage.getItem("MonthlyClosureDay"),
+//                isLastDayOfMonth: localStorage.getItem("MonthlyClosureDayOfMonth"),
+//                periodStart: localStorage.getItem("MonthlyClosurePeriodStart"),
+//                periodEnd: localStorage.getItem("MonthlyClosurePeriodEnd"),
+//                check : null
             }
             service.getInfors(screenParams).done((results: any) => {
 
@@ -245,7 +251,13 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                         localStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
                         localStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
                         localStorage.setItem("MonthlyClosureId", result.closureId);
-                        localStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
+                        localStorage.setItem("MonthlyClosureStartDT", result.startDT);
+                        localStorage.setItem("MonthlyClosureEndDT", result.endDT);
+                        localStorage.setItem("MonthlyClosureCurrentMonth", result.currentMonth);
+                        localStorage.setItem("MonthlyClosureDay", result.closureDay);
+                        localStorage.setItem("MonthlyClosureDayOfMonth", result.isLastDayOfMonth);
+                        localStorage.setItem("MonthlyClosurePeriodStart", result.periodStart);
+                        localStorage.setItem("MonthlyClosurePeriodEnd", result.periodEnd);
                     }
                     self.openKmw006fDialog(result);
                 }).fail((error) => {

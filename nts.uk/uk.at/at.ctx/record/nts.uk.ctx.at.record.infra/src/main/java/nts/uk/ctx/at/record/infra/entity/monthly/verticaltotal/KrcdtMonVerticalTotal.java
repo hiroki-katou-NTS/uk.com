@@ -342,7 +342,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 						krcdtMonAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())));
 		
 		// 月別実績の勤務時間
-		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						krcdtMonAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				GoOutOfMonthly.of(

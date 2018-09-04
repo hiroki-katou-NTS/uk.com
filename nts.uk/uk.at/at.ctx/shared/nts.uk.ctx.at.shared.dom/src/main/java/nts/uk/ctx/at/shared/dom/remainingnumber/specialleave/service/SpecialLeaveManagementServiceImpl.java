@@ -29,6 +29,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.DayNumberOfGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.SpecialLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveUsedNumber;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagementService{
@@ -164,6 +167,14 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				SpecialLeaveNumberInfo details = new SpecialLeaveNumberInfo();
 				SpecialLeaveGrantNumber grantNumber = new SpecialLeaveGrantNumber(new DayNumberOfGrant(memoryInfor.getGrantDaysInfor().getGrantDays()), Optional.empty());
 				details.setGrantNumber(grantNumber);
+				SpecialLeaveUsedNumber useNumber = new SpecialLeaveUsedNumber();
+				useNumber.setDayNumberOfUse(new DayNumberOfUse((double)0));
+				useNumber.setSpecialLeaveOverLimitNumber(Optional.empty());
+				useNumber.setTimeOfUse(Optional.empty());
+				useNumber.setUseSavingDays(Optional.empty());
+				details.setUsedNumber(useNumber);
+				SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber(new DayNumberOfRemain((double) 0), Optional.empty());
+				details.setRemainingNumber(remainingNumber);
 				SpecialLeaveGrantRemainingData grantMemoryData = new SpecialLeaveGrantRemainingData(mngId, 
 						cid,
 						sid, 
@@ -175,6 +186,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 						details);
 				lstDataSpeDataMemory.add(grantMemoryData);
 			}
+			//付与日が同じ管理データを排除する
 			lstDataSpeDataBase = this.adjustGrantData(lstDataSpeDataBase, lstDataSpeDataMemory);
 		}
 		//「特別休暇付与残数データ」(output)をソートする
@@ -223,7 +235,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		for (InterimSpecialHolidayMng speHolidayData : tmpInterimSpeData) {
 			List<InterimRemain> lstInterimMngTmp = lstInterimMng.stream().filter(x -> x.getRemainManaID() == speHolidayData.getSpecialHolidayId())
 					.collect(Collectors.toList());
-			if(lstInterimMng.isEmpty()) {
+			if(lstInterimMngTmp.isEmpty()) {
 				continue;
 			}
 			InterimRemain interimMng = lstInterimMngTmp.get(0);

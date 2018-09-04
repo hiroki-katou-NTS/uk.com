@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo;
+package nts.uk.ctx.pereg.app.find.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class SpecialleaveInformation {
 	private int appSet;
 	
 	//	付与日数 
-	private Integer grantDays;
+	private Double grantDays;
 	
 	//	特休付与テーブルコード
 	private String grantTable;
@@ -35,10 +35,10 @@ public class SpecialleaveInformation {
 	private GeneralDate retireDate;
 	
 	// 年休付与基準日
-	private Integer year;
+	private GeneralDate yearRefDate;
 
 	public SpecialleaveInformation(String sid, int spLeaveCD, GeneralDate grantDate, int appSet, String grantTable,
-			Integer grantDays, GeneralDate entryDate, GeneralDate retireDate, Integer year) {
+			Double grantDays, GeneralDate entryDate, GeneralDate retireDate, GeneralDate yearRefDate) {
 		super();
 		this.sid = sid;
 		this.spLeaveCD = spLeaveCD;
@@ -48,7 +48,7 @@ public class SpecialleaveInformation {
 		this.grantTable = grantTable;
 		this.entryDate = entryDate;
 		this.retireDate = retireDate;
-		this.year = year;
+		this.yearRefDate = yearRefDate;
 	}
 
 }
