@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Wor
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,6 +47,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -175,6 +179,10 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 			// ドメイン「振出申請」を1件更新する
 			Application_New recApp = updateRecDomain(command, companyID, appReason);
+			// 暫定データの登録
+			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
+					recApp.getEmployeeID(),
+					Arrays.asList(recCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (recApp != null) {
 				this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);
@@ -188,6 +196,10 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					command.getAppCmd().getAppVersion());
 			// ドメイン「振休申請」を1件更新する
 			Application_New absApp = updateAbsDomain(command, companyID, appReason);
+			// 暫定データの登録
+			interimRemainDataMngRegisterDateChange.registerDateChange(companyID,
+					absApp.getEmployeeID(),
+					Arrays.asList(absCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (absApp != null) {
 				this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);

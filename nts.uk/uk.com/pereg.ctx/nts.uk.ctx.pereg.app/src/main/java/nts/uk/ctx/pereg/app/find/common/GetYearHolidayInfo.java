@@ -65,6 +65,17 @@ public class GetYearHolidayInfo {
 					baseDate);
 
 			entryDate = affComHist.getEntryDate().orElse(null);
+			
+			// ドメインモデル「所属会社履歴（社員別）」を取得し直し、入社年月日を取得する
+			if (entryDate == null){
+				AffCompanyHistSharedImport defaultValue = empEmployeeAdapter.GetAffComHisBySid(AppContexts.user().companyId(),annLea.getSid());
+				entryDate = defaultValue.getEntryDate().orElse(null);
+			}
+						
+		}
+		
+		if (entryDate == null){
+			return result;
 		}
 		
 		// Set contract time
