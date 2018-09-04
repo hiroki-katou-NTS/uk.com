@@ -288,7 +288,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				return output;
 			}
 			List<ApprovalRootStateStatusImport> lstRootStatus = appAdapter.getStatusByEmpAndDate(chkParam.getSid(), 
-					new DatePeriod(chkParam.getAppDate(), chkParam.getAppDate()), 0);
+					new DatePeriod(chkParam.getAppDate(), chkParam.getAppDate()), 1);
 			if(!lstRootStatus.isEmpty()
 					&& lstRootStatus.get(0).getDailyConfirmAtr() == 0) {
 				return output;
