@@ -112,7 +112,13 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 
 		//時間帯跨いだ控除時間帯分割
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		dedTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Deduction, commonSetting);
+		});
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
+		recordTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Appropriate, commonSetting);
+		});
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No

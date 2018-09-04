@@ -192,7 +192,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 listEmployeeId: listEmpId,
                 closureId: localStorage.getItem("MonthlyClosureId"),
                 startDT: localStorage.getItem("MonthlyClosureStartDT"),
-                endDT: localStorage.getItem("MonthlyClosureEndDT"),
+//                endDT: localStorage.getItem("MonthlyClosureEndDT"),
                 currentMonth: localStorage.getItem("MonthlyClosureCurrentMonth"),
                 closureDay: localStorage.getItem("MonthlyClosureDay"),
                 isLastDayOfMonth: localStorage.getItem("MonthlyClosureDayOfMonth"),
