@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,11 +42,55 @@ public class LogPerCateCorrectRecordDto {
 	private String valueAfter;//33
 	private String infoOperateAttr;//24
 	
-	public static List<LogPerCateCorrectRecordDto> fromDomain(PersonInfoCorrectionLog domain,String parentKey) {
+	public static List<LogPerCateCorrectRecordDto> fromDomain(PersonInfoCorrectionLog domain,String parentKey,HashMap<Integer, HashMap<String, Integer>> mapCheckOrder) {
+		HashMap<String, Integer> mapCateOder = new HashMap<>();
+		HashMap<String, Integer> mapItemOder = new HashMap<>();
+		int numberOrder = 10001;
+		if (mapCheckOrder != null) {
+			mapCateOder = mapCheckOrder.get(0);
+			mapItemOder = mapCheckOrder.get(1);
+		}
 		List<LogPerCateCorrectRecordDto> listReturn = new ArrayList<>();
+		List<CategoryCorrectionLogDto> listCategory = new ArrayList<>();
+		
 		List<CategoryCorrectionLog> rsListCategoryCorrectionLog = domain.getCategoryCorrections();
-		for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
-			List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
+		
+		for (CategoryCorrectionLog categoryCorrectionLog : rsListCategoryCorrectionLog) {
+			List<ItemInfoDto> lstItemInfoDto= new ArrayList<>();
+			List<ItemInfo> lstItemInfo= categoryCorrectionLog.getItemInfos();
+			String categoryId = categoryCorrectionLog.getCategoryId();
+			if(!CollectionUtil.isEmpty(lstItemInfo)){
+				// Convert domain to DTO
+				for (ItemInfo itemInfo : lstItemInfo) {
+					String itemInfroId = itemInfo.getItemId();
+					if (mapItemOder.containsKey(itemInfroId)) {
+						numberOrder = mapItemOder.get(itemInfroId);
+					}
+					lstItemInfoDto.add(new ItemInfoDto(itemInfo.getId(), itemInfo.getItemId(), itemInfo.getName(), itemInfo.getValueBefore().getViewValue(),
+							itemInfo.getValueAfter().getViewValue(), numberOrder));
+				}
+				// Sort list by number order
+				lstItemInfoDto = lstItemInfoDto.stream().sorted(Comparator.comparing(ItemInfoDto::getNumberOrder))
+						.collect(Collectors.toList());
+			}
+			if (mapCateOder.containsKey(categoryId)) {
+				numberOrder = mapCateOder.get(categoryId);
+			}
+			// Convert and add Dto to list
+			listCategory.add(new CategoryCorrectionLogDto(categoryCorrectionLog.getCategoryId(),
+					categoryCorrectionLog.getCategoryName(),
+					categoryCorrectionLog.getInfoOperateAttr(),
+					categoryCorrectionLog.getTargetKey(),
+					lstItemInfoDto,
+					categoryCorrectionLog.getReviseInfo(),
+					numberOrder));
+		}
+		// Sort list by catefory number order
+		listCategory = listCategory.stream().sorted(Comparator.comparing(CategoryCorrectionLogDto::getNumberOrder))
+				.collect(Collectors.toList());
+		// Setting list to list return
+		for(CategoryCorrectionLogDto categoryCorrectionLog:listCategory){
+			List<ItemInfoDto> rsItemInfo=categoryCorrectionLog.getItemInfos();
 			// Setting tagetDate
 			String tagetDateStr = "";
 			if (categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
@@ -63,7 +110,7 @@ public class LogPerCateCorrectRecordDto {
 				}
 			}
 			if(!CollectionUtil.isEmpty(rsItemInfo)){
-				for (ItemInfo itemInfo : rsItemInfo) {
+				for (ItemInfoDto itemInfo : rsItemInfo) {
 					LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
 					String childrentKey = IdentifierUtil.randomUniqueId();
 					perObject.setParentKey(parentKey);
@@ -79,8 +126,8 @@ public class LogPerCateCorrectRecordDto {
 
 					// item 29,31,33
 					perObject.setItemName(itemInfo.getName());
-					perObject.setValueBefore(itemInfo.getValueBefore().getViewValue());
-					perObject.setValueAfter(itemInfo.getValueAfter().getViewValue());
+					perObject.setValueBefore(itemInfo.getValueBefore());
+					perObject.setValueAfter(itemInfo.getValueAfter());
 					listReturn.add(perObject);
 				}
 				

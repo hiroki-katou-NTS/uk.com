@@ -506,27 +506,22 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
-                                if (data.length > 1000) {
-                                    self.isDisplayText(true);
-                                }
                                 // process sub header with record type = persion infro and data correct
                                 _.forEach(data, function(logBasicInfoModel) {
-                                    if (countLog <= 1000) {
-                                        let logtemp = "";
-                                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                            logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logtemp);
-                                        }
-                                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        countLog++;
-                                    } else {
-                                        return false;
+                                    if (countLog == 1) {
+                                        self.isDisplayText(logBasicInfoModel.displayText);
+                                    }
+                                    let logtemp = "";
+                                    if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
+                                    }
+                                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                        logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logtemp);
+                                    }
+                                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                        logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
                                     }
                                 });
                                 // Generate table
@@ -1891,6 +1886,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>;
         subColumnsHeaders: KnockoutObservableArray<IgGridColumnModel>;
         lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>;
+        isDisplayText : boolean;
         constructor(param: LogBasicInfoParam) {
             this.userNameLogin = param.loginBasicInfor.userNameLogin;
             this.employeeCodeLogin = param.loginBasicInfor.employeeCodeLogin;
