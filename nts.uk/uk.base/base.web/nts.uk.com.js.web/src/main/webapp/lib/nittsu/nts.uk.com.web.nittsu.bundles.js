@@ -19298,6 +19298,7 @@ var nts;
                                     return false;
                                 }
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
+                                component_1.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result_1.options });
                                 if (targetMode === 'igGrid') {
                                     component_1.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
@@ -32875,6 +32876,7 @@ var nts;
                         if (!nts.uk.util.isNullOrEmpty(rows)) {
                             height = rows * ROW_HEIGHT;
                         }
+                        $(element).addClass("ig-tree-background");
                         var $tree = $(element);
                         //            let template = "{{if ${"+optionsValue+"}.indexOf('1') >= 0}} <img src='http://igniteui.com/images/samples/tree/book.png'>" + 
                         //                " {{elseif ${"+optionsValue+"}.indexOf('2') >= 0}}<img src='http://igniteui.com/images/samples/tree/coins.png'>" +
