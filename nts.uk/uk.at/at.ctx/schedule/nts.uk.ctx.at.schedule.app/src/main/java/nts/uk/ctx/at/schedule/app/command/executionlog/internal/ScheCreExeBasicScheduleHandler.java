@@ -801,10 +801,17 @@ public class ScheCreExeBasicScheduleHandler {
 		List<WorkScheduleBreak> lstOldBreakTime = backupBasicSchedule.getWorkScheduleBreaks();
 		List<ChildCareSchedule> lstOldChildTime = backupBasicSchedule.getChildCareSchedules();
 		
+		int lstOldScheTimeZoneCount = lstOldScheTimeZone.size();
+		int lstOldBreakTimeCount = lstOldBreakTime.size();
+		int lstOldChildTimeCount = lstOldChildTime.size();
+		
 		// Get update basic schedule data
 		List<WorkScheduleTimeZoneSaveCommand> lstSaveScheTimeZone = basicScheduleSaveCommand.getWorkScheduleTimeZones();
 		List<WorkScheduleBreakSaveCommand> lstSaveBreakTime = basicScheduleSaveCommand.getWorkScheduleBreaks();
 		List<ChildCareScheduleSaveCommand> lstSaveChildTime = basicScheduleSaveCommand.getChildCareSchedules();
+		int lstSaveScheTimeZoneCount = lstSaveScheTimeZone.size();
+		int lstSaveBreakTimeCount = lstSaveBreakTime.size();
+		int lstSaveChildTimeCount = lstSaveChildTime.size();
 		
 		try {
 			for (int i = 0; i < lstScheduleItemStartTime.size(); i++) {
@@ -813,27 +820,27 @@ public class ScheCreExeBasicScheduleHandler {
 				
 				switch(timeType) {
 				case 0:
-					if (i == lstOldScheTimeZone.size()) break;
+					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleStartClock().v(), lstSaveScheTimeZone.get(i).getScheduleStartClock().v());
 					break;
 				case 1:
-					if (i == lstOldScheTimeZone.size()) break;
+					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleEndClock().v(), lstSaveScheTimeZone.get(i).getScheduleEndClock().v());
 					break;
 				case 2:
-					if (i == lstOldBreakTime.size()) break;
+					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledStartClock().v(), lstSaveBreakTime.get(i).getScheduledStartClock().v());
 					break;
 				case 3:
-					if (i == lstOldBreakTime.size()) break;
+					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledEndClock().v(), lstSaveBreakTime.get(i).getScheduledEndClock().v());
 					break;
 				case 4:
-					if (i == lstOldChildTime.size()) break;
+					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleStart().v(), lstSaveChildTime.get(i).getChildCareScheduleStart().v());
 					break;
 				case 5:
-					if (i == lstOldChildTime.size()) break;
+					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleEnd().v(), lstSaveChildTime.get(i).getChildCareScheduleEnd().v());
 					break;
 				}
