@@ -23,11 +23,15 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
@@ -87,8 +91,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -169,6 +173,20 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 															KrcdtDayShorttime.class).orElse(null);
 				if(otherAtrkrcdtDayShorttime != null) {
 					this.commandProxy().remove(otherAtrkrcdtDayShorttime);
+				}
+				
+				for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+					//外出時間
+					KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																			   KrcdtDayOutingTime.class).orElse(null);
+					if(krcdtDayOutingTime != null) {
+						krcdtDayOutingTime.setData(outing);
+						this.commandProxy().update(krcdtDayOutingTime);
+					}
+					else {
+						this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), outing));
+					}
 				}
 
 			}
@@ -282,7 +300,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
-		StringBuilder query = new StringBuilder();
+//		StringBuilder query = new StringBuilder();
 //		query.append("SELECT a FROM KrcdtDayAttendanceTime a ");
 //		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		query.append("AND a.krcdtDayAttendanceTimePK.generalDate >= :start ");
@@ -291,14 +309,23 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
 //				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end())
 //				.getList(e -> e.toDomain());
-		query.append("SELECT a FROM KrcdtDayTime a ");
+		StringBuilder query = new StringBuilder("SELECT a, c, d, e, f, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		query.append("LEFT JOIN a.krcdtDayLateTime e ");
+		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
+		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
+		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate >= :start ");
 		query.append("AND a.krcdtDayTimePK.generalDate <= :end ");
-		query.append("ORDER BY a.krcdtDayTimePK.generalDate ");
-		return queryProxy().query(query.toString(), KrcdtDayTime.class).setParameter("employeeId", employeeId)
-				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end())
-				.getList(e -> e.toDomain());
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(),  Object[].class);
+		
+		List<Object[]> result = new ArrayList<>();
+		result.addAll(tQuery.setParameter("employeeId", employeeId)
+							.setParameter("start", datePeriod.start())
+							.setParameter("end", datePeriod.end())
+							.getList());
+		return toDomainFromJoin(result);
 	}
 
 	@Override
@@ -308,11 +335,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID IN :employeeId ");
 //		query.append("AND a.krcdtDayAttendanceTimePK.generalDate <= :end AND a.krcdtDayAttendanceTimePK.generalDate >= :start");
 //		TypedQueryWrapper<KrcdtDayAttendanceTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class);
-		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
 		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
 		query.append("LEFT JOIN a.KrcdtDayShorttime g ");	
+		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate <= :end AND a.krcdtDayTimePK.generalDate >= :start");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(),  Object[].class);
@@ -335,7 +363,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					List<KrcdtDayLateTime> krcdtDayLateTime = e.getValue().stream().filter(c -> c[3] != null).map(c -> (KrcdtDayLateTime) c[3]).distinct().collect(Collectors.toList());
 					List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime = e.getValue().stream().filter(c -> c[4] != null).map(c -> (KrcdtDaiShortWorkTime) c[4]).distinct().collect(Collectors.toList());
 					List<KrcdtDayShorttime> KrcdtDayShorttime =  e.getValue().stream().filter(c -> c[5] != null).map(c -> (KrcdtDayShorttime) c[5]).distinct().collect(Collectors.toList());
-					return KrcdtDayTime.toDomain(krcdtDayTime, krcdtDayPremiumTime, krcdtDayLeaveEarlyTime, krcdtDayLateTime, krcdtDaiShortWorkTime, KrcdtDayShorttime);
+					List<KrcdtDayOutingTime> krcdtDayOutingTime =  e.getValue().stream().filter(c -> c[6] != null).map(c -> (KrcdtDayOutingTime) c[6]).distinct().collect(Collectors.toList());
+					return KrcdtDayTime.toDomain(krcdtDayTime, krcdtDayPremiumTime, krcdtDayLeaveEarlyTime, krcdtDayLateTime, krcdtDaiShortWorkTime, KrcdtDayShorttime, krcdtDayOutingTime);
 				})
 				.collect(Collectors.toList());		
 	}
@@ -372,11 +401,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //							.filter(c -> p.get(c.krcdtDayAttendanceTimePK.employeeID).contains(c.krcdtDayAttendanceTimePK.generalDate))
 //							.map(x -> x.toDomain()).collect(Collectors.toList()));
 //		});
-		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g ,h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
 		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
 		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
+		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);

@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
            baseDate 基準日
            workplaceID 
          */
-        start( sid: any, employmentRootAtr: any,appType: any,standardDate: any): JQueryPromise<any> {
+        start( sid: any, employmentRootAtr: any,appType: any,standardDate: any, overtimeAtr: any): JQueryPromise<any> {
             let self = this;
             self.objApprovalRootInput().sid = sid;
             self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred();
             
             //Call approval list
-            self.getAppDataDate(appType, standardDate, true,sid).done(function(data) {
+            self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
                 dfd.resolve(data); 
             }).fail((res)=>{
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
@@ -75,14 +75,15 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
-        getAppDataDate(appType: number, appDate: string, isStartup: boolean, employeeID: string): JQueryPromise<any> {
+        getAppDataDate(appType: number, appDate: string, isStartup: boolean, employeeID: string, overtimeAtr: any): JQueryPromise<any> {
             var self = this;
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getAppDataDate({
                 appTypeValue: appType,
                 appDate: appDate,
                 isStartup: isStartup,
-                employeeID: employeeID
+                employeeID: employeeID,
+                overtimeAtrParam: overtimeAtr
             }).done((data)=>{
                 $('#listApproverRootState').ntsError('clear');
                 if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){

@@ -163,7 +163,7 @@ public class DailyPerformanceService {
 							item.getNameLineFeedPosition());
 				}).collect(Collectors.toList());
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
-						.getByAttendanceId(new ArrayList<>(listItemIDs));
+						.getFullDataByListAttdaId(new ArrayList<>(listItemIDs));
 		
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
 			
@@ -269,7 +269,7 @@ public class DailyPerformanceService {
 							item.getNameLineFeedPosition());
 				}).collect(Collectors.toList());
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
-				.getByAttendanceId(new ArrayList<>(listItemIDs));
+				.getFullDataByListAttdaId(new ArrayList<>(listItemIDs));
 		
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
 			AttendanceResultImport attdResult = new AttendanceResultImport();

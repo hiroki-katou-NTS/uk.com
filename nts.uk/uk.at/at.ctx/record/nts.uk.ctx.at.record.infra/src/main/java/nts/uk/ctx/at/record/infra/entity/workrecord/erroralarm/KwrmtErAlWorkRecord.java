@@ -526,5 +526,13 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
 	}
+	
+	public String getGroup1Id() {
+		return this.krcmtErAlCondition.atdItemConditionGroup1;
+	}
+	
+	public String getGroup2Id() {
+		return this.krcmtErAlCondition.atdItemConditionGroup2;
+	}
 
 }

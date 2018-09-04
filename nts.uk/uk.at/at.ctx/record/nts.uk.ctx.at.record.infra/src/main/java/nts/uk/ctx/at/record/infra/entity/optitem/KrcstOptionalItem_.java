@@ -30,8 +30,9 @@ public class KrcstOptionalItem_ {
 
 	/** The emp condition atr. */
 	public static volatile SingularAttribute<KrcstOptionalItem, Integer> empConditionAtr;
-
-	/** The emp condition atr. */
+	
+	/** The krcst calc result range. */
 	public static volatile SingularAttribute<KrcstOptionalItem, KrcstCalcResultRange> krcstCalcResultRange;
+
 
 }

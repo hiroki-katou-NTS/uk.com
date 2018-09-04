@@ -91,6 +91,7 @@ public class AggregationProcessService {
 		map.put(TextResource.localize("KAL010_62"), AlarmCategory.SCHEDULE_4WEEK);
 		map.put(TextResource.localize("KAL010_100"), AlarmCategory.MONTHLY);
 		map.put(TextResource.localize("KAL010_208"), AlarmCategory.AGREEMENT);
+		map.put(TextResource.localize("KAL010_250"), AlarmCategory.MULTIPLE_MONTH);
 		return map;
 	} 
 	

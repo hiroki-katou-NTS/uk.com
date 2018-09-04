@@ -5,9 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
@@ -219,6 +218,7 @@
 											<!-- I13_2 -->
 											<input
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			name:'#{i18n.getText('KMF004_49')}',
 																			value: ageLowerLimit ,
 																			enable: $parent.ageLimit ,
 																			option:{width:'60',unitID:'AGE'},
@@ -229,6 +229,7 @@
 											<!-- I13_4 -->
 											<input
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			name:'#{i18n.getText('KMF004_50')}',
 																			value: ageHigherLimit ,
 																			enable: $parent.ageLimit ,
 																			option:{width:'60',unitID:'AGE'} ,
@@ -251,7 +252,7 @@
 													value: ageStandard,
 													optionsText: 'name',
 													editable: false ,
-													enable: true ,
+													enable: ageLimit ,
 													width:'70',
 													columns: [
 														{ prop: 'name', length: 4 },
@@ -259,18 +260,18 @@
 
 											<!-- I13_8 -->
 											<div style="margin-left: 20px;"
-												data-bind="ntsDatePicker: {value: ageStandardBaseDate ,enable: ageLimit , dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYY/MM/DD', required:ageLimit}"></div>
+												data-bind="ntsMonthDays: {
+												name:'#{i18n.getText('KMF004_52')}',
+												width:'60',
+												value: ageStandardBaseDate ,
+												enable: ageLimit , 
+												required:ageLimit}"></div>
 										</div>
 									</div>
 								</div>
-
 							</div>
-
 						</div>
-
 					</div>
-
-
 				</div>
 			</div>
 		</ui:define>

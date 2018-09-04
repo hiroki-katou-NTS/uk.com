@@ -27,7 +27,7 @@
 				<!--B1_2: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable:enableState" tabindex="2">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: Registration,enable:enableState, timeClick: 500" tabindex="2">#{i18n.getText('KMK011_3')}</button>
 			</div>
 
 			<div class="contents-area fixed-flex-layout">
@@ -87,7 +87,7 @@
 							<tr class="row">
 								<td>
 									<!--B3_3 -->
-									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_9')}</div>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'DivergenceTimeName'}">#{i18n.getText('KMK011_9')}</div>
 								</td>
 								<td style="padding-left: 5px">
 									<!-- B3_4: Divergence Time Name --> <input tabindex="5"

@@ -9,6 +9,8 @@ import nts.uk.ctx.at.function.dom.adapter.sysfixedcheckcondition.SysFixedCheckCo
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 @Stateless
 public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
@@ -44,5 +46,15 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 				export.getAlarmValueMessage(),
 				export.getComment().orElse(null)
 				);
+	}
+	@Override
+	public Optional<ValueExtractAlarm> checkDeadlineCompensatoryLeaveCom(String employeeID, Closure closing,
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting) {
+		
+		Optional<ValueExtractAlarmWRPubExport> data = sysFixedCheckConMonPub.checkDeadlineCompensatoryLeaveCom(employeeID, closing, compensatoryLeaveComSetting);
+		if(data.isPresent()) {
+			return Optional.of(convertToExport(data.get()));
+		}
+		return Optional.empty();
 	}
 }

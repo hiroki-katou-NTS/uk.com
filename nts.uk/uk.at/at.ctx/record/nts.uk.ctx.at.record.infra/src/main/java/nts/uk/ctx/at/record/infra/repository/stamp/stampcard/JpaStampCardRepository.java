@@ -22,6 +22,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids ";
 
+	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
 	private static final String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
 	
@@ -168,8 +169,16 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 				.collect(Collectors.toList());
 	}
 
-	
+	@Override
+	public List<StampCard> getLstStampCardByLstSidAndContractCd(List<String> sids, String contractCode) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE, KwkdtStampCard.class)
+				.setParameter("sids", sids)
+				.setParameter("contractCode", contractCode).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
 
-	
-
+		return entities.stream()
+				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.collect(Collectors.toList());
+	}
 }

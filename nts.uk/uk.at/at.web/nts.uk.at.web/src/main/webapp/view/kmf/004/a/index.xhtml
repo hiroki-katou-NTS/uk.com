@@ -66,7 +66,7 @@
 								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td width="70">
-								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: isDisable, name: '#[KMF004_5]'} " />
 							</td>
 							<td>
 								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
@@ -151,7 +151,7 @@
 														name: '#[KMF004_22]',
 														option: ko.mapping.fromJS({
 															unitID: 'DAYS',
-															width: '50'
+															width: '60'
 														}),
 														required: dayReq,
 														enable: dayEnable }" />
@@ -346,7 +346,12 @@
 													{ prop: 'name', length: 5 }
 												]}"></div>
 											
-											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { value: ageBaseDate, name: '#[KMF004_52]', enable: ageBaseDateEnable }"/>
+											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { 
+												value: ageBaseDate, 
+												name: '#[KMF004_52]', 
+												required: ageBaseDateReq,
+												selectFirstIfNull: ageBaseDateDefaultValue,
+												enable: ageBaseDateEnable }"/>
 										</div>
 									</td>
 								</tr>

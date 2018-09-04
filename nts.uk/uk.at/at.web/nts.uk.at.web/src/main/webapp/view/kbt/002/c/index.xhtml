@@ -46,7 +46,7 @@
 	                        </colgroup>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_53')}</td>
-	                        	<td><div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true}"></div></td>
+	                        	<td><div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true,name: '#[KBT002_54]'}"></div></td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_55')}</td>
@@ -56,6 +56,7 @@
                         				inputFormat: 'time',
                         				required: true,
                         				mode: 'time',
+                        				name: '#[KBT002_56]',
                         				constraint: 'StartTime'}" />
                  				</td>
 	                        </tr>

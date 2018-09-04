@@ -13,7 +13,7 @@ td div {
 	vertical-align: middle;
 }
 
-.a4_7, .a4_8, #a7_row1 {
+.a4_8, #a7_row1 {
 	width: 80px;
 	margin: 5px;
 }
@@ -196,7 +196,7 @@ textarea {
 }
 
 .contents-area-kaf022 {
-	height: 620px;
+	height: 650px;
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
@@ -285,4 +285,46 @@ div.fixed-table-container table[id^="fixed-table"] tbody tr:last-child td {
 
 .nts-fixed-table table.fixed-table>tbody>tr>td, .nts-fixed-table table.fixed-table>tbody>tr>th{
 	white-space: normal !important;
+}
+
+
+
+.hdtype{
+	margin-left: 30px;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(37) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(38) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(39) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(40) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(41) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(42) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(43) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#fixed-table-a8 > tbody > tr:nth-child(44) > td:nth-child(3){
+	border-right: 1px solid #ccc;
+}
+
+#tab-1 > div > div:nth-child(5) > div.nts-fixed-body-container.ui-iggrid{
+	overflow: hidden !important;
 }

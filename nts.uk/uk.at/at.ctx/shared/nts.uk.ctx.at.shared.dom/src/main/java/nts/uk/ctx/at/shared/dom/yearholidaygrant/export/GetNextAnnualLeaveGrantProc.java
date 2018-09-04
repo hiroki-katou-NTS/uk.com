@@ -240,39 +240,34 @@ public class GetNextAnnualLeaveGrantProc {
 		
 		NextAnnualLeaveGrant nextAnnualLeaveGrant = new NextAnnualLeaveGrant();
 		
-		// 「付与基準日」をチェック
-		GeneralDate criteriaYmd = this.entryDate;
+		// 「付与基準日」をチェック　→　付与計算基準日
+		GeneralDate calcCriteria = this.entryDate;
 		if (lengthServiceTbl.getStandGrantDay() == GrantReferenceDate.YEAR_HD_REFERENCE_DATE){
-			criteriaYmd = this.criteriaDate;
+			calcCriteria = this.criteriaDate;
 		}
 
+		// 年休付与日を計算　→　付与年月日（＝勤続年月の年休付与日）
+		GeneralDate grantDate = calcCriteria.addYears(lengthServiceTbl.getYear().v());
+		if (calcYears.isPresent()) grantDate = calcCriteria.addYears(calcYears.get());
+		grantDate = grantDate.addMonths(lengthServiceTbl.getMonth().v());
+		
 		// 「一斉付与する」をチェック　および　「一斉付与日」が存在するかチェック
-		boolean isSimultaneousGrant = false;
 		if (lengthServiceTbl.getAllowStatus() == GrantSimultaneity.USE &&
 			this.simultaneousGrantMDOpt.isPresent()){
 
-			// 「前回付与日」が「付与基準日」以前かチェック
+			// 「前回付与日」が存在するかチェック　→　計算開始日を計算
+			GeneralDate calcStart = this.entryDate.addDays(1);
 			if (this.previousDate != null){
-				if (this.previousDate.beforeOrEquals(criteriaYmd)){
-					isSimultaneousGrant = true;		// 一斉付与する
-				}
+				calcStart = this.previousDate.addDays(1);
 			}
-		}
-		
-		// 年休付与日を計算
-		GeneralDate grantDate = criteriaYmd.addYears(lengthServiceTbl.getYear().v());
-		if (calcYears.isPresent()) grantDate = criteriaYmd.addYears(calcYears.get());
-		grantDate = grantDate.addMonths(lengthServiceTbl.getMonth().v());
-		if (isSimultaneousGrant){
-			
-			// 一斉付与日を採用する時
+
+			// 一斉付与年月を取得
 			val simultaneousGrantMD = this.simultaneousGrantMDOpt.get();
 			Integer simulMonth = simultaneousGrantMD / 100;
 			Integer simulDay = simultaneousGrantMD % 100;
 			
-			// 付与日当年・前年の一斉付与日の計算
-			GeneralDate currentSimul = GeneralDate.ymd(grantDate.year(), simulMonth, 1);
-			currentSimul = currentSimul.addMonths(1);
+			// 勤続年月時点の当年一斉付与日・前年一斉付与日の計算
+			GeneralDate currentSimul = GeneralDate.ymd(grantDate.year(), simulMonth, 1).addMonths(1);
 			GeneralDate previousSimul = currentSimul.addYears(-1);
 			currentSimul = currentSimul.addDays(-1);
 			previousSimul = previousSimul.addDays(-1);
@@ -283,16 +278,17 @@ public class GetNextAnnualLeaveGrantProc {
 				previousSimul = GeneralDate.ymd(previousSimul.year(), previousSimul.month(), simulDay);
 			}
 			
-			// 計算付与日以前で一番遅い付与日を一斉付与日とする
-			if (currentSimul.beforeOrEquals(grantDate)){
+			// 「計算開始日」～「勤続年月の年休付与日」に「一斉付与日」があるかチェック　→　ある時、一斉付与の年休付与日を計算（該当の最も遅い日）
+			DatePeriod checkPeriod = new DatePeriod(calcStart, grantDate);
+			if (checkPeriod.contains(currentSimul)){
 				grantDate = currentSimul;
 			}
-			else {
+			else if (checkPeriod.contains(previousSimul)){
 				grantDate = previousSimul;
 			}
 		}
 		
-		// 次回年休付与にセット
+		// 次回年休付与にセット（付与年月日、回数）
 		nextAnnualLeaveGrant.setGrantDate(grantDate);
 		nextAnnualLeaveGrant.setTimes(new GrantNum(lengthServiceTbl.getGrantNum().v()));
 		

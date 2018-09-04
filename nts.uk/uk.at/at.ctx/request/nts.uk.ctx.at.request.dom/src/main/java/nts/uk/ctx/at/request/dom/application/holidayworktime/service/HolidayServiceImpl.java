@@ -164,26 +164,29 @@ public class HolidayServiceImpl implements HolidayService {
 		List<String> workTypeCodes = new ArrayList<>();
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+			AppEmploymentSetting appSet =  appEmploymentSettings.get(0);
+			List<AppEmployWorkType> lstEmploymentWorkType = appSet.getLstWorkType();
+			boolean isDisplay = appSet.isDisplayFlag();
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType) && isDisplay) {
 				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
 				lstEmploymentWorkType.forEach(x -> {
 					
 					workTypeCodes.add(x.getWorkTypeCode());
 					});
 				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+				return workTypeHolidayWorks;
 			}
-		}else{
-			////休出
-			int breakDay = 11;
-			// ドメインモデル「勤務種類」を取得
-			List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
-			if(!CollectionUtil.isEmpty(workrTypes)){
-				workrTypes.forEach(x -> {
-					workTypeCodes.add(x.getWorkTypeCode().toString());
-				});
-				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
-			}
+		}
+		////休出
+		int breakDay = 11;
+		// ドメインモデル「勤務種類」を取得
+		List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
+		if(!CollectionUtil.isEmpty(workrTypes)){
+			workrTypes.forEach(x -> {
+				workTypeCodes.add(x.getWorkTypeCode().toString());
+			});
+			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+			return workTypeHolidayWorks;
 		}
 		return workTypeHolidayWorks;
 	}

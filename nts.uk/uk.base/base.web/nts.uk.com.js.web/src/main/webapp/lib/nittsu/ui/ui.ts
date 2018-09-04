@@ -25,6 +25,13 @@ module nts.uk.ui {
     export function localize(textId: string): string {
         return textId;
     }
+    
+    export function writeViewConstraint(constraint: any){
+        if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
+            __viewContext.primitiveValueConstraints = {};
+        }
+        __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;
+    }
 
 
     export var confirmSave: (dirtyChecker: DirtyChecker) => any;
@@ -169,7 +176,7 @@ module nts.uk.ui {
                             my: 'left top',
                             at: 'left bottom',
                             of: $label,
-                            collision: 'flip'
+                            collision: 'flipfit'
                         });
 
                     $label.bind('mouseleave.limitedlabel', () => {

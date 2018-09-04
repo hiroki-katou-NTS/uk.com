@@ -40,9 +40,14 @@ public class ValicationUseDto implements ItemConst {
 	
 	public TimevacationUseTimeOfDaily toDomain(){
 		return new TimevacationUseTimeOfDaily(
-						timeAnnualLeaveUseTime == null ? null : new AttendanceTime(timeAnnualLeaveUseTime), 
-						timeCompensatoryLeaveUseTime == null ? null : new AttendanceTime(timeCompensatoryLeaveUseTime), 
-						excessHolidayUseTime == null ? null : new AttendanceTime(excessHolidayUseTime), 
-						timeSpecialHolidayUseTime == null ? null : new AttendanceTime(timeSpecialHolidayUseTime));
+						timeAnnualLeaveUseTime == null ? new AttendanceTime(0) : new AttendanceTime(timeAnnualLeaveUseTime), 
+						timeCompensatoryLeaveUseTime == null ? new AttendanceTime(0) : new AttendanceTime(timeCompensatoryLeaveUseTime), 
+						excessHolidayUseTime == null ? new AttendanceTime(0) : new AttendanceTime(excessHolidayUseTime), 
+						timeSpecialHolidayUseTime == null ? new AttendanceTime(0) : new AttendanceTime(timeSpecialHolidayUseTime));
+	}
+	
+	public static TimevacationUseTimeOfDaily createEmpty(){
+		return new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), 
+											new AttendanceTime(0), new AttendanceTime(0));
 	}
 }

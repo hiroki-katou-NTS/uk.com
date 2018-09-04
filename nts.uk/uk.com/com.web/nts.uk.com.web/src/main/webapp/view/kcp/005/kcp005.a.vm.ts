@@ -14,6 +14,7 @@ module kcp005.a.viewmodel {
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
         showOptionalColumn: KnockoutObservable<boolean>;
+        disableSelection : KnockoutObservable<boolean>;
 
         multiSelectedCode: KnockoutObservableArray<string>;
         multiBySelectedCode: KnockoutObservableArray<string>;
@@ -48,6 +49,11 @@ module kcp005.a.viewmodel {
 
             self.isShowNoSelectionItem = ko.observable(false);
             self.isShowNoSelectionItem.subscribe(function(data: boolean) {
+                self.reloadComponent();
+            });
+            
+            self.disableSelection = ko.observable(false);
+            self.disableSelection.subscribe(function(data: boolean) {
                 self.reloadComponent();
             });
 
@@ -124,7 +130,8 @@ module kcp005.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                maxRows: 12
+                maxRows: 12,
+                disableSelection : self.disableSelection()
             };
 
             self.selectionTypeList = ko.observableArray([
@@ -277,8 +284,9 @@ module kcp005.a.viewmodel {
             self.listComponentOption.isShowWorkPlaceName = self.isShowWorkPlaceName();
             self.listComponentOption.isShowSelectAllButton = self.isShowSelectAllButton();
             self.listComponentOption.showOptionalColumn = self.showOptionalColumn();
-            self.listComponentOption.optionalColumnName = nts.uk.resource.getText('KSM005_18'),
-            self.listComponentOption.optionalColumnDatasource = ko.observableArray([]),
+            self.listComponentOption.optionalColumnName = nts.uk.resource.getText('KSM005_18');
+            self.listComponentOption.optionalColumnDatasource = ko.observableArray([]);
+            self.listComponentOption.disableSelection = self.disableSelection();
 
             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
                 $('#component-items-list').focusComponent();

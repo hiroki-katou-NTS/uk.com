@@ -510,8 +510,10 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.historyId), historyIds));
+		if (!CollectionUtil.isEmpty(historyIds)) {
+			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+					.get(BsymtWkpConfigInfoPK_.historyId).in(historyIds));
+		}
 		if (!CollectionUtil.isEmpty(workplaceIds)) {
 			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
 					.in(workplaceIds));

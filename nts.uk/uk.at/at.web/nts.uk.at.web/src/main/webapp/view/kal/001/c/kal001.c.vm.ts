@@ -40,11 +40,11 @@ module nts.uk.at.view.kal001.c {
                 let dfd = $.Deferred(); 
                 self.columns = ko.observableArray([
                     { headerText: '',  dataType: 'string', key: 'GUID' },
-                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
-                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToManager' },
-                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: 170 },
-                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 170 },
-                    { headerText: getText('KAL001_26'), key: 'employeeName', width: 170 }
+                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: "100", ntsControl: 'isSendToMe' },
+                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: "100", ntsControl: 'isSendToManager' },
+                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: "138" },
+                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: "138" },
+                    { headerText: getText('KAL001_26'), key: 'employeeName', width: "204" }
                 ]);
                 
                 service.getEmployeeSendEmail(self.shareEmployees()).done((listEmployeeDto: Array<modeldto.EmployeeDto>) => {
@@ -54,7 +54,8 @@ module nts.uk.at.view.kal001.c {
                     });
                     // create table
                     $("#grid").ntsGrid({
-                        height: '450px',
+                        width : '700px',
+                        height: 380,
                         dataSource: self.listEmployee(),
                         hidePrimaryKey: true,
                         primaryKey: 'GUID',
@@ -187,7 +188,7 @@ module nts.uk.at.view.kal001.c {
             employeeCode: string;
             employeeName: string;
             constructor(e: EmployeeDto ) {
-                this.GUID = nts.uk.util.randomId();
+                this.GUID = nts.uk.util.randomId().replace(/-/g, "_");
                 this.isSendToMe = ko.observable(false);
                 this.isSendToManager = ko.observable(false);
                 this.workplaceId = e.workplaceId;

@@ -14,5 +14,5 @@ public interface GetExcessTimesYear {
 	 * @param year 年度
 	 * @return 年間超過回数
 	 */
-	int algorithm(String employeeId, Year year);
+	AgreementExcessInfo algorithm(String employeeId, Year year);
 }

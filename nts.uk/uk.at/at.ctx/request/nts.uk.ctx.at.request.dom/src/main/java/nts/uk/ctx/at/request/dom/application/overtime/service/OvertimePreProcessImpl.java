@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -187,28 +188,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// if display then check What call UI?
 			if (applicationSetting.get().getDisplayPrePostFlg().value == AppDisplayAtr.DISPLAY.value) {
 				result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
-				/**
-				 * check UI 0: メニューから起動 :menu other:
-				 * 日別修正、トップページアラームから起動,残業指示から起動
-				 */
-				if (uiType == 0) {
-					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, appType);
-					if (discreteSetting.isPresent()) {
-						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
-						result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
-					}
-				} else if (uiType == 2){
-					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, appType);
-					if (discreteSetting.isPresent()) {
-						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
-					}
-					result.setPrePostCanChangeFlg(false);
-				}else{
-					// 事後申請として起動する(khoi dong cai xin sau len)
-					result.setPrePostAtr(InitValueAtr.POST.value);
-
+				Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
+						.getAppTypeDiscreteSettingByAppType(companyID, appType);
+				if (discreteSetting.isPresent()) {
+					result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
+					result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
 				}
 			} else {
 				// if not display
@@ -321,16 +305,25 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		// 早出残業の場合
 		if (overtimeAtr == OverTimeAtr.PREOVERTIME.value) {
 			List<OvertimeWorkFrame> overtimeFramePres = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
-			overtimeFrames.add(overtimeFramePres.get(0));
+			overtimeFrames = overtimeFramePres.stream().filter(x -> {
+				return x.getOvertimeWorkFrNo().v().intValue() == 1;
+			}).collect(Collectors.toList());
 		}
 		// 通常残業の場合
 		if (overtimeAtr == OverTimeAtr.REGULAROVERTIME.value) {
 			List<OvertimeWorkFrame> overtimeFrameRegulars = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
-			overtimeFrames = overtimeFrameRegulars.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() != 1).collect(Collectors.toList());
+			overtimeFrames = overtimeFrameRegulars.stream().filter(x -> {
+				return (x.getOvertimeWorkFrNo().v().intValue() == 2) || (x.getOvertimeWorkFrNo().v().intValue() == 3);
+			}).sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList());
 		}
 		// 早出残業・通常残業の場合
 		if (overtimeAtr == OverTimeAtr.ALL.value) {
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
+			List<OvertimeWorkFrame> overtimeFrameAll = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
+			overtimeFrames = overtimeFrameAll.stream().filter(x -> {
+				return (x.getOvertimeWorkFrNo().v().intValue() == 1) || 
+						(x.getOvertimeWorkFrNo().v().intValue() == 2) ||
+						(x.getOvertimeWorkFrNo().v().intValue() == 3);
+			}).sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList());
 		}
 		return overtimeFrames;
 	}

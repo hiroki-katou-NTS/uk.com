@@ -331,26 +331,31 @@ public class RecoveryStorageService {
 			for (int j = 5; j < dataRow.size(); j++) {
 				dataInsertDb.put(targetDataHeader.get(j), j == indexCidOfCsv ? cidCurrent : dataRow.get(j));
 			}
+			List<String> columnNotNull = checkTypeColumn(TABLE_NAME);
 			// insert delete data
 			if(tableUse) {
-				crudRowTransaction(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb);
+				crudRowTransaction(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb, columnNotNull);
 			} else {
-				crudRow(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb);
+				crudRow(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb, columnNotNull);
 			}
 
 		}
 		return condition;
 	}
 	
+	public List<String> checkTypeColumn(String TABLE_NAME) {
+		List<String> data = performDataRecoveryRepository.getTypeColumnNotNull(TABLE_NAME);
+		return data;
+	}
 	
 	public void crudRow(int count, Map<String, String> filedWhere, String TABLE_NAME, String namePhysicalCid,
-			String cidCurrent, HashMap<String, String> dataInsertDb) {
+			String cidCurrent, HashMap<String, String> dataInsertDb, List<String> columnNotNull) {
 		try {
 			if(count == 1) {
 				performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 						cidCurrent);
 			}
-			performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+			performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME,columnNotNull);
 		} catch (Exception e) {
 			LOGGER.info("Error delete data for table " + TABLE_NAME);
 		}
@@ -358,13 +363,13 @@ public class RecoveryStorageService {
 	}
 
 	public void crudRowTransaction(int count, Map<String, String> filedWhere, String TABLE_NAME, String namePhysicalCid,
-			String cidCurrent, HashMap<String, String> dataInsertDb) {
+			String cidCurrent, HashMap<String, String> dataInsertDb, List<String> columnNotNull) {
 		try {
 			if(count == 1) {
 				performDataRecoveryRepository.deleteTransactionDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 						cidCurrent);
 			}
-			performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME);
+			performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME,columnNotNull);
 		} catch (Exception e) {
 			LOGGER.info("Error delete data for table " + TABLE_NAME);
 			throw e;

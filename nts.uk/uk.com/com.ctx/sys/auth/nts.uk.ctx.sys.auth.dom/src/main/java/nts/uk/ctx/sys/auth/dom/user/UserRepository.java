@@ -38,6 +38,26 @@ public interface UserRepository {
 	List<User> searchByKey(GeneralDate systemDate, int special, int multi, String key);	
 	// add function 19.06.2018 thanhpv for CAS013
 	List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key, List<String> employeePersonIdFindName, List<String> employeePersonId);
-
+	// add fuction for CAS004
+	List<User> getListUserByListAsIDOrderByLoginID(List<String> listAssociatePersonId);
+	List<User> getByContractCode(String contractCode);
+	List<User> getListUserByCompanyId(String cid, GeneralDate baseDate);
+	List<User> getByContractCdAndAsIDNull(String contractCode);
+	
+	/**
+	 * Gets the by contract and personal id.
+	 *
+	 * @param contractCode the contract code
+	 * @param personalId the personal id
+	 * @return the by contract and personal id
+	 */
+	List<User> getByContractAndPersonalId(String contractCode, String personalId);
+	
+	/**
+	 * Delete.
+	 *
+	 * @param userId the user id
+	 */
+	void delete(String userId);
 
 }

@@ -74,4 +74,11 @@ public class TimeZoneRounding extends TimeZone {
 	public TimeSpanForCalc getTimeSpan() {
 		return new TimeSpanForCalc(this.start,this.end);
 	}
+	
+	/**
+	 * 丸め設定の初期化(1分/切り捨て　に変更)
+	 */
+	public void roudingReset() {
+		this.rounding = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+	}
 }

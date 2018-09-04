@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.ac.employment;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -32,5 +34,10 @@ public class ScEmploymentAdapterImpl implements ScEmploymentAdapter {
 			GeneralDate baseDate) {
 		return this.empPub.findSEmpHistBySid(companyId, employeeId, baseDate)
 				.map(f -> new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod()));
+	}
+
+	@Override
+	public Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes) {
+		return this.empPub.getEmploymentMapCodeName(companyId, empCodes);
 	}
 }

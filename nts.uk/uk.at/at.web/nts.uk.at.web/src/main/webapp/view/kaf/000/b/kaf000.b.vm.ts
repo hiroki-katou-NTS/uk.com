@@ -129,6 +129,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
+                if(self.displayReturnReasonPanel()){
+                    self.reasonApp(data.applicationDto.reversionReason);    
+                }
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);
@@ -320,7 +323,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         sendMail(msg, data) {
             let self = this;
-            if (self.appType() != 10) {
                 if (data.processDone) {
                     nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
                         if (data.autoSendMail) {
@@ -342,15 +344,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 } else {
                     nts.uk.ui.block.clear();
                 }
-            } else {
-                nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                    if (!nts.uk.util.isNullOrEmpty(data)) {
-                        self.callReflect(data);
-                    } else {
-                        self.reloadPage();
-                    }
-                });
-            }
+            
         }
 
        callReflect(data) {
@@ -455,18 +449,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
-                        if (self.appType() != 10) {
                             //kiểm tra list người xác nhận, nếu khác null thì show info 392
                             if (data.autoSendMail) {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                                });
+                                appcommon.CommonProcess.displayMailDeleteRs(data);
                             } else {
                                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                             }
-                        } else {
-                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                        }
                     });
                 }).fail(function(res: any) {
                     self.showError(res);

@@ -645,7 +645,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
                 moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
                 moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
-                Number(self.yearValue().startDate), Number(self.yearValue().endDate),
+                self.yearValue().startDate, self.yearValue().endDate,
                 Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
                 Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
             

@@ -53,4 +53,7 @@ public interface OptionalWidgetAdapter {
 	
 	/**get request list 197*/
 	List<DailyLateAndLeaveEarlyTimeImport> getLateLeaveEarly(String employeeId, DatePeriod datePeriod);
+	
+	/**get request list 201*/
+	KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date);
 }

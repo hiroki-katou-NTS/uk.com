@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * 
@@ -59,8 +60,8 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
-			GeneralDate endDate);
+	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDateTime startDate,
+			GeneralDateTime endDate);
 
 	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
 	

@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonRefl
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -34,7 +36,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Inject
 	private JudgmentWorkTypeService judgmentService;
-	
+	@Inject
+	private WorkInformationRepository workRepository;
 	@Override
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
 		try {
@@ -71,10 +74,16 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		//予定開始終了時刻をクリアするかチェックする
 		//1日半日出勤・1日休日系の判定
 		if(basicScheService.checkWorkDay(workTypeCode) == WorkStyle.ONE_DAY_REST) {
+			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(employeeId, baseDate);
+			if(!optDailyData.isPresent()) {
+				return;
+			}
+			WorkInfoOfDailyPerformance dailyInfor = optDailyData.get();
 			//予定開始時刻の反映
 			//予定終了時刻の反映
 			TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, true, true);
-			workTimeUpdate.updateScheStartEndTime(timeData);
+			dailyInfor = workTimeUpdate.updateScheStartEndTime(timeData, dailyInfor);
+			workRepository.updateByKeyFlush(dailyInfor);
 		}
 	}
 	@Override

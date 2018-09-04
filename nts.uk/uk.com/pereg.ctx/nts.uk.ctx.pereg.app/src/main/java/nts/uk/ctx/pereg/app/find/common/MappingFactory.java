@@ -50,6 +50,32 @@ public class MappingFactory {
 		return itemCodeValueMap;
 	}
 	
+	   // Map<itemDfId, Object: value of field>
+	public static Map<String, Object> getFullDtoValue2(PeregDto peregDto) {
+		// Map<itemDfId, Object: value of field>
+		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
+
+		// map from domain data
+		PeregDomainDto domainDto = peregDto.getDomainDto();
+		if (domainDto == null) {
+			return itemCodeValueMap;
+		}
+
+		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(),
+				PeregItem.class);
+		lstField.forEach(field -> {
+			String itemCode = field.getAnnotation(PeregItem.class).value();
+			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
+			itemCodeValueMap.put(itemCode, obj);
+		});
+
+		// map from option data
+		peregDto.getOptionalItemData()
+				.forEach(empData -> itemCodeValueMap.put(empData.getPerInfoItemDefId(), empData.getValue()));
+
+		return itemCodeValueMap;
+	}
+	
 	/**
 	 * map peregDto to classItemList which is same category
 	 * 

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -49,6 +50,9 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The formulas. */
 	private List<FormulaDto> formulas;
+
+	/** The unit. */
+	private String unit;
 
 	/*
 	 * (non-Javadoc)
@@ -144,5 +148,17 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
 		this.calcResultRange = new CalcResultRangeDto();
 		calculationResultRange.saveToMemento(this.calcResultRange);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento#setUnit(nts.uk.
+	 * ctx.at.record.dom.optitem.UnitOfOptionalItem)
+	 */
+	@Override
+	public void setUnit(UnitOfOptionalItem unit) {
+		this.unit = unit.v();
 	}
 }

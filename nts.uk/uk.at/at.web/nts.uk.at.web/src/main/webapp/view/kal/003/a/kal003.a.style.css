@@ -17,11 +17,11 @@
 .text-center {
 	text-align: center;
 }
-
 .left-content {
 	display: inline-block;
 	vertical-align: top;
 }
+
 
 .right-content {
 	display: inline-block;
@@ -88,3 +88,11 @@ label.label4w4d {
 div .tab-content-5 .nts-fixed-table .nts-fixed-body-container{
 	border-bottom-width:0px;
 }
+
+#multiple-months-content .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
+	height: 171px !important;
+}
+#div_table_check_conditions .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
+	height: 171px !important;
+}
+

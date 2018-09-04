@@ -15,6 +15,7 @@ module nts.uk.at.view.kal003.a.tab {
         isAllCheckCondition: KnockoutObservable<boolean> = ko.observable(false);
         currentRowSelected: KnockoutObservable<number> = ko.observable(0);
         category: KnockoutObservable<number>;
+        checkUseAtr57: KnockoutObservable<boolean> = ko.observable(false);
         constructor(category: number, listExtraResultMonthly?: Array<model.ExtraResultMonthly>) {
             let self = this;
             
@@ -52,6 +53,17 @@ module nts.uk.at.view.kal003.a.tab {
             self.currentRowSelected.subscribe((data) => {
                 $("#fixed-table2 tr").removeClass("ui-state-active");
                 $("#fixed-table2 tr[data-id='" + data + "']").addClass("ui-state-active");
+            });
+            //MinhVV add
+            self.checkUseAtr57 = ko.pureComputed({
+                read: function() {
+                    if (self.listExtraResultMonthly().filter((x) => { return x.useAtr() }).length > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                owner: self
             });
         }
         
@@ -136,13 +148,17 @@ module nts.uk.at.view.kal003.a.tab {
                     block.clear();
                     return;
                 });
-            }
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 || s) {
+            } 
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length || _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 ) {
                 block.clear();
+                nts.uk.ui.errors.clearAll();
                 return;
             }
             
-            self.listExtraResultMonthly.remove(function(item) { return item.useAtr(); })
+            self.listExtraResultMonthly.remove(function(item) { 
+                nts.uk.ui.errors.clearAll();
+                return item.useAtr(); 
+            })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listExtraResultMonthly().length; i++) {
                 self.listExtraResultMonthly()[i].rowId(i + 1);

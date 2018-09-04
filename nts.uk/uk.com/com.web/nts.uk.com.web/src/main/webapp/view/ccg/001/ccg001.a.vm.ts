@@ -115,8 +115,9 @@ module nts.uk.com.view.ccg001.a {
                     return;
                 }
                 // clear ccg001 errors
-                $('#daterangepicker .ntsStartDate input').ntsError('clear');
-                $('#daterangepicker .ntsEndDate input').ntsError('clear');
+                $('#ccg001-search-period .ntsDateRangeComponent').ntsError('clear');
+                $('#ccg001-search-period .ntsStartDate input').ntsError('clear');
+                $('#ccg001-search-period .ntsEndDate input').ntsError('clear');
                 $('#inp_baseDate').ntsError('clear');
                 $('#inp-period-startYMD').ntsError('clear');
                 $('#inp-period-endYMD').ntsError('clear');

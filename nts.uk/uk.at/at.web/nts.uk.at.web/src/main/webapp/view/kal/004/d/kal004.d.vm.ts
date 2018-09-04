@@ -21,14 +21,32 @@ module nts.uk.com.view.kal004.d.viewmodel {
             self.endMonth = ko.observable(self.getParam.endMonth);
         }
         Decide(): any {
-            var self = this;
-            let dataSetShare = self.getDataShare();
+            var self = this;               
+               let dataSetShare = self.getDataShare();
             nts.uk.ui.windows.setShared("extractionMonthly", dataSetShare);
-            if (self.strMonth() > self.endMonth()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
+
+            if (self.checkPeriod() == false) {
+                nts.uk.ui.windows.setShared("validateMonthly", false);        
                 return false;
             } else {
+                 nts.uk.ui.windows.setShared("validateMonthly", true);
+
                 self.closeDialog();
+            }
+        
+            }
+        private validateSelectMonth(startMonth: number, endMonth: number):boolean {
+            let self = this;
+            const month7 = 7;
+            if (startMonth <= month7 && (endMonth < startMonth || endMonth > month7)) {
+                return true;
+            } else if (startMonth >= month7 && endMonth > startMonth) {
+                return true;
+            } else if (startMonth == endMonth) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
 
@@ -44,7 +62,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
         }
         checkPeriod(): boolean {
             var self = this;
-            if (self.strMonth() > self.endMonth()) {
+            if (self.strMonth() < self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {
@@ -52,7 +70,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             }
         }
 
-        closeDialog(): void {
+        closeDialog(): any {
             nts.uk.ui.windows.close();
         }
 

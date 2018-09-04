@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -25,6 +27,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	/** The type value. */
 	private KrcstOptionalItem typeValue;
 	
+	/** The krcst calc result range. */
 	private KrcstCalcResultRange krcstCalcResultRange;
 
 	/**
@@ -33,7 +36,12 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaOptionalItemGetMemento(KrcstOptionalItem typeValue) {
+	public JpaOptionalItemGetMemento(KrcstOptionalItem typeValue, KrcstCalcResultRange... krcstCalcResultRangeView) {
+		
+		if(krcstCalcResultRangeView.length > 0) {
+			this.krcstCalcResultRange = krcstCalcResultRangeView[0];
+		}
+		
 		this.typeValue = typeValue;
 	}
 	
@@ -129,10 +137,18 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 */
 	@Override
 	public CalcResultRange getCalculationResultRange() {
-		if(this.krcstCalcResultRange == null){
-			this.krcstCalcResultRange = this.typeValue.getKrcstCalcResultRange(); 
-		}
-		return new CalcResultRange(new JpaCalcResultRangeGetMemento(this.krcstCalcResultRange));
+		return new CalcResultRange(new JpaCalcResultRangeGetMemento(
+				this.krcstCalcResultRange != null
+						? this.krcstCalcResultRange
+						: this.typeValue.getKrcstCalcResultRange()));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemGetMemento#getUnit()
+	 */
+	@Override
+	public UnitOfOptionalItem getUnit() {
+		return new UnitOfOptionalItem(this.typeValue.getUnitOfOptionalItem());
 	}
 
 }

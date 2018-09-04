@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -87,13 +88,13 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     }
 
 	@Override
-	public Integer getSpecialHolidayFrame() {
-		return this.entityNursing.getSpecialHolidayFrame();
+	public Optional<Integer> getSpecialHolidayFrame() {
+		return Optional.of(this.entityNursing.getSpecialHolidayFrame());
 	}
 
 	@Override
-	public Integer getWorkAbsence() {
-		return this.entityNursing.getWorkAbsence();
+	public Optional<Integer> getWorkAbsence() {
+		return Optional.of(this.entityNursing.getWorkAbsence());
 	}
 
     /*

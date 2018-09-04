@@ -23,7 +23,7 @@ public class AnnLeaveOfThisMonth {
 	/**
 	 * 付与日数
 	 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/**
 	 * 月初残日数
@@ -55,7 +55,7 @@ public class AnnLeaveOfThisMonth {
 	 */
 	private Optional<Integer> remainMinutes;
 
-	public AnnLeaveOfThisMonth(GeneralDate grantDate, BigDecimal grantDays, Double firstMonthRemNumDays,
+	public AnnLeaveOfThisMonth(GeneralDate grantDate, Double grantDays, Double firstMonthRemNumDays,
 			int firstMonthRemNumMinutes, AnnualLeaveUsedDayNumber usedDays,
 			Optional<Integer> usedMinutes, AnnualLeaveRemainingDayNumber remainDays,
 			Optional<Integer> remainMinutes) {
@@ -72,7 +72,7 @@ public class AnnLeaveOfThisMonth {
 
 	// avoid compile error
 	public void setGrantDays(Double days) {
-		this.grantDays = days != null ? new BigDecimal(days) : null;
+		this.grantDays = days;
 	}
 	
 }

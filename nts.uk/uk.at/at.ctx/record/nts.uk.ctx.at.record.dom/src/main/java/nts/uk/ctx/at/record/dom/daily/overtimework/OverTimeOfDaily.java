@@ -15,6 +15,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
@@ -301,7 +303,7 @@ public class OverTimeOfDaily {
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
 		//事前申請制御
 		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-			calcTime = beforeApplicationTime;
+			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
 		}
 		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 	}
@@ -586,9 +588,17 @@ public class OverTimeOfDaily {
 				val getframe = changeList.get(new OverTimeFrameNo(frameNo)); 
 				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
 					//残業時間の置き換え
-					getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					if(getframe.getOverTimeWork()!=null && map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork()!=null) {
+						getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					}else {
+						getframe.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
 					//振替時間の置き換え
-					getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+					if(getframe.getTransferTime()!=null&&map.get(new OverTimeFrameNo(frameNo)).getTransferTime()!=null) {
+						getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+					}else {
+						getframe.setTransferTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
 				}
 				else {
 					//残業時間の置き換え

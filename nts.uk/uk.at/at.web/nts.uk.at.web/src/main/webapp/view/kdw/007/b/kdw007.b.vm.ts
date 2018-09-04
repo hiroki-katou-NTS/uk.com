@@ -57,6 +57,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+                param.data.compareStartValue = null;
+                param.data.compareEndValue = null;
+                param.data.uncountableAtdItem = null;
+            }
+            
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
             if (caic.compareOperator() > 5) {
@@ -72,6 +78,14 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     { code: 2, name: "入力チェック", enable: true }
                 ]);
             }
+            
+            caic.compareStartValue.subscribe(v => {
+                self.validateRange();
+            });
+            
+            caic.compareEndValue.subscribe(v => {
+                self.validateRange();
+            });
             
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
@@ -118,10 +132,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
-            });
-
-            $(".value-input").blur(() => {
-                self.validateRange();
             });
 
             self.fillTextDisplayTarget();
@@ -234,12 +244,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 });
             } else { // 日数
                 service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
+                    dfd.resolve(lstAtdItem);
                 });
             }
             return dfd.promise();
@@ -247,6 +252,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         openSelectAtdItemDialogTarget() {
             let self = this;
+            nts.uk.ui.block.invisible();
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
@@ -281,6 +287,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     });
                 }
             });
+            nts.uk.ui.block.clear();
         }
 
         openSelectAtdItemDialogComparison() {
@@ -309,19 +316,17 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-//                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-//                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-//                setTimeout(() => {
+
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-//                }, 25);
+
             }
         }
 

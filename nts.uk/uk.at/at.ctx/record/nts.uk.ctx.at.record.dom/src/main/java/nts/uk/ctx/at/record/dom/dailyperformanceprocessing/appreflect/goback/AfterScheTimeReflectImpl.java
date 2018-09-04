@@ -5,6 +5,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -17,11 +19,14 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
 	private WorkUpdateService scheUpdateService;
+	@Inject
+	private WorkInformationRepository workRepository;
 	@Override
-	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
+	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
+			WorkInfoOfDailyPerformance dailyInfor) {
 		//予定時刻反映できるかチェックする
 		if(!this.checkScheTimeCanReflect(para.getGobackData().getWorkTimeCode(), para.getScheAndRecordSameChangeFlg())) {
-			return;
+			return dailyInfor;
 		}
 		//(開始時刻)反映する時刻を求める
 		TimeOfDayReflectOutput startTime = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, para.getGobackData().getStartTime1(), ApplyTimeAtr.START, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
@@ -33,7 +38,8 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 				1,
 				startTime.isReflectFlg(), 
 				endTime.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData1);		
+		dailyInfor = scheUpdateService.updateScheStartEndTime(timeData1, dailyInfor);
+		return dailyInfor;
 		//(開始時刻2)反映する時刻を求める,
 		/*TimeOfDayReflectOutput startTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), ApplyTimeAtr.START2, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());

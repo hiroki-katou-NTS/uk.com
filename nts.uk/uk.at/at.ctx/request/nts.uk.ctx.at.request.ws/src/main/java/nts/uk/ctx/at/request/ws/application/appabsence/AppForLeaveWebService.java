@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -14,8 +15,10 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsence
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/appforleave")
@@ -24,9 +27,9 @@ public class AppForLeaveWebService extends WebService{
 	@Inject
 	private AppAbsenceFinder appForLeaveFinder;
 	@Inject
-	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
+	private CreatAppAbsenceCommandHandler creatAppAbsence;
 	@Inject
-	private UpdateAppAbsenceCommandHandler updateAppAbsenceCommandHandler;
+	private UpdateAppAbsenceCommandHandler updateAppAbsence;
 	
 	@POST
 	@Path("getAppForLeaveStart")
@@ -36,7 +39,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getAllAppForLeave")
 	public AppAbsenceDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getAllDisplay(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+		return this.appForLeaveFinder.getAllDisplay(param);
 	}
 	@POST
 	@Path("findChangeAppdate")
@@ -61,7 +64,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("findChangeWorkType")
 	public AppAbsenceDto getChangeWorkType(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeWorkType(param.getStartAppDate(),param.getEmployeeID(),param.getWorkTypeCode(),param.getHolidayType(),param.getWorkTimeCode());
+		return this.appForLeaveFinder.getChangeWorkType(param);
 	}
 	@POST
 	@Path("getListWorkTime")
@@ -70,13 +73,13 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getWorkingHours")
-	public AppAbsenceDto getWorkingHours(ParamGetAllAppAbsence param) {
+	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType());
 	}
 	@POST
 	@Path("insert")
 	public ProcessResult insert(CreatAppAbsenceCommand param) {
-		return creatAppAbsenceCommandHandler.handle(param);
+		return creatAppAbsence.handle(param);
 	}
 	@POST
 	@Path("getByAppID")
@@ -87,8 +90,13 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("update")
 	public ProcessResult update(UpdateAppAbsenceCommand command) {
-		return this.updateAppAbsenceCommandHandler.handle(command);
+		return this.updateAppAbsence.handle(command);
 	}
 	
+	@POST
+	@Path("changeRela/{workTypeCD}/{relationCD}")
+	public ChangeRelationShipDto changeRelationShip(@PathParam("workTypeCD") String workTypeCD, @PathParam("relationCD") String relationCD){
+		return appForLeaveFinder.changeRelationShip(workTypeCD, relationCD);
+	}
 }
 

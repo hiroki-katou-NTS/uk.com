@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -36,6 +37,9 @@ public class ExtractAlarmForEmployeeService {
 	
 	@Inject
 	private MonthlyAggregateProcessService monthlyAggregateProcessService;
+	
+	@Inject
+	private MultipleMonthAggregateProcessService multipleMonthAggregateProcessService;
 	
 	public List<ValueExtractAlarm> process(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees){
 		
@@ -91,6 +95,15 @@ public class ExtractAlarmForEmployeeService {
 						// アルゴリズム「日次の集計処理」を実行する
 						List<ValueExtractAlarm> monthlyAlarmList = monthlyAggregateProcessService.monthlyAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
 						result.addAll(monthlyAlarmList);
+					}
+				}
+				//Hoidd
+				else if (checkCondition.isMultipleMonth()) {
+					
+					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+						// 複数月の集計処理
+						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
+						result.addAll(mutilpleMonthlAlarmList);
 					}
 				}
 

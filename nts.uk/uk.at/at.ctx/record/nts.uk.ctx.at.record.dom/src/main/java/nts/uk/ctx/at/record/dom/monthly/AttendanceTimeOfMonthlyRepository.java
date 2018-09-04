@@ -8,6 +8,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /*
  * リポジトリ：月別実績の勤怠時間
@@ -67,9 +68,17 @@ public interface AttendanceTimeOfMonthlyRepository {
 	 * 検索　（基準日）
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
-	 * @return 月別実績の勤怠時間
+	 * @return 月別実績の勤怠時間リスト
 	 */
 	List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate);
+
+	/**
+	 * 検索　（終了日を含む期間）
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @return 月別実績の勤怠時間リスト
+	 */
+	List<AttendanceTimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period);
 	
 	/**
 	 * 登録および更新

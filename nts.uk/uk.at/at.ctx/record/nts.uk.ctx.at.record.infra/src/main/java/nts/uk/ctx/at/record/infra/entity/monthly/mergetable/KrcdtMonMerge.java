@@ -86,6 +86,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Temporar
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
@@ -123,7 +124,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.WorkTimeOfMonthly;
 
 /**
  * 残数系以外
@@ -3770,10 +3770,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 勤務時間 */
-	public void toEntityWorkTimeOfMonthly(nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly vtWorkTime) {
+	public void toEntityWorkTimeOfMonthly(WorkTimeOfMonthlyVT vtWorkTime) {
 		/** 加給時間 */
 		val bonusPayTime = vtWorkTime.getBonusPayTime();
-		this.toEntityBonusPayTime1(bonusPayTime);
+//		this.toEntityBonusPayTime1(bonusPayTime);
 		
 		
 	}
@@ -5254,7 +5254,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				SpcVacationDaysOfMonthly.of(new AttendanceDaysMonth(new Double(this.totalSpcvactDays)), new AttendanceTimeMonth(this.totalSpcvactTime), new ArrayList<>())); // avoid compile error
 		
 		// 月別実績の勤務時間
-		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val workTime = WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						krcdtMonAggrBnspyTime),
 				GoOutOfMonthly.of(

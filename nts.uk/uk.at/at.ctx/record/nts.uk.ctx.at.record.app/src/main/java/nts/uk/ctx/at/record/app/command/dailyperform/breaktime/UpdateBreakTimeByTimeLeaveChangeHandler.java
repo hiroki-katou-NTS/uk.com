@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -56,13 +58,13 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	/** 休憩時間帯を補正する */
 	protected EventHandleResult<BreakTimeOfDailyPerformance> handle(CommandHandlerContext<UpdateBreakTimeByTimeLeaveChangeCommand> context) {
 		UpdateBreakTimeByTimeLeaveChangeCommand command = context.getCommand();
-		WorkInfoOfDailyPerformance wi = command.cachedWorkInfo.orElse(getDefaultWorkInfo(command));
+		WorkInfoOfDailyPerformance wi = getWithDefaul(command.cachedWorkInfo, () -> getDefaultWorkInfo(command));
 		if(wi == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		};
-		String companyId = command.companyId.orElse(AppContexts.user().companyId());
+		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
 		
-		WorkType wt = command.cachedWorkType.orElse(getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
+		WorkType wt = getWithDefaul(command.cachedWorkType, () -> getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
 		if(wt == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		}
@@ -93,12 +95,12 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	/** 「補正した休憩時間帯」を取得する */
 	private BreakTimeOfDailyPerformance getUpdateBreakTime(UpdateBreakTimeByTimeLeaveChangeCommand command,
 			WorkInfoOfDailyPerformance wi, String companyId) {
-		TimeLeavingOfDailyPerformance timeLeave = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
+		TimeLeavingOfDailyPerformance timeLeave = getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command));
 		
 		BreakTimeOfDailyPerformance breakTime = reflectBreakTimeService.reflectBreakTime(companyId, command.employeeId,
 				command.targetDate, null, timeLeave, wi);
 		
-		BreakTimeOfDailyPerformance breakTimeRecord = command.cachedBreackTime.orElse(getBreakTimeDefault(command.employeeId,
+		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(command.cachedBreackTime, () -> getBreakTimeDefault(command.employeeId,
 				command.targetDate));
 		
 		if (breakTimeRecord != null) {
@@ -132,7 +134,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 
 	private List<EditStateOfDailyPerformance> getEditStateByItems(UpdateBreakTimeByTimeLeaveChangeCommand command) {
 		List<Integer> needCheckItems = DailyCorrectEventServiceCenter.BREAK_TIME_ITEMS;
-		return command.cachedEditState.orElse(getDefaultEditStates(command, needCheckItems))
+		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, needCheckItems))
 											.stream().filter(e -> needCheckItems.contains(e.getAttendanceItemId()))
 											.collect(Collectors.toList());
 	}
@@ -156,5 +158,12 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	private List<EditStateOfDailyPerformance> getDefaultEditStates(UpdateBreakTimeByTimeLeaveChangeCommand command,
 			List<Integer> needCheckItems) {
 		return this.editStateRepo.findByItems(command.employeeId, command.targetDate, needCheckItems);
+	}
+	
+	private <T> T getWithDefaul(Optional<T> target, Supplier<T> defaultVal){
+		if(target.isPresent()){
+			return target.get();
+		}
+		return defaultVal.get();
 	}
 }

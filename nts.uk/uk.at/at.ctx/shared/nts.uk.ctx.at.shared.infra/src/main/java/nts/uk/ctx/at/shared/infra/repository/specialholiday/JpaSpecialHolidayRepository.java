@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,13 +64,28 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
 			+ " ORDER BY sphd.pk.specialHolidayCode";
 	
+	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
+			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
+			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
+			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
+			+ " FROM KshstSpecialHoliday sphd"
+			+ " LEFT JOIN KshstGrantRegular gra"
+			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstGrantPeriodic pe"
+			+ " ON sphd.pk.companyId = pe.pk.companyId AND sphd.pk.specialHolidayCode = pe.pk.specialHolidayCode"
+			+ " LEFT JOIN KshstSpecialLeaveRestriction re"
+			+ " ON sphd.pk.companyId = re.pk.companyId AND sphd.pk.specialHolidayCode = re.pk.specialHolidayCode"
+			+ " WHERE sphd.pk.companyId = :companyId "
+			+ " AND sphd.pk.specialHolidayCode IN :specialHolidayCodes"
+			+ " ORDER BY sphd.pk.specialHolidayCode";
+	
 	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.absFameNo";
 	
 	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.sphdNo";
 	
 	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
 			+ "WHERE a.pk.companyId = :companyID "
@@ -129,6 +145,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	private final static String DELETE_SPEC_EMP = "DELETE FROM KshstSpecEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+	
+	/**
+	 * For delete releated domain of KDR001 (team G)
+	 */
+//	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
+//			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
+//			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD"; 
 	
 	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
 			+ " WHERE c.pk.companyId = :companyId"
@@ -422,6 +445,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			.setParameter("companyID", companyId)
 			.setParameter("specialHolidayCD", specialHolidayCode)
 			.executeUpdate();
+		
+		/**
+		 * For delete releated domain of KDR001 (team G)
+		 */
+//		this.getEntityManager().createQuery(DELETE_SPEC_HD)
+//			.setParameter("companyID", companyId)
+//			.setParameter("specialHolidayCD", specialHolidayCode)
+//			.executeUpdate();
 	}
 
 	/*@Override
@@ -485,5 +516,32 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				.map(c -> {
 					return c.pk.specialHolidayCode;
 				}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes) {
+		if(specialHolidayCodes.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(SELECT_SPHD_BY_LIST_CODE, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCodes", specialHolidayCodes)
+				.getList(c -> {
+					return createSphdDomainFromEntity(c);
+				});
+	}
+
+	@Override
+	public List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId) {
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.getList(c -> {
+					 return createSphdDomainFromEntityWithTargetItem(c);
+				});
+	}
+	
+	private SpecialHoliday 	createSphdDomainFromEntityWithTargetItem(Object[] c){
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		 return this.findBySingleCD(companyId, specialHolidayCode).get();
 	}
 }

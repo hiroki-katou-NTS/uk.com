@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -47,6 +48,16 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 	/** The Constant FIRST_LENGTH. */
 	public static final int FIRST_LENGTH = 1;
+
+	/** The Constant FIND_BY_CURRENT_YEARMONTH_AND_USED. */
+	public static final String FIND_BY_CURRENT_YEARMONTH_AND_USED = "SELECT his from KclmtClosureHist his "
+			+ "JOIN KclmtClosure c "
+			+ "ON his.kclmtClosureHistPK.cid = c.kclmtClosurePK.cid "
+			+ "AND his.kclmtClosureHistPK.closureId = c.kclmtClosurePK.closureId "
+			+ "WHERE his.kclmtClosureHistPK.cid = :comId "
+			+ "AND c.useClass = 1 " // is used
+			+ "AND his.kclmtClosureHistPK.strYM <= :baseDate "
+			+ "AND his.endYM >= :baseDate";
 
 	/*
 	 * (non-Javadoc)
@@ -833,5 +844,21 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 			return Optional.of(this.toDomain(kclmtClosure.get(), this.findHistoryByClosureId(companyId, closureId)));
 		}
 		return Optional.empty();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#
+	 * findByCurrentYearMonthAndUsed(java.lang.String)
+	 */
+	@Override
+	public List<ClosureHistory> findByCurrentYearMonthAndUsed(String companyId) {
+		GeneralDate now = GeneralDate.today();
+		YearMonth currentYearMonth = YearMonth.of(now.year(), now.month());
+		return this.queryProxy().query(FIND_BY_CURRENT_YEARMONTH_AND_USED, KclmtClosureHist.class)
+				.setParameter("comId", companyId)
+				.setParameter("baseDate", currentYearMonth).getList()
+				.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 }

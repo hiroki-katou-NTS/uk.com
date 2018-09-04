@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceConfigRepository.
@@ -251,5 +253,48 @@ public class JpaWorkplaceConfigRepository extends JpaRepository
 	private WorkplaceConfigHistory toDomain(BsymtWkpConfig item) {
 		return new WorkplaceConfigHistory(new JpaWorkplaceConfigHistoryGetMemento(item));
 	}
+	
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findByCompanyIdAndPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<WorkplaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod period){
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfig> cq = criteriaBuilder.createQuery(BsymtWkpConfig.class);
+		Root<BsymtWkpConfig> root = cq.from(BsymtWkpConfig.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfig_.bsymtWkpConfigPK).get(BsymtWkpConfigPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(BsymtWkpConfig_.strD), period.end()));
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(BsymtWkpConfig_.endD), period.start()));
+		
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfig_.strD)));
+
+		// exclude select
+		List<WorkplaceConfigHistory> lstWkpConfigHist = em.createQuery(cq).getResultList().stream()
+						.map(item -> this.toDomain(item)).collect(Collectors.toList());
+				
+		// check empty
+		if (lstWkpConfigHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<WorkplaceConfig> workplaceConfigs = new ArrayList<WorkplaceConfig>();
+		workplaceConfigs.add(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWkpConfigHist)));
+		
+		return workplaceConfigs;
+	}
 }

@@ -85,10 +85,22 @@ public interface InterimRecAbasMngRepository {
 	void deleteInterimRecMng(String recruitmentMngId);
 
 	/**
+	 * 
+	 * @param listRecMngId
+	 */
+	void deleteInterimRecMng(List<String> listRecMngId);
+	
+	/**
 	 * 暫定振休管理データ 　を削除
 	 * @param absenceMngId
 	 */
 	void deleteInterimAbsMng(String absenceMngId);
+	
+	/**
+	 * 
+	 * @param listAbsMngId
+	 */
+	void deleteInterimAbsMng(List<String> listAbsMngId);
 
 	/**
 	 * 暫定振出振休紐付け管理  を削除
@@ -120,4 +132,13 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr);
+	
+	/**
+	 * 
+	 * @param absIds
+	 * @param absMngAtr
+	 * @return
+	 */
+	List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr);
+	
 }

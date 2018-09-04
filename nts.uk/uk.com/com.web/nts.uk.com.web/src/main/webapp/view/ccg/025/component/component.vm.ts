@@ -8,6 +8,8 @@ module nts.uk.com.view.ccg025.a.component {
         showEmptyItem?: boolean;
         tabindex?: number;
         roleAtr? : number;
+        isResize?: boolean;
+        rows?: number;
     }
 
     export module viewmodel {
@@ -17,7 +19,8 @@ module nts.uk.com.view.ccg025.a.component {
             private columns: KnockoutObservableArray<any>;
             private defaultOption: Option = {
                 multiple: true,
-                showEmptyItem: false
+                showEmptyItem: false,
+                isResize: false
             }
             private setting: Option;
             private searchMode: string;
@@ -32,14 +35,14 @@ module nts.uk.com.view.ccg025.a.component {
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'name', width: 180 }
+                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 180 }
                     ]);
                 } else {
                     self.currentCode = ko.observable("");
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'name', width: 233 }
+                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 233 }
                     ]);
                 }
 
@@ -57,7 +60,11 @@ module nts.uk.com.view.ccg025.a.component {
                 let dfd = $.Deferred();
                 service.getListRoleByRoleType(roleType, roleAtr).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
-                    self.listRole(data);
+                    self.listRole(_.map(data, (x) => { return new model.Role(
+                        x.roleId, x.roleCode, x.roleType,
+                        x.employeeReferenceRange, x.name,
+                        x.contractCode, x.assignAtr, x.companyId)
+                    }));
                     self.addEmptyItem();
 
                     // Select item base on param code
@@ -102,6 +109,7 @@ module nts.uk.com.view.ccg025.a.component {
             roleCode: string;
             roleType: number;
             employeeReferenceRange: number;
+            roleName: string;
             name: string;
             contractCode: string;
             assignAtr: number;
@@ -114,18 +122,20 @@ module nts.uk.com.view.ccg025.a.component {
             roleCode: string;
             roleType: number;
             employeeReferenceRange: number;
+            roleName: string;
             name: string;
             contractCode: string;
             assignAtr: number;
             companyId: string;
             constructor(roleId: string, roleCode: string,
-                roleType: number, employeeReferenceRange: number, name: string,
+                roleType: number, employeeReferenceRange: number, roleName: string,
                 contractCode: string, assignAtr: number, companyId: string) {
                 this.roleId = roleId;
                 this.roleCode = roleCode;
                 this.roleType = roleType;
                 this.employeeReferenceRange = employeeReferenceRange;
-                this.name = name;
+                this.name = roleName;
+                this.roleName = roleName;
                 this.contractCode = contractCode;
                 this.assignAtr = assignAtr;
                 this.companyId = companyId;
