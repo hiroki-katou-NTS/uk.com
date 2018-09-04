@@ -604,7 +604,7 @@ module cmm045.a.viewmodel {
             _.each(timeNo417.lstOverMonth, function(month){
                 lstMonth.push(month % 100);
             });
-            lstMonth.sort();
+            _.sortBy(lstMonth);
             let a2 = '';
             _.each(lstMonth, function(mon){
                 a2 = a2 == '' ? getText('CMM045_285', [mon]) : a2 + '、' + getText('CMM045_285', [mon]);
