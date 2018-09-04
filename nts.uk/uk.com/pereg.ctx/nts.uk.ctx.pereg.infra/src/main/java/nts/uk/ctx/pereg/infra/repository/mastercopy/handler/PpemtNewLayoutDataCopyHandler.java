@@ -11,6 +11,8 @@ import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayoutPk;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemClsPk;
+import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
+import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDfPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,8 +25,10 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 
 	private static final String QUERY_DATA_BY_COMPANYID = "SELECT l FROM PpemtNewLayout l WHERE l.companyId = :companyId";
 	private static final String GET_LAYOUT_ITEM = "SELECT l FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
+	private static final String GET_LAYOUT_ITEM_DF = "SELECT l FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
 	private static final String DELETE_DATA = "DELETE FROM PpemtNewLayout l WHERE l.companyId = :companyId";
 	private static final String DELETE_LAYOUT_ITEM = "DELETE FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
+	private static final String DELETE_LAYOUT_ITEM_DF = "DELETE FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
 
 	public PpemtNewLayoutDataCopyHandler(int copyMethod, String companyId, EntityManager em) {
 		super();
@@ -65,6 +69,9 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				if (!itemList.isEmpty()) {
 					this.entityManager.createQuery(DELETE_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 							.setParameter("layoutId", CurrentComlayoutId).executeUpdate();
+
+					this.entityManager.createQuery(DELETE_LAYOUT_ITEM_DF, PpemtLayoutItemClsDf.class)
+							.setParameter("layoutId", item.ppemtNewLayoutPk.layoutId).executeUpdate();
 				}
 
 				// remove data layout of current company
@@ -85,14 +92,30 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 						.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 						.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
+				// get data layout item cls df
+				List<PpemtLayoutItemClsDf> itemListDf = this.entityManager
+						.createQuery(GET_LAYOUT_ITEM_DF, PpemtLayoutItemClsDf.class)
+						.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
+
 				// Insert new data
 
 				this.entityManager.persist(newEntity);
 
+				// insert data layout item cls
 				itemList.forEach(i -> {
 					PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId, i.ppemtLayoutItemClsPk.dispOrder);
 					PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, i.categoryId, i.itemType);
 					this.entityManager.persist(item);
+
+				});
+
+				// insert data layout item cls Df
+
+				itemListDf.forEach(i -> {
+					PpemtLayoutItemClsDfPk PK = new PpemtLayoutItemClsDfPk(layoutId,
+							i.ppemtLayoutItemClsDfPk.layoutDispOrder, i.ppemtLayoutItemClsDfPk.dispOrder);
+					PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(PK, i.itemDfID);
+					this.entityManager.persist(itemDf);
 				});
 
 			});
@@ -116,14 +139,27 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
+					// get data layout item cls df
+					List<PpemtLayoutItemClsDf> itemListDf = this.entityManager
+							.createQuery(GET_LAYOUT_ITEM_DF, PpemtLayoutItemClsDf.class)
+							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
+					
 					// Insert new data
 					this.entityManager.persist(newEntity);
 
-					// set layoutID and insert
+					// set layout item cls and insert
 					itemList.forEach(i -> {
 						PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId, i.ppemtLayoutItemClsPk.dispOrder);
 						PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, i.categoryId, i.itemType);
 						this.entityManager.persist(item);
+					});
+					
+					// set data layout item cls Df and insert 
+					itemListDf.forEach(i -> {
+						PpemtLayoutItemClsDfPk PK = new PpemtLayoutItemClsDfPk(layoutId,
+								i.ppemtLayoutItemClsDfPk.layoutDispOrder, i.ppemtLayoutItemClsDfPk.dispOrder);
+						PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(PK, i.itemDfID);
+						this.entityManager.persist(itemDf);
 					});
 
 				});
