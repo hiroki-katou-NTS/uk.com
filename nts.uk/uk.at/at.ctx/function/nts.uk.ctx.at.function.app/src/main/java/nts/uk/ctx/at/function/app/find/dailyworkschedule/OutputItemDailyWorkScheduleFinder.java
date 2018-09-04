@@ -231,7 +231,7 @@ public class OutputItemDailyWorkScheduleFinder {
 								return dto;
 							}).collect(Collectors.toList());
 				if (lstData.isEmpty()) {
-					throw new BusinessException("Msg_1140", new String[]{AUTHORITY_DEFINE});
+					throw new BusinessException("Msg_1410", new String[]{AUTHORITY_DEFINE});
 				} 
 				return lstData;
 			case BUSINESS_TYPE: // In case of work type
@@ -255,7 +255,7 @@ public class OutputItemDailyWorkScheduleFinder {
 					})
 				.collect(Collectors.toList());
 				if (lstData.isEmpty()) {
-					throw new BusinessException("Msg_1140", new String[]{BUSINESS_TYPE_DEFINE});
+					throw new BusinessException("Msg_1410", new String[]{BUSINESS_TYPE_DEFINE});
 				}
 				return lstData;
 			default:
