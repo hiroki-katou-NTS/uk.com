@@ -86,6 +86,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
         switch (copyMethod) {
             case REPLACE_ALL:
                 // Delete all old data
+            	break;
             case ADD_NEW:
                 // Insert Data
                 copyMasterData(sourceCid, targetCid, false);
