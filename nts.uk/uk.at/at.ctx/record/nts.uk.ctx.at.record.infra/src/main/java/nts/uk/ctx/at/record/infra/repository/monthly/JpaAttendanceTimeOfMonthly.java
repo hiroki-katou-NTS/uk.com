@@ -605,21 +605,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				case 45:
 					entity.toEntityExcessOutsideWork45(excessOutsideTime);
 					break;
-				case 46:
-					entity.toEntityExcessOutsideWork46(excessOutsideTime);
-					break;
-				case 47:
-					entity.toEntityExcessOutsideWork47(excessOutsideTime);
-					break;
-				case 48:
-					entity.toEntityExcessOutsideWork48(excessOutsideTime);
-					break;
-				case 49:
-					entity.toEntityExcessOutsideWork49(excessOutsideTime);
-					break;
-				case 50:
-					entity.toEntityExcessOutsideWork50(excessOutsideTime);
-					break;							
+				default: break;
 				}
 				i++;
 			}
