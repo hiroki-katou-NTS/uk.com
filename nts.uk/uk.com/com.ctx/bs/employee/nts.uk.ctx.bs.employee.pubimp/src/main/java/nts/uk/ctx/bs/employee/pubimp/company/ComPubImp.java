@@ -92,6 +92,26 @@ public class ComPubImp implements SyCompanyPub {
 				.collect(Collectors.toList()));
 
 		return affComHostEx;
+	}
+
+	@Override
+	public AffCompanyHistExport GetAffComHisBySid(String cid, String sid) {
+		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sid);
+		
+		if (affComHis == null){
+			return new AffCompanyHistExport(null, Collections.emptyList());
+		}
+		
+		AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(sid);
+		
+		AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
+		affComHostEx.setEmployeeId(sid);
+
+		affComHostEx.setLstAffComHistItem(affComBySid.getLstAffCompanyHistoryItem().stream()
+				.map(item -> new AffComHistItem(item.getHistoryId(), item.isDestinationData(), item.getDatePeriod()))
+				.collect(Collectors.toList()));
+
+		return affComHostEx;
 	};
 
 }

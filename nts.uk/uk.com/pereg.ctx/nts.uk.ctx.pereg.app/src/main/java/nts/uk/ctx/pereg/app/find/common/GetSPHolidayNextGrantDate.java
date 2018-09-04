@@ -49,8 +49,6 @@ public class GetSPHolidayNextGrantDate {
 	 */
 	public GeneralDate getSPHolidayGrantDate(SpecialleaveInformation param){
 		
-		GeneralDate result = null;
-		
 		GeneralDate entryDate = null;
 		
 		GeneralDate yearRefDate = null;
@@ -58,7 +56,7 @@ public class GetSPHolidayNextGrantDate {
 		// 次回休暇付与を計算する開始日を取得する
 		GeneralDate baseDate = getCalcStartForNextLeaveGrant.algorithm(param.getSid());
 		if (baseDate == null){
-			return result;
+			return null;
 		}
 		
 		// Set entry date
@@ -69,6 +67,16 @@ public class GetSPHolidayNextGrantDate {
 			AffCompanyHistSharedImport affComHist = empEmployeeAdapter.GetAffComHisBySidAndBaseDate(param.getSid(),
 					baseDate);
 			entryDate = affComHist.getEntryDate().orElse(null);
+			
+			// ドメインモデル「所属会社履歴（社員別）」を取得し直し、入社年月日を取得する
+			if (entryDate == null){
+				AffCompanyHistSharedImport defaultValue = empEmployeeAdapter.GetAffComHisBySid(AppContexts.user().companyId(),param.getSid());
+				entryDate = defaultValue.getEntryDate().orElse(null);
+			}
+		}
+		
+		if (entryDate == null){
+			return null;
 		}
 		
 		// Set 年休付与基準日
@@ -82,6 +90,11 @@ public class GetSPHolidayNextGrantDate {
 		} else {
 			yearRefDate = param.getYearRefDate();
 		}
+		
+		if (yearRefDate == null){
+			return null;
+		}
+		
 		SpecialLeaveGrantNextDateInput inputParam = new SpecialLeaveGrantNextDateInput(AppContexts.user().companyId(),
 				param.getSpLeaveCD(), param.getGrantDate(),
 				EnumAdaptor.valueOf(param.getAppSet(), SpecialLeaveAppSetting.class),

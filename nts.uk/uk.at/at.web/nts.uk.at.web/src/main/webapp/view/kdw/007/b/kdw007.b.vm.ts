@@ -37,6 +37,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
+        
+        optionNoOfHolidays: any = {
+            decimallength: 1
+        }
 
         constructor() {
             let self = this,
