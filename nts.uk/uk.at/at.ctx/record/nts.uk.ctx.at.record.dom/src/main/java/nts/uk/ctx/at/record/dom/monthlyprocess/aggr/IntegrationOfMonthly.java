@@ -50,7 +50,7 @@ public class IntegrationOfMonthly {
 	private Optional<MonthlyDayoffRemainData> monthlyDayoffRemain;
 	/** 特別休暇残数月別データ */
 	@Setter
-	private Optional<SpecialHolidayRemainData> specialLeaveRemain;
+	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 週別実績の勤怠時間 */
 	private List<AttendanceTimeOfWeekly> attendanceTimeOfWeekList;
 	/** 社員の月別実績エラー一覧 */
@@ -65,7 +65,7 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = Optional.empty();
 		this.absenceLeaveRemain = Optional.empty();
 		this.monthlyDayoffRemain = Optional.empty();
-		this.specialLeaveRemain = Optional.empty();
+		this.specialLeaveRemainList = new ArrayList<>();
 		this.attendanceTimeOfWeekList = new ArrayList<>();
 		this.employeeMonthlyPerErrorList = new ArrayList<>();
 	}
@@ -80,7 +80,7 @@ public class IntegrationOfMonthly {
 	 * @param reserveLeaveRemain 積立年休月別残数データ
 	 * @param absenceLeaveRemain 振休月別残数データ
 	 * @param monthlyDayoffRemain 代休月別残数データ
-	 * @param specialLeaveRemain 特別休暇月別残数データ
+	 * @param specialLeaveRemainList 特別休暇月別残数データ
 	 */
 	public IntegrationOfMonthly(
 			Optional<AttendanceTimeOfMonthly> attendanceTime,
@@ -91,7 +91,7 @@ public class IntegrationOfMonthly {
 			Optional<RsvLeaRemNumEachMonth> reserveLeaveRemain,
 			Optional<AbsenceLeaveRemainData> absenceLeaveRemain,
 			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
-			Optional<SpecialHolidayRemainData> specialLeaveRemain){
+			List<SpecialHolidayRemainData> specialLeaveRemainList){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -101,6 +101,6 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = reserveLeaveRemain;
 		this.absenceLeaveRemain = absenceLeaveRemain;
 		this.monthlyDayoffRemain = monthlyDayoffRemain;
-		this.specialLeaveRemain = specialLeaveRemain;
+		this.specialLeaveRemainList = specialLeaveRemainList;
 	}
 }

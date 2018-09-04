@@ -1,4 +1,4 @@
-module nts.uk.com.view.cps017.a.viewmodel {
+﻿module nts.uk.com.view.cps017.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -260,7 +260,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }).fail(error => {
                 alertError({ messageId: "Msg_455" });
             });
-
+ 
             return dfd.promise();
         }
         
@@ -495,9 +495,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             }
                         });
                         if (self.listSelection().length > 1) {
-                           self.checkCreateaaa(false);
+                            self.checkCreateaaa(false);
                         } else {
-                            self.createNewData();
+                            let selection: Selection = self.selection();
+                            self.enableSelectionCd(true);
+                            selection.externalCD('');
+                            selection.selectionCD('');
+                            selection.selectionName('');
+                            selection.memoSelection('');
+                            self.focus.code(true);
                             self.checkCreateaaa(true);
                         }
                     });

@@ -343,7 +343,7 @@ public class MonthlyAggregateProcessService {
 										if(erAlAtdItemCon.getConditionAtr() == 1) {
 											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
-										else if(compare>5 && compare<=7) {
+										if(compare>5 && compare<=7) {
 											alarmDescription1 += startValue +" "+
 													compareOperatorText.getCompareLeft()+ " "+
 													nameErrorAlarm+ " "+

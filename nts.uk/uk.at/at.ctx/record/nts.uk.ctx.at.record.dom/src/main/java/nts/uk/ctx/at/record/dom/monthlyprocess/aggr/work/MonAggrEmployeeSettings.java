@@ -89,14 +89,12 @@ public class MonAggrEmployeeSettings {
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
-		final String resourceId = "001";
-		
 		MonAggrEmployeeSettings domain = new MonAggrEmployeeSettings(employeeId);
 
 		// 社員
 		domain.employee = repositories.getEmpEmployee().findByEmpId(employeeId);
 		if (domain.employee == null){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1156")));
+			domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
 			return domain;
 		}
 		

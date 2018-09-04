@@ -48,4 +48,6 @@ public interface EmpEmployeeAdapter {
 			DatePeriod datePeriod);
 	
 	AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate);
+	
+	AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid);
 }
