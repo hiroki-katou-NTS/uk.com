@@ -66,28 +66,6 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 	@Override
 	public List<ClosureStatusManagement> getByIdListAndDatePeriod(List<String> employeeIds, DatePeriod span){
 		
-//		List<KrcdtClosureSttMng> results = new ArrayList<>();
-//		String sql = "SELECT * FROM KrcdtClosureSttMng ";
-//				//"a WHERE a.SID IN ?employeeId";
-//				//		String sql = "SELECT * FROM KrcdtClosureSttMng a WHERE a.SID IN ?employeeId AND"
-////				+ " (((a.START_DATE <= ?StartSpan ) AND (?StartSpan <= a.END_DATE)) OR"//実行期間が開始を含んでいる
-////				+ "  ((a.START_DATE <= ?EndSpan   ) AND (?EndSpan   <= a.END_DATE)) OR"//実行期間が終了を含んでいる
-////				+ "  ((?StartSpan   <= a.START_DATE) AND (a.END_DATE <= ?EndSpan )))";//実行期間がspanの中にある
-//		
-//		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
-//			@SuppressWarnings("unchecked")
-//			//Object subResults = this.getEntityManager().createNativeQuery(sql)
-//			List<ClosureStatusManagement> subResults = this.getEntityManager().createNativeQuery(sql)
-//					//.setParameter("employeeId", subEmployeeIds)
-////					.setParameter("StartSpan", Date.valueOf(span.start().toLocalDate()))
-////					.setParameter("EndSpan", Date.valueOf(span.end().toLocalDate()))
-//					.getResultList();
-//			subResults.toString();
-//			//results.addAll(subResults);
-//		});		
-//		return results.stream().map(tc -> tc.toDomain()).collect(Collectors.toList());
-//		//return Collections.emptyList();
-		
 		List<Object[]> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
 		query.append("WHERE a.pk.employeeId IN :employeeId ");

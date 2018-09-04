@@ -228,9 +228,11 @@ module cmm045.shr {
             overTimeShiftNight: number;
             /**フレックス超過時間*/
             flexExessTime: number;
+            //時間外時間の詳細
+            timeNo417: TimeNo417;
             constructor(appID: string, workClockFrom1: string, workClockTo1: string, workClockFrom2: string,
                 workClockTo2: string, total: number, lstFrame: Array<OverTimeFrame>,
-                overTimeShiftNight: number, flexExessTime: number)
+                overTimeShiftNight: number, flexExessTime: number, timeNo417: TimeNo417)
             {
                 this.appID = appID;
                 this.workClockFrom1 = workClockFrom1;
@@ -241,6 +243,7 @@ module cmm045.shr {
                 this.lstFrame = lstFrame;
                 this.overTimeShiftNight = overTimeShiftNight;
                 this.flexExessTime = flexExessTime;    
+                this.timeNo417 = timeNo417;
             }
         }
         
@@ -464,8 +467,10 @@ module cmm045.shr {
             //勤務終了時刻2
             endTime2: string;
             lstFrame: Array<OverTimeFrame>;
+            //時間外時間の詳細
+            timeNo417: TimeNo417;
             constructor(appId: string, workTypeName: string, workTimeName: string, startTime1: string,
-                endTime1: string, startTime2: string, endTime2: string, lstFrame: Array<OverTimeFrame>){
+                endTime1: string, startTime2: string, endTime2: string, lstFrame: Array<OverTimeFrame>, timeNo417: TimeNo417){
                 this.appId = appId;
                 this.workTypeName = workTypeName;
                 this.workTimeName = workTimeName;
@@ -473,7 +478,8 @@ module cmm045.shr {
                 this.endTime1 = endTime1;
                 this.startTime2 = startTime2;
                 this.endTime2 = endTime2;
-                this.lstFrame = lstFrame;    
+                this.lstFrame = lstFrame;
+                this.timeNo417 = timeNo417; 
             }
         }
         export class AppAbsenceFull {
@@ -609,6 +615,22 @@ module cmm045.shr {
             endDate: string;//yyyy-mm-dd //期間（終了日）
             extractCondition: number;//０＝全て、１＝早出・普通残業のみ
             agreementTime36: number;//０＝表示しない、1＝表示する
+        }
+        export class TimeNo417{
+            //実績時間 + 申請時間
+            totalOv: number;
+            //36時間
+            time36: number;
+            //36年間超過回数
+            numOfYear36Over: number;
+            //36年間超過月
+            lstOverMonth: Array<number>;
+            constructor(totalOv: number, time36: number, numOfYear36Over: number, lstOverMonth: Array<number>){
+                this.totalOv = totalOv;
+                this.time36 = time36;
+                this.numOfYear36Over = numOfYear36Over;
+                this.lstOverMonth = lstOverMonth;
+            }
         }
         export class ProcessHandler {
             /**

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 @Stateless
 public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService {
@@ -44,6 +47,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
@@ -85,6 +91,13 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		this.goBackDirectlyRepo.update(goBackDirectly);
 		application.setVersion(version);
 		appRepo.updateWithVersion(application);
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				application.getCompanyID(), 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate()));
+		
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
 	}

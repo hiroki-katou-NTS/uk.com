@@ -112,6 +112,8 @@ var nts;
             KeyCodes.Tab = 9;
             KeyCodes.Enter = 13;
             KeyCodes.Ctrl = 17;
+            KeyCodes.NotValueKeys = [9, 16, 17, 18, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39,
+                40, 91, 92, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 144, 145];
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
@@ -4796,7 +4798,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(result.errorMessage, [self.name, self.constraint.maxLength]), result.errorCode);
                             return result;
                         }
-                        result.success(uk.text.toUpperCase(inputText));
+                        result.success(inputText);
                         return result;
                     };
                     return EmployeeCodeValidator;
@@ -5607,7 +5609,7 @@ var nts;
                                 my: 'left top',
                                 at: 'left bottom',
                                 of: $label,
-                                collision: 'flip'
+                                collision: 'flipfit'
                             });
                             $label.bind('mouseleave.limitedlabel', function () {
                                 $label.unbind('mouseleave.limitedlabel');
@@ -5673,6 +5675,12 @@ var nts;
         (function (ui) {
             var windows;
             (function (windows) {
+                windows.iframeNameCounter = 0;
+                // this is used for "name" attr of iframe for sub window
+                function createIframeName() {
+                    windows.iframeNameCounter++;
+                    return "window_" + windows.iframeNameCounter;
+                }
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
                 var DEFAULT_DIALOG_OPTIONS = {
                     autoOpen: false,
@@ -5825,7 +5833,9 @@ var nts;
                         })
                             .appendTo($('body'))
                             .dialog(options);
-                        this.$iframe = $('<iframe/>').css({
+                        this.$iframe = $('<iframe/>')
+                            .attr('name', createIframeName())
+                            .css({
                             width: '100%',
                             height: '100%'
                         }).appendTo(this.$dialog);
@@ -8108,6 +8118,10 @@ var nts;
                             }
                         }
                         if ($childCells.length > 0) {
+                            var fieldArr_1;
+                            if (gen.painter.options.updateMode === STICK) {
+                                fieldArr_1 = viewFn(viewMode);
+                            }
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $childCells[i];
@@ -8129,9 +8143,19 @@ var nts;
                                             $c.classList.remove(cStyle.class);
                                         }
                                     }
+                                    if (fieldArr_1) {
+                                        fields = [fieldArr_1[i]];
+                                    }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                                     var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
-                                    if (!touched || !touched.dirty)
+                                    if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
+                                        touched = mTouch;
+                                        touched.idx = i;
+                                    }
+                                    else if (touched && touched.dirty && mTouch && mTouch.dirty) {
+                                        touched.idx = -1;
+                                    }
+                                    else
                                         touched = mTouch;
                                     if (updateMode === EDIT) {
                                         validation.validate($grid, $c, rowIdx, columnKey, i, val);
@@ -8221,8 +8245,12 @@ var nts;
                                         makeUp($grid, rowIdx, key, style_2);
                                     }
                                     if (childCells_1.length > 0) {
+                                        var fieldArr_2;
                                         if (_.isFunction(viewFn)) {
                                             cData = helper.viewData(viewFn, viewMode, data[key]);
+                                            if (gen.painter.options.updateMode === STICK) {
+                                                fieldArr_2 = viewFn(viewMode);
+                                            }
                                         }
                                         if (cData.constructor === Array) {
                                             _.forEach(cData, function (d, i) {
@@ -8231,8 +8259,14 @@ var nts;
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
+                                                if (fieldArr_2) {
+                                                    fields = [fieldArr_2[i]];
+                                                }
                                                 cellObj_1 = new selection.Cell(rowIdx, key, data[key], i);
-                                                touched = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                var mTouch = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
+                                                    touched = mTouch;
+                                                }
                                             });
                                             return false;
                                         }
@@ -9341,7 +9375,11 @@ var nts;
                             changedData = cData;
                             gen.dataSource[rowIdx][columnKey] = value;
                         }
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
+                        var sm, sticker = $.data($grid, internal.STICKER);
+                        if (sticker) {
+                            sm = sticker.styleMaker;
+                        }
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, sm);
                         if (touched && touched.dirty) {
                             var cellObj = new selection.Cell(rowIdx, columnKey, changedData);
                             cellObj.setTarget(touched.updateTarget);
@@ -9390,7 +9428,11 @@ var nts;
                                 delete origData[k];
                             }
                         });
-                        var touched = render.gridRow($grid, rowIdx, origData);
+                        var sm, sticker = $.data($grid, internal.STICKER);
+                        if (sticker) {
+                            sm = sticker.styleMaker;
+                        }
+                        var touched = render.gridRow($grid, rowIdx, origData, sm);
                         if (changedCells.length > 0) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushHistory($grid, changedCells, txId);
@@ -9417,12 +9459,15 @@ var nts;
                         var changedData = _.cloneDeep(cData);
                         gen.dataSource[rowIdx][columnKey] = value;
                         var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
-                        if (touched && touched.dirty) {
-                            var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
-                            cellObj.setTarget(touched.updateTarget);
-                            pushStickHistory($grid, [cellObj]);
-                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        if (!touched || !touched.dirty)
+                            return;
+                        if (!_.isNil(touched.idx) && touched.idx !== -1) {
+                            innerIdx = touched.idx;
                         }
+                        var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
+                        cellObj.setTarget(touched.updateTarget);
+                        pushStickHistory($grid, [cellObj]);
+                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
                     }
                     update.stickGridCellOw = stickGridCellOw;
                     /**
@@ -9439,7 +9484,7 @@ var nts;
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
-                        var opt = gen.options;
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode);
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
@@ -9448,8 +9493,17 @@ var nts;
                                 src[key] = objVal;
                                 return objVal;
                             }
-                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
-                                changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                            if (!uk.util.isNullOrUndefined(src[key])) {
+                                if (fieldArr && _.isObject(srcVal)) {
+                                    _.forEach(fieldArr, function (f, i) {
+                                        if (!helper.isEqual(srcVal[f], objVal[f])) {
+                                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal), i));
+                                        }
+                                    });
+                                }
+                                else if (!helper.isEqual(src[key], obj[key])) {
+                                    changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                }
                             }
                             else {
                                 delete origData[key];
@@ -12820,6 +12874,8 @@ var nts;
                         if (body) {
                             _.assignIn(exTable.detailContent, body);
                             var $body = $container.find("." + BODY_PRF + DETAIL);
+                            if (!keepStates)
+                                internal.clearStates($body[0]);
                             if (keepStruct) {
                                 render.begin($body[0], body.dataSource, exTable.detailContent);
                             }
@@ -12827,8 +12883,6 @@ var nts;
                                 $body.empty();
                                 render.process($body[0], exTable.detailContent, true);
                             }
-                            if (!keepStates)
-                                internal.clearStates($body[0]);
                         }
                     }
                     /**
@@ -13134,7 +13188,8 @@ var nts;
                             return;
                         var items = histories.pop();
                         _.forEach(items, function (i) {
-                            update.gridCell($grid[0], i.rowIndex, i.columnKey, -1, i.value, true);
+                            var innerIdx = _.isNil(i.innerIdx) ? -1 : i.innerIdx;
+                            update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
                             internal.removeChange($grid[0], i);
                         });
                     }
@@ -16842,7 +16897,7 @@ var nts;
                                 while (!mainD.isRoot) {
                                     mainD = mainD.parent;
                                 }
-                                nts.uk.ui.errors.clearAll();
+                                //nts.uk.ui.errors.clearAll();
                                 mainD.globalContext.nts.uk.ui.dialog.error({ message: totalMes, messageId: totalMesCode }).then(function () {
                                 });
                             }
@@ -17184,15 +17239,19 @@ var nts;
                             }
                         });
                         $input.on("keyup", function (e) {
+                            if ($input.attr('readonly')) {
+                                return;
+                            }
                             var code = e.keyCode || e.which;
-                            if (!$input.attr('readonly') && _.toString(code) !== '9') {
-                                var validator = self.getValidator(data);
-                                var newText = $input.val();
-                                var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
-                                if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                }
+                            if (_.includes(uk.KeyCodes.NotValueKeys, code)) {
+                                return;
+                            }
+                            var validator = self.getValidator(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText, { isCheckExpression: true });
+                            $input.ntsError('clear');
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         });
                         // Format on blur
@@ -17218,7 +17277,8 @@ var nts;
                                     if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                                         var formatter = self.getFormatter(data);
                                         var formatted = formatter.format(result.parsedValue);
-                                        $input.val(formatted);
+                                        //$input.val(formatted);
+                                        value(formatted);
                                     }
                                 }
                             }
@@ -17228,7 +17288,7 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
+                                //$input.ntsError('clear');
                                 if (result.isValid) {
                                     if (value() === result.parsedValue) {
                                         $input.val(result.parsedValue);
@@ -17239,7 +17299,16 @@ var nts;
                                     }
                                 }
                                 else {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    var oldError = $input.ntsError('getError');
+                                    if (nts.uk.util.isNullOrEmpty(oldError)) {
+                                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    }
+                                    else {
+                                        var inListError = _.find(oldError, function (o) { return o.errorCode === result.errorCode; });
+                                        if (nts.uk.util.isNullOrUndefined(inListError)) {
+                                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                        }
+                                    }
                                     if ($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)) {
                                         valueChanging.markUserChange($input);
                                     }
@@ -31464,8 +31533,6 @@ var nts;
                 var REQUIRED = "required";
                 var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
                 var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
-                var IS_REMOVE_BY_VM = "remove-by-vm";
-                var IS_USER_SELECTED = "user-selected";
                 var SELECTED_FILE_NAME = "selected-file-name";
                 var STEREOTYPE = "stereotype";
                 var IMMEDIATE_UPLOAD = "immediate-upload";
@@ -31512,19 +31579,14 @@ var nts;
                             }
                             $container.ntsError("clear");
                             var selectedFilePath = $(this).val();
+                            // canceled on selecting file dialog
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                                if ($container.data(IS_REMOVE_BY_VM) === true) {
-                                    // canceled on selecting file dialog
-                                    $container.data(IS_REMOVE_BY_VM, false);
-                                    return;
-                                }
                                 if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
                                     $container.data(IS_RESTORED_BY_CANCEL, true);
                                     this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                                 }
                                 return;
                             }
-                            $container.data(IS_USER_SELECTED, true);
                             $container.data(FILES_CACHE_FOR_CANCEL, this.files);
                             var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                             $container.data(SELECTED_FILE_NAME, selectedFileName);
@@ -31585,12 +31647,6 @@ var nts;
                         var $fileNameLabel = $container.find(".filenamelabel");
                         // when change just only filename, file in input must be cleared
                         if ($container.data(SELECTED_FILE_NAME) !== fileName) {
-                            if ($container.data(IS_USER_SELECTED) !== true && !nts.uk.util.isNullOrUndefined($container.data(IS_USER_SELECTED))) {
-                                $container.data(IS_REMOVE_BY_VM, true);
-                            }
-                            else {
-                                $container.data(IS_REMOVE_BY_VM, false);
-                            }
                             $container.data(SELECTED_FILE_NAME, "");
                             $container.find("input[type='file']").val(null);
                         }
@@ -31608,7 +31664,6 @@ var nts;
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
                         $fileNameInput.prop("disabled", !enable);
-                        $container.data(IS_USER_SELECTED, false);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -31934,6 +31989,7 @@ var nts;
                             constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
                         }
                         constructSite.buildActionArea();
+                        constructSite.$imageInfomation.width(width - 110);
                         constructSite.buildUploadAction();
                         constructSite.buildImagePreviewArea();
                         constructSite.buildFileChangeHandler();
@@ -31988,18 +32044,20 @@ var nts;
                         }, allBindingsAccessor, viewModel, bindingContext);
                     };
                     ImageEditorConstructSite.prototype.buildActionArea = function () {
-                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+                        var self = this;
+                        self.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        self.$imageInfomation = $("<div>", { "class": "image-editor-component inline-container" });
+                        self.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label limited-label" })
+                            .appendTo(self.$imageInfomation);
+                        self.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                            .appendTo(self.$imageInfomation);
+                        self.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": self.helper.toStringExtension() })
                             .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                            .appendTo(this.$imageNameLbl.parent());
-                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        var $uploadArea = this.$root.find(".image-upload-container");
-                        $uploadArea.append(this.$uploadBtn.parent());
-                        $uploadArea.append(this.$imageNameLbl.parent());
-                        $uploadArea.append(this.$inputFile.parent());
+                        var $uploadArea = self.$root.find(".image-upload-container");
+                        $uploadArea.append(self.$uploadBtn.parent());
+                        $uploadArea.append(self.$imageInfomation);
+                        $uploadArea.append(self.$inputFile.parent());
                     };
                     ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
                         this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
@@ -32970,7 +33028,9 @@ var nts;
                                 });
                             }
                             else {
-                                $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                                var $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                                $tree.igTree("select", $selectingNode);
+                                $tree.igTree("expandToNode", $selectingNode);
                             }
                         }
                     };

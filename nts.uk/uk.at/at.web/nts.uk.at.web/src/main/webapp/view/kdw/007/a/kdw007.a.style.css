@@ -75,3 +75,8 @@ div[id^="tab"] {
 [dropdown-for="combo-box"] .nts-combo-column-0 {
   width: 240px !important;
 }
+
+.switchEnd{
+    float: right;
+    margin-right: -45px;
+}

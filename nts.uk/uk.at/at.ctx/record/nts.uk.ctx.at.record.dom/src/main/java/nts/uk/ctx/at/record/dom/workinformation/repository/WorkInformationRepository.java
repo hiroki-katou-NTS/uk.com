@@ -38,4 +38,11 @@ public interface WorkInformationRepository {
 	 * @return
 	 */
 	List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period);
+	/**
+	 * 
+	 * @param employeeId
+	 * @param dates list
+	 * @return
+	 */
+	List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates);
 }
