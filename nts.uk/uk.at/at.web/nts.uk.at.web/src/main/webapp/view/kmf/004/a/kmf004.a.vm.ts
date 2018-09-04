@@ -751,7 +751,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         deleteSpecialHoliday() {
             let self = this;
             
-            nts.uk.ui.block.invisible();
             
             let count = 0;
             for (let i = 0; i <= self.sphdList().length; i++){
@@ -798,7 +797,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();      
                 });
-            }).ifNo(()=> { nts.uk.ui.block.clear(); });
+            })
         }
 
         initSpecialHoliday(): void {
