@@ -86,11 +86,10 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
         switch (copyMethod) {
             case REPLACE_ALL:
                 // Delete all old data
+            	copyMasterData(sourceCid, targetCid, false);
             	break;
             case ADD_NEW:
                 // Insert Data
-                copyMasterData(sourceCid, targetCid, false);
-                break;
             case DO_NOTHING:
                 // Do nothing
             default:
@@ -356,8 +355,10 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     des = new PpemtPerInfoCtg();
                     des.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK();
                     des.ppemtPerInfoCtgPK.perInfoCtgId = perInfoCtgId;
+                    des.categoryCd = src.categoryCd;
+                    des.cid=targetCid;
                     fl1 = true;
-                }
+                }               
                 des.categoryName = src.categoryName;
                 des.abolitionAtr = src.abolitionAtr;
                 if (fl1)
