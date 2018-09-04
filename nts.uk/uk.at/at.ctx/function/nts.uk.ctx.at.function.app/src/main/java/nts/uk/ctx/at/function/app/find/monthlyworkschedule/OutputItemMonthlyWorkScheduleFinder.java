@@ -241,7 +241,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	// algorithm for screen D: start screen
 	public List<MonthlyDataInforReturnDto> getFormatMonthlyPerformance() {
 		String companyId = AppContexts.user().companyId();
-		// Get domain 実績修正画面で利用するフォーマット from request list 402
+		// Get domain from request list 402 ドメインモデル「実績修正画面で利用するフォーマット」を取得する
 		Optional<MonthlyFormatPerformanceImport> optFormatPerformanceImport = monthlyFormatPerformanceAdapter
 				.getFormatPerformance(companyId);
 
@@ -250,7 +250,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		}
 		switch (optFormatPerformanceImport.get().getSettingUnitType()) {
 		case AUTHORITY: // In case of authority
-			// Get domain 会社の月別実績の修正のフォーマット
+			// Get domain ドメインモデル「会社の月別実績の修正のフォーマット」を取得する
 			List<MonPfmCorrectionFormat> lstMonPfmCorrectionFormat = monPfmCorrectionFormatRepository
 					.getAllMonPfm(companyId);
 			return lstMonPfmCorrectionFormat.stream().map(obj -> {
@@ -258,10 +258,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 						obj.getMonPfmCorrectionFormatName().v());
 			}).collect(Collectors.toList());
 		case BUSINESS_TYPE: // In case of work type
-			// Get domain 勤務種別月別実績の修正のフォーマット
-			List<BusinessTypeFormatMonthly> lstBusinessTypeFormatMonthly = businessTypeFormatMonthlyRepository
-					.getMonthlyDetailByCompanyId(companyId);
-			Set<String> setBusinessTypeFormatMonthlyCode = lstBusinessTypeFormatMonthly.stream()
+			// Get domain ドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
+			List<MonthlyRecordWorkType> lstMonthlyRecordWorkType = monthlyRecordWorkTypeRepository
+					.getAllMonthlyRecordWorkType(companyId);
+			Set<String> setBusinessTypeFormatMonthlyCode = lstMonthlyRecordWorkType.stream()
 					.map(domain -> domain.getBusinessTypeCode().v()).collect(Collectors.toSet());
 
 			// Get domain businessTypeCode ドメインモデル「勤務種別」を取得する
