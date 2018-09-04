@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 
 @Stateless
 public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngRegister{
@@ -41,13 +42,16 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Override
-	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData) {
+	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData, CompanyHolidayMngSetting comHolidaySetting) {
 		//指定期間の暫定残数管理データを作成する
-		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData);
+		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData, comHolidaySetting);
 		List<GeneralDate> lstInterimDate = new ArrayList<>();
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);
 		});
+		if(lstInterimDate.isEmpty()) {
+			return;
+		}
 		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);

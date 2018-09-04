@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 
@@ -185,6 +186,9 @@ public class AppAbsenceDto {
 	private List<DisplayReasonDto> displayReasonDtoLst;
 	//ドメインモデル「申請種類別設定」.事前事後区分を変更できる
 	private boolean prPostChange;
+	private SettingNo65 setingNo65;
+	//No.376
+	private NumberOfRemainOutput numberRemain;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -223,7 +227,9 @@ public class AppAbsenceDto {
 								null,
 								null,
 								Collections.emptyList(),
-								false);
+								false,
+								null,
+								null);
 	}
 }
 
