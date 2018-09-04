@@ -205,7 +205,9 @@ module nts.uk.ui.koExtentions {
                         }
                     });
                 } else {
-                    $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                    let $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                    $tree.igTree("select", $selectingNode);
+                    $tree.igTree("expandToNode", $selectingNode);
                 }
             }
         }

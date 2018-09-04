@@ -102,7 +102,7 @@ public class ExtractAlarmForEmployeeService {
 					
 					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 						// 複数月の集計処理
-						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees,listCategory);
+						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
 						result.addAll(mutilpleMonthlAlarmList);
 					}
 				}

@@ -83,34 +83,21 @@ public class AgreementOperationSetting extends AggregateRoot {
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
 		
 		// 集計期間を取得
-		val startYMStart = GeneralDate.ymd(period.start().year(), period.start().month(), 1);
-		val startYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addMonths(1).addDays(-1);
+		val endYMStart = GeneralDate.ymd(period.end().year(), period.end().month(), 1);
 		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
 		if (this.closingDateType == ClosingDateType.LASTDAY){
-			// 開始月の末締め
-			aggrPeriod.setPeriod(new DatePeriod(startYMStart, startYMEnd));
+			// 終了月の末締め
+			aggrPeriod.setPeriod(new DatePeriod(endYMStart, endYMEnd));
 		}
 		else {
-			// 集計期間の開始月締め開始日～終了月締め日
+			// 集計期間の終了月の締め期間を求める
 			int closureDay = this.closingDateType.value + 1;
-			GeneralDate closingStart = startYMEnd.addDays(1);
-			if (closureDay + 1 <= startYMEnd.day()){
-				closingStart = GeneralDate.ymd(startYMEnd.year(), startYMEnd.month(), closureDay + 1);
-			}
 			GeneralDate closingEnd = endYMEnd;
-			if (closureDay <= endYMEnd.day()){
+			if (closureDay < closingEnd.day()){
 				closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
 			}
+			GeneralDate closingStart = closingEnd.addMonths(-1).addDays(1);
 			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-			if (aggrPeriod.getPeriod().isReversed()){
-				// 開始＞終了の時、開始を１か月前にずらす
-				val prevYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addDays(-1);
-				closingStart = prevYMEnd.addDays(1);
-				if (closureDay + 1 <= prevYMEnd.day()){
-					closingStart = GeneralDate.ymd(prevYMEnd.year(), prevYMEnd.month(), closureDay + 1);
-				}
-				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-			}
 		}
 		
 		// 年度・年月の取得

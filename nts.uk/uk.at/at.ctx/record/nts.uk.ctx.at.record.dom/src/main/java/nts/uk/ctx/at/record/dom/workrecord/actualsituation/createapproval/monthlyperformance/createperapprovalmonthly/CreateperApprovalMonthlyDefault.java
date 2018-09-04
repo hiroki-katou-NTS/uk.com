@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.createdailyapprover.AppRootInsContentFnImport;
+import nts.uk.ctx.at.record.dom.adapter.createdailyapprover.CreateDailyApproverAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthlyRepository;
@@ -16,6 +18,10 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 	
 	@Inject 
 	private AppDataInfoMonthlyRepository appDataInfoMonthlyRepo;
+	
+	@Inject
+	private CreateDailyApproverAdapter createDailyApproverAdapter;
+	
 	@Override
 	public boolean createperApprovalMonthly(String companyId, String executionId, List<String> employeeIDs,
 			int processExecType, GeneralDate startDateClosure) {
@@ -24,9 +30,10 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 			for(String employeeID : employeeIDs) {
 				
 				/**アルゴリズム「指定社員の中間データを作成する」を実行する*/
-				//TODO: requestList 512
-				boolean flagError = false;
-				String errorMessage = "";
+				AppRootInsContentFnImport appRootInsContentFnImport =  createDailyApproverAdapter.createDailyApprover(employeeID, 2, startDateClosure);
+				
+				boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue()==1?true:false;
+				String errorMessage = appRootInsContentFnImport.getErrorMsgID();
 				//取得したエラーフラグ != エラーなし
 				if(flagError) {
 					/**ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を追加する*/
