@@ -167,22 +167,22 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 	public static QpbmtItemRangeSetInit toEntity(ItemRangeSettingInitialValue domain) {
 		return new QpbmtItemRangeSetInit(new QpbmtItemRangeSetInitPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getRangeValueAtr().value,
-				domain.getErrorRangeSetting().getUpperLimitSetting().getUpperLimitSettingAtr().value,
-				domain.getErrorRangeSetting().getUpperLimitSetting().getRangeValueAmount().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getUpperLimitSetting().getRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getUpperLimitSetting().getRangeValueNum().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getLowerLimitSetting().getLowerLimitSettingAtr().value,
-				domain.getErrorRangeSetting().getLowerLimitSetting().getRangeValueAmount().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getLowerLimitSetting().getRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getLowerLimitSetting().getRangeValueNum().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getUpperLimitSetting().getUpperLimitSettingAtr().value,
-				domain.getAlarmRangeSetting().getUpperLimitSetting().getRangeValueAmount().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getUpperLimitSetting().getRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getUpperLimitSetting().getRangeValueNum().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getLowerLimitSetting().getLowerLimitSettingAtr().value,
-				domain.getAlarmRangeSetting().getLowerLimitSetting().getRangeValueAmount().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getLowerLimitSetting().getRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getLowerLimitSetting().getRangeValueNum().map(i -> i.v()).orElse(null));
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value,
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueTime().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueNum().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerLimitSettingAtr().value,
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueAmount().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueTime().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueNum().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperLimitSettingAtr().value,
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueAmount().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueTime().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueNum().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerLimitSettingAtr().value,
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueAmount().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueTime().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueNum().map(i -> i.v()).orElse(null));
 	}
 
 }

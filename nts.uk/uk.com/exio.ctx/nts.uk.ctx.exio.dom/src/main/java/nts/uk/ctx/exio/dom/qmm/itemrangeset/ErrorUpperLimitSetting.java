@@ -16,31 +16,31 @@ public class ErrorUpperLimitSetting extends DomainObject {
 	/**
 	 * エラー上限値設定区分
 	 */
-	private RangeSettingEnum upperLimitSettingAtr;
+	private RangeSettingEnum errorUpperLimitSettingAtr;
 
 	/**
 	 * エラー上限値金額
 	 */
-	private Optional<MonetaryValue> rangeValueAmount;
+	private Optional<MonetaryValue> errorUpperRangeValueAmount;
 
 	/**
 	 * エラー上限値時間
 	 */
-	private Optional<TimeValue> rangeValueTime;
+	private Optional<TimeValue> errorUpperRangeValueTime;
 
 	/**
 	 * エラー上限値回数
 	 */
-	private Optional<TimesValue> rangeValueNum;
+	private Optional<TimesValue> errorUpperRangeValueNum;
 	
 	public ErrorUpperLimitSetting(int errorUpperLimitSetAtr, BigDecimal errorUpRangeValAmount,
 			Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum) {
-		this.upperLimitSettingAtr = EnumAdaptor.valueOf(errorUpperLimitSetAtr, RangeSettingEnum.class);
-		this.rangeValueAmount = errorUpRangeValAmount == null ? Optional.empty()
+		this.errorUpperLimitSettingAtr = EnumAdaptor.valueOf(errorUpperLimitSetAtr, RangeSettingEnum.class);
+		this.errorUpperRangeValueAmount = errorUpRangeValAmount == null ? Optional.empty()
 				: Optional.of(new MonetaryValue(errorUpRangeValAmount));
-		this.rangeValueTime = errorUpRangeValTime == null ? Optional.empty()
+		this.errorUpperRangeValueTime = errorUpRangeValTime == null ? Optional.empty()
 				: Optional.of(new TimeValue(errorUpRangeValTime));
-		this.rangeValueNum = errorUpRangeValNum == null ? Optional.empty()
+		this.errorUpperRangeValueNum = errorUpRangeValNum == null ? Optional.empty()
 				: Optional.of(new TimesValue(errorUpRangeValNum));
 	}
 	

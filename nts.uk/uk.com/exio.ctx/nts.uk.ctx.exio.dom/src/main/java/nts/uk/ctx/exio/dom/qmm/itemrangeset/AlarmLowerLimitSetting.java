@@ -16,29 +16,29 @@ public class AlarmLowerLimitSetting extends DomainObject {
 	/**
 	 * アラーム下限値設定区分
 	 */
-	private RangeSettingEnum lowerLimitSettingAtr;
+	private RangeSettingEnum alarmLowerLimitSettingAtr;
 
 	/**
 	 * アラーム上限値金額
 	 */
-	private Optional<MonetaryValue> rangeValueAmount;
+	private Optional<MonetaryValue> alarmLowerRangeValueAmount;
 
 	/**
 	 * アラーム上限値時間
 	 */
-	private Optional<TimeValue> rangeValueTime;
+	private Optional<TimeValue> alarmLowerRangeValueTime;
 
 	/**
 	 * アラーム上限値回数
 	 */
-	private Optional<TimesValue> rangeValueNum;
+	private Optional<TimesValue> alarmLowerRangeValueNum;
 	
 	public AlarmLowerLimitSetting(int alarmLowerLimitSetAtr, BigDecimal alarmLoRangeValAmount,
 			Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
-		this.lowerLimitSettingAtr =  EnumAdaptor.valueOf(alarmLowerLimitSetAtr, RangeSettingEnum.class);
-		this.rangeValueAmount = alarmLoRangeValAmount == null ? Optional.empty() : Optional.of(new MonetaryValue(alarmLoRangeValAmount));
-		this.rangeValueTime = alarmLoRangeValTime == null ? Optional.empty() : Optional.of(new TimeValue(alarmLoRangeValTime));
-		this.rangeValueNum = alarmLoRangeValNum == null ? Optional.empty() : Optional.of(new TimesValue(alarmLoRangeValNum));
+		this.alarmLowerLimitSettingAtr =  EnumAdaptor.valueOf(alarmLowerLimitSetAtr, RangeSettingEnum.class);
+		this.alarmLowerRangeValueAmount = alarmLoRangeValAmount == null ? Optional.empty() : Optional.of(new MonetaryValue(alarmLoRangeValAmount));
+		this.alarmLowerRangeValueTime = alarmLoRangeValTime == null ? Optional.empty() : Optional.of(new TimeValue(alarmLoRangeValTime));
+		this.alarmLowerRangeValueNum = alarmLoRangeValNum == null ? Optional.empty() : Optional.of(new TimesValue(alarmLoRangeValNum));
 	}
 
 }

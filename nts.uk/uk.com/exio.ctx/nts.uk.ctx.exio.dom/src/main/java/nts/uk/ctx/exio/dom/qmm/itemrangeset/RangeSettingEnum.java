@@ -5,7 +5,7 @@ package nts.uk.ctx.exio.dom.qmm.itemrangeset;
  */
 public enum RangeSettingEnum {
 	NOT_USE(0, "Enum_Range_Setting_NOT_USE"),
-	USE(1, "Enum_Range_Setting_USE");
+	USE(1, "Enum_Range_Setting_USE"),;
 	
 	/** The value. */
 	public final int value;

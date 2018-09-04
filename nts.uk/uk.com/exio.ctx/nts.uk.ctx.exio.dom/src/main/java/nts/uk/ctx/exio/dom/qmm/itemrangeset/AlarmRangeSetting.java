@@ -14,19 +14,19 @@ public class AlarmRangeSetting extends DomainObject {
 	/**
 	 * アラーム上限設定
 	 */
-	private AlarmUpperLimitSetting upperLimitSetting;
+	private AlarmUpperLimitSetting alarmUpperLimitSetting;
 
 	/**
 	 * アラーム下限設定
 	 */
-	private AlarmLowerLimitSetting lowerLimitSetting;
+	private AlarmLowerLimitSetting alarmLowerLimitSetting;
 
 	public AlarmRangeSetting(int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount, Integer alarmUpRangeValTime,
 			BigDecimal alarmUpRangeValNum, int alarmLowerLimitSetAtr, BigDecimal alarmLoRangeValAmount,
 			Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
-		this.upperLimitSetting = new AlarmUpperLimitSetting(alarmUpperLimitSetAtr, alarmUpRangeValAmount,
+		this.alarmUpperLimitSetting = new AlarmUpperLimitSetting(alarmUpperLimitSetAtr, alarmUpRangeValAmount,
 				alarmUpRangeValTime, alarmUpRangeValNum);
-		this.lowerLimitSetting = new AlarmLowerLimitSetting(alarmLowerLimitSetAtr, alarmLoRangeValAmount,
+		this.alarmLowerLimitSetting = new AlarmLowerLimitSetting(alarmLowerLimitSetAtr, alarmLoRangeValAmount,
 				alarmLoRangeValTime, alarmLoRangeValNum);
 	}
 

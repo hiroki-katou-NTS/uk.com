@@ -14,19 +14,19 @@ public class ErrorRangeSetting extends DomainObject {
 	/**
 	 * エラー上限値設定
 	 */
-	private ErrorUpperLimitSetting upperLimitSetting;
+	private ErrorUpperLimitSetting errorUpperLimitSetting;
 
 	/**
 	 * エラー下限値設定
 	 */
-	private ErrorLowerLimitSetting lowerLimitSetting;
+	private ErrorLowerLimitSetting errorLowerLimitSetting;
 
 	public ErrorRangeSetting(int errorUpperLimitSetAtr, BigDecimal errorUpRangeValAmount, Integer errorUpRangeValTime,
 			BigDecimal errorUpRangeValNum, int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount,
 			Integer errorLoRangeValTime, BigDecimal errorLoRangeValNum) {
-		this.upperLimitSetting = new ErrorUpperLimitSetting(errorUpperLimitSetAtr, errorUpRangeValAmount,
+		this.errorUpperLimitSetting = new ErrorUpperLimitSetting(errorUpperLimitSetAtr, errorUpRangeValAmount,
 				errorUpRangeValTime, errorUpRangeValNum);
-		this.lowerLimitSetting = new ErrorLowerLimitSetting(errorLowerLimitSetAtr, errorLoRangeValAmount,
+		this.errorLowerLimitSetting = new ErrorLowerLimitSetting(errorLowerLimitSetAtr, errorLoRangeValAmount,
 				errorLoRangeValTime, errorLoRangeValNum);
 	}
 
