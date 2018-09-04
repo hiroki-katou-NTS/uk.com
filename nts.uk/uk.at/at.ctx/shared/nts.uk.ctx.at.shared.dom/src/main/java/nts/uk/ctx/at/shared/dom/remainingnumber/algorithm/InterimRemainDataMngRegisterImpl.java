@@ -43,13 +43,15 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Override
 	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData, CompanyHolidayMngSetting comHolidaySetting) {
-		
 		//指定期間の暫定残数管理データを作成する
 		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData, comHolidaySetting);
 		List<GeneralDate> lstInterimDate = new ArrayList<>();
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);
 		});
+		if(lstInterimDate.isEmpty()) {
+			return;
+		}
 		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
 		interimDataMng.forEach((x, y) -> {
 			lstInterimDate.add(x);
