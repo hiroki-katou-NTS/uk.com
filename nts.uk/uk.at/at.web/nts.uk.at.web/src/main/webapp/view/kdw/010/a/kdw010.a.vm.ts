@@ -25,6 +25,7 @@ module nts.uk.at.view.kdw010.a {
             ignoreWorkTypes: KnockoutObservableArray<model.OtkWorkTypeDto>;
             updateMode: KnockoutObservable<boolean>;
             maxContinuousDay: any;
+            tempContinuousHolCheckSet: model.ContinuousHolCheckSet;
 
 
             constructor() {
@@ -50,6 +51,7 @@ module nts.uk.at.view.kdw010.a {
                 self.targetWorkTypes = ko.observableArray([]);
                 self.ignoreWorkTypes = ko.observableArray([]);
                 self.updateMode = ko.observable(false);
+                self.tempContinuousHolCheckSet = null;
 
                 self.selectUse.subscribe(function(codeChanged) {
                     if (codeChanged == 1) {
@@ -76,6 +78,8 @@ module nts.uk.at.view.kdw010.a {
 
                 service.findContinuousHolCheckSet().done(function(continuousHolCheckSetDto: model.ContinuousHolCheckSet) {
                     if (!nts.uk.util.isNullOrEmpty(continuousHolCheckSetDto) && continuousHolCheckSetDto.targetWorkType != null) {
+                        self.tempContinuousHolCheckSet = continuousHolCheckSetDto;
+                        console.log(this.tempContinuousHolCheckSet);
                         self.updateMode(true);
                         self.maxContinuousDay.value(continuousHolCheckSetDto.maxContinuousDays);
                         self.displayMessege(continuousHolCheckSetDto.displayMessage);
@@ -158,6 +162,8 @@ module nts.uk.at.view.kdw010.a {
                     if (!$('.nts-editor').ntsError("hasError")) {
                         var useAtr = self.selectUse() == 1 ? true : false;
                         var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay.value(), self.updateMode());
+                        //set before value if maxContinuousDays is valid
+                        if (isNaN(continuousHolCheckSet.maxContinuousDays)) continuousHolCheckSet.maxContinuousDays = self.tempContinuousHolCheckSet.maxContinuousDays;
                         service.saveContinuousHolCheckSet(continuousHolCheckSet).done(function() {
                             self.updateMode(true);
                             nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
