@@ -2,9 +2,6 @@
 /* 	width: 1405px; */
 /* } */
 
-#contents-area{
-	height: calc(100vh - 21px) !important;
-}
 
 body {
 	overflow: hidden;
@@ -115,7 +112,7 @@ body {
 
 #exCode {
 	margin-top: 5px;
-	width: 90px !important;
+	width: 70px !important;
 }
 
 #memoSelection {

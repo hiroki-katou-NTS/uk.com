@@ -32,8 +32,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
@@ -106,7 +106,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	/** 上書きフラグ */
 	private Optional<Boolean> isOverWriteOpt;
 	/** 上書き用の暫定年休管理データ */
-	private Optional<List<TmpAnnualHolidayMng>> forOverWriteListOpt;
+	private Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt;
 	/** 前回の年休の集計結果 */
 	private Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt;
 	/** 年休集計期間WORKリスト */
@@ -176,7 +176,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualHolidayMng>> forOverWriteListOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
 			Optional<Boolean> noCheckStartDate) {
 	
@@ -214,7 +214,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt,
-			Optional<List<TmpAnnualHolidayMng>> forOverWriteListOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
 			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
@@ -604,6 +604,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	private List<TmpAnnualLeaveMngWork> getTempAnnualLeaveMngs(){
 		
 		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
+		
+		// 「上書きフラグ」をチェック
+		if (this.isOverWriteOpt.isPresent()){
+			if (this.isOverWriteOpt.get()){
+				
+				// 上書き用データがある時、使用する
+				if (this.forOverWriteListOpt.isPresent()) return this.forOverWriteListOpt.get();
+			}
+		}
 		
 		// 「モード」をチェック
 		if (this.mode == TempAnnualLeaveMngMode.MONTHLY){

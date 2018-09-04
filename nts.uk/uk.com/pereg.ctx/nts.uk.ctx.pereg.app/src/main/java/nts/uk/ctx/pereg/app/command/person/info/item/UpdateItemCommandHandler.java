@@ -126,7 +126,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 			
 			if(c.getReferenceType() == ReferenceTypes.CODE_NAME.value) {
 			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
-					AppContexts.user().zeroCompanyIdInContract(), itemCommand.getSingleItem().getSelectionItemId(),
+					AppContexts.user().companyId(), itemCommand.getSingleItem().getSelectionItemId(),
 					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 				throw new BusinessException("Msg_587"); 

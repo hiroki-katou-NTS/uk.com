@@ -111,8 +111,9 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		entity.birthday = domain.getBirthDate();
 		entity.bloodType = domain.getBloodType() == null ? null :domain.getBloodType().value;
 		entity.gender = domain.getGender() == null ? 0 : domain.getGender().value;
-		entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
-		
+		if(domain.getPersonNameGroup().getPersonName().getFullName().v() != "") {
+			entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
+		}
 		entity.personNameKana = domain.getPersonNameGroup().getPersonName().getFullNameKana().v();
 		
 		entity.businessEnglishName = domain.getPersonNameGroup().getBusinessEnglishName() == null ? null

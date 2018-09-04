@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
@@ -20,13 +21,21 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -51,6 +60,15 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 	/** 積立年休月別残数データ */
 	@Inject
 	private RsvLeaRemNumEachMonthRepository reserveLeaveRepo;
+	/** 振休月別残数データ */
+	@Inject
+	private AbsenceLeaveRemainDataRepository absLeaRemRepo;
+	/** 代休月別残数データ */
+	@Inject
+	private MonthlyDayoffRemainDataRepository monDayoffRemRepo;
+	/** 特別休暇月別残数データ */
+	@Inject
+	private SpecialHolidayRemainDataRepository spcLeaRemRepo;
 	/** 勤怠項目変換 */
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConverterFact;
@@ -127,6 +145,43 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 					reserveLeave.getClosureId(),
 					reserveLeave.getClosureDate());
 			reserveLeaveMap.putIfAbsent(key, reserveLeave);
+		}
+		
+		// 振休月別残数データを取得する
+		val absenceLeaves = this.absLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<AttendanceTimeOfMonthlyKey, AbsenceLeaveRemainData> absenceLeaveMap = new HashMap<>();
+		for (val absenceLeave : absenceLeaves){
+			AttendanceTimeOfMonthlyKey key = new AttendanceTimeOfMonthlyKey(
+					absenceLeave.getSId(),
+					absenceLeave.getYm(),
+					EnumAdaptor.valueOf(absenceLeave.getClosureId(), ClosureId.class),
+					new ClosureDate(absenceLeave.getClosureDay(), absenceLeave.isLastDayIs()));
+			absenceLeaveMap.putIfAbsent(key, absenceLeave);
+		}
+		
+		// 代休月別残数データを取得する
+		val monDayoffs = this.monDayoffRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<AttendanceTimeOfMonthlyKey, MonthlyDayoffRemainData> monDayoffMap = new HashMap<>();
+		for (val monDayoff : monDayoffs){
+			AttendanceTimeOfMonthlyKey key = new AttendanceTimeOfMonthlyKey(
+					monDayoff.getSId(),
+					monDayoff.getYm(),
+					EnumAdaptor.valueOf(monDayoff.getClosureId(), ClosureId.class),
+					new ClosureDate(monDayoff.getClosureDay(), monDayoff.isLastDayis()));
+			monDayoffMap.putIfAbsent(key, monDayoff);
+		}
+		
+		// 特別休暇月別残数データを取得する
+		val specialLeaves = this.spcLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<AttendanceTimeOfMonthlyKey, List<SpecialHolidayRemainData>> specialLeaveMap = new HashMap<>();
+		for (val specialLeave : specialLeaves){
+			AttendanceTimeOfMonthlyKey key = new AttendanceTimeOfMonthlyKey(
+					specialLeave.getSid(),
+					specialLeave.getYm(),
+					EnumAdaptor.valueOf(specialLeave.getClosureId(), ClosureId.class),
+					specialLeave.getClosureDate());
+			specialLeaveMap.putIfAbsent(key, new ArrayList<>());
+			specialLeaveMap.get(key).add(specialLeave);
 		}
 		
 		// 月別実績の勤怠時間を取得する
@@ -259,6 +314,48 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 			val yearMonth = reserveLeave.getYearMonth();
 			reserveLeaveMap.putIfAbsent(employeeId, new HashMap<>());
 			reserveLeaveMap.get(employeeId).put(yearMonth, reserveLeave);
+		}
+		
+		// 振休月別残数データを取得する
+		val absenceLeaves = this.absLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<String, Map<YearMonth, AbsenceLeaveRemainData>> absenceLeaveMap = new HashMap<>();
+		for (val absenceLeave : absenceLeaves){
+			val employeeId = absenceLeave.getSId();
+			val yearMonth = absenceLeave.getYm();
+			absenceLeaveMap.putIfAbsent(employeeId, new HashMap<>());
+			absenceLeaveMap.get(employeeId).put(yearMonth, absenceLeave);
+		}
+		
+		// 代休月別残数データを取得する
+		val monDayoffs = this.monDayoffRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<String, Map<YearMonth, MonthlyDayoffRemainData>> monDayoffMap = new HashMap<>();
+		for (val monDayoff : monDayoffs){
+			val employeeId = monDayoff.getSId();
+			val yearMonth = monDayoff.getYm();
+			monDayoffMap.putIfAbsent(employeeId, new HashMap<>());
+			monDayoffMap.get(employeeId).put(yearMonth, monDayoff);
+		}
+		
+		// 特別休暇月別残数データを取得する
+		val specialLeaves = this.spcLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
+		Map<String, Map<YearMonth, List<SpecialHolidayRemainData>>> specialLeaveMap = new HashMap<>();
+		for (val specialLeave : specialLeaves){
+			val employeeId = specialLeave.getSid();
+			val yearMonth = specialLeave.getYm();
+			specialLeaveMap.putIfAbsent(employeeId, new HashMap<>());
+			specialLeaveMap.get(employeeId).putIfAbsent(yearMonth, new ArrayList<>());
+			ListIterator<SpecialHolidayRemainData> itrSpecialLeave =
+					specialLeaveMap.get(employeeId).get(yearMonth).listIterator();
+			boolean isNotExist = false;
+			while (itrSpecialLeave.hasNext()){
+				val outSpecialLeave = itrSpecialLeave.next();
+				if (outSpecialLeave.getSpecialHolidayCd() == specialLeave.getSpecialHolidayCd()){
+					itrSpecialLeave.set(outSpecialLeave);
+					isNotExist = true;
+					break;
+				}
+			}
+			if (!isNotExist) specialLeaveMap.get(employeeId).get(yearMonth).add(specialLeave);
 		}
 		
 		for (val employeeId : employeeIds){
