@@ -20,7 +20,6 @@ public class AffCompanyHistSharedImport {
 	// List Affiliated company history item
 	private List<AffComHistItemShareImport> lstAffComHistItem;
 	
-	
 	public Optional<GeneralDate> getEntryDate(){
 		
 		if (this.lstAffComHistItem == null || this.lstAffComHistItem.isEmpty()){

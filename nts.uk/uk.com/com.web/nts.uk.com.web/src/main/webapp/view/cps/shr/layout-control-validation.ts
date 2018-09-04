@@ -1819,6 +1819,7 @@ module nts.layout {
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
+                        
                         inp.data.value.valueHasMutated();
                     }
                 };

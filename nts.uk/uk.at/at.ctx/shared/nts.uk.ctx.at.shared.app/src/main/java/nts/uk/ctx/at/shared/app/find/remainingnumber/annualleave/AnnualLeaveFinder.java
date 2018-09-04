@@ -78,7 +78,7 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 //					basicInfo.getGrantRule().getGrantTableCode().v(), null, null, null, null);
 //					
 //			YearHolidayInfoResult result = annLeaDomainService.getYearHolidayInfo(annLeaInfo);
-			
+//			
 //			basicInfo.getGrantRule().setNextGrantDate(result.getNextGrantDate());
 //			basicInfo.getGrantRule().setNextGrantDay(result.getNextGrantDay());
 //			basicInfo.getGrantRule().setNextMaxTime(result.getNextMaxTime());

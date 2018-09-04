@@ -82,7 +82,8 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 		this.withAnyItem(domain.getAnyItemList());
 		this.withAnnLeave(domain.getAnnualLeaveRemain().orElse(null));
 		this.withRsvLeave(domain.getReserveLeaveRemain().orElse(null));
-		this.withSpecialLeave(domain.getSpecialLeaveRemain().orElse(null));
+		this.withSpecialLeave(
+				domain.getSpecialLeaveRemainList().size() > 0 ? domain.getSpecialLeaveRemainList().get(0) : null);
 		this.withDayOff(domain.getMonthlyDayoffRemain().orElse(null));
 		this.withAbsenceLeave(domain.getAbsenceLeaveRemain().orElse(null));
 		return this;
