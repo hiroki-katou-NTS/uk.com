@@ -61,8 +61,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	/*コアタイム*/
 	private Optional<TimeSpanForCalc> coreTimeSheet;
 
-	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, Optional<TimeSpanForCalc> coreTimeSheet) {
-		super(withinWorkTimeFrame,Optional.of(new LateDecisionClock(new TimeWithDayAttr(0), 1)),Optional.of(new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1)));
+	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,List<TimeSheetOfDeductionItem> shortTimeSheets,Optional<TimeSpanForCalc> coreTimeSheet) {
+		super(withinWorkTimeFrame,shortTimeSheets,Optional.of(new LateDecisionClock(new TimeWithDayAttr(0), 1)),Optional.of(new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1)));
 		this.coreTimeSheet = coreTimeSheet;
 	}	
 	

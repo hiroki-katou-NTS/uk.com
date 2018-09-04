@@ -657,6 +657,23 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 			
 	}
+	
+	/**
+	 * 自身が持つ短時間勤務時間帯(控除)を収集
+	 * @return　短時間勤務時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> collectShortTimeSheetInFrame(){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>(); 
+		//自身が持つ短時間時間帯を保持
+		returnList.addAll(this.collectShortTimeSheet());
+		//遅刻時間帯の短時間時間帯を保持
+		if(this.getLateTimeSheet() != null && this.getLateTimeSheet().isPresent())
+			returnList.addAll(this.getLateTimeSheet().get().getShortTimeSheet());
+		//早退時間帯の短時間時間帯を保持
+		if(this.getLeaveEarlyTimeSheet() != null && this.getLeaveEarlyTimeSheet().isPresent())
+			returnList.addAll(this.getLeaveEarlyTimeSheet().get().getShortTimeSheet());
+		return returnList;
+	}
 
 }
 

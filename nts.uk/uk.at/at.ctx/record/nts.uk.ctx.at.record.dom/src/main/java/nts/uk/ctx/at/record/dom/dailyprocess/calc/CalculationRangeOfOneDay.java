@@ -388,6 +388,7 @@ public class CalculationRangeOfOneDay {
 																									 Collections.emptyList(), 
 																									 Optional.empty(), 
 																									 Optional.empty())),
+																			 Collections.emptyList(),
 																			 Optional.empty(),
 																			 Optional.empty()));
 		}
@@ -775,7 +776,7 @@ public class CalculationRangeOfOneDay {
 		 /*コアタイ�?のセ�?��*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 		 if(this.withinWorkingTimeSheet.isPresent())
-			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting(),deductionTimeSheet));
 	 }
 	
 //	 /**

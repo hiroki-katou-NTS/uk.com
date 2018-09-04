@@ -843,4 +843,16 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 	}
 
+	/**
+	 * 短時間勤務時間帯の収集
+	 * @return　自身と自身が持つ短時間勤務リスト
+	 */
+	public List<TimeSheetOfDeductionItem> collectShortTime() {
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		if(this.getDeductionAtr().isChildCare()) {
+			returnList.add(this);
+		}
+		returnList.addAll(this.collectShortTimeSheet());
+		return returnList;
+	}
 }

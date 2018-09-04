@@ -287,6 +287,18 @@ public class LateTimeSheet{
 		return lateDeductionTime;
 	}
 	
+	/**
+	 * 自身が持つ短時間勤務時間帯(控除)を収集
+	 * @return　短時間勤務時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getShortTimeSheet(){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		if(this.getForRecordTimeSheet() != null && this.getForRecordTimeSheet().isPresent()) {
+			returnList.addAll(this.getForRecordTimeSheet().get().collectShortTimeSheet());
+		}
+		return returnList;
+	}
+	
 	
 //	/**
 //	 * 控除項目の時間帯（List）を取得する
