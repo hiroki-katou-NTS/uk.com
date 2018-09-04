@@ -386,14 +386,11 @@ public class SaveHolidayShipmentCommandHandler
 		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (wkTypeOpt.isPresent()) {
 			WorkType wkType = wkTypeOpt.get();
-			if (wkType.getDailyWork().isHolidayWork()) {
+			if (wkType.getDailyWork().isHolidayType()) {
 				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
-
 			}
-
 		}
 		return result;
-
 	}
 
 	private GeneralDate DemOfexpDate(GeneralDate refDate, String companyID, String sID) {
@@ -519,14 +516,27 @@ public class SaveHolidayShipmentCommandHandler
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
 					companyID);
-			if (absHolidayType == null || achievementHolidayType == null) {
-				return;
+			boolean isError = compareHoliday(absHolidayType, achievementHolidayType);
+			
+			if (isError) {
+				String nameId = achievementHolidayType != null ? achievementHolidayType.nameId : "設定なし";
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), nameId);
 			}
-			if (!absHolidayType.equals(achievementHolidayType)) {
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), absHolidayType.nameId);
-			}
+
 		}
 
+	}
+
+	private boolean compareHoliday(HolidayAtr absHolidayType, HolidayAtr achievementHolidayType) {
+		boolean isError = false;
+		if (absHolidayType == null && achievementHolidayType == null)
+			isError = true;
+		if (absHolidayType == null && achievementHolidayType != null)
+			isError = true;
+		if (!absHolidayType.equals(achievementHolidayType)) {
+			isError = true;
+		}
+		return isError;
 	}
 
 	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
