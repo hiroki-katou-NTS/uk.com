@@ -191,7 +191,7 @@ module nts.layout {
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
         check_mt_se: (param: any) => ajax(`ctx/pereg/person/common/checkStartEndMultiTime`, param),
-        get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
+        get_ro_data: (param: INextTimeParam) => ajax('com', `at/record/remainnumber/annlea/event/nextTime`, param),
         get_annLeaNumber: (sid: string) => ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
         get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
@@ -1613,7 +1613,7 @@ module nts.layout {
                     inpCode: 'IS00295',
                     comboboxCode: 'IS00297',
                     inpGrantDay: 'IS00298',
-                    comboGrantTbl: 'IS0029',
+                    comboGrantTbl: 'IS00299',
                     result: 'IS00300',
                     specialCd: 1
                 }, {
@@ -1786,7 +1786,7 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbl = grantTbl ? ko.toJS(grantTbl.data.value): null;
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null;
                             
                             // 
 
@@ -1800,7 +1800,7 @@ module nts.layout {
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
-                                grantTable: grantTbl
+                                grantTable: grantTbls
                             }).done(res => {
                                 let x = moment.utc(ko.toJS(res));
                                 if (x._isValid)
@@ -1819,6 +1819,8 @@ module nts.layout {
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
+                        
+                        inp.data.value.valueHasMutated();
                     }
                 };
 

@@ -196,17 +196,13 @@ public class PeregCommandFacade {
 			user = userAuth.get(0);
 		}
 		
-		List<ItemsByCategory> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete()).collect(Collectors.toList());
-			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
+		target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.UPDATE, null);
-		
-		if(deleteInputs.size() == 0) {
-			// ADD COMMAND
-			recordId = this.add(inputContainer, target, user);
+		// ADD COMMAND
+		recordId = this.add(inputContainer, target, user);
 
-			// UPDATE COMMAND
-			this.update(inputContainer, target, user);
-		}
+		// UPDATE COMMAND
+		this.update(inputContainer, target, user);
 
 		// DELETE COMMAND
 		this.delete(inputContainer, ctgCode);

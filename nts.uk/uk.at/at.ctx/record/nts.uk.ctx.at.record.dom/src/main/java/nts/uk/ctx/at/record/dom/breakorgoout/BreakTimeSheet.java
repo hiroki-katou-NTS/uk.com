@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -70,6 +71,7 @@ public class BreakTimeSheet extends DomainObject {
 																			  Collections.emptyList(),
 																			  Collections.emptyList(),
 																			  Optional.empty(),
+																			  WorkingBreakTimeAtr.NOTWORKING,
 																			  Finally.empty(),
 																			  Finally.of(BreakClassification.BREAK),
 																			  Optional.empty(),

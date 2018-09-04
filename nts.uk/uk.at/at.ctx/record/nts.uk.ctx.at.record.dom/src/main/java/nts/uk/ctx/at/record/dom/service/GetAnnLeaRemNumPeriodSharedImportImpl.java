@@ -35,16 +35,16 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 			DatePeriod aggrPeriod, boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualHolidayMng>> forOverWriteList, Optional<Boolean> noCheckStartDate) {
-		
-		Optional<AggrResultOfAnnualLeave> outResult = annleaRemNumService.algorithm(companyId,
+		return new ArrayList<>();
+	/*	Optional<AggrResultOfAnnualLeave> outResult = annleaRemNumService.algorithm(companyId,
 				employeeId, 
 				aggrPeriod, 
 				mode ? TempAnnualLeaveMngMode.MONTHLY : TempAnnualLeaveMngMode.OTHER,
 						criteriaDate, 
 						isGetNextMonthData, 
 						isCalcAttendanceRate,
-						isOverWrite,
-						forOverWriteList,
+						false,
+						Optional.empty(), 
 						Optional.empty(), 
 						noCheckStartDate);
 		if(!outResult.isPresent()) {
@@ -55,7 +55,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 			outputData.add(EnumAdaptor.valueOf(x.value, AnnualLeaveErrorSharedImport.class));
 		});
 				
-		return outputData;
+		return outputData;*/
 	}
 
 	@Override
@@ -64,16 +64,17 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualHolidayMng>> tempAnnDataforOverWriteList,
 			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate) {
-		AggrResultOfAnnAndRsvLeave algorithm = fundingAnnualService.algorithm(companyId, 
+		return new ArrayList<>();
+		/*AggrResultOfAnnAndRsvLeave algorithm = fundingAnnualService.algorithm(companyId, 
 				employeeId,
 				aggrPeriod, 
 				mode ? TempAnnualLeaveMngMode.MONTHLY : TempAnnualLeaveMngMode.OTHER, 
 				criteriaDate, 
 				isGetNextMonthData,
 				isCalcAttendanceRate,
-				isOverWrite, 
-				tempAnnDataforOverWriteList,
-				tempRsvDataforOverWriteList, 
+				false, 
+				Optional.empty(), 
+				Optional.empty(), 
 				isOutputForShortage, 
 				noCheckStartDate,
 				Optional.empty(), Optional.empty());
@@ -84,6 +85,6 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 		List<ReserveLeaveError> lstResult = optResult.get().getReserveLeaveErrors();
 		
 		return lstResult.stream().map(x -> EnumAdaptor.valueOf(x.value, ReserveLeaveErrorImport.class))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
 	}
 }

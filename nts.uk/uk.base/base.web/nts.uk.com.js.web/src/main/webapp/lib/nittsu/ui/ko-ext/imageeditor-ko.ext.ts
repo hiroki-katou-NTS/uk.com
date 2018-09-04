@@ -46,6 +46,7 @@ module nts.uk.ui.koExtentions {
             } 
 
             constructSite.buildActionArea();
+            constructSite.$imageInfomation.width(width - 110);
 
             constructSite.buildUploadAction();
 
@@ -90,6 +91,7 @@ module nts.uk.ui.koExtentions {
         $root: JQuery;
         $previewArea: JQuery;
         $imagePreview: JQuery;
+        $imageInfomation: JQuery;
         $imageSizeLbl: JQuery;
         $imageNameLbl: JQuery;
         $inputFile: JQuery;
@@ -132,19 +134,23 @@ module nts.uk.ui.koExtentions {
         }
 
         buildActionArea() {
-            this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+            let self = this;
+            self.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+            
+            self.$imageInfomation = $("<div>", { "class": "image-editor-component inline-container" });
+            self.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label limited-label" })
+                .appendTo(self.$imageInfomation);
+            self.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                .appendTo(self.$imageInfomation);
+            
+            self.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": self.helper.toStringExtension() })
                 .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-            this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-            this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                .appendTo(this.$imageNameLbl.parent());
-            this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-
-            let $uploadArea = this.$root.find(".image-upload-container");
-            $uploadArea.append(this.$uploadBtn.parent());
-            $uploadArea.append(this.$imageNameLbl.parent());
-            $uploadArea.append(this.$inputFile.parent());
+            
+            let $uploadArea = self.$root.find(".image-upload-container");
+            $uploadArea.append(self.$uploadBtn.parent());
+            $uploadArea.append(self.$imageInfomation);
+            $uploadArea.append(self.$inputFile.parent());
         }
 
         buildImagePreviewArea() {

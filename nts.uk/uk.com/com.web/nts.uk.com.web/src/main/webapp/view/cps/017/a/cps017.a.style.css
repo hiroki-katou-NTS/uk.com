@@ -2,9 +2,6 @@
 /* 	width: 1405px; */
 /* } */
 
-#contents-area{
-	height: calc(100vh - 21px) !important;
-}
 
 body {
 	overflow: hidden;
