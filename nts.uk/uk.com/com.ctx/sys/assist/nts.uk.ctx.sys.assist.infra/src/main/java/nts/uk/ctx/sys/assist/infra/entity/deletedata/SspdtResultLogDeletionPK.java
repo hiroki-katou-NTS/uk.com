@@ -5,9 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,9 +15,14 @@ import lombok.NoArgsConstructor;
 public class SspdtResultLogDeletionPK implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
+	
+	/** The deletion Id. */
+	/** データ削除処理ID */
+	@Basic(optional = false)
+	@Column(name = "DEL_ID")
+	public String delId;
+	
 	@Basic(optional=false)
 	@Column(name = "SEQ_ID")
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "del_log_generator")
-	@SequenceGenerator(name="del_log_generator", sequenceName = "SSPCS_DELETE_LOG", allocationSize=1)
     public int seqId;
 }

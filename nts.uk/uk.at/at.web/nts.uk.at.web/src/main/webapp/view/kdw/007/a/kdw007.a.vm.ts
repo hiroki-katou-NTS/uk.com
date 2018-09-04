@@ -369,6 +369,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         update() {
             let self = this;
+            
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 var data = ko.mapping.toJS(self.selectedErrorAlarm());
@@ -402,6 +403,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 });
                 ko.utils.extend(data, {newMode: self.isNewMode() ? 1 : 0});
                 if (self.screenMode() == ScreenMode.Daily) {
+                    nts.uk.ui.block.invisible();
                     service.update(data).done(() => {
                         self.codeToSelect(data.code);
                         if (data.fixedAtr == 1)
@@ -424,7 +426,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                             $("#errorAlarmWorkRecordCode").focus();
                         });
                     });
+                    nts.uk.ui.block.clear();
                 } else if (self.screenMode() == ScreenMode.Monthly) {
+                    nts.uk.ui.block.invisible();
                     service.updateMonthlyCondition(data).done(() => {
                         self.codeToSelect(data.code);
                         service.getAllMonthlyCondition().done((lstData: Array<any>) => {
@@ -457,6 +461,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                             $("#errorAlarmWorkRecordCode").focus();
                         });
                     });
+                    nts.uk.ui.block.clear();
                 }
             }
 

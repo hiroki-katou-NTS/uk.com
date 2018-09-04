@@ -164,4 +164,13 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.getSingle(c -> c.toDomain());
 	}
 
+	private static final String SELECT_BY_USER_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userId";
+	
+	@Override
+	public void removeByUserId(String userId) {
+		List<SacmtRoleIndiviGrant> entities = this.queryProxy().query(SELECT_BY_USER_ID, SacmtRoleIndiviGrant.class)
+				.setParameter("userId", userId).getList();
+		this.commandProxy().removeAll(entities);
+	}
+
 }

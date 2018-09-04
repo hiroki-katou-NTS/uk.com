@@ -392,14 +392,6 @@ module nts.uk.at.view.kaf009.b {
                     } else{
                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
                     }
-                    if(res.parameterIds.length>=4){
-                        let rsTime1 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[3]));
-                        nts.uk.ui.dialog.error({ messageId: res.parameterIds[2].split("=")[1], messageParams: [rsTime1] });    
-                    }
-                    if(res.parameterIds.length>=2){
-                        let rsTime2 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[1]));
-                        nts.uk.ui.dialog.error({ messageId: res.parameterIds[0].split("=")[1], messageParams: [rsTime2] });    
-                    }
                 });
                 return dfd.promise();
             }
