@@ -1,4 +1,4 @@
-﻿module nts.uk.com.view.cps017.a.viewmodel {
+module nts.uk.com.view.cps017.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -260,7 +260,7 @@
             }).fail(error => {
                 alertError({ messageId: "Msg_455" });
             });
- 
+
             return dfd.promise();
         }
         

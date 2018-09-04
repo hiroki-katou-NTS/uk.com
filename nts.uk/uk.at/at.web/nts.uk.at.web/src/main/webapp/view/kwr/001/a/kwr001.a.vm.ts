@@ -327,9 +327,7 @@ module nts.uk.at.view.kwr001.a {
                     self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOutput.details);
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOutput.personalTotal);
                     self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOutput.workplaceTotal);
-                    // update spec ver 25, only hidden temporary
-                    // self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
-                    self.checkedA10_5(false);
+                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
                     self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOutput.grossTotal);
                     self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOutput.cumulativeWorkplace);
                     if (workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal) {
@@ -598,9 +596,7 @@ module nts.uk.at.view.kwr001.a {
                 let self = this;
                 
                 if (self.selectedDataOutputType() == 0) {
-                    if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() 
-                    // update spec ver 25, only hidden temporary
-                    //  && !self.checkedA10_5()
+                    if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
                         && !self.checkedA10_6() && !self.checkedA10_7()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
                         return false;
@@ -701,8 +697,7 @@ module nts.uk.at.view.kwr001.a {
                     
                     if (self.selectedDataOutputType() == 1) {
                         self.checkedA10_3(false);
-                        // update spec ver 25, only hidden temporary 
-                        // self.checkedA10_5(false);
+                        self.checkedA10_5(false);
                     }
                     
                     let totalWorkplaceHierachy = new TotalWorkplaceHierachy(self.checkedA10_10(), self.checkedA10_11(), 
@@ -711,8 +706,7 @@ module nts.uk.at.view.kwr001.a {
                                                                             self.checkedA10_16(), self.checkedA10_17(), 
                                                                             self.checkedA10_18());
                     let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(), self.checkedA10_3(), 
-                                                                                            self.checkedA10_4(), false, 
-                                                                                            //self.checkedA10_5(), 
+                                                                                            self.checkedA10_4(), self.checkedA10_5(), 
                                                                                             self.checkedA10_6(), self.checkedA10_7(), 
                                                                                             totalWorkplaceHierachy);
                     

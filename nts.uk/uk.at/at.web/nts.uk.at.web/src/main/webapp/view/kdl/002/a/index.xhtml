@@ -14,7 +14,7 @@
 			<com:scriptfile path="kdl002.a.start.js" />
 			<com:scriptfile path="kdl002.a.service.js" />
 			<com:scriptfile path="kdl002.a.vm.js" />
-			<script>var dialogSize = { width: 620 , height: 630};</script>
+			<script>var dialogSize = { width: 620 , height: 480};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
@@ -40,12 +40,13 @@
 						<!-- A1_3 -->
 						<table id="multi-list" 
 							data-bind="ntsGridList: {
-										height: 390,
+										height: 200,
 										width: 580,
 										options: items,
 										optionsValue: 'workTypeCode',
 										columns: columns,
 										multiple: isMulti,
+										rows: 10,
 										value: currentCodeList}">
 						</table>
 					</div>

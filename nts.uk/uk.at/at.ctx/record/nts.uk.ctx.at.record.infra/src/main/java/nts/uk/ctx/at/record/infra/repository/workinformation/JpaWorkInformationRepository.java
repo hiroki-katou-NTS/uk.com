@@ -96,6 +96,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			+ " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
 			+ " AND c.recordWorkWorktypeCode = :workTypeCode"
 			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
+	
+	private String FIND_BY_LIST_DATE = "SELECT c "
+			+ " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates"
+			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -245,5 +250,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		return lstOutput;
 	}
 
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
+		if(dates.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dates", dates)
+				.getList(f -> f.toDomain());
+	}
 
 }
