@@ -184,24 +184,36 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
     public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
         //Get data company zero
         List<PpemtPerInfoCtg> sPerInfoCtgEntities = findAllPerInfoCtgByCid(sourceCid);
-        Set<String> sourcePersonalInfoCatId = sPerInfoCtgEntities.stream()
-                .map(ppemtPerInfoCtg -> ppemtPerInfoCtg.ppemtPerInfoCtgPK.perInfoCtgId)
-                .collect(Collectors.toSet());
-        List<PpemtPerInfoCtgOrder> sPerInfoCtgOrderEntities = findAllPerInfoCtgOrderByCid(sourceCid, sourcePersonalInfoCatId);
-
-        List<PpemtPerInfoItem> sPerInfoItemEntities = findAllPpemtPerInfoItemByCatId(sourcePersonalInfoCatId);
-        List<PpemtPerInfoItemOrder> sPerInfoItemOrderEntities = findAllPerInfoItemOrderByCatId(sourcePersonalInfoCatId);
-        List<PpemtDateRangeItem> sDateRangeItemEntities = findAlldateRangeItemByCatId(sourcePersonalInfoCatId);
+        List<PpemtPerInfoCtgOrder> sPerInfoCtgOrderEntities = new ArrayList<>();
+        List<PpemtPerInfoItem> sPerInfoItemEntities = new ArrayList<>();
+        List<PpemtPerInfoItemOrder> sPerInfoItemOrderEntities = new ArrayList<>();
+        List<PpemtDateRangeItem> sDateRangeItemEntities = new ArrayList<>();
+        Set<String> sourcePersonalInfoCatId = new TreeSet<String>();
+		if (!sPerInfoCtgEntities.isEmpty()) {
+			sourcePersonalInfoCatId = sPerInfoCtgEntities.stream()
+					.map(ppemtPerInfoCtg -> ppemtPerInfoCtg.ppemtPerInfoCtgPK.perInfoCtgId).collect(Collectors.toSet());
+			sPerInfoCtgOrderEntities = findAllPerInfoCtgOrderByCid(sourceCid, sourcePersonalInfoCatId);
+	        sPerInfoItemEntities = findAllPpemtPerInfoItemByCatId(sourcePersonalInfoCatId);
+	        sPerInfoItemOrderEntities = findAllPerInfoItemOrderByCatId(sourcePersonalInfoCatId);
+	        sDateRangeItemEntities = findAlldateRangeItemByCatId(sourcePersonalInfoCatId);
+		}
 
         //Get data company target
-        List<PpemtPerInfoCtg> tPerInfoCtgEntities = findAllPerInfoCtgByCid(sourceCid);
-        Set<String> targetPersonalInfoCatId = tPerInfoCtgEntities.stream()
-                .map(ppemtPerInfoCtg -> ppemtPerInfoCtg.ppemtPerInfoCtgPK.perInfoCtgId)
-                .collect(Collectors.toSet());
-        List<PpemtPerInfoCtgOrder> tPerInfoCtgOrderEntities = findAllPerInfoCtgOrderByCid(sourceCid, targetPersonalInfoCatId);
-        List<PpemtPerInfoItem> tPerInfoItemEntities = findAllPpemtPerInfoItemByCatId(targetPersonalInfoCatId);
-        List<PpemtPerInfoItemOrder> tPerInfoItemOrderEntities = findAllPerInfoItemOrderByCatId(targetPersonalInfoCatId);
-        List<PpemtDateRangeItem> tPateRangeItemEntities = findAlldateRangeItemByCatId(targetPersonalInfoCatId);
+        List<PpemtPerInfoCtg> tPerInfoCtgEntities = findAllPerInfoCtgByCid(targetCid);
+        List<PpemtPerInfoCtgOrder> tPerInfoCtgOrderEntities = new ArrayList<>();
+        List<PpemtPerInfoItem> tPerInfoItemEntities = new ArrayList<>();
+        List<PpemtPerInfoItemOrder> tPerInfoItemOrderEntities = new ArrayList<>();
+        List<PpemtDateRangeItem> tPateRangeItemEntities = new ArrayList<>();
+        if(!tPerInfoCtgEntities.isEmpty()) {
+			Set<String> targetPersonalInfoCatId = tPerInfoCtgEntities.stream()
+					.map(ppemtPerInfoCtg -> ppemtPerInfoCtg.ppemtPerInfoCtgPK.perInfoCtgId).collect(Collectors.toSet());
+			tPerInfoCtgOrderEntities = findAllPerInfoCtgOrderByCid(targetCid,
+					targetPersonalInfoCatId);
+			tPerInfoItemEntities = findAllPpemtPerInfoItemByCatId(targetPersonalInfoCatId);
+			tPerInfoItemOrderEntities = findAllPerInfoItemOrderByCatId(
+					targetPersonalInfoCatId);
+			tPateRangeItemEntities = findAlldateRangeItemByCatId(targetPersonalInfoCatId);
+		}
 
         //group by personal info item def Id
         final List<PpemtPerInfoCtg> s1 = new ArrayList<>();
