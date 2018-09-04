@@ -237,14 +237,16 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				listEmployeeID = lstRegulationInfoEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
 			}else {
 				//再作成の場合
-				/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
-				DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
-				ListLeaderOrNotEmpOutput listLeaderOrNotEmpOutput = transfereePerson.createProcessForChangePerOrWorktype(closure.getClosureId().value, procExec.getCompanyId(),
-						lstRegulationInfoEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()), 
-						maxPeriodBetweenCalAndCreate, procExec);
-				listEmployeeID.addAll(listLeaderOrNotEmpOutput.getLeaderEmpIdList());
-				listEmployeeID.addAll(listLeaderOrNotEmpOutput.getNoLeaderEmpIdList());
-				
+				List<String> listEmp = lstRegulationInfoEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+				if(!listEmp.isEmpty()) {
+					/**異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する*/	
+					DatePeriod maxPeriodBetweenCalAndCreate = new DatePeriod(closureData.getClosureStartDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+					ListLeaderOrNotEmpOutput listLeaderOrNotEmpOutput = transfereePerson.createProcessForChangePerOrWorktype(closure.getClosureId().value, procExec.getCompanyId(),
+							listEmp, 
+							maxPeriodBetweenCalAndCreate, procExec);
+					listEmployeeID.addAll(listLeaderOrNotEmpOutput.getLeaderEmpIdList());
+					listEmployeeID.addAll(listLeaderOrNotEmpOutput.getNoLeaderEmpIdList());
+				}
 			}
 			
 			/** アルゴリズム「日別実績の承認ルート中間データの作成」を実行する */

@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 加給時間 */
@@ -41,9 +39,8 @@ public class RaisingSalaryTimeDto implements ItemConst {
 	
 	public BonusPayTime toDomain(){
 		return new BonusPayTime(no,
-						rasingSalaryTime == null ? null : new AttendanceTime(rasingSalaryTime.getTime()),
-						outOfLegalRasingSalaryTime == null ? null : outOfLegalRasingSalaryTime.createTimeWithCalc(), 
-						inLegalRasingSalaryTime == null ? null : inLegalRasingSalaryTime.createTimeWithCalc()
-						);
+						rasingSalaryTime == null ? null : new AttendanceTime(rasingSalaryTime.getTime()), 
+						inLegalRasingSalaryTime == null ? null : inLegalRasingSalaryTime.createTimeWithCalc(),
+						outOfLegalRasingSalaryTime == null ? null : outOfLegalRasingSalaryTime.createTimeWithCalc());
 	}
 }

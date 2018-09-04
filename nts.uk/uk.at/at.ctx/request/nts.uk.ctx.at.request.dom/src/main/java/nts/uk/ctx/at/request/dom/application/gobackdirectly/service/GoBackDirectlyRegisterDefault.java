@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -56,11 +60,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	@Inject
 	DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	@Inject
 	ScBasicScheduleAdapter scBasicScheduleAdapter;
 	
-
 	/**
 	 * 
 	 */
@@ -72,6 +77,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		appRepo.insert(application);
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				application.getCompanyID(), 
+				employeeID, 
+				Arrays.asList(application.getAppDate()));
+		
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
 		return newAfterRegister.processAfterRegister(application);
 		

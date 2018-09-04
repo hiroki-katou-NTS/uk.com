@@ -40,7 +40,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="3"
-					data-bind="click: execution">#{i18n.getText('KMK011_62')}</button>
+					data-bind="click: execution, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('KMK011_62')}</button>
 				<button class="large" tabindex="4" data-bind="click: close">#{i18n.getText('KMK011_63')}</button>
 			</div>
 		</ui:define>
