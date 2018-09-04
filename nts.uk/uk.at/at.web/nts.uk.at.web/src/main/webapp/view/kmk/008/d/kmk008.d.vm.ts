@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk008.d {
+    import text = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel {
             timeOfCompany: KnockoutObservable<TimeOfEmploymentModel>;
@@ -17,6 +18,28 @@ module nts.uk.at.view.kmk008.d {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
+
+            nameErrorWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_43"));
+            nameAlarmWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_42"));
+            nameLimitWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_44"));
+            nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_42"));
+            nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_43"));
+            nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_44"));
+            nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_24") + text("KMK008_42"));
+            nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_24") + text("KMK008_43"));
+            nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_24") + text("KMK008_44"));
+            nameErrorOneMonth: KnockoutObservable<string> = ko.observable(text("KMK008_25") + text("KMK008_42"));
+            nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(text("KMK008_25") + text("KMK008_43"));
+            nameLimitOneMonth: KnockoutObservable<string> = ko.observable(text("KMK008_25") + text("KMK008_44"));
+            nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(text("KMK008_26") + text("KMK008_42"));
+            nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(text("KMK008_26") + text("KMK008_43"));
+            nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(text("KMK008_26") + text("KMK008_44"));
+            nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(text("KMK008_27") + text("KMK008_42"));
+            nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(text("KMK008_27") + text("KMK008_43"));
+            nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(text("KMK008_27") + text("KMK008_44"));
+            nameErrorOneYear: KnockoutObservable<string> = ko.observable(text("KMK008_28") + text("KMK008_42"));
+            nameAlarmOneYear: KnockoutObservable<string> = ko.observable(text("KMK008_28") + text("KMK008_43"));
+            nameLimitOneYear: KnockoutObservable<string> = ko.observable(text("KMK008_28") + text("KMK008_44"));
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
