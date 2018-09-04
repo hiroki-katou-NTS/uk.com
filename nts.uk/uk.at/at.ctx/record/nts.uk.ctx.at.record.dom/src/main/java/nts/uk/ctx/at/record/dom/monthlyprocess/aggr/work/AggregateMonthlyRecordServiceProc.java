@@ -1254,21 +1254,29 @@ public class AggregateMonthlyRecordServiceProc {
 	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod){
 		
 		// 月初の所属情報を取得
+		boolean isExistStartWorkInfo = false;
+		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())){
+			isExistStartWorkInfo = true;
+		}
 		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstInfoOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			if (!isExistStartWorkInfo){
+				val errorInfo = new MonthlyAggregationErrorInfo(
+						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
+				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
 			return null;
 		}
 		val firstInfoOfDaily = firstInfoOfDailyOpt.get();
 		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstWorkTypeOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			if (!isExistStartWorkInfo){
+				val errorInfo = new MonthlyAggregationErrorInfo(
+						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
+				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
 			return null;
 		}
 		val firstWorkTypeOfDaily = firstWorkTypeOfDailyOpt.get();
