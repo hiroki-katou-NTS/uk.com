@@ -137,10 +137,6 @@ module nts.uk.at.view.kwr008.a {
                 });
                 return dfd.promise();
             }
-            checkInput(): boolean {
-                var self = this;
-                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
-            }
 
             exportReport() {
                 var self = this;
