@@ -97,7 +97,11 @@ public class DailyModifyResCommandFacade {
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
 		
-		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems);
+		List<DPItemValueRC> result = this.handler.handleUpdateRes(commandNew, commandOld, dailyItems);
+		
+		processor.requestForFlush();
+		
+		return result;
 	}
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {

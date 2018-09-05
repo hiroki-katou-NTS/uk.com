@@ -230,4 +230,6 @@ public interface DailyPerformanceScreenRepo {
 	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
 
 	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
+	
+	void requestForFlush();
 }
