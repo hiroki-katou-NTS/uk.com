@@ -160,7 +160,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			//午前
 			WorkTypeClassification workTypeMorning = workTypeData.getDailyWork().getMorning();
 			if(this.lstZansu().contains(workTypeMorning)) {
-				outputData.setWorkTypeClass(workTypeMorning);
 				WorkTypeRemainInfor morning = new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypeMorning, createAtr, 
 						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData()); 
 				morning = this.createWithOneDayWorkType(cid, workTypeData, morning);
@@ -169,7 +168,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			//午後
 			WorkTypeClassification workTypAfternoon = workTypeData.getDailyWork().getAfternoon();
 			if(this.lstZansu().contains(workTypAfternoon)) {
-				outputData.setWorkTypeClass(workTypAfternoon);
 				WorkTypeRemainInfor after =  new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypAfternoon, createAtr,
 						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData());
 				after = this.createWithOneDayWorkType(cid, workTypeData, after);
@@ -512,6 +510,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		if(remainInfor.isEmpty()) {
 			return null;
 		}
+		outputData.setWorkTypeRemain(remainInfor);
 		//申請種類をチェックする
 		if(appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			// 休日出勤申請から代休振替情報を作成する
