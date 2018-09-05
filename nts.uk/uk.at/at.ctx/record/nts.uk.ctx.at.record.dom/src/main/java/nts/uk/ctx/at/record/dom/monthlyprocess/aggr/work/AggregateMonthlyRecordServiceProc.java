@@ -708,7 +708,11 @@ public class AggregateMonthlyRecordServiceProc {
 		// いずれかの手修正値を戻した時、戻した後の勤怠時間を返す
 		if (this.isRetouch){
 			val convertedOpt = convert.toAttendanceTime();
-			if (convertedOpt.isPresent()) attendanceTime = convertedOpt.get();
+			if (convertedOpt.isPresent()) {
+				val retouchedTime = convertedOpt.get();
+				retouchedTime.getMonthlyCalculation().copySettings(attendanceTime.getMonthlyCalculation());
+				return retouchedTime;
+			}
 		}
 		return attendanceTime;
 	}
