@@ -93,7 +93,7 @@
 								extColumns: treeColumns,
 								initialExpandDepth: 0,
 								showCheckBox: false}"
-								data-scroll="true" style="height: 504px;">
+								data-scroll="true" style="height: 504px; background: #fff;">
 							</div>
 						</div>
 					</div>
@@ -136,7 +136,7 @@
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_11')}</button>
 								</div>
 								<div style="margin-top: 8px;">
-									<button tabindex="12"
+									<button tabindex="12" class="danger"
 										data-bind="click: deleteWkpHistory,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_12')}</button>
 								</div>

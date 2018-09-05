@@ -39,14 +39,10 @@ public class AddEmployeeCommandHelper {
 
 	@Inject
 	private PersonRepository personRepo;
-	
-	@Inject
-	private AddEmployeeCommandFacade commandFacade;	  
 
 	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
 			String companyId) {
-		List<ItemsByCategory> inputs = commandFacade.createData(command);
-		Optional<ItemsByCategory> affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		Optional<ItemsByCategory> affComHist = command.getInputs().stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
 		// add newPerson
 
 		addNewPerson(personId, command.getEmployeeName());

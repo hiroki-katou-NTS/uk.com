@@ -26,8 +26,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             nts.uk.ui.windows.setShared("extractionMonthly", dataSetShare);
 
             if (self.checkPeriod() == false) {
-                nts.uk.ui.windows.setShared("validateMonthly", false);
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
+                nts.uk.ui.windows.setShared("validateMonthly", false);        
                 return false;
             } else {
                  nts.uk.ui.windows.setShared("validateMonthly", true);

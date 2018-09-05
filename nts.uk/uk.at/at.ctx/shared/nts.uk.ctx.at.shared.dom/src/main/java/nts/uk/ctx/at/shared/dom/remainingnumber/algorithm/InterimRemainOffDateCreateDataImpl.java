@@ -507,7 +507,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		String workTimeCode = appInfor.getWorkTimeCode().isPresent() ? appInfor.getWorkTimeCode().get() : "000";
 		
 		
-		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, null, dayOffTimeIsUse);
+		return this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, breakTime, createAtr, 0, dayOffTimeIsUse);
 	}
 
 	@Override

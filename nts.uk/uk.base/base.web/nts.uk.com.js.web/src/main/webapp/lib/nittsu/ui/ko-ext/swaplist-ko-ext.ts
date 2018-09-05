@@ -685,6 +685,7 @@ module nts.uk.ui.koExtentions {
                     this.resetOriginalDataSource();
                 }
                 this.bindData(this.originalDataSource);
+                this.$searchBox.val('');
             }
         }
         

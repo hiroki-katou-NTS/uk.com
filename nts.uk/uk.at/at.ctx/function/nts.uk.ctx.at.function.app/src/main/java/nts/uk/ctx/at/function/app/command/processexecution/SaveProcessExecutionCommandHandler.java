@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
@@ -110,9 +111,11 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		ProcessExecution procExec =
 				new ProcessExecution(companyId,
 						new ExecutionCode(command.getExecItemCd()),
-						new ExecutionName(command.getExecItemName()), execScope, execSetting);
+						new ExecutionName(command.getExecItemName()), execScope, execSetting,
+						EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class));
 		
-		procExec.validate();
+		
+		procExec.validateVer2();
 		if (command.isNewMode()) {
 			//新規登録処理
 			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, command.getExecItemCd());

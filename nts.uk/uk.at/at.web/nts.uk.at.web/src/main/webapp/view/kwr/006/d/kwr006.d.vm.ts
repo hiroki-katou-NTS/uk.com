@@ -31,8 +31,8 @@ module nts.uk.at.view.kwr006.d {
 
                 service.getDataStartPage().done(function(data) {
                     if (_.isEmpty(data)) {
+                        nts.uk.ui.windows.setShared('KWR006_D', null);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1410" }).then(() => nts.uk.ui.windows.close());
-
                     } else {
                         let arr = _.map(data, item => new ItemModel(item.code, item.name));
                         self.itemList(arr);
@@ -53,15 +53,11 @@ module nts.uk.at.view.kwr006.d {
                     return;
                 }
                 service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR006_D')).done(function(data: any) {
-                    if (!_.isEmpty(data)) {
-                        dataReturnScrC.lstAtdChoose = data;
-                        dataReturnScrC.codeCopy = self.D1_6_value();
-                        dataReturnScrC.nameCopy = self.D1_7_value();
-                        nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
-                        nts.uk.ui.windows.close();
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" }).then(() => nts.uk.ui.windows.close());
-                    }
+                    dataReturnScrC.lstAtdChoose = data;
+                    dataReturnScrC.codeCopy = self.D1_6_value();
+                    dataReturnScrC.nameCopy = self.D1_7_value();
+                    nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
+                    nts.uk.ui.windows.close();
                 }).fail(function(err) {
                     nts.uk.ui.dialog.alertError(err);
                 })

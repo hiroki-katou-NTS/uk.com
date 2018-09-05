@@ -33,16 +33,16 @@
 							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- I1_4 -->
-						<td><span data-bind="text : processingMonth "></span>月度</td>
+						<td><span data-bind="text : processingMonth "></span>月度
 						<!-- I1_5 -->
-						<td data-bind="text : nameClosure"></td>
+						<span style="padding-left: 20px;" data-bind="text : nameClosure"></span></td>
 					</tr>
-					<tr id = "period-date">
+					<tr >
 						<td>
 							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- I1_6 -->
-						<td colspan="2"><span data-bind="text: periodStartDate"></span>
+						<td id = "period-date" colspan="2"><span data-bind="text: periodStartDate"></span>
 							～ <span data-bind="text: periodEndDate"></span></td>
 					</tr>
 					<tr>

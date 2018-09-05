@@ -44,7 +44,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
 			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ";
-
+	private static final String FIND_BY_EMPLOYEE_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
+			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -95,11 +96,23 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			+ " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
 			+ " AND c.recordWorkWorktypeCode = :workTypeCode"
 			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
+	
+	private String FIND_BY_LIST_DATE = "SELECT c "
+			+ " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates"
+			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
 		return this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(c -> c.toDomain());
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId) {
+		return this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -235,6 +248,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("employeeId", employeeId)
 				.getList();
 		return lstOutput;
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
+		if(dates.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dates", dates)
+				.getList(f -> f.toDomain());
 	}
 
 }

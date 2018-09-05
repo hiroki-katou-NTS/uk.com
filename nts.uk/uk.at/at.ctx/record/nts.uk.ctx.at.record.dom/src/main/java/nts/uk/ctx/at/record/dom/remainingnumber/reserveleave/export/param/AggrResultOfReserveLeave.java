@@ -9,7 +9,7 @@ import lombok.Setter;
 
 /**
  * 積立年休の集計結果
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @Setter
@@ -61,5 +61,15 @@ public class AggrResultOfReserveLeave {
 		domain.lapsed = lapsed;
 		domain.reserveLeaveErrors = reserveLeaveErrors;
 		return domain;
+	}
+	
+	/**
+	 * 積立年休エラー情報の追加
+	 * @param error 積立年休エラー情報
+	 */
+	public void addError(ReserveLeaveError error){
+		
+		if (this.reserveLeaveErrors.contains(error)) return;
+		this.reserveLeaveErrors.add(error);
 	}
 }

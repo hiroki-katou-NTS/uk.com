@@ -120,11 +120,13 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	 */
 	public DataCorrectionLog toDomainToView() {
 		GeneralDate ymd = this.pk.ymdKey;
-		if (this.ymKey != null) {
-			YearMonth ym = YearMonth.of(this.ymKey);
-			ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
-		} else if (this.yKey != null)
-			ymd = GeneralDate.ymd(this.yKey, 1, 1);
+		if (this.pk.ymdKey == null) {
+			if (this.ymKey != null) {
+				YearMonth ym = YearMonth.of(this.ymKey);
+				ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
+			} else if (this.yKey != null)
+				ymd = GeneralDate.ymd(this.yKey, 1, 1);
+		}
 		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.employeeId, this.userName),
 				TargetDataType.of(this.pk.targetDataType), TargetDataKey.of(ymd, this.stringKey),
 				CorrectionAttr.of(this.correctionAttr),

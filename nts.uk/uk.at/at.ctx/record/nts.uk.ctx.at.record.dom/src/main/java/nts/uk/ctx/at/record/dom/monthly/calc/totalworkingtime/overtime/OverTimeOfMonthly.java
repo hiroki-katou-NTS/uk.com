@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +16,11 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -396,13 +394,15 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
-	 * @param flexAggrSet フレックス時間勤務の月の集計設定
-	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
 	 * @param flexTime フレックス時間
+	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 */
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, FlexMonthWorkTimeAggrSet flexAggrSet,
-			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
+			String companyId, MonthlyAggregateAtr aggregateAtr, FlexTime flexTime,
+			SettingRequiredByFlex settingsByFlex){
+		
+		val flexAggrSet = settingsByFlex.getFlexAggrSet();
+		val monthlyAggrSetOfFlexOpt = settingsByFlex.getMonthlyAggrSetOfFlexOpt();
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();

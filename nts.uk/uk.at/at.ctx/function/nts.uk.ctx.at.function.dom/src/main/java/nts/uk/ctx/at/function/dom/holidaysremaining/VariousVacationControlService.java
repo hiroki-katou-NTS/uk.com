@@ -62,18 +62,20 @@ public class VariousVacationControlService {
 			pauseItemHolidaySetting = true;
 		}
 		val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(companyId);
-		// 子の看護
-		val childNursing = listNursingLeaveSetting.stream()
-				.filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing).findFirst();
-		if (childNursing.isPresent() && childNursing.get().getManageType() == ManageDistinct.YES) {
-			childNursingSetting = true;
-		}
+		if (listNursingLeaveSetting != null) {
+			// 子の看護
+			val childNursing = listNursingLeaveSetting.stream()
+					.filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing).findFirst();
+			if (childNursing.isPresent() && childNursing.get().getManageType() == ManageDistinct.YES) {
+				childNursingSetting = true;
+			}
 
-		// 介護
-		val nursingCare = listNursingLeaveSetting.stream()
-				.filter(i -> i.getNursingCategory() == NursingCategory.Nursing).findFirst();
-		if (nursingCare.isPresent() && nursingCare.get().getManageType() == ManageDistinct.YES) {
-			nursingCareSetting = true;
+			// 介護
+			val nursingCare = listNursingLeaveSetting.stream()
+					.filter(i -> i.getNursingCategory() == NursingCategory.Nursing).findFirst();
+			if (nursingCare.isPresent() && nursingCare.get().getManageType() == ManageDistinct.YES) {
+				nursingCareSetting = true;
+			}
 		}
 
 		val listSpecialHoliday = specialHolidayFinder.findByCompanyId(companyId);

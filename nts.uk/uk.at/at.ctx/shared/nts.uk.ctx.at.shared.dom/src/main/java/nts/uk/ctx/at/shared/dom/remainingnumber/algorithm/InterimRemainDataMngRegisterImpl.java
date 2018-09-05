@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 
 @Stateless
 public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngRegister{
@@ -40,12 +42,22 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Override
-	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData) {
+	public void registryInterimDataMng(InterimRemainCreateDataInputPara inputData, CompanyHolidayMngSetting comHolidaySetting) {
 		//指定期間の暫定残数管理データを作成する
-		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData);
+		Map<GeneralDate, DailyInterimRemainMngData> interimDataMng = periodCreateData.createInterimRemainDataMng(inputData, comHolidaySetting);
+		List<GeneralDate> lstInterimDate = new ArrayList<>();
 		interimDataMng.forEach((x, y) -> {
+			lstInterimDate.add(x);
+		});
+		if(lstInterimDate.isEmpty()) {
+			return;
+		}
+		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
+		interimDataMng.forEach((x, y) -> {
+			lstInterimDate.add(x);
 			//ドメインモデル「暫定残数管理データ」を取得する
-			List<InterimRemain> lstBeforInterimData = interimRemainRepos.getDataBySidDate(inputData.getSid(), x);
+			List<InterimRemain> lstBeforInterimData = lstBeforInterimDataAlls.stream()
+					.filter(z -> z.getYmd() == x).collect(Collectors.toList());
 			List<InterimRemain> lstInterimData = y.getRecAbsData();
 			RegistryInterimResereLeaveDataInput dataInput = new RegistryInterimResereLeaveDataInput();
 			dataInput.setCid(inputData.getCid());

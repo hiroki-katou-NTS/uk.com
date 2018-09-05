@@ -399,5 +399,32 @@ module nts.uk.at.view.kaf006.share {
                 this.displayAppReason = displayAppReason;              
             }
         }
+        
+        export class SettingNo65 {
+            //休暇種類
+            hdType: number;
+            //画面モード
+            screenMode: number;
+            //休暇申請設定．年休より優先消化チェック区分 - HdAppSet
+            pridigCheck: number;
+            //振休管理設定．管理区分
+            subVacaManage: boolean;
+            //休暇申請対象勤務種類．休暇種類を利用しない（振休） - AppEmploymentSetting
+            subVacaTypeUseFlg: boolean;
+            //代休管理設定．管理区分
+            subHdManage: boolean;
+            //休暇申請対象勤務種類．休暇種類を利用しない（代休） - AppEmploymentSetting
+            subHdTypeUseFlg: boolean;
+            constructor(hdType: number, screenMode: number, pridigCheck: number, subVacaManage: boolean,
+                    subVacaTypeUseFlg: boolean, subHdManage: boolean, subHdTypeUseFlg: boolean){
+                this.hdType = hdType;
+                this.screenMode = screenMode;
+                this.pridigCheck = pridigCheck;
+                this.subVacaManage = subVacaManage;
+                this.subVacaTypeUseFlg = subVacaTypeUseFlg;
+                this.subHdManage = subHdManage;
+                this.subHdTypeUseFlg = subHdTypeUseFlg;
+            }
+        }
     }
 }
