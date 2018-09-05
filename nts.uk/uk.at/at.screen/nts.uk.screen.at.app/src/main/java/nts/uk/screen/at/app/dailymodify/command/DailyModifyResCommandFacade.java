@@ -203,10 +203,12 @@ public class DailyModifyResCommandFacade {
 		dtoOlds = mergeDto.getLeft();
 		dtoNews = mergeDto.getRight();
 		// map to list result -> check error;
-		List<DailyModifyResult> resultOlds = dtoOlds.stream()
+		List<DailyModifyResult> resultOlds = /**dtoOlds.stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
-				.collect(Collectors.toList());
+				.collect(Collectors.toList()); */
+				AttendanceItemUtil.toItemValues(dtoOlds).entrySet().stream().map(dto -> DailyModifyResult.builder().items(dto.getValue())
+						.employeeId(dto.getKey().getEmployeeId()).workingDate(dto.getKey().getDate()).completed()).collect(Collectors.toList());
 		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = resultOlds.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
