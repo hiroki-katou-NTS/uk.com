@@ -152,21 +152,25 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		//会社共通の設定を
 		MasterShareContainer shareContainer = MasterShareBus.open();
 		
-		List<ErrorAlarmWorkRecord> errorAlermWorkRecords;
-		if (!calcOption.isSchedule()) {
-			errorAlermWorkRecords = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtrV2(comanyId, true);
-		} else {
-			errorAlermWorkRecords = Collections.emptyList();	
-		}
+		ManagePerCompanySet companyCommonSetting = companySet.orElseGet(() -> {
+			List<ErrorAlarmWorkRecord> errorAlermWorkRecords;
+			if (calcOption.isSchedule()) {
+				errorAlermWorkRecords = Collections.emptyList();
+			} else {
+				errorAlermWorkRecords = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtrV2(comanyId, true);
+			}
 		
-		ManagePerCompanySet companyCommonSetting = companySet.orElse(new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(comanyId),
-				   																			 holidayAddtionRepository.findByCId(comanyId),
-				   																			 specificWorkRuleRepository.findCalcMethodByCid(comanyId),
-				   																			 compensLeaveComSetRepository.find(comanyId),
-				   																			 divergenceTimeRepository.getAllDivTime(comanyId),
-				   																			 errorAlermWorkRecords,
-				   																			 bPUnitUseSettingRepository.getSetting(comanyId),
-				   																			 zeroTimeRepository.findByCId(comanyId)));
+			return new ManagePerCompanySet(
+					holidayAddtionRepository.findByCompanyId(comanyId),
+					holidayAddtionRepository.findByCId(comanyId),
+					specificWorkRuleRepository.findCalcMethodByCid(comanyId),
+					compensLeaveComSetRepository.find(comanyId),
+					divergenceTimeRepository.getAllDivTime(comanyId),
+					errorAlermWorkRecords,
+					bPUnitUseSettingRepository.getSetting(comanyId),
+					zeroTimeRepository.findByCId(comanyId));
+		});
+		
 		companyCommonSetting.setShareContainer(shareContainer);
 		
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
