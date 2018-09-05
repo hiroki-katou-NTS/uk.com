@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAla
 import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * 更新処理実行設定
@@ -33,4 +34,10 @@ public class ProcessExecutionSetting extends DomainObject {
 	
 	/* 月別集計 */
 	private boolean monthlyAggCls;
+	
+	/* 承認ルート更新（日次） */
+	private AppRouteUpdateDaily appRouteUpdateDaily;
+	
+	/* 承認ルート更新（月次） */
+	private NotUseAtr appRouteUpdateMonthly;
 }

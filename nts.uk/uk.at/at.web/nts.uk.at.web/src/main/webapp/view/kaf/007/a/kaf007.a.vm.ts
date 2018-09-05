@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
     import text = nts.uk.resource.getText;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -63,8 +64,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         endDate: self.targetDate    
                     });
                 }
-                if(!nts.uk.util.isNullOrEmpty(data.employeeIDs)){
-                    self.employeeID = data.employeeIDs[0];
+                if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
+                    self.employeeID = data.employeeIds[0];
                 }
                 return null;
             });
@@ -152,7 +153,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
             let self = this,
                 dfd = $.Deferred(),
-                employeeIDs = [];
+                employeeIDs = isNullOrEmpty(self.employeeID)? []:[self.employeeID];
 
             //get Common Setting
             nts.uk.ui.block.invisible();
@@ -229,7 +230,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 //A8 勤務時間２ ※A7
                 //共通設定.複数回勤務
-                self.isMultipleTime(settingData.multipleTime);
+                // self.isMultipleTime(settingData.multipleTime);
             }
             //Setting default value data work:
             self.appWorkChange().dataWork(settingData.dataWorkDto);
@@ -403,6 +404,12 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
+                if(self.appChangeSetting().initDisplayWorktime()===0){
+                    self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
+                    self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
+                    self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime1);
+                    self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
+                }
                 dfd.resolve();
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

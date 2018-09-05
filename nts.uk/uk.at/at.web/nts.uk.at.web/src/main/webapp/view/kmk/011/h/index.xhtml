@@ -56,7 +56,7 @@
 
 			<div id="functions-area-bottom">
 				<!-- H1_5 -->
-				<button tabindex="2" data-bind="click: closeSaveDialog"
+				<button tabindex="2" data-bind="click: closeSaveDialog, timeClick: 500, enable: $root.errors.isEmpty"
 					class="x-large proceed">#{i18n.getText('KMK011_65')}</button>
 				<!-- H1_6 -->
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KMK011_63')}</button>

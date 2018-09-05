@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -113,5 +114,23 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 		
 		// 積立年休使用残を返す
 		return remainingDays;
+	}
+	
+	public static void validate(ReserveLeaveGrantRemainingData domain) {
+		if ((domain.getDetails().getGrantNumber() != null) || (domain.getDetails().getUsedNumber().getDays() != null)
+				|| (domain.getDetails().getRemainingNumber() != null)) {
+			if (domain.getGrantDate() == null || domain.getDeadline() == null) {
+				if (domain.getGrantDate() == null) {
+					throw new BusinessException("Msg_925", "付与日");
+				}
+				if (domain.getDeadline() == null) {
+					throw new BusinessException("Msg_925", "期限日");
+				}
+			}
+		}
+		// 付与日＞使用期限の場合はエラー #Msg_1023
+		if (domain.getGrantDate().compareTo(domain.getDeadline()) > 0) {
+			throw new BusinessException("Msg_1023");
+		}
 	}
 }

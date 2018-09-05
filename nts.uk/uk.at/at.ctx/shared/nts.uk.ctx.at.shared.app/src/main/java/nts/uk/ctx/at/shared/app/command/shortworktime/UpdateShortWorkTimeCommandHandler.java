@@ -54,7 +54,9 @@ public class UpdateShortWorkTimeCommandHandler extends CommandHandler<UpdateShor
 			if (!itemtoBeUpdated.isPresent()){
 				throw new RuntimeException("Invalid ShortWorkTimeHistory");
 			}
-			DatePeriod newSpan = new DatePeriod(command.getStartDate(), command.getEndDate());
+			
+			GeneralDate endDate = (command.getEndDate() != null) ? command.getEndDate() : GeneralDate.ymd(9999, 12, 31);
+			DatePeriod newSpan = new DatePeriod(command.getStartDate(), endDate);
 			existHist.get().changeSpan(itemtoBeUpdated.get(), newSpan);
 			
 			sWorkTimeHistoryRepository.update(command.getEmployeeId(),dateItem);

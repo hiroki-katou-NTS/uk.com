@@ -89,7 +89,7 @@
                                 <table>
                                     <colgroup>
                                         <col width="150px" />
-                                        <col width="250px" />
+                                        <col width="266px" />
                                         <col width="266px" />
                                         <col width="*" />
                                     </colgroup>
@@ -98,8 +98,7 @@
                                             <!-- BA1-1 -->
                                             <div>#{i18n.getText('KAL003_56')}</div>
                                         </td>
-                                        <td></td>
-                                        <td class="pad_left_5px tx_radiobox_right">
+                                        <td class="tx_radiobox_right">
                                             <!-- BA1-2 -->
                                             <com:ko-if bind="checkItem() == 0
                                     || checkItem() == 1
@@ -192,7 +191,7 @@
                                         </td>
                                         <td class="pad_left_5px">
                                             <!-- BA2-4, BA2-5 -->
-                                            <div id="comBoxOperator" class="combo-box" data-bind="ntsComboBox: {
+                                            <div id="comBoxOperator" style = "width : 280px " class="combo-box" data-bind="ntsComboBox: {
                                              name:'#[KAL003_60]',
                                              options: $parent.listCompareTypes,
                                              optionsValue: 'value',
@@ -566,19 +565,19 @@
                         <div id="div_common_footer">
                             <table>
                                 <colgroup>
-                                    <col width="400px" />
+                                    <col width="150px" />
                                     <col width="*" />
                                 </colgroup>
                                 <tr class="row">
                                     <!-- B2-1: メッセージ色 - Message color -->
-                                    <td class="pad_left_10px">
+                                    <!-- <td class="pad_left_10px">
 
                                         <div>#{i18n.getText('KAL003_28')}</div>
                                     </td>
                                     <td class="pad_left_5px">
-                                        <!-- B2-2-->
+                                        B2-2
                                         <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 <tr class="row">
                                     <!-- B3-1: 表示するメッセージ - Message content -->
@@ -600,11 +599,11 @@
                                 </tr>
                                 <tr class="row">
 
-                                    <td class="pad_left_10px"></td>
+                                    <!-- <td class="pad_left_10px"></td>
                                     <td>
-                                        <!-- B3-3: ■メッセージを太字にする - Make the message bold-->
+                                        B3-3: ■メッセージを太字にする - Make the message bold
                                         <div data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </table>
                         </div>
@@ -1305,11 +1304,10 @@
 										</td>
 										<td class="pad_left_10px" style="margin-left: 30px">
 											<!-- BA3-2--> 
-											<input class="value-input needcheck" 
-											
+											<input class="value-input needcheck"  id = "settingtimes"
 											tabindex = "8"
 											data-bind="ntsNumberEditor: {
-						                              name: '#[KAL003_44]',
+						                              name: '#[KAL003_182]',
 						                              value: times,
 						                              required: true,
 						                              constraint: 'ContinuousVacationMonths',
@@ -1327,7 +1325,7 @@
 						<div id="div_common_footer">
 							<table>
 								<colgroup>
-									<col width="400px" />
+									<col width="150px" />
 									<col width="*" />
 								</colgroup>
 								<tr class="row">

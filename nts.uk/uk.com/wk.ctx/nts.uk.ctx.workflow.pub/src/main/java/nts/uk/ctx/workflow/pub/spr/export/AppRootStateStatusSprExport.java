@@ -23,4 +23,5 @@ public class AppRootStateStatusSprExport {
 	 * 承認状況
 	 */
 	private Integer dailyConfirmAtr;
+	
 }

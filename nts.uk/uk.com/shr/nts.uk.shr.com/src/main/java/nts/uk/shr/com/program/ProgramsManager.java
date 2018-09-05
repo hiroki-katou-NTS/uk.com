@@ -438,6 +438,11 @@ public class ProgramsManager {
 	 */
 	public static final Program KBT002H = new Program(WebAppId.AT, ProgramIdConsts.KBT002H, "KBT002_150",
 			"/view/kbt/002/h/index.xhtml");
+	/**
+	 * KBT002I
+	 */
+	public static final Program KBT002I = new Program(WebAppId.AT, ProgramIdConsts.KBT002I, "KBT002_190",
+			"/view/kbt/002/i/index.xhtml");
 
 	/**
 	 * KDW001A
@@ -829,6 +834,11 @@ public class ProgramsManager {
 	/** The Constant KMK012E. */
 	public static final Program KMK012E = new Program(WebAppId.AT, ProgramIdConsts.KMK012E, "KMK012_43",
 			"/view/kmk/012/e/index.xhtml");
+	
+	/** The Constant KMK012F. */
+	public static final Program KMK012F = new Program(WebAppId.AT, ProgramIdConsts.KMK012F, "KMK012_51",
+			"/view/kmk/012/f/index.xhtml");
+	
 	/** The Constant KMF001A. */
 	public static final Program KMF001A = new Program(WebAppId.AT, ProgramIdConsts.KMF001A, "KMF001_1",
 			"/view/kmf/001/a/index.xhtml");
@@ -1220,7 +1230,7 @@ public class ProgramsManager {
 	/**
 	 * CPS002E
 	 */
-	public static final Program CPS002E = new Program(WebAppId.COM, ProgramIdConsts.CPS002E, "CPS002_5",
+	public static final Program CPS002E = new Program(WebAppId.COM, ProgramIdConsts.CPS002E, "CPS002_110",
 			"/view/cps/002/e/index.xhtml");
 
 	/**

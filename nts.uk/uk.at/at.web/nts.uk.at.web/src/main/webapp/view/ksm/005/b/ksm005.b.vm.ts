@@ -4,6 +4,7 @@ module nts.uk.at.view.ksm005.b {
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
+    import blockUI = nts.uk.ui.block;
     export module viewmodel {
 
         export class ScreenModel {
@@ -36,7 +37,7 @@ module nts.uk.at.view.ksm005.b {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
@@ -48,6 +49,7 @@ module nts.uk.at.view.ksm005.b {
                 
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(self.getMonth());
+                self.yearMonthPicked.extend({ notify: 'always' });
                 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
                     if (self.isBuild) {
@@ -65,8 +67,27 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+                    if($('#yMPicker').ntsError('hasError')){
+                        return; 
+                    }
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
+                    }
+                    
+                    if (self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
+                        service.getItemOfMonth(self.selectMonthlyPattern(), month).done(function(data) {
+                            var dataUpdate: WorkMonthlySettingDto[] = [];
+                            for (var item of data) {
+                                item.workTypeCode='';
+                                item.workTypeName = '';
+                                item.workingCode='';
+                                item.workingName = '';
+                                item.typeColor = TypeColor.HOLIDAY;
+                                dataUpdate.push(item);
+                            }
+                            self.updateWorkMothlySetting(dataUpdate);
+                            self.lstWorkMonthlySetting(dataUpdate);
+                        });
                     }
                 });
                 self.cssRangerYM = {
@@ -433,7 +454,6 @@ module nts.uk.at.view.ksm005.b {
 //                if (isAdd) {
 //                    dataUpdate.push(setting);
 //                }   
-                console.log(dataUpdate);
                 self.lstWorkMonthlySetting(dataUpdate);
                 self.updateWorkMothlySetting(dataUpdate);
             } 
@@ -469,6 +489,10 @@ module nts.uk.at.view.ksm005.b {
                     return;    
                 }
                 
+                if (_.isNull(self.yearMonthPicked())){
+                    return;
+                }
+                blockUI.grayout();
                 service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(), self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -482,7 +506,7 @@ module nts.uk.at.view.ksm005.b {
                     } else {
                         nts.uk.ui.dialog.alertError(error);
                     }
-                })
+                }).always(()=> blockUI.clear());
                                 
             }
             

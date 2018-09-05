@@ -8,6 +8,7 @@
 
 table#date-fixed-table {
     empty-cells: show;
+    width: auto;
 }
 
 table.fixed-table th {

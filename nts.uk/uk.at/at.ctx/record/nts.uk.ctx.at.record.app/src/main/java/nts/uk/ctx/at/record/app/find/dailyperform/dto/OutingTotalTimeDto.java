@@ -3,9 +3,11 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 控除合計時間 */
 @Data
@@ -34,8 +36,14 @@ public class OutingTotalTimeDto implements ItemConst {
 	
 	public OutingTotalTime createDeductionTime() {
 		return OutingTotalTime.of(
-					totalTime == null ? null : totalTime.createTimeWithCalc(),
-					withinStatutoryTotalTime == null ? null : withinStatutoryTotalTime.toDomain(),
-					excessOfStatutoryTotalTime == null ? null : excessOfStatutoryTotalTime.createTimeWithCalc());
+					totalTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : totalTime.createTimeWithCalc(),
+					withinStatutoryTotalTime == null ? WithinOutingTotalTimeDto.createEmpty() : withinStatutoryTotalTime.toDomain(),
+					excessOfStatutoryTotalTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : excessOfStatutoryTotalTime.createTimeWithCalc());
+	}
+	
+	public static OutingTotalTime createEmpty() {
+		return OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+									WithinOutingTotalTimeDto.createEmpty(),
+									TimeWithCalculation.sameTime(new AttendanceTime(0)));
 	}
 }

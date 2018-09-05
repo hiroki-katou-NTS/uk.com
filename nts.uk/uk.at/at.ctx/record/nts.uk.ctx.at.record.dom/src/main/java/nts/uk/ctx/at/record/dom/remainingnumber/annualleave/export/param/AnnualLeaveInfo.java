@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
 /**
  * 年休情報
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @Setter
@@ -206,7 +206,7 @@ public class AnnualLeaveInfo implements Cloneable {
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
-			List<TempAnnualLeaveManagement> tempAnnualLeaveMngs,
+			List<TmpAnnualLeaveMngWork> tempAnnualLeaveMngs,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
 			AggrResultOfAnnualLeave aggrResult,
@@ -445,19 +445,20 @@ public class AnnualLeaveInfo implements Cloneable {
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
-			List<TempAnnualLeaveManagement> tempAnnualLeaveMngs,
+			List<TmpAnnualLeaveMngWork> tempAnnualLeaveMngs,
 			AggrResultOfAnnualLeave aggrResult){
 		
 		// 「暫定年休管理データリスト」を取得する
+		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		for (val tempAnnualLeaveMng : tempAnnualLeaveMngs){
 			if (!aggregatePeriodWork.getPeriod().contains(tempAnnualLeaveMng.getYmd())) continue;
 			
 			// 年休を消化する
 			{
 				// 年休使用数WORK
-				ManagementDays useDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
+				ManagementDays useDaysWork = new ManagementDays(tempAnnualLeaveMng.getUseDays().v());
 				// 年休使用残数WORK
-				ManagementDays remainDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
+				ManagementDays remainDaysWork = new ManagementDays(tempAnnualLeaveMng.getUseDays().v());
 				
 				// 年休付与残数を取得
 				List<AnnualLeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
@@ -513,6 +514,24 @@ public class AnnualLeaveInfo implements Cloneable {
 				
 				// 年休情報残数を更新
 				this.updateRemainingNumber();
+			}
+		}
+		
+		// 残数不足エラーをチェックする
+		{
+			// 年休残数がマイナスかチェック
+			val withMinus = this.remainingNumber.getAnnualLeaveWithMinus();
+			if (withMinus.getRemainingNumber().getTotalRemainingDays().v() < 0.0){
+				if (this.afterGrantAtr){
+					
+					// 「日単位年休不足エラー（付与後）」を追加
+					aggrResult.addError(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
+				}
+				else {
+					
+					// 「日単位年休不足エラー（付与前）」を追加
+					aggrResult.addError(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
+				}
 			}
 		}
 		

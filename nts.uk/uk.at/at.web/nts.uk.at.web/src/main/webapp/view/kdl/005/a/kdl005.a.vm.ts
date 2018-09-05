@@ -118,24 +118,26 @@ module nts.uk.at.view.kdl005.a {
             }
             
             bindTimeData(data: any) {
-                var self = this;
-                var leaveDate = "";
-                var dayOffDateTop = "";
-                var dayOffDateBot = "";
-                var duedateHoliday = "";
-                var occurrenceDays1 = "";
-                var occurrenceDays2Top = "";
-                var occurrenceDays2Bot = "";
+                let self = this;
+               
                 
                 self.dataItems.removeAll();
                 
                 if(data.lstHistory != null && data.lstHistory.length >= 1) {
                     _.each(data.lstHistory, function (item) {
-                        var isHalfDay = false;
+                        
+                        let leaveDate = "";
+                        let dayOffDateTop = "";
+                        let dayOffDateBot = "";
+                        let duedateHoliday = "";
+                        let occurrenceDays1 = "";
+                        let occurrenceDays2Top = "";
+                        let occurrenceDays2Bot = "";
+                        let isHalfDay = false;
                         
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
-                                var dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
+                                let dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
                                 
                                 if(dayoffDateStr !== "") {
                                     if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
@@ -189,10 +191,10 @@ module nts.uk.at.view.kdl005.a {
                             isHalfDay = true;
                         }
                         
-                        var temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
+                        let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
-                        if(temp.leaveDate !== "" && temp.dayOffDateTop !== "" && temp.dayOffDateBot !== "" && temp.duedateHoliday !== "" 
-                                && temp.occurrenceDays1 !== "" && temp.occurrenceDays2Top !== "" && temp.occurrenceDays2Bot !== "") {
+                        if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== "" 
+                                || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
                             self.dataItems.push(temp);
                         }
                     });                    

@@ -221,4 +221,13 @@ public class PredetermineTimeSetForCalc {
 		
 	}
 	
+	/**
+	 * 1日の範囲時間帯を作成する
+	 * @return　1日の範囲時間帯
+	 */
+	public TimeSpanForCalc getOneDayTimeSpan() {
+		return new TimeSpanForCalc(this.getStartOneDayTime(), this.getStartOneDayTime().forwardByMinutes(this.getOneDayRange().valueAsMinutes()));
+	}
+	
+	
 }

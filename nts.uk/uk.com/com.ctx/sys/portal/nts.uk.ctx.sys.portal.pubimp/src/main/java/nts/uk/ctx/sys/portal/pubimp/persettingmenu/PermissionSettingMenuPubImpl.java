@@ -27,14 +27,16 @@ public class PermissionSettingMenuPubImpl implements PermissionSettingMenuPub{
 			perMenues.forEach(m -> {
 				StandardMenu standardMenu = standardMenuRepo.getStandardMenubyCode(
 						AppContexts.user().companyId(), m.getMenuCode().toString(), m.getSystem().value,
-						m.getClassification().value).get();
-				PermissionSettingMenuExport dto = new PermissionSettingMenuExport();
-				dto.setCode(standardMenu.getCode().toString());
-				dto.setDisplayName(standardMenu.getDisplayName().toString());
-				dto.setProgramId(standardMenu.getProgramId());
-				dto.setScreenId(standardMenu.getScreenId());
-				dto.setQueryString(standardMenu.getQueryString());
-				result.add(dto);
+						m.getClassification().value).orElse(null);
+				if(standardMenu != null) {
+					PermissionSettingMenuExport dto = new PermissionSettingMenuExport();
+					dto.setCode(standardMenu.getCode().toString());
+					dto.setDisplayName(standardMenu.getDisplayName().toString());
+					dto.setProgramId(standardMenu.getProgramId());
+					dto.setScreenId(standardMenu.getScreenId());
+					dto.setQueryString(standardMenu.getQueryString());
+					result.add(dto);
+				}
 			});
 		}
 		if(!result.isEmpty()) result.sort((a,b) -> a.getCode().compareTo(b.getCode()));

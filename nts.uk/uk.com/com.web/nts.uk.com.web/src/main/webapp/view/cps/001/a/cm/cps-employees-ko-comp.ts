@@ -147,7 +147,7 @@ module nts.custom.component {
             
             .header-info .person-info .row>div.info>* {
                 display: inline-block;
-                max-width: 215px;
+                max-width: 200px;
                 text-overflow: ellipsis;
                 height: 30px;
                 overflow: hidden;
@@ -309,10 +309,12 @@ module nts.custom.component {
                 action: {
                     ebook: () => {
                         let auth = params.auth,
-                            id = ko.toJS(params.person.id);
+                            pid = ko.toJS(params.person.id),
+                            sid = ko.toJS(params.employee.id);
 
                         setShared("CPS001F_PARAMS", {
-                            pid: id
+                            pid: pid,
+                            sid:sid
                         });
 
                         modal('../f/index.xhtml').onClosed(() => { });

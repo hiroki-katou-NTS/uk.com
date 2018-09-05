@@ -30,7 +30,7 @@ public class CompareItemValue {
 		// 就業時間帯 - workTimeCode
 		itemValueWork = new ItemValue();
 		itemValueWork.itemId(2);
-		itemValueWork.value(basicSchedule.getWorkTimeCode() == null ? null : basicSchedule.getWorkTimeCode());
+		itemValueWork.value(basicSchedule.getWorkTimeCode());
 		itemValueWork.valueType(ValueType.TEXT);
 		itemValues.add(itemValueWork);
 
@@ -169,13 +169,29 @@ public class CompareItemValue {
 		itemValueTotalLaborTime.valueType(ValueType.TIME);
 		itemValues.add(itemValueTotalLaborTime);
 
-		// 育児介護時間 - childCareTime
-		ItemValue itemValueChildCareTime = new ItemValue();
-		itemValueChildCareTime.itemId(38);
-		itemValueChildCareTime.value(basicSchedule.getWorkScheduleTime().isPresent()
-				? basicSchedule.getWorkScheduleTime().get().getChildCareTime().valueAsMinutes() : null);
-		itemValueChildCareTime.valueType(ValueType.TIME);
-		itemValues.add(itemValueChildCareTime);
+		// フレックス超過時間 - flexTime
+		ItemValue itemValueFlexTime = new ItemValue();
+		itemValueFlexTime.itemId(39);
+		itemValueFlexTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getFlexTime().valueAsMinutes() : null);
+		itemValueFlexTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueFlexTime);
+		
+		// 育児時間 - childTime
+		ItemValue itemValueChildTime = new ItemValue();
+		itemValueChildTime.itemId(102);
+		itemValueChildTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getChildTime().valueAsMinutes() : null);
+		itemValueChildTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueChildTime);
+		
+		// 介護時間 - careTime
+		ItemValue itemValueCareTime = new ItemValue();
+		itemValueCareTime.itemId(103);
+		itemValueCareTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getCareTime().valueAsMinutes() : null);
+		itemValueCareTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueCareTime);
 
 		// 勤務予定人件費 - workSchedulePersonFees
 		int itemIdWorkSchedulePersonFee = 53;

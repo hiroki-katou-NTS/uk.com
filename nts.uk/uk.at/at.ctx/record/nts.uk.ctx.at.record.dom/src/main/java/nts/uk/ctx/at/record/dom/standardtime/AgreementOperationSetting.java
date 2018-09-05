@@ -83,39 +83,21 @@ public class AgreementOperationSetting extends AggregateRoot {
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
 		
 		// 集計期間を取得
-		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE){
-			aggrPeriod.setPeriod(period);
+		val endYMStart = GeneralDate.ymd(period.end().year(), period.end().month(), 1);
+		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
+		if (this.closingDateType == ClosingDateType.LASTDAY){
+			// 終了月の末締め
+			aggrPeriod.setPeriod(new DatePeriod(endYMStart, endYMEnd));
 		}
-		if (this.closingDateAtr == ClosingDateAtr.DESIGNATEDATE){
-			val startYMStart = GeneralDate.ymd(period.start().year(), period.start().month(), 1);
-			val startYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addMonths(1).addDays(-1);
-			val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
-			if (this.closingDateType == ClosingDateType.LASTDAY){
-				// 開始月の末締め
-				aggrPeriod.setPeriod(new DatePeriod(startYMStart, startYMEnd));
+		else {
+			// 集計期間の終了月の締め期間を求める
+			int closureDay = this.closingDateType.value + 1;
+			GeneralDate closingEnd = endYMEnd;
+			if (closureDay < closingEnd.day()){
+				closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
 			}
-			else {
-				// 集計期間の開始月締め開始日～終了月締め日
-				int closureDay = this.closingDateType.value + 1;
-				GeneralDate closingStart = startYMEnd.addDays(1);
-				if (closureDay + 1 <= startYMEnd.day()){
-					closingStart = GeneralDate.ymd(startYMEnd.year(), startYMEnd.month(), closureDay + 1);
-				}
-				GeneralDate closingEnd = endYMEnd;
-				if (closureDay <= endYMEnd.day()){
-					closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
-				}
-				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-				if (aggrPeriod.getPeriod().isReversed()){
-					// 開始＞終了の時、開始を１か月前にずらす
-					val prevYMEnd = GeneralDate.ymd(period.start().year(), period.start().month(), 1).addDays(-1);
-					closingStart = prevYMEnd.addDays(1);
-					if (closureDay + 1 <= prevYMEnd.day()){
-						closingStart = GeneralDate.ymd(prevYMEnd.year(), prevYMEnd.month(), closureDay + 1);
-					}
-					aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
-				}
-			}
+			GeneralDate closingStart = closingEnd.addMonths(-1).addDays(1);
+			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
 		}
 		
 		// 年度・年月の取得
@@ -141,40 +123,27 @@ public class AgreementOperationSetting extends AggregateRoot {
 		aggrPeriod.setYearMonth(yearMonth);
 		aggrPeriod.setYear(new Year(yearMonth.year()));	// 期首月　未配慮
 		
-		// 「締め日区分」を取得
-		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE){
-			
-			// 締め期間と同じ集計期間を取得
-			val datePeriods = closure.getPeriodByYearMonth(yearMonth);
-			if (datePeriods.size() <= 0) return Optional.empty();
-			aggrPeriod.setPeriod(datePeriods.get(0));
-			return Optional.of(aggrPeriod);
+		// 締め日を指定する場合の集計期間を取得
+		val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
+		val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
+		val prevEnd = currentStart.addDays(-1);
+		if (this.closingDateType == ClosingDateType.LASTDAY){
+			// 年月の末締め
+			aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
 		}
-		if (this.closingDateAtr == ClosingDateAtr.DESIGNATEDATE){
-			
-			// 締め日を指定する場合の集計期間を取得
-			val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
-			val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
-			val prevEnd = currentStart.addDays(-1);
-			if (this.closingDateType == ClosingDateType.LASTDAY){
-				// 年月の末締め
-				aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
+		else {
+			// 年月の締め開始日～締め終了日
+			int closureDay = this.closingDateType.value + 1;
+			GeneralDate closingStart = currentStart;
+			if (closureDay + 1 <= prevEnd.day()){
+				closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
 			}
-			else {
-				// 年月の締め開始日～締め終了日
-				int closureDay = this.closingDateType.value + 1;
-				GeneralDate closingStart = currentStart;
-				if (closureDay + 1 <= prevEnd.day()){
-					closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
-				}
-				GeneralDate closingEnd = currentEnd;
-				if (closureDay <= currentEnd.day()){
-					closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
-				}
-				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
+			GeneralDate closingEnd = currentEnd;
+			if (closureDay <= currentEnd.day()){
+				closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
 			}
-			return Optional.of(aggrPeriod);
+			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
 		}
-		return Optional.empty();
+		return Optional.of(aggrPeriod);
 	}
 }

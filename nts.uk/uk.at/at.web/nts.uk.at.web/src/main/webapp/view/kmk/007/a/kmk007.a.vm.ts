@@ -241,7 +241,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.isCreated(true);
                     $('#input-workTypeCode').focus();
-                    self.checkDisabled(true);
+                    self.cleanForm();
                 }
 
             });

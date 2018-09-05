@@ -22,7 +22,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogDataCorrectRecordRefeDto {
-
+	private String parentKey;
 	private String childrentKey;
 	private String operationId;
 	private String targetDate;
@@ -38,7 +38,7 @@ public class LogDataCorrectRecordRefeDto {
 	public static LogDataCorrectRecordRefeDto fromDomain(DataCorrectionLog domain) {
 		String childrentKey = IdentifierUtil.randomUniqueId();
 		String targetDateStr = "";
-		GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+		GeneralDate targetDate = domain.getTargetDataKey().getDateKey();
 		TargetDataType tagetData = TargetDataType.of(domain.getTargetDataType().value);
 		switch (tagetData) {
 		case SCHEDULE:
@@ -61,7 +61,7 @@ public class LogDataCorrectRecordRefeDto {
 			break;
 		}
 		
-		return new LogDataCorrectRecordRefeDto(
+		return new LogDataCorrectRecordRefeDto("",
 				childrentKey,
 				domain.getOperationId(),
 				targetDateStr,

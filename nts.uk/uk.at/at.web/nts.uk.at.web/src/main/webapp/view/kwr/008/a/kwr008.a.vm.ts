@@ -4,7 +4,8 @@ module nts.uk.at.view.kwr008.a {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import share = nts.uk.at.view.kwr008.share.model;
-
+    import alertError = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
 
@@ -76,6 +77,13 @@ module nts.uk.at.view.kwr008.a {
 
             printFormat: KnockoutObservable<number> = ko.observable(0);
 
+            listSheetExcludedEmp: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText('KWR008_60') },
+                { code: 1, name: nts.uk.resource.getText('KWR008_61') }
+            ]);
+
+            excludeEmp: KnockoutObservable<number> = ko.observable(0);
+
             fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
             constructor() {
@@ -105,6 +113,10 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
+                
+                self.printFormat.subscribe(item => {
+                    nts.uk.ui.errors.clearAll();
+                });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
@@ -125,15 +137,11 @@ module nts.uk.at.view.kwr008.a {
                 });
                 return dfd.promise();
             }
-            checkInput(): boolean {
-                var self = this;
-                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
-            }
 
             exportReport() {
                 var self = this;
                 if (self.validate()) return;
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 var data = new model.EmployeeDto();
                 if (self.printFormat() == 0) {
                     data.startYearMonth = self.dateValue().startDate;
@@ -145,29 +153,30 @@ module nts.uk.at.view.kwr008.a {
                 data.breakPage = self.selectedBreakPage().toString();
                 data.printFormat = self.printFormat();
                 data.employees = [];
+                data.excludeEmp = self.excludeEmp();
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
                     if (emp) data.employees.push(emp);
                 }
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
-                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
+                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat(), self.excludeEmp()));
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(res => {
                     let msgId = self.getAsyncData(res.taskDatas, "messageId").valueAsString;
                     if (msgId == "") return;
                     let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
                     let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
-                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
+                    alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
                 }).fail(err => {
-                    nts.uk.ui.dialog.alertError(err);
+                    alertError(err);
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    block.clear();
                 })
             }
 
             private getMsgEmpError(data: Array<any>, totalErr: number) {
                 let self = this;
                 let msgEmpErr = "";
-                for (let i = 0; i < totalErr; i++){
+                for (let i = 0; i < totalErr; i++) {
                     msgEmpErr += "\n" + self.getAsyncData(data, "empErr" + i).valueAsString;
                 }
                 return msgEmpErr;
@@ -182,7 +191,7 @@ module nts.uk.at.view.kwr008.a {
 
             openKWR008B() {
                 let self = this;
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 let param = {
                     selectedCd: self.selectedOutputItem()
                 }
@@ -193,15 +202,15 @@ module nts.uk.at.view.kwr008.a {
                     self.getOutItemSettingCode().done(() => {
                         if (!resultData) {
                             self.selectedOutputItem(null);
-                            nts.uk.ui.block.clear();
+                            block.clear();
                             return;
                         } else {
                             self.selectedOutputItem(resultData.selectedCd);
-                            nts.uk.ui.block.clear();
+                            block.clear();
                         }
                     }).fail(err => {
-                        nts.uk.ui.dialog.alertError({ messageId: err.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                        nts.uk.ui.block.clear();
+                        alertError({ messageId: err.messageId }).then(function() { block.clear(); });
+                        block.clear();
                     });
                 });
             }
@@ -255,7 +264,7 @@ module nts.uk.at.view.kwr008.a {
                 }
 
                 if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
-                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
+                    alertError("Base Date or Closure or Period must be shown!");
                     return;
                 }
                 self.ccgcomponent = {
@@ -336,6 +345,7 @@ module nts.uk.at.view.kwr008.a {
                                     self.selectedOutputItem(data.setItemsOutputCd);
                                     self.selectedBreakPage(data.breakPage);
                                     self.printFormat(data.printFormat);
+                                    self.excludeEmp(data.excludeEmp);
                                 } else if (self.outputItem().length) {
                                     self.selectedOutputItem(self.outputItem()[0].code);
                                 }
@@ -363,7 +373,10 @@ module nts.uk.at.view.kwr008.a {
                 return dfd.promise();
             }
             public validate(): boolean {
-                $('#period').trigger('validate');
+                let self = this;
+                if (self.printFormat() == 0) {
+                    $('#period .ntsDatepicker').trigger('validate');
+                }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
             }
@@ -395,7 +408,7 @@ module nts.uk.at.view.kwr008.a {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };
@@ -499,10 +512,13 @@ module nts.uk.at.view.kwr008.a {
 
                 printFormat: number;
 
-                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number) {
+                excludeEmp: number;
+
+                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number, excludeEmp: number) {
                     this.setItemsOutputCd = setItemsOutputCd;
                     this.breakPage = breakPage;
                     this.printFormat = printFormat;
+                    this.excludeEmp = excludeEmp;
                 }
             }
 

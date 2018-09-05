@@ -91,5 +91,18 @@ public class SaveProcessExecutionCommand {
 	
 	/* 更新処理の日別処理対象者区分.異動者を再作成する */
 	public boolean recreateTransfers;
+	
+	/** 承認ルート更新区分 */
+	private boolean appRouteUpdateAtr;
+	
+	/** 新入社員を作成する */
+	private Boolean createNewEmp;
+	
+	/* 承認ルート更新（月次） */
+	private boolean appRouteUpdateMonthly;
+
+	/* 実行種別*/
+	private int processExecType;
+	
 
 }

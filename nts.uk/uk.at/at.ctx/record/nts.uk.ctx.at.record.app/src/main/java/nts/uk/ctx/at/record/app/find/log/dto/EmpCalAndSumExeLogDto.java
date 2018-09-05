@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 
@@ -30,6 +31,10 @@ public class EmpCalAndSumExeLogDto {
 	private String companyID;
 	
 	/**
+	 * 選択した締め
+	 */
+	private String closureName;
+	/**
 	 * 処理月
 	 */
 	private Integer processingMonth;
@@ -44,7 +49,7 @@ public class EmpCalAndSumExeLogDto {
 	 * 実行日
 	 */
 
-	private GeneralDate executionDate;
+	private GeneralDateTime executionDate;
 	
 	/**
 	 * 実行状況
@@ -88,7 +93,8 @@ public class EmpCalAndSumExeLogDto {
 	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain, List<ExecutionLog> lstExecutionLog) {
 		return new EmpCalAndSumExeLogDto(
 				domain.getEmpCalAndSumExecLogID(), 
-				domain.getCompanyID(), 
+				domain.getCompanyID(),
+				null,
 				domain.getProcessingMonth().v(), 
 				domain.getExecutedMenu().value, 
 				domain.getExecutionDate(), 

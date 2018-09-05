@@ -1,3 +1,10 @@
+let $: any = window['$'],
+    _: any = window['_'],
+    ko: any = window['ko'],
+    nts: any = window['nts'],
+    moment: any = window['moment'],
+    __viewContext: any = window['__viewContext'];
+
 module cps002.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
@@ -13,6 +20,8 @@ module cps002.a.vm {
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
     import alertError = nts.uk.ui.dialog.alertError;
+    import alertWarning = nts.uk.ui.dialog.caution;
+
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -49,9 +58,7 @@ module cps002.a.vm {
         currentInitSetting: KnockoutObservable<InitSetting> = ko.observable(new InitSetting(null));
 
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
-
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout());
-
+        
         isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
 
         currentUseSetting: KnockoutObservable<UserSetting> = ko.observable(null);
@@ -59,10 +66,11 @@ module cps002.a.vm {
         employeeBasicInfo: KnockoutObservable<IEmployeeBasicInfo> = ko.observable(null);
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
+        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         // check quyen có thể setting copy 
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
@@ -111,8 +119,33 @@ module cps002.a.vm {
             }
         };
 
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
+        classWarning: KnockoutObservable<string> = ko.observable("");
+
         constructor() {
             let self = this;
+
+            ko.computed({
+                read: () => {
+                    let step = ko.toJS(self.currentStep),
+                        typi = ko.toJS(self.createTypeId);
+
+                    if (step == 1 && typi == 1) {
+                        $('#ccgcomponent').css('visibility', '');
+                    } else {
+                        $('#ccgcomponent').css('visibility', 'hidden');
+                    }
+
+                    setTimeout(() => {
+                        if (step == 2) {
+                            $('#emp_reg_info_wizard').css('min-height', '740px');
+                        } else {
+                            $('#emp_reg_info_wizard').css('min-height', $('.body.current').height() + 'px');
+                        }
+                    }, 100);
+                }
+            });
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
@@ -223,7 +256,7 @@ module cps002.a.vm {
                 }
             });
 
-            self.currentEmployee().avatarId.subscribe((avartarId) => {
+            self.currentEmployee().avatarCropedId.subscribe((avartarId) => {
                 let self = this,
                     avartarContent = $("#employeeAvatar");
 
@@ -242,13 +275,13 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
                 let self = this;
                 self.autoUpdateCardNo(employeeCode);
-            }); 
-            
+            });
+
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
                 if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
-                    if (cardNo && cardNo.length < ce.digitsNumber) {
+                    if (cardNo && cardNo.length <= ce.digitsNumber) {
                         switch (ce.method) {
                             case EDIT_METHOD.PreviousZero: {
                                 emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
@@ -270,7 +303,7 @@ module cps002.a.vm {
                     }
                 }
             });
-            
+
             // check quyen có thể setting copy hoặc setting init
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
@@ -288,8 +321,10 @@ module cps002.a.vm {
                     }
                 }
             });
-
+            self.checkLicense();
             self.start();
+            
+            self.currentStep.valueHasMutated();
         }
 
         loadCopySettingItemData() {
@@ -311,12 +346,12 @@ module cps002.a.vm {
                 });
             }
         }
-        
+
         logMouseOver() {
             let self = this;
             self.autoUpdateCardNo(self.currentEmployee().employeeCode());
         }
-        
+
         autoUpdateCardNo(employeeCode) {
             let self = this;
             let employee = self.currentEmployee();
@@ -345,12 +380,10 @@ module cps002.a.vm {
                     break;
             }
         }
-        
-        start() : JQueryPromise<any>{
+
+        start() {
             let self = this;
             self.currentEmployee().clearData();
-
-            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 self.subContraint(false);
@@ -360,10 +393,7 @@ module cps002.a.vm {
                     self.employeeBasicInfo(data);
                 });
                 self.getLayout();
-                dfd.resolve(data);
             });
-
-            return dfd.promise();
         }
 
         getLayout() {
@@ -384,6 +414,9 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(userSetting));
                         self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
+                    }).always(() => {
+                        // show content
+                        $('#contents-area').css('visibility', 'visible');
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
@@ -411,17 +444,22 @@ module cps002.a.vm {
             }
         }
 
-        initStampCard(newEmployeeCode : string) {
-            let self = this;
+        initStampCard(newEmployeeCode: string) {
+            let self = this,
+                ce = ko.toJS(self.stampCardEditing);
             service.getInitCardNumber(newEmployeeCode).done((value) => {
-                self.currentEmployee().cardNo(value);
+                if (value && value.length <= ce.digitsNumber) {
+                    self.currentEmployee().cardNo(value);
+                }else{
+                    self.currentEmployee().cardNo("");
+                }
             });
         }
-        
+
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                let controls = self.layout().listItemCls();
+                let controls = self.listItemCls();
                 lv.checkError(controls);
             } else {
                 $(".form_step1").trigger("validate");
@@ -445,6 +483,7 @@ module cps002.a.vm {
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
                     if (self.createTypeId() === 3) {
+                        $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));  
                         self.gotoStep2();
                         return;
                     }
@@ -477,11 +516,11 @@ module cps002.a.vm {
             self.currentStep(0);
 
             self.start();
-            
+
             self.getUserSetting();
-            
+
         }
-        
+
         getUserSetting(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -501,11 +540,6 @@ module cps002.a.vm {
         gotoStep2() {
             let self = this;
             self.currentStep(2);
-            let layout = self.layout();
-
-            layout.layoutCode('');
-            layout.layoutName('');
-            layout.listItemCls([]);
 
             let command = ko.toJS(self.currentEmployee());
 
@@ -515,16 +549,10 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             service.getLayoutByCreateType(command).done((data: ILayout) => {
-                layout.layoutCode(data.layoutCode || '');
-                layout.layoutName(data.layoutName || '');
 
-                if (data.standardDate) {
-                    layout.standardDate(data.standardDate);
-                }
-
-                layout.listItemCls(data.itemsClassification || []);
-                if (layout.listItemCls().length > 0) {
-                    new vc(layout.listItemCls());
+                self.listItemCls(data.itemsClassification || []);
+                if (self.listItemCls().length > 0) {
+                    new vc(self.listItemCls());
                     setTimeout(() => {
                         $('.drag-panel input:not(:disabled):first').focus();
                     }, 100);
@@ -561,6 +589,8 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
+            //Name Screen D 
+            $('#pg-name').text('CPS002D'+ ' ' + text('CPS002_4'));
         }
 
         isUseInitValue() {
@@ -578,13 +608,17 @@ module cps002.a.vm {
             if (self.isUseInitValue()) {
 
                 //start Screen C
+                //Set name Screen C　#CPS002_3
+                $('#pg-name').text('CPS002C'+ ' ' + text('CPS002_3'));
 
                 self.loadInitSettingData();
 
-
+                 $('#combo-box').focus();
             } else {
 
                 //start Screen B
+                //Set name Screen B　#CPS002_2
+                $('#pg-name').text('CPS002B'+ ' ' + text('CPS002_2'));
 
                 $('#search_box').hide();
 
@@ -592,8 +626,7 @@ module cps002.a.vm {
                 if (self.copyEmployee().employeeId == '') {
                     $('#hor-scroll-button-show').trigger('click');
                 }
-                $('#inp_baseDate').focus();
-
+                $('#combo-box').focus();
             }
 
 
@@ -605,7 +638,7 @@ module cps002.a.vm {
             self.categoryList.removeAll();
 
             service.getCopySetting().done((result: Array<ICopySetting>) => {
-                if (result.length) {
+                if (result.length > 0) {
                     self.categoryList(_.map(result, item => {
                         return new CategoryItem(item);
                     }));
@@ -664,15 +697,17 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            self.layout().listItemCls.removeAll();
+            self.listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
             }
             if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
                 return;
             }
         }
@@ -711,50 +746,10 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
-            
-            // list category nghỉ đặc biệt còn lại
-            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
-                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
-            for (var i = 0; i < command.inputs.length; i++) {
-                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
-                    if((command.inputs[i].items[0].value == undefined) 
-                        ||(command.inputs[i].items[1].value == undefined) 
-                        || (command.inputs[i].items[3].value == undefined) 
-                        || (command.inputs[i].items[4].value == undefined) 
-                        || (command.inputs[i].items[5].value == undefined) 
-                        || (command.inputs[i].items[6].value == undefined) 
-                        || (command.inputs[i].items[7].value == undefined) 
-                        || (command.inputs[i].items[8].value == undefined) 
-                        || (command.inputs[i].items[9].value == undefined) 
-                        || (command.inputs[i].items[10].value == undefined)){
-                        _.remove(command.inputs, function(n: any) {
-                            return n.categoryCd == command.inputs[i].categoryCd;
-                        });
-                    }
-                }
-                
-                // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
-                // fix bug #96124
-                if (command.inputs[i].categoryCd === 'CS00037') {
-                    if ((command.inputs[i].items[0].value == undefined)
-                        || (command.inputs[i].items[1].value == undefined)
-                        || (command.inputs[i].items[3].value == undefined)
-                        || (command.inputs[i].items[4].value == undefined)
-                        || (command.inputs[i].items[5].value == undefined)){
-                        _.remove(command.inputs, function(n: any) {
-                            return n.categoryCd == command.inputs[i].categoryCd;
-                        });
-
-                        _.remove(self.layout().listItemCls(), function(m: any) {
-                            return m.personInfoCategoryCD == 'CS00037';
-                        });
-                    }
-                }
-            }
-            
+            command.categoryName = nts.uk.resource.getText("CPS001_152");
+            command.itemName = nts.uk.resource.getText("CPS001_150");
 
             if (!self.isError()) {
-
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
@@ -767,10 +762,12 @@ module cps002.a.vm {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
+                    
+                     self.checkLicense();
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                    alertError({ messageId: error.messageId, messageParams: error.parameterIds });
 
                 })
             }
@@ -800,7 +797,7 @@ module cps002.a.vm {
                 }
             });
         }
-        
+
 
         openJModal(param, data) {
 
@@ -816,8 +813,8 @@ module cps002.a.vm {
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#cardNumber").ntsError("clear");
-                        currentEmp.cardNo(result);
-                        currentEmp.cardNo.valueHasMutated();
+                    currentEmp.cardNo(result);
+                    currentEmp.cardNo.valueHasMutated();
                 }
             });
         }
@@ -856,29 +853,45 @@ module cps002.a.vm {
                 setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
-
+                setShared("openIDialog", self.currentEmployee().avatarOrgId());
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
-                    let imageResult = getShared("imageId");
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult.cropImgId)
-                        self.defaultImgId(imageResult.defaultImgId);
+                    let dataShare = getShared("imageId");
+                    if (dataShare) {
+                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId),
+                            self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
+                            self.currentEmployee().fileName(dataShare.fileName)
                     }
                 });
 
             }
         }
 
-
         openInitModal() {
-
-
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
             });
         }
 
+        checkLicense() {
+            let self = this;
 
+            service.licenseCheck().done((data: ILicensenCheck) => {
+                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
+                self.licenseCheckDipslay(data.display);
+
+                if (!!data.message) {
+                    self.classWarning('color-schedule-error');
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] }).then(() => {
+                        if (data.message === 'Msg_1370') {
+                            jump('/view/ccg/008/a/index.xhtml');
+                        }
+                    });
+                } else {
+                    self.classWarning('');
+                }
+            });
+        }
     }
 
     class BoxModel {
@@ -897,16 +910,24 @@ module cps002.a.vm {
         employeeCode: KnockoutObservable<string> = ko.observable("");
         hireDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
         cardNo: KnockoutObservable<string> = ko.observable("");
-        avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        avatarOrgId: KnockoutObservable<string> = ko.observable("");
+        avatarCropedId: KnockoutObservable<string> = ko.observable("");
+        categoryName: KnockoutObservable<string> = ko.observable("");
+        itemName: KnockoutObservable<string> = ko.observable("");
+        fileName: KnockoutObservable<string> = ko.observable("");
         clearData() {
             let self = this;
             self.employeeName("");
             self.employeeCode("");
-            self.avatarId("");
             self.loginId("");
             self.password("");
+            self.avatarOrgId("");
+            self.avatarCropedId("");
+            self.categoryName("");
+            self.itemName("");
+            self.fileName("");
         }
     }
 
@@ -1083,32 +1104,6 @@ module cps002.a.vm {
         standardDate?: string;
     }
 
-    class Layout {
-        layoutCode: KnockoutObservable<string> = ko.observable('');
-        layoutName: KnockoutObservable<string> = ko.observable('');
-        maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
-        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
-        standardDate: KnockoutObservable<string> = ko.observable(undefined);
-
-        constructor(param?: ILayout) {
-            let self = this;
-            if (param) {
-                self.layoutCode(param.layoutCode || '');
-                self.layoutName(param.layoutName || '');
-                self.maintenanceLayoutID(param.maintenanceLayoutID || '');
-                self.standardDate(param.standardDate)
-
-                self.listItemCls(param.itemsClassification || []);
-            }
-        }
-
-        // recall selected layout event
-        filterData() {
-            let self = this;
-            self.maintenanceLayoutID.valueHasMutated();
-        }
-    }
-
     class EmpRegHistory {
 
         lastRegEmployee: KnockoutObservable<RegEmployee> = ko.observable(null);
@@ -1167,7 +1162,7 @@ module cps002.a.vm {
         PreviousSpace = 3,
         AfterSpace = 4
     }
-    
+
     enum CardNoValType {
         //頭文字指定 (InitialDesignation)
         INIT_DESIGNATION = 1,
@@ -1178,14 +1173,14 @@ module cps002.a.vm {
         //最大値 (MaxValue)
         MAXVALUE = 4,
         //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
-        CPC_AND_EMPC = 5 
+        CPC_AND_EMPC = 5
     }
 
     enum POSITION {
         Previous = 0,
         After = 1
     }
-    
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
@@ -1206,6 +1201,15 @@ module cps002.a.vm {
         No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+    }
+    interface ILicensenCheck {
+        display: boolean;
+        registered: number;
+        canBeRegistered: number;
+        maxRegistered: number;
+        message: string;
+        licenseKey: string;
+        status: string;
     }
 
 }
