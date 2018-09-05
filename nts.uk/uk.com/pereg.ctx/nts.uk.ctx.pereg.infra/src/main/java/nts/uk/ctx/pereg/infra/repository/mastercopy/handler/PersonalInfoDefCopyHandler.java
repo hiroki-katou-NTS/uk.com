@@ -344,9 +344,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     .map(ppemtPerInfoCtg -> ppemtPerInfoCtg.categoryCd)
                     .collect(Collectors.toSet());
             //overwrite
-            Iterator<String> iterator1 = sourcePersonalInfoCatCd.iterator();
-            while (iterator1.hasNext()) {
-                String catCd = iterator1.next();
+            for (String catCd : sourcePersonalInfoCatCd) {
                 //1 update overwrite for PpemtPerInfoCtg
                 PpemtPerInfoCtg src = sgroupPersonalInfoCatByCatCd.get(catCd);
                 PpemtPerInfoCtg des = tgroupPersonalInfoCatByCatCd.get(catCd);
@@ -363,9 +361,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                         .stream().collect(Collectors.toMap(o -> o.itemCd, o -> o));
 
                 if (!CollectionUtil.isEmpty(sourcePerInfoItems.keySet())) {
-                    Iterator<String> iterator = sourcePerInfoItems.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String itemCd = iterator.next();
+                    for (String itemCd : sourcePerInfoItems.keySet()) {
                         PpemtPerInfoItem srcPerInfoItem = sourcePerInfoItems.get(itemCd);
                         PpemtPerInfoItem desPerInfoItem = destPerInfoItems.get(itemCd);
                         if (srcPerInfoItem == null || desPerInfoItem == null) break;
