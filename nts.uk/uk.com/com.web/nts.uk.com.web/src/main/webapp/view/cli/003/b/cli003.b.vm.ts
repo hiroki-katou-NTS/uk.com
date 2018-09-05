@@ -5,6 +5,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
 
     //C screen
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
@@ -437,9 +438,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
 
         //F
+        startScreenF() : JQueryPromise<any> {
+            let self = this;
+            self.initComponentScreenF().done(function() {
+            });
+        }
         initComponentScreenF() {
             var self = this
-
+            let dfd = $.Deferred<any>();
             //F igGrid
             self.columnsIgGrid = ko.observableArray([]);
             self.supColumnsIgGrid = ko.observableArray([]);
@@ -490,6 +496,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
             if (checkProcess) {
                 // get log out put items
+                block.grayout();
                 service.getLogOutputItemsByRecordTypeItemNos(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                     if (dataOutputItems.length > 0) {
                         // Get Log basic infor
@@ -497,12 +504,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                             if (data.length > 0) {
                                 // order by list
-                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
-                                 }
-                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
-                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
-                                 }
+                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
+
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
@@ -539,8 +542,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     nts.uk.ui.block.clear();
                                 });
                             }
+                             dfd.resolve();
+                        }).always(() => {
+                            block.clear();
+                            errors.clearAll();
                         }).fail(function(error) {
                             alertError(error);
+                            block.clear();
+                            errors.clearAll();
+                            dfd.resolve();
                         });
 
                     } else {
@@ -548,13 +558,19 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             self.previousScreenE();
                             nts.uk.ui.block.clear();
                         });
-
+                        block.clear();
+                        errors.clearAll();
+                        dfd.resolve();
                     }
 
                 }).fail(function(error) {
                     alertError(error);
+                    block.clear();
+                    errors.clearAll();
+                    dfd.resolve();
                 });
             }
+             return dfd.promise();
         }
 
         getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
@@ -1091,7 +1107,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         nextScreenF() {
             var self = this;
             // init compnent screen F
-            self.initComponentScreenF();
+            self.startScreenF();
             self.checkDestroyIgGrid();
             self.next();
         }
