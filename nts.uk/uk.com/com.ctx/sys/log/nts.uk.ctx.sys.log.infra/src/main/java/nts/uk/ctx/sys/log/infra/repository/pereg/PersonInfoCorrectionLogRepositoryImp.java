@@ -204,7 +204,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							}
 							
 							return new ItemInfo(ii.itemInfoLogID, ii.itemID, ii.itemName,
-									new Value(rvb, ii.contentBefore), new Value(rva, ii.contentAfter));
+									new Value(rvb, !ii.contentBefore.isEmpty() ? ii.contentBefore : ""),
+									new Value(rva, !ii.contentAfter.isEmpty() ? ii.contentAfter : ""));
 						}).filter(f -> f != null).collect(Collectors.toList());
 
 						// create reviseInfo from dataHistLog
@@ -213,7 +214,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 									Optional.ofNullable(new YearMonth(r.reviseYM)), Optional.ofNullable(r.reviseY));
 						});
 
-						return new CategoryCorrectionLog("UPDATE_ID", ctgcLog.categoryName,
+						return new CategoryCorrectionLog(ctgcLog.categoryID, ctgcLog.categoryName,
 								EnumAdaptor.valueOf(ctgcLog.infoOperateAttr, InfoOperateAttr.class),
 								dhLog.targetKeyYMD != null ? TargetDataKey.of(dhLog.targetKeyYMD, dhLog.stringKey)
 										: dhLog.targetKeyYM != null
