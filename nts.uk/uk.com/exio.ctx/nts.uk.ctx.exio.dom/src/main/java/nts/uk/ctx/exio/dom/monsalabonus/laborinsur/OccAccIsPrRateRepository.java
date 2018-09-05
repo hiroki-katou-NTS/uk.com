@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface OccAccIsPrRateRepository
 {
 
-
+    OccAccIsPrRate getOccAccIsPrRateByHisId(String hisId);
     void remove(String ocAcIsPrRtId, String hisId);
 
 }

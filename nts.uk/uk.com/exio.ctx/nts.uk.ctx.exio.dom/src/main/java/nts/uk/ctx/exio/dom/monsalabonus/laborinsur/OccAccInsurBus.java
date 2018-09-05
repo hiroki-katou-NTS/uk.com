@@ -23,4 +23,6 @@ public class OccAccInsurBus extends AggregateRoot {
     private List<NameOfEachBusiness> eachBusiness;
 
 
+
+
 }

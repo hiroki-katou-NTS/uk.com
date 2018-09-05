@@ -22,4 +22,7 @@ public class NameOfEachBusiness {
      * 名称
      */
     private Optional<OccAccInsurBusinessName> name;
+
+
+
 }
