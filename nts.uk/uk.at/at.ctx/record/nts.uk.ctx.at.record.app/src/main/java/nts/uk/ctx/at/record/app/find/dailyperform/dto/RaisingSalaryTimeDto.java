@@ -29,6 +29,14 @@ public class RaisingSalaryTimeDto implements ItemConst {
 	/** 加給NO: 加給時間項目NO */
 	private Integer no;
 	
+	@Override
+	public RaisingSalaryTimeDto clone(){
+		return new RaisingSalaryTimeDto(rasingSalaryTime == null ? null : rasingSalaryTime.clone(), 
+								outOfLegalRasingSalaryTime == null ? null : outOfLegalRasingSalaryTime.clone(),
+								inLegalRasingSalaryTime == null ? null : inLegalRasingSalaryTime.clone(),
+								no);
+	}
+	
 	public static RaisingSalaryTimeDto toDto(BonusPayTime time){
 		return time == null ? null : new RaisingSalaryTimeDto(
 										time.getBonusPayTime() == null ? null : new CalcAttachTimeDto(null, time.getBonusPayTime().valueAsMinutes()), 

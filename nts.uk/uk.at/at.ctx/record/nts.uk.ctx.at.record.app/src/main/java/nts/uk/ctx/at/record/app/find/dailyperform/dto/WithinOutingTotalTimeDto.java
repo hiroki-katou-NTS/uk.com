@@ -35,6 +35,14 @@ public class WithinOutingTotalTimeDto implements ItemConst {
 						CalcAttachTimeDto.toTimeWithCal(domain.getExcessCoreTime()));
 	}
 	
+	@Override
+	public WithinOutingTotalTimeDto clone() {
+		return new WithinOutingTotalTimeDto(
+							totalTime == null ? null : totalTime.clone(),
+							withinCoreTime == null ? null : withinCoreTime.clone(),
+							excessCoreTime == null ? null : excessCoreTime.clone());
+	}
+	
 	public WithinOutingTotalTime toDomain() {
 		return WithinOutingTotalTime.of(
 					totalTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : totalTime.createTimeWithCalc(),
