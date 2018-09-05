@@ -98,14 +98,12 @@ public class PerInfoInitValueSettingFinder {
 
 		List<PerInfoInitValueSettingDto> settingList = this.settingRepo.getAllInitValueSettingHasChild(companyId)
 				.stream().map(c -> PerInfoInitValueSettingDto.fromDomain(c)).collect(Collectors.toList());
-
 		if (settingList.isEmpty()) {
-
-			boolean isPersonnelStaff = true;
-			if (isPersonnelStaff) {
-				throw new BusinessException(new RawErrorMessage("Msg_350"));
-			} else {
+			String role = AppContexts.user().roles().forPersonalInfo();
+			if (role == "" || role == null) {
 				throw new BusinessException(new RawErrorMessage("Msg_351"));
+			} else {
+				throw new BusinessException(new RawErrorMessage("Msg_350"));
 			}
 		}
 

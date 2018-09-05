@@ -2,21 +2,25 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.Check36AgreementValueImport;
 import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.CheckResultMonthlyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.checkresultmonthly.MonthlyRecordValuesImport;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
@@ -31,12 +35,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 /**
  * 月次の集計処理
  * @author tutk
@@ -67,11 +72,12 @@ public class MonthlyAggregateProcessService {
 	private ClosureService closureService;
 	
 	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	@Inject
 	private AttendanceItemNameDomainService attdItemNameDomainService;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
-		
-		
 		
 		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
@@ -98,7 +104,7 @@ public class MonthlyAggregateProcessService {
 		}
 		List<EmployeeSearchDto> employeesDto = employees.stream().filter(c-> listEmployeeID.contains(c.getId())).collect(Collectors.toList());
 		//tab 2
-		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto));
+		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto, companyID));
 		//tab 3
 		
 		listValueExtractAlarm.addAll(this.extraResultMonthly(companyID, listExtra, period, employeesDto));
@@ -107,32 +113,33 @@ public class MonthlyAggregateProcessService {
 	}
 	//tab 2
 	private List<ValueExtractAlarm> extractMonthlyFixed(List<FixedExtraMonFunImport> listFixed,
-			DatePeriod period, List<EmployeeSearchDto> employees) {
+			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
-		GeneralDate lastDateInPeriod = period.end();
-		
-		
 		
 		for(EmployeeSearchDto employee : employees) {
-			//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-			if(closure == null)
-				continue;
-			int closureID= closure.getClosureId().value;
-			ClosureDate closureDate = null;
-			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
-				String endYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0');
-				GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
-						+ endYM + '-' + String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
-				String startYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0');
-				GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-' 
-						+ startYM + '-' +"01", "yyyy-MM-dd");
-				if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
-					closureDate = ClosureHistory.getClosureDate();
-					break;
+			Closure closure = null;
+			//Tightening ID: optional 
+			if (listFixed.get(5).isUseAtr()) {
+				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+				closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+			}
+			
+			//MinhVV
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+
+			if (listFixed.get(5).isUseAtr()) {
+				Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
+						.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
+				if (checkDeadline.isPresent()) {
+					checkDeadline.get().setAlarmValueMessage(listFixed.get(5).getMessage());
+					checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+					String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
+					checkDeadline.get().setAlarmValueDate(dateString);
+					listValueExtractAlarm.add(checkDeadline.get());
 				}
 			}
+			
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -153,14 +160,15 @@ public class MonthlyAggregateProcessService {
 							case 2 :break;//chua co
 							case 3 :break;//chua co
 							case 4 :
-								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID,closureDate);
-								if(agreement.isPresent()) {
-									agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
-									agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-									String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
-									agreement.get().setAlarmValueDate(dateAgreement);
-									listValueExtractAlarm.add(agreement.get());
-								}
+								//ticket #100053
+//								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID.get(),closureDate.get());
+//								if(agreement.isPresent()) {
+//									agreement.get().setAlarmValueMessage(listFixed.get(i).getMessage());
+//									agreement.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+//									String dateAgreement = agreement.get().getAlarmValueDate().substring(0, 7);
+//									agreement.get().setAlarmValueDate(dateAgreement);
+//									listValueExtractAlarm.add(agreement.get());
+//								}
 							break;
 							default : break; // so 6 : chua co
 						}//end switch
@@ -182,36 +190,20 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
-		GeneralDate lastDateInPeriod = period.end();
 		
-		
+		GeneralDate tempStart = period.start();
+		GeneralDate tempEnd = period.end();
+		YearMonth startYearMonth = tempStart.yearMonth();
+		YearMonth endYearMonth = tempEnd.yearMonth();
+		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYearMonth, endYearMonth);
+		List<MonthlyRecordValuesImport> monthlyRecords;
+		List<Integer> itemIds = Arrays.asList(202,203,204,205,206);
 		
 		for (ExtraResultMonthlyDomainEventDto extra : listExtra) {
 			if(!extra.isUseAtr())
 				continue;
 			for (YearMonth yearMonth : lstYearMonth) {
 				for (EmployeeSearchDto employee : employees) {
-					
-					//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-					Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-					if(closure == null)
-						continue;
-					int closureID= closure.getClosureId().value;
-					ClosureDate closureDate = null;
-					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
-						GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
-								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0')  + '-' 
-								+ String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
-						GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-'
-								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0') + '-'
-								+ "01", "yyyy-MM-dd");
-						if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
-							closureDate = ClosureHistory.getClosureDate();
-							break;
-						}
-					}
-					
-					
 					
 					switch (extra.getTypeCheckItem()) {
 					case 0:
@@ -230,51 +222,85 @@ public class MonthlyAggregateProcessService {
 //							listValueExtractAlarm.add(resultMonthlyValue);
 //						}
 						break;
-					case 1:
-						Check36AgreementValueImport checkAgreementError = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
-								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						
-						if(checkAgreementError.isCheck36AgreementCon()) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									this.yearmonthToString(yearMonth),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_204"),
-									TextResource.localize("KAL010_205",
-									this.timeToString(checkAgreementError.getErrorValue())), 
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
+					case 1: // 36協定エラー時間  
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if (!CollectionUtil.isEmpty(monthlyRecords)) {
+							List<Check36AgreementValueImport> lstReturnStatus = checkResultMonthlyAdapter
+									.check36AgreementConditions(employee.getId(), monthlyRecords,
+											extra.getAgreementCheckCon36(), Optional.empty());
+							if (!CollectionUtil.isEmpty(lstReturnStatus)) {
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if (check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(), employee.getId(),
+												this.yearmonthToString(yearMonth), TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_204"),
+												TextResource.localize("KAL010_205",
+														this.timeToString(check36AgreementValueImport.getErrorValue())),
+												extra.getDisplayMessage());
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
 						}
 						break;
-					case 2:
-						Check36AgreementValueImport checkAgreementAlarm = checkResultMonthlyAdapter.check36AgreementCondition(employee.getId(),
-								yearMonth,closureID,closureDate,extra.getAgreementCheckCon36());
-						if(checkAgreementAlarm.isCheck36AgreementCon()) {
-							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
-									employee.getWorkplaceId(),
-									employee.getId(),
-									this.yearmonthToString(yearMonth),
-									TextResource.localize("KAL010_100"),
-									TextResource.localize("KAL010_206"),
-									TextResource.localize("KAL010_207",
-									this.timeToString(checkAgreementAlarm.getAlarmValue())),
-									extra.getDisplayMessage()
-									);
-							listValueExtractAlarm.add(resultMonthlyValue);
-						}
-						if(true) {
-							
+					case 2: // 36協定アラーム時間 
+						// Call RQ 436
+						monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(employee.getId(), yearMonthPeriod, itemIds);
+						if (!CollectionUtil.isEmpty(monthlyRecords)) {
+							List<Check36AgreementValueImport> lstReturnStatus = checkResultMonthlyAdapter
+									.check36AgreementConditions(employee.getId(), monthlyRecords,
+											extra.getAgreementCheckCon36(), Optional.empty());
+							if (!CollectionUtil.isEmpty(lstReturnStatus)) {
+								for (Check36AgreementValueImport check36AgreementValueImport : lstReturnStatus) {
+									if (check36AgreementValueImport.isCheck36AgreementCon()) {
+										ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
+												employee.getWorkplaceId(), employee.getId(),
+												this.yearmonthToString(yearMonth), TextResource.localize("KAL010_100"),
+												TextResource.localize("KAL010_206"),
+												TextResource.localize("KAL010_207",
+														this.timeToString(check36AgreementValueImport.getAlarmValue())),
+												extra.getDisplayMessage());
+										listValueExtractAlarm.add(resultMonthlyValue);
+									}
+								}
+							}
 						}
 						break;
 					case 3 :
 						break;
 					default:
-						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
-								yearMonth, closureID,closureDate, employee.getId(), extra.getCheckConMonthly());
+						//get AttendanceIds
+						List<Integer> attendanceIds = new ArrayList<>();
+						if (!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon())) {
+							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup1 = extra.getCheckConMonthly()
+									.getGroup1().getLstErAlAtdItemCon();
+							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup1) {
+								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
+							}
+						}
+						if ((extra.getCheckConMonthly().getGroup2())!=null&&
+								!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon())) {
+							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup2 = extra.getCheckConMonthly()
+									.getGroup2().getLstErAlAtdItemCon();
+							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup2) {
+								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
+							}
+						}
+						if (!CollectionUtil.isEmpty(attendanceIds)) {
+							Set<Integer> set = new HashSet<Integer>(attendanceIds);
+							attendanceIds = new ArrayList<Integer>(set);
+						}
+						//
+						Map<String, Integer> checkPerTimeMonActualResults = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
+								yearMonth, employee.getId(), extra.getCheckConMonthly(),attendanceIds);
+						// Key of MAP : employeeID+yearMonth.toString()+closureID.toString()
+						//ValueMap 0 = false, 1= true
+//						String key =employee.getId().toString()+yearMonth.toString()+closureID.toString();
 						//true
-						if(checkPerTimeMonActualResult) {
+						checkPerTimeMonActualResults.forEach((k,v)->{
+						if(v==1) {
 							if(extra.getTypeCheckItem() ==8) {
 								String alarmDescription1 = "";
 								String alarmDescription2 = "";
@@ -317,7 +343,7 @@ public class MonthlyAggregateProcessService {
 										if(erAlAtdItemCon.getConditionAtr() == 1) {
 											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
-										else if(compare>5 && compare<=7) {
+										if(compare>5 && compare<=7) {
 											alarmDescription1 += startValue +" "+
 													compareOperatorText.getCompareLeft()+ " "+
 													nameErrorAlarm+ " "+
@@ -499,7 +525,7 @@ public class MonthlyAggregateProcessService {
 									if(compare<=5) {
 										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTimes);
 									}else {
-										endValueDays = String.valueOf(endValue.intValue());
+										endValueTimes = String.valueOf(endValue.intValue());
 										if(compare>5 && compare<=7) {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
 													compareOperatorText.getCompareLeft(),
@@ -525,7 +551,7 @@ public class MonthlyAggregateProcessService {
 									if(compare<=5) {
 										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney+".00");
 									}else {
-										endValueDays = String.valueOf(endValue.intValue());
+										endValueMoney = String.valueOf(endValue.intValue());
 										if(compare>5 && compare<=7) {
 											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
 													compareOperatorText.getCompareLeft(),
@@ -563,7 +589,7 @@ public class MonthlyAggregateProcessService {
 								listValueExtractAlarm.add(resultMonthlyValue);
 							}
 						}
-						
+						});// close for Map
 						break;
 					}
 					

@@ -23,7 +23,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        workState: KnockoutObservable<boolean> = ko.observable(true);;
+        workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable('');
@@ -142,6 +142,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         uiType: KnockoutObservable<number> = ko.observable(0);
         preWorkContent: common.WorkContent;
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT); 
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -368,7 +370,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             
             if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                 self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                let reasonID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 }).divergenceReasonID;
+                let defaultID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 })
+                let reasonID = "";
+                if(!nts.uk.util.isNullOrUndefined(defaultID)){
+                    reasonID = defaultID;         
+                }
                 self.selectedReason2(reasonID);
                 self.multilContent2(data.divergenceReasonContent); 
             }
@@ -682,6 +688,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {                
                 if (data.errorCode == 0) {
+                    overtime.appOvertimeDetail = data.appOvertimeDetail;
                     if (data.confirm) {
                         //メッセージNO：829
                         dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {
@@ -718,7 +725,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }else{
                       //Change background color
                         self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
-                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                        nts.uk.ui.dialog.confirmProceed({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}).ifYes(() => {
+                            self.registerData(overtime);    
+                        }).ifNo(() => {
+                            nts.uk.ui.block.clear(); 
+                        });
                     }                    
                 }
             }).fail((res) => {
@@ -1018,8 +1029,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             
             if(overtimeDto.divergenceReasonDtos != null){
                 self.reasonCombo2(_.map(overtimeDto.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                self.selectedReason2(overtimeDto.divergenceReasonDtos.divergenceReasonIdDefault);
-                self.multilContent2(overtimeDto.divergenceReasonContent);
+                let defaultID = _.find(overtimeDto.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 })
+                let reasonID = "";
+                if(!nts.uk.util.isNullOrUndefined(defaultID)){
+                    reasonID = defaultID;         
+                }
+                self.selectedReason2(reasonID);
+                self.multilContent2(overtimeDto.divergenceReasonContent); 
             }
             
             self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);

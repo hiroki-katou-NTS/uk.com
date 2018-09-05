@@ -9,5 +9,6 @@ public interface RegisterBasicScheduleService {
 	 * Process register basic schedule
 	 * @return
 	 */
-	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleListAfter, List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode);
+	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList,
+			List<BasicSchedule> basicScheduleListBefore, List<BasicSchedule> basicScheduleListAfter, boolean isInsertMode, RegistrationListDateSchedule registrationListDateSchedule);
 }

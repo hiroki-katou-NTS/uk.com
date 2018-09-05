@@ -19,6 +19,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         checkUpdate: KnockoutObservable<boolean>;
         // display or hide delete button
         isHide: KnockoutObservable<boolean>;
+        // display or hide register button
+        registerHide: KnockoutObservable<boolean> = ko.observable(true); 
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -35,6 +37,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.isHide = ko.observable(true);
             self.selectedCode.subscribe((businessTypeCode) => {
                 if (businessTypeCode) {
+                    self.registerHide(true);
                     let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
                         return item.businessTypeCode == businessTypeCode;
                     });
@@ -46,6 +49,12 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     self.check(false);
                     $("#inpPattern").focus();
                     self.checkUpdateMode();
+                }else{
+                    self.registerHide(false);
+                    self.isHide(false);
+                    self.selectedOption(null);
+                    self.selectedName("");
+                    self.codeObject("")
                 }
             });
             
@@ -155,7 +164,9 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
-            $("#inpCode").focus();
+            _.defer(() => {
+                $("#inpCode").focus();
+            })            
             self.checkUpdateMode();
         }
 

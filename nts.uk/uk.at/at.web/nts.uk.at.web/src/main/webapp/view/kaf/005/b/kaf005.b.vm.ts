@@ -129,6 +129,8 @@ module nts.uk.at.view.kaf005.b {
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             overtimeAtr: KnockoutObservable<number> = ko.observable(null);
             heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -215,19 +217,18 @@ module nts.uk.at.view.kaf005.b {
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
-                    
                     let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                     self.reasonCombo(lstReasonCombo);
-                    
-                    self.multilContent(data.application.applicationReason);
                 }
+                 self.multilContent(data.application.applicationReason);
                 
                 if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                     self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
                     let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
-                    self.multilContent2(data.divergenceReasonContent);
                 }
+                
+                self.multilContent2(data.divergenceReasonContent);
                 self.overtimeAtr(data.overtimeAtr);
 //                if (data.overtimeAtr == 0) {
 //                    self.heightOvertimeHours(56);
@@ -242,6 +243,11 @@ module nts.uk.at.view.kaf005.b {
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
+                    self.indicationOvertimeFlg(false);    
+                } else {
+                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);    
+                }
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                 self.workTypeChangeFlg(data.workTypeChangeFlg);
                 // preAppOvertime
@@ -543,6 +549,7 @@ module nts.uk.at.view.kaf005.b {
                 
                 service.checkBeforeUpdate(command).done((data) => {                
                     if (data.errorCode == 0) {
+                        command.appOvertimeDetail = data.appOvertimeDetail;
                         if (data.confirm) {
                             //メッセージNO：829
                             dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {

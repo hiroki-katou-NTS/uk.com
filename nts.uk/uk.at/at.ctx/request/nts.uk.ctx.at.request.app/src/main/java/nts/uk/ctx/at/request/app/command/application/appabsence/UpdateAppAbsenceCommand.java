@@ -41,9 +41,14 @@ public class UpdateAppAbsenceCommand {
 	 * 申請.申請者
 	 */
 	private String employeeID;
+	
+	/**
+	 * 定型理由
+	 */
+	private String appReasonID;
 
 	/**
-	 * 申請.申請理由 = 申請.申請定型理由 + \n + 申請.申請理由
+	 * 申請理由
 	 */
 	private String applicationReason;
 	/**

@@ -80,7 +80,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.appDate >= :startDate"
 			+ " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals"
-			+ " AND c.appType IN appTypes";
+			+ " AND c.appType IN :appTypes";
 	//hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT c FROM KrqdtApplication_New c"
 			+ " WHERE c.krqdpApplicationPK.companyID = :companyID"
@@ -92,6 +92,13 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.stateReflectionReal IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
+	private String SELECT_BY_REFLECT = SELECT_BY_SID_PERIOD_APPTYPE + " AND c.stateReflection IN :stateReflection";
+	
+	private String SELECT_BY_SID_LISTDATE_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+			+ " WHERE c.employeeID = :employeeID"
+			+ " AND c.appDate IN :dates"
+			+ " AND c.stateReflectionReal IN :stateReflectionReals"
+			+ " AND c.appType IN :appTypes";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -343,5 +350,27 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("appType", appType)
 				.setParameter("lstRef", lstRef)
 				.getList(c -> c.toDomain());
+	}
+	@Override
+	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
+			List<Integer> scheStatus, List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_REFLECT, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.setParameter("stateReflectionReals", recordStatus)
+				.setParameter("stateReflection", scheStatus)
+				.setParameter("appTypes", appType)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
+			List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("dates", dateData)
+				.setParameter("stateReflectionReals", reflect)
+				.setParameter("appTypes", appType)
+				.getList(x -> x.toDomain());
 	}
 }

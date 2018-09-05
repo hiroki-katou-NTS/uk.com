@@ -27,7 +27,11 @@ module nts.uk.com.view.cps009.d.viewmodel {
                 };
 
             $('.nts-input').trigger("validate");
+            
             if (!nts.uk.ui.errors.hasError()) {
+                
+                block.invisible();
+                
                 service.add(newInit).done(function(initSettingId) {
                     dialog.info({ messageId: "Msg_15" }).then(function() {
                         setShared('CPS009D_PARAMS', initSettingId);
@@ -39,17 +43,13 @@ module nts.uk.com.view.cps009.d.viewmodel {
                         $('#roleCode').focus();
                     });
 
-                });
+                }).always(() => { block.clear() });
             }
         }
 
         cancelNewInitValue() {
             close();
         }
-
-
-
-
     }
 
     export interface IItemInitValue {
