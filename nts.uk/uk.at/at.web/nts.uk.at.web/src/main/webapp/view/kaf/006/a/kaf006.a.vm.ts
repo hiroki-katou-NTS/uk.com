@@ -621,7 +621,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         registerClick() {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
-            $("#workTypes").trigger('validate');
             if (self.displayEndDateFlg()) {
                 $(".ntsStartDatePicker").trigger("validate");
                 $(".ntsEndDatePicker").trigger("validate");
@@ -633,6 +632,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(self.holidayTypeCode() == 3 && self.fix()){
                 $("#relaCD-combo").trigger("validate");
             }
+            $("#hdType").trigger('validate');
+            $("#workTypes").trigger('validate');
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
