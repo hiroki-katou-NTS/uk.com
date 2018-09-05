@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +14,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.BusinessDayCalendarAdapter;
@@ -22,17 +25,21 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
 	@Inject
@@ -51,7 +58,12 @@ public class HolidayServiceImpl implements HolidayService {
 	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
-	
+	@Inject 
+	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
 			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition) {
@@ -276,5 +288,31 @@ public class HolidayServiceImpl implements HolidayService {
 			workTypeHoliday.setWorkTypeName(workType.get().getName().toString());
 		}
 		return workTypeHoliday;
+	}
+	@Override
+	public void delHdWorkByAbsLeaveChange(String appID) {
+		String companyID = AppContexts.user().companyId();
+		
+		// ドメインモデル「振休申請休出変更管理」を取得する
+		Optional<BrkOffSupChangeMng> opBrkOffSupChangeMng = brkOffSupChangeMngRepository.findHolidayAppID(appID);
+		if(!opBrkOffSupChangeMng.isPresent()){
+			return;
+		}
+		BrkOffSupChangeMng brkOffSupChangeMng = opBrkOffSupChangeMng.get();
+		
+		// アルゴリズム「振休申請復活」を実行する (9.振休申請復活)
+		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		// 「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
+		application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+		applicationRepository.update(application);
+		
+		// ドメインモデル「振休申請休出変更管理」を削除する
+		brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyID, 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate()));
 	}
 }

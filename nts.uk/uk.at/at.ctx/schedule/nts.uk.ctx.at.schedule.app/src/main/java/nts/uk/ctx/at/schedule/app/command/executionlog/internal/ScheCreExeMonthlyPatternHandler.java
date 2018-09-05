@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
@@ -72,7 +73,8 @@ public class ScheCreExeMonthlyPatternHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<BasicSchedule> listBasicSchedule) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto,
+			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
@@ -167,7 +169,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod, workingConditionItem.getEmployeeId(),
 					workTypeOpt.get(), workTimeOpt.isPresent() ? workTimeOpt.get() : null, empGeneralInfo, listWorkType,
 					listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
-					mapDiffTimeWorkSetting, listShortWorkTimeDto, listBasicSchedule);
+					mapDiffTimeWorkSetting, listShortWorkTimeDto, listBasicSchedule, dateRegistedEmpSche);
 		}
 
 	}

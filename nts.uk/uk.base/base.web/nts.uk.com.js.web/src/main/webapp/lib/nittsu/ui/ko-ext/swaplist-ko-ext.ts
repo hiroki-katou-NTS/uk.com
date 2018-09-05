@@ -127,8 +127,8 @@ module nts.uk.ui.koExtentions {
                     
                     $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
-                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                    initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                 }
                 
                 $searchArea.height(SEARCH_AREA_HEIGHT);
@@ -175,7 +175,7 @@ module nts.uk.ui.koExtentions {
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .withDataSource(data.value())
                                 .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
-                                .setSearchMode(data.searchMode || "highlight")
+                                .setSearchMode("highlight")
                                 .setColumns(rightColumns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
@@ -685,6 +685,7 @@ module nts.uk.ui.koExtentions {
                     this.resetOriginalDataSource();
                 }
                 this.bindData(this.originalDataSource);
+                this.$searchBox.val('');
             }
         }
         
@@ -712,14 +713,17 @@ module nts.uk.ui.koExtentions {
                 var gotoEnd = source.splice(0, selected[0].index + 1);
                 source = source.concat(gotoEnd);
             }
-            var iggridColumns = _.map(this.columns, c => {
+            /*var iggridColumns = _.map(this.columns, c => {
                 c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
-            });
+            });*/
+            var searchCriterion = this.searchCriterion;
+            
             var searchedValues = _.find(source, function(val) {
-                return _.find(iggridColumns, function(x) {
-                    return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                return _.find(searchCriterion, function(x) {
+                    //return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                    return val[x].toString().indexOf(value) >= 0;
                 }) !== undefined;
             });
             

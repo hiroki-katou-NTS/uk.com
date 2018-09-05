@@ -19,15 +19,18 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -56,6 +59,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private AgreementTimeStatusAdapter agreementTimeStatusAdapter; 
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -237,5 +243,18 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workTypeAndSiftType.setSiftType(siftType);
 		}
 		return workTypeAndSiftType;
+	}
+
+	@Override
+	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
+		if(appOvertimeDetail.getLimitErrorTime().v() <= 0){
+			return null;
+		}
+		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+				new AttendanceTimeMonth(appOvertimeDetail.getApplicationTime().v()+appOvertimeDetail.getActualTime().v()), 
+				appOvertimeDetail.getLimitAlarmTime(), 
+				appOvertimeDetail.getLimitErrorTime(), 
+				appOvertimeDetail.getExceptionLimitAlarmTime(), 
+				appOvertimeDetail.getExceptionLimitErrorTime()).value;
 	}
 }

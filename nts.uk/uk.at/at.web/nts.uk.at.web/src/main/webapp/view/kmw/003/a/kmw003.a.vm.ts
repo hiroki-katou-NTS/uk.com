@@ -811,6 +811,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.setHeaderColor();
             let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
+            self.actualTimeSelectedCode.subscribe(code => {
+               dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
+            });
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',

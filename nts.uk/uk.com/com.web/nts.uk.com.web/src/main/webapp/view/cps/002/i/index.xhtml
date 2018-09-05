@@ -33,7 +33,14 @@
 			<div id="contents-area" class="cf coverBlock">
 				<div>#{i18n.getText('CPS002_96')}</div>
 				<div id="test"
-					data-bind="ntsImageEditor: {editable: true, width:600, height: 600, freeResize: false, resizeRatio: 0.75, accept: ['.gif', '.png', '.jpg', '.jpeg','.bmp'] }"></div>
+					data-bind="ntsImageEditor: {
+					editable: true,
+					width:600,
+					height: 600,
+					freeResize: false,
+					resizeRatio: 0.75,
+					accept: ['.gif', '.png', '.jpg', '.jpeg','.bmp'],
+					maxSize: 10 }"></div>
 
 			</div>
 			<div id="functions-area-bottom">

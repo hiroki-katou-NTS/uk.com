@@ -19,8 +19,8 @@ module nts.uk.at.view.kmk012.e {
 
             //View list data on grid.
             $("#gridData").ntsGrid({
-                width: '390px',
-                height: '380px',
+                width: '320px',
+                height: '450px',
                 dataSource: model.items,
                 primaryKey: 'code',
                 virtualization: true,
@@ -29,15 +29,15 @@ module nts.uk.at.view.kmk012.e {
 
                 //columns on grid list.
                 columns: [
-                    { headerText: 'ID', key: 'code', dataType: 'string', width: '50px' },
+                    { headerText: 'ID', key: 'code', dataType: 'string', width: '0px' },
                     { headerText: getText('KMK012_38'), key: 'name', dataType: 'string', width: '150px' },
-                    { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '180px', ntsControl: 'Combobox' }
+                    { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '150px', ntsControl: 'Combobox' }
                 ],
                 features: [{ name: 'Sorting', type: 'local' }],
 
                 //Defind combobox and other control
                 ntsControls: [
-                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true }]
+                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, width: 115 }]
             });
            
         });

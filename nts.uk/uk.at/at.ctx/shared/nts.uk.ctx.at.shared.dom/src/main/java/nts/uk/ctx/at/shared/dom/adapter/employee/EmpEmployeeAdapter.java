@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.adapter.employee;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -45,4 +46,8 @@ public interface EmpEmployeeAdapter {
 	 */
 	List<SClsHistImport> lstClassByEmployeeId(String companyId, List<String> employeeIds,
 			DatePeriod datePeriod);
+	
+	AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate);
+	
+	AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid);
 }
