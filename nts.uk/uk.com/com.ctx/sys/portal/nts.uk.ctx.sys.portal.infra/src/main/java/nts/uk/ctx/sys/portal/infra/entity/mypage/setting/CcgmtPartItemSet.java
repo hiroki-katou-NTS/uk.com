@@ -20,11 +20,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Entity
+@Setter
 @Table(name = "CCGMT_PART_ITEM_SET")
-public class CcgmtPartItemSet extends UkJpaEntity {
+public class CcgmtPartItemSet extends UkJpaEntity  {
 
 	@EmbeddedId
 	public CcgmtPartItemSetPK ccgmtPartItemSetPK;

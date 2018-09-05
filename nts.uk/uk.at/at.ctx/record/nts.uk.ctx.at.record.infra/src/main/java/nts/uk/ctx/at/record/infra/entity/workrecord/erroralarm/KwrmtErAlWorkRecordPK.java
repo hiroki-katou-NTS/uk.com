@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author hungnm
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class KwrmtErAlWorkRecordPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
