@@ -68,6 +68,9 @@ import nts.uk.ctx.at.shared.app.find.attendance.AttItemDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -163,6 +166,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	@Inject
 	private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
+	
+	@Inject
+	private MonthlyItemControlByAuthRepository monthlyItemControlByAuthRepository;
 
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "report/KWR006.xlsx";
@@ -379,7 +385,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<MonthlyAttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
 		
-		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+		List<Integer> lstAttendanceId = getListAttendanceIdAuth(lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList()));
 		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
 		
 		lstAttendanceId.stream().forEach(x -> {
@@ -2472,5 +2478,22 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setPrintArea("A1:" + lastCellName);
+	}
+	
+	/**
+	 * 会社の月次項目を取得する (private version)
+	 * @param lstRegisterAttendanceId
+	 * @return
+	 */
+	private List<Integer> getListAttendanceIdAuth(List<Integer> lstRegisterAttendanceId) {
+		String roleId = AppContexts.user().roles().forAttendance();
+		String companyId = AppContexts.user().companyId();
+		Optional<MonthlyItemControlByAuthority> optData = monthlyItemControlByAuthRepository.getMonthlyAttdItem(companyId, roleId);
+		if (optData.isPresent()) {
+			MonthlyItemControlByAuthority data = optData.get();
+			List<DisplayAndInputMonthly> listDisplayAndInputMonthly = data.getListDisplayAndInputMonthly();
+			return lstRegisterAttendanceId.stream().filter(x -> listDisplayAndInputMonthly.contains(x)).collect(Collectors.toList());
+		}
+		return lstRegisterAttendanceId;
 	}
 }
