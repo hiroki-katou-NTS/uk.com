@@ -1650,6 +1650,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
 		List<DailyAttendanceItem> lstDailyAttendanceItem = attendanceNameService.getNameOfDailyAttendanceItem(getListAttendanceIdByRole(lstAttendanceId));
+		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
 			DailyAttendanceItem attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
@@ -3075,7 +3076,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (optDaiAttItemAuth.isPresent()) {
 			DailyAttendanceItemAuthority daiAttItemAuth = optDaiAttItemAuth.get();
 			List<DisplayAndInputControl> listDisplayAndInputControlEnable = daiAttItemAuth.getListDisplayAndInputControl().stream().filter(x -> x.isToUse()).collect(Collectors.toList());
-			return lstRequestAttendaceId.stream().filter(x -> listDisplayAndInputControlEnable.contains(x)).collect(Collectors.toList());
+			return listDisplayAndInputControlEnable.stream().filter(x -> lstRequestAttendaceId.contains(x.getItemDailyID()) && x.isToUse()).map(y -> y.getItemDailyID()).collect(Collectors.toList());
 		}
 		return lstRequestAttendaceId;
 	}
