@@ -134,6 +134,8 @@ module nts.uk.at.view.kaf010.b {
             preWorkContent: common.WorkContent;
             inputDate: KnockoutObservable<string> = ko.observable('');
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable(true);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -250,6 +252,11 @@ module nts.uk.at.view.kaf010.b {
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
+                    self.indicationOvertimeFlg(false);    
+                } else {
+                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);    
+                }
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
 //                // preAppOvertime
                 if (data.preAppHolidayWorkDto != null) {
@@ -528,6 +535,7 @@ module nts.uk.at.view.kaf010.b {
                 
                 service.checkBeforeUpdate(command).done((data) => {                
                     if (data.errorCode == 0) {
+                        command.appOvertimeDetail = data.appOvertimeDetail;
                         if (data.confirm) {
                             //メッセージNO：829
                             dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {

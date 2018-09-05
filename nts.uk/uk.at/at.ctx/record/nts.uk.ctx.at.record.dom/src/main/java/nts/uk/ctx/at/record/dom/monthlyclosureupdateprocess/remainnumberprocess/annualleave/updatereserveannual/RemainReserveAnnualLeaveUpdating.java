@@ -46,7 +46,11 @@ public class RemainReserveAnnualLeaveUpdating {
 	public void updateReservedAnnualLeaveRemainNumber(AggrResultOfReserveLeave output,
 			AggrPeriodEachActualClosure period, String empId) {
 		deleteDataAfterCurrentMonth(period, empId);
-		updateNumberOfRemainingLeaveData(output, period, empId);
+//		if (output != null) {
+			updateNumberOfRemainingLeaveData(output, period, empId);
+//		} else {
+//			return;
+//		}
 	}
 
 	/**
@@ -67,9 +71,11 @@ public class RemainReserveAnnualLeaveUpdating {
 				reserveLeaveRemainHistRepo.addOrUpdate(hist, cid);
 			}
 		}
+
 		updateProcess(output.getAsOfPeriodEnd());
 		updateRsvLeaveTimeRemainHistProcess(
 				output.getAsOfGrant().isPresent() ? output.getAsOfGrant().get() : Collections.emptyList());
+
 	}
 
 	/**

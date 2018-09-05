@@ -78,13 +78,14 @@
 						<br/>
 						<div tabindex="9" class="nts-calendar-container">
 							<div class="nts-calendar-header">
-								<div data-bind="ntsDatePicker: {
+								<div id="yMPicker" data-bind="ntsDatePicker: {
 								value: yearMonthPicked, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								cssRanger: cssRangerYM,
 								defaultClass: 'round-orange',
-								showJumpButtons: true}"></div>
+								showJumpButtons: true,
+								required: true}"></div>
 							</div>
 							<div id="calendar" data-bind="ntsCalendar: {
 								optionDates: optionDates, 

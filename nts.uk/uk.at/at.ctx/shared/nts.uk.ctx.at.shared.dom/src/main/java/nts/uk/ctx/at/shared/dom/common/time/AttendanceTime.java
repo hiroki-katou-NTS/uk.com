@@ -22,4 +22,13 @@ public class AttendanceTime extends TimeDurationPrimitiveValue<AttendanceTime> {
 	public AttendanceTime(Integer rawValue) {
 		super(rawValue);
 	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if(rawValue > 2880)
+			rawValue = 2880;
+		if(0 > rawValue)
+			rawValue = 0;
+		return super.reviseRawValue(rawValue);
+	}
 }

@@ -55,8 +55,9 @@ module nts.uk.com.view.cas001.d.viewmodel {
 
         creatCategory() {
             let self = this,
-                role: IPersonRole = ko.toJS(self.currentRole);
-            self.update(self.categoryList(), role.roleId);
+                role: IPersonRole = ko.toJS(self.currentRole),
+                category: Array<any> = $("#grid").igGrid("option","dataSource");
+            self.update(category, role.roleId);
 
         }
 
@@ -82,6 +83,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
                     .value();
             service.updateCategory({ lstCategory: datas }).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
                 });
             }).fail(function(res) {
                 alert(res.message);

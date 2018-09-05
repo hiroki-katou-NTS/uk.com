@@ -5,18 +5,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnnLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -76,6 +82,10 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 		this.withAnyItem(domain.getAnyItemList());
 		this.withAnnLeave(domain.getAnnualLeaveRemain().orElse(null));
 		this.withRsvLeave(domain.getReserveLeaveRemain().orElse(null));
+		this.withSpecialLeave(
+				domain.getSpecialLeaveRemainList().size() > 0 ? domain.getSpecialLeaveRemainList().get(0) : null);
+		this.withDayOff(domain.getMonthlyDayoffRemain().orElse(null));
+		this.withAbsenceLeave(domain.getAbsenceLeaveRemain().orElse(null));
 		return this;
 	}
 	
@@ -114,6 +124,24 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 		this.monthlyRecord.withRsvLeave(RsvLeaRemNumEachMonthDto.from(domain));
 		return this;
 	}
+
+	@Override
+	public MonthlyRecordToAttendanceItemConverter withDayOff(MonthlyDayoffRemainData domain) {
+		this.monthlyRecord.withDayOff(MonthlyDayoffRemainDataDto.from(domain));
+		return this;
+	}
+
+	@Override
+	public MonthlyRecordToAttendanceItemConverter withSpecialLeave(SpecialHolidayRemainData domain) {
+		this.monthlyRecord.withSpecialHoliday(SpecialHolidayRemainDataDto.from(domain));
+		return this;
+	}
+
+	@Override
+	public MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain) {
+		this.monthlyRecord.withAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain));
+		return this;
+	}
 	
 	@Override
 	public MonthlyRecordToAttendanceItemConverter completed() {
@@ -143,5 +171,20 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 	@Override
 	public Optional<RsvLeaRemNumEachMonth> toRsvLeave() {
 		return Optional.ofNullable(this.monthlyRecord.toRsvLeave());
+	}
+
+	@Override
+	public Optional<MonthlyDayoffRemainData> toDayOff() {
+		return Optional.ofNullable(this.monthlyRecord.toDayOff());
+	}
+
+	@Override
+	public Optional<SpecialHolidayRemainData> toSpecialHoliday() {
+		return Optional.ofNullable(this.monthlyRecord.toSpecialHoliday());
+	}
+
+	@Override
+	public Optional<AbsenceLeaveRemainData> toAbsenceLeave() {
+		return Optional.ofNullable(this.monthlyRecord.toAbsenceLeave());
 	}
 }

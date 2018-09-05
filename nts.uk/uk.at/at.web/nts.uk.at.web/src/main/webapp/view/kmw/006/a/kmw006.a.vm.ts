@@ -152,7 +152,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(self.executionDate()) && nts.uk.ntsNumber.isNumber(self.targetYm(), false))
                     return getText("KMW006_7", [nts.uk.time.formatYearMonth(self.targetYm()), moment.utc(self.executionDate()).format("YYYY/MM/DD")]);
                 else
-                    return null
+                    return null;
             });
             self.displayClosurePeriod = ko.computed(() => {
                 return self.listClosureInfo().length >= 2;
@@ -183,8 +183,26 @@ module nts.uk.at.view.kmw006.a.viewmodel {
             block.invisible();
             self.listClosureInfo.removeAll();
             self.itemList.removeAll();
-            service.getInfors().done((results: any) => {
-                if (results) {
+            let listEmpId = [];
+            if (localStorage.getItem("MonthlyClosureListEmpId") != null) {
+                listEmpId = localStorage.getItem("MonthlyClosureListEmpId").split(',');
+            }
+            let screenParams = {
+                monthlyClosureUpdateLogId: localStorage.getItem("MonthlyClosureUpdateLogId"),
+                listEmployeeId: listEmpId,
+                closureId: localStorage.getItem("MonthlyClosureId"),
+                startDT: localStorage.getItem("MonthlyClosureStartDT")
+//                endDT: localStorage.getItem("MonthlyClosureEndDT"),
+//                currentMonth: localStorage.getItem("MonthlyClosureCurrentMonth"),
+//                closureDay: localStorage.getItem("MonthlyClosureDay"),
+//                isLastDayOfMonth: localStorage.getItem("MonthlyClosureDayOfMonth"),
+//                periodStart: localStorage.getItem("MonthlyClosurePeriodStart"),
+//                periodEnd: localStorage.getItem("MonthlyClosurePeriodEnd"),
+//                check : null
+            }
+            service.getInfors(screenParams).done((results: any) => {
+
+                if (results.listInfor != null) {
                     for (var i = 0; i < results.listInfor.length; i++) {
                         let r = results.listInfor[i];
                         self.itemList.push(new ItemModel(r.closureId, r.closureName));
@@ -196,7 +214,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                     else
                         self.selectedClosureId(results.selectClosureId);
                 } else {//running => open dialog F
-                    self.openKmw006fDialog(null);
+                    self.openKmw006fDialog(results.screenParams);
                     self.first(false);
                 }
                 dfd.resolve();
@@ -211,9 +229,20 @@ module nts.uk.at.view.kmw006.a.viewmodel {
 
         private executeClick() {
             let self = this;
+            let listEmpId = [];
+            if (localStorage.getItem("MonthlyClosureListEmpId") != null) {
+                listEmpId = localStorage.getItem("MonthlyClosureListEmpId").split(',');
+            }
             confirmProceed({ messageId: "Msg_1355" }).ifYes(() => {
                 block.invisible();
-                service.checkStatus(self.selectedClosureId()).done((result) => {
+                var screenParams = {
+                    monthlyClosureUpdateLogId: localStorage.getItem("MonthlyClosureUpdateLogId"),
+                    listEmployeeId: listEmpId,
+                    closureId: localStorage.getItem("MonthlyClosureId"),
+                    startDT: localStorage.getItem("MonthlyClosureExecutionDateTime"),
+                    endDT: localStorage.getItem("MonthlyClosureExecutionEndDate")
+                }
+                service.checkStatus({ closureId: self.selectedClosureId(), screenParams: screenParams }).done((result) => {
                     if (result) {
                         let periodStart: string = result.periodStart;
                         let periodEnd: string = result.periodEnd;
@@ -222,7 +251,13 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                         localStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
                         localStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
                         localStorage.setItem("MonthlyClosureId", result.closureId);
-                        localStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
+                        localStorage.setItem("MonthlyClosureStartDT", result.startDT);
+                        localStorage.setItem("MonthlyClosureEndDT", result.endDT);
+                        localStorage.setItem("MonthlyClosureCurrentMonth", result.currentMonth);
+                        localStorage.setItem("MonthlyClosureDay", result.closureDay);
+                        localStorage.setItem("MonthlyClosureDayOfMonth", result.isLastDayOfMonth);
+                        localStorage.setItem("MonthlyClosurePeriodStart", result.periodStart);
+                        localStorage.setItem("MonthlyClosurePeriodEnd", result.periodEnd);
                     }
                     self.openKmw006fDialog(result);
                 }).fail((error) => {
@@ -241,7 +276,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 if (check || !self.first()) self.startPage();
             });
         }
-        
+
         private openKmw006cDialog() {
             modal("/view/kmw/006/c/index.xhtml").onClosed(() => {
             });
@@ -267,7 +302,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
         periodEnd: string;
         targetYm: number;
         executionDate: string;
-        
+
         constructor(closureId: number, closureName: string, currentMonth: number, periodStart: string, periodEnd: string, targetYm: number, executionDate: string) {
             this.closureId = closureId;
             this.closureName = closureName;

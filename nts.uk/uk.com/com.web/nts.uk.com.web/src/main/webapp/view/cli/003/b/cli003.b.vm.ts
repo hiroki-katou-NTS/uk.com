@@ -506,27 +506,22 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
-                                if (data.length > 1000) {
-                                    self.isDisplayText(true);
-                                }
                                 // process sub header with record type = persion infro and data correct
                                 _.forEach(data, function(logBasicInfoModel) {
-                                    if (countLog <= 1000) {
-                                        let logtemp = "";
-                                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                            logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logtemp);
-                                        }
-                                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        countLog++;
-                                    } else {
-                                        return false;
+                                    if (countLog == 1) {
+                                        self.isDisplayText(logBasicInfoModel.displayText);
+                                    }
+                                    let logtemp = "";
+                                    if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
+                                    }
+                                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                        logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logtemp);
+                                    }
+                                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                        logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
                                     }
                                 });
                                 // Generate table
@@ -635,7 +630,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '405px',
+                height: '348px',
                 features: [
                     {
                         name: "Paging",
@@ -659,6 +654,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 rowVirtualization: true,
+                virtualization : true,
+                virtualizationMode: 'continuous',
                 dataSource: self.listLogBasicInforModel,
                 columns: self.columnsIgGrid()
             });
@@ -699,7 +696,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -786,7 +783,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -855,26 +852,28 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var headerSetting = [];
                 var newSource = [];
                 let recordType = self.logTypeSelectedCode();
-                for (var i = 0; i < parentSource.length; i++) {
-                    if (parentSource[i].operationId === childSource[0].operationId) {
-                        headerSetting = parentSource[i].subColumnsHeaders;
-                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
-                        }
-                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                if (childSource.length > 0) {
+                    for (var i = 0; i < parentSource.length; i++) {
+                        if (parentSource[i].operationId === childSource[0].operationId) {
+                            headerSetting = parentSource[i].subColumnsHeaders;
+                            if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                            }
+                            if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                            }
                         }
                     }
+                    ui.options.dataSource = newSource;
+                    $(ui.element).data("headersetting", headerSetting);
                 }
-                ui.options.dataSource = newSource;
-                $(ui.element).data("headersetting", headerSetting);
             });
         }
 
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
-            
+            self.columnsIgGrid.push(new IgGridColumnSwitchModel("parentkey", -2, recordType));
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -1887,6 +1886,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>;
         subColumnsHeaders: KnockoutObservableArray<IgGridColumnModel>;
         lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>;
+        isDisplayText : boolean;
         constructor(param: LogBasicInfoParam) {
             this.userNameLogin = param.loginBasicInfor.userNameLogin;
             this.employeeCodeLogin = param.loginBasicInfor.employeeCodeLogin;
@@ -1980,6 +1980,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
+        parentKey:string;
         childrentKey:string;
         operationId: string;
         targetDate: string;
@@ -2001,6 +2002,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
+        parentKey:string;
         childrentKey:string;
         operationId: string;
         targetDate: string;
@@ -2065,6 +2067,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
+                    this.hidden = true;
+                    break;
+                }
+                case -2: {
+                    this.key = ITEM_PROPERTY.ITEM_PARRENT_KEY;
                     this.hidden = true;
                     break;
                 }

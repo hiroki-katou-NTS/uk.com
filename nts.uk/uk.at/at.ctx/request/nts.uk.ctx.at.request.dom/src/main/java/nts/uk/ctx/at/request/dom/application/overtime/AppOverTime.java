@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,7 +82,11 @@ public class AppOverTime extends AggregateRoot{
 	 * 就業時間外深夜時間
 	 */
 	private Integer overTimeShiftNight;
-	
+	/**
+	 * 時間外時間の詳細
+	 */
+	private Optional<AppOvertimeDetail> appOvertimeDetail;
+
 	public AppOverTime(String companyID,
 						String appID,
 						int overTimeAtr,

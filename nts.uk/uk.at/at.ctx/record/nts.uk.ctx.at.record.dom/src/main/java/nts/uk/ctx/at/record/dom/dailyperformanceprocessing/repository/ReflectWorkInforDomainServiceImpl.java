@@ -274,7 +274,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
@@ -398,7 +398,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day, empCalAndSumExecLogID);
+		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+				empCalAndSumExecLogID);
 
 		if (workTypeOfDailyPerformance != null) {
 
@@ -428,7 +429,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
 			Optional<StampReflectionManagement> stampReflectionManagement) {
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day, empCalAndSumExecLogID);
+		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+				empCalAndSumExecLogID);
 
 		if (workTypeOfDailyPerformance != null) {
 
@@ -552,13 +554,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							workplaceHistItemImport.get().getWorkplaceId(), day,
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), null)));
 		} else {
-			// #日別作成修正　2018/07/17　前川　隼大　
+			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-					employeeId, day, new ErrorAlarmWorkRecordCode("S025"),
-					new ArrayList<>());			
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-			
+
 			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
@@ -646,13 +647,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						businessTypeOfEmployee.get().getBusinessTypeCode().v());
 				return workTypeOfDailyPerformance;
 			} else {
-				// #日別作成修正　2018/07/17　前川　隼大　
+				// #日別作成修正 2018/07/17 前川 隼大
 				// 社員の日別実績のエラーを作成する
-				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-						employeeId, day, new ErrorAlarmWorkRecordCode("S025"),
-						new ArrayList<>());			
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-				
+
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 						new ErrMessageContent(TextResource.localize("Msg_1010")));
@@ -661,13 +661,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				return null;
 			}
 		} else {
-			// #日別作成修正　2018/07/17　前川　隼大　
+			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-					employeeId, day, new ErrorAlarmWorkRecordCode("S025"),
-					new ArrayList<>());			
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-						
+
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 					new ErrMessageContent(TextResource.localize("Msg_1010")));
@@ -742,13 +741,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(), day,
 							new ClassificationCode(classificationHasData.get().getClassificationCode()), null)));
 		} else {
-			// #日別作成修正　2018/07/17　前川　隼大　
+			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-					employeeId, day, new ErrorAlarmWorkRecordCode("S025"),
-					new ArrayList<>());			
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-			
+
 			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
@@ -790,13 +788,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		if (!workingConditionItem.isPresent() || workingConditionItem.get() == null) {
-			// #日別作成修正　2018/07/17　前川　隼大　
+			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-					employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-					new ArrayList<>());			
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-			
+
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 					new ErrMessageResource("005"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 					new ErrMessageContent(TextResource.localize("Msg_430")));
@@ -818,13 +815,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 取得したImported(就業.勤務実績)「勤務予定基本情報」が存在するか確認する
 				// 存在しない - no data
 				if (!basicScheduleHasData.isPresent()) {
-					// #日別作成修正　2018/07/17　前川　隼大　
+					// #日別作成修正 2018/07/17 前川 隼大
 					// 社員の日別実績のエラーを作成する
-					EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-							employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-							new ArrayList<>());			
+					EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+							new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 					this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-					
+
 					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 							new ErrMessageResource("006"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 							new ErrMessageContent(TextResource.localize(TextResource.localize("Msg_431"))));
@@ -846,13 +842,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 
 					if (!workTypeOpt.isPresent()) {
-						// #日別作成修正　2018/07/17　前川　隼大　
+						// #日別作成修正 2018/07/17 前川 隼大
 						// 社員の日別実績のエラーを作成する
-						EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-								employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-								new ArrayList<>());			
+						EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID,
+								day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 						this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-						
+
 						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 								new ErrMessageResource("015"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 								new ErrMessageContent(TextResource.localize("Msg_590")));
@@ -874,13 +869,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											AbolishAtr.NOT_ABOLISH);
 
 							if (!workTimeOpt.isPresent()) {
-								// #日別作成修正　2018/07/17　前川　隼大　
+								// #日別作成修正 2018/07/17 前川 隼大
 								// 社員の日別実績のエラーを作成する
 								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-										employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-										new ArrayList<>());			
+										employeeID, day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 								this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-								
+
 								ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 										new ErrMessageResource("016"), EnumAdaptor.valueOf(0, ExecutionContent.class),
 										day, new ErrMessageContent(TextResource.localize("Msg_591")));
@@ -894,13 +888,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										.getWorkScheduleSidImports();
 								// 存在しない - no data
 								if (workScheduleHasData.isEmpty()) {
-									// #日別作成修正　2018/07/17　前川　隼大　
+									// #日別作成修正 2018/07/17 前川 隼大
 									// 社員の日別実績のエラーを作成する
 									EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-											employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-											new ArrayList<>());			
+											employeeID, day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 									this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-									
+
 									ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID,
 											empCalAndSumExecLogID, new ErrMessageResource("007"),
 											EnumAdaptor.valueOf(0, ExecutionContent.class), day,
@@ -988,13 +981,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 
 			} else {
-				// #日別作成修正　2018/07/17　前川　隼大　
+				// #日別作成修正 2018/07/17 前川 隼大
 				// 社員の日別実績のエラーを作成する
-				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-						employeeID, day, new ErrorAlarmWorkRecordCode("S025"),
-						new ArrayList<>());			
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
 				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-				
+
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 						new ErrMessageResource("012"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 						new ErrMessageContent(TextResource.localize("Msg_1120")));
@@ -1141,12 +1133,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// }
 			}
 			if (errMesInfos.isEmpty()) {
-				
+
 				// pharse 3
-				// #日別作成修正　2018/07/17　前川　隼大
+				// #日別作成修正 2018/07/17 前川 隼大
 				// 社員の日別実績のエラーを解除する
 				this.createEmployeeDailyPerError.removeByCidSidDateAndErrorCode(companyId, employeeID, day, "S025");
-				
+
 				// pharse 2 start ----
 				// 特定日を日別実績に反映する
 				SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = reflectSpecificDate(companyId, employeeID,
@@ -1472,7 +1464,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		AutoCalFlexOvertimeSetting autoCalFlexOvertimeSetting = new AutoCalFlexOvertimeSetting(flexExcessTime);
 
 		// 加給: 加給の自動計算設定
-		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(
+				baseAutoCalSetting.getRaisingSalary().isSpecificRaisingSalaryCalcAtr(),
+				baseAutoCalSetting.getRaisingSalary().isRaisingSalaryCalcAtr());
 
 		// 休出時間: 休出時間の自動計算設定
 		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(
@@ -1497,10 +1491,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
 
 		// //遅刻早退: 遅刻早退の自動計算設定
-		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true, true);
+		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(
+				baseAutoCalSetting.getLeaveEarly().isLate(), baseAutoCalSetting.getLeaveEarly().isLeaveEarly());
 		// 乖離時間: 乖離時間の自動計算設定
 		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
-				DivergenceTimeAttr.USE);
+				EnumAdaptor.valueOf(baseAutoCalSetting.getDivergenceTime().getDivergenceTime().value, DivergenceTimeAttr.class));
 
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
@@ -1884,6 +1879,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 加給設定を取得する
 			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
 					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(), workPlaceIdList);
+
+			return bonusPaySetting;
 		} else {
 			// 「期間内マスタ一覧」と「就業時間帯コード」から加給設定を取得する
 			// 就業時間帯の加給設定を取得する
@@ -1908,13 +1905,45 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 							bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
 									: Optional.empty();
+
+							return bonusPaySetting;
+						} else {
+							return bonusPay;
 						}
+					} else {
+						// return fail
+						List<MasterList> masterLists = periodInMasterList.getMasterLists();
+						Optional<MasterList> newMasterLists = masterLists.stream()
+								.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+						bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+								: Optional.empty();
+
+						return bonusPaySetting;
 					}
+				} else {
+					// return fail
+					List<MasterList> masterLists = periodInMasterList.getMasterLists();
+					Optional<MasterList> newMasterLists = masterLists.stream()
+							.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+					bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+							: Optional.empty();
+
+					return bonusPaySetting;
 				}
+			} else {
+				// return fail
+				List<MasterList> masterLists = periodInMasterList.getMasterLists();
+				Optional<MasterList> newMasterLists = masterLists.stream()
+						.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+				bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+						: Optional.empty();
+
+				return bonusPaySetting;
 			}
 		}
-
-		return bonusPaySetting;
 	}
 
 	/**
