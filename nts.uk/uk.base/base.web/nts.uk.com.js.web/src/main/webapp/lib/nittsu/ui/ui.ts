@@ -176,7 +176,7 @@ module nts.uk.ui {
                             my: 'left top',
                             at: 'left bottom',
                             of: $label,
-                            collision: 'flip'
+                            collision: 'flipfit'
                         });
 
                     $label.bind('mouseleave.limitedlabel', () => {

@@ -19,7 +19,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ReserveLeaveErrorImport;
@@ -34,8 +36,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 	public List<AnnualLeaveErrorSharedImport> annualLeaveErrors(String companyId, String employeeId,
 			DatePeriod aggrPeriod, boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TmpAnnualHolidayMng>> forOverWriteList, Optional<Boolean> noCheckStartDate) {
-		
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList, Optional<Boolean> noCheckStartDate) {
 		Optional<AggrResultOfAnnualLeave> outResult = annleaRemNumService.algorithm(companyId,
 				employeeId, 
 				aggrPeriod, 
@@ -43,8 +44,8 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 						criteriaDate, 
 						isGetNextMonthData, 
 						isCalcAttendanceRate,
-						isOverWrite,
-						forOverWriteList,
+						Optional.of(true),
+						forOverWriteList, 
 						Optional.empty(), 
 						noCheckStartDate);
 		if(!outResult.isPresent()) {
@@ -61,8 +62,8 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 	@Override
 	public List<ReserveLeaveErrorImport> reserveLeaveErrors(String companyId, String employeeId, DatePeriod aggrPeriod,
 			boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
-			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualHolidayMng>> tempAnnDataforOverWriteList,
-			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
+			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
 			Optional<Boolean> noCheckStartDate) {
 		AggrResultOfAnnAndRsvLeave algorithm = fundingAnnualService.algorithm(companyId, 
 				employeeId,
@@ -71,8 +72,8 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 				criteriaDate, 
 				isGetNextMonthData,
 				isCalcAttendanceRate,
-				isOverWrite, 
-				tempAnnDataforOverWriteList,
+				Optional.of(true), 
+				tempAnnDataforOverWriteList, 
 				tempRsvDataforOverWriteList, 
 				isOutputForShortage, 
 				noCheckStartDate,

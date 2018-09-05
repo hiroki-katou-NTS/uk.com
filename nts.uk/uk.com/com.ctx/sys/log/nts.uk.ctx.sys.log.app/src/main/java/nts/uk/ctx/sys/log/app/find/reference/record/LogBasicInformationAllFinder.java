@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -416,15 +418,15 @@ public class LogBasicInformationAllFinder {
 												categoryCorrectionLog.getInfoOperateAttr().value));
 										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
 											
-												GeneralDate datekey = categoryCorrectionLog.getTargetKey()
+											Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
 														.getDateKey();
 												// item 25
-												logBasicInfoDto.setTarGetYmd(datekey.toString());
+												logBasicInfoDto.setTarGetYmd(datekey.get().toString());
 												// item 26
 												logBasicInfoDto
-														.setTarGetYm(String.valueOf(datekey.yearMonth()));
+														.setTarGetYm(String.valueOf(datekey.get().yearMonth()));
 												// item 27
-												logBasicInfoDto.setTarGetY(String.valueOf(datekey.year()));
+												logBasicInfoDto.setTarGetY(String.valueOf(datekey.get().year()));
 												// item 28
 												logBasicInfoDto.setKeyString(categoryCorrectionLog.getTargetKey()
 														.getStringKey().isPresent()

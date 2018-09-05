@@ -261,16 +261,22 @@ module nts.uk.ui.koExtentions {
             });
             
             $input.on("keyup", (e) => {
+                if ($input.attr('readonly')) {
+                    return;                
+                }
+                
                 var code = e.keyCode || e.which;
-                if (!$input.attr('readonly') && _.toString(code) !== '9') {
-                    let validator = self.getValidator(data);
-                    var newText = $input.val();
-                    var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
-                    if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                    } 
-                } 
+                if (_.includes(KeyCodes.NotValueKeys, code)) {
+                    return;
+                }
+                
+                let validator = self.getValidator(data);
+                var newText = $input.val();
+                var result = validator.validate(newText, { isCheckExpression: true });
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                }
             });
             
             // Format on blur
@@ -307,7 +313,7 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
-                    $input.ntsError('clear');
+                    //$input.ntsError('clear');
                     if (result.isValid) {
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
@@ -316,7 +322,15 @@ module nts.uk.ui.koExtentions {
                             value(result.parsedValue);
                         }
                     } else {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
+                           $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        } else {
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                            }
+                        }
                         
                         if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
                             valueChanging.markUserChange($input);
@@ -532,7 +546,8 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            let option: any = ko.toJS(data.option),
+            let option: any = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {},
+                eOption = $.extend(this.getDefaultOption(), option),
                 required = (data.required !== undefined) ? ko.unwrap(data.required) : false,
                 constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "",
                 name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
@@ -540,9 +555,9 @@ module nts.uk.ui.koExtentions {
             // update editor option
             $.extend(this.editorOption, {
                 required: required,
-                decimallength: Number(option.decimallength),
-                grouplength: Number(option.grouplength),
-                decimalseperator: option.decimalseperator
+                decimallength: Number(eOption.decimallength),
+                grouplength: Number(eOption.grouplength),
+                decimalseperator: eOption.decimalseperator
             });
             
             return new validation.NumberValidator(name, constraintName, this.editorOption);

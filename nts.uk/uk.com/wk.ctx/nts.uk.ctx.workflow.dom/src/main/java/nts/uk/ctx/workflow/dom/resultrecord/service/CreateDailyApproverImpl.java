@@ -81,35 +81,44 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			break;
 		}
 		if(errorFlag!=ErrorFlag.NO_ERROR){
-			// create log
+			return new AppRootInstanceContent(appRootInstance, errorFlag, errorMsgID);
 		}
 		// ドメインモデル「承認ルート中間データ」を取得する
 		Optional<AppRootInstance> opAppRootInstanceConflict = appRootInstanceRepository.findByEmpDate(companyID, employeeID, recordDate, rootType);
 		if(opAppRootInstanceConflict.isPresent()){
 			// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」を取得する
-			AppRootInstance appRootInstanceNewest = appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).get();
+			AppRootInstance appRootInstanceConflict = opAppRootInstanceConflict.get();
 			// output．承認ルートの内容は取得したドメインモデル「承認ルート中間データ」を比較する
-			boolean isSame = compareAppRootContent(appRootInstanceNewest, appRootInstance)
-					&& compareAppRootContent(appRootInstance, appRootInstanceNewest);
+			boolean isSame = compareAppRootContent(appRootInstanceConflict, appRootInstance)
+					&& compareAppRootContent(appRootInstance, appRootInstanceConflict);
 			if(isSame){
-				return new AppRootInstanceContent(appRootInstanceNewest, errorFlag, errorMsgID);
+				return new AppRootInstanceContent(appRootInstanceConflict, errorFlag, errorMsgID);
 			}
+			appRootInstanceRepository.delete(appRootInstanceConflict);
 		}
-		// 取得した承認ルートをドメインモデル「承認ルート中間データ」にINSERTする
-		appRootInstanceRepository.insert(appRootInstance);
 		// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
-		appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).ifPresent(x -> {
+		/*appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).ifPresent(x -> {
 			GeneralDate start = x.getDatePeriod().start();
-			GeneralDate end = x.getDatePeriod().end().addDays(-1);
+			GeneralDate end = x.getDatePeriod().end();
+			if(end.afterOrEquals(recordDate)){
+				end = recordDate.addDays(-1);
+			}
 			x.setDatePeriod(new DatePeriod(start, end));
 			appRootInstanceRepository.update(x);
-		});
+		});*/
 		//承認状態をクリアする
 		appRootConfirmRepository.clearStatus(companyID, employeeID, recordDate, rootType);
+		// 取得した承認ルートをドメインモデル「承認ルート中間データ」にINSERTする
+		appRootInstanceRepository.insert(appRootInstance);
 		return new AppRootInstanceContent(appRootInstance, errorFlag, errorMsgID);
 	}
 	
 	private boolean compareAppRootContent(AppRootInstance oldAppRoot, AppRootInstance newAppRoot){
+		DatePeriod oldPeriod = oldAppRoot.getDatePeriod();
+		DatePeriod newPeriod = newAppRoot.getDatePeriod();
+		if(!oldPeriod.start().equals(newPeriod.start()) || !oldPeriod.end().equals(newPeriod.end())){
+			return false;
+		}
 		for(AppPhaseInstance oldAppPhase : oldAppRoot.getListAppPhase()){
 			Optional<AppPhaseInstance> opNewAppPhaseLoop = 
 					newAppRoot.getListAppPhase().stream().filter(x -> x.getPhaseOrder()==oldAppPhase.getPhaseOrder()).findAny();

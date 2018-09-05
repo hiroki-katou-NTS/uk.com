@@ -151,5 +151,12 @@ public class TimeRoundingSetting extends DomainObject {
 		}
 	}
 	
+	/**
+	 * 自信を逆丸めに変更する
+	 * @return 逆丸めへ変更後の設定
+	 */
+	public TimeRoundingSetting getReverseRounding() {
+		return new TimeRoundingSetting(this.roundingTime, this.rounding.getReverseRounding());
+	}
 	
 }
