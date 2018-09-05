@@ -9,6 +9,7 @@ import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHis;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHisRepository;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurHis;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsHis;
 import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsHisPk;
 
@@ -18,11 +19,18 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid AND  f.occAccIsHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid ";
 
     @Override
     public List<OccAccIsHis> getAllOccAccIsHis(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtOccAccIsHis.class)
                 .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public List<OccAccIsHis> getAllOccAccIsHisByCid(String cid) {
+        return this.queryProxy().query(SELECT_BY_CID, QpbmtOccAccIsHis.class).setParameter("cid", cid).
+                getList(item -> item.toDomain());
     }
 
     @Override

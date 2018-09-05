@@ -1,36 +1,56 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm011.c.start.js" />
-			<com:scriptfile path="qmm011.c.service.js" />
-			<com:scriptfile path="qmm011.c.vm.js" />
-			<com:stylefile path="qmm011.c.style.css" />
-		</ui:define>
-		<ui:define name="content">
-	<div class = "content">
-		<div class = "left">
-			<div id="B1_1" 
-				data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
+<ui:composition template="/master/base.xhtml">
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="../share/model.js" />
+		<com:scriptfile path="qmm011.c.start.js" />
+		<com:scriptfile path="qmm011.c.service.js" />
+		<com:scriptfile path="qmm011.c.vm.js" />
+		<com:stylefile path="qmm011.c.style.css" />
+	</ui:define>
+	<ui:define name="content">
+		<div
+				class="sidebar-content-header flex valign-center header-content">
+			<span class="title">#{i18n.getText('KDM001_149')}</span>
+
+			<div style="margin-left: 100px">
+				<div>
+					<!-- A1_1-->
+					<button class="proceed" id="A1_1" tabindex="1"
+							data-bind="">#{i18n.getText('qmm011_1')}</button>
+					<!-- A1_2 -->
+					<button id="A1_2" tabindex="2"
+							data-bind="">#{i18n.getText('qmm011_2')}</button>
+					<!-- A1_3-->
+					<button id="A1_3" tabindex="3"
+							data-bind="">#{i18n.getText('qmm011_3')}</button>
+				</div>
+			</div>
+
+		</div>
+		<div class = "content">
+			<div class = "left">
+				<div id="B1_1"
+					 data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="">#{i18n.getText('QMM011_6')}</button>
+						<button id ="B1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="">#{i18n.getText('QMM011_7')}</button>
+						<button id ="B1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div>
 						<!--B1_4 雇用保険料率一覧 -->
 						<table id="B1_4"
-								data-bind="ntsGridList: {
+							   data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												height: 490,
-												rows: 14,
+												height: 760,
+												rows: 15,
 		                                        dataSource: listEmpInsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
@@ -41,7 +61,7 @@
 								                		],                                        
 								                multiple: false,
 		                                        value: selectedEmpInsHisId
-		                        }">
+		                        				}">
 						</table>
 					</div>
 				</div>
@@ -59,59 +79,92 @@
 				<div id ="B2_6" class="set-row">
 					<hr />
 				</div>
-				<div>
-				<table id="C3_2" >
-					<tbody>
-						<tr class="bg-green">
-							<!--B3_2  個人負担率  -->
-							<th></th>
-							<th></th>
-							<!--B3_3 端数処理  -->
-							<th>#{i18n.getText('QMM011_12')}</th>
-							<!--B3_4  事業主負担率  -->
-							<th>#{i18n.getText('QMM011_13')}</th>
-
+				<div class = "table">
+					<table id="3_1" >
+						<colgroup>
+							<col width="20px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="150px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th class="bg-green" style="border: 1px solid #CCC"></th>
+							<th class="bg-green">#{i18n.getText('QMM011_11')}</th>
+							<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
+							<th class="bg-green">#{i18n.getText('QMM011_13')}</th>
+							<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
 						</tr>
-							<tr>
-								<td class="bg-green" width ="5%">
-									<label id= "B3_6"></label>
-								</td>
-								<td class="bg-green"  width ="45%">
-
-								</td>
-								<td width ="25%">
-									<div tabindex="5"><input id = "C3_6" style="float: left"
-												data-bind="ntsNumberEditor: {
-									option : {width: '30px'},
-									name: '#{i18n.getText('QMM011_13')}',
-									value: indBdRation,
-									required: false
-									}"/><span id = "C3_7" style="float: right">#{i18n.getText('QMM011_15')}</span></div>
-
-								</td>
-								<td width ="25%">
-									<div tabindex="6" id = "C3_8"
-										 data-bind="ntsComboBox: {
-																name: '#{i18n.getText('QMM011_12')}',
-																value: perFracClass,
-																required: false,
-																options: listPerFracClass,
-																optionsValue: 'code',
-																visibleItemsCount: 5,
-																optionsText: 'name'
+						</thead>
+						<tbody data-bind="foreach: listEmpInsurPreRate()">
+						<tr >
+							<td class="bg-green" style="border: 1px solid #CCC">
+								<com:ko-if bind="empPreRateId === 2">
+									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span>
+								</com:ko-if>
+								<com:ko-if bind="empPreRateId === 1">
+									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span>
+								</com:ko-if>
+								<com:ko-if bind="empPreRateId === 0">
+									<span class = "label" id= "B3_24">#{i18n.getText('QMM011_17')}</span>
+								</com:ko-if>
+							</td>
+							<td >
+								<input id = "B3_7"
+									   data-bind="ntsNumberEditor: {
+																option : {width: '40px'},
+																name: '#{i18n.getText('QMM011_11')}',
+																value: indBdRatio,
+																required: false
 																}"/>
-								</td>
+								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
+							</td>
+							<td>
+								<div class = "B3_9"
+									 data-bind="ntsComboBox: {
+																
+																name: '#{i18n.getText('QMM011_15')}',
+																value: perFracClass,
+																options: $parent.listPerFracClass,
+																optionsValue: 'code',
+																optionsText: 'name',
+																columns: [             
+																{ prop: 'name', length: 10 },]
+										
+																}"/>
+							</td>
+							<td>
+								<input id = "B3_11"
+									   data-bind="ntsNumberEditor: {
+																option : {width: '40px'},
+																value: empContrRatio, 
+																name: '#{i18n.getText('QMM011_13')}'
+																	}"/>
 
+								<span class= "label" id= "B3_12">#{i18n.getText('QMM011_15')}</span>
+							</td>
+							<td>
+								<div id = "B3_13"
+									 data-bind="ntsComboBox: {
+																
+																value: busiOwFracClass, 
+																name:'#{i18n.getText('QMM011_12')}',
+																options: $parent.listPerFracClass,
+																optionsText: 'name',
+																optionsValue: 'code',
+																}">
+								</div>
 
-								
-							</tr>
-					</tbody>
-				</table>
+							</td>
+						</tr>
+
+						</tbody>
+					</table>
 				</div>
 			</div>
-			
-	</div>
-</ui:define>
+		</div>
+	</ui:define>
 </ui:composition>
 </body>
 </html>

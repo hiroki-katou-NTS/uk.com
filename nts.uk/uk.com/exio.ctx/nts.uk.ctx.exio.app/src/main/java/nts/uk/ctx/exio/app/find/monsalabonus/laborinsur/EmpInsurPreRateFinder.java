@@ -1,12 +1,11 @@
 package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatioRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatioRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsurPreRateFinder {

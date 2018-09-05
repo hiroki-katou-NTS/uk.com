@@ -12,6 +12,7 @@ public interface OccAccIsHisRepository
 {
 
     List<OccAccIsHis> getAllOccAccIsHis();
+    List<OccAccIsHis> getAllOccAccIsHisByCid(String cid);
 
     Optional<OccAccIsHis> getOccAccIsHisById(String cid, String hisId);
 
