@@ -37,7 +37,7 @@ div.nts-fixed-header-wrapper{ width : 450px !important}
 div.nts-fixed-body-wrapper{width: 450px !important }
 div.nts-fixed-body-container.ui-iggrid{ height: 205px;}
 #func-notifier-errors.shown {
-    display: inline-block;
+    display: none;
     position: absolute;
     bottom: 380px;
 }
