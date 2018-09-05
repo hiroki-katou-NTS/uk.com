@@ -49,7 +49,13 @@
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
 	border-right: none;
+	border-left: none;
 	line-height: 22px;
+}
+
+.ui-iggrid table tr th.ui-iggrid-header {
+	border-right: none;
+	border-left: none;	
 }
 
 
