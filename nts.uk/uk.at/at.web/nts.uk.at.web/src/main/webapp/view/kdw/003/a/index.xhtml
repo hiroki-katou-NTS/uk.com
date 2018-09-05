@@ -158,7 +158,7 @@
                                                 	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <!-- <tr>
                                                 <td class="ui-widget-body remain-compen-time">
                                                 	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
                                                 </td>
@@ -167,11 +167,11 @@
                                                 	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
                                                 </td>
                                                 <td class="ui-widget-body"></td>
-                                            </tr>
+                                            </tr> -->
                                         </tbody>
                                     </table>
-                                    <label data-bind="text: dataHoliday().dispSysDate"></label>
-                                    <label style="padding-left: 20px" data-bind="text: dataHoliday().dispNextGrantDate"></label>
+                                    <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()"></label>
+                                    <label style="padding-left: 20px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
                                 </div>
                             </div>
                             <div id="container" style="padding-top: 12px">
