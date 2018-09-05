@@ -233,9 +233,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting
-										,Optional<WorkInfoOfDailyPerformance> yesterDayInfo
-										,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+	public IntegrationOfDaily calculate(CalculateOption calculateOption,
+			IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
+			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 		
@@ -246,14 +247,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			companyCommonSetting.setShareContainer(MasterShareBus.open());
 		}
 		// 実績データの計算
-		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
-		//大塚モードの処理
-		val afterOOtsukaModeCalc = replaceStampForOOtsuka(afterCalcResult, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+		IntegrationOfDaily result = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
 		
-		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
-		//エラーチェック
-		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
+		if (!calculateOption.isSchedule()) {
+			//大塚モードの処理
+			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+			
+			//任意項目の計算
+			result = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
+		}
+		
+		if (!calculateOption.isMasterTime()) {
+			//エラーチェック
+			result = calculationErrorCheckService.errorCheck(result, companyCommonSetting);
+		}
 		
 		if(isShareContainerNotInit) {
 			companyCommonSetting.getShareContainer().clearAll();
@@ -261,7 +268,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		return result;
 	}
-
+	
+	
+	
+		
 	//大塚モード(計算項目置き換えと計算)
 	private IntegrationOfDaily replaceStampForOOtsuka(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo, DailyRecordToAttendanceItemConverter converter) {
 		if(integrationOfDaily.getPcLogOnInfo().isPresent()) {
