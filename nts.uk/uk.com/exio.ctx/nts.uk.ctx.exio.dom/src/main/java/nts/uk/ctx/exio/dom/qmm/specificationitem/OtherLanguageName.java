@@ -1,0 +1,19 @@
+package nts.uk.ctx.exio.dom.qmm.specificationitem;
+
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
+
+/**
+ * その他言語名称
+ */
+@StringMaxLength(20)
+public class OtherLanguageName extends StringPrimitiveValue<OtherLanguageName> {
+
+	private static final long serialVersionUID = 1L;
+
+	public OtherLanguageName(String rawValue) {
+		super(rawValue);
+		// TODO Auto-generated constructor stub
+	}
+
+}
