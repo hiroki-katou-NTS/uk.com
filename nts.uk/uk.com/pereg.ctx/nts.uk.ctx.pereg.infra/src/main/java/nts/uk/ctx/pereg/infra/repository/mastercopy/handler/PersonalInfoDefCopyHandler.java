@@ -348,7 +348,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 //1 update overwrite for PpemtPerInfoCtg
                 PpemtPerInfoCtg src = sgroupPersonalInfoCatByCatCd.get(catCd);
                 PpemtPerInfoCtg des = tgroupPersonalInfoCatByCatCd.get(catCd);
-                if (src == null || des == null) break;
+                if (src == null || des == null) continue;
                 des.categoryName = src.categoryName;
                 des.abolitionAtr = src.abolitionAtr;
                 this.commandProxy.update(des);
@@ -364,7 +364,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     for (String itemCd : sourcePerInfoItems.keySet()) {
                         PpemtPerInfoItem srcPerInfoItem = sourcePerInfoItems.get(itemCd);
                         PpemtPerInfoItem desPerInfoItem = destPerInfoItems.get(itemCd);
-                        if (srcPerInfoItem == null || desPerInfoItem == null) break;
+                        if (srcPerInfoItem == null || desPerInfoItem == null) continue;
                         desPerInfoItem.itemCd = itemCd;
                         desPerInfoItem.itemName = srcPerInfoItem.itemName;
                         desPerInfoItem.abolitionAtr = srcPerInfoItem.abolitionAtr;
@@ -373,16 +373,15 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                     }
                 }
 
-                //3
+                //3 
                 PpemtDateRangeItem sourceDateRangeItem = findAlldateRangeItemByPerInfoCtgId(src.ppemtPerInfoCtgPK.perInfoCtgId);
-                PpemtDateRangeItem destDateRangeItem = findAlldateRangeItemByPerInfoCtgId(src.ppemtPerInfoCtgPK.perInfoCtgId);
-                if (sourceDateRangeItem == null || destDateRangeItem == null) break;
+                PpemtDateRangeItem destDateRangeItem = findAlldateRangeItemByPerInfoCtgId(des.ppemtPerInfoCtgPK.perInfoCtgId);
+                if (sourceDateRangeItem == null || destDateRangeItem == null) continue;
                 destDateRangeItem.startDateItemId = sourceDateRangeItem.startDateItemId;
                 destDateRangeItem.endDateItemId = sourceDateRangeItem.endDateItemId;
                 destDateRangeItem.dateRangeItemId = sourceDateRangeItem.dateRangeItemId;
                 this.commandProxy.update(destDateRangeItem);
             }
-
         }
     }
 }
