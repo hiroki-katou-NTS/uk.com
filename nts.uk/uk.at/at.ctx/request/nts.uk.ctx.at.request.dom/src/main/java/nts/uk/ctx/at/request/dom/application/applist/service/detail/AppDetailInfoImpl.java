@@ -469,6 +469,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
 		//get list appHoliday detail
 		Map<String, AppHolidayWork> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
+		if(mapHdFrame.isEmpty()) {
+			return new ArrayList<>();
+		}
 		Map<String, String> mapWorkTimeName = new HashMap<>();
 		for (String appId : lstAppId) {
 			AppHolidayWork hdWork = mapHdFrame.get(appId);
