@@ -38,7 +38,7 @@ public class LogDataCorrectRecordRefeDto {
 	public static LogDataCorrectRecordRefeDto fromDomain(DataCorrectionLog domain) {
 		String childrentKey = IdentifierUtil.randomUniqueId();
 		String targetDateStr = "";
-		GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+		GeneralDate targetDate = domain.getTargetDataKey().getDateKey();
 		TargetDataType tagetData = TargetDataType.of(domain.getTargetDataType().value);
 		switch (tagetData) {
 		case SCHEDULE:

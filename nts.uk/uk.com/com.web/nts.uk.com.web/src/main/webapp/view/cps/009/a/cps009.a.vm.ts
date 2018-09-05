@@ -1,3 +1,14 @@
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
 module nts.uk.com.view.cps009.a.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
@@ -10,6 +21,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import formatDate = nts.uk.time.formatDate;
+    import validation = validationcps009;
 
     import primitiveConst = CPS009Constraint.primitiveConst;
 
@@ -40,29 +52,27 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
             
             self.initSettingId.subscribe(function(value: string) {
-               nts.uk.ui.errors.clearAll();
-               self.errorList.removeAll();
+              
                self.currentCategory().itemList.removeAll();
                 self.currentCategory().setData({
                     settingCode: "",
                     settingName: "",
                     ctgList: []
                 });
+                nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return;
-                self.getDetail(value);           
+                self.getDetail(value); 
+        
 
             });
 
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
-                self.errorList.removeAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return; 
                 
                 self.getItemList(self.initSettingId(), value);
 
             });
-            
-            
             
         }
         
@@ -162,7 +172,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         self.currentCategory().itemList(itemConvert);
                         self.lstItemFilter = itemConvert;
                         _.defer(() => {
-                            $('#ctgName').focus();
+                             let ctrl = $("#ctgName"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
+                             $("#ctgName").trigger("validate"); 
                         });
                     });
                 } else {
@@ -170,7 +184,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         self.currentCategory().itemList.removeAll();
                         self.currentCategory().itemList([]);
                         _.defer(() => {
-                            $('#ctgName').focus();
+                             let ctrl = $("#ctgName"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
+                           $("#ctgName").trigger("validate"); 
                         });
                     });
                 }
@@ -410,25 +428,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $('tr').find('#date'),
-                dateInputListOfYear = $('tr').find('#datey'),
-                itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item) {
-                    return item.dataType == 3 && item.selectedRuleCode == 2;
+                itemListSetting: Array<any> = _.filter(self.currentCategory().itemList(), function(item) {
+                    return item.selectedRuleCode() == 2;
                 });
-            if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
-                let i: number = 0;
-                _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = dateInputList[i],
-                        $input2 = dateInputListOfYear[i];
-                    if ($input1 != undefined) {
-                        $input1.setAttribute("nameid", item.itemName);
-                    }
-                    else if ($input2 != undefined) {
-                        $input2.setAttribute("nameid", item.itemName);
-                    }
-                    i++;
-                });
-            }
+            
+            validation.initCheckError(itemListSetting);
+            validation.checkError(itemListSetting);
+            
+            if(nts.uk.ui.errors.hasError()){ return;}
 
             block.invisible();
             service.update(updateObj).done(function(data) {
@@ -970,7 +977,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
-                nts.uk.ui.errors.clearAll();
             });
 
         }
@@ -1264,13 +1270,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                             itemWorkTime, itemWorkType, false);
                                     }
                                 }
-
-
                             });
-
-
-
-
                         }
 
                     }

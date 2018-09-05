@@ -21,7 +21,7 @@ public enum SearchReferenceRange {
 	/** The department only. */
 	// 部門（配下含まない）
 	DEPARTMENT_ONLY(2, "Enum_EmployeeReferenceRange_departmentOnly", "部門（配下含まない）"),
-
+	//参照範囲を考慮しない
 	/** The do not consider reference range. */
 	DO_NOT_CONSIDER_REFERENCE_RANGE(3, "Enum_EmployeeReferenceRange_DO_NOT_CONSIDER_REFERENCE_RANGE", "");
 

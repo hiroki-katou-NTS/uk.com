@@ -69,7 +69,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 					+ affiliationInforOfDailyPerfor.getWplID() + "' , "
 					+ bonusPaycode + " )";
 			Statement statementI = con.createStatement();
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

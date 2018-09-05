@@ -4,7 +4,8 @@ module cps002.g.service {
 
     let paths = {
         getUserSetting: 'ctx/pereg/usersetting/getUserSetting',
-        setUserSetting: 'ctx/pereg/usersetting/update/updateUserSetting'
+        setUserSetting: 'ctx/pereg/usersetting/update/updateUserSetting',
+        getStamCardEditing: 'record/stamp/stampcardedit/find'
     };
 
     export function setUserSetting(command) {
@@ -14,5 +15,9 @@ module cps002.g.service {
 
     export function getUserSetting() {
         return ajax(paths.getUserSetting);
+    }
+    
+    export function getStamCardEdit() {
+        return ajax("at", paths.getStamCardEditing);
     }
 }

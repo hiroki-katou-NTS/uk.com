@@ -154,7 +154,15 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
 		if (this.uncountableTarget != null) {
-			return getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+			List<Integer> items = Arrays.asList(this.uncountableTarget.getAttendanceItem());
+			if(items.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目が不正です。");
+			}
+			List<Integer> values = getItemValue.apply(items);
+			if(values.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目の値が不正です。");
+			}
+			return values.get(0);
 		} else {
 			return this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
 		}

@@ -12,7 +12,7 @@ public enum DailyPerformanceItem {
 	SECOND_OPT(1),
 	
 	/* 03 作成：当月開始日 計算：当月開始日～当日 */
-	THIRD_OPT(2),
+	THIRD_OPT(2),	
 	
 	/* 04 作成：当月開始日 計算：当月開始日～当月終了日 */
 	FOURTH_OPT(3),
@@ -21,7 +21,12 @@ public enum DailyPerformanceItem {
 	FIFTH_OPT(4),
 	
 	/* 06 作成：翌月開始日 計算：翌月開始日～翌月終了日 */
-	SIXTH_OPT(5);
+	SIXTH_OPT(5),
+	
+	/* 07 作成：翌々月同一日 計算：その翌日（月末のみ末日まで） */
+	SEVENTH_OPT(6);
+	
+	
 	
 	/** The value. */
 	public final int value;

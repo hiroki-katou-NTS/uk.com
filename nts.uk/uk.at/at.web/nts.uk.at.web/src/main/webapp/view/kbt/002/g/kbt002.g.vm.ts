@@ -12,6 +12,8 @@ module nts.uk.at.view.kbt002.g {
             execLog: any = {};
             sharedObj = {};
             modalLink = '';
+            execItemCd = '';
+            
             constructor() {
                 let self = this;
             }
@@ -23,6 +25,7 @@ module nts.uk.at.view.kbt002.g {
                 var sharedData = nts.uk.ui.windows.getShared('inputDialogG');
                 if (sharedData) {
                     self.execLog = sharedData.execLog;
+                    
                 }
                 
                 dfd.resolve();
@@ -110,8 +113,27 @@ module nts.uk.at.view.kbt002.g {
                                      };
                     nts.uk.ui.windows.setShared("openH", self.sharedObj);
                     self.modalLink = "/view/kdw/001/h/index.xhtml";
-                } else if (taskId == 5) { // アラーム抽出（個人別）
-                } else if (taskId == 6) { // アラーム抽出（職場別）
+                } else if (taskId == 5) { // アラーム抽出
+                } else if (taskId == 6) { // 承認ルート更新（日次）
+                    self.sharedObj = {
+                        executionId : logHistory.execId,
+                        execItemCd : self.execLog.execItemCd,
+                        isDaily : true,
+                        nameObj : "承認ルート更新（日次）"  
+                    }; 
+                    nts.uk.ui.windows.setShared('inputDialogI', { sharedObj:self.sharedObj});
+                    nts.uk.ui.windows.sub.modal("/view/kbt/002/i/index.xhtml").onClosed(function() {
+                    });
+                } else if (taskId == 7) { // 承認ルート更新（月次）
+                    self.sharedObj = {
+                        executionId : logHistory.execId,
+                        execItemCd : self.execLog.execItemCd,
+                        isDaily : false,
+                        nameObj : "承認ルート更新（月次）"  
+                    }; 
+                    nts.uk.ui.windows.setShared('inputDialogI', { sharedObj:self.sharedObj});
+                    nts.uk.ui.windows.sub.modal("/view/kbt/002/i/index.xhtml").onClosed(function() {
+                    });
                 }
             }
         }

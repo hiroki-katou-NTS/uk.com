@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月の計算中の日別実績データ
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @Setter
@@ -80,8 +80,8 @@ public class MonthlyCalculatingDailys {
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
-		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addMonths(1));
 		
 		// 日別実績の勤怠時間
 		val attendanceTimeOfDailyList =
@@ -112,13 +112,19 @@ public class MonthlyCalculatingDailys {
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
-		// 取得期間を　開始日-6日～開始日-1日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.start().addDays(-1));
+		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
+		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
 		
-		// 日別実績の勤怠時間　（前月最終週分）
-		val findAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		for (val attendanceTimeOfDaily : findAttendanceTimeOfDailyList){
+		// 日別実績の勤怠時間
+		val prevAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
+		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		val nextAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
+		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
@@ -203,31 +209,47 @@ public class MonthlyCalculatingDailys {
 			}
 		}
 		
-		// 取得期間を　開始日-6日～開始日-1日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.start().addDays(-1));
+		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
+		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
 		
-		// 日別実績の勤怠時間　（前月最終週分）
-		val findAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		for (val attendanceTimeOfDaily : findAttendanceTimeOfDailyList){
+		// 日別実績の勤怠時間
+		val prevAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
+		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		val nextAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
+		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
-		// 日別実績の出退勤　（前月最終週分）
-		val findTimeLeaveOfDailyList =
-				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
-		for (val timeLeaveOfDaily : findTimeLeaveOfDailyList){
+		// 日別実績の出退勤
+		val prevTimeLeaveOfDailyList =
+				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, prevPeriod);
+		for (val timeLeaveOfDaily : prevTimeLeaveOfDailyList){
+			result.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
+		}
+		val nextTimeLeaveOfDailyList =
+				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, nextPeriod);
+		for (val timeLeaveOfDaily : nextTimeLeaveOfDailyList){
 			result.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
 		}
 		
 		// 日別実績の勤務情報
-		val findWorkInfoOfDailyList =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		for (val workInfoOfDaily : findWorkInfoOfDailyList){
+		val prevWorkInfoOfDailyList =
+				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
+		for (val workInfoOfDaily : prevWorkInfoOfDailyList){
+			result.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
+		}
+		val nextWorkInfoOfDailyList =
+				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
+		for (val workInfoOfDaily : nextWorkInfoOfDailyList){
 			result.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
 		}
 		
-		// ※　以下は、期間の前月最終週の配慮不要。
+		// ※　以下は、期間外の配慮不要。
 
 		// 年休付与残数データリスト
 		result.grantRemainingDatas =
@@ -259,8 +281,8 @@ public class MonthlyCalculatingDailys {
 		// データ取得共通処理　（36協定時間用）
 		this.loadDataCommonForAgreement(employeeId, period, repositories);
 		
-		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addMonths(1));
 		
 		// 日別実績の出退勤
 		val timeLeaveOfDailyList =
@@ -269,7 +291,7 @@ public class MonthlyCalculatingDailys {
 			this.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
 		}
 		
-		// ※　以下は、期間の前月最終週の配慮不要。
+		// ※　以下は、期間外の配慮不要。
 
 		// 日別実績の臨時出退勤
 		val temporaryTimeOfDailys =
@@ -326,8 +348,8 @@ public class MonthlyCalculatingDailys {
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
-		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addMonths(1));
 		
 		// 日別実績の勤怠時間
 		val attendanceTimeOfDailyList =
@@ -364,13 +386,19 @@ public class MonthlyCalculatingDailys {
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
-		// 取得期間を　開始日-6日～開始日-1日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.start().addDays(-1));
+		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
+		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
 		
-		// 日別実績の勤怠時間　（前月最終週分）
-		val findAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		for (val attendanceTimeOfDaily : findAttendanceTimeOfDailyList){
+		// 日別実績の勤怠時間
+		val prevAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
+		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
+			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		}
+		val nextAttendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
+		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
@@ -391,8 +419,8 @@ public class MonthlyCalculatingDailys {
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// 取得期間を　開始日-6日～終了日　とする　（前月の最終週の集計のため）
-		DatePeriod findPeriod = new DatePeriod(period.start().addDays(-6), period.end());
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addMonths(1));
 		
 		// 日別実績の勤務情報
 		val workInfoOfDailyList =
@@ -400,5 +428,20 @@ public class MonthlyCalculatingDailys {
 		for (val workInfoOfDaily : workInfoOfDailyList){
 			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
 		}
+	}
+	
+	/**
+	 * 期間内の日別実績の勤怠時間が存在するか
+	 * @param period 期間
+	 * @return true：存在する、false：存在しない
+	 */
+	public boolean isExistDailyRecord(DatePeriod period){
+	
+		for (val attendanceTimeOfDaily : this.attendanceTimeOfDailyMap.values()){
+			val ymd = attendanceTimeOfDaily.getYmd();
+			if (!period.contains(ymd)) continue;
+			return true;
+		}
+		return false;
 	}
 }

@@ -233,9 +233,16 @@ module nts.uk.at.view.kmk003.a {
                         self.settingEnum.workTimeMethodSet = self.backupOptions;
                         // focus worktime atr
                         $('#search-daily-atr').focus();
+                        //update value model tab 2
+                        self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated();
                     }
                     else {
-                        self.enterNewMode();
+                        if (self.screenMode() != 2) {
+                            self.enterNewMode();
+                        }
+                        else {
+                            self.enterCopyMode();
+                        }
                     }
                 });
 
@@ -440,8 +447,8 @@ module nts.uk.at.view.kmk003.a {
              */
             private validateInput(): void {
                 let self = this;
-                let commonDayoff = self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
-                let commonOvertime = self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
+                let commonDayoff = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
+                let commonOvertime = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
                 self.clearAllError();
                 $('.nts-editor').each((index, element) => {
                     if (!element.id) {
@@ -460,14 +467,16 @@ module nts.uk.at.view.kmk003.a {
                 self.validatetab7();
                 
                 //validate disabled item tab 11
-                if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
-                    self.validateTab11(commonDayoff,commonOvertime);
-                }
-                else {
-                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
-                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
+                if (!nts.uk.util.isNullOrEmpty(self.backupCommonSetting)) {
+                    if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
+                        self.validateTab11(commonDayoff, commonOvertime);
+                    }
+                    else {
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
+                    }
                 }
             }
             
@@ -546,7 +555,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 // Validate Msg_770
-                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getShiftTwo();
+                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
                 if (shiftTwo.useAtr() && (shiftTwo.start() >= shiftTwo.end())) {
                     $('#shiftTwoStart').ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText('KMK003_216')]});
                 }
@@ -697,7 +706,10 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-
+                
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
 
@@ -712,9 +724,6 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
-                
                 // do interlock if simple mode
                 if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);

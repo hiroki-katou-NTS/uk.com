@@ -10,6 +10,7 @@ public interface AnnualWorkScheduleRepository {
 	/**
 	 * 年間勤務表の出力処理
 	 */
-	ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYearMonth, YearMonth endYearMonth,
-			List<Employee> employees, int printFormat, int breakPage);
+	ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYearMonth,
+			YearMonth endYearMonth, List<Employee> employees, PrintFormat printFormat, int breakPage,
+			ExcludeEmp excludeEmp, Integer monthLimit);
 }

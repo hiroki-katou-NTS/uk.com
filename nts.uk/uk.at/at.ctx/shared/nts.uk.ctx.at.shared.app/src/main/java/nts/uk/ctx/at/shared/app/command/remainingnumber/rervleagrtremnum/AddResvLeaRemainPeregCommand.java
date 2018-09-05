@@ -19,6 +19,9 @@ public class AddResvLeaRemainPeregCommand {
 	 */
 	@PeregItem("IS00398")
 	private GeneralDate grantDate;
+	
+	public String grantDateItemName;
+	public String deadlineDateItemName;
 
 	/**
 	 * 積立年休期限日

@@ -16,9 +16,10 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 @Stateless
 public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepository{
 	
-	private static final String SELECT_BASE = "SELECT m, t"
-									+ " FROM CcgmtFlowMenu m JOIN CcgmtTopPagePart t"
-									+ " ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID";
+	private static final String SELECT_BASE = "SELECT m, t "
+									+ "FROM CcgmtFlowMenu m JOIN CcgmtTopPagePart t "
+									+ "ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+									+ "AND m.ccgmtFlowMenuPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	private static final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID IN :topPagePartID";

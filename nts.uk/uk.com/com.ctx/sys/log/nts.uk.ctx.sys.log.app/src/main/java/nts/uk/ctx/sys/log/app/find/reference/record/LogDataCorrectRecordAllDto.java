@@ -40,10 +40,10 @@ public class LogDataCorrectRecordAllDto {
 
 	public static LogDataCorrectRecordAllDto fromDomain(DataCorrectionLog domain) {
 
-		return new LogDataCorrectRecordAllDto(domain.getOperationId(), domain.getTargetDataKey().getDateKey().get(),
+		return new LogDataCorrectRecordAllDto(domain.getOperationId(), domain.getTargetDataKey().getDateKey(),
 				domain.getTargetDataType().value, domain.getCorrectedItem().getName(),
-				domain.getCorrectedItem().getValueBefore().getViewValue(),
-				domain.getCorrectedItem().getValueAfter().getViewValue(), domain.getRemark(),
+				domain.getCorrectedItem().getValueBefore().getRawValue()==null?"":domain.getCorrectedItem().getValueBefore().getRawValue().getValue().toString(),
+				domain.getCorrectedItem().getValueAfter().getRawValue()==null?"":domain.getCorrectedItem().getValueAfter().getRawValue().getValue().toString(), domain.getRemark(),
 				getCorrectionAttr(domain.getCorrectionAttr().value), domain.getTargetUser().getUserName(),
 				domain.getTargetUser().getEmployeeId(), domain.getTargetUser().getUserId(), getTarGetYmd(domain),
 				getTarGetYm(domain), getarGetY(domain),
@@ -70,32 +70,32 @@ public class LogDataCorrectRecordAllDto {
 
 	private static String getTarGetYm(DataCorrectionLog domain) {
 
-		if (domain.getTargetDataKey().getDateKey().isPresent()) {
-			GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+//		if (domain.getTargetDataKey().getDateKey().isPresent()) {
+			GeneralDate targetDate = domain.getTargetDataKey().getDateKey();
 			return String.valueOf(targetDate.yearMonth());
-		}
+//		}
 
-		return null;
+//		return null;
 	}
 
 	private static String getarGetY(DataCorrectionLog domain) {
 
-		if (domain.getTargetDataKey().getDateKey().isPresent()) {
-			GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+//		if (domain.getTargetDataKey().getDateKey().isPresent()) {
+			GeneralDate targetDate = domain.getTargetDataKey().getDateKey();
 			return String.valueOf(targetDate.year());
-		}
+//		}
 
-		return null;
+//		return null;
 	}
 
 	private static String getTarGetYmd(DataCorrectionLog domain) {
 
-		if (domain.getTargetDataKey().getDateKey().isPresent()) {
-			GeneralDate targetDate = domain.getTargetDataKey().getDateKey().get();
+//		if (domain.getTargetDataKey().getDateKey().isPresent()) {
+			GeneralDate targetDate = domain.getTargetDataKey().getDateKey();
 			return targetDate.toString();
-		}
+//		}
 
-		return null;
+//		return null;
 	}
 
 }

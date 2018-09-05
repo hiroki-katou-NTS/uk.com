@@ -28,13 +28,11 @@ public class AppOverTimeInfoFull {
 	private String workClockTo2;
 	
 	private List<OverTimeFrame> lstFrame;
-	/**
-	 * 就業時間外深夜時間
-	 */
+	/** 就業時間外深夜時間 */
 	private String overTimeShiftNight;
 	
-	/**
-	 * フレックス超過時間
-	 */
+	/** フレックス超過時間 */
 	private String flexExessTime;
+	//時間外時間の詳細
+	private TimeNo417 timeNo417;
 }

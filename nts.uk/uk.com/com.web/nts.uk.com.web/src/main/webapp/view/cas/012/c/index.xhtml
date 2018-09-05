@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width:380, height: 330 };</script>
+			<script>var dialogSize = { width:480, height: 330 };</script>
 			<com:stylefile path="cas012.c.style.css" />
 			<com:scriptfile path="cas012.c.service.js" />
 			<com:scriptfile path="cas012.c.start.js" />
@@ -30,6 +30,7 @@
 							value: selectedCompany,
 							optionsText: 'companyName',
 							required : isRequired,
+							width :300,
 							columns: [
 								{ prop: 'companyName', length: 14 }
 							]}"></div>

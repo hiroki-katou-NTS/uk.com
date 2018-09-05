@@ -32,7 +32,7 @@ public class LicenseCheckFinder {
 	private IEmployeeDataMngInfoPub iEmployeeDataMngInfoPub;
 
 	public LicensenCheckDto checkLicense() {
-
+		//ライセンス上限をチェックする	
 		String contractCD = AppContexts.user().contractCode();
 		int registered = 0;
 		int canBeRegistered = 0;
@@ -68,6 +68,7 @@ public class LicenseCheckFinder {
 
 	/**
 	 * CPS001_ThanhPV add function check License when Start screen.
+	 * 
 	 */
 	public LicensenCheckDto checkLicenseStartCPS001() {
 		boolean dipslay = this.checkDislay();
@@ -82,7 +83,7 @@ public class LicenseCheckFinder {
 		}
 		return new LicensenCheckDto(dipslay, licenseUpperLimit.getRegistered(), licenseUpperLimit.getCanBeRegistered(), licenseUpperLimit.getMaxRegistered(), msg, "");
 	}
-
+    //ライセンス表示するかどうかチェックする 
 	private boolean checkDislay() {
 		String sysAdminID = AppContexts.user().roles().forSystemAdmin();
 		String groupAdminID = AppContexts.user().roles().forGroupCompaniesAdmin();

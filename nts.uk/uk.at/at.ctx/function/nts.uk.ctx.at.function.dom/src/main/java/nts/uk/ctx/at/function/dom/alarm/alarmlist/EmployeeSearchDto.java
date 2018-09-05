@@ -7,7 +7,7 @@ public class EmployeeSearchDto {
 	/**
 	 * employeeID
 	 */
-	private String id;
+	public String id;
 	/**
 	 * employeeCode
 	 */
