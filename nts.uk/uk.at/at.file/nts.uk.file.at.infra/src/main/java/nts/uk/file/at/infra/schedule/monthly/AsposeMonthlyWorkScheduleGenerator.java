@@ -387,6 +387,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		List<Integer> lstAttendanceId = getListAttendanceIdAuth(lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList()));
 		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
+		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
 			AttdItemDto attendanceItem = lstMonthlyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
@@ -784,7 +785,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		//MonthlyWorkScheduleCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
-		//TODO: domain man C
 		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, query.getCode()).get();
 		
 		// Get all data from query data container
@@ -2492,7 +2492,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (optData.isPresent()) {
 			MonthlyItemControlByAuthority data = optData.get();
 			List<DisplayAndInputMonthly> listDisplayAndInputMonthly = data.getListDisplayAndInputMonthly();
-			return lstRegisterAttendanceId.stream().filter(x -> listDisplayAndInputMonthly.contains(x)).collect(Collectors.toList());
+			return listDisplayAndInputMonthly.stream().filter(x -> lstRegisterAttendanceId.contains(x.getItemMonthlyId()) && x.isToUse()).map(y -> y.getItemMonthlyId()).collect(Collectors.toList());
 		}
 		return lstRegisterAttendanceId;
 	}
