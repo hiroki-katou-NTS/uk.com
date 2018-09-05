@@ -593,7 +593,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
          */
         deleteFunction(){
             var self = this;
-            nts.uk.ui.block.invisible();
             let count = 0;
             for (let i = 0; i <= self.items().length; i++){
                 if(self.items()[i].code == self.singleSelectedCode()){
@@ -633,9 +632,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();      
                 });
-            }).ifNo(() => {
-                nts.uk.ui.block.clear();
-            });
+            })
         }
         
         /**

@@ -4,6 +4,8 @@
         export const Tab = 9;
         export const Enter = 13;
         export const Ctrl = 17;
+        export const NotValueKeys = [9, 16, 17, 18, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39,
+                    40, 91, 92, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 144, 145];        
     }
 
     export module util {

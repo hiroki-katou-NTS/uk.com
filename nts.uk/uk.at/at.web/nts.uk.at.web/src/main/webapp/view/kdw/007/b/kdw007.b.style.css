@@ -26,10 +26,10 @@
 	margin-right: 215px
 }
 
-.ui-igcombo-list{
-	width: 263px;
-}
-
 .mb-20{
 	margin-bottom: 20px
+}
+
+[dropdown-for="compareOperator-cbb"] .nts-combo-column-0 {
+  width: 240px !important;
 }

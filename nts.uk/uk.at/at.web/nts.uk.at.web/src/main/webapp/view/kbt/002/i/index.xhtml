@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+			 <script>
+				var dialogSize = {
+					width : 760,
+					height : 520
+				};
+			</script> 
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kbt002.i.main.css" />
+				<com:scriptfile path="kbt002.i.service.js" />
+				<com:scriptfile path="kbt002.i.vm.js" />
+				<com:scriptfile path="kbt002.i.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<table>
+						<tr>
+							<td style="padding-top: 10px;padding-left: 19px;">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_180')}</div>
+							</td>
+							<td style="padding-top: 10px;padding-left: 19px;"> 
+								<div><span data-bind="text: nameObj"></span></div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-top: 10px;padding-left: 19px;">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_181')}</div>
+							</td>
+							<td style="padding-top: 10px;padding-left: 19px;">
+								<div><span data-bind="text: numberPerson"></span>人</div>
+							</td>
+						</tr>
+					</table>
+					<div style="padding-top: 10px;padding-left: 19px;" >
+						<table tabindex="1" id="single-list" data-bind="ntsGridList: {								
+									height: 250,
+									dataSource: dataSource ,
+									primaryKey: 'employeeId',
+									columns: columns,
+									multiple: false,
+									value: currentCode
+								}"></table>
+					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<button tabindex="2" data-bind="click: closeDialog"  >#{i18n.getText('KBT002_134')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

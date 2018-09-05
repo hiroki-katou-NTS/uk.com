@@ -7,23 +7,29 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes.TotalTimesFromDailyRecord;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の回数集計
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class TotalCountByPeriod implements Cloneable {
 
 	/** 回数集計 */
 	private Map<Integer, TotalCount> totalCountList;
+
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -31,6 +37,8 @@ public class TotalCountByPeriod implements Cloneable {
 	public TotalCountByPeriod(){
 		
 		this.totalCountList = new HashMap<>();
+		
+		this.errorInfos = new ArrayList<>();
 	}
 
 	/**
@@ -92,6 +100,11 @@ public class TotalCountByPeriod implements Cloneable {
 		
 		// 回数集計マスタを取得
 		val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
+		if (totalTimesList.size() <= 0){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"020", new ErrMessageContent(TextResource.localize("Msg_1416"))));
+			return;
+		}
 		
 		// 回数集計処理
 		val results = algorithm.getResults(

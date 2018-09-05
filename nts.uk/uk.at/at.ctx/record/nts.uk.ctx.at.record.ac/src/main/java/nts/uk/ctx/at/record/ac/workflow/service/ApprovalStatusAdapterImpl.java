@@ -20,8 +20,10 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -32,14 +34,17 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
 
 	@Override
 	public List<ApproveRootStatusForEmpImport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
 			String employeeID, String companyID, Integer rootType) {
-		return approvalRootStatePub.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType)
+		return intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, new DatePeriod(startDate, endDate), rootType)
 				.stream()
-				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getAppDate(),
-						EnumAdaptor.valueOf(pub.getApprovalStatus().value, ApprovalStatusForEmployee.class)))
+				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
+						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
 				.collect(Collectors.toList());
 	}
 

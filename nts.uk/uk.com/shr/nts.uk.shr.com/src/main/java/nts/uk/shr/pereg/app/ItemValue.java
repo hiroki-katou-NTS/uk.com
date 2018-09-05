@@ -245,7 +245,6 @@ public class ItemValue {
 		default:
 			return value.toString();
 		}
-		
 	}
 	
 	private static String formatContent(int logType, String viewContent, String value) {
@@ -257,11 +256,15 @@ public class ItemValue {
 		
 		switch(itemValueType) {
 		case STRING:
-		case NUMERIC: 
 		case DATE:
 		case SELECTION: 
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
+		case NUMERIC: 
+		case NUMBERIC_BUTTON:
+		case READONLY:
+		case READONLY_BUTTON:
+		case RELATE_CATEGORY:
 			return viewContent;
 		case TIME:
 			return formatMinutesToTime(Integer.valueOf(value));
@@ -270,7 +273,6 @@ public class ItemValue {
 		default:
 			throw new RuntimeException("invalid attribute: " + value);
 		}
-		
 	}
 	
 	private static String formatMinutesToTime(int valueAsMinutes) {

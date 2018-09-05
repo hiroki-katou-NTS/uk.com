@@ -59,6 +59,7 @@ module nts.uk.at.view.kmk008.b {
                 self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelC.startPage();
+                self.viewmodelE.startPage();
 
                 service.getData().done(function(item) {
                     if (item) {

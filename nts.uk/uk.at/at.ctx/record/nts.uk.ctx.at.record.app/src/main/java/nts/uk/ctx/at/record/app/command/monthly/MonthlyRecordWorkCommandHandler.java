@@ -49,6 +49,24 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 	@AttendanceItemLayout(layout = MONTHLY_RESERVE_LEAVING_REMAIN_CODE, 
 		jpPropertyName = MONTHLY_RESERVE_LEAVING_REMAIN_NAME, index = 5)
 	private RsvLeaRemNumEachMonthCommandHandler reserveLeave;
+	
+	/** 特別休暇月別残数データ */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, index = 6)
+	private AnyItemOfMonthlyCommandHandler specialHoliday;
+
+	/** 代休月別残数データ */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_OFF_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_OFF_REMAIN_NAME, index = 7)
+	private AnnLeaRemNumEachMonthCommandHandler dayOff;
+
+	/** 振休月別残数データ */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_ABSENCE_LEAVE_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, index = 8)
+	private RsvLeaRemNumEachMonthCommandHandler absenceLeave;
 
 	public void handleAdd(MonthlyRecordWorkCommand command) {
 		handler(command, false);
@@ -95,6 +113,15 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 			break;
 		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
 			handler = this.reserveLeave;
+			break;
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_CODE:
+			handler = this.absenceLeave;
+			break;
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE:
+			handler = this.specialHoliday;
+			break;
+		case MONTHLY_OFF_REMAIN_CODE:
+			handler = this.dayOff;
 			break;
 		default:
 			break;

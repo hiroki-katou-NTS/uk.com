@@ -211,8 +211,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(date);
 		String cid = AppContexts.user().companyId();
 		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
 
@@ -240,12 +238,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		// Get Person
 		Person person = personOpt.get();
-		// String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
-		// EmployeeMail comMailAddr = emp.getCompanyMail();
 
 		result.setPId(person.getPersonId());
 		result.setEmployeeId(emp.getEmployeeId());
-		result.setPName(person.getPersonNameGroup().getPersonName().getFullName().v());
+		result.setPName(person.getPersonNameGroup().getBusinessName().toString());
 		result.setGender(person.getGender().value);
 		result.setPMailAddr(new MailAddress(""));
 		result.setEmployeeCode(emp.getEmployeeCode().v());

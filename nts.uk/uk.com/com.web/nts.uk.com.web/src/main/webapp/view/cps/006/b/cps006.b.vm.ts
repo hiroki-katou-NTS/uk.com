@@ -463,6 +463,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                     if (!getShared('CDL020_VALUES')) {
                         block.clear();
+                        $("#itemName").focus();
                         return;
                     }
 
@@ -474,18 +475,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     service.SetOrder(command).done(function() {
 
                         self.loadDataForGrid().done(function() {
-
+                            $("#itemName").focus();
                             block.clear();
                         });
-
                     });
-
-
                 });
-
             });
-
-
         }
 
         settingSelection() {

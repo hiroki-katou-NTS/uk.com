@@ -129,22 +129,22 @@ module nts.uk.at.view.kdl009.a {
             }
             
             bindTimeData(data: any) {
-                var self = this;
-                var issueDate = "";
-                var holidayDateTop = "";
-                var holidayDateBot = "";
-                var expirationDate = "";
-                var occurrenceDays1 = "";
-                var occurrenceDays2Top = "";
-                var occurrenceDays2Bot = "";
+                let self = this;
+                
                 self.dataItems.removeAll();
                                 
                 if(data.recAbsHistoryOutput.length > 0) {
                     _.each(data.recAbsHistoryOutput, function (item) {
-                        var isHalfDay = false;
-                        
+                        let isHalfDay = false;
+                        let issueDate = "";
+                        let holidayDateTop = "";
+                        let holidayDateBot = "";
+                        let expirationDate = "";
+                        let occurrenceDays1 = "";
+                        let occurrenceDays2Top = "";
+                        let occurrenceDays2Bot = "";
                         if(item.recHisData != null) {
-                            if(item.recHisData.recDate.unknownDate) {
+                            if(!item.recHisData.recDate.unknownDate) {
                                 if(item.recHisData.dataAtr == 3) {
                                     issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
                                 } else {
@@ -194,7 +194,7 @@ module nts.uk.at.view.kdl009.a {
                             }                            
                         }
                         
-                        var temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
+                        let temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
                         self.dataItems.push(temp);
                     });                    

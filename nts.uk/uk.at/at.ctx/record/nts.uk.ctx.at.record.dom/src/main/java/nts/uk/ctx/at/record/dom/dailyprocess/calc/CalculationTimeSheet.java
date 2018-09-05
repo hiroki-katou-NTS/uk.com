@@ -40,7 +40,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public abstract class CalculationTimeSheet {
 	protected TimeZoneRounding timeSheet;
-	protected final TimeSpanForCalc calcrange;
+	protected TimeSpanForCalc calcrange;
 	@Setter
 	//計上用
 	protected List<TimeSheetOfDeductionItem> recordedTimeSheet= new ArrayList<>();
@@ -512,7 +512,7 @@ public abstract class CalculationTimeSheet {
 			if(midNightTimeSheet.isPresent()) {
 				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().timeSheet.getTimeSpan().getDuplicatedWith(deductionTimeSheet.timeSheet.getTimeSpan());
 				if(duplicateSpan.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 																								deductionTimeSheet.timeSheet
 																							   ,deductionTimeSheet.calcrange
 																							   ,deductionTimeSheet.recordedTimeSheet
@@ -520,6 +520,7 @@ public abstract class CalculationTimeSheet {
 																							   ,deductionTimeSheet.bonusPayTimeSheet
 																							   ,deductionTimeSheet.specBonusPayTimesheet
 																							   ,deductionTimeSheet.midNightTimeSheet
+																							   ,deductionTimeSheet.getWorkingBreakAtr()
 																							   ,deductionTimeSheet.getGoOutReason()
 																							   ,deductionTimeSheet.getBreakAtr()
 																							   ,deductionTimeSheet.getShortTimeSheetAtr()
@@ -740,7 +741,8 @@ public abstract class CalculationTimeSheet {
 																																	  tc.getDeductionTimeSheet(), 
 																																	  tc.getBonusPayTimeSheet(), 
 																																	  tc.getSpecBonusPayTimesheet(), 
-																																	  tc.getMidNightTimeSheet(), 
+																																	  tc.getMidNightTimeSheet(),
+																																	  tc.getWorkingBreakAtr(),
 																																	  tc.getGoOutReason(), 
 																																	  tc.getBreakAtr(), 
 																																	  tc.getShortTimeSheetAtr(), 
@@ -841,7 +843,7 @@ public abstract class CalculationTimeSheet {
 	private static List<SpecBonusPayTimesheet> getUseSpecTimeSheet(List<SpecBonusPayTimesheet> specBpTimeSheets,List<SpecificDateItemNo> specNoList){
 		List<SpecBonusPayTimesheet> returnList = new ArrayList<>();
 		for(SpecBonusPayTimesheet specTimeSheet:specBpTimeSheets) {
-			if(specNoList.contains(new SpecificDateItemNo(specTimeSheet.getSpecBonusPayNumber().v().intValue())))
+			if(specNoList.contains(new SpecificDateItemNo(specTimeSheet.getDateCode())))
 				returnList.add(specTimeSheet);
 		}
 		return returnList;

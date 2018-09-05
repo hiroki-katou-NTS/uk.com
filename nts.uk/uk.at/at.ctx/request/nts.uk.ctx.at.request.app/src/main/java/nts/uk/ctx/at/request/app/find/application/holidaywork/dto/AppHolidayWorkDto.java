@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
@@ -230,6 +231,10 @@ public class AppHolidayWorkDto {
 	
 	private AgreeOverTimeDto agreementTimeDto;
 	
+	private AppOvertimeDetailDto appOvertimeDetailDto;
+	
+	private Integer appOvertimeDetailStatus;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -278,6 +283,8 @@ public class AppHolidayWorkDto {
 				false, 
 				null,
 				null,false, false, false,
+				null,
+				null, 
 				null);
 	}
 	

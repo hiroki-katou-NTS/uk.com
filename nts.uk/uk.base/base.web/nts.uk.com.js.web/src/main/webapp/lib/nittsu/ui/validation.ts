@@ -296,7 +296,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result.success(text.toUpperCase(inputText));
+            result.success(inputText);
             return result;
         }
     }
@@ -432,7 +432,7 @@ module nts.uk.ui.validation {
             if (validateFail) {
                 result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);
             } else {  
-                let formated = value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"); 
+                let formated = value.toString() === "0" ? "0" : text.removeFromStart(inputText, "0"); 
                 if (formated.indexOf(".") >= 0) {
                     formated = text.removeFromEnd(formated, "0");    
                 }

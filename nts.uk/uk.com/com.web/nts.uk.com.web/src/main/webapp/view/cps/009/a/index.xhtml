@@ -13,8 +13,10 @@
 					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingName
 			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
+			
 			<com:scriptfile path="cps009.a.service.js" />
 			<com:scriptfile path="layout-control-ko-ext.js" />
+			<com:scriptfile path="validate.js" />
 			<com:scriptfile path="cps009.a.start.js" />
 			<com:scriptfile path="cps009.a.vm.js" />
 		</ui:define>
@@ -83,7 +85,7 @@
 								name: '#[CPS009_14]',
 								value: currentCategory().settingName ,
 								constraint: 'ValueSettingName',
-								enable: true,
+								enable: initValSettingLst().length > 0,
 								immediate: false,
 								required: true}"
 								tabindex="8"></input>
@@ -479,7 +481,7 @@
 														<div class=" flex valign-center">
 														<button  data-bind='click: button, attr: {
 							                                    id: perInfoItemDefId, 
-							                                    nameid: perInfoItemDefId,
+							                                    nameid: itemName,
 							                                    title: itemName,
 							                                    "data-title": itemName,
 							                                    "data-code": itemCode,

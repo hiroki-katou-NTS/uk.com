@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         self.selectedCode(data.reasonID);
                     }
                 });
-                self.appCommonSetting(new AppComonSetting(data.appCommonSettingDto));
+                self.appCommonSetting().appTypeDiscreteSetting(new AppTypeDiscreteSetting(data.appCommonSettingDto.appTypeDiscreteSettingDtos[0]));
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
@@ -148,7 +148,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     let isShowReasonText = self.appCommonSetting().appTypeDiscreteSetting().displayReasonFlg() != 0,
                         isShowReasonCombo = self.appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg() != 0,
                         appReason = self.getReason(),
-                        txtReasonTmp = _.find(self.ListTypeReason(), { 'reasonID': self.selectedCode() }).reasonTemp,
+                        txtReasonTmp = !nts.uk.util.isNullOrEmpty(self.selectedCode()) ? _.find(self.ListTypeReason(), { 'reasonID': self.selectedCode() }).reasonTemp : "",
                         appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, isShowReasonCombo, isShowReasonText, appReason);
 
 

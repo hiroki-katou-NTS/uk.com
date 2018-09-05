@@ -55,7 +55,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * エンティティ：年休月別残数データ
  * 
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Entity
 @Table(name = "KRCDT_MON_ANNLEA_REMAIN")
@@ -644,9 +644,7 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 
 		// 年休：未消化数
 		val normalUndigest = normal.getUndigestedNumber();
-		if (normalUndigest.getUndigestedDays() != null) {
-			this.unusedDays = normalUndigest.getUndigestedDays().getUndigestedDays().v();
-		}
+		this.unusedDays = normalUndigest.getUndigestedDays().getUndigestedDays().v();
 		if (normalUndigest.getUndigestedTime().isPresent()) {
 			this.unusedMinutes = normalUndigest.getUndigestedTime().get().getUndigestedTime().v();
 		}

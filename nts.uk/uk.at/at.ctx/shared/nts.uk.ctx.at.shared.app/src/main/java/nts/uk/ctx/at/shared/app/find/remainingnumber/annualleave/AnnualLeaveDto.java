@@ -139,13 +139,13 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	
 	public void pullDataFromBasicInfo(AnnualLeaveEmpBasicInfo basicInfo) {
 		// 付与ルール
-		AnnualLeaveGrantRule grantRule = basicInfo.getGrantRule();
+//		AnnualLeaveGrantRule grantRule = basicInfo.getGrantRule();
 		this.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
 		this.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
 		
-		this.nextTimeGrantDate = grantRule.nextTimeGrantDate();
-		this.nextTimeGrantDays = grantRule.nextTimeGrantDays();
-		this.nextTimeMaxTime = grantRule.nextTimeMaxTime();
+//		this.nextTimeGrantDate = grantRule.nextTimeGrantDate();
+//		this.nextTimeGrantDays = grantRule.nextTimeGrantDays();
+//		this.nextTimeMaxTime = grantRule.nextTimeMaxTime();
 		
 		// 年間所定労働日数
 		this.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().isPresent()

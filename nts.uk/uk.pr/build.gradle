@@ -65,40 +65,40 @@ subprojects {
 	}
 	
 	task initd (dependsOn: [
-		':pr.ctx:shared:nts.uk.ctx.pr.shared.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.shared.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.shared.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.shared.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.core.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.core.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.core.infra:upver',
-		':pr.ctx:core:nts.uk.ctx.pr.core.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.infra:upver',
+		':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.report.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.report.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.report.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.report.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.stdremu.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.stdremu.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.stdremu.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.stdremu.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.yearend.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.yearend.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.yearend.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.yearend.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.transfer.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.transfer.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.transfer.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.transfer.pub:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.pub:upver',
 		
-		':pr.ctx:shared:nts.uk.ctx.pr.retire.app:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.retire.dom:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.retire.infra:upver',
-		':pr.ctx:shared:nts.uk.ctx.pr.retire.pub:upver'
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.app:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.dom:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.infra:upver',
+		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.pub:upver'
 	
 	]) { }
 	
@@ -179,309 +179,309 @@ subprojects {
 
 
 
-//=========================pr:shared===================================
-project (':pr.ctx:shared:nts.uk.ctx.pr.shared.app') {
+//=========================pr:pr.shared===================================
+project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:shared:nts.uk.ctx.pr.shared.infra') {
+project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:shared:nts.uk.ctx.pr.shared.ws') {
+project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ws') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app')
 	}
 }
 
-project (':pr.ctx:shared:nts.uk.ctx.pr.shared.ac') {
+project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ac') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:shared:nts.uk.ctx.pr.shared.pubimp') {
+project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pubimp') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.pub')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.app')
-	}
-}
-
-
-
-//=========================pr:core===================================
-project (':pr.ctx:core:nts.uk.ctx.pr.core.app') {
-	dependencies {
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:core:nts.uk.ctx.pr.core.dom') {
-	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:core:nts.uk.ctx.pr.core.infra') {
-	dependencies {
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:core:nts.uk.ctx.pr.core.ws') {
-	dependencies {
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.app')
-	}
-}
-
-project (':pr.ctx:core:nts.uk.ctx.pr.core.ac') {
-	dependencies {
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:core:nts.uk.ctx.pr.core.pubimp') {
-	dependencies {
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pub')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app')
 	}
 }
 
 
 
-//=========================pr:report===================================
-project (':pr.ctx:report:nts.uk.ctx.pr.report.app') {
+//=========================pr:pr.core===================================
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.app') {
 	dependencies {
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:report:nts.uk.ctx.pr.report.dom') {
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:report:nts.uk.ctx.pr.report.infra') {
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.infra') {
 	dependencies {
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:report:nts.uk.ctx.pr.report.ws') {
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ws') {
 	dependencies {
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.app')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.app')
 	}
 }
 
-project (':pr.ctx:report:nts.uk.ctx.pr.report.ac') {
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ac') {
 	dependencies {
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:report:nts.uk.ctx.pr.report.pubimp') {
+project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.pubimp') {
 	dependencies {
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.pub')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-
-//=========================pr:stdremu===================================
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app') {
-	dependencies {
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom') {
-	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.infra') {
-	dependencies {
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.ws') {
-	dependencies {
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app')
-	}
-}
-
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.ac') {
-	dependencies {
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
-	}
-}
-
-project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.pubimp') {
-	dependencies {
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.pub')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-
-//=========================pr:yearend===================================
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app') {
-	dependencies {
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom') {
-	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.infra') {
-	dependencies {
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.ws') {
-	dependencies {
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app')
-	}
-}
-
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.ac') {
-	dependencies {
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
-	}
-}
-
-project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.pubimp') {
-	dependencies {
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.pub')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-
-//=========================pr:transfer===================================
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app') {
-	dependencies {
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom') {
-	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.infra') {
-	dependencies {
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-	}
-}
-
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.ws') {
-	dependencies {
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app')
-	}
-}
-
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.ac') {
-	dependencies {
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.pub')
-	}
-}
-
-project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.pubimp') {
-	dependencies {
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.pub')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
 
 
-//=========================pr:retire===================================
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.app') {
+//=========================pr:pr.report===================================
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.app') {
 	dependencies {
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.dom') {
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.infra') {
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.infra') {
 	dependencies {
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.ws') {
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.ws') {
 	dependencies {
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.app')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.app')
 	}
 }
 
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.ac') {
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.ac') {
 	dependencies {
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
 	}
 }
 
-project (':pr.ctx:retire:nts.uk.ctx.pr.retire.pubimp') {
+project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.pubimp') {
 	dependencies {
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.pub')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.pub')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+
+//=========================pr:pr.stdremu===================================
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app') {
+	dependencies {
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom') {
+	dependencies {
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.infra') {
+	dependencies {
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.ws') {
+	dependencies {
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app')
+	}
+}
+
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.ac') {
+	dependencies {
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+	}
+}
+
+project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.pubimp') {
+	dependencies {
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.pub')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+
+//=========================pr:pr.yearend===================================
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app') {
+	dependencies {
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom') {
+	dependencies {
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.infra') {
+	dependencies {
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.ws') {
+	dependencies {
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app')
+	}
+}
+
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.ac') {
+	dependencies {
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+	}
+}
+
+project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.pubimp') {
+	dependencies {
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.pub')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+
+//=========================pr:pr.transfer===================================
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app') {
+	dependencies {
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom') {
+	dependencies {
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra') {
+	dependencies {
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.ws') {
+	dependencies {
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app')
+	}
+}
+
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.ac') {
+	dependencies {
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pub')
+	}
+}
+
+project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.pubimp') {
+	dependencies {
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.pub')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+
+
+//=========================pr:pr.retire===================================
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app') {
+	dependencies {
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom') {
+	dependencies {
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra') {
+	dependencies {
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+	}
+}
+
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.ws') {
+	dependencies {
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
+	}
+}
+
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.ac') {
+	dependencies {
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+	}
+}
+
+project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pubimp') {
+	dependencies {
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pub')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 	}
 }
 
@@ -496,20 +496,20 @@ project (':pr.screen:nts.uk.screen.pr.ws') {
 
 project (':pr.screen:nts.uk.screen.pr.app') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.app')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.app')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.app')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.app')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.app')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
 
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: version)
@@ -526,13 +526,13 @@ project (':pr.screen:nts.uk.screen.pr.infra') {
 	dependencies {
 		compile project (':pr.screen:nts.uk.screen.pr.app')
 		
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.infra')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.infra')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.infra')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.infra')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.infra')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.infra')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.infra')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.infra')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.infra')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.infra')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.infra')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra')
 
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: version)
@@ -552,20 +552,20 @@ project (':pr.file:nts.uk.file.pr.ws') {
 
 project (':pr.file:nts.uk.file.pr.app') {
 	dependencies {
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.app')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.app')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.app')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.app')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.app')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.app')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
@@ -573,13 +573,13 @@ project (':pr.file:nts.uk.file.pr.app') {
 project (':pr.file:nts.uk.file.pr.infra') {
 	dependencies {
 		compile project (':pr.file:nts.uk.file.pr.app')
-		compile project(':pr.ctx:shared:nts.uk.ctx.pr.shared.infra')
-		compile project(':pr.ctx:core:nts.uk.ctx.pr.core.infra')
-		compile project(':pr.ctx:report:nts.uk.ctx.pr.report.infra')
-		compile project(':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.infra')
-		compile project(':pr.ctx:yearend:nts.uk.ctx.pr.yearend.infra')
-		compile project(':pr.ctx:transfer:nts.uk.ctx.pr.transfer.infra')
-		compile project(':pr.ctx:retire:nts.uk.ctx.pr.retire.infra')
+		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.infra')
+		compile project(':pr.ctx:pr.report:nts.uk.ctx.pr.report.infra')
+		compile project(':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.infra')
+		compile project(':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.infra')
+		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra')
+		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
@@ -612,61 +612,61 @@ project (':pr.web:nts.uk.pr.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.ac')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.app')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.dom')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.infra')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.pub')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.pubimp')
-		runtime project (':pr.ctx:shared:nts.uk.ctx.pr.shared.ws')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ac')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.app')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pub')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pubimp')
+		runtime project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ws')
 
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ac')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.app')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.dom')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.infra')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.pub')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.pubimp')
-		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ws')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ac')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.app')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.infra')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.pubimp')
+		runtime project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ws')
 
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.ac')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.app')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.dom')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.infra')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.pub')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.pubimp')
-		runtime project (':pr.ctx:report:nts.uk.ctx.pr.report.ws')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.ac')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.app')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.infra')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.pub')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.pubimp')
+		runtime project (':pr.ctx:pr.report:nts.uk.ctx.pr.report.ws')
 
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.ac')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.app')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.dom')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.infra')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.pub')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.pubimp')
-		runtime project (':pr.ctx:stdremu:nts.uk.ctx.pr.stdremu.ws')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.ac')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.infra')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.pub')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.pubimp')
+		runtime project (':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.ws')
 
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.ac')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.app')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.dom')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.infra')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.pub')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.pubimp')
-		runtime project (':pr.ctx:yearend:nts.uk.ctx.pr.yearend.ws')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.ac')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.infra')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.pub')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.pubimp')
+		runtime project (':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.ws')
 
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.ac')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.app')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.dom')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.infra')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.pub')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.pubimp')
-		runtime project (':pr.ctx:transfer:nts.uk.ctx.pr.transfer.ws')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.ac')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.pub')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.pubimp')
+		runtime project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.ws')
 
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.ac')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.app')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.dom')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.infra')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.pub')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.pubimp')
-		runtime project (':pr.ctx:retire:nts.uk.ctx.pr.retire.ws')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.ac')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pub')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pubimp')
+		runtime project (':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.ws')
 
 		runtime project (':pr.screen:nts.uk.screen.pr.ws')
 		runtime project (':pr.screen:nts.uk.screen.pr.app')
@@ -770,6 +770,49 @@ project (':pr.web:nts.uk.pr.web') {
 		
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
+
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: version
+		
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: version
+		
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
+		
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: version
+		
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: version
+		
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

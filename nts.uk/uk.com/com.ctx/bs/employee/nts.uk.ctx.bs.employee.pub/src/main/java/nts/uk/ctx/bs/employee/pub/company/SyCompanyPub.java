@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.pub.company;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface SyCompanyPub {
@@ -13,6 +14,24 @@ public interface SyCompanyPub {
 	 * @return
 	 */
 	List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sid, DatePeriod datePeriod);
+	
+	/**
+	 * Get Company history by sid and base date
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	
+	AffCompanyHistExport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate);
+	
+	/**
+	 * Get Company history by sid
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	
+	AffCompanyHistExport GetAffComHisBySid(String cid, String sid);
 	
 
 }

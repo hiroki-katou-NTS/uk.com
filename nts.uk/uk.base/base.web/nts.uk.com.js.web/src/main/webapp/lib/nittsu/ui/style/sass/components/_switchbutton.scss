@@ -44,7 +44,7 @@ button.nts-switch-button {
    	&[disabled] {
    		background-color: darken($button-normal-base-color, 15%);
    		&:hover {
-   			background-color: darken($button-normal-base-color, 15%);
+   			background-color: #7b8;
    		}
    	}
 }

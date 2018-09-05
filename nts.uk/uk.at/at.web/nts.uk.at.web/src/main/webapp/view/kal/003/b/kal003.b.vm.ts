@@ -868,7 +868,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         }
 
-
+        getListItemByAtr(conditionAtr) {
+            let self = this;
+            return service.getAttendanceItemByAtr(conditionAtr);
+        }
 
         getListItemByAtrMultipleMonth( mulMonCheckItem: number,mode: number) {
             let self = this;
