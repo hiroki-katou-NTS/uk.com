@@ -1,0 +1,507 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<script>var dialogSize = { width: 990, height: 530 };</script>
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm005.c.start.js" />
+			<com:scriptfile path="qmm005.c.service.js" />
+			<com:scriptfile path="qmm005.c.vm.js" />
+			<com:stylefile path="qmm005.c.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- D1_1  処理区分 -->
+				<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
+				
+				<!-- D1_2  処理区分名称 -->				
+				<input data-bind="ntsTextEditor: {value: simpleValue}" />
+				
+				<!-- D2_3 この処理区分を廃止する -->				
+				<div data-bind="ntsCheckBox: { checked: enableChecckBox }">#{i18n.getText('QMM005_80')}</div>
+				
+				<!-- D2_4 支払年月日区分 -->				
+				<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+				
+			</div>
+
+			<div id="contents-area">
+				<table id="fixed-table">
+				
+					<colgroup>
+						<col width="200px"/>
+						<col width="100px"/>
+						<col width="150px"/>
+						<col width="100px"/>
+						<col width="100px"/>
+						<col width="100px"/>
+						
+					</colgroup>
+					
+					<tbody>
+					
+					<tr>
+						<div class="label">#{i18n.getText('QMM005_95')}</div>
+					</tr>
+						<tr>
+							<td>
+								<!-- D3_1 毎月の支払日 -->				
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_49')}</div>
+							</td>
+							<td>
+								<!-- D3_2 支払月の -->				
+								<span class="label" style="margin-left: 30px;">#{i18n.getText('QMM005_50')}</span>
+							</td>
+							
+							<td>
+								<!-- D3_3 毎月の支払日 -->				
+								<div data-bind="ntsComboBox: {
+										name: 'Sample List', width:100 ,
+										options: datePayment,
+										optionsValue: 'code',
+										visibleItemsCount: 8,
+										value: datePaymentSelectedCode,
+										optionsText: 'name',								
+										columns: [
+											
+											{ prop: 'name', length: 5 },
+										]}"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- D3_5 個人情報の履歴参照日 -->					
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_51')}</div>
+								
+								<!-- D3_6 個人情報の履歴参照日について -->					
+								<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+							</td>
+							
+							<td>
+								<!-- D3_7 支払月の -->				
+								<span class="label" style="margin-left: 30px;">#{i18n.getText('QMM005_50')}</span>
+							</td>
+							<td>
+								<!-- D3_8 個人情報の履歴参照月 -->				
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: refeMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: refeMonthSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							
+							<td>
+								<div class="label">#{i18n.getText('QMM005_53')}</div>								
+							</td>
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: refeDate,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: refeDateSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<td>
+								<div class="label">#{i18n.getText('QMM005_55')}</div>
+							</td>
+							
+						</tr>
+						
+						<tr>
+						<!-- D5_1 -->
+						<td>
+							<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_33')}</div>
+						</td>
+						<!-- D5_2 -->
+						<td>
+							<input data-bind="ntsNumberEditor: {value: numberOfWorkingDays}" />
+						</td>
+						<td>
+							<div class="label">#{i18n.getText('QMM005_40')}</div>	
+						</td>
+						
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
+							</td>
+							<td>
+								<div class="label">#{i18n.getText('QMM005_56')}</div>	
+							</td>
+							<!-- D3_17 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List',
+											 width:100 ,
+											options: processMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 2,
+											value: processMonthSelectedCode,
+											optionsText: 'name',
+											columns: [												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							
+							<td>
+								<div class="label">#{i18n.getText('QMM005_53')}</div>
+							</td>
+							<!-- D3_20 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: disposalDay,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: disposalDaySelectedCode,
+											optionsText: 'name',
+										
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<td>
+								<div class="label">#{i18n.getText('QMM005_60')}</div>
+							</td>
+							
+						</tr>					
+					</tbody>
+				</table>
+				<a class="hyperlink" href="#">アイコン無し、ただのリンク</a>
+				
+				<table>
+					<colgroup>
+						<col width="200px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+						<col width="120px"/>						
+					</colgroup>
+					<tbody>
+						<tr>
+							<!-- D4_1 -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_32')}</div>
+							</td>
+							<!-- D4_2 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_68')}</div>
+							</td>
+							<!-- D4_3 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: printingMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 2,
+											value: printingMonthSelectedCode,
+											optionsText: 'name',											
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!-- D4_5 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_63')}</div>
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<!-- D4_7 -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_64')}</div>
+							</td>
+							<!-- D4_8 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_56')}</div>
+							</td>
+							<!-- D4_9 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: monthsCollected,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: monthsCollectedSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!-- D4_11 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_65')}</div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td></td>
+							<!-- D4_12 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_66')}</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- D4_13 -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_44')}</div>
+							</td>
+							<!-- D4_14 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_68')}</div>
+							</td>
+							<!-- D4_15 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: guaranteedBaseYear,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: guaranteedBaseYearSelectedCode,											
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!-- D4_17 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: guaranteedBaseMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: guaranteedBaseMonthSelectedCode,
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!-- D4_19 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: guaranteedBaseDate,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: guaranteedBaseDateSelectedCode,
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+						</tr>
+						
+						<tr>
+							<!-- D4_21  -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_45')}</div>
+							</td>
+							<!-- D4_22 -->
+							<td>
+								<div class="label">#{i18n.getText('QMM005_68')}</div>
+							</td>
+							<!--  D4_23 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: employmentInsuranceStandardMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: employmentInsuranceStandardMonthSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!--  D4_24 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: employmentInsuranceStandardDate,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: employmentInsuranceStandardMonthSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+						
+						</tr>
+						
+						<!-- D4_27 -->
+						<tr>
+							<td></td>
+							<td><div class="label">#{i18n.getText('QMM005_74')}</div></td>
+						</tr>
+						
+						<!-- D4_28 -->
+						<tr>
+							<td></td>
+							<td><div class="label">#{i18n.getText('QMM005_75')}</div></td>
+						</tr>
+						
+						<tr>
+							<!-- D4_29 -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_112')}</div>
+							</td>
+							<!-- D4_30 -->
+							<td>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: timeCloseDate,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedId,
+									}"></div>
+							</td>
+						
+						</tr>
+						
+						
+						<tr>
+							<td></td>
+							<!-- D4_33 -->
+							<td><div class="label">#{i18n.getText('QMM005_68')}</div></td>
+							<!--  D4_34 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options:  timeBaseYear,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value:  timeBaseYearSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!--  D4_36 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: timeClosingStandardMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: timeClosingStandardMonthSelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!--  D4_38 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: timeReferenceStandardDay,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: timeReferenceStandardDaySelectedCode,
+											optionsText: 'name',
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+						</tr>
+						<tr>
+							<!-- D4_40 -->
+							<td>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
+							</td>
+							<!-- D4_41 -->
+							<td><div class="label">#{i18n.getText('QMM005_68')}</div></td>
+							<!--  D4_42 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: incomeTaxBaseYear,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: incomeTaxBaseYearSelectedCode,
+											optionsText: 'name',
+
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!--  D4_44 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: incomeTaxBaseMonth,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: incomeTaxBaseMonthSelectedCode,
+											optionsText: 'name',
+
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+							<!--  D4_46 -->
+							<td>
+								<div data-bind="ntsComboBox: {
+											name: 'Sample List', width:100 ,
+											options: incomeTaxBaseDate,
+											optionsValue: 'code',
+											visibleItemsCount: 8,
+											value: incomeTaxBaseDateSelectedCode,
+											optionsText: 'name',
+
+											columns: [
+												
+												{ prop: 'name', length: 5 },
+											]}"></div>
+							</td>
+						</tr>
+						
+					
+					</tbody>
+				
+				</table>
+				
+												
+					
+				</div>
+				<div id="functions-area-bottom">
+					<button class="x-large proceed "
+						data-bind="click: saveCharacterSetting">#{i18n.getText('QMM005_1')}</button>
+					<button class="large"
+						data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
+				</div>
+				
+					
+				
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

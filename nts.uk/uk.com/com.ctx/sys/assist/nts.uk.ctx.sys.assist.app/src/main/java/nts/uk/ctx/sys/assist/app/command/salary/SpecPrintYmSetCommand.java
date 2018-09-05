@@ -1,0 +1,31 @@
+package nts.uk.ctx.sys.assist.app.command.salary;
+
+import lombok.Value;
+
+@Value
+public class SpecPrintYmSetCommand
+{
+    
+    /**
+    * CID
+    */
+    private String cid;
+    
+    /**
+    * PROCESS_CATE_NO
+    */
+    private int processCateNo;
+    
+    /**
+    * PROCESS_DATE
+    */
+    private int processDate;
+    
+    /**
+    * PRINT_DATE
+    */
+    private int printDate;
+    
+    private Long version;
+
+}
