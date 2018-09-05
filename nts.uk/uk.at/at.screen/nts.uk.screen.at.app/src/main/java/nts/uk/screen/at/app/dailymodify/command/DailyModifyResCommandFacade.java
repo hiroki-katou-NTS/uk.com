@@ -249,7 +249,12 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			if (querys.isEmpty() ? dataParent.isFlagCalculation() : true) {
+			if (querys.isEmpty() && !dataParent.isFlagCalculation()
+					&& (dataParent.getMonthValue() == null || dataParent.getMonthValue().getItems() == null)) {
+				// only insert check box
+			} else {
+				// if (querys.isEmpty() ? !dataParent.isFlagCalculation() :
+				// true) {
 				RCDailyCorrectionResult resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam,
 						dataParent.getMode(), dataParent.isFlagCalculation());
 				val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
@@ -262,6 +267,7 @@ public class DailyModifyResCommandFacade {
 				val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
 				if (!errorMonth.isEmpty())
 					resultError.putAll(errorMonth);
+				// }
 			}
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);

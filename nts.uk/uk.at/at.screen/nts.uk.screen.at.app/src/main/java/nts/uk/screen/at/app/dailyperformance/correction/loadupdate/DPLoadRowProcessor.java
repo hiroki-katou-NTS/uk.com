@@ -106,7 +106,7 @@ public class DPLoadRowProcessor {
 								process.getEmploymentCode(companyId, new DateRange(null, param.getDateMonth()), emp), dailyPerformanceDto, param.getAutBussCode())));
 			// screenDto.setFlexShortage(null);
 			//}
-			if (emp.equals(sId)) {
+			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
 				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
 				result.checkShowTighProcess(displayFormat, true,
 						checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));

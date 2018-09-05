@@ -646,7 +646,7 @@ public class DailyPerformanceCorrectionProcessor {
 //				}
 			}
 
-			if (lockSign && mode == ScreenMode.NORMAL.value) {
+			if (lockSign) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
 				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;

@@ -511,12 +511,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 
                                 //nts.uk.ui.dialog.alert(error.message);
                                 nts.uk.ui.block.clear();
-                            });
-                        }
-                    });
-                }
+                            };
+                        });
+                    };
+                });
 
-            });
+            };
+                });
             return dfd.promise();
         }
 
@@ -1954,6 +1955,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
             service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
+                self.processLockButton(self.showLock());
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 nts.uk.ui.block.clear();
             });

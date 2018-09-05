@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -396,13 +397,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private <T extends DailyWorkCommonCommand> RCDailyCorrectionResult handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
 		long time = System.currentTimeMillis();
+		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 	
+		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
+		if(month == null || !month.getDomainMonth().isPresent()){
 		//remove  domain error
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
 		//merge item is edited into old domain  
 		///domainOld
 		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
 		///domainNew
-		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
 		//TODO insert before <=> domain event
 //		List<DailyRecordWorkCommand> commandNewAfter =  dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
 		
@@ -416,9 +419,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
+		}
 		if (mode == 0) {
-			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, month == null ? domainDailyNew : Collections.emptyList(),
 					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(), month);
 		}
 		//get error after caculator
