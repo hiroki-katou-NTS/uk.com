@@ -5,15 +5,6 @@ module nts.custombinding {
         moment: any = window['moment'];
 
     // blockui all ajax request on layout
-    $(document)
-        .ajaxStart(() => {
-            $.blockUI({
-                message: null,
-                overlayCSS: { opacity: 0.1 }
-            });
-        }).ajaxStop(() => {
-            $.unblockUI();
-        });
 
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
@@ -149,6 +140,17 @@ module nts.custombinding {
 
                     .layout-control .ui-iggrid-scrolldiv {
                         background-color: #fff;
+                    }
+
+                    .layout-control #cps007_lst_header {
+                        display: block;
+                        line-height: 23px;
+                        background-color: #CFF1A5;
+                        box-sizing: border-box;
+                        border: 1px solid gray;
+                        border-bottom: none;
+                        width: calc(100% - 1px);
+                        padding-left: 3px;
                     }
 
                     .layout-control .add-buttons {
@@ -648,6 +650,7 @@ module nts.custombinding {
                             <div id="cps007_sch_control" class="search-control ntsControl"></div>
                         </div>
                         <div class="form-group">
+                            <div id="cps007_lst_header"></div>
                             <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
                         </div>
                     </div>
@@ -2816,138 +2819,148 @@ module nts.custombinding {
                 });
 
 
-            $(ctrls.button).on('click', () => {
-                // アルゴリズム「項目追加処理」を実行する
-                // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value);
+            $(ctrls.button)
+                .data('safeClick', new Date().getTime())
+                .on('click', () => {
+                    let timeClick = new Date().getTime(),
+                        safeClick = $(ctrls.button).data('safeClick');
+                    // prevent multi click
+                    $(ctrls.button).data('safeClick', timeClick);
+                    if (timeClick - safeClick <= 500) {
+                        return;
+                    }
 
-                if (!ids || !ids.length) {
-                    alert({ messageId: 'Msg_203' });
-                    return;
-                }
+                    // アルゴリズム「項目追加処理」を実行する
+                    // Execute the algorithm "項目追加処理"
+                    let ids: Array<string> = ko.toJS(opts.listbox.value);
 
-                // category mode
-                if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
-                    let cid: string = ko.toJS(opts.combobox.value),
-                        cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
-                        cat: IItemCategory = _.find(cats, x => x.id == cid);
+                    if (!ids || !ids.length) {
+                        alert({ messageId: 'Msg_203' });
+                        return;
+                    }
 
-                    if (cat) {
-                        // multiple items
-                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
-                            // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
-                            // if category is exist in sortable box.
-                            let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
-                            if (_catcls) {
-                                alert({
-                                    messageId: 'Msg_202',
-                                    messageParams: [cat.categoryName]
-                                });
-                                return;
-                            }
+                    // category mode
+                    if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
+                        let cid: string = ko.toJS(opts.combobox.value),
+                            cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
+                            cat: IItemCategory = _.find(cats, x => x.id == cid);
 
-                            setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
-                            modal('../../007/b/index.xhtml').onClosed(() => {
-                                let dfds: Array<JQueryDeferred<any>> = [],
-                                    data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
+                        if (cat) {
+                            // multiple items
+                            if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                                // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
+                                // if category is exist in sortable box.
+                                let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
+                                if (_catcls) {
+                                    alert({
+                                        messageId: 'Msg_202',
+                                        messageParams: [cat.categoryName]
+                                    });
+                                    return;
+                                }
 
-                                if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
-                                    services.getCat(data.category.id).done((_cat: IItemCategory) => {
+                                setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
+                                modal('../../007/b/index.xhtml').onClosed(() => {
+                                    let dfds: Array<JQueryDeferred<any>> = [],
+                                        data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
 
-                                        if (!_cat || !!_cat.isAbolition) {
-                                            return;
-                                        }
+                                    if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
+                                        services.getCat(data.category.id).done((_cat: IItemCategory) => {
 
-                                        let ids: Array<string> = data.chooseItems.map(x => x.id);
-                                        services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
-                                            // sort againt by ids
-                                            _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+                                            if (!_cat || !!_cat.isAbolition) {
+                                                return;
+                                            }
 
-                                            _data = _.orderBy(_data, x => x.dispOrder);
+                                            let ids: Array<string> = data.chooseItems.map(x => x.id);
+                                            services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
+                                                // sort againt by ids
+                                                _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
 
-                                            // get set item
-                                            _.each(_data, x => {
-                                                let dfd = $.Deferred<any>();
-                                                if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                                    services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
-                                                        dfd.resolve([x].concat(_items));
-                                                    }).fail(msg => {
+                                                _data = _.orderBy(_data, x => x.dispOrder);
+
+                                                // get set item
+                                                _.each(_data, x => {
+                                                    let dfd = $.Deferred<any>();
+                                                    if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                        services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
+                                                            dfd.resolve([x].concat(_items));
+                                                        }).fail(msg => {
+                                                            dfd.resolve(x);
+                                                        });
+                                                    } else {
                                                         dfd.resolve(x);
-                                                    });
-                                                } else {
-                                                    dfd.resolve(x);
-                                                }
+                                                    }
 
-                                                dfds.push(dfd);
-                                            });
+                                                    dfds.push(dfd);
+                                                });
 
-                                            $.when.apply($, dfds).then(function() {
-                                                let args = _.flatten(arguments),
-                                                    items = _(args)
-                                                        .filter(x => !!x)
-                                                        .map((x: IItemDefinition) => {
-                                                            if (ids.indexOf(x.id) > -1) {
-                                                                x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
-                                                            } else {
-                                                                let parent = _.find(args, p => p.itemCode == x.itemParentCode);
-                                                                if (parent) {
-                                                                    x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                $.when.apply($, dfds).then(function() {
+                                                    let args = _.flatten(arguments),
+                                                        items = _(args)
+                                                            .filter(x => !!x)
+                                                            .map((x: IItemDefinition) => {
+                                                                if (ids.indexOf(x.id) > -1) {
+                                                                    x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
+                                                                } else {
+                                                                    let parent = _.find(args, p => p.itemCode == x.itemParentCode);
+                                                                    if (parent) {
+                                                                        x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                                    }
                                                                 }
-                                                            }
-                                                            return x;
-                                                        })
-                                                        .orderBy(x => x.dispOrder)
-                                                        .value(),
-                                                    item: IItemClassification = {
-                                                        layoutID: random(),
-                                                        dispOrder: -1,
-                                                        className: _cat.categoryName,
-                                                        personInfoCategoryID: _cat.id,
-                                                        layoutItemType: IT_CLA_TYPE.LIST,
-                                                        listItemDf: items
-                                                    };
+                                                                return x;
+                                                            })
+                                                            .orderBy(x => x.dispOrder)
+                                                            .value(),
+                                                        item: IItemClassification = {
+                                                            layoutID: random(),
+                                                            dispOrder: -1,
+                                                            className: _cat.categoryName,
+                                                            personInfoCategoryID: _cat.id,
+                                                            layoutItemType: IT_CLA_TYPE.LIST,
+                                                            listItemDf: items
+                                                        };
 
-                                                opts.sortable.data.push(item);
-                                                opts.listbox.value.removeAll();
-                                                scrollDown();
+                                                    opts.sortable.data.push(item);
+                                                    opts.listbox.value.removeAll();
+                                                    scrollDown();
+                                                });
                                             });
                                         });
-                                    });
-                                }
-                            });
-                        }
-                        else { // set or single item
-                            let idefid: Array<string> = ko.toJS(opts.listbox.value),
-                                idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
-
-                            if (idefs && idefs.length) {
-                                services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
-                                    if (defs && defs.length) {
-                                        opts.sortable.pushAllItems(defs, false);
-                                        scrollDown();
                                     }
                                 });
                             }
+                            else { // set or single item
+                                let idefid: Array<string> = ko.toJS(opts.listbox.value),
+                                    idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
+
+                                if (idefs && idefs.length) {
+                                    services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
+                                        if (defs && defs.length) {
+                                            opts.sortable.pushAllItems(defs, false);
+                                            scrollDown();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    } else { // group mode
+                        let ids: Array<string> = ko.toJS(opts.listbox.value),
+                            groups: Array<any> = ko.unwrap(opts.listbox.options),
+                            filters: Array<any> = _(groups)
+                                .filter(x => ids.indexOf(x.id) > -1)
+                                .map(x => x.id)
+                                .value();
+
+                        if (filters && filters.length) {
+                            services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
+                                if (defs && defs.length) {
+                                    opts.sortable.pushAllItems(defs, true);
+                                    scrollDown();
+                                }
+                            });
                         }
                     }
-                } else { // group mode
-                    let ids: Array<string> = ko.toJS(opts.listbox.value),
-                        groups: Array<any> = ko.unwrap(opts.listbox.options),
-                        filters: Array<any> = _(groups)
-                            .filter(x => ids.indexOf(x.id) > -1)
-                            .map(x => x.id)
-                            .value();
-
-                    if (filters && filters.length) {
-                        services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
-                            if (defs && defs.length) {
-                                opts.sortable.pushAllItems(defs, true);
-                                scrollDown();
-                            }
-                        });
-                    }
-                }
-            })
+                })
                 .on('dblclick', (evt) => { evt.stopImmediatePropagation() });
 
             // set data controls and option to element
@@ -2996,13 +3009,8 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 
-
-            /*if ($(ctrls.listbox).find('[id$="_grid"]').data('igGrid')) {
-                $(ctrls.listbox).find('[id$="_grid"]').igGrid("option", "columns", [
-                    { key: 'id', headerText: '', hidden: true },
-                    { key: 'itemName', headerText: text('CPS007_9') }
-                ]);
-            }*/
+            // fix header off listbox
+            $('#cps007_lst_header').text(text('CPS007_9'));
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
