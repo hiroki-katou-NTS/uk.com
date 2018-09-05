@@ -230,5 +230,13 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				appRootInstanceContent.getErrorFlag().value, 
 				appRootInstanceContent.getErrorMsgID());
 	}
+
+	@Override
+	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType) {
+		return appRootInstanceService.isDataExist(
+				approverID, 
+				period, 
+				EnumAdaptor.valueOf(rootType, RecordRootType.class));
+	}
 	
 }
