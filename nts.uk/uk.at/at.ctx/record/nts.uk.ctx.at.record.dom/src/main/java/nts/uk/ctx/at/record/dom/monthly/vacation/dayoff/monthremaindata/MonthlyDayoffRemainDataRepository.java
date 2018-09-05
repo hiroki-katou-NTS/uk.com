@@ -22,9 +22,17 @@ public interface MonthlyDayoffRemainDataRepository {
 	 * 検索　（年月）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
-	 * @return 代休月別残数データリスト　（開始年月日順）
+	 * @return 代休月別残数データリスト
 	 */
 	List<MonthlyDayoffRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
+
+	/**
+	 * 検索　（社員IDリストと年月リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonths 年月リスト
+	 * @return 代休月別残数データ
+	 */
+	List<MonthlyDayoffRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 代休月別残数データ 　を追加および削除

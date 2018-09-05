@@ -98,4 +98,13 @@ public interface IntermediateDataPub {
 	 */
 	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate);
 	
+	/**
+	 * [No.190-191](中間データ版)承認すべきデータ有無を取得する
+	 * @param approverID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType);
+	
 }

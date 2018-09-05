@@ -279,7 +279,7 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
 			if (!regularAggrSetOpt.isPresent()){
 				this.errorInfos.add(new MonthlyAggregationErrorInfo(
-						"002", new ErrMessageContent("通常勤務月別実績集計設定が取得できません。")));
+						"007", new ErrMessageContent(TextResource.localize("Msg_1234"))));
 				return;
 			}
 			this.settingsByReg.setRegularAggrSet(regularAggrSetOpt.get());
@@ -291,7 +291,7 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
 			if (!deforAggrSetOpt.isPresent()){
 				this.errorInfos.add(new MonthlyAggregationErrorInfo(
-						"002", new ErrMessageContent("変形労働月別実績集計設定が取得できません。")));
+						"007", new ErrMessageContent(TextResource.localize("Msg_1234"))));
 				return;
 			}
 			this.settingsByDefo.setDeforAggrSet(deforAggrSetOpt.get());
@@ -303,7 +303,7 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
 			if (!flexAggrSetOpt.isPresent()){
 				this.errorInfos.add(new MonthlyAggregationErrorInfo(
-						"002", new ErrMessageContent("フレックス月別実績集計設定が取得できません。")));
+						"007", new ErrMessageContent(TextResource.localize("Msg_1234"))));
 				return;
 			}
 			this.settingsByFlex.setFlexAggrSet(flexAggrSetOpt.get());
@@ -313,6 +313,11 @@ public class MonthlyCalculation {
 			
 			// フレックス勤務所定労働時間
 			this.settingsByFlex.setGetFlexPredWorkTimeOpt(Optional.of(companySets.getFlexPredWorkTime()));
+			
+			// フレックス不足の年休補填管理
+			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
+			
+			// フレックス不足の繰越上限管理
 		}
 		
 		// 法定内振替順設定
@@ -338,6 +343,8 @@ public class MonthlyCalculation {
 					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
 			this.settingsByDefo.getRoleHolidayWorkFrameMap().putIfAbsent(
 					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+			this.settingsByFlex.getRoleHolidayWorkFrameMap().putIfAbsent(
+					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
 			
 			// 自動的に除く休出枠
 			if (roleHolidayWorkFrame.getRoleOfOpenPeriodEnum() != RoleOfOpenPeriodEnum.MIX_WITHIN_OUTSIDE_STATUTORY) continue;
@@ -358,7 +365,7 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth, this.workingSystem);
 			if (!monAndWeekStatTimeOpt.isPresent()){
 				this.errorInfos.add(new MonthlyAggregationErrorInfo(
-						"002", new ErrMessageContent("法定労働時間が取得できません。")));
+						"008", new ErrMessageContent(TextResource.localize("Msg_1235"))));
 				break;
 			}
 			val monAndWeekStatTime = monAndWeekStatTimeOpt.get();
@@ -395,9 +402,22 @@ public class MonthlyCalculation {
 		
 		// 週NO　確認
 		this.startWeekNo = startWeekNo;
-		
-		// 年度　設定
-		this.year = new Year(this.yearMonth.year());
+
+		// 36協定運用設定を取得
+		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
+		if (!agreementOperationSetOpt.isPresent()) {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
+		}
+		else {
+			val agreementOperationSet = agreementOperationSetOpt.get();
+			
+			// 年度　設定　（36協定用）
+			int calcedYear = this.yearMonth.year();
+			int startingMonth = agreementOperationSet.getStartingMonth().value + 1;		// 起算月
+			if (this.yearMonth.month() < startingMonth) calcedYear--;
+			this.year = new Year(calcedYear);
+		}
 	}
 	
 	/**
@@ -723,8 +743,8 @@ public class MonthlyCalculation {
 						companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
 						period, workingConditionItem, weekNo,
 						companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
-				for (val errorInfo : calcWork.errorInfos){
-					if (errorInfo.getResourceId().compareTo("002") == 0) return Optional.empty();
+				if (calcWork.errorInfos.size() > 0){
+					return Optional.empty();
 				}
 				calcWork.year = aggrPeriod.getYear();
 				

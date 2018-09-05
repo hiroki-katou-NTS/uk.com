@@ -7,12 +7,14 @@ module kdl002.b.viewmodel {
         posibleItems: Array<string>;
         SelectedCode: KnockoutObservable<string>;
         SelectableCode: KnockoutObservable<string>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.isMulti = true;
             self.SelectedCode = ko.observable('');
             self.SelectableCode = ko.observable('');
             self.items = ko.observableArray([]);
+            self.isShowNoSelectRow = ko.observable(false);
             //header
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL002_3"), prop: 'code', width: 70 },
@@ -59,11 +61,15 @@ module kdl002.b.viewmodel {
              nts.uk.ui.windows.setShared('kdl002isSelection',true);
             //selected items
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
+            nts.uk.ui.windows.setShared('KDL002_isShowNoSelectRow',self.isShowNoSelectRow,true);
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                 self.SelectedCode();
-                self.SelectedCode(lst[0].code);
+                if (lst.length > 0){
+                    self.SelectedCode(lst[0].code);
+                }
+                
             })
         }
     }
