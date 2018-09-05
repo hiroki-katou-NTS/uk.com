@@ -14,57 +14,49 @@ import nts.uk.ctx.exio.dom.qmm.taxexemptlimit.TaxExemptLimit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 非課税限度額の登録
- */
+* 非課税限度額の登録
+*/
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_TAX_EXEMPT_LIMIT")
-public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    
+    /**
+    * ID
+    */
+    @EmbeddedId
+    public QpbmtTaxExemptLimitPk taxExemptLimitPk;
+    
+    /**
+    * 非課税限度額名称
+    */
+    @Basic(optional = false)
+    @Column(name = "TAX_EXEMPTION_NAME")
+    public String taxExemptionName;
+    
+    /**
+    * 非課税限度額
+    */
+    @Basic(optional = false)
+    @Column(name = "TAX_EXEMPTION")
+    public int taxExemption;
+    
+    @Override
+    protected Object getKey()
+    {
+        return taxExemptLimitPk;
+    }
 
-	/**
-	 * ID
-	 */
-	@EmbeddedId
-	public QpbmtTaxExemptLimitPk taxExemptLimitPk;
-
-	/**
-	 * 非課税限度額名称
-	 */
-	@Basic(optional = false)
-	@Column(name = "TAX_EXEMPTION_NAME")
-	public String taxExemptionName;
-
-	/**
-	 * 非課税限度額コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "TAX_FREEAMOUNT_CODE")
-	public String taxFreeamountCode;
-
-	/**
-	 * 非課税限度額
-	 */
-	@Basic(optional = false)
-	@Column(name = "TAX_EXEMPTION")
-	public int taxExemption;
-
-	@Override
-	protected Object getKey() {
-		return taxExemptLimitPk;
-	}
-
-	public TaxExemptLimit toDomain() {
-		return new TaxExemptLimit(this.taxExemptLimitPk.cid, this.taxExemptionName, this.taxFreeamountCode,
-				this.taxExemption);
-	}
-
-	public static QpbmtTaxExemptLimit toEntity(TaxExemptLimit domain) {
-		return new QpbmtTaxExemptLimit(new QpbmtTaxExemptLimitPk(domain.getCid()),
-				domain.getTaxExemptionName().v(),
-				domain.getTaxFreeamountCode().v(),
-				domain.getTaxExemption().v());
-	}
+    public TaxExemptLimit toDomain() {
+        return new TaxExemptLimit(this.taxExemptLimitPk.cid, this.taxExemptLimitPk.taxFreeamountCode, this.taxExemptionName, this.taxExemption);
+    }
+    public static QpbmtTaxExemptLimit toEntity(TaxExemptLimit domain) {
+        return new QpbmtTaxExemptLimit(new QpbmtTaxExemptLimitPk(domain.getCid(), domain.getTaxFreeamountCode().v()), 
+        		domain.getTaxExemptionName().v(),
+        		domain.getTaxExemption().v());
+    }
 
 }
