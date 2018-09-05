@@ -377,7 +377,10 @@ module nts.uk.at.view.kwr008.a {
                 return dfd.promise();
             }
             public validate(): boolean {
-                $('#period .ntsDatepicker').trigger('validate');
+                let self = this;
+                if (self.printFormat() == 0) {
+                    $('#period .ntsDatepicker').trigger('validate');
+                }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
             }
