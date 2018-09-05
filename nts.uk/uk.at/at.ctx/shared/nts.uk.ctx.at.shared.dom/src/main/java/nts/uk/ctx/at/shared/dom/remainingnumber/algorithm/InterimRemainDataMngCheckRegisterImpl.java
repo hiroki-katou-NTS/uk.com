@@ -86,7 +86,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			//積立年休
 			y.getResereData().ifPresent(z -> {
 				resereLeaveData.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID() == z.getResereId())
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getResereId()))
 						.collect(Collectors.toList());
 				for (InterimRemain mngData : lstTmp) {
 					resereMng.add(mngData);
@@ -96,7 +96,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			//年休
 			y.getAnnualHolidayData().ifPresent(z -> {
 				annualHolidayData.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID() == z.getAnnualId())
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getAnnualId()))
 						.collect(Collectors.toList());
 				for (InterimRemain mngData : lstTmp) {
 					annualMng.add(mngData);
