@@ -150,7 +150,7 @@ module nts.uk.at.view.kmk008.e {
                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.getDetail(self.selectedWorkplaceId());
-                         ts.uk.ui.block.clear();
+                         nts.uk.ui.block.clear();
                     });
                     return;
                 }
@@ -159,13 +159,13 @@ module nts.uk.at.view.kmk008.e {
                         let errorCode = _.split(listError[0], ',');
                          et  eriodName = nts.uk.resource.getText(errorCode[1]);
                          et param1 = "期間: "+ n ts.uk.resource.getText(errorCode[1]) +" <br>"+ n ts.uk.resource.getText(errorCode[2]);
-                         ts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                         return;
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.getalreadySettingList();
                     self.getDetail(self.selectedWorkplaceId());
-                     ts.uk.ui.block.clear();
+                     nts.uk.ui.block.clear();
                 });
                 nts.uk.ui.block.clear();
             }
