@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur;
 
-
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatio;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;

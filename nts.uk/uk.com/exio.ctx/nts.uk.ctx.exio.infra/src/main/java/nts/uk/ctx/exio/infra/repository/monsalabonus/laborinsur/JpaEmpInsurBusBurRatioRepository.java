@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.monsalabonus.laborinsur;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -16,7 +15,6 @@ public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements E
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurBusBurRatio f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurBusBurRatioPk.hisId =:hisId AND  f.empInsurBusBurRatioPk.empPreRateId =:empPreRateId ";
     private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurBusBurRatioPk.hisId =:hisId";
     
 

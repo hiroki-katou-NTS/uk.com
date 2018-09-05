@@ -27,7 +27,17 @@
 .table table {
   table-layout: fixed;
 }
+span.nts-editor-wrapped.ntsControl{
+	width: 20% !important;
+}
+.ui-igcombo-wrapper{
+	width: 80% !important;
+}
+#B3_8{
+	margin-left: 25px;
+}
 
-.
-
+#B3_12{
+	margin-left: 25px;
+}
 
