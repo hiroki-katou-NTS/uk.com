@@ -6,6 +6,12 @@ module nts.uk.com.view.qmm005.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     export class ScreenModel {
+
+        createMode:KnockoutObservable<boolean>;
+
+        //D2_3
+        DiscontinueThisProcessClassification:KnockoutObservableArray<model.Abolition>;
+        DiscontinueThisProcessClassificationSelectedCode:KnockoutObservable<number>;
         
         //D4_19
         guaranteedBaseDate:KnockoutObservableArray<model.ItemModel>; 
@@ -98,11 +104,14 @@ module nts.uk.com.view.qmm005.c.viewmodel {
         incomeTaxBaseDateSelectedCode: KnockoutObservable<string>;
         
         constructor(){
+
             var self=this;
             self.numberOfWorkingDays=ko.observable(20);
             self.simpleValue=ko.observable(getText('QMM005_48'));
 
+            self.DiscontinueThisProcessClassification=ko.observableArray([
 
+            ])
             
             //D4_42
             self.incomeTaxBaseYear=ko.observableArray([
@@ -276,12 +285,7 @@ module nts.uk.com.view.qmm005.c.viewmodel {
             ]);
             self.guaranteedBaseMonthSelectedCode=ko.observable(0);
             
-//            let i = 1;
-//            for (let data in model.DateSelectClassification) {
-//                if (isNaN(data)) continue;
-//                self.itemList.push(new model.ItemModel(data, i + '日'))
-//                i++;
-//            }
+
             
             self.pushDaytoList(self.disposalDay,model.DateSelectClassification);
             self.pushDaytoList(self.datePayment,model.DateSelectClassification);
@@ -290,40 +294,22 @@ module nts.uk.com.view.qmm005.c.viewmodel {
             self.pushDaytoList(self.timeReferenceStandardDay,model.DateSelectClassification);
             self.pushDaytoList(self.guaranteedBaseDate,model.DateSelectClassification);
             self.pushDaytoList(self.incomeTaxBaseDate,model.DateSelectClassification);
-            
-            
-            
-            
+
             self.selectedId=ko.observable(0);
 
             self.labelRequired=ko.observable(true);
             self.isEnable=ko.observable(true);
             self.enableChecckBox=ko.observable(true);
 
-            
-        
         }
-        
-        
-        pushDaytoList(itemList:Array<model.ItemModel>,codeEnum:enum):void{
-            let items=itemList;
-            let code=codeEnum;
-            let 
-            let i = 1;
-            for (let data in code) {
-                if (isNaN(data)) continue;
-                items.push(new model.ItemModel(data, i + '日'));
-                i++;
-            }
+
+        saveCharacterSetting():void{
+
+
         }
-    
-        saveCharacterSetting():void{}
     
         cancelCharacterSetting():void{}
         
-        
-
-
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -332,6 +318,20 @@ module nts.uk.com.view.qmm005.c.viewmodel {
 
             return dfd.promise();
         }
+
+        pushDaytoList(itemList:KnockoutObservableArray<model.ItemModel>,codeEnum:enum):void{
+                let items=itemList;
+                let code=codeEnum;
+
+                let i = 1;
+                for (let data in codeEnum) {
+                if (isNaN(data)) continue;
+                itemList.push(new model.ItemModel(data, i + '日'));
+                i++;
+            }
+        }
+
+
 
     }
     

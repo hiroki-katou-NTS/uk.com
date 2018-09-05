@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
-		<script>var dialogSize = { width: 1550, height: 530 };</script>
+		<script>var dialogSize = { width: 900, height: 530 };</script>
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -56,10 +56,12 @@
 							<span><label>#{i18n.getText('QMM005_97')}</label></span>
 						</div>
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+						<input data-bind="ntsNumberEditor: {value: processingYear}" />
+						<span><label>????</label></span>
 						<button class=""
-							data-bind="click: reflectSystemReferenceDateInformation">#{i18n.getText('QMM005_89')}</button>
+							data-bind="click: reflect, enable: screenModeCreate()">#{i18n.getText('QMM005_89')}</button>
 						<button class=""
-							data-bind="click: reflect">#{i18n.getText('QMM005_27')}</button>
+							data-bind="click: reflectSystemReferenceDateInformation, enable: !screenModeCreate()">#{i18n.getText('QMM005_27')}</button>
 
 						<table id="expand-example">
 							<tbody>
@@ -89,16 +91,16 @@
 								</tr>
 								<com:ko-foreach bind="itemList">
 									<tr>
-										<td><div class="label" data-bind="text: targetMonth"></div></td>
+										<td><div class="label" data-bind="text: $index"></div></td>
 										<td>
-                                            <div data-bind="ntsDatePicker: {value: paymentDate, dateFormat: 'YYYY/MM/DD'}"></div>
-                                            <div class="label" data-bind="text: payDay"></div>
+                                            <div data-bind="ntsDatePicker: {value: paymentDate, dateFormat: 'YYYY/MM/DD ddd'}"></div>
+
                                         </td>
 
 										<td><div data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div></td>
 										<td>
 											<div data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></div>
-											<div class="label" data-bind="text: collectMinutes"></div>
+											<div class="label"> b4_14 </div>
 										</td>
 
 										<td><div data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div></td>
