@@ -72,7 +72,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private RecruitmentAppRepository recruitmentRepo;
 	@Override
-	public void reflectEmployeeOfApp(Application_New appInfor) {
+	public boolean reflectEmployeeOfApp(Application_New appInfor) {
 		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
 		CommonReflectPara workchangeData = null;
@@ -98,57 +98,57 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getFullAppOvertime(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
-				return;
+				return true;
 			}
 			AppOverTime appOvertimeInfor = getFullAppOvertime.get();			
 			overTimeTmp = this.getOverTimeReflect(appInfor, appOvertimeInfor);
 			if(overTimeTmp == null) {
-				return;
+				return true;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 			Optional<GoBackDirectly> optGobackInfo = gobackRepo.findByApplicationID(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optGobackInfo.isPresent()) {
-				return;
+				return true;
 			}
 			GoBackDirectly gobackInfo = optGobackInfo.get();
 			reflectScheParam.setGoBackDirectly(gobackInfo);
 			appGobackTmp = this.getGobackReflectPara(appInfor, gobackInfo);
 			if(appGobackTmp == null) {
-				return;
+				return true;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optAbsence.isPresent()) {
-				return;
+				return true;
 			}
 			AppAbsence absenceAppData = optAbsence.get();
 			reflectScheParam.setForLeave(absenceAppData);
 			absenceData = this.getAbsence(appInfor, absenceAppData);
 			if(absenceData == null) {
-				return;
+				return true;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
 				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
-				return;
+				return true;
 			}
 			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();
 			reflectScheParam.setHolidayWork(holidayWorkData);
 			holidayworkInfor = this.getHolidayWork(appInfor, holidayWorkData);
 			if(holidayworkInfor == null) {
-				return;
+				return true;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 			Optional<AppWorkChange> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
-				return;
+				return true;
 			}
 			AppWorkChange workChange = getAppworkChangeById.get();
 			reflectScheParam.setWorkChange(workChange);
 			workchangeData = this.getWorkChange(appInfor, workChange);
 			if(workchangeData == null) {
-				return;
+				return true;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			Optional<AbsenceLeaveApp> optAbsenceLeaveData = absenceLeaveRepo.findByAppId(appInfor.getAppID());
@@ -166,13 +166,15 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 		} 
 		else {
-			return;
+			return true;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
 		if(scheReflect.workscheReflect(reflectScheParam)) {
 			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));
+		} else {
+			return false;
 		}
 		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
 		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
@@ -186,8 +188,12 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		if(workRecordReflect.workRecordreflect(appPara)) {
 			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
+		} else {
+			return false;
 		}
+		
 		appRepo.updateWithVersion(appInfor);
+		return true;
 	}
 	
 	private CommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange) {
