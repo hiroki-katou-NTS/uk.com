@@ -13,7 +13,7 @@ div.nts-fixed-body-wrapper{height: 209px ! important}
 div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90px;}
 #fixed-table tbody>tr:last-child {
 	position: absolute;
-	bottom: 7px;
+	bottom: 17px;
 	border-right: 1px solid #CCC;
 	border-top: double;
 }
@@ -35,4 +35,9 @@ div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90p
 }
 div.nts-fixed-header-wrapper{ width : 450px !important}
 div.nts-fixed-body-wrapper{width: 450px !important }
-div.nts-fixed-body-container.ui-iggrid{ height: 215px;}
+div.nts-fixed-body-container.ui-iggrid{ height: 205px;}
+#func-notifier-errors.shown {
+    display: inline-block;
+    position: absolute;
+    bottom: 380px;
+}
