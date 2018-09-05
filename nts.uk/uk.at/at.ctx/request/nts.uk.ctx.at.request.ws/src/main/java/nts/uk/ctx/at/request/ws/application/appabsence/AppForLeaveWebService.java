@@ -103,7 +103,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("checkRegister")
 	public void checkRegister(ParamCheckRegister param){
-		//creatAppAbsence.checkRegister(param);
+		creatAppAbsence.checkRegister(param);
 	}
 }
 
