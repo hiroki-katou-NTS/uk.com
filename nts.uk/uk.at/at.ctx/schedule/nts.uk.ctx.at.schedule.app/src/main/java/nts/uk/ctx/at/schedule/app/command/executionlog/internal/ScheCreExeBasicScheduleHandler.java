@@ -604,7 +604,7 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
-				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(), scTimeImport.getFlexTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
 		return commandSave;
 	}

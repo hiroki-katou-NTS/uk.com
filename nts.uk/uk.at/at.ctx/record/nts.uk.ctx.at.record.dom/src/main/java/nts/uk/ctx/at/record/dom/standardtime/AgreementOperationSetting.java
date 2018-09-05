@@ -123,40 +123,27 @@ public class AgreementOperationSetting extends AggregateRoot {
 		aggrPeriod.setYearMonth(yearMonth);
 		aggrPeriod.setYear(new Year(yearMonth.year()));	// 期首月　未配慮
 		
-		// 「締め日区分」を取得
-		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE){
-			
-			// 締め期間と同じ集計期間を取得
-			val datePeriods = closure.getPeriodByYearMonth(yearMonth);
-			if (datePeriods.size() <= 0) return Optional.empty();
-			aggrPeriod.setPeriod(datePeriods.get(0));
-			return Optional.of(aggrPeriod);
+		// 締め日を指定する場合の集計期間を取得
+		val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
+		val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
+		val prevEnd = currentStart.addDays(-1);
+		if (this.closingDateType == ClosingDateType.LASTDAY){
+			// 年月の末締め
+			aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
 		}
-		if (this.closingDateAtr == ClosingDateAtr.DESIGNATEDATE){
-			
-			// 締め日を指定する場合の集計期間を取得
-			val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
-			val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
-			val prevEnd = currentStart.addDays(-1);
-			if (this.closingDateType == ClosingDateType.LASTDAY){
-				// 年月の末締め
-				aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
+		else {
+			// 年月の締め開始日～締め終了日
+			int closureDay = this.closingDateType.value + 1;
+			GeneralDate closingStart = currentStart;
+			if (closureDay + 1 <= prevEnd.day()){
+				closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
 			}
-			else {
-				// 年月の締め開始日～締め終了日
-				int closureDay = this.closingDateType.value + 1;
-				GeneralDate closingStart = currentStart;
-				if (closureDay + 1 <= prevEnd.day()){
-					closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
-				}
-				GeneralDate closingEnd = currentEnd;
-				if (closureDay <= currentEnd.day()){
-					closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
-				}
-				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
+			GeneralDate closingEnd = currentEnd;
+			if (closureDay <= currentEnd.day()){
+				closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
 			}
-			return Optional.of(aggrPeriod);
+			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
 		}
-		return Optional.empty();
+		return Optional.of(aggrPeriod);
 	}
 }
