@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Value;
 
 @Value
-public class EmpInsurPreRateCommand {
+public class EmpInsurBusBurRatioCommand {
     
     private String hisId;
     private int empPreRateId;
