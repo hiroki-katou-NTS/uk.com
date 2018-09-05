@@ -66,23 +66,18 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 	@Override
 	public List<ClosureStatusManagement> getByIdListAndDatePeriod(List<String> employeeIds, DatePeriod span){
 		
-		List<Object[]> result = new ArrayList<>();
+		List<KrcdtClosureSttMng> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
 		query.append("WHERE a.pk.employeeId IN :employeeId ");
-		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
+		TypedQueryWrapper<KrcdtClosureSttMng> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSttMng.class);
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds).getList());
 		});
 		return toDomainFromJoin(result);
 	}
 
-	private List<ClosureStatusManagement> toDomainFromJoin(List<Object[]> result) {
-		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.toList()))
-				.entrySet().stream().map(e -> {
-					KrcdtClosureSttMng closure = (KrcdtClosureSttMng) e.getKey();
-					return closure.toDomain();
-				})
-				.collect(Collectors.toList());		
+	private List<ClosureStatusManagement> toDomainFromJoin(List<KrcdtClosureSttMng> result) {
+		return result.stream().map(tc -> tc.toDomain()).collect(Collectors.toList());		
 	}
 
 }
