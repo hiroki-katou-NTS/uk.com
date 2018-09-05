@@ -258,6 +258,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
             //B8_2_1
             self.isExistCompressPasswordFlg = ko.observable(true);
+            /**
+            * Clear validate
+             */
+             self.isExistCompressPasswordFlg.subscribe(function(value) {
+                 console.log(value);
+                 if (!value) {
+                     nts.uk.ui.errors.removeByElement($("#B8_2_2"));
+                     nts.uk.ui.errors.removeByElement($("#B8_3_2"));
+                 }
+            });
         }
 
         /**

@@ -28,8 +28,9 @@ module nts.uk.at.view.kal001.c {
                 self.isSendToManager = ko.observable(true);                                              
                 self.listEmployeeSendTaget = ko.observableArray([]);                                              
                 self.listManagerSendTaget = ko.observableArray([]);
-//                let paramFromb = nts.uk.ui.windows.getShared("extractedAlarmData");    
-                self.listValueExtractAlarmDto = nts.uk.ui.windows.getShared("extractedAlarmData");                                         
+                
+                let paramFromb = nts.uk.ui.windows.getShared("extractedAlarmData");    
+                self.listValueExtractAlarmDto = paramFromb.listAlarmExtraValueWkReDto;                                                                               
             }
 
             /**

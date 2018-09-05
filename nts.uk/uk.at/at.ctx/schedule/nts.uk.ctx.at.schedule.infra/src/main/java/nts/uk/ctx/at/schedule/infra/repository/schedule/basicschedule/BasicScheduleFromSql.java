@@ -27,7 +27,9 @@ public class BasicScheduleFromSql {
 	private Integer weekdayTime;
 	private Integer prescribedTime;
 	private Integer totalLaborTime;
-	private Integer childCareTime;
+	private Integer childTime;
+	private Integer careTime;
+	private Integer flexTime;
 	
 	private Integer feeTimeNo;
 	private Integer personFeeTime;
