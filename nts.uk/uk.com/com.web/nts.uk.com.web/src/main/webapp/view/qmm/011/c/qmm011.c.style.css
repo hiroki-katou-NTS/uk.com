@@ -1,0 +1,33 @@
+.padding-item {
+	padding: 10px 0 0 10px;
+}
+
+.content {
+	margin: 20px 0 20px 0;
+}
+.right{
+	float: left;
+	width: 900px;
+}
+.left{
+	float: left;
+	width: 350px;
+}
+#C3_2{
+	margin: 20px 20px 0 0;
+	width: 600px;
+	border: 1px solid #CCC;
+}
+#C3_2 th{
+    border: 1px solid #CCC;
+    height: 30px;
+    text-align: center;
+
+}
+
+#C3_2 td {
+	text-align: center;
+	height: 30px;
+	border: 1px solid #CCC;
+}
+

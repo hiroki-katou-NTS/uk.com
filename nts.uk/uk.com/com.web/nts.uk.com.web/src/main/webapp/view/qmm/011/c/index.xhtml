@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="qmm011.c.start.js" />
+			<com:scriptfile path="qmm011.c.service.js" />
+			<com:scriptfile path="qmm011.c.vm.js" />
+			<com:stylefile path="qmm011.c.style.css" />
+		</ui:define>
+		<ui:define name="content">
+	<div class = "content">
+		<div class = "left">
+			<div id="B1_1" 
+				data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
+					<div id="functions-area">
+						<!-- B1_2 履歴追加 -->
+						<button id ="B1_2"  data-bind="">#{i18n.getText('QMM011_6')}</button>
+						<!-- B1_3 履歴編集 -->
+						<button id ="B1_3"  data-bind="">#{i18n.getText('QMM011_7')}</button>
+					</div>
+					<div>
+						<!--B1_4 雇用保険料率一覧 -->
+						<table id="B1_4"
+								data-bind="ntsGridList: {
+												name: '#QMM011_8',
+												height: 490,
+												rows: 14,
+		                                        dataSource: listEmpInsHis,
+		                                        primaryKey: 'hisId',
+		                                        columns: [
+		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
+																{headerText: '', key: 'startDate', width: 100, formatter: _.escape},
+								                				{headerText: '', key: 'between', width: 50, formatter: _.escape},
+								                				{headerText: '', key: 'endDate', width: 100, formatter: _.escape}
+								                		],                                        
+								                multiple: false,
+		                                        value: selectedEmpInsHisId
+		                        }">
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class = "right">
+				<div id="B2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
+				<!--B2_2 開始年月 -->
+				<span class="label" data-bind="text: startDate"></span>
+				<!--B2_3 開始年月和暦 -->
+				<span class="label" data-bind="text: monthlyCalendar"></span>
+				<!--B2_4 ～  -->
+				<label id= "B2_4">#{i18n.getText('QMM011_9')}</label>
+				<!--B2_5 終了年月  -->
+				<span class="label" data-bind="text: endDate"></span>
+				<div id ="B2_6" class="set-row">
+					<hr />
+				</div>
+				<div>
+				<table id="C3_2" >
+					<tbody>
+						<tr class="bg-green">
+							<!--B3_2  個人負担率  -->
+							<th></th>
+							<th></th>
+							<!--B3_3 端数処理  -->
+							<th>#{i18n.getText('QMM011_12')}</th>
+							<!--B3_4  事業主負担率  -->
+							<th>#{i18n.getText('QMM011_13')}</th>
+
+						</tr>
+							<tr>
+								<td class="bg-green" width ="5%">
+									<label id= "B3_6"></label>
+								</td>
+								<td class="bg-green"  width ="45%">
+
+								</td>
+								<td width ="25%">
+									<div tabindex="5"><input id = "C3_6" style="float: left"
+												data-bind="ntsNumberEditor: {
+									option : {width: '30px'},
+									name: '#{i18n.getText('QMM011_13')}',
+									value: indBdRation,
+									required: false
+									}"/><span id = "C3_7" style="float: right">#{i18n.getText('QMM011_15')}</span></div>
+
+								</td>
+								<td width ="25%">
+									<div tabindex="6" id = "C3_8"
+										 data-bind="ntsComboBox: {
+																name: '#{i18n.getText('QMM011_12')}',
+																value: perFracClass,
+																required: false,
+																options: listPerFracClass,
+																optionsValue: 'code',
+																visibleItemsCount: 5,
+																optionsText: 'name'
+																}"/>
+								</td>
+
+
+								
+							</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+			
+	</div>
+</ui:define>
+</ui:composition>
+</body>
+</html>

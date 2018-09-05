@@ -1,0 +1,43 @@
+.padding-item {
+	padding: 10px 0 0 10px;
+}
+
+.content {
+	margin: 20px 0 20px 0;
+}
+.right{
+	float: left;
+	width: 900px;
+}
+.left{
+	float: left;
+	width: 350px;
+}
+.table{
+	margin: 20px 20px 0 0;
+	width: 800px;
+}
+.table th,td{
+    border: 1px solid #CCC;
+    height: 40px;
+    text-align: center;
+    
+}
+
+.table table {
+  table-layout: fixed;
+}
+span.nts-editor-wrapped.ntsControl{
+	width: 20% !important;
+}
+.ui-igcombo-wrapper{
+	width: 80% !important;
+}
+#B3_8{
+	margin-left: 25px;
+}
+
+#B3_12{
+	margin-left: 25px;
+}
+
