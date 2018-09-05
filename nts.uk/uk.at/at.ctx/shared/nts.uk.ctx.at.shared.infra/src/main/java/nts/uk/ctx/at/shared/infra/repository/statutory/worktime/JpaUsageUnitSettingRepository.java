@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.KuwstUsageUnitWtSet;
@@ -49,9 +52,21 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.
 	 * UsageUnitSettingRepository#find(java.lang.String)
 	 */
+	@SneakyThrows
 	@Override
 	public Optional<UsageUnitSetting> findByCompany(String companyId) {
-		return this.queryProxy().find(companyId, KuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
+//		return this.queryProxy().find(companyId, KuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
+		val statement = this.connection().prepareStatement("select * FROM KUWST_USAGE_UNIT_WT_SET where CID = ?");
+		statement.setString(1, companyId);
+		Optional<KuwstUsageUnitWtSet> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			val entity = new KuwstUsageUnitWtSet();
+			entity.setCid(companyId);
+			entity.setIsWkp(rec.getInt("IS_WKP"));
+			entity.setIsEmp(rec.getInt("IS_EMP"));
+			entity.setIsEmpt(rec.getInt("IS_EMPT"));
+			return entity;
+		});
+		return krcdtDaiBreakTimes.map(c -> this.toDomain(c));
 	}
 
 	/**
