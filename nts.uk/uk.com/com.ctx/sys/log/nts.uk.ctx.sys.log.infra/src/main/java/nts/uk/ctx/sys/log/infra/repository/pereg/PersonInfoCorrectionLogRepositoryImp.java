@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtDataHistoryLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtItemInfoLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -74,11 +74,35 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		List<PersonalInfoCorrectionLogQuery> query = new ArrayList<PersonalInfoCorrectionLogQuery>();
 
 		CollectionUtil.split(operationIds, MAX_WHERE_IN, (subOpts) -> {
-			CollectionUtil.split(listEmployeeId, MAX_WHERE_IN, (subEmpIds) -> {
+			if (!CollectionUtil.isEmpty(listEmployeeId)) {
+				CollectionUtil.split(listEmployeeId, MAX_WHERE_IN, (subEmpIds) -> {
+					List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
+							.setParameter("operationIDs", subOpts)
+							.setParameter("empIdNULL",
+									subEmpIds == null || subEmpIds.size() == 0 ? "ISNULL" : "ISNOTNULL")
+							.setParameter("employeeIDs",
+									subEmpIds == null || subEmpIds.size() == 0 ? new ArrayList<String>() {
+										private static final long serialVersionUID = 1L;
+										{
+											add("");
+										}
+									} : subEmpIds)
+							.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
+								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
+								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
+								SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
+								SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+
+								return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
+										perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
+							}).collect(Collectors.toList());
+
+					query.addAll(_query);
+				});
+			} else {
 				List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
-						.setParameter("operationIDs", operationIds)
-						.setParameter("empIdNULL",
-								listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
+						.setParameter("operationIDs", subOpts)
+						.setParameter("empIdNULL", listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
 						.setParameter("employeeIDs",
 								listEmployeeId == null || listEmployeeId.size() == 0 ? new ArrayList<String>() {
 									private static final long serialVersionUID = 1L;
@@ -95,9 +119,9 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 									perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
 						}).collect(Collectors.toList());
-				
+
 				query.addAll(_query);
-			});
+			}
 		});
 
 		return query.stream().map(m -> m.getPerCorrectionLogID()).distinct().map(m -> {
@@ -138,26 +162,47 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							 */
 							switch (ii.dataValueAttr) {
 							case 1:
-								rvb = RawValue.asString(ii.valueBefore);
-								rva = RawValue.asString(ii.valueAfter);
+								if (!ii.valueBefore.isEmpty()) {
+									rvb = RawValue.asString(ii.valueBefore);
+								}
+								if (!ii.valueAfter.isEmpty()) {
+									rva = RawValue.asString(ii.valueAfter);
+								}
 								break;
 							case 2:
-								rvb = RawValue.asInteger(Integer.parseInt(ii.valueBefore));
-								rva = RawValue.asInteger(Integer.parseInt(ii.valueAfter));
+								if (!ii.valueBefore.isEmpty()) {
+									rvb = RawValue.asInteger(Integer.parseInt(ii.valueBefore));
+								}
+								if (!ii.valueAfter.isEmpty()) {
+									rva = RawValue.asInteger(Integer.parseInt(ii.valueAfter));
+								}
 								break;
 							case 3:
-								rvb = RawValue.asDouble(Double.parseDouble(ii.valueBefore));
-								rva = RawValue.asDouble(Double.parseDouble(ii.valueAfter));
+								if (!ii.valueBefore.isEmpty()) {
+									rvb = RawValue.asDouble(Double.parseDouble(ii.valueBefore));
+								}
+								if (!ii.valueAfter.isEmpty()) {
+									rva = RawValue.asDouble(Double.parseDouble(ii.valueAfter));
+								}
 								break;
 							case 4:
-								rvb = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueBefore)));
-								rva = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueAfter)));
+								if (!ii.valueBefore.isEmpty()) {
+									rvb = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueBefore)));
+								}
+								if (!ii.valueAfter.isEmpty()) {
+									rva = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueAfter)));
+								}
 								break;
 							case 5:
-								rvb = RawValue.asDate(GeneralDate.fromString(ii.valueBefore, "yyyy/MM/dd"));
-								rva = RawValue.asDate(GeneralDate.fromString(ii.valueAfter, "yyyy/MM/dd"));
+								if (!ii.valueBefore.isEmpty()) {
+									rvb = RawValue.asDate(GeneralDate.fromString(ii.valueBefore, "yyyy/MM/dd"));
+								}
+								if (!ii.valueAfter.isEmpty()) {
+									rva = RawValue.asDate(GeneralDate.fromString(ii.valueAfter, "yyyy/MM/dd"));
+								}
 								break;
 							}
+							
 							return new ItemInfo(ii.itemInfoLogID, ii.itemID, ii.itemName,
 									new Value(rvb, ii.contentBefore), new Value(rva, ii.contentAfter));
 						}).filter(f -> f != null).collect(Collectors.toList());
@@ -234,6 +279,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		}
 
 		pcl.remark = domain.getRemark();
+		pcl.employeeID = uif.getEmployeeId();
 
 		return pcl;
 	}
@@ -266,21 +312,21 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			dhl.stringKey = k;
 		});
 
-//		tdKey.getDateKey().ifPresent(d -> {
+		tdKey.getDateKey().ifPresent(d -> {
 			switch (tdKey.getCalendarKeyType()) {
 			case DATE:
-				dhl.targetKeyYMD = tdKey.getDateKey();
+				dhl.targetKeyYMD = d;
 				break;
 			case YEARMONTH:
-				dhl.targetKeyYM = tdKey.getDateKey().yearMonth().v().intValue();
+				dhl.targetKeyYM = d.yearMonth().v().intValue();
 				break;
 			case YEAR:
-				dhl.targetKeyY = tdKey.getDateKey().year();
+				dhl.targetKeyY = d.year();
 				break;
 			case NONE:
 				break;
 			}
-//		});
+		});
 
 		return dhl;
 	}

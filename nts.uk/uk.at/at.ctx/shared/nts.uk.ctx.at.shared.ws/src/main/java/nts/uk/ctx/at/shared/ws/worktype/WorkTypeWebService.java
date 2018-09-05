@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 
 /**
  * The Class WorkTypeWebService.
@@ -79,7 +80,7 @@ public class WorkTypeWebService extends WebService {
 	 */
 	@POST
 	@Path("getpossibleworktype")
-	public List<WorkTypeDto> getPossibleWorkType(List<String> lstPossible) {
+	public List<WorkTypeInfor> getPossibleWorkType(List<String> lstPossible) {
 		return this.find.getPossibleWorkType(lstPossible);
 	}
 
@@ -103,6 +104,17 @@ public class WorkTypeWebService extends WebService {
 	@Path("findNotDeprecated")
 	public List<WorkTypeDto> findNotDeprecated() {
 		return this.find.findNotDeprecated();
+	}
+	
+	/**
+	 * Find all by order.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAllByOrder")
+	public List<WorkTypeInfor> findAllByOrder() {
+		return this.find.findAllByOrder();
 	}
 	
 	/**

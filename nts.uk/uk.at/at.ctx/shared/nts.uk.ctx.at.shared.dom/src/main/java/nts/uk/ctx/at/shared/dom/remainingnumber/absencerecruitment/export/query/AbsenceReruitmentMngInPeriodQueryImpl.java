@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -682,6 +683,22 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			lstOutputOfRec.add(outputData);
 		}
 		return lstOutputOfRec;
+	}
+
+	@Override
+	public double getAbsRecMngRemain(String employeeID, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
+				companyID, 
+				employeeID, 
+				new DatePeriod(date, date.addYears(1)), 
+				date, 
+				false, 
+				false, 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Collections.emptyList());
+		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();
 	}
 	
 }

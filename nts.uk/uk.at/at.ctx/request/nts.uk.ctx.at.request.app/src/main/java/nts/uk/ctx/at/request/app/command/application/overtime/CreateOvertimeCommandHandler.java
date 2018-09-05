@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,11 +54,14 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
 		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
+				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyId, appID));
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
 				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID));
+				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID), 
+				appOvertimeDetailOtp);
 
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);

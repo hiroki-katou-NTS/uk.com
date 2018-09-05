@@ -46,6 +46,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -80,7 +81,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * 実装：月別集計が必要とするリポジトリ
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 @Getter
@@ -245,6 +246,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** フレックス勤務所定労働時間取得 */
 	@Inject
 	private GetFlexPredWorkTimeRepository flexPredWorktime;
+	/** フレックス不足の年休補填管理 */
+	@Inject
+	private InsufficientFlexHolidayMntRepository insufficientFlex;
+	/** フレックス不足の繰越上限管理 */
 	/** 残業・振替の処理順序を取得する */
 	@Inject
 	private GetOverTimeAndTransferOrder overTimeAndTransferOrder;

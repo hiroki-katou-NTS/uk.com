@@ -37,6 +37,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
+        
+        optionNoOfHolidays: any = {
+            decimallength: 1
+        }
 
         constructor() {
             let self = this,
@@ -309,24 +313,28 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             });
         }
 
-        validateRange() {
+               validateRange() {
             let self = this,
                 caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
+                // fixbug 99086 : set timeout
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
+                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-
+                // fixbug 99086 : set timeout
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-
+                }, 25);
             }
         }
 

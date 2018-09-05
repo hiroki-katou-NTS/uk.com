@@ -1092,6 +1092,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                     dataParent["monthValue"] = self.valueUpdateMonth;
                 }
+                self.removeErrorRefer();
                 let dfd = $.Deferred();
                 service.calculation(dataParent).done((data) => {
                     self.valueUpdateMonth = null;
@@ -3797,7 +3798,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispAnnualDay = annualLeave == null ? false : annualLeave.manageYearOff;
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
-            if (this.dispCompensationDay) {
+            if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
                 this.compensationDay = nts.uk.resource.getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
                 if (compensatoryLeave.compenLeaveRemain < 0)
                     $("#fixed-table td.remain-compen-day").css("color","#ff0000");
@@ -3805,7 +3806,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-compen-day").css("color","");
             } else 
                 this.compensationDay = "";
-            if (this.dispCompensationTime) {
+            if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
                 this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
                 if (compensatoryLeave.timeRemain < 0)
                     $("#fixed-table td.remain-compen-time").css("color","#ff0000");
@@ -3813,7 +3814,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-compen-time").css("color","");
             } else 
                 this.compensationTime = "";
-            if (this.dispSubstitute) {
+            if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
                 this.substitute = nts.uk.resource.getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
                     $("#fixed-table td.remain-subst-day").css("color","#ff0000");
@@ -3821,7 +3822,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-subst-day").css("color","");
             } else 
                 this.substitute = "";
-            if (this.dispAnnualDay) {
+            if (this.dispAnnualDay && annualLeave.annualLeaveRemain != null) {
                 this.annualDay = nts.uk.resource.getText("KDW003_8", [annualLeave.annualLeaveRemain]);
                 if (annualLeave.annualLeaveRemain < 0)
                     $("#fixed-table td.remain-annual-day").css("color","#ff0000");
@@ -3829,7 +3830,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-annual-day").css("color","");
             } else 
                 this.annualDay = "";
-            if (this.dispAnnualTime) {
+            if (this.dispAnnualTime && annualLeave.timeRemain != null) {
                 this.annualTime = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
                 if (annualLeave.timeRemain < 0)
                     $("#fixed-table td.remain-annual-time").css("color","#ff0000");
@@ -3837,7 +3838,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-annual-time").css("color","");
             } else 
                 this.annualTime = "";
-            if (this.dispReserve) {
+            if (this.dispReserve && reserveLeave.remainNumber != null) {
                 this.reserve = nts.uk.resource.getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)
                     $("#fixed-table td.remain-reserve-day").css("color","#ff0000");

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -788,5 +788,21 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			
 		}
 		return lstOutputBreak;
+	}
+
+	@Override
+	public double getBreakDayOffMngRemain(String employeeID, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
+				companyID, 
+				employeeID, 
+				new DatePeriod(date, date.addYears(1)), 
+				false, 
+				date, 
+				false, 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Collections.emptyList());
+		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();
 	}
 }

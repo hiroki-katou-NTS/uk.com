@@ -26,10 +26,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の勤務時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class WorkTimeOfMonthly {
+public class WorkTimeOfMonthlyVT {
 
 	/** 加給時間 */
 	private BonusPayTimeOfMonthly bonusPayTime;
@@ -59,7 +59,7 @@ public class WorkTimeOfMonthly {
 	/**
 	 * コンストラクタ
 	 */
-	public WorkTimeOfMonthly(){
+	public WorkTimeOfMonthlyVT(){
 		
 		this.bonusPayTime = new BonusPayTimeOfMonthly();
 		this.goOut = new GoOutOfMonthly();
@@ -89,7 +89,7 @@ public class WorkTimeOfMonthly {
 	 * @param medicalTimeList 医療時間リスト
 	 * @return 月別実績の勤務時間
 	 */
-	public static WorkTimeOfMonthly of(
+	public static WorkTimeOfMonthlyVT of(
 			BonusPayTimeOfMonthly bonusPayTime,
 			GoOutOfMonthly goOut,
 			PremiumTimeOfMonthly premiumTime,
@@ -102,7 +102,7 @@ public class WorkTimeOfMonthly {
 			DivergenceTimeOfMonthly divergenceTime,
 			List<MedicalTimeOfMonthly> medicalTimeList){
 		
-		val domain = new WorkTimeOfMonthly();
+		val domain = new WorkTimeOfMonthlyVT();
 		domain.bonusPayTime = bonusPayTime;
 		domain.goOut = goOut;
 		domain.premiumTime = premiumTime;
@@ -198,7 +198,7 @@ public class WorkTimeOfMonthly {
 	 * 合算する
 	 * @param target 加算対象
 	 */
-	public void sum(WorkTimeOfMonthly target){
+	public void sum(WorkTimeOfMonthlyVT target){
 		
 		this.bonusPayTime.sum(target.bonusPayTime);
 		this.goOut.sum(target.goOut);
