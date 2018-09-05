@@ -230,9 +230,9 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             Map<String, List<PpemtPerInfoCtg>> groupPersonalInfoCatByCatId = new HashMap<>();
             Map<String, List<PpemtPerInfoCtgOrder>> groupPersonalInfoCatOrderByCatId = new HashMap<>();
             Map<String, List<PpemtPerInfoItem>> groupPersonalInfoItemByCatId = new HashMap<>();
-            Map<String, List<PpemtPerInfoItem>> groupPersonalInfoItemByDefId = new HashMap<>();
+//            Map<String, List<PpemtPerInfoItem>> groupPersonalInfoItemByDefId = new HashMap<>();
             Map<String, List<PpemtPerInfoItemOrder>> groupPersonalInfoItemOrderByCatId = new HashMap<>();
-            Map<String, List<PpemtPerInfoItemOrder>> groupPersonalInfoItemOrderByDefId = new HashMap<>();
+//            Map<String, List<PpemtPerInfoItemOrder>> groupPersonalInfoItemOrderByDefId = new HashMap<>();
             Map<String, List<PpemtDateRangeItem>> groupDateRangeByCatId = new HashMap<>();
             if (!CollectionUtil.isEmpty(sPerInfoCtgEntities)) {
                 groupPersonalInfoCatByCatId = sPerInfoCtgEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoCtgPK.perInfoCtgId));
@@ -242,11 +242,11 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             }
             if (!CollectionUtil.isEmpty(sPerInfoItemEntities)) {
                 groupPersonalInfoItemByCatId = sPerInfoItemEntities.stream().collect(Collectors.groupingBy(o -> o.perInfoCtgId));
-                groupPersonalInfoItemByDefId = sPerInfoItemEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
+//                groupPersonalInfoItemByDefId = sPerInfoItemEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
             }
             if (!CollectionUtil.isEmpty(sPerInfoItemOrderEntities)) {
                 groupPersonalInfoItemOrderByCatId = sPerInfoItemOrderEntities.stream().collect(Collectors.groupingBy(o -> o.perInfoCtgId));
-                groupPersonalInfoItemOrderByDefId = sPerInfoItemOrderEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
+//                groupPersonalInfoItemOrderByDefId = sPerInfoItemOrderEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
             }
             if (!CollectionUtil.isEmpty(sDateRangeItemEntities)) {
                 groupDateRangeByCatId = sDateRangeItemEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoCtgPK.perInfoCtgId));
@@ -296,35 +296,41 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 }
             }
 
-            s3.clear();
-            s4.clear();
+            Map<String, PpemtPerInfoItem> groupPersonalInfoItemByDefId = new HashMap<>();
+            if (!CollectionUtil.isEmpty(s3))
+                groupPersonalInfoItemByDefId = s3.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
+            Map<String, PpemtPerInfoItemOrder> groupPersonalInfoItemOrderByDefId = new HashMap<>();
+            if (!CollectionUtil.isEmpty(s4))
+                groupPersonalInfoItemOrderByDefId = s4.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
+
+
+            final List<PpemtPerInfoItem> s33 = new ArrayList<>();
+            final List<PpemtPerInfoItemOrder> s44 = new ArrayList<>();
+
             Set<String> sourcePersonalInfoItemDefId = s3.stream()
                     .map(ppemtPerInfoItem -> ppemtPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId)
                     .collect(Collectors.toSet());
             for (String defId : sourcePersonalInfoItemDefId) {
                 String newDefId = UUID.randomUUID().toString();
-                if (!CollectionUtil.isEmpty(groupPersonalInfoItemByDefId.get(defId))) {
-                    for (PpemtPerInfoItem perInfoItemEntity : groupPersonalInfoItemByDefId.get(defId)) {
-                        PpemtPerInfoItem cloneObject = SerializationUtils.clone(perInfoItemEntity);
-                        cloneObject.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
-                        s3.add(cloneObject);
-                    }
-                }
 
-                if (!CollectionUtil.isEmpty(groupPersonalInfoItemOrderByDefId.get(defId))) {
-                    for (PpemtPerInfoItemOrder perInfoItemOrderEntity : groupPersonalInfoItemOrderByDefId.get(defId)) {
-                        PpemtPerInfoItemOrder cloneObject = SerializationUtils.clone(perInfoItemOrderEntity);
-                        cloneObject.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
-                        s4.add(cloneObject);
-                    }
-                }
+                PpemtPerInfoItem perInfoItemEntity = groupPersonalInfoItemByDefId.get(defId);
+                PpemtPerInfoItem cloneObject1 = SerializationUtils.clone(perInfoItemEntity);
+                cloneObject1.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
+                s33.add(cloneObject1);
+
+
+                PpemtPerInfoItemOrder perInfoItemOrderEntity = groupPersonalInfoItemOrderByDefId.get(defId);
+                if(perInfoItemOrderEntity == null) continue;
+                PpemtPerInfoItemOrder cloneObject2 = SerializationUtils.clone(perInfoItemOrderEntity);
+                cloneObject2.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
+                s44.add(cloneObject2);
             }
 
             // insert new
             this.commandProxy.insertAll(s1);
             this.commandProxy.insertAll(s2);
-            this.commandProxy.insertAll(s3);
-            this.commandProxy.insertAll(s4);
+            this.commandProxy.insertAll(s33);
+            this.commandProxy.insertAll(s44);
             this.commandProxy.insertAll(s5);
 
         } else {//取得できた場合（会社ID　＝　Input．会社IDの個人情報定義）//Lấy được
