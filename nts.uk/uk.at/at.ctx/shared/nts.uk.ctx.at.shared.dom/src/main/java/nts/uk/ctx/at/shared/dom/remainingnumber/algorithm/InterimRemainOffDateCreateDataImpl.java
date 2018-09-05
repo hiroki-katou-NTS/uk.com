@@ -146,8 +146,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		outputData.setCreateData(createAtr);
 		outputData.setWorkTypeCode(workTypeCode);
 		outputData.setOccurrenceDetailData(this.createDetailData());
-		
-		
 		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
 		if(workTypeData.getDailyWork().isOneDay()) {
 			workTypeClass = workTypeData.getDailyWork().getOneDay();
@@ -160,17 +158,21 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return lstOutputData;
 		} else {
 			//午前
-			workTypeClass = workTypeData.getDailyWork().getMorning();
-			if(this.lstZansu().contains(workTypeClass)) {
-				outputData.setWorkTypeClass(workTypeClass);
-				WorkTypeRemainInfor morning = this.createWithOneDayWorkType(cid, workTypeData, outputData);
+			WorkTypeClassification workTypeMorning = workTypeData.getDailyWork().getMorning();
+			if(this.lstZansu().contains(workTypeMorning)) {
+				outputData.setWorkTypeClass(workTypeMorning);
+				WorkTypeRemainInfor morning = new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypeMorning, createAtr, 
+						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData()); 
+				morning = this.createWithOneDayWorkType(cid, workTypeData, morning);
 				lstOutputData.add(morning);
 			}
 			//午後
-			workTypeClass = workTypeData.getDailyWork().getAfternoon();
-			if(this.lstZansu().contains(workTypeClass)) {
-				outputData.setWorkTypeClass(workTypeClass);
-				WorkTypeRemainInfor after = this.createWithOneDayWorkType(cid, workTypeData, outputData);
+			WorkTypeClassification workTypAfternoon = workTypeData.getDailyWork().getAfternoon();
+			if(this.lstZansu().contains(workTypAfternoon)) {
+				outputData.setWorkTypeClass(workTypAfternoon);
+				WorkTypeRemainInfor after =  new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypAfternoon, createAtr,
+						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData());
+				after = this.createWithOneDayWorkType(cid, workTypeData, after);
 				lstOutputData.add(after);
 			}
 		}
