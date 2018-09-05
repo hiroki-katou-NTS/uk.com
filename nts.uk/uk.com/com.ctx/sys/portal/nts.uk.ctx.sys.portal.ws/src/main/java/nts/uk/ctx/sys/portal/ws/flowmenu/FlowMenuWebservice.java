@@ -78,10 +78,5 @@ public class FlowMenuWebservice extends WebService {
 	public void deleteFile(DeleteFileCommand command) {
 		this.storedFileStreamService.delete(command.getFileId());
 	}
-	@POST
-	@Path("test")
-	public void test() {
-		
-	}
 	
 }
