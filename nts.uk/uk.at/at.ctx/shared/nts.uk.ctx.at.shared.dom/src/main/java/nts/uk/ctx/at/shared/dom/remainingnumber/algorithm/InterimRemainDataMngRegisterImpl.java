@@ -84,7 +84,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 			dataInput.setRemainType(RemainType.SUBHOLIDAY);
 			this.registryInterimResereLeave(dataInput);
 			//暫定休出データの登録
-			dataInput.setRemainType(RemainType.SUBHOLIDAY);
+			dataInput.setRemainType(RemainType.BREAK);
 			this.registryInterimResereLeave(dataInput);
 		});
 		
