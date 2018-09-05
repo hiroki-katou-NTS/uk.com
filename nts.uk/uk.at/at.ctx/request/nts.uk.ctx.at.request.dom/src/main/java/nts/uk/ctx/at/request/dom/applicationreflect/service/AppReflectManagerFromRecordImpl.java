@@ -39,6 +39,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private ClosureStatusManagementRequestImport closureStatusImport;
 	@Inject
 	private ApplicationRepository_New applicationRepo;
+	@Inject
+	private AppReflectManager appRefMng;
 	@Override
 	public boolean applicationRellect(String workId, WorkReflectAtr workAtr, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
 		val dataSetter = asyncContext.getDataSetter();
@@ -54,15 +56,22 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				.stream()
 				.sorted(Comparator.comparing(TargetPersonImport::getEmployeeId))
 				.collect(Collectors.toList());
+		ExecutionTypeExImport aprResult = ExecutionTypeExImport.NORMAL_EXECUTION;
+		if(optRefAppResult.isPresent()) {
+			aprResult = optRefAppResult.get().getExecutionType();
+		}
 		for (TargetPersonImport targetPersonImport : lstPerson) {
 			//社員の申請を反映 (Phản ánh nhân viên)
-			
+			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, optRequesSetting.get(), aprResult)) {
+				
+			}
+			//TODO
 		}
 		return false;
 	}
 	@Override
 	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
-			RequestSetting optRequesSetting, SetInforReflAprResultImport refAppResult) {
+			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult) {
 		
 		//ドメインモデル「締め状態管理」を取得する
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
@@ -88,8 +97,17 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			return false;
 		}
 		
-		List<Application_New> lstApp = this.getApps(sid, datePeriod, refAppResult.getExecutionType());
-		
+		List<Application_New> lstApp = this.getApps(sid, datePeriod, refAppResult);
+		if(lstApp.isEmpty()) {
+			return true;
+		}
+		for (Application_New appData : lstApp) {
+			if(appRefMng.reflectEmployeeOfApp(appData)) {
+				//TODO
+			} else {
+				//TODO 
+			}
+		}
 		return false;
 	}
 	@Override
