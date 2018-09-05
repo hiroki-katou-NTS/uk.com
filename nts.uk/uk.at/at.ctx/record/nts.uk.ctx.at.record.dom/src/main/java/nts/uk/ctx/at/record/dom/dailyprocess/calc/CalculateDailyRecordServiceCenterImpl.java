@@ -105,8 +105,19 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Override
 	//会社共通の設定を他のコンテキストで取得できる場合に呼び出す窓口
-	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(calcOption, integrationOfDaily,false,Optional.empty(),Optional.empty(),companySet,Collections.emptyList()).getIntegrationOfDailyList();
+	public List<IntegrationOfDaily> calculatePassCompanySetting(
+			CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily,
+			Optional<ManagePerCompanySet> companySet){
+		return commonPerCompany(
+				calcOption,
+				integrationOfDaily,
+				false,
+				Optional.empty(),
+				Optional.empty(),
+				companySet,
+				Collections.emptyList())
+				.getIntegrationOfDailyList();
 	}
 	
 	@Override
