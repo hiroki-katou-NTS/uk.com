@@ -20197,22 +20197,21 @@ var nts;
                         setTimeout(function () {
                             $source.igGrid("virtualScrollTo", selectIndex);
                             $dest.igGrid("virtualScrollTo", destList.length - 1);
-                            if (selectIndex >= 0) {
-                                var selectId = void 0;
-                                if (searchResult) {
-                                    selectId = searchResult[selectIndex][primaryKey];
-                                }
-                                else if (forward) {
-                                    selectId = firstSource[selectIndex][primaryKey];
-                                }
-                                else {
-                                    selectId = secondSource[selectIndex][primaryKey];
-                                }
-                                $source.igGridSelection("selectRowById", selectId);
-                            }
-                            if (!forward) {
-                                $dest.ntsGridList("setSelected", selectedIds);
-                            }
+                            //                if(selectIndex >= 0){
+                            //                    let selectId;
+                            //                    if (searchResult) {
+                            //                        selectId = searchResult[selectIndex][primaryKey];
+                            //                    } else if (forward) {
+                            //                        selectId = firstSource[selectIndex][primaryKey];
+                            //                    } else {
+                            //                        selectId = secondSource[selectIndex][primaryKey];
+                            //                    }
+                            //                    
+                            //                    $source.igGridSelection("selectRowById", selectId);    
+                            //                } 
+                            //                if(!forward){
+                            //                    $dest.ntsGridList("setSelected", selectedIds);    
+                            //                }
                         }, 10);
                     };
                     return GridSwapList;
