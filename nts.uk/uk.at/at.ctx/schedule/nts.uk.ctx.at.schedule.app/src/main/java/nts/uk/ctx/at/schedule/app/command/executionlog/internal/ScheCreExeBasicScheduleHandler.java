@@ -310,6 +310,30 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 	}
 	
+	/**
+	 * Save basic schedule, also add work schedule state
+	 *
+	 * @param command
+	 *            the command
+	 */
+	// 勤務予定情報を登録する
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<WorkScheduleState> lstWorkScheState) {
+
+		// find basic schedule by id
+        boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
+                command.getYmd());
+
+        BasicSchedule basicSchedule = command.toDomain();
+        basicSchedule.setWorkScheduleStates(lstWorkScheState);
+        
+        // check exist data
+        if (optionalBasicSchedule) {
+			this.basicScheduleRepository.update(basicSchedule);
+		} else {
+			this.basicScheduleRepository.insert(basicSchedule);
+		}
+	}
+	
 	// 勤務予定情報を登録する-for KSC001
 	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule,
 			boolean isDeleteBeforeInsert, DateRegistedEmpSche dateRegistedEmpSche) {
@@ -689,14 +713,14 @@ public class ScheCreExeBasicScheduleHandler {
 			return WorkScheduleState.createFromJavaType(
 					basicSchedule.getEmployeeId().equals(sid) ? ScheduleEditState.HAND_CORRECTION_PRINCIPAL.value : ScheduleEditState.HAND_CORRECTION_ORDER.value, 
 					Integer.parseInt(x.getScheduleItemId()), 
-					basicSchedule.getDate(), sid);
+					basicSchedule.getDate(), employeeId);
 		}).collect(Collectors.toList());
 		
 
-		saveBasicSchedule(basicScheduleSaveCommand);
+		saveBasicSchedule(basicScheduleSaveCommand, lstWorkScheduleState);
 		
-		this.basicScheduleRepository.removeScheState(employeeId, baseDate, lstWorkScheduleState);
-		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
+//		this.basicScheduleRepository.removeScheState(employeeId, baseDate, lstWorkScheduleState);
+//		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
 		
 		
 		// 修正ログ情報を作成する
