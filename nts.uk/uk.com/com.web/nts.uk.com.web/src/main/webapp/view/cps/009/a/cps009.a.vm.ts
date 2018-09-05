@@ -52,18 +52,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
             
             self.initSettingId.subscribe(function(value: string) {
-              
-               self.currentCategory().itemList.removeAll();
+                error.clearAll();
                 self.currentCategory().setData({
-                    settingCode: "",
-                    settingName: "",
+                    settingCode: null,
+                    settingName: " ",
                     ctgList: []
                 });
-                nts.uk.ui.errors.clearAll();
-                if (nts.uk.text.isNullOrEmpty(value))  return;
+                self.currentCategory().itemList.removeAll();
+                if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetail(value); 
         
-
             });
 
             self.currentItemId.subscribe(function(value: string) {
@@ -174,9 +172,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         _.defer(() => {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
-
-                            ctrl.focus().val('').val(str);
-                             $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 } else {
@@ -187,8 +186,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
 
-                            ctrl.focus().val('').val(str);
-                           $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 }
