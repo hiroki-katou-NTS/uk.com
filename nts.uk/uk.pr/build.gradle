@@ -770,6 +770,49 @@ project (':pr.web:nts.uk.pr.web') {
 		
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
+
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: version
+		
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: version
+		
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
+		
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: version
+		
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: version
+		
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
