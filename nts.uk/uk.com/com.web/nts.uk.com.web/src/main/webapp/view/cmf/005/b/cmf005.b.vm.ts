@@ -289,6 +289,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             setShared("CMF005CParams_ListCategory", self.listDataCategory());
             setShared("CMF005CParams_SystemType", self.systemTypeCbb);
+            nts.uk.ui.errors.clearAll();
             modal("/view/cmf/005/c/index.xhtml").onClosed(() => {
 
                 let categoryC = getShared('CMF005COutput_ListCategoryChose');
@@ -302,17 +303,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 if (categoryC && (categoryC.length > 0)) {
                     self.listDataCategory.removeAll();
                     self.requiredDate(false);
-                    self.requiredMonth = ko.observable(false);
-                    self.requiredYear = ko.observable(false);
+                    self.requiredMonth(false);
+                    self.requiredYear(false);
                     for (let i = 0; i < categoryC.length; i++) {
                         self.listDataCategory.push(categoryC[i]);
 
                         if (!self.requiredMonth() && categoryC[i].timeStore == model.TIME_STORE.MONTHLY) {
-                            self.requiredMonth = ko.observable(true);
+                            self.requiredMonth(true);
                         }
 
                         if (!self.requiredYear() && categoryC[i].timeStore == model.TIME_STORE.ANNUAL) {
-                            self.requiredYear = ko.observable(true);
+                            self.requiredYear(true);
                         }
 
                         if (!self.requiredDate() && categoryC[i].timeStore == model.TIME_STORE.DAILY) {
