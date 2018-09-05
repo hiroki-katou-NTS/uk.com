@@ -110,19 +110,20 @@ public class DailyModifyResCommandFacade {
 	}
 
 	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
-		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
+//		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
 				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
-		dtoOlds = finder.find(query.stream()
+		Map<String, Map<GeneralDate, List<ItemValue>>> itemValueMap = query.stream()
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
-						c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList())))));
-		dtoNews = dtoOlds.stream().map(o -> {
+						c -> c.stream().collect(Collectors.toMap(q -> q.getBaseDate(), q -> q.getItemValues())))));
+		List<DailyRecordDto> dtoOlds = finder.find(query.stream()
+					.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+							c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList()))))),
+				dtoNews = dtoOlds.stream().map(o -> {
 
-			List<ItemValue> itemValues = query.stream()
-					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
-					.findFirst().get().getItemValues();
-			DailyRecordDto dtoClone = o.clone();
-			AttendanceItemUtil.fromItemValues(dtoClone, itemValues);
+			List<ItemValue> itemValues = itemValueMap.get(o.employeeId()).get(o.workingDate()); 
+			
+			DailyRecordDto dtoClone = AttendanceItemUtil.fromItemValues(o.clone(), itemValues);
 			dtoClone.getOptionalItem().ifPresent(optional -> {
 				optional.correctItemsWith(optionalMaster);
 			});

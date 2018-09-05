@@ -56,6 +56,13 @@ public class GoOutTimeDto implements ItemConst {
 										domain.getReasonForGoOut().value);
 	}
 	
+	@Override
+	public GoOutTimeDto clone() {
+		return new GoOutTimeDto(comeBack == null ? null : comeBack.clone(),
+								outing == null ? null : outing.clone(),
+								outingTime, outingTimeCalc, no, outingReason);
+	}
+	
 	public OutingTimeSheet toDomain(){
 		return new OutingTimeSheet(new OutingFrameNo(no), createTimeActual(outing), 
 				outingTimeCalc == null ? new AttendanceTime(0) : new AttendanceTime(outingTimeCalc),

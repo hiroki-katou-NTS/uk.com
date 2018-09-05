@@ -39,4 +39,9 @@ public class TimeStampDto implements ItemConst {
 				!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
 				c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 	}
+	
+	@Override
+	public TimeStampDto clone() {
+		return new TimeStampDto(timesOfDay, afterRoundingTimesOfDay, placeCode, stampSourceInfo);
+	}
 }

@@ -28,6 +28,11 @@ public class HolidayUseTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
+	
+	@Override
+	public HolidayUseTimeDto clone() {
+		return new HolidayUseTimeDto(timeDigestionVacationUseTime, useTime);
+	}
 
 	public SpecialHolidayOfDaily toSpecialHoliday() {
 		return new SpecialHolidayOfDaily(toUseAttendanceTime(),

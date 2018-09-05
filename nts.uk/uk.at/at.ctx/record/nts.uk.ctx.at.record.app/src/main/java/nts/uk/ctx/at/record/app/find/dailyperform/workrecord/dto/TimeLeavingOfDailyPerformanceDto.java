@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -45,6 +46,19 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getLeaveStamp().orElse(null)))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public TimeLeavingOfDailyPerformanceDto clone() {
+		TimeLeavingOfDailyPerformanceDto dto = new TimeLeavingOfDailyPerformanceDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setWorkTimes(workTimes);
+		dto.setWorkAndLeave(workAndLeave == null ? null : workAndLeave.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;

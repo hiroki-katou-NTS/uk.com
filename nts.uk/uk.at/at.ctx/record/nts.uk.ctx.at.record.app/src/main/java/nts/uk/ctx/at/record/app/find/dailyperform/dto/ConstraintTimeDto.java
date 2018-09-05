@@ -23,4 +23,9 @@ public class ConstraintTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE_NIGHT)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer lateNightConstraintTime;
+	
+	@Override
+	public ConstraintTimeDto clone() {
+		return new ConstraintTimeDto(totalConstraintTime, lateNightConstraintTime);
+	}
 }
