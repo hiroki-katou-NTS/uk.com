@@ -21,7 +21,9 @@ module nts.uk.at.view.kmf004.i.viewmodel {
             {
                 headerText: getText('KMF004_73'), key: 'setting', width: 60,
                 //I2_6
-                template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
+                template: '{{if ${setting} == "true"}}<div style=\' height:100%;\'> <i  data-bind=\'ntsIcon: { no: 78 }\'></i> </div>{{else }}  {{/if}}',
+
+                columnCssClass:'nowrap'
             }
         ]);;
         currentFrameCd: KnockoutObservable<number> = ko.observable(null);
