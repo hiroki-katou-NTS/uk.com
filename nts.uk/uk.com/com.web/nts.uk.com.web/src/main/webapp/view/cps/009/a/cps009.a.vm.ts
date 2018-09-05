@@ -172,9 +172,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         _.defer(() => {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
-
-                            ctrl.focus().val('').val(str);
-                             $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 } else {
@@ -185,8 +186,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
 
-                            ctrl.focus().val('').val(str);
-                           $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 }
