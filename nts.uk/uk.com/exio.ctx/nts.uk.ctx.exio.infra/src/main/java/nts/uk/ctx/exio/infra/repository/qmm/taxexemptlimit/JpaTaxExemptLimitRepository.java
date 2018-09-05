@@ -16,7 +16,8 @@ public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExe
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTaxExemptLimit f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.taxExemptLimitPk.cid =:cid ";
+			+ " WHERE  f.taxExemptLimitPk.cid =:cid AND  f.taxExemptLimitPk.taxFreeamountCode =:taxFreeamountCode ";
+	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.taxExemptLimitPk.cid =:cid";
 
 	@Override
 	public List<TaxExemptLimit> getAllTaxExemptLimit() {
@@ -25,9 +26,15 @@ public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExe
 	}
 
 	@Override
-	public Optional<TaxExemptLimit> getTaxExemptLimitById(String cid) {
+	public List<TaxExemptLimit> getTaxExemptLimitByCompanyId(String cid) {
+		return this.queryProxy().query(SELECT_BY_CID, QpbmtTaxExemptLimit.class)
+				.setParameter("cid", cid).getList(i -> i.toDomain());
+	}
+
+	@Override
+	public Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeamountCode) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtTaxExemptLimit.class).setParameter("cid", cid)
-				.getSingle(c -> c.toDomain());
+				.setParameter("taxFreeamountCode", taxFreeamountCode).getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -41,7 +48,11 @@ public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExe
 	}
 
 	@Override
-	public void remove(String cid) {
-		this.commandProxy().remove(QpbmtTaxExemptLimit.class, new QpbmtTaxExemptLimitPk(cid));
+	public void remove(String cid, String taxFreeamountCode) {
+		this.commandProxy().remove(QpbmtTaxExemptLimit.class, new QpbmtTaxExemptLimitPk(cid, taxFreeamountCode));
 	}
+
+
+
+	
 }

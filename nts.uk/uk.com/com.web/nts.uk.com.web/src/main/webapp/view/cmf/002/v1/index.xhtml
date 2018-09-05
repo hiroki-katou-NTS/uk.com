@@ -46,14 +46,14 @@
 								height: 300,
 								width: 280,
 								name:'#{i18n.getText('CMF002_353')}',
-								dataSource: listCategoryItem,
+								dataSource: listTaxExemptLimit,
 								primaryKey: 'dispCategoryCode',
 									columns: [
 					                { headerText: '#{i18n.getText('CMF002_271')}', key: 'dispCategoryName', width: 180, formatter: _.escape }
 					            ],
 					            rows: 10,
 								multiple: false,
-								value: selectedCategoryCode
+								value: selectedTaxExemptLimit
 							}">
 						</table>
 					</div>

@@ -27,4 +27,11 @@ public class QpbmtTaxExemptLimitPk implements Serializable {
 	@Column(name = "CID")
 	public String cid;
 
+	/**
+	 * 非課税限度額コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "TAX_FREEAMOUNT_CODE")
+	public String taxFreeamountCode;
+
 }
