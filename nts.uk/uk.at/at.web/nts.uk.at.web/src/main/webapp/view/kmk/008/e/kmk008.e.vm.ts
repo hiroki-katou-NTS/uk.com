@@ -115,7 +115,7 @@ module nts.uk.at.view.kmk008.e {
                         }
                     
                 })
-                 elf.isRemove(self.isShowAlreadySet());
+                 self.isRemove(self.isShowAlreadySet());
             }
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
