@@ -2516,7 +2516,7 @@ module nts.uk.at.view.kmf022 {
                 };
                 //g
                 data.otRestApp7 = {
-                    appType: 7,
+                    appType: 6,
                     bonusTimeDisplayAtr: self.selectedIdG10(),
                     divergenceReasonFormAtr: self.selectedIdG12(),
                     divergenceReasonInputAtr: self.selectedIdG14(),

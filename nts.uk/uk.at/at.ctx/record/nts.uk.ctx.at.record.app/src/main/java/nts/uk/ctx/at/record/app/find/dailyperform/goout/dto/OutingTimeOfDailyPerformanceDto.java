@@ -46,8 +46,8 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut().orElse(null)),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack().orElse(null)),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
 							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
 							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
 							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));

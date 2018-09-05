@@ -7,7 +7,9 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -77,5 +79,14 @@ public interface ApprovalStatusAdapter {
 	 */
 	public void cleanApprovalRootState(String rootStateID, Integer rootType);
 	
-	
+	/**
+	 * [No.113](中間データ版)承認対象者と期間から承認状況を取得する を呼び出す。
+	 * @param employeeID
+	 * @param startDate
+	 * @param endDate
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootStateStatusImport> getStatusByEmpAndDate(String employeeID, DatePeriod datePeriod, 
+			Integer rootType);
 }

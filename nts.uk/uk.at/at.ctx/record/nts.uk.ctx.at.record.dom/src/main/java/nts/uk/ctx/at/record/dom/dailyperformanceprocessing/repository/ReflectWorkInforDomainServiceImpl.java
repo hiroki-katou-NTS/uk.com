@@ -1213,9 +1213,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Override
 	public SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
 			String workPlaceID, PeriodInMasterList periodInMasterList) {
-		List<MasterList> masterLists = periodInMasterList.getMasterLists();
-		Optional<MasterList> newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day))
-				.findFirst();
+		List<MasterList> masterLists = new ArrayList<>();
+		Optional<MasterList> newMasterLists = Optional.empty();
+		if (periodInMasterList != null) {
+			masterLists = periodInMasterList.getMasterLists();
+			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day))
+					.findFirst();
+		}
 
 		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
 		if (newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()) {

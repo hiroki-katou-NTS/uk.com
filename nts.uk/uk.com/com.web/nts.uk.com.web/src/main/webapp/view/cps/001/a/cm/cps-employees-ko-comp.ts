@@ -147,7 +147,7 @@ module nts.custom.component {
             
             .header-info .person-info .row>div.info>* {
                 display: inline-block;
-                max-width: 215px;
+                max-width: 200px;
                 text-overflow: ellipsis;
                 height: 30px;
                 overflow: hidden;

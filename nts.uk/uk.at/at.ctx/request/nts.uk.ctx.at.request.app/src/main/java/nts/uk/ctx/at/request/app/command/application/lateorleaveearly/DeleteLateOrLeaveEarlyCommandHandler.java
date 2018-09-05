@@ -24,7 +24,11 @@ public class DeleteLateOrLeaveEarlyCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<DeleteLateOrLeaveEarlyCommand> context) {
 		// lateOrLeaveEarlyService.deleteLateOrLeaveEarly(context.getCommand().getCompanyID(), context.getCommand().getAppID());
-		return afterProcessDeleteService.screenAfterDelete(context.getCommand().getCompanyID(), context.getCommand().getAppID(), context.getCommand().getVersion());
+		return afterProcessDeleteService.screenAfterDelete(
+				context.getCommand().getCompanyID(), 
+				context.getCommand().getAppID(), 
+				context.getCommand().getVersion())
+				.getProcessResult();
 	}
 
 }
