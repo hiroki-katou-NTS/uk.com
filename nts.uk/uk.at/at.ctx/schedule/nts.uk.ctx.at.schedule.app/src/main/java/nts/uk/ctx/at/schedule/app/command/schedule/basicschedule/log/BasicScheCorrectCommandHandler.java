@@ -47,7 +47,7 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		
 		// Get all attendanceItemId from domain BasicSchedule
 		List<Integer> attItemIds = new ArrayList<>();
-		for(int i =1; i<=66; i++){
+		for(int i =1; i<=103; i++){
 			attItemIds.add(Integer.valueOf(i));
 		}
 		
