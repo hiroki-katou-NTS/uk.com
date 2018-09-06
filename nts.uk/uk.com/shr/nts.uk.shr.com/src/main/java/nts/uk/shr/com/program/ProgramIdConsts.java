@@ -448,6 +448,12 @@ public class ProgramIdConsts {
 	public static final String KWR001C = "KWR001C";
 	
 	public static final String KWR001D = "KWR001D";
+	
+	public static final String KWR006A = "KWR006A";
+	
+	public static final String KWR006C = "KWR006C";
+	
+	public static final String KWR006D = "KWR006D";
 
 	public static final String CPS006A = "CPS006A";
 
