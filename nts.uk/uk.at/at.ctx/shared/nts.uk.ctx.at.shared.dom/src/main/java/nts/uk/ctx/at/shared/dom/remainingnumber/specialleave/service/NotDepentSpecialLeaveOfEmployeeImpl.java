@@ -63,11 +63,11 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			//パラメータ「入社年月日」をパラメータ「付与基準日」にセットする
 			baseDate = param.getInputDate();
 		} else if (grantDateInfor == GrantDate.GRANT_BASE_HOLIDAY) {
-			//パラメータ「特別休暇付与基準日」をパラメータ「付与基準日」にセットする
-			baseDate = param.getSpeGrantDate();
-		} else {
 			//パラメータ「年休付与基準日」をパラメータ「付与基準日」にセットする
 			baseDate = param.getAnnGrantDate();
+		} else {
+			//パラメータ「特別休暇付与基準日」をパラメータ「付与基準日」にセットする
+			baseDate = param.getSpeGrantDate();
 		}
 		//取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
 		TypeTime typeTime = speHoliday.getGrantRegular().getTypeTime();
