@@ -215,6 +215,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if ($(".fixedcheckID").ntsError("hasError")) {
                     return;
                 }
+                
+                $("#A3_2").trigger("validate");
+                $("#A3_4").trigger("validate");
+                if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
+                    return;
+                }
             }else if(data.category() == model.CATEGORY.SCHEDULE_4_WEEK){
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");

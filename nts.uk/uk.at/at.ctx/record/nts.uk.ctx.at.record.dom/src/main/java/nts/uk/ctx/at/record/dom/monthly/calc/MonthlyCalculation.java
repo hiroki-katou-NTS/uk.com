@@ -421,6 +421,41 @@ public class MonthlyCalculation {
 	}
 	
 	/**
+	 * 集計関連設定のコピー
+	 * @param source コピー元：月別実績の月の計算
+	 */
+	public void copySettings(MonthlyCalculation source){
+		this.companyId = source.companyId;
+		this.employeeId = source.employeeId;
+		this.yearMonth = source.yearMonth;
+		this.closureId = source.closureId;
+		this.closureDate = source.closureDate;
+		this.procPeriod = source.procPeriod;
+		this.workingConditionItem = source.workingConditionItem;
+		this.workingSystem = source.workingSystem;
+		this.employee = source.employee;
+		this.workplaceId = source.workplaceId;
+		this.employmentCd = source.employmentCd;
+		this.isRetireMonth = source.isRetireMonth;
+		this.closureOpt = source.closureOpt;
+		this.settingsByReg = source.settingsByReg;
+		this.settingsByDefo = source.settingsByDefo;
+		this.settingsByFlex = source.settingsByFlex;
+		this.companySets = source.companySets;
+		this.employeeSets = source.employeeSets;
+		
+		this.monthlyCalculatingDailys = source.monthlyCalculatingDailys;
+		this.workInfoOfRecordMap = source.workInfoOfRecordMap;
+		this.originalData = source.originalData;
+		this.attendanceTimeWeeks = source.attendanceTimeWeeks;
+
+		this.startWeekNo = source.startWeekNo;
+		this.year = source.year;
+		this.agreementTimeOfManagePeriod = source.agreementTimeOfManagePeriod;
+		this.errorInfos = source.errorInfos;
+	}
+	
+	/**
 	 * 履歴ごとに月別実績を集計する
 	 * @param aggrPeriod 集計期間
 	 * @param aggrAtr 集計区分

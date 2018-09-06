@@ -27,6 +27,7 @@ import nts.uk.ctx.at.function.dom.adapter.SortingConditionOrderImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.PositionImport;
 import nts.uk.ctx.at.function.dom.adapter.jobtitle.JobTitleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.jobtitle.JobTitleImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
@@ -158,10 +159,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			// 36協定対象外者のチェック
 			this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 			// アルゴリズム「年間勤務表の作成」を実行する
-			PeriodAtrOfAgreement periodAtr;
+			PeriodAtrOfAgreement periodAtr = null;
 			if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) {
 				periodAtr = PeriodAtrOfAgreement.TWO_MONTHS;
-			} else {
+			} else if (OutputAgreementTime.THREE_MONTH.equals(setOutItemsWoSc.getDisplayFormat())){
 				periodAtr = PeriodAtrOfAgreement.THREE_MONTHS;
 			}
 			this.createAnnualWorkSchedule36Agreement(cid, exportData, yearMonthPeriod, employeeIds, listItemOut,
@@ -278,11 +279,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, endDate, false, false, true,
 							false, false, false));
 			for (EmployeeInformationImport emp : empInfoList) {
-				// 職位IDから職位を取得する
-				Optional<JobTitleImport> jobTitleOtp = jobTitleAdapter.findByJobId(AppContexts.user().companyId(),
-						emp.getPosition().getPositionId(), endDate);
 				// 取得した社員の「職位情報.管理職とする」をチェック
-				if (!this.checkIsManager(jobTitleOtp)) {
+				if (!this.checkIsManager(emp, endDate)) {
 					// パラメータ.対象社員ID（List）へ追加する
 					empId.add(emp.getEmployeeId());
 				}
@@ -298,7 +296,14 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		}
 	}
 
-	private boolean checkIsManager(Optional<JobTitleImport> jobTitleOtp) {
+	private boolean checkIsManager(EmployeeInformationImport emp, GeneralDate endDate) {
+		PositionImport postion = emp.getPosition();
+		if (postion == null) {
+			return false;
+		}
+		// 職位IDから職位を取得する
+		Optional<JobTitleImport> jobTitleOtp = jobTitleAdapter.findByJobId(AppContexts.user().companyId(),
+				emp.getPosition().getPositionId(), endDate);
 		if (!jobTitleOtp.isPresent()) {
 			return false;
 		}

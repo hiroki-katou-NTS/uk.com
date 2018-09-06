@@ -739,24 +739,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY:{
                     let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
-                    let attdAtr = 0;
-                    if(self.workRecordExtractingCondition().checkItem() == 0){
-                        //時間
-                        attdAtr = 5;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 1){
-                        //回数
-                        attdAtr = 2;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 2){
-                        //金額
-                        attdAtr = 3;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 3){
-                        //時刻
-                        attdAtr = 6;
-                    }
-                    //fixbug select item 111
-                    self.getListItemByAtr(attdAtr).done((lstItem) => {
-                        let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                        if (self.workRecordExtractingCondition().checkItem() === 3) {
+                    if (self.workRecordExtractingCondition().checkItem() == 3) {
+                        self.getListItemByAtr(6).done((lstItem) => {
+                            let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                             //Open dialog KDL021
                             nts.uk.ui.windows.setShared('Multiple', false);
                             nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
@@ -772,19 +757,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                     self.displayAttendanceItemSelections_BA2_3("");
                                 }
                             });
-                        } else {
+
+                        });
+                    } else {
+                        self.getListItemByAtrDaily(self.workRecordExtractingCondition().checkItem(), 1).done((lstItem) => {
+                            let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                             //Open dialog KDW007C
                             let param = {
+                                attr: 1,
                                 lstAllItems: lstItemCode,
                                 lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
                                 lstSubItems: currentAtdItemCondition.countableSubAtdItems()
                             };
-
-                            if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
-                                param.lstAddItems = [];
-                                param.lstSubItems = [];
-                            }
-
                             nts.uk.ui.windows.setShared("KDW007Params", param);
                             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                                 $(".nts-input").ntsError("clear");
@@ -795,10 +779,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                     self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
                                 }
                             });
-                        }
-                    });
+                        });
+
+                    }
                     break;
-        }
+                }
                 case sharemodel.CATEGORY.MONTHLY:{
 
                     let currentAtdItemConMon = self.extraResultMonthly().currentConditions()[0].group1().lstErAlAtdItemCon()[0];
@@ -872,6 +857,80 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             return service.getAttendanceItemByAtr(conditionAtr);
         }
+        
+        //GET ALL MONTHLY
+        getListItemByAtrDaily( typeCheck: number,mode: number) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == 1) { //combobox select
+                //With type 回数 - Times , Number  = 2
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
+                    });
+                });
+            } else if (typeCheck == 0) {
+                //With type 時間 - Time
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
+                    });
+                });
+            } else if (typeCheck == 2) {
+                //With type 金額 - AmountMoney
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((data) => {
+                    service.getOptItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            data.push(lstOptItem[i]);
+                        }
+                        let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                        service.getNameMonthly(listAttdID).done(function(dataNew) {
+                            for(let i =0;i<data.length;i++){
+                                for(let j = 0;j<dataNew.length; j++){
+                                    if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                        data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                        break;
+                                    }  
+                                }    
+                            }
+                            dfd.resolve(data);
+                        });
+                    });
+                });
+            }else{
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
+        
 
         getListItemByAtrMultipleMonth( mulMonCheckItem: number,mode: number) {
             let self = this;
