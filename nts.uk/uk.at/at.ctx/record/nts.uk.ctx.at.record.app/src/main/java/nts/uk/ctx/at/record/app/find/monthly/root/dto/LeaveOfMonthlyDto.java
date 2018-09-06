@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
@@ -45,8 +45,8 @@ public class LeaveOfMonthlyDto implements ItemConst {
 		return LeaveOfMonthly.of(
 				ConvertHelper.mapTo(fixLeaveDays,
 						c -> AggregateLeaveDays.of(ConvertHelper.getEnum(c.getAttr(), CloseAtr.class),
-								new AttendanceDaysMonth(c.getDays()))),
+								new AttendanceDaysMonthDom(c.getDays()))),
 				ConvertHelper.mapTo(anyLeaveDays, c -> AnyLeave.of(c.getNo(),
-						new AttendanceDaysMonth(c.getDays()))));
+						new AttendanceDaysMonthDom(c.getDays()))));
 	}
 }

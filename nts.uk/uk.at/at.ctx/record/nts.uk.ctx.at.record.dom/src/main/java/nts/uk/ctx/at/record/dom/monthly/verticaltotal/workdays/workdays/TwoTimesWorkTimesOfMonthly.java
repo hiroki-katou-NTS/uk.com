@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 public class TwoTimesWorkTimesOfMonthly {
 
 	/** 回数 */
-	private AttendanceTimesMonth times;
+	private AttendanceTimesMonthDom times;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public TwoTimesWorkTimesOfMonthly(){
 		
-		this.times = new AttendanceTimesMonth(0);
+		this.times = new AttendanceTimesMonthDom(0);
 	}
 	
 	/**
@@ -28,7 +28,7 @@ public class TwoTimesWorkTimesOfMonthly {
 	 * @param times 回数
 	 * @return 月別実績の二回勤務回数
 	 */
-	public static TwoTimesWorkTimesOfMonthly of(AttendanceTimesMonth times){
+	public static TwoTimesWorkTimesOfMonthly of(AttendanceTimesMonthDom times){
 		
 		val domain = new TwoTimesWorkTimesOfMonthly();
 		domain.times = times;

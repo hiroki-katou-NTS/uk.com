@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 
 /**
  * 月別実績の勤務回数
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 public class WorkTimesOfMonthly {
 
 	/** 回数 */
-	private AttendanceTimesMonth times;
+	private AttendanceTimesMonthDom times;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public WorkTimesOfMonthly(){
 		
-		this.times = new AttendanceTimesMonth(0);
+		this.times = new AttendanceTimesMonthDom(0);
 	}
 	
 	/**
@@ -28,7 +28,7 @@ public class WorkTimesOfMonthly {
 	 * @param times 回数
 	 * @return 月別実績の勤務回数
 	 */
-	public static WorkTimesOfMonthly of(AttendanceTimesMonth times){
+	public static WorkTimesOfMonthly of(AttendanceTimesMonthDom times){
 		
 		val domain = new WorkTimesOfMonthly();
 		domain.times = times;
