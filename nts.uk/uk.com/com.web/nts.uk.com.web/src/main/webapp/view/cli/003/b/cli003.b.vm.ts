@@ -27,11 +27,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
         //B
         itemList: KnockoutObservableArray<ItemModel>;
+        dataTypeList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         logTypeSelectedCode: KnockoutObservable<string>;
+        dataTypeSelectedCode: KnockoutObservable<number>;
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
+        checkFormatDate: KnockoutObservable<string>;
 
         //C
         roundingRules: KnockoutObservableArray<any>;
@@ -96,6 +99,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 { content: '.step-4' },
                 { content: '.step-5' }
             ];
+            // B
+          
             //C   
             self.initComponentC();
             self.initComponnentKCP005();
@@ -120,14 +125,29 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 //      new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
 
             ]);
+              self.dataTypeList = ko.observableArray([
+                new ItemModel(0, getText('Enum_DataType_Schedule')),
+                new ItemModel(1, getText('Enum_DataType_DailyResults')),
+                new ItemModel(2, getText('Enum_DataType_MonthlyResults'))
+//                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
+//                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
+//                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
+//                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
+//                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
+//                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
+//                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
+//                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
+            ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.logTypeSelectedCode = ko.observable(RECORD_TYPE.LOGIN);
+            self.dataTypeSelectedCode = ko.observable(0);         
             self.isEnable = ko.observable(true);
             // end screen B
             self.activeStep = ko.observable(0);
             self.displayStep2 = ko.observable(false);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+            self.checkFormatDate=ko.observable('1'); 
 
         }
 
@@ -162,11 +182,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 self.dateValue().endDate = value;
                 self.dateValue.valueHasMutated();
             });
+ 
             self.dateValue = ko.observable({
-                startDate: moment.utc().format("YYYY/MM/DD"),
-                endDate: moment.utc().format("YYYY/MM/DD")
-
-            });
+            startDate: moment.utc().format("YYYY/MM/DD"),
+            endDate: moment.utc().format("YYYY/MM/DD")
+                       });
+        
+           
 
             self.roundingRules = ko.observableArray([
                 { code: EMPLOYEE_SPECIFIC.SPECIFY, name: getText('CLI003_17') },
@@ -1042,8 +1064,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
         //B
         nextScreenCD() {
             let self = this;
+          //  self.initComponentC();
+          //  self.initComponentD();
             //present date time C   
             let checkLogType = parseInt(self.logTypeSelectedCode());
+            let targetDataType =self.dataTypeSelectedCode(); 
+            self.checkFormatDate('1'); 
+            if(checkLogType==RECORD_TYPE.DATA_CORRECT
+                && (targetDataType==='2' || targetDataType==='3'
+                || targetDataType==='6' || targetDataType==='7' ) ){
+                self.dateValue = ko.observable({
+                startDate: moment.utc().format("YYYY/MM"),
+                endDate: moment.utc().format("YYYY/MM")    
+                             });
+              self.checkFormatDate('2');  
+               console.log('giatricheckdate1:'+  self.checkFormatDate()); 
+                
+                }
+            
+            if(checkLogType==RECORD_TYPE.DATA_CORRECT && targetDataType===""){
+                checkLogType=null;
+                }
             switch (checkLogType) {
                 case RECORD_TYPE.LOGIN:
                 case RECORD_TYPE.START_UP:
@@ -1127,8 +1168,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
-                startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-                endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+                startDateTaget: moment.utc(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
+                endDateTaget: moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
                 startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
                 endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
@@ -1871,8 +1912,17 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
 
-
     class ItemModel {
+        code: number;
+        name: string;
+        description: string;
+        constructor(code: number, name: string, description: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+        }
+    }
+    class TargetDataTypeModel {
         code: number;
         name: string;
         description: string;
