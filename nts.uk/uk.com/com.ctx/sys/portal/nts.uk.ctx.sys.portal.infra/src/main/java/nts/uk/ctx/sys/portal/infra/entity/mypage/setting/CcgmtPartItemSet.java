@@ -4,16 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.entity.mypage.setting;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class CcgmtPartItemSetting.
@@ -21,7 +19,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Setter
 @Table(name = "CCGMT_PART_ITEM_SET")
 public class CcgmtPartItemSet extends UkJpaEntity  {
 

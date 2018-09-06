@@ -1,18 +1,14 @@
 package nts.uk.ctx.sys.portal.infra.entity.standardmenu;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-@Setter
-@Getter
 public class CcgstStandardMenuPK {
 	@Column(name = "CID")
 	public String companyId;

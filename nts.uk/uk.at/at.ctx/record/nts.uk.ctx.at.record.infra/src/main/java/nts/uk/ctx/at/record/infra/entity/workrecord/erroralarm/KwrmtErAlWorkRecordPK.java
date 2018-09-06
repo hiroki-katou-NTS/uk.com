@@ -3,15 +3,13 @@
  */
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.Serializable;
 
 /**
  * @author hungnm
@@ -20,7 +18,6 @@ import lombok.Setter;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 public class KwrmtErAlWorkRecordPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
