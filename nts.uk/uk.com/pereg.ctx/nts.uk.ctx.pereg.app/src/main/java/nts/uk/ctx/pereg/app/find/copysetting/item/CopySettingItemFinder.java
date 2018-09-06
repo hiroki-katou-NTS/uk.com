@@ -206,7 +206,12 @@ public class CopySettingItemFinder {
 					|| dataType == DataTypeValue.RELATE_CATEGORY) {
 				continue;
 			}
-			Object value  = dataMap.get(itemDef.getPerInfoItemDefId()) == null ? dataMap.get(itemDef.getItemCode().v())  : null;
+			Object value = null;
+			if(itemDef.getItemCode().toString().charAt(1) == 'S') {
+				value = dataMap.get(itemDef.getItemCode().v());
+			}else if(itemDef.getItemCode().toString().charAt(1) == '0') {
+				value = dataMap.get(itemDef.getPerInfoItemDefId());
+			}
 			
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryCd,
 					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),
@@ -254,7 +259,12 @@ public class CopySettingItemFinder {
 				continue;
 			}
 			
-			Object value  = dataMap.get(itemDef.getPerInfoItemDefId()) == null ? dataMap.get(itemDef.getItemCode().v())  : null;
+			Object value = null;
+			if(itemDef.getItemCode().toString().charAt(1) == 'S') {
+				value = dataMap.get(itemDef.getItemCode().v());
+			}else if(itemDef.getItemCode().toString().charAt(1) == '0'){
+				value = dataMap.get(itemDef.getPerInfoItemDefId());
+			}
 
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryIdvsCodeMap.get(itemDef.getPerInfoCategoryId()),
 					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),

@@ -1,6 +1,10 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,15 +14,17 @@ import nts.arc.layer.dom.AggregateRoot;
 // マスタコピーデータ
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MasterCopyData extends AggregateRoot {
 
 	/** The master copy id. */
 	// マスタコピーID
-	private String masterCopyId;
+	private MasterCopyCategoryNo categoryNo;
 
-	/** The master copy target. */
-	// マスタコピー対象
-	private MasterCopyTarget masterCopyTarget;
+	/** The target table. */
+	// 対象テーブル
+	private List<TargetTableInfo> targetTables;
 
 	/**
 	 * Instantiates a new master copy data.
@@ -27,8 +33,8 @@ public class MasterCopyData extends AggregateRoot {
 	 *            the memento
 	 */
 	public MasterCopyData(MasterCopyDataGetMemento memento) {
-		this.masterCopyId = memento.getMasterCopyId();
-		this.masterCopyTarget = memento.getMasterCopyTarget();
+		this.categoryNo = memento.getCategoryNo();
+		this.targetTables = memento.getTargetTable();
 	}
 
 	/**
@@ -38,8 +44,8 @@ public class MasterCopyData extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(MasterCopyDataSetMemento memento) {
-		memento.setMasterCopyId(this.masterCopyId);
-		memento.setMasterCopyTarget(this.masterCopyTarget);
+		memento.setCategoryNo(this.categoryNo);
+		memento.setTargetTable(this.targetTables);
 	}
 
 }
