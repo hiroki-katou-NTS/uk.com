@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -45,6 +47,12 @@ public class DisplayRemainingHolidayNumber {
 	
 	@Inject
 	private AnnualHolidayManagementAdapter annualHolidayMng;
+	
+	@Inject
+	private BreakDayOffMngInPeriodQuery brDayOffQuery;
+	
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRecQuery;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		AnnualHolidaySetOutput output = absenceProc.getSettingForAnnualHoliday(companyId);
@@ -76,8 +84,8 @@ public class DisplayRemainingHolidayNumber {
 	public SubstVacationDto getSubsitutionVacationSetting(String companyId, String employeeId, GeneralDate date) {
 		LeaveSetOutput output = absenceProc.getSetForLeave(companyId, employeeId, date);
 		if (output.isSubManageFlag()) {
-			// TODO: call requestlist506
-			return new SubstVacationDto(output.isSubManageFlag(), 0.0);
+			double remain = absRecQuery.getAbsRecMngRemain(employeeId, date);
+			return new SubstVacationDto(output.isSubManageFlag(), remain);
 		}
 		return new SubstVacationDto(false, null);
 	}
@@ -85,8 +93,8 @@ public class DisplayRemainingHolidayNumber {
 	public CompensLeaveComDto getCompensatoryLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		SubstitutionHolidayOutput output = absenceProc.getSettingForSubstituteHoliday(companyId, employeeId, date);
 		if (output != null && output.isSubstitutionFlg()) {
-			// TODO: call requestlist505
-			return new CompensLeaveComDto(output.isSubstitutionFlg(), output.isTimeOfPeriodFlg(), 0.0, 0);
+			double remain = brDayOffQuery.getBreakDayOffMngRemain(employeeId, date);
+			return new CompensLeaveComDto(output.isSubstitutionFlg(), output.isTimeOfPeriodFlg(), remain, 0);
 		} else {
 			return new CompensLeaveComDto(false, false, null, null);
 		}
