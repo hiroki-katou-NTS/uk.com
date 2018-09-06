@@ -56,7 +56,6 @@ public class UpdateShortWorkTimeCommandHandler extends CommandHandler<UpdateShor
 			}
 			
 			GeneralDate endDate = (command.getEndDate() != null) ? command.getEndDate() : GeneralDate.ymd(9999, 12, 31);
-			
 			DatePeriod newSpan = new DatePeriod(command.getStartDate(), endDate);
 			existHist.get().changeSpan(itemtoBeUpdated.get(), newSpan);
 			

@@ -127,10 +127,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			SpecialLeaveBasicInfo leaveBasicInfo) {
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GeneralDate hikakuYmd = grantDate;
 		GrantTime grantTime = speHoliday.getGrantRegular().getGrantTime();
 		int interval = grantTime.getFixGrantDate().getInterval().v();
-		GeneralDate hikakuYmdTmp = grantDate.addDays(interval);
 		GeneralDate nextTime = grantDate;
 		double grantDays = 0;
 		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
@@ -145,8 +143,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
 		}
 		//パラメータ「期間」に一致する付与日数を生成する
-		for(int i = 0; hikakuYmd.daysTo(hikakuYmdTmp) - i >= 0; i++){			
-			GeneralDate loopDate = period.start().addDays(i);
+		for(GeneralDate loopDate = grantDate; loopDate.beforeOrEquals(period.end());) {
 			nextTime = loopDate;
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(loopDate)
@@ -164,9 +161,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
 					lstOutput.add(outPut);
 				}
-			} else if (period.end().before(loopDate)) {
-				break;
 			}
+			loopDate = loopDate.addYears(interval);
 		}
 		return new GrantDaysInforByDates(nextTime, lstOutput);
 	}

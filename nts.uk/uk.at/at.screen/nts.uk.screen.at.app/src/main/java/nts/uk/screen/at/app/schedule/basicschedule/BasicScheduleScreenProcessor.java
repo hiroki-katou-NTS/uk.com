@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -150,6 +151,11 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<WorkEmpCombineScreenDto> getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
 		String companyId = AppContexts.user().companyId();
+		List<String> lstWorkTypeCode = params.getLstWorkTypeCode();
+				List<String> lstWorkTimeCode = params.getLstWorkTimeCode();
+		if(CollectionUtil.isEmpty(lstWorkTypeCode) || CollectionUtil.isEmpty(lstWorkTimeCode) ){
+			return Collections.emptyList();
+		}
 		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.getLstWorkTypeCode(),
 				params.getLstWorkTimeCode());
 	}

@@ -5,6 +5,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
 
     //C screen
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
@@ -437,9 +438,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
 
         //F
+        startScreenF() : JQueryPromise<any> {
+            let self = this;
+            self.initComponentScreenF().done(function() {
+            });
+        }
         initComponentScreenF() {
             var self = this
-
+            let dfd = $.Deferred<any>();
             //F igGrid
             self.columnsIgGrid = ko.observableArray([]);
             self.supColumnsIgGrid = ko.observableArray([]);
@@ -490,6 +496,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
             if (checkProcess) {
                 // get log out put items
+                block.grayout();
                 service.getLogOutputItemsByRecordTypeItemNos(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                     if (dataOutputItems.length > 0) {
                         // Get Log basic infor
@@ -497,36 +504,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                             if (data.length > 0) {
                                 // order by list
-                                 if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                    data = _.orderBy(data, ['employeeCodeLogin'], ['asc']);
-                                 }
-                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
-                                    data = _.orderBy(data, ['employeeCodeTaget'], ['asc']);
-                                 }
+                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
+
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
-                                if (data.length > 1000) {
-                                    self.isDisplayText(true);
-                                }
                                 // process sub header with record type = persion infro and data correct
                                 _.forEach(data, function(logBasicInfoModel) {
-                                    if (countLog <= 1000) {
-                                        let logtemp = "";
-                                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                            logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logtemp);
-                                        }
-                                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                            self.listLogBasicInforModel.push(logBasicInfoModel);
-                                        }
-                                        countLog++;
-                                    } else {
-                                        return false;
+                                    if (countLog == 1) {
+                                        self.isDisplayText(logBasicInfoModel.displayText);
+                                    }
+                                    let logtemp = "";
+                                    if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
+                                    }
+                                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                        logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logtemp);
+                                    }
+                                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                        logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
+                                        self.listLogBasicInforModel.push(logBasicInfoModel);
                                     }
                                 });
                                 // Generate table
@@ -544,8 +542,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     nts.uk.ui.block.clear();
                                 });
                             }
+                             dfd.resolve();
+                        }).always(() => {
+                            block.clear();
+                            errors.clearAll();
                         }).fail(function(error) {
                             alertError(error);
+                            block.clear();
+                            errors.clearAll();
+                            dfd.resolve();
                         });
 
                     } else {
@@ -553,13 +558,19 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             self.previousScreenE();
                             nts.uk.ui.block.clear();
                         });
-
+                        block.clear();
+                        errors.clearAll();
+                        dfd.resolve();
                     }
 
                 }).fail(function(error) {
                     alertError(error);
+                    block.clear();
+                    errors.clearAll();
+                    dfd.resolve();
                 });
             }
+             return dfd.promise();
         }
 
         getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
@@ -701,7 +712,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -788,7 +799,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 autoGenerateColumns: false,
-                primaryKey: "operationId",
+                primaryKey: "parentKey",
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
@@ -857,26 +868,28 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var headerSetting = [];
                 var newSource = [];
                 let recordType = self.logTypeSelectedCode();
-                for (var i = 0; i < parentSource.length; i++) {
-                    if (parentSource[i].operationId === childSource[0].operationId) {
-                        headerSetting = parentSource[i].subColumnsHeaders;
-                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
-                        }
-                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                            newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                if (childSource.length > 0) {
+                    for (var i = 0; i < parentSource.length; i++) {
+                        if (parentSource[i].operationId === childSource[0].operationId) {
+                            headerSetting = parentSource[i].subColumnsHeaders;
+                            if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                            }
+                            if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                            }
                         }
                     }
+                    ui.options.dataSource = newSource;
+                    $(ui.element).data("headersetting", headerSetting);
                 }
-                ui.options.dataSource = newSource;
-                $(ui.element).data("headersetting", headerSetting);
             });
         }
 
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
-            
+            self.columnsIgGrid.push(new IgGridColumnSwitchModel("parentkey", -2, recordType));
             let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
             let lstSubHeaderPersion = [25,26,27,28];
@@ -1094,7 +1107,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         nextScreenF() {
             var self = this;
             // init compnent screen F
-            self.initComponentScreenF();
+            self.startScreenF();
             self.checkDestroyIgGrid();
             self.next();
         }
@@ -1889,6 +1902,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>;
         subColumnsHeaders: KnockoutObservableArray<IgGridColumnModel>;
         lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>;
+        isDisplayText : boolean;
         constructor(param: LogBasicInfoParam) {
             this.userNameLogin = param.loginBasicInfor.userNameLogin;
             this.employeeCodeLogin = param.loginBasicInfor.employeeCodeLogin;
@@ -1982,6 +1996,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
+        parentKey:string;
         childrentKey:string;
         operationId: string;
         targetDate: string;
@@ -2003,6 +2018,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
+        parentKey:string;
         childrentKey:string;
         operationId: string;
         targetDate: string;
@@ -2067,6 +2083,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
+                    this.hidden = true;
+                    break;
+                }
+                case -2: {
+                    this.key = ITEM_PROPERTY.ITEM_PARRENT_KEY;
                     this.hidden = true;
                     break;
                 }

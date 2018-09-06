@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -35,7 +35,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	Optional<AggrResultOfAnnualLeave> algorithm(
 			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
-			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualHolidayMng>> forOverWriteList,
+			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<Boolean> noCheckStartDate);
 
 	/**
@@ -59,7 +59,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	Optional<AggrResultOfAnnualLeave> algorithm(
 			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
-			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualHolidayMng>> forOverWriteList,
+			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,

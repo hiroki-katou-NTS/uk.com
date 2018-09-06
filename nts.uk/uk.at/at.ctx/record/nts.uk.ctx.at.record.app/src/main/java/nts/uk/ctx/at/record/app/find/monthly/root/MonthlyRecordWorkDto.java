@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
+import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
@@ -178,6 +180,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		if (this.attendanceTime == null) return new IntegrationOfMonthly();
+		List<SpecialHolidayRemainData> specialHolidayRemainDatas = new ArrayList<>();
+		val specialHolidayDomain = this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate);
+		if (specialHolidayDomain != null) specialHolidayRemainDatas.add(specialHolidayDomain);
 		return new IntegrationOfMonthly(
 				Optional.ofNullable(this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
@@ -187,6 +192,6 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate)));
+				specialHolidayRemainDatas);
 	}
 }

@@ -48,7 +48,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		WorkTypeOutput workTypeOutput = null;
 		WorkTimeOutput workTimeOutput = null;
 		Integer startTime1 = null, endTime1 = null, startTime2 = null, endTime2 = null;
-		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())||Strings.isBlank(recordWorkInfoImport.getWorkTimeCode())){
+		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode()) && Strings.isBlank(recordWorkInfoImport.getWorkTimeCode())){
 			if(scheduleManagementControlAdapter.isScheduleManagementAtr(applicantID).equals(Boolean.FALSE)){
 				return new AchievementOutput(appDate, new WorkTypeOutput("", ""), new WorkTimeOutput("", ""), null, null, null, null);
 			}
