@@ -561,7 +561,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
+		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(null, param);
 		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for (int i = 0; i < listPersonFeeTime.size(); i++) {

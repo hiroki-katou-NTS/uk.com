@@ -258,7 +258,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
@@ -420,7 +420,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
 		
 		boolean isDeleteBeforeInsert = false;
 		// save command
@@ -596,8 +596,8 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
+	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave) {
+		ScTimeImport scTimeImport = scTimeAdapter.calculation(companySetting, param);
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
 			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
@@ -680,7 +680,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
-		basicScheduleSaveCommand = saveScheduleTime(param, basicScheduleSaveCommand);
+		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand);
 		
 		// Get all schedule item by company id (for optimization)
 		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);

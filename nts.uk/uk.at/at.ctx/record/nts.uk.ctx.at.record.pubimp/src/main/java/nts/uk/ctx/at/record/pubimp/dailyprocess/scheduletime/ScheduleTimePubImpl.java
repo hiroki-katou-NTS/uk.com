@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
@@ -40,13 +41,22 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 	@Inject
 	private ProvisionalCalculationService provisionalCalculationService;
 	
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySetting;
+
+	@Override
+	public Object getCompanySettingForCalclationScheduleTimeForMultiPeople() {
+		return this.commonCompanySetting.getCompanySetting();
+	}
+
+	
 	@Override
 	/**
 	 * RequestList(1人用の処理)
 	 */
-	public ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime) {
+	public ScheduleTimePubExport calculationScheduleTime(Object companySetting, ScheduleTimePubImport impTime) {
 		if(impTime != null) {
-			val calcValue = calclationScheduleTimeForMultiPeople(Arrays.asList(impTime));
+			val calcValue = calclationScheduleTimeForMultiPeople(companySetting, Arrays.asList(impTime));
 			if(!calcValue.isEmpty()) {
 				return calcValue.stream().findFirst().get();
 			}
@@ -54,12 +64,12 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 		return ScheduleTimePubExport.empty();
 	}
 	
-	@Override
 	/**
 	 * RequestList No 91(複数人対応版)
 	 */
-	public List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(List<ScheduleTimePubImport> impList) {
-		return calclationScheduleTimePassCompanyCommonSetting(impList,Optional.empty());
+	@Override
+	public List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(Object companySetting, List<ScheduleTimePubImport> impList) {
+		return calclationScheduleTimePassCompanyCommonSetting(impList, Optional.ofNullable((ManagePerCompanySet)companySetting));
 	}
 	
 	@Override
@@ -209,7 +219,6 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 		}
 		return timeList;
 	}
-
 
 
 }
