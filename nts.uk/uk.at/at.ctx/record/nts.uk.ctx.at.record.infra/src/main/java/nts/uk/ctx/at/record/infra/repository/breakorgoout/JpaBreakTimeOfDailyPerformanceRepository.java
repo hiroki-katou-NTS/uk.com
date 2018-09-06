@@ -257,7 +257,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 					.collect(Collectors.toList());
 			
 			toRemove.stream().forEach(c -> {
-				commandProxy().remove(c);
+				commandProxy().remove(getEntityManager().merge(c));
 			});
 			// commandProxy().removeAll(toRemove);
 			commandProxy().updateAll(toUpdate);
