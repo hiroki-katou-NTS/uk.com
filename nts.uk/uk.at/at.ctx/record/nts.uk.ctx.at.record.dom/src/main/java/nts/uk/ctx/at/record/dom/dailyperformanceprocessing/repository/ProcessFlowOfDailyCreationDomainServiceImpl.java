@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
@@ -58,7 +59,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	@Inject
 	private ExecutionLogRepository executionLogRepository;
-	
+	@Inject
+	private AppReflectManagerFromRecordImport appReflectService;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
@@ -157,6 +159,12 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			finalStatus = this.monthlyAggregationService.manager(asyncContext, companyId, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, monthlyAggregationLog);
 		}
+		//承認反映
+		if(finalStatus == ProcessState.SUCCESS
+				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+		}
+		
 		//***** ↑
 		
 		// ドメインモデル「就業計算と修正実行ログ」を更新する
@@ -172,7 +180,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			} else {
 				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.DONE_WITH_ERROR.value);
 			}
-		}		
+		}	
+		
+		
 	}
 	
 	private void updateExecutionState(TaskDataSetter dataSetter, String empCalAndSumExecLogID){
