@@ -2782,8 +2782,8 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 22, ../sass/components/_gridlist.scss */
-.ui-iggrid tbody td {
-  white-space: pre;
+.ui-iggrid .nts-gridlist tbody td {
+   white-space: pre; 
 }
 
 /* line 1, ../sass/components/_tabpanel.scss */
