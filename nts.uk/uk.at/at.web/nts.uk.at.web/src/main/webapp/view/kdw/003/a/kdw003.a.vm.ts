@@ -968,27 +968,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.clickFromExtract = false;
                         self.showTextStyle = false;
                         dataChange = {};
+                        let errorFlex = false;
                         if (!_.isEmpty(dataAfter.flexShortage)) {
                             if (dataAfter.flexShortage.error && dataAfter.flexShortage.messageError.length != 0) {
                                 $("#next-month").ntsError("clear");
                                 _.each(dataAfter.flexShortage.messageError, value => {
                                     $("#next-month").ntsError("set", value.message, value.messageId);
                                 });
+                                errorFlex = true;
                             } else {
                                 $("#next-month").ntsError("clear");
                             }
                         }
 
-                        if (_.isEmpty(dataAfter.errorMap) || (dataAfter.errorMap[5] != undefined)) {
+                        if (_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined && !errorFlex) {
                             if (checkDailyChange) {
                                 // self.reloadScreen();
                                 self.loadRowScreen(false);
                             } else {
                                 self.loadRowScreen(true);
                                 //nts.uk.ui.block.clear();
-                            }
-                            if (dataAfter.errorMap[5] != undefined) {
-                                self.listErrorMonth = dataAfter.errorMap[5];
                             }
                         } else {
                             nts.uk.ui.block.clear();
@@ -1011,6 +1010,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                             if (dataAfter.errorMap[4] != undefined) {
                                 self.listCheckDeviation = dataAfter.errorMap[4];
+                            }
+                            
+                            if (dataAfter.errorMap[5] != undefined) {
+                                self.listErrorMonth = dataAfter.errorMap[5];
                             }
                             self.showErrorDialog();
                         }
@@ -3213,6 +3216,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any;
             __viewContext.vm.flagCalculation = false;
+            $("#next-month").ntsError("clear");
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
