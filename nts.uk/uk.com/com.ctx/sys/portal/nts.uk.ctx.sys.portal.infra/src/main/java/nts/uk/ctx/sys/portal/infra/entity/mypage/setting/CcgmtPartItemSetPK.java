@@ -4,12 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.entity.mypage.setting;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class CcgmtPartItemSetPK.
@@ -18,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Embeddable
 public class CcgmtPartItemSetPK implements Serializable {
-	
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 

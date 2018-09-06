@@ -3,13 +3,14 @@
  */
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hungnm
@@ -25,9 +26,9 @@ public class KwrmtErAlWorkRecordPK implements Serializable {
 	@NotNull
 	@Column(name = "CID")
 	public String companyId;
-	
+
 	@NotNull
 	@Column(name = "ERROR_ALARM_CD")
 	public String errorAlarmCode;
-	
+
 }
