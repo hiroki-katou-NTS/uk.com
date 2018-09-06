@@ -6,8 +6,8 @@ module nts.uk.at.view.kmk008.c {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
-                nameErrorWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_43"));
-                nameAlarmWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_42"));
+                nameErrorWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_42"));
+                nameAlarmWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_43"));
                 nameLimitWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_44"));
                 nameErrorTwoWeeks: KnockoutObservable < string > = ko.observable(text("KMK008_23") + text("KMK008_42"));
                 nameAlarmTwoWeeks: KnockoutObservable < string > = ko.observable(text("KMK008_23") + text("KMK008_43"));
