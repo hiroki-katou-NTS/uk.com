@@ -1476,9 +1476,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                     //distinct arrCell
-                    arrCell = _.uniqBy(arrCell, (x) => {
-                        return x.rowIndex && x.columnKey;
-                    });    
+                    arrCell = _.uniqWith(arrCell, _.isEqual);    
                 }
                 arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
                 arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
