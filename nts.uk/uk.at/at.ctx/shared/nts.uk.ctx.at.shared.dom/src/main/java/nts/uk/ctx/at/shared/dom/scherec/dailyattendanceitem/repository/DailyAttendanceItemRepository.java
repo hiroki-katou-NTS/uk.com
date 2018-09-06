@@ -40,4 +40,14 @@ public interface DailyAttendanceItemRepository {
 	 * @return the list
 	 */
 	List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs);
+
+	/**
+	 * add by Hoidd
+	 * @param companyId
+	 * @param attendanceItemIds
+	 * @param dailyAttendanceAtr
+	 * @return
+	 */
+	List<DailyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds,
+			List<Integer> dailyAttendanceAtr);
 }
