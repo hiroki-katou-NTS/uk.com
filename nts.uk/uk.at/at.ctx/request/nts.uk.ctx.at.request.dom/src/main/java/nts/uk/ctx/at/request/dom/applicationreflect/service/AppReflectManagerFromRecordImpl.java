@@ -88,7 +88,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					optRequesSetting.get(), aprResult, dataSetter)) {
 				return ProcessStateReflect.INTERRUPTION;
 			}
-			dataSetter.setData("reflectApprovalCount", count);
+			dataSetter.updateData("reflectApprovalCount", count);
 		}
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;

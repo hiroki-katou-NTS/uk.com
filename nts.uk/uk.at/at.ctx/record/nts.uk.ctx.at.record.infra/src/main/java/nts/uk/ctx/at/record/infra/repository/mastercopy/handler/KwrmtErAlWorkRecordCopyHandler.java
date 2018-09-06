@@ -89,7 +89,7 @@ public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
         final List<KwrmtErAlWorkRecord> sourceWeeklyWorkSets = new ArrayList<>();
         weeklyWorkSetEntities.forEach(entity -> {
             KwrmtErAlWorkRecord cloneObject = SerializationUtils.clone(entity);
-            cloneObject.kwrmtErAlWorkRecordPK.setCompanyId(targetCid);
+            //cloneObject.kwrmtErAlWorkRecordPK.setCompanyId(targetCid);
             sourceWeeklyWorkSets.add(cloneObject);
         });
 
