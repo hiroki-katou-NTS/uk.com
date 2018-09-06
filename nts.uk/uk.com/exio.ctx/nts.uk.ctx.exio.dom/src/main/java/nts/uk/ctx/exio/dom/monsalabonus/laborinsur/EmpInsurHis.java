@@ -3,6 +3,9 @@ package nts.uk.ctx.exio.dom.monsalabonus.laborinsur;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+
+import java.util.List;
 
 /**
 * 雇用保険履歴
@@ -18,19 +21,7 @@ public class EmpInsurHis extends AggregateRoot
     private String cid;
     
     /**
-    * 履歴ID
+    * 履歴
     */
-    private String hisId;
-    
-    /**
-    * 年月期間
-    */
-    private int startDate;
-    
-    /**
-    * 年月期間
-    */
-    private int endDate;
-    
-    
+    private List<YearMonthHistoryItem> history;
 }

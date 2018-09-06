@@ -20,14 +20,13 @@ import lombok.NoArgsConstructor;
 public class QpbmtOccAccIsPrRatePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 
-    */
+     * 労災保険事業No
+     */
     @Basic(optional = false)
-    @Column(name = "OC_AC_IS_PR_RT_ID")
-    public String ocAcIsPrRtId;
-    
+    @Column(name = "OCC_ACC_INSUR_BUS_NO")
+    public int occAccInsurBusNo;
     /**
     * 履歴ID
     */

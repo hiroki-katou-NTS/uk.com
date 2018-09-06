@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-
+/*
+*雇用保険各事業負担率
+* */
 @Getter
 @Setter
 public class EmpInsurBusBurRatio {

@@ -10,6 +10,6 @@ public interface OccAccIsPrRateRepository
 {
 
     OccAccIsPrRate getOccAccIsPrRateByHisId(String hisId);
-    void remove(String ocAcIsPrRtId, String hisId);
+    void remove(int occAccInsurBusNo, String hisId);
 
 }

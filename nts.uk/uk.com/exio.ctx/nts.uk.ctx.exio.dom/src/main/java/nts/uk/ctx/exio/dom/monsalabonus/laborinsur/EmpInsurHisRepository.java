@@ -9,9 +9,8 @@ import java.util.List;
 public interface EmpInsurHisRepository
 {
 
-    List<EmpInsurHis> getAllEmpInsurHis();
-    
-    List<EmpInsurHis> getEmpInsurHisByCid(String cid);
+
+    Optional<EmpInsurHis> getEmpInsurHisByCid(String cid);
 
     Optional<EmpInsurHis> getEmpInsurHisById(String cid, String hisId);
 

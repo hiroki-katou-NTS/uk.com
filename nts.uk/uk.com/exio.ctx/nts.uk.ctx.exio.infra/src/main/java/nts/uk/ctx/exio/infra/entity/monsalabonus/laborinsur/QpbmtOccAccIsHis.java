@@ -45,11 +45,6 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
         return occAccIsHisPk;
     }
 
-    public OccAccIsHis toDomain() {
-        return new OccAccIsHis(this.occAccIsHisPk.cid, this.occAccIsHisPk.hisId, this.startDate, this.endDate);
-    }
-    public static QpbmtOccAccIsHis toEntity(OccAccIsHis domain) {
-        return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(domain.getCid(), domain.getHisId()), domain.getStartDate(), domain.getEndDate());
-    }
+
 
 }

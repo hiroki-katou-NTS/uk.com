@@ -46,11 +46,9 @@ public class QpbmtEmpInsurHis extends UkJpaEntity implements Serializable
         return empInsurHisPk;
     }
 
-    public EmpInsurHis toDomain() {
-        return new EmpInsurHis(this.empInsurHisPk.cid, this.empInsurHisPk.hisId, this.startDate, this.endDate);
-    }
+
     public static QpbmtEmpInsurHis toEntity(EmpInsurHis domain) {
-        return new QpbmtEmpInsurHis(new QpbmtEmpInsurHisPk(domain.getCid(), domain.getHisId()), domain.getStartDate(), domain.getEndDate());
+        return null;
     }
 
 }

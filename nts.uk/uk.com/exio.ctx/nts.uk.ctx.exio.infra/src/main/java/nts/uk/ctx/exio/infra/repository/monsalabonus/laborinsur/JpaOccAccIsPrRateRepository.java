@@ -35,14 +35,14 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
         }
         List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatio = new ArrayList<OccAccInsurBusiBurdenRatio>();
         entities.forEach(entity -> {
-            occAccInsurBusiBurdenRatio.add( new OccAccInsurBusiBurdenRatio(entity.occAccInsurBusNo,
+            occAccInsurBusiBurdenRatio.add( new OccAccInsurBusiBurdenRatio(entity.occAccIsPrRatePk.occAccInsurBusNo,
                     EnumAdaptor.valueOf(entity.fracClass,InsuPremiumFractionClassification.class),entity.empConRatio));
         });
         return occAccInsurBusiBurdenRatio;
     }
 
     @Override
-    public void remove(String ocAcIsPrRtId, String hisId){
-        this.commandProxy().remove(QpbmtOccAccIsPrRate.class, new QpbmtOccAccIsPrRatePk(ocAcIsPrRtId, hisId));
+    public void remove(int occAccInsurBusNo, String hisId){
+        this.commandProxy().remove(QpbmtOccAccIsPrRate.class, new QpbmtOccAccIsPrRatePk(occAccInsurBusNo, hisId));
     }
 }

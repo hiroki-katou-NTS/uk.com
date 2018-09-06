@@ -26,12 +26,7 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     @EmbeddedId
     public QpbmtOccAccIsPrRatePk occAccIsPrRatePk;
     
-    /**
-    * 労災保険事業No
-    */
-    @Basic(optional = false)
-    @Column(name = "OCC_ACC_INSUR_BUS_NO")
-    public int occAccInsurBusNo;
+
     
     /**
     * 端数区分
