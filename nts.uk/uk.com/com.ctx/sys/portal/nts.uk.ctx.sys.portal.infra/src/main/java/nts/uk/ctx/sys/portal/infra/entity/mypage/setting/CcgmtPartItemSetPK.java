@@ -4,23 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.entity.mypage.setting;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.Serializable;
 
 /**
  * The Class CcgmtPartItemSetPK.
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Embeddable
 public class CcgmtPartItemSetPK implements Serializable {
 	
