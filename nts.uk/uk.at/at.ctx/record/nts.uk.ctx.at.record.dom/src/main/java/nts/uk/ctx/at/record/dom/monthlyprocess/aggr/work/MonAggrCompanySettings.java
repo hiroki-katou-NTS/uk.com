@@ -369,7 +369,10 @@ public class MonAggrCompanySettings {
 		this.roleHolidayWorkFrameList.addAll(repositories.getRoleHolidayWorkFrame().findByCID(companyId));
 		
 		// 休暇時間加算設定
-		this.holidayAdditionMap.putAll(repositories.getHolidayAddition().findByCompanyId(companyId));
+		for (val holidayAddition : repositories.getHolidayAddition().findByCompanyId(companyId).entrySet()){
+			if (holidayAddition.getValue() == null) continue;
+			this.holidayAdditionMap.put(holidayAddition.getKey(), holidayAddition.getValue());
+		}
 		
 		// 労働時間と日数の設定の利用単位の設定
 		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
