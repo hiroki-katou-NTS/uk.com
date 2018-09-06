@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
