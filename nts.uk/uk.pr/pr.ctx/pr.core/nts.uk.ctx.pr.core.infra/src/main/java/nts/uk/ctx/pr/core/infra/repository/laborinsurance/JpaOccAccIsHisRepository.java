@@ -1,11 +1,15 @@
 package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHis;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHisRepository;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsHis;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsHisPk;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
@@ -20,25 +24,29 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid AND  f.occAccIsHisPk.hisId =:hisId ";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid ";
 
-    @Override
-    public List<OccAccIsHis> getAllOccAccIsHis(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtOccAccIsHis.class)
-                .getList(item -> item.toDomain());
-    }
+
 
     @Override
-    public List<OccAccIsHis> getAllOccAccIsHisByCid(String cid) {
-        return this.queryProxy().query(SELECT_BY_CID, QpbmtOccAccIsHis.class).setParameter("cid", cid).
-                getList(item -> item.toDomain());
+    public Optional<OccAccIsHis> getAllOccAccIsHisByCid(String cid) {
+        List<QpbmtOccAccIsHis> qpbmtOccAccIsHisList = this.queryProxy().query(SELECT_BY_CID, QpbmtOccAccIsHis.class).setParameter("cid", cid).
+                getList();
+        return Optional.ofNullable(new OccAccIsHis(cid,toDomain(qpbmtOccAccIsHisList)));
     }
 
-    @Override
-    public Optional<OccAccIsHis> getOccAccIsHisById(String cid, String hisId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtOccAccIsHis.class)
-        .setParameter("cid", cid)
-        .setParameter("hisId", hisId)
-        .getSingle(c->c.toDomain());
+
+    private List<YearMonthHistoryItem> toDomain(List<QpbmtOccAccIsHis> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return null;
+        }
+        List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<YearMonthHistoryItem>();
+        entities.forEach(entity -> {
+            yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.occAccIsHisPk.hisId,
+                    new YearMonthPeriod(new YearMonth(entity.startDate),
+                            new YearMonth(entity.endDate))));
+        });
+        return yearMonthHistoryItemList;
     }
+
 
     @Override
     public void add(OccAccIsHis domain){

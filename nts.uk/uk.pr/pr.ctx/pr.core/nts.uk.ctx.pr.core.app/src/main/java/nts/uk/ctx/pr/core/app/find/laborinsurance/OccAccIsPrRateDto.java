@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
+package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

@@ -22,7 +22,7 @@ public class WorkersComInsurService {
     /*
     * 初期データ取得処理
     * */
-    public List<OccAccIsHis> initDataAcquisition(String cId){
+    public Optional<OccAccIsHis> initDataAcquisition(String cId){
         /*
         * ドメインモデル「労災保険事業」を全て取得する
         * */
@@ -30,7 +30,7 @@ public class WorkersComInsurService {
         /*
         *ドメインモデル「労災保険履歴」を全て取得する
         * */
-        List<OccAccIsHis> getEmpInsurHisByCid = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
+        Optional<OccAccIsHis> getEmpInsurHisByCid = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
         if(acceptCode.get().getEachBusiness() == null || getEmpInsurHisByCid == null ){
             /*選択処理*/
           return null;

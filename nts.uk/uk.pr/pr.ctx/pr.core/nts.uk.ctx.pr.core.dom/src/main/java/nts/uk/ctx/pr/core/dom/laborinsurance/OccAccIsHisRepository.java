@@ -10,10 +10,8 @@ import java.util.List;
 public interface OccAccIsHisRepository
 {
 
-    List<OccAccIsHis> getAllOccAccIsHis();
-    List<OccAccIsHis> getAllOccAccIsHisByCid(String cid);
+    Optional<OccAccIsHis> getAllOccAccIsHisByCid(String cid);
 
-    Optional<OccAccIsHis> getOccAccIsHisById(String cid, String hisId);
 
     void add(OccAccIsHis domain);
 

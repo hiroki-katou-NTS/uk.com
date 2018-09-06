@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 */
 @AllArgsConstructor
 @Getter
-public class EmpInsurHis extends AggregateRoot
+public class EmpInsurHis extends AggregateRoot implements ContinuousResidentHistory
 {
     
     /**
@@ -24,4 +25,8 @@ public class EmpInsurHis extends AggregateRoot
     * 履歴
     */
     private List<YearMonthHistoryItem> history;
+    @Override
+    public List<YearMonthHistoryItem> items() {
+        return this.history;
+    }
 }

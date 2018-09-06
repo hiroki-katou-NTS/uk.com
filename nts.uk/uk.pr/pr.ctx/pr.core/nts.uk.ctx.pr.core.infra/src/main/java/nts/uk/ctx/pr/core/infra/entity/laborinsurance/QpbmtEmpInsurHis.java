@@ -7,6 +7,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * 労災保険履歴
@@ -47,8 +50,12 @@ public class QpbmtEmpInsurHis extends UkJpaEntity implements Serializable
     }
 
 
-    public static QpbmtEmpInsurHis toEntity(EmpInsurHis domain) {
-        return null;
+    public static List<QpbmtEmpInsurHis> toEntity(EmpInsurHis domain) {
+        List<QpbmtEmpInsurHis> qpbmtEmpInsurHisList = domain.getHistory().stream().map(item -> {
+            return new QpbmtEmpInsurHis(new QpbmtEmpInsurHisPk(domain.getCid(),item.identifier()),item.start().month(),item.end().month());
+        }).collect(Collectors.toList());
+
+        return qpbmtEmpInsurHisList;
     }
 
 }
