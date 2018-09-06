@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +10,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
@@ -276,24 +281,21 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	@Override
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT a, b, c, d FROM KmlmtPersonCostCalculation a ");
+		query.append("SELECT a, b, c FROM KmlmtPersonCostCalculation a ");
 		query.append(" LEFT JOIN a.kmlstPremiumSets b ");
-		query.append(" LEFT JOIN b.kmnmtPremiumItem d ");
 		query.append(" LEFT JOIN b.kmldtPremiumAttendances c ");
 		query.append(" WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
 		query.append(" AND a.startDate <= :date AND a.endDate >= :date");
 		List<Object[]> entities = this.queryProxy().query(query.toString(), Object[].class)
 													.setParameter("companyID", companyID)
 													.setParameter("date", date).getList();
-		
+		List<KmnmtPremiumItem> premiumItem = getPremiumItems(companyID);
 		List<PersonCostCalculation> personCostCals = entities.stream().collect(Collectors.groupingBy(c -> (KmlmtPersonCostCalculation) c[0], Collectors.toList()))
 			.entrySet().stream().map(e -> {
 				List<KmlstPremiumSet> premiumSet = e.getValue().stream().map(x -> (KmlstPremiumSet) x[1])
 																.filter(ps -> ps != null && ps.kmlspPremiumSet.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
 																.distinct().collect(Collectors.toList());
-				List<KmnmtPremiumItem> premiumItem = e.getValue().stream().map(x -> (KmnmtPremiumItem) x[3])
-						.filter(ps -> ps != null && ps.kmnmpPremiumItemPK.companyID.equals(companyID))
-						.distinct().collect(Collectors.toList());
+				
 				List<KmldtPremiumAttendance> preAttendamce = e.getValue().stream().map(x -> (KmldtPremiumAttendance) x[2])
 						.filter(ps -> ps != null && ps.kmldpPremiumAttendancePK.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
 						.distinct().collect(Collectors.toList());
@@ -308,6 +310,29 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		return personCostCals;
 	}
 
+	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ");
+
+			statement.setString(1, comId);
+			List<KmnmtPremiumItem> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KmnmtPremiumItem();
+				entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
+				entity.kmnmpPremiumItemPK.companyID = comId;
+				entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
+				entity.name = rec.getString("PREMIUM_NAME");
+				entity.useAtr = rec.getInt("USE_ATR");
+				return entity;
+			});
+			
+			return krcdtTimeLeaveWorks;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
 	private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation, 
 			List<KmlstPremiumSet> premiumSet, List<KmldtPremiumAttendance> attendanceItems, List<KmnmtPremiumItem> premiumItem){
 		return new PersonCostCalculation(

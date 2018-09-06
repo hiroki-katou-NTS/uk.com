@@ -1575,7 +1575,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public void requestForFlush() {
-		this.getEntityManager().flush();
+//		this.getEntityManager().flush();
 	}
 	
 }

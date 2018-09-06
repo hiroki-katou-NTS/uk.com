@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.record.infra.repository.workrule.specific;
 
-import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -19,8 +19,6 @@ import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrde
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrderPK;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrl;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrlPK;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 
 /**
  * The Class JpaSpecificWorkRuleRepository.
@@ -154,24 +152,29 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository#findUpperLimitWkHourByCid(java.lang.String)
 	 */
-	@SneakyThrows
 	@Override
 	public Optional<UpperLimitTotalWorkingHour> findUpperLimitWkHourByCid(String companyId) {
-		val statement = this.connection().prepareStatement("select * FROM KRCST_WK_HOUR_LIMIT_CTRL where CID = ?");
-		statement.setString(1, companyId);
-		Optional<KrcstWkHourLimitCtrl> opt = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			val entity = new KrcstWkHourLimitCtrl();
-			KrcstWkHourLimitCtrlPK id = new KrcstWkHourLimitCtrlPK();
-			id.setCid(companyId);
-			entity.setWorkLimitCtrl(rec.getInt("WORK_LIMIT_CTRL"));
-			entity.setId(id);
-			return entity;
-		});
-//		Optional<KrcstWkHourLimitCtrl> opt = this.queryProxy().query(SEL_WORK_HOUR_LIMIT, KrcstWkHourLimitCtrl.class).
-//				setParameter("companyId", companyId).getSingle();
-		if (opt.isPresent()) {
-			return Optional.of(toDomain(opt.get()));
+		try {
+			PreparedStatement statement = this.connection().prepareStatement("select * FROM KRCST_WK_HOUR_LIMIT_CTRL where CID = ?");
+			statement.setString(1, companyId);
+			Optional<KrcstWkHourLimitCtrl> opt = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				val entity = new KrcstWkHourLimitCtrl();
+				KrcstWkHourLimitCtrlPK id = new KrcstWkHourLimitCtrlPK();
+				id.setCid(companyId);
+				entity.setWorkLimitCtrl(rec.getInt("WORK_LIMIT_CTRL"));
+				entity.setId(id);
+				return entity;
+			});
+//			Optional<KrcstWkHourLimitCtrl> opt = this.queryProxy().query(SEL_WORK_HOUR_LIMIT, KrcstWkHourLimitCtrl.class).
+//					setParameter("companyId", companyId).getSingle();
+			if (opt.isPresent()) {
+				return Optional.of(toDomain(opt.get()));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return Optional.empty();
 	}
 

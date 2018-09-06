@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -221,66 +222,79 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 //		this.getEntityManager().flush();
 	}
 
-	@SneakyThrows
 	private KrcdtDaiLeavingWork getDailyLeaving(String employee, GeneralDate date) {
-		val statement = this.connection().prepareStatement(
-				"select * FROM KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
-		statement.setString(1, employee);
-		statement.setDate(2, Date.valueOf(date.localDate()));
-		Optional<KrcdtDaiLeavingWork> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			val entity = new KrcdtDaiLeavingWork();
-			entity.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
-			entity.workTimes = rec.getInt("WORK_TIMES");
-			entity.timeLeavingWorks = getTimeLeavingWork(employee, date);
-			return entity;
-		});
-		
-		if(!krcdtDaiBreakTimes.isPresent()){
-			KrcdtDaiLeavingWork defaultV = new KrcdtDaiLeavingWork();
-			defaultV.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
-			defaultV.timeLeavingWorks = new ArrayList<>();
-			return defaultV;
+		try {
+			val statement = this.connection().prepareStatement(
+					"select * FROM KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
+			statement.setString(1, employee);
+			statement.setDate(2, Date.valueOf(date.localDate()));
+			Optional<KrcdtDaiLeavingWork> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				val entity = new KrcdtDaiLeavingWork();
+				entity.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
+				entity.workTimes = rec.getInt("WORK_TIMES");
+				entity.timeLeavingWorks = getTimeLeavingWork(employee, date);
+				return entity;
+			});
+			
+			if(!krcdtDaiBreakTimes.isPresent()){
+				return getDefault(employee, date);
+			}
+			
+			return krcdtDaiBreakTimes.get();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return getDefault(employee, date);
 		}
-		
-		return krcdtDaiBreakTimes.get();
+	}
+
+	private KrcdtDaiLeavingWork getDefault(String employee, GeneralDate date) {
+		KrcdtDaiLeavingWork defaultV = new KrcdtDaiLeavingWork();
+		defaultV.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
+		defaultV.timeLeavingWorks = new ArrayList<>();
+		return defaultV;
 	}
 	
-	@SneakyThrows
 	private List<KrcdtTimeLeavingWork> getTimeLeavingWork(String employee, GeneralDate date) {
-		val statement = this.connection().prepareStatement(
-				"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
-		statement.setString(1, employee);
-		statement.setDate(2, Date.valueOf(date.localDate()));
-		statement.setInt(3, 0);
-		List<KrcdtTimeLeavingWork> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			val entity = new KrcdtTimeLeavingWork();
-			entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK();
-			entity.krcdtTimeLeavingWorkPK.employeeId = employee;
-			entity.krcdtTimeLeavingWorkPK.ymd = date;
-			entity.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
-			entity.krcdtTimeLeavingWorkPK.workNo = rec.getInt("WORK_NO");
-			entity.attendanceActualRoudingTime = rec.getInt("ATD_ACTUAL_ROUDING_TIME_DAY");
-			entity.attendanceActualTime = rec.getInt("ATD_ACTUAL_TIME");
-			entity.attendanceActualPlaceCode = rec.getString("ATD_ACTUAL_PLACE_CODE");
-			entity.attendanceActualSourceInfo = rec.getInt("ATD_ACTUAL_SOURCE_INFO");
-			entity.attendanceStampRoudingTime = rec.getInt("ATD_STAMP_ROUDING_TIME_DAY");
-			entity.attendanceStampTime = rec.getInt("ATD_STAMP_TIME");
-			entity.attendanceStampPlaceCode = rec.getString("ATD_STAMP_PLACE_CODE");
-			entity.attendanceStampSourceInfo = rec.getInt("ATD_STAMP_SOURCE_INFO");
-			entity.attendanceNumberStamp = rec.getInt("ATD_NUMBER_STAMP");
-			entity.leaveWorkActualRoundingTime = rec.getInt("LWK_ACTUAL_ROUDING_TIME_DAY");
-			entity.leaveWorkActualTime = rec.getInt("LWK_ACTUAL_TIME");
-			entity.leaveWorkActualPlaceCode = rec.getString("LWK_ACTUAL_PLACE_CODE");
-			entity.leaveActualSourceInfo = rec.getInt("LWK_ACTUAL_SOURCE_INFO");
-			entity.leaveWorkStampRoundingTime = rec.getInt("LWK_STAMP_ROUDING_TIME_DAY");
-			entity.leaveWorkStampTime = rec.getInt("LWK_STAMP_TIME");
-			entity.leaveWorkStampPlaceCode = rec.getString("LWK_STAMP_PLACE_CODE");
-			entity.leaveWorkStampSourceInfo = rec.getInt("LWK_STAMP_SOURCE_INFO");
-			entity.leaveWorkNumberStamp = rec.getInt("LWK_NUMBER_STAMP");
-			return entity;
-		});
-		
-		return krcdtTimeLeaveWorks;
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
+
+			statement.setString(1, employee);
+			statement.setDate(2, Date.valueOf(date.localDate()));
+			statement.setInt(3, 0);
+			List<KrcdtTimeLeavingWork> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KrcdtTimeLeavingWork();
+				entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK();
+				entity.krcdtTimeLeavingWorkPK.employeeId = employee;
+				entity.krcdtTimeLeavingWorkPK.ymd = date;
+				entity.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+				entity.krcdtTimeLeavingWorkPK.workNo = rec.getInt("WORK_NO");
+				entity.attendanceActualRoudingTime = rec.getInt("ATD_ACTUAL_ROUDING_TIME_DAY");
+				entity.attendanceActualTime = rec.getInt("ATD_ACTUAL_TIME");
+				entity.attendanceActualPlaceCode = rec.getString("ATD_ACTUAL_PLACE_CODE");
+				entity.attendanceActualSourceInfo = rec.getInt("ATD_ACTUAL_SOURCE_INFO");
+				entity.attendanceStampRoudingTime = rec.getInt("ATD_STAMP_ROUDING_TIME_DAY");
+				entity.attendanceStampTime = rec.getInt("ATD_STAMP_TIME");
+				entity.attendanceStampPlaceCode = rec.getString("ATD_STAMP_PLACE_CODE");
+				entity.attendanceStampSourceInfo = rec.getInt("ATD_STAMP_SOURCE_INFO");
+				entity.attendanceNumberStamp = rec.getInt("ATD_NUMBER_STAMP");
+				entity.leaveWorkActualRoundingTime = rec.getInt("LWK_ACTUAL_ROUDING_TIME_DAY");
+				entity.leaveWorkActualTime = rec.getInt("LWK_ACTUAL_TIME");
+				entity.leaveWorkActualPlaceCode = rec.getString("LWK_ACTUAL_PLACE_CODE");
+				entity.leaveActualSourceInfo = rec.getInt("LWK_ACTUAL_SOURCE_INFO");
+				entity.leaveWorkStampRoundingTime = rec.getInt("LWK_STAMP_ROUDING_TIME_DAY");
+				entity.leaveWorkStampTime = rec.getInt("LWK_STAMP_TIME");
+				entity.leaveWorkStampPlaceCode = rec.getString("LWK_STAMP_PLACE_CODE");
+				entity.leaveWorkStampSourceInfo = rec.getInt("LWK_STAMP_SOURCE_INFO");
+				entity.leaveWorkNumberStamp = rec.getInt("LWK_NUMBER_STAMP");
+				return entity;
+			});
+			
+			return krcdtTimeLeaveWorks;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
 	}
 
 	@Override

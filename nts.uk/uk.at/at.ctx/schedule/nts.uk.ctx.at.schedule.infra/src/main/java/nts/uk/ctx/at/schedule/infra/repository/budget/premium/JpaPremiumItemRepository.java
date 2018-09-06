@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,25 +75,30 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 				.getList(x -> convertToDomain(x));
 	}
 	
-	@SneakyThrows
 	@Override
 	public List<PremiumItem> findAllIsUse (String companyID) {
 //		return this.queryProxy().query(FIND_ALL_IS_USE, KmnmtPremiumItem.class)
 //				.setParameter("CID", companyID)
 //				.setParameter("useAtr", UseAttribute.Use.value)
 //				.getList(x -> convertToDomain(x));
-		val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?");
-		statement.setString(1, companyID);
-		statement.setInt(2, UseAttribute.Use.value);
-		return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			val entity = new KmnmtPremiumItem();
-			entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
-			entity.kmnmpPremiumItemPK.companyID = companyID;
-			entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
-			entity.useAtr = UseAttribute.Use.value;
-			entity.name = rec.getString("PREMIUM_NAME");
-			return entity;
-		}).stream().map(e -> convertToDomain(e)).collect(Collectors.toList());
+		
+		try {val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?");
+			statement.setString(1, companyID);
+			statement.setInt(2, UseAttribute.Use.value);
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KmnmtPremiumItem();
+				entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
+				entity.kmnmpPremiumItemPK.companyID = companyID;
+				entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
+				entity.useAtr = UseAttribute.Use.value;
+				entity.name = rec.getString("PREMIUM_NAME");
+				return entity;
+			}).stream().map(e -> convertToDomain(e)).collect(Collectors.toList());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return new ArrayList<>();
 	}
 	
 	/**

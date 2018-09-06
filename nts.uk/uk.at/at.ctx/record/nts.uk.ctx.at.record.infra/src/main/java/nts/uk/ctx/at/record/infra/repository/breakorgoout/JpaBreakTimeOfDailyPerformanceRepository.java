@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -110,7 +109,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().flush();
 	}
 
-	@SneakyThrows
 	@Override
 	public List<BreakTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = findEntities(employeeId, ymd);
@@ -121,22 +119,27 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return group(krcdtDaiBreakTimes);
 	}
 
-	private List<KrcdtDaiBreakTime> findEntities(String employeeId, GeneralDate ymd) throws SQLException {
-		val statement = this.connection().prepareStatement(
-				"select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
-		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			val entity = new KrcdtDaiBreakTime();
-			entity.krcdtDaiBreakTimePK = new KrcdtDaiBreakTimePK();
-			entity.krcdtDaiBreakTimePK.employeeId = rec.getString("SID");
-			entity.krcdtDaiBreakTimePK.ymd = rec.getGeneralDate("YMD");
-			entity.krcdtDaiBreakTimePK.breakType = rec.getInt("BREAK_TYPE");
-			entity.krcdtDaiBreakTimePK.breakFrameNo = rec.getInt("BREAK_FRAME_NO");
-			entity.startStampTime = rec.getInt("STR_STAMP_TIME");
-			entity.endStampTime = rec.getInt("END_STAMP_TIME");
-			return entity;
-		});
+	private List<KrcdtDaiBreakTime> findEntities(String employeeId, GeneralDate ymd) {
+		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = null; 
+
+		try {
+			val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
+			krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KrcdtDaiBreakTime();
+				entity.krcdtDaiBreakTimePK = new KrcdtDaiBreakTimePK();
+				entity.krcdtDaiBreakTimePK.employeeId = rec.getString("SID");
+				entity.krcdtDaiBreakTimePK.ymd = rec.getGeneralDate("YMD");
+				entity.krcdtDaiBreakTimePK.breakType = rec.getInt("BREAK_TYPE");
+				entity.krcdtDaiBreakTimePK.breakFrameNo = rec.getInt("BREAK_FRAME_NO");
+				entity.startStampTime = rec.getInt("STR_STAMP_TIME");
+				entity.endStampTime = rec.getInt("END_STAMP_TIME");
+				return entity;
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (krcdtDaiBreakTimes == null || krcdtDaiBreakTimes.isEmpty()) {
 			return new ArrayList<>();
@@ -238,7 +241,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 //		}
 	}
 
-	@SneakyThrows
 	@Override
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		if(breakTimes.isEmpty()) {
