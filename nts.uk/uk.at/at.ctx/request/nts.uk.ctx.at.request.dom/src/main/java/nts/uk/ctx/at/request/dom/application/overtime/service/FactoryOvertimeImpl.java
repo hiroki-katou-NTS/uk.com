@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,12 +62,14 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 			String divergenceReason, 
 			Integer flexExessTime, 
 			Integer overTimeShiftNight, 
-			List<OverTimeInput> overtimeInputs) {
+			List<OverTimeInput> overtimeInputs,
+			Optional<AppOvertimeDetail> appOvertimeDetail) {
 		
 		AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode,
 				siftCode, workClockFrom1, workClockTo1, workClockFrom2, workClockTo2, divergenceReason, flexExessTime,
 				overTimeShiftNight);
 		appOverTime.setOverTimeInput(overtimeInputs);
+		appOverTime.setAppOvertimeDetail(appOvertimeDetail);
 		return appOverTime;
 	}
 

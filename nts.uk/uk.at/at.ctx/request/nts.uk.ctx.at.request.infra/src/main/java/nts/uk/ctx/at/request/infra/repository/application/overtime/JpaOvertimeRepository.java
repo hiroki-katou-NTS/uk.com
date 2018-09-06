@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -20,9 +21,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Stateless
 public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepository {
@@ -105,13 +109,15 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 							item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
+		
+		KrqdtAppOvertimeDetail appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail());
 
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
 				domain.getOverTimeAtr().value, domain.getWorkTypeCode() == null? null :  domain.getWorkTypeCode().v(), domain.getSiftCode() == null ? null : domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
-				domain.getOverTimeShiftNight(), overtimeInputs);
+				domain.getOverTimeShiftNight(), overtimeInputs, appOvertimeDetail);
 	}
 
 	private AppOverTime convertToDomain(KrqdtAppOvertime entity) {
@@ -177,10 +183,25 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		List<AppOverTime> lstOt =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppOvertime.class)
 			.setParameter("companyID", companyID)
 			.setParameter("lstAppID", lstAppID)
-			.getList(c -> c.toDomain());
+			.getList(c -> toDomainPlus(c));
 		for (AppOverTime ot : lstOt) {
 			lstMap.put(ot.getAppID(), ot);
 		}
 		return lstMap;
+	}
+	private AppOverTime toDomainPlus(KrqdtAppOvertime entity){
+		return new AppOverTime(null, 
+				entity.getKrqdtAppOvertimePK().getCid(), 
+				entity.getKrqdtAppOvertimePK().getAppId(), 
+				EnumAdaptor.valueOf(entity.getOvertimeAtr(), OverTimeAtr.class),
+				entity.overtimeInputs.stream()
+					.map(x -> x.toDomain()).collect(Collectors.toList()),
+				new WorkTypeCode(entity.getWorkTypeCode()),
+				new WorkTimeCode(entity.getSiftCode()), 
+				entity.getWorkClockFrom1(),
+				entity.getWorkClockTo1(), entity.getWorkClockFrom2(), 
+				entity.getWorkClockTo2(), entity.getDivergenceReason(),
+				entity.getFlexExcessTime(), entity.getOvertimeShiftNight(),
+				entity.appOvertimeDetail == null ? Optional.empty() : Optional.of(entity.appOvertimeDetail.toDomain()));
 	}
 }

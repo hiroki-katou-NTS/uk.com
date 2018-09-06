@@ -104,7 +104,18 @@ module nts.uk.at.view.kaf006.b{
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
-            
+        //No.376
+        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
+        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
+        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
+        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
+        numberRemain: KnockoutObservableArray<any> = ko.observableArray([]);
+        yearDis: KnockoutObservable<boolean> = ko.observable(false);
+        subHdDis: KnockoutObservable<boolean> = ko.observable(false);
+        subVacaDis: KnockoutObservable<boolean> = ko.observable(false);
+        stockDis: KnockoutObservable<boolean> = ko.observable(false);
+        //ver20
+        disAll: KnockoutObservable<boolean> = ko.observable(false);
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReason: KnockoutObservable<boolean> = ko.observable(false);
@@ -163,7 +174,29 @@ module nts.uk.at.view.kaf006.b{
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            service.findByAppID(appID).done((data) => { 
+            service.findByAppID(appID).done((data) => {
+                //No.376
+                if(data.numberRemain != null){
+                    if(data.numberRemain.yearRemain != null){//年休残数
+                        self.yearRemain(data.numberRemain.yearRemain + '日');
+                        self.yearDis(true);
+                    }
+                    if(data.numberRemain.subHdRemain != null){//代休残数
+                        self.subHdRemain(data.numberRemain.subHdRemain + '日');
+                        self.subHdDis(true);
+                    }
+                    if(data.numberRemain.subVacaRemain != null){//振休残数
+                        self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.subVacaDis(true);
+                    }
+                    if(data.numberRemain.stockRemain != null){//ストック休暇残数
+                        self.stockRemain(data.numberRemain.stockRemain + '日');
+                        self.stockDis(true);
+                    }
+                }
+                if(self.yearDis() || self.subHdDis() || self.subVacaDis() || self.stockDis()){
+                    self.disAll(true);
+                }
                 self.initData(data);
                 //find by change AllDayHalfDay
                 self.selectedAllDayHalfDayValue.subscribe((value) => {
@@ -491,16 +524,6 @@ module nts.uk.at.view.kaf006.b{
              let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
              let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
              let appReason: string;
-//             appReason = self.getReason(
-//                self.selectedReason(),
-//                self.reasonCombo(),
-//                self.multilContent()
-//            );
-//             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
-//             if (appReasonError) {
-//                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-//                 return;
-//             }
              if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                  return;
              }
