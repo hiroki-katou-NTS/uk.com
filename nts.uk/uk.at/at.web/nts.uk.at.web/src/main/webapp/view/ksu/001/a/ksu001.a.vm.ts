@@ -828,11 +828,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let updateLeftHorzSumContent = {
                     dataSource: newLeftHorzContentDs
                 };
-                // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
-                $("#extable").find(".ex-body-detail").data("x-det", null);
-                $("#extable").find(".ex-body-detail").data("copy-history", null);
-                $("#extable").find(".ex-body-detail").data("edit-history", null);
-                $("#extable").find(".ex-body-detail").data("stick-history", null);
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
                 //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
@@ -1849,7 +1844,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * copy data on cell
          */
         copyData(): void {
-            let self = this;
             $("#extable").exTable("updateMode", "copyPaste");
         }
 
