@@ -58,18 +58,18 @@ public class SpecialLeaveGrantDto6 extends PeregDomainDto {
 	@PeregItem("IS00494")
 	private double numberDaysOver;
 
-	// 残日数
-	@PeregItem("IS00497")
+	// 上限超過消滅時間
+	@PeregItem("IS00495")
 	private int timeOver;
 
 	// 残時間
-	@PeregItem("IS00498")
+	@PeregItem("IS00497")
 	private double numberDayRemain;
 
-	// 上限超過消滅時間
-	@PeregItem("IS00495")
+	// 残日数
+	@PeregItem("IS00498")
 	private int timeRemain;
-
+	
 	public static SpecialLeaveGrantDto6 createFromDomain(SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto6 dto = new SpecialLeaveGrantDto6();
 		dto.specialid = domain.getSpecialId();
