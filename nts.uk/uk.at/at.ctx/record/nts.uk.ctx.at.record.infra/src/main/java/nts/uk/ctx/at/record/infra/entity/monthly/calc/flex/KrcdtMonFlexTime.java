@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
@@ -153,7 +153,7 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.principleTime),
 						new AttendanceTimeMonth(this.forConvenienceTime)),
 				FlexShortDeductTime.of(
-						new AttendanceDaysMonth(this.annualLeaveDeductDays),
+						new AttendanceDaysMonthDom(this.annualLeaveDeductDays),
 						new AttendanceTimeMonth(this.absenceDeductTime),
 						new AttendanceTimeMonth(this.shotTimeBeforeDeduct)));
 	}

@@ -19,8 +19,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.ExcessOutsideByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -582,63 +582,63 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		List<AnyLeave> anyLeaveDaysList = new ArrayList<>();
 		if (this.vtPrenatalLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.PRENATAL, new AttendanceDaysMonth(this.vtPrenatalLeaveDays)));
+					CloseAtr.PRENATAL, new AttendanceDaysMonthDom(this.vtPrenatalLeaveDays)));
 		}
 		if (this.vtPostpartumLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.POSTPARTUM, new AttendanceDaysMonth(this.vtPostpartumLeaveDays)));
+					CloseAtr.POSTPARTUM, new AttendanceDaysMonthDom(this.vtPostpartumLeaveDays)));
 		}
 		if (this.vtChildcareLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CHILD_CARE, new AttendanceDaysMonth(this.vtChildcareLeaveDays)));
+					CloseAtr.CHILD_CARE, new AttendanceDaysMonthDom(this.vtChildcareLeaveDays)));
 		}
 		if (this.vtCareLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CARE, new AttendanceDaysMonth(this.vtCareLeaveDays)));
+					CloseAtr.CARE, new AttendanceDaysMonthDom(this.vtCareLeaveDays)));
 		}
 		if (this.vtInjuryOrIllnessLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.INJURY_OR_ILLNESS, new AttendanceDaysMonth(this.vtInjuryOrIllnessLeaveDays)));
+					CloseAtr.INJURY_OR_ILLNESS, new AttendanceDaysMonthDom(this.vtInjuryOrIllnessLeaveDays)));
 		}
 		if (this.vtAnyLeaveDays01 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(1, new AttendanceDaysMonth(this.vtAnyLeaveDays01)));
+			anyLeaveDaysList.add(AnyLeave.of(1, new AttendanceDaysMonthDom(this.vtAnyLeaveDays01)));
 		}
 		if (this.vtAnyLeaveDays02 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(2, new AttendanceDaysMonth(this.vtAnyLeaveDays02)));
+			anyLeaveDaysList.add(AnyLeave.of(2, new AttendanceDaysMonthDom(this.vtAnyLeaveDays02)));
 		}
 		if (this.vtAnyLeaveDays03 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(3, new AttendanceDaysMonth(this.vtAnyLeaveDays03)));
+			anyLeaveDaysList.add(AnyLeave.of(3, new AttendanceDaysMonthDom(this.vtAnyLeaveDays03)));
 		}
 		if (this.vtAnyLeaveDays04 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(4, new AttendanceDaysMonth(this.vtAnyLeaveDays04)));
+			anyLeaveDaysList.add(AnyLeave.of(4, new AttendanceDaysMonthDom(this.vtAnyLeaveDays04)));
 		}
 		
 		// 月別実績の勤務日数
 		val vtWorkDays = WorkDaysOfMonthly.of(
-				AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(this.vtAttendanceDays)),
+				AttendanceDaysOfMonthly.of(new AttendanceDaysMonthDom(this.vtAttendanceDays)),
 				AbsenceDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.vtTotalAbsenceDays),
+						new AttendanceDaysMonthDom(this.vtTotalAbsenceDays),
 						new AttendanceTimeMonth(this.vtTotalAbsenceTime),
 						this.krcdtWekAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				PredeterminedDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.vtPredetermineDays)),
-				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.vtWorkDays)),
-				HolidayDaysOfMonthly.of(new AttendanceDaysMonth(this.vtHolidayDays)),
+						new AttendanceDaysMonthDom(this.vtPredetermineDays)),
+				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonthDom(this.vtWorkDays)),
+				HolidayDaysOfMonthly.of(new AttendanceDaysMonthDom(this.vtHolidayDays)),
 				SpecificDaysOfMonthly.of(
 						this.krcdtWekAggrSpecDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
-				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(this.vtHolidayWorkDays)),
+				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonthDom(this.vtHolidayWorkDays)),
 				PayDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.vtPayAttendanceDays),
-						new AttendanceDaysMonth(this.vtPayAbsenceDays)),
-				WorkTimesOfMonthly.of(new AttendanceTimesMonth(this.vtWorkTimes)),
-				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.vtTwoTimesWorkTimes)),
-				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.vtTemporaryWorkTimes)),
+						new AttendanceDaysMonthDom(this.vtPayAttendanceDays),
+						new AttendanceDaysMonthDom(this.vtPayAbsenceDays)),
+				WorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.vtWorkTimes)),
+				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.vtTwoTimesWorkTimes)),
+				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.vtTemporaryWorkTimes)),
 				LeaveOfMonthly.of(
 						fixLeaveDaysList,
 						anyLeaveDaysList),
-				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(this.vtRecruitDays)),
+				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonthDom(this.vtRecruitDays)),
 				SpcVacationDaysOfMonthly.of(
-						new AttendanceDaysMonth(this.vtTotalSpecialVacationDays),
+						new AttendanceDaysMonthDom(this.vtTotalSpecialVacationDays),
 						new AttendanceTimeMonth(this.vtTotalSpecialVacationTime),
 						this.krcdtWekAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList()))
 				);
@@ -648,13 +648,13 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		if (this.vtChildcareGoOutTimes != 0 || this.vtChildcareGoOutTime != 0){
 			goOutForChildCares.add(GoOutForChildCare.of(
 					ChildCareAtr.CHILD_CARE,
-					new AttendanceTimesMonth(this.vtChildcareGoOutTimes),
+					new AttendanceTimesMonthDom(this.vtChildcareGoOutTimes),
 					new AttendanceTimeMonth(this.vtChildcareGoOutTime)));
 		}
 		if (this.vtCareGoOutTimes != 0 || this.vtCareGoOutTime != 0){
 			goOutForChildCares.add(GoOutForChildCare.of(
 					ChildCareAtr.CARE,
-					new AttendanceTimesMonth(this.vtCareGoOutTimes),
+					new AttendanceTimesMonthDom(this.vtCareGoOutTimes),
 					new AttendanceTimeMonth(this.vtCareGoOutTime)));
 		}
 		
@@ -700,12 +700,12 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 								new AttendanceTimeMonth(this.vtCalcSpecialHolidayWorkMidnightTime))),
 				LateLeaveEarlyOfMonthly.of(
 						LeaveEarly.of(
-								new AttendanceTimesMonth(this.vtLeaveEarlyTimes),
+								new AttendanceTimesMonthDom(this.vtLeaveEarlyTimes),
 								new TimeMonthWithCalculation(
 										new AttendanceTimeMonth(this.vtLeaveEarlyTime),
 										new AttendanceTimeMonth(this.vtCalcLeaveEarlyTime))),
 						Late.of(
-								new AttendanceTimesMonth(this.vtLateTimes),
+								new AttendanceTimesMonthDom(this.vtLateTimes),
 								new TimeMonthWithCalculation(
 										new AttendanceTimeMonth(this.vtLateTime),
 										new AttendanceTimeMonth(this.vtCalcLateTime)))),
@@ -722,26 +722,26 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 		// 月別実績の勤務時刻
 		val vtWorkClock = WorkClockOfMonthly.of(
 				EndClockOfMonthly.of(
-						new AttendanceTimesMonth(this.vtEndWorkTimes),
+						new AttendanceTimesMonthDom(this.vtEndWorkTimes),
 						new AttendanceTimeMonth(this.vtEndWorkTotalClock),
 						new AttendanceTimeMonth(this.vtEndWorkAverageClock)),
 				PCLogonOfMonthly.of(
 						PCLogonClockOfMonthly.of(
 								AggrPCLogonClock.of(
-										new AttendanceDaysMonth(this.vtLogonTotalDays),
+										new AttendanceDaysMonthDom(this.vtLogonTotalDays),
 										new AttendanceTimeMonth(this.vtLogonTotalClock),
 										new AttendanceTimeMonth(this.vtLogonAverageClock)),
 								AggrPCLogonClock.of(
-										new AttendanceDaysMonth(this.vtLogoffTotalDays),
+										new AttendanceDaysMonthDom(this.vtLogoffTotalDays),
 										new AttendanceTimeMonth(this.vtLogoffTotalClock),
 										new AttendanceTimeMonth(this.vtLogoffAverageClock))),
 						PCLogonDivergenceOfMonthly.of(
 								AggrPCLogonDivergence.of(
-										new AttendanceDaysMonth(this.vtLogonDivDays),
+										new AttendanceDaysMonthDom(this.vtLogonDivDays),
 										new AttendanceTimeMonth(this.vtLogonDivTotalTime),
 										new AttendanceTimeMonth(this.vtLogonDivAverageTime)),
 								AggrPCLogonDivergence.of(
-										new AttendanceDaysMonth(this.vtLogoffDivDays),
+										new AttendanceDaysMonthDom(this.vtLogoffDivDays),
 										new AttendanceTimeMonth(this.vtLogoffDivTotalTime),
 										new AttendanceTimeMonth(this.vtLogoffDivAverageTime)))));
 		
@@ -766,7 +766,7 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 						this.krcdtWekTotalTimes.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				AnyItemByPeriod.of(
 						this.krcdtWekAnyItemValue.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
-				new AttendanceDaysMonth(this.aggregateDays));
+				new AttendanceDaysMonthDom(this.aggregateDays));
 	}
 	
 	/**

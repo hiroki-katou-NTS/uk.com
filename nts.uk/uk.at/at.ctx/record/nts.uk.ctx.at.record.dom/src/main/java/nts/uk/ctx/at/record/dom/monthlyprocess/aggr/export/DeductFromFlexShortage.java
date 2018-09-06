@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -27,5 +27,5 @@ public interface DeductFromFlexShortage {
 	 */
 	DeductFromFlexShortageValue calc(String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod period,
-			AttendanceDaysMonth annualLeaveDeductDays, AttendanceTimeMonth absenceDeductTime);
+			AttendanceDaysMonthDom annualLeaveDeductDays, AttendanceTimeMonth absenceDeductTime);
 }
