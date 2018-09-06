@@ -438,6 +438,11 @@ public class ProgramsManager {
 	 */
 	public static final Program KBT002H = new Program(WebAppId.AT, ProgramIdConsts.KBT002H, "KBT002_150",
 			"/view/kbt/002/h/index.xhtml");
+	/**
+	 * KBT002I
+	 */
+	public static final Program KBT002I = new Program(WebAppId.AT, ProgramIdConsts.KBT002I, "KBT002_190",
+			"/view/kbt/002/i/index.xhtml");
 
 	/**
 	 * KDW001A

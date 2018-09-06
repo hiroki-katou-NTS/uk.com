@@ -78,7 +78,7 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 	 * @return the sspmt mastercopy category
 	 */
 	private SspmtMastercopyCategory toEntity(MasterCopyCategory domain) {
-		SspmtMastercopyCategory entity = this.queryProxy().find(domain.getMasterCopyId(), SspmtMastercopyCategory.class)
+		SspmtMastercopyCategory entity = this.queryProxy().find(domain.getCategoryNo(), SspmtMastercopyCategory.class)
 				.orElse(new SspmtMastercopyCategory());
 
 		MasterCopyCategorySetMemento memento = new JpaMasterCopyCategorySetMemento(entity);
