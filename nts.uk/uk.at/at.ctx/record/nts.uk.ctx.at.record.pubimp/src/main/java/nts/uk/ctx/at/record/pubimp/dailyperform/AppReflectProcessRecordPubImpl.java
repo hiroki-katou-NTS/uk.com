@@ -2,11 +2,14 @@ package nts.uk.ctx.at.record.pubimp.dailyperform;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -83,6 +86,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private ClosureService closureService;
 	@Inject
 	private RemainCreateInforByScheData scheData;
+	@Inject
+	private ApprovalStatusAdapter appAdapter;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		boolean output = true;		
@@ -282,7 +287,14 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			if(chkParam.isRecordReflect()) {
 				return output;
 			}
-			//TODO [No.113](中間データ版)承認対象者と期間から承認状況を取得する
+			List<ApprovalRootStateStatusImport> lstRootStatus = appAdapter.getStatusByEmpAndDate(chkParam.getSid(), 
+					new DatePeriod(chkParam.getAppDate(), chkParam.getAppDate()), 1);
+			if(!lstRootStatus.isEmpty()
+					&& lstRootStatus.get(0).getDailyConfirmAtr() == 0) {
+				return output;
+			} else {
+				return false;
+			}
 		} else {
 			//ドメインモデル「反映情報」．予定強制反映をチェックする
 			if(chkParam.isScheReflect()) {
@@ -294,5 +306,4 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		}
 		return output;
 	}
-
 }

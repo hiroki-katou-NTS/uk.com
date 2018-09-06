@@ -113,6 +113,10 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
+                
+                self.printFormat.subscribe(item => {
+                    nts.uk.ui.errors.clearAll();
+                });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
@@ -132,10 +136,6 @@ module nts.uk.at.view.kwr008.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-            checkInput(): boolean {
-                var self = this;
-                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
             }
 
             exportReport() {
@@ -373,7 +373,10 @@ module nts.uk.at.view.kwr008.a {
                 return dfd.promise();
             }
             public validate(): boolean {
-                $('#period').trigger('validate');
+                let self = this;
+                if (self.printFormat() == 0) {
+                    $('#period .ntsDatepicker').trigger('validate');
+                }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
             }
@@ -405,7 +408,7 @@ module nts.uk.at.view.kwr008.a {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };

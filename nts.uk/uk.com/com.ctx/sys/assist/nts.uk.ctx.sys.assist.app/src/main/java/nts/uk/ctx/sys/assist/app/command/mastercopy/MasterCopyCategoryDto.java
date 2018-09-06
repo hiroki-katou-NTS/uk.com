@@ -9,7 +9,7 @@ import lombok.Data;
 public class MasterCopyCategoryDto {
 	
 	/** The master copy id. */
-	private String masterCopyId;
+	private Integer masterCopyId;
 	
 	/** The category name. */
 	private String categoryName;

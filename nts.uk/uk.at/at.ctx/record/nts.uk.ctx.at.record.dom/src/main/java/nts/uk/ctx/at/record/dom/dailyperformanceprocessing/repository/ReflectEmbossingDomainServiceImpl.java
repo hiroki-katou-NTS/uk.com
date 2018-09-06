@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,6 +42,7 @@ import nts.uk.ctx.at.record.dom.stamp.StampMethod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -374,18 +374,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 				break;
 			case 7:
-			case 9://  開始 , 終了
+			case 9:// 開始 , 終了
 					// 9* ドメインモデル「臨時勤務管理」を取得する (Lấy về domain model "臨時勤務管理")
 					// 9*
 				boolean isUse = true;
 				// Optional<TemporaryWorkUseManage>
-				// temporaryWorkUseManageOptional =
-				// this.tempWorkUseManageRepo.findByKey(companyId);
-				// //DungDT
-				// if(temporaryWorkUseManageOptional.isPresent()){
+				// temporaryWorkUseManageOptional = this.tempWorkUseManageRepo
+				// .findByKey(companyId);
+				// if (temporaryWorkUseManageOptional.isPresent()) {
 				// NotUseAtr useClassification =
 				// temporaryWorkUseManageOptional.get().getUseClassification();
-				// isUse = (useClassification.value ==1) ? true :false;
+				// isUse = (useClassification.value == 1) ? true : false;
 				// }
 				if (isUse) {
 					// 10* Chuyển thời gian check tay đang xử lý sang thời gian
@@ -398,20 +397,23 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					if (s.getTemporary().getStart().v().intValue() <= processTimeOutput1.getTimeOfDay().v().intValue()
 							&& s.getTemporary().getEnd().v().intValue() >= processTimeOutput1.getTimeOfDay().v()
 									.intValue()) {
-						// reflect
-						if (x.getStampAtr().value == 7) {
-							// 開始
-							String attendanceClass = "出勤";
-							temporaryPerformance = reflectTimeTemporaryStart(companyId, WorkInfo, attendanceClass,
-									lstStamp, date, employeeId, x, processTimeOutput1, temporaryPerformance);
+						Optional<ManageWorkTemporary> temporaryWorkManageOptional = this.temporaryWorkManageRepo
+								.findByCID(companyId);
+						if (temporaryWorkManageOptional.isPresent()) {
+							// reflect
+							if (x.getStampAtr().value == 7) {
+								// 開始
+								String attendanceClass = "出勤";
+								temporaryPerformance = reflectTimeTemporaryStart(companyId, WorkInfo, attendanceClass,
+										lstStamp, date, employeeId, x, processTimeOutput1, temporaryPerformance);
 
-						} else if (x.getStampAtr().value == 9) {
-							String attendanceClass = "退勤";
-							// 終了
-							temporaryPerformance = reflectTimeTemporaryEnd(companyId, WorkInfo, attendanceClass,
-									lstStamp, date, employeeId, x, processTimeOutput1, temporaryPerformance);
+							} else if (x.getStampAtr().value == 9) {
+								String attendanceClass = "退勤";
+								// 終了
+								temporaryPerformance = reflectTimeTemporaryEnd(companyId, WorkInfo, attendanceClass,
+										lstStamp, date, employeeId, x, processTimeOutput1, temporaryPerformance);
+							}
 						}
-
 					}
 					// 11*
 
@@ -583,22 +585,22 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		reflectStampOutput.setOutingTimeOfDailyPerformance(outingDailyPerformance);
 		reflectStampOutput.setLstStamp(lstStamp);
 		reflectStampOutput.setTemporaryTimeOfDailyPerformance(temporaryPerformance);
-		
-		boolean isPassed =false;
+
+		boolean isPassed = false;
 		for (int i = 0; i < size; i++) {
 
 			StampItem x = lstStampItem.get(i);
-			if(x.getStampAtr().value==0 || x.getStampAtr().value==1){
-				isPassed =true;
+			if (x.getStampAtr().value == 0 || x.getStampAtr().value == 1) {
+				isPassed = true;
 				break;
 			}
 		}
-		if(isPassed){
+		if (isPassed) {
 			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
-		}else{
+		} else {
 			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeDailyPer);
 		}
-		
+
 		return reflectStampOutput;
 
 	}
@@ -713,25 +715,24 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
 				/*
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null
-						&& logOnInfo.getLogOn().isPresent()) {
+				 * if (logOnInfo.getWorkNo().v().intValue() == worktNo &&
+				 * logOnInfo.getLogOn() != null &&
+				 * logOnInfo.getLogOn().isPresent()) { return i; }
+				 */
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo) {
 					return i;
 				}
-				*/
-				if(logOnInfo.getWorkNo().v().intValue() == worktNo){
-					return i;
-				}
-				
+
 			}
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
 				/*
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null
-						&& logOnInfo.getLogOff().isPresent()) {
-					return i;
-				}*/
-				if(logOnInfo.getWorkNo().v().intValue() == worktNo){
+				 * if (logOnInfo.getWorkNo().v().intValue() == worktNo &&
+				 * logOnInfo.getLogOff() != null &&
+				 * logOnInfo.getLogOff().isPresent()) { return i; }
+				 */
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo) {
 					return i;
 				}
 			}
@@ -972,13 +973,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			for (int i = 0; i < attendanceLeavingGateSize; i++) {
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
 				/*
-				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
-						&& attendanceLeavingGate.getAttendance() != null
-						&& attendanceLeavingGate.getAttendance().isPresent()) {
-					return i;
-				}
-				*/
-				if(attendanceLeavingGate.getWorkNo().v().intValue() == worktNo){
+				 * if (attendanceLeavingGate.getWorkNo().v().intValue() ==
+				 * worktNo && attendanceLeavingGate.getAttendance() != null &&
+				 * attendanceLeavingGate.getAttendance().isPresent()) { return
+				 * i; }
+				 */
+				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo) {
 					return i;
 				}
 			}
@@ -986,13 +986,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			for (int i = 0; i < attendanceLeavingGateSize; i++) {
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
 				/*
-				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
-						&& attendanceLeavingGate.getLeaving() != null
-						&& attendanceLeavingGate.getLeaving().isPresent()) {
-					return i; 
-				}
-				*/
-				if(attendanceLeavingGate.getWorkNo().v().intValue() == worktNo){
+				 * if (attendanceLeavingGate.getWorkNo().v().intValue() ==
+				 * worktNo && attendanceLeavingGate.getLeaving() != null &&
+				 * attendanceLeavingGate.getLeaving().isPresent()) { return i; }
+				 */
+				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo) {
 					return i;
 				}
 			}
@@ -1009,7 +1007,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOptional = this.temporaryTimeRepo.findByKey(employeeId,
 				date);
 		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
-		List<TimeLeavingWork> timeLeavingWorks;
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 		if (temporaryPerformance == null) {
 			if (temporaryTimeOptional.isPresent()) {
 				temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
@@ -1034,7 +1032,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					}
 				});
 			} else {
-				return null;
+				temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, new WorkTimes(0),
+						new ArrayList<>(), date);
 			}
 		} else {
 			temporaryTimeOfDailyPerformance = temporaryPerformance;
@@ -1067,17 +1066,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 最大使用回数 = 11;
 		int Maxcount = 3;
 
-		/*
-		 * DungDT Optional<TemporaryWorkManage> TemporaryWorkManageOptional =
-		 * this.temporaryWorkManageRepo.findByKey(companyId);
-		 * if(TemporaryWorkManageOptional.isPresent()){ Maxcount =
-		 * TemporaryWorkManageOptional.get().getMaxUseCount(); }
-		 */
+		Optional<ManageWorkTemporary> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByCID(companyId);
+		if (TemporaryWorkManageOptional.isPresent()) {
+			Maxcount = TemporaryWorkManageOptional.get().getMaxUsage().v();
+		}
 
 		int timeLeavingSize = timeLeavingWorks.size();
 		if (timeLeavingSize < Maxcount) {
 			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
-				timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
+				timeLeavingWorks.add(new TimeLeavingWork(new WorkNo(i), null, null));
 			}
 		} else if (timeLeavingSize > Maxcount) {
 			for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
@@ -1099,19 +1096,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
 				// (k đồng nhất)
 				boolean equal = true;
-				/*
-				 * DUNGDT TimeWithDayAttr tempTime =
-				 * timeLeavingWork.getLeaveStamp().get().getStamp().get().
-				 * getTimeWithDay(); TimeWithDayAttr stamp =
-				 * processTimeOutput.getTimeOfDay(); int timeTreatTempSame=0;
-				 * Optional<TemporaryWorkManage> TemporaryWorkManageOptional =
-				 * this.temporaryWorkManageRepo.findByKey(companyId);
-				 * if(TemporaryWorkManageOptional.isPresent()){
-				 * timeTreatTempSame =
-				 * TemporaryWorkManageOptional.get().getTemporatyStampTime(); }
-				 * equal = this.confirmStampAndTempTimeSame(stamp, tempTime,
-				 * timeTreatTempSame);
-				 */
+
+				TimeWithDayAttr tempTime = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+				TimeWithDayAttr stamp = processTimeOutput.getTimeOfDay();
+				int timeTreatTempSame = 0;
+				timeTreatTempSame = TemporaryWorkManageOptional.get().getTimeTreatTemporarySame().valueAsMinutes();
+
+				equal = this.confirmStampAndTempTimeSame(stamp, tempTime, timeTreatTempSame);
+
 				// 8*
 				if (equal) {
 					// 打刻を出退勤．退勤．実打刻に入れる (Set 打刻 vào 退勤．退勤．実打刻)
@@ -1180,19 +1172,19 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			TimeLeavingWork timeLeavingWork) {
 		// 臨時時刻を丸める
 
-		RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-				"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE):null;
+		RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+				: null;
 		InstantRounding instantRounding = null;
-		if (roudingTime == null) {
-			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-		} else {
+		if (roudingTime != null) {
 			instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 					roudingTime.getRoundingSet().getRoundingTimeUnit());
 		}
 
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-				instantRounding.getRoundingTimeUnit());
+		int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+				instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes() ;
 		processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 		// 7.2.1
 		WorkStamp actualStamp = null;
@@ -1264,20 +1256,19 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						? timeLeavingWork.getLeaveStamp().get().getActualStamp().get() : null;
 		if (leaveStamp == null) {
 			// 臨時時刻を丸める
-
-			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-					"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE):null;
+			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+					: null;
 			InstantRounding instantRounding = null;
-			if (roudingTime == null) {
-				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-			} else {
+			if (roudingTime != null) {
 				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 						roudingTime.getRoundingSet().getRoundingTimeUnit());
 			}
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
 
-			int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-					instantRounding.getRoundingTimeUnit());
+			int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+					instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 			processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 
 			WorkStamp actualStamp = null;
@@ -1376,7 +1367,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOptional = this.temporaryTimeRepo.findByKey(employeeId,
 				date);
 		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
-		List<TimeLeavingWork> timeLeavingWorks;
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 		if (temporaryPerformance == null) {
 			if (temporaryTimeOptional.isPresent()) {
 				temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
@@ -1401,7 +1392,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					}
 				});
 			} else {
-				return null;
+				temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, new WorkTimes(0),
+						new ArrayList<>(), date);
 			}
 		} else {
 			temporaryTimeOfDailyPerformance = temporaryPerformance;
@@ -1432,16 +1424,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 臨時勤務管理 chưa có (fixed)
 		// 最大使用回数 = 11;
 		int Maxcount = 3;
-		/*
-		 * DungDT Optional<TemporaryWorkManage> TemporaryWorkManageOptional =
-		 * this.temporaryWorkManageRepo.findByKey(companyId);
-		 * if(TemporaryWorkManageOptional.isPresent()){ Maxcount =
-		 * TemporaryWorkManageOptional.get().getMaxUseCount(); }
-		 */
+
+		Optional<ManageWorkTemporary> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByCID(companyId);
+		if (TemporaryWorkManageOptional.isPresent()) {
+			Maxcount = TemporaryWorkManageOptional.get().getMaxUsage().v();
+		}
+
 		int timeLeavingSize = timeLeavingWorks.size();
 		if (timeLeavingSize < Maxcount) {
 			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
-				timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
+				timeLeavingWorks.add(new TimeLeavingWork(new WorkNo(i), null, null));
 			}
 		} else if (timeLeavingSize > Maxcount) {
 			for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
@@ -1460,22 +1452,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				// 8* 打刻時刻と臨時時刻が同一か判定する (Đánh giá xem 打刻時刻 và 臨時時刻 có giống
 				// nhau không)
 				// 打刻時刻と臨時時刻が同一か判定する
-				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
-				// (k đồng nhất)
 				boolean equal = true;
-				/*
-				 * DUNGDT TimeWithDayAttr tempTime =
-				 * timeLeavingWork.getAttendanceStamp().get().getStamp().get().
-				 * getTimeWithDay(); TimeWithDayAttr stamp =
-				 * processTimeOutput.getTimeOfDay(); int timeTreatTempSame=0;
-				 * Optional<TemporaryWorkManage> TemporaryWorkManageOptional =
-				 * this.temporaryWorkManageRepo.findByKey(companyId);
-				 * if(TemporaryWorkManageOptional.isPresent()){
-				 * timeTreatTempSame =
-				 * TemporaryWorkManageOptional.get().getTemporatyStampTime(); }
-				 * equal = this.confirmStampAndTempTimeSame(stamp, tempTime,
-				 * timeTreatTempSame);
-				 */
+
+				TimeWithDayAttr tempTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+				TimeWithDayAttr stamp = processTimeOutput.getTimeOfDay();
+				int timeTreatTempSame = 0;
+				if (TemporaryWorkManageOptional.isPresent()) {
+					timeTreatTempSame = TemporaryWorkManageOptional.get().getTimeTreatTemporarySame().valueAsMinutes();
+					equal = this.confirmStampAndTempTimeSame(stamp, tempTime, timeTreatTempSame);
+				}
 
 				// 8*
 				if (equal) {
@@ -1531,17 +1516,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 臨時時刻を丸める
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-				"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE):null;
+		RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+				: null;
 		InstantRounding instantRounding = null;
-		if (roudingTime == null) {
-			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-		} else {
+		if (roudingTime != null) {
 			instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 					roudingTime.getRoundingSet().getRoundingTimeUnit());
 		}
-		int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-				instantRounding.getRoundingTimeUnit());
+		int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+				instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 		processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 		// 7.2.1
 		WorkStamp actualStamp = null;
@@ -1615,18 +1600,18 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 臨時時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-					"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE):null;
+			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+					: null;
 			InstantRounding instantRounding = null;
-			if (roudingTime == null) {
-				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-			} else {
+			if (roudingTime != null) {
 				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 						roudingTime.getRoundingSet().getRoundingTimeUnit());
 			}
 
-			int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-					instantRounding.getRoundingTimeUnit());
+			int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+					instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 			processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 			WorkStamp newActualStamp = null;
 
@@ -1668,18 +1653,19 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				break;
 			}
 			int numberOfReflectionStamp = 0;
-			if (timeLeavingWork.getAttendanceStamp() != null) {
+			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()) {
 				numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get()
 						.getNumberOfReflectionStamp() == null ? 0
 								: timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
 			}
-			return new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(
-					newActualStamp,
+			return new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(newActualStamp,
 					(timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
 									? timeLeavingWork.getAttendanceStamp().get().getStamp().get() : null,
-					numberOfReflectionStamp), (timeLeavingWork.getLeaveStamp()!=null && timeLeavingWork.getLeaveStamp().isPresent())?timeLeavingWork.getLeaveStamp().get():null);
+					numberOfReflectionStamp),
+					(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())
+							? timeLeavingWork.getLeaveStamp().get() : null);
 		}
 		// 反映済み区分 = true
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -1698,7 +1684,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
 								? timeLeavingWork.getAttendanceStamp().get().getStamp().get() : null,
-				numberOfReflectionStamp + 1), (timeLeavingWork.getLeaveStamp()!=null&& timeLeavingWork.getLeaveStamp().isPresent())?timeLeavingWork.getLeaveStamp().get():null);
+				numberOfReflectionStamp + 1),
+				(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())
+						? timeLeavingWork.getLeaveStamp().get() : null);
 
 	}
 
@@ -1737,7 +1725,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
 
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
@@ -1778,7 +1766,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			int outingTimeSize = lstOutingTimeSheet.size();
 			if (outingTimeSize < outingManager) {
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
-					lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+					lstOutingTimeSheet
+							.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
 				}
 			} else if (outingTimeSize > outingManager) {
 				for (int i = 0; i < outingTimeSize - outingManager; i++) {
@@ -1892,7 +1881,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, new AttendanceTime(0), new AttendanceTime(0), null, null));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(), new AttendanceTime(0),
+						new AttendanceTime(0), null, Optional.empty()));
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
 		} else {
@@ -1935,7 +1925,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			int outingTimeSize = lstOutingTimeSheet.size();
 			if (outingTimeSize < outingManager) {
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
-					lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+					lstOutingTimeSheet
+							.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
 				}
 			} else if (outingTimeSize > outingManager) {
 				for (int i = 0; i < outingTimeSize - outingManager; i++) {
@@ -2017,17 +2008,18 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	// 出退勤Listの空枠を削除する
 	private List<TimeLeavingWork> revomeEmptyTimeLeaves(List<TimeLeavingWork> timeLeavingWorks) {
 		List<TimeLeavingWork> newTimeLeavingWorks = new ArrayList<TimeLeavingWork>();
-		List<TimeLeavingWork> newTimeLeavingWorksRemoved = new ArrayList<TimeLeavingWork>();
+		List<TimeLeavingWork> newTimeLeavingWorksHasData = new ArrayList<TimeLeavingWork>();
 		int lstOutingTimeSize = timeLeavingWorks.size();
 		for (int j = 0; j < lstOutingTimeSize; j++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(j);
 
-			if (timeLeavingWork.getAttendanceStamp() != null || timeLeavingWork.getLeaveStamp() != null) {
-				newTimeLeavingWorksRemoved.add(timeLeavingWork);
+			if ((timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent())
+					|| (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())) {
+				newTimeLeavingWorksHasData.add(timeLeavingWork);
 			}
 
 		}
-		timeLeavingWorks = newTimeLeavingWorksRemoved;
+		timeLeavingWorks = newTimeLeavingWorksHasData;
 		Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
 			public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
 				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
@@ -2052,12 +2044,20 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int j = 0; j < timeLeavingWorksSize; j++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(j);
 			if (j < 3) {
-				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j + 1), (timeLeavingWork.getAttendanceStamp()!=null&& timeLeavingWork.getAttendanceStamp().isPresent())?timeLeavingWork.getAttendanceStamp().get():null,
-						(timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().isPresent())?timeLeavingWork.getLeaveStamp().get():null));
+				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j + 1),
+						(timeLeavingWork.getAttendanceStamp() != null
+								&& timeLeavingWork.getAttendanceStamp().isPresent())
+										? timeLeavingWork.getAttendanceStamp().get() : null,
+						(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())
+								? timeLeavingWork.getLeaveStamp().get() : null));
 
 			} else {
-				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j % 3 + 1), (timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().isPresent())?timeLeavingWork.getAttendanceStamp().get():null,
-						(timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().isPresent())?timeLeavingWork.getLeaveStamp().get():null));
+				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j % 3 + 1),
+						(timeLeavingWork.getAttendanceStamp() != null
+								&& timeLeavingWork.getAttendanceStamp().isPresent())
+										? timeLeavingWork.getAttendanceStamp().get() : null,
+						(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())
+								? timeLeavingWork.getLeaveStamp().get() : null));
 			}
 		}
 		return newTimeLeavingWorks;
@@ -2123,8 +2123,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				&& o.getGoOut().get().getActualStamp().isPresent()) ? o.getGoOut().get().getActualStamp().get() : null;
 		if (actualStamp == null) {
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-					"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK):null;
+			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+							"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
+					: null;
 			InstantRounding instantRounding = null;
 			if (roudingTime == null) {
 				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
@@ -2215,8 +2217,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 外出・休憩時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-					"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK):null;
+			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+							"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
+					: null;
 			InstantRounding instantRounding = null;
 			if (roudingTime == null) {
 				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
@@ -2326,8 +2330,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// lý)
 
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-				"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK):null;
+		RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+						"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
+				: null;
 		InstantRounding instantRounding = null;
 		if (roudingTime == null) {
 			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
@@ -2402,8 +2408,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 外出・休憩時刻を丸める
 		// 7.2.1* Làm tròn 打刻時刻 đang xử ly
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-				"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK):null;
+		RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+						"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
+				: null;
 		InstantRounding instantRounding = null;
 		if (roudingTime == null) {
 			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
@@ -2534,17 +2542,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeDailyPer, GeneralDate date,
 			String employeeId, StampItem x, String attendanceClass, String actualStampClass, int worktNo,
 			String companyId) {
- 		TimePrintDestinationOutput timePrintDestinationOutput = new TimePrintDestinationOutput();
+		TimePrintDestinationOutput timePrintDestinationOutput = new TimePrintDestinationOutput();
 		// getReflecDestination Lấy dữ liệu 反映先
 
- 		boolean checkTimeLeavingWorkExist =false;
+		boolean checkTimeLeavingWorkExist = false;
 		// khởi tạo đối tượng mới
 		WorkStamp stampOrActualStamp = null;
 		TimeActualStamp timeActualStamp = null;
 		if (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null
 				&& !timeDailyPer.getTimeLeavingWorks().isEmpty()) {
 			timeActualStamp = this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass);
-			 checkTimeLeavingWorkExist = this.checkTimeLeavingWorkExist(timeDailyPer, worktNo, attendanceClass);
+			checkTimeLeavingWorkExist = this.checkTimeLeavingWorkExist(timeDailyPer, worktNo, attendanceClass);
 			if (timeActualStamp != null && "実打刻".equals(actualStampClass)) {
 				stampOrActualStamp = (timeActualStamp.getActualStamp() != null
 						&& timeActualStamp.getActualStamp().isPresent()) ? timeActualStamp.getActualStamp().get()
@@ -2637,10 +2645,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 打刻を反映する
 					// timePrintDestinationCopy
 					if ("打刻".equals(actualStampClass)) {
-						
-						RoundingSet roudingTime =WorkInfo.getScheduleInfo().getWorkTimeCode()!=null? this.getRoudingTime(companyId,
-								WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
-								"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE):null;
+
+						RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+								? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
+										"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+								: null;
 						InstantRounding instantRounding = null;
 						if (roudingTime == null) {
 							instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
@@ -2701,8 +2710,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// update data TimeLeavingOfDailyPerformance
 
-		if (isNullStampOrActualStamp && isNullTimeActualStamp&& !checkTimeLeavingWorkExist) {
-			List<TimeLeavingWork> lstTimeLeave = (timeDailyPer!=null &&timeDailyPer.getTimeLeavingWorks() != null)
+		if (isNullStampOrActualStamp && isNullTimeActualStamp && !checkTimeLeavingWorkExist) {
+			List<TimeLeavingWork> lstTimeLeave = (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null)
 					? timeDailyPer.getTimeLeavingWorks() : new ArrayList<TimeLeavingWork>();
 
 			if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
@@ -2907,6 +2916,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 		return null;
 	}
+
 	private boolean checkTimeLeavingWorkExist(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo,
 			String attendanceClass) {
 		List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
@@ -2914,17 +2924,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int i = 0; i < n; i++) {
 			TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);
 			if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
-				if((timeLeavingWork.getAttendanceStamp() != null
-						&& timeLeavingWork.getAttendanceStamp().isPresent())
-						||(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())){
+				if ((timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent())
+						|| (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
-	
 
 	// Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻 (true reflect and false no
 	// reflect)
@@ -3107,8 +3114,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst()
-					.get();
+			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
+					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
 		}
 		return null;
 	}
@@ -3117,12 +3124,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			if(stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst()!=null && stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst().isPresent()){
-				return stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst()
-						.get();	
+			if (stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)
+					.findFirst() != null
+					&& stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)
+							.findFirst().isPresent()) {
+				return stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)
+						.findFirst().get();
 			}
 			return null;
-			
+
 		}
 		return null;
 	}
