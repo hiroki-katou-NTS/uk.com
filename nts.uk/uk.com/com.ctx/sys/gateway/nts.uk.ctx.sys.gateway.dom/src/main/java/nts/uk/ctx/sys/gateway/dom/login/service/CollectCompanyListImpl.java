@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -25,6 +26,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
  * @author Doan Duy Hung
  *
  */
+@Stateless
 public class CollectCompanyListImpl implements CollectCompanyList {
 	
 	@Inject
