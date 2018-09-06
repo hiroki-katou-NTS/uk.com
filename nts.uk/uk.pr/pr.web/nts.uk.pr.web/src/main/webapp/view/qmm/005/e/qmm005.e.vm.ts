@@ -1,5 +1,5 @@
-module nts.uk.com.view.qmm005.e.viewmodel {
-    import model = nts.uk.com.view.qmm005.share.model;
+module nts.uk.pr.view.qmm005.e.viewmodel {
+    import model = nts.uk.pr.view.qmm005.share.model;
     export class ScreenModel {
         processingClassification: KnockoutObservable<string>;
         processingYearAD: KnockoutObservable<string>;

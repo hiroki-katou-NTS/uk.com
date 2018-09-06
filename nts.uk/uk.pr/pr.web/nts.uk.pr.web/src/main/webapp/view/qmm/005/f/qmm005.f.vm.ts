@@ -1,5 +1,5 @@
-module nts.uk.com.view.qmm005.f.viewmodel {
-    import model = nts.uk.com.view.qmm005.share.model;
+module nts.uk.pr.view.qmm005.f.viewmodel {
+    import model = nts.uk.pr.view.qmm005.share.model;
     import resource = nts.uk.resource;
     export class ScreenModel {
         itemsSwap: KnockoutObservableArray<ItemModel>;

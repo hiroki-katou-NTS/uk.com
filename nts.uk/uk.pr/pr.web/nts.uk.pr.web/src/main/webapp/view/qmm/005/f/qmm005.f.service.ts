@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm005.f {
+module nts.uk.pr.view.qmm005.f {
     export module service {
         var paths = {
 
