@@ -1898,42 +1898,44 @@ module nts.custombinding {
                     //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
                     if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
-                        let data = ko.toJS(def.lstComboBoxValue),
-                            selected = _.find(data, (f: any) => f.optionValue == def.value());
+                        let fl = true,
+                            val = ko.toJS(def.value),
+                            data = ko.toJS(def.lstComboBoxValue),
+                            selected = _.find(data, (f: any) => _.isEqual(f.optionValue, val));
 
-                        if (!selected) {
-                            def.value(undefined);
-                        } else {
+                        if (selected) {
                             def.defText = selected.optionText;
                         }
 
-                        def.value.subscribe(v => {
-                            if (v) {
-                                let data = ko.toJS(def.lstComboBoxValue),
-                                    selected: any = _.find(data, (f: any) => f.optionValue == v);
+                        ko.computed({
+                            read: () => {
+                                let cbv = ko.toJS(def.value);
 
-                                if (selected) {
-                                    def.textValue(selected.optionText);
+                                if (cbv) {
+                                    let data = ko.toJS(def.lstComboBoxValue),
+                                        selected: any = _.find(data, (f: any) => f.optionValue == cbv);
+
+                                    if (selected) {
+                                        def.textValue(selected.optionText);
+                                    } else {
+                                        def.value(undefined);
+                                        def.textValue(text('CPS001_107'));
+                                    }
                                 } else {
-                                    def.value(undefined);
-                                    def.textValue(text('CPS001_107'));
+                                    def.textValue('');
                                 }
-                            } else {
-                                def.textValue('');
                             }
                         });
                     }
 
-                    if (ko.toJS(access.editAble) == 2) {
-                        def.value.subscribe(x => {
-                            calc_data();
-                        });
-                    }
+                    ko.computed({
+                        read: () => {
+                            ko.toJS(def.editable);
+                            ko.toJS(access.editAble);
 
-                    def.editable.subscribe(x => {
-                        def.value.valueHasMutated();
+                            calc_data();
+                        }
                     });
-                    def.editable.valueHasMutated();
                 },
                 calc_data = () => {
                     if (ko.toJS(access.editAble) == 2) {
