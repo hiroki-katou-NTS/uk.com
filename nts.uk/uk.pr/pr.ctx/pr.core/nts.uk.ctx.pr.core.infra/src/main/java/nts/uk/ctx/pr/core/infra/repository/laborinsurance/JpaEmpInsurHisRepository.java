@@ -9,13 +9,11 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurHis;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurHisRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.InsuPremiumFractionClassification;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBusiBurdenRatio;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurHis;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurHisPk;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsPrRate;
+
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHisRepository;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurHis;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurHisPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -60,7 +58,7 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
 
     @Override
     public void remove(String cid, String hisId){
-        this.commandProxy().remove(QpbmtEmpInsurHis.class, new QpbmtEmpInsurHisPk(cid, hisId)); 
+        this.commandProxy().remove(QpbmtEmpInsurHis.class, new QpbmtEmpInsurHisPk(cid, hisId));
     }
 
 	@Override

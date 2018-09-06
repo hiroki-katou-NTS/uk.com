@@ -2,10 +2,8 @@ package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBusiBurdenRatio;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRate;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
 
 import java.util.List;
 

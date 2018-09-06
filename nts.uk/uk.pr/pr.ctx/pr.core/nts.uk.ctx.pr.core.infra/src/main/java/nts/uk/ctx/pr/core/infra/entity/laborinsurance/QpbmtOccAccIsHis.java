@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHis;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -44,6 +43,8 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
     {
         return occAccIsHisPk;
     }
+
+    public void toDomain();
 
 
 

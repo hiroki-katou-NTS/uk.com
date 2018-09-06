@@ -1,11 +1,12 @@
-package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
+package nts.uk.ctx.pr.core.app.find.laborinsurance;
+
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsPrRateRepository;
 
 @Stateless
 /**
@@ -17,8 +18,8 @@ public class OccAccIsPrRateFinder
     @Inject
     private OccAccIsPrRateRepository finder;
 
-    public OccAccIsPrRateDto getAllOccAccIsPrRate(String hisId){
-        return OccAccIsPrRateDto.fromDomain(finder.getOccAccIsPrRateByHisId(hisId));
+    public nts.uk.ctx.exio.app.find.monsalabonus.laborinsur.OccAccIsPrRateDto getAllOccAccIsPrRate(String hisId){
+        return nts.uk.ctx.exio.app.find.monsalabonus.laborinsur.OccAccIsPrRateDto.fromDomain(finder.getOccAccIsPrRateByHisId(hisId));
     }
 
 }

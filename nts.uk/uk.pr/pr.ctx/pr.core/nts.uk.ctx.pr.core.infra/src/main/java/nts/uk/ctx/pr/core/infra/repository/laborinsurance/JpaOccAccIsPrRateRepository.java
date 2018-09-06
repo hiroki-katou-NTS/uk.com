@@ -2,16 +2,17 @@ package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.*;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurBusBurRatio;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccInsurBus;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsPrRate;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsPrRatePk;
+import nts.uk.ctx.pr.core.dom.laborinsurance.InsuPremiumFractionClassification;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsPrRate;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsPrRatePk;
+
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAccIsPrRateRepository

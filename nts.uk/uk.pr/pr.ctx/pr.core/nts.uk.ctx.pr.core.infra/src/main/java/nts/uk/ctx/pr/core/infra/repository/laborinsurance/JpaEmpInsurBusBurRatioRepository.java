@@ -5,10 +5,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatio;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatioRepository;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurBusBurRatio;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurBusBurRatioPk;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatioRepository;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurBusBurRatio;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurBusBurRatioPk;
+
 
 @Stateless
 public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements EmpInsurBusBurRatioRepository
@@ -30,7 +31,7 @@ public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements E
 
     @Override
     public void remove(String hisId, int empPreRateId){
-        this.commandProxy().remove(QpbmtEmpInsurBusBurRatio.class, new QpbmtEmpInsurBusBurRatioPk(hisId, empPreRateId)); 
+        this.commandProxy().remove(QpbmtEmpInsurBusBurRatio.class, new QpbmtEmpInsurBusBurRatioPk(hisId, empPreRateId));
     }
 
 	@Override

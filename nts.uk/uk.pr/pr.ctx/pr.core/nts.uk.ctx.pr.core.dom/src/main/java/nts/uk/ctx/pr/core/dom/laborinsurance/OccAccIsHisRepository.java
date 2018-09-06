@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHis;
 
 import java.util.Optional;
 import java.util.List;

@@ -1,17 +1,16 @@
 package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHis;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHisRepository;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsHis;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsHisPk;
+
 import java.util.Optional;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHis;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccIsHisRepository;
-
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtEmpInsurHis;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsHis;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsHisPk;
 
 @Stateless
 public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsHisRepository

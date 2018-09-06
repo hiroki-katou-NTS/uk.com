@@ -1,6 +1,8 @@
-package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
+package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatioRepository;
+
+import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurPreRateDto;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatioRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

@@ -1,15 +1,13 @@
 package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.NameOfEachBusiness;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBus;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBusRepository;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.OccAccInsurBusinessName;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccInsurBus;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccInsurBusPk;
-import nts.uk.ctx.exio.infra.entity.monsalabonus.laborinsur.QpbmtOccAccIsHis;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.pr.core.dom.laborinsurance.NameOfEachBusiness;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusRepository;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBus;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBusPk;
+
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;

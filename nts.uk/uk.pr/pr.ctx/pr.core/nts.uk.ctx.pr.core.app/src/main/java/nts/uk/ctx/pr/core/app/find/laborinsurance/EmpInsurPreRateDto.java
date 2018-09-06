@@ -1,8 +1,8 @@
-package nts.uk.ctx.exio.app.find.monsalabonus.laborinsur;
+package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
 
 import java.math.BigDecimal;
 

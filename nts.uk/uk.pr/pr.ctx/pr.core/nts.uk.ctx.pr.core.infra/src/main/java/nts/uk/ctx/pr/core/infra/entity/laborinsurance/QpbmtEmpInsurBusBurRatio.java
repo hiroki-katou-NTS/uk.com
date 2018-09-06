@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.monsalabonus.laborinsur.EmpInsurBusBurRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
