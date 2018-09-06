@@ -1,11 +1,12 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppagepart;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author LamDT
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Embeddable
 public class CcgmtTopPagePartPK implements Serializable {
-	
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
