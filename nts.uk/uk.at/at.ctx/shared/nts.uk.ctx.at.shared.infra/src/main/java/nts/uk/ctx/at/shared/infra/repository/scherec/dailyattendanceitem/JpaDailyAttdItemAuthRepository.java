@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.dailyattendanceitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
@@ -64,6 +66,55 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 			this.commandProxy().insert(dailyServiceTypeControl);
 		}
 
+	}
+	//HoiDD
+	private final String SELECT_ALL_BY_AUTHORITY_DAILY_LIST_ID = "SELECT c FROM KshstDailyServiceTypeControl c"
+			+ " WHERE c.kshstDailyServiceTypeControlPK.companyID = :companyID"
+			+ " AND c.kshstDailyServiceTypeControlPK.authorityDailyID = :authorityDailyID"
+			+ " AND c.toUse = :toUse "
+			+ " ORDER BY c.kshstDailyServiceTypeControlPK.itemDailyID";
+	
+	private final String SELECT_BY_AUTHORITY_DAILY_LIST_ID = "SELECT c FROM KshstDailyServiceTypeControl c"
+			+ " WHERE c.kshstDailyServiceTypeControlPK.companyID = :companyID"
+			+ " AND c.kshstDailyServiceTypeControlPK.authorityDailyID = :authorityDailyID"
+			+ " AND c.kshstDailyServiceTypeControlPK.itemDailyID  IN  :itemDailyIDs"
+			+ " AND c.toUse = :toUse "
+			+ " ORDER BY c.kshstDailyServiceTypeControlPK.itemDailyID";
+	
+	@Override
+	public Optional<DailyAttendanceItemAuthority> getDailyAttdItemByUse(String companyId,
+			String roleId,List<Integer> attendanceItemIds,int toUse) {
+		List<DisplayAndInputControl> data = new  ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, 1000, subIdList -> {
+			data.addAll(
+					this.queryProxy().query(SELECT_BY_AUTHORITY_DAILY_LIST_ID,KshstDailyServiceTypeControl.class)
+					.setParameter("companyID", companyId)
+					.setParameter("authorityDailyID", roleId)
+					.setParameter("itemDailyIDs", attendanceItemIds)
+					.setParameter("toUse", toUse)
+					.getList(c->c.toDomain()));
+			
+		});
+		if(CollectionUtil.isEmpty(data))
+			return Optional.empty();
+		DailyAttendanceItemAuthority dailyItemControlByAuthority = new DailyAttendanceItemAuthority(
+				companyId,roleId,data
+				);
+		return Optional.of(dailyItemControlByAuthority);
+	}
+
+	@Override
+	public Optional<DailyAttendanceItemAuthority> getAllDailyAttdItemByUse(String companyId, String roleId, int toUse) {
+		List<DisplayAndInputControl> data = this.queryProxy()
+				.query(SELECT_ALL_BY_AUTHORITY_DAILY_LIST_ID, KshstDailyServiceTypeControl.class)
+				.setParameter("companyID", companyId).setParameter("authorityDailyID", roleId)
+				.setParameter("toUse", toUse).getList(c -> c.toDomain());
+
+		if (CollectionUtil.isEmpty(data))
+			return Optional.empty();
+		DailyAttendanceItemAuthority monthlyItemControlByAuthority = new DailyAttendanceItemAuthority(companyId, roleId,
+				data);
+		return Optional.of(monthlyItemControlByAuthority);
 	}
 
 }

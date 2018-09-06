@@ -382,7 +382,7 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setChildRemainNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
@@ -399,7 +399,7 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setCareLeaveNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {

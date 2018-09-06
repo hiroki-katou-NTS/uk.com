@@ -37,39 +37,39 @@ public class SpecialLeaveGrantDto12 extends PeregDomainDto {
 
 	// 付与日数
 	@PeregItem("IS00649")
-	private double numberDayGrant;
+	private Double numberDayGrant;
 
 	// 付与時間
 	@PeregItem("IS00650")
-	private int timeGrant;
+	private Integer timeGrant;
 
 	// 使用日数
 	@PeregItem("IS00652")
-	private double numberDayUse;
+	private Double numberDayUse;
 
 	// 使用時間
 	@PeregItem("IS00653")
-	private int timeUse;
+	private Integer timeUse;
 
 	//
-	private double useSavingDays;
+	private Double useSavingDays;
 
 	// 上限超過消滅日数
 	@PeregItem("IS00654")
-	private double numberDaysOver;
-
-	// 残日数
-	@PeregItem("IS00657")
-	private int timeOver;
-
-	// 残時間
-	@PeregItem("IS00658")
-	private double numberDayRemain;
+	private Double numberDaysOver;
 
 	// 上限超過消滅時間
 	@PeregItem("IS00655")
-	private int timeRemain;
+	private Integer timeOver;
 
+	// 残時間
+	@PeregItem("IS00657")
+	private Double numberDayRemain;
+
+	// 残日数
+	@PeregItem("IS00658")
+	private Integer timeRemain;
+	
 	public static SpecialLeaveGrantDto12 createFromDomain(SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto12 dto = new SpecialLeaveGrantDto12();
 		dto.specialid = domain.getSpecialId();
@@ -94,10 +94,10 @@ public class SpecialLeaveGrantDto12 extends PeregDomainDto {
 				: 0;
 		dto.useSavingDays = domain.getDetails().getUsedNumber().getUseSavingDays().isPresent()
 				? domain.getDetails().getUsedNumber().getUseSavingDays().get().v()
-				: 0;
+				: 0d;
 		dto.numberDaysOver = domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
 				? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getNumberOverDays().v()
-				: 0;
+				: 0d;
 		dto.timeOver = (domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
 				&& domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().isPresent())
 						? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().get()
