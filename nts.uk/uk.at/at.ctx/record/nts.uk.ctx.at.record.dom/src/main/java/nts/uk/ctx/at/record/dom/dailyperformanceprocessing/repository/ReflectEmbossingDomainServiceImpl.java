@@ -1177,16 +1177,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 				: null;
 		InstantRounding instantRounding = null;
-		if (roudingTime == null) {
-			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-		} else {
+		if (roudingTime != null) {
 			instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 					roudingTime.getRoundingSet().getRoundingTimeUnit());
 		}
 
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-				instantRounding.getRoundingTimeUnit());
+		int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+				instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes() ;
 		processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 		// 7.2.1
 		WorkStamp actualStamp = null;
@@ -1258,22 +1256,19 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						? timeLeavingWork.getLeaveStamp().get().getActualStamp().get() : null;
 		if (leaveStamp == null) {
 			// 臨時時刻を丸める
-
 			RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
 					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
 							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 					: null;
 			InstantRounding instantRounding = null;
-			if (roudingTime == null) {
-				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-			} else {
+			if (roudingTime != null) {
 				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 						roudingTime.getRoundingSet().getRoundingTimeUnit());
 			}
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
 
-			int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-					instantRounding.getRoundingTimeUnit());
+			int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+					instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 			processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 
 			WorkStamp actualStamp = null;
@@ -1526,14 +1521,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 				: null;
 		InstantRounding instantRounding = null;
-		if (roudingTime == null) {
-			instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-		} else {
+		if (roudingTime != null) {
 			instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 					roudingTime.getRoundingSet().getRoundingTimeUnit());
 		}
-		int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-				instantRounding.getRoundingTimeUnit());
+		int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+				instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 		processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 		// 7.2.1
 		WorkStamp actualStamp = null;
@@ -1611,16 +1604,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
 							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 					: null;
-			InstantRounding instantRounding = roudingTime != null ? roudingTime.getRoundingSet() : null;
-			if (roudingTime == null) {
-				instantRounding = new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.ONE);
-			} else {
+			InstantRounding instantRounding = null;
+			if (roudingTime != null) {
 				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
 						roudingTime.getRoundingSet().getRoundingTimeUnit());
 			}
 
-			int numberMinuteTimeOfDayRounding = roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
-					instantRounding.getRoundingTimeUnit());
+			int numberMinuteTimeOfDayRounding = instantRounding != null ? roudingTimeWithDay(timeOfDay, instantRounding.getFontRearSection(),
+					instantRounding.getRoundingTimeUnit()) : timeOfDay.valueAsMinutes();
 			processTimeOutput.setTimeAfter(new TimeWithDayAttr(numberMinuteTimeOfDayRounding));
 			WorkStamp newActualStamp = null;
 
@@ -3123,8 +3114,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst()
-					.get();
+			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
+					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
 		}
 		return null;
 	}
