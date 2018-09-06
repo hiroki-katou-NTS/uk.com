@@ -141,7 +141,7 @@ public class LeaveManagementService {
 	}
 	public Boolean checkDeadlineCompensatoryLeaveCom(String employeeID, Closure closing,
 			CompensatoryLeaveComSetting compensatoryLeaveComSetting){
-		if(closing !=null){
+		if(closing ==null){
 			return false;
 		}
 		Optional<ClosureDate> closingDate = closing.getClosureDateOfCurrentMonth();
