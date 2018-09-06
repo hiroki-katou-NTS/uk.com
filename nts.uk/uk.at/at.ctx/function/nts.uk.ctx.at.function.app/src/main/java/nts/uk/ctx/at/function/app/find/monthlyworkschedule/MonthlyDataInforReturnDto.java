@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.find.monthlyworkschedule;
 
 import lombok.Data;
 
-// TODO: Auto-generated Javadoc
 /**
  * Instantiates a new monthly data infor return dto.
  */

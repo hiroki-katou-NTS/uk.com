@@ -63,18 +63,18 @@ implements PeregAddCommandHandler<AddResvLeaRemainPeregCommand>{
 		if (grantDays != null || usedDays != null || remainDays != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
-					throw new BusinessException("Msg_925", grantDateItemName);
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 				}
 				if (deadlineDate == null) {
-					throw new BusinessException("Msg_925", deadlineDateItemName);
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 				}
 			}
 		}
 		if (grantDate == null && deadlineDate != null) {
-			throw new BusinessException("Msg_925", grantDateItemName);
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 		}
 		if (deadlineDate == null && grantDate != null) {
-			throw new BusinessException("Msg_925", deadlineDateItemName);
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 		}
 		if (grantDate != null && deadlineDate != null) {
 			// 付与日＞使用期限の場合はエラー #Msg_1023
