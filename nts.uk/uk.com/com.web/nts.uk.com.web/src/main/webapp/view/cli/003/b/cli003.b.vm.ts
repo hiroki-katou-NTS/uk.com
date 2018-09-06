@@ -66,6 +66,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         dateOperator: KnockoutObservable<string>;
         isDisplayTarget: KnockoutObservable<boolean>;
         logTypeSelectedName: KnockoutObservable<string>;
+        tarGetDataTypeSelectedName: KnockoutObservable<string>;
         targetNumber: KnockoutObservable<string>;
         operatorNumber: KnockoutObservable<string>;
 
@@ -370,6 +371,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             self.dateOperator = ko.observable("");
             self.logTypeSelectedName = ko.observable("");
+            self.tarGetDataTypeSelectedName = ko.observable("");
             self.isDisplayTarget = ko.observable(false);
             self.targetNumber = ko.observable("");
             self.operatorNumber = ko.observable("");
@@ -432,6 +434,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
+          getTargetDataTypeName() {
+            var self = this;
+            for (var i = 0; i < self.dataTypeList().length; i++) {
+                let temp = self.dataTypeList()[i];
+                if (temp.code == self.dataTypeSelectedCode()) {
+                    self.tarGetDataTypeSelectedName(temp.name);
+                }
+            }
+        }
+        
         getDateOperator() {
             var self = this;
             self.dateOperator(self.startDateOperator() + " ~ " + self.endDateOperator());
@@ -1029,6 +1041,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             self.setEmployeeListTarget();
             self.getlogTypeName();
+            self.getTargetDataTypeName();
             if (self.validateForm()) {
                 if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
                     if (self.selectedEmployeeCodeTarget().length > 0) {
@@ -1832,6 +1845,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let self = this;
             self.getListEmployeeIdOperator();
             self.getlogTypeName();
+            self.getTargetDataTypeName();
             self.getDateOperator();
             self.getOperatorNumber();
             self.getTargetNumber();
