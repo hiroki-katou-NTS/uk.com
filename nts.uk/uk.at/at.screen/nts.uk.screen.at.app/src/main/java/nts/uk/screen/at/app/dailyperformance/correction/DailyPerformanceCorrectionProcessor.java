@@ -272,9 +272,11 @@ public class DailyPerformanceCorrectionProcessor {
 		dateRange = changeDateRange(dateRange, objectShare, companyId, sId, screenDto);
 		
 		///TODO 表示形式を変更する -- get from Characteristic 
-		
+		DateRange datePeriodResult = dateRange;
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
+		}else if(displayFormat == 1 && !dateRange.getStartDate().equals(dateRange.getEndDate())){
+			dateRange = new DateRange(dateRange.getStartDate(), dateRange.getStartDate());
 		}
 		screenDto.setDateRange(dateRange);
 		/// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
@@ -491,6 +493,7 @@ public class DailyPerformanceCorrectionProcessor {
 			executorService.shutdown();
 		}
 		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
+		screenDto.setDateRange(datePeriodResult);
 		return screenDto;
 	}
 

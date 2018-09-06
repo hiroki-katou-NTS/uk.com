@@ -2,6 +2,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
+    import character = nts.uk.characteristics;
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -15,10 +16,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         { headerText: 'ID', key: 'id', dataType: 'String', width: '30px', ntsControl: 'Label' },
         { headerText: '状<br/>態', key: 'state', dataType: 'String', width: '30px', ntsControl: 'Label' },
         { headerText: 'ER/AL', key: 'error', dataType: 'String', width: '60px', ntsControl: 'Label' },
-        { headerText: nts.uk.resource.getText("KDW003_41"), key: 'date', dataType: 'String', width: '90px', ntsControl: 'Label' },
-        { headerText: nts.uk.resource.getText("KDW003_42"), key: 'sign', dataType: 'boolean', width: '35px', ntsControl: 'Checkbox' },
-        { headerText: nts.uk.resource.getText("KDW003_32"), key: 'employeeCode', dataType: 'String', width: '120px', ntsControl: 'Label' },
-        { headerText: nts.uk.resource.getText("KDW003_33"), key: 'employeeName', dataType: 'String', width: '190px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_41"), key: 'date', dataType: 'String', width: '90px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_42"), key: 'sign', dataType: 'boolean', width: '35px', ntsControl: 'Checkbox' },
+        { headerText: getText("KDW003_32"), key: 'employeeCode', dataType: 'String', width: '120px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_33"), key: 'employeeName', dataType: 'String', width: '190px', ntsControl: 'Label' },
         { headerText: '', key: "picture-person", dataType: "string", width: '35px', ntsControl: 'Image' }
     ];
 
@@ -44,7 +45,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     }
 
     var ITEM_CHANGE = [28, 29, 31, 34, 41, 44];
-    
+
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
     export class ScreenModel {
@@ -214,16 +215,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         lstDomainOld: any = [];
         lstDataSourceLoad: any;
         lstDomainEdit: any = [];
-        
+
         flagCalculation: boolean = false;
-        
-        showLock:  KnockoutObservable<boolean> = ko.observable(true);
-        unLock:  KnockoutObservable<boolean> = ko.observable(false);
-        
-        itemChange:  any = [];
-        
+
+        showLock: KnockoutObservable<boolean> = ko.observable(true);
+        unLock: KnockoutObservable<boolean> = ko.observable(false);
+
+        itemChange: any = [];
+
+        characteristics: Characteristics = {};
+        loadFirst: boolean = true;
+
         constructor(dataShare: any) {
             var self = this;
+
             self.initLegendButton();
             self.initDateRanger();
             self.initDisplayFormat();
@@ -231,39 +236,51 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
-                let headerText
-                _.each(self.optionalHeader, header => {
-                    if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
-                        if (header.group == undefined && header.group == null) {
-                            if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                if (!self.loadFirst) {
+                    let headerText;
+                    self.characteristics.showNumberHeader = val;
+                    character.save('characterKdw003a', self.characteristics);
+                    _.each(self.optionalHeader, header => {
+                        if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
+                            if (header.group == undefined && header.group == null) {
+                                if (self.showHeaderNumber()) {
+                                    headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                                    $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                                } else {
+                                    headerText = header.headerText.split(" ")[0];
+                                    $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                                }
                             } else {
-                                headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
-                            }
-                        } else {
-                            if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
-                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
-                            } else {
-                                headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
+                                if (self.showHeaderNumber()) {
+                                    headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                                    $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
+                                } else {
+                                    headerText = header.headerText.split(" ")[0];
+                                    $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             });
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
                 //if (self.displayFormat() == 1 || self.displayFormat() ==2) {
-                self.displayProfileIcon(self.displayFormat());
-                // }
+                if (!self.loadFirst) {
+                    self.characteristics.showProfile = val;
+                    character.save('characterKdw003a', self.characteristics);
+                    self.displayProfileIcon(self.displayFormat());
+                    // }
+                }
             });
 
             self.displayWhenZero.subscribe(val => {
                 //self.displayWhenZero();
-                self.displayNumberZero();
+                if (!self.loadFirst) {
+                    self.characteristics.showZero = val;
+                    character.save('characterKdw003a', self.characteristics);
+                    self.displayNumberZero();
+                }
             });
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
@@ -287,21 +304,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.getNameMonthly();
                 }
             });
-            
-            $(".grid-container").attr('style', 'height: '+ (window.screen.availHeight -268) +'px !IMPORTANT');
-            
+
+            $(".grid-container").attr('style', 'height: ' + (window.screen.availHeight - 268) + 'px !IMPORTANT');
+
             self.dataHoliday.subscribe(val => {
-                if (val.dispCompensationDay || val.dispCompensationTime) 
+                if (val.dispCompensationDay || val.dispCompensationTime)
                     $('#fixed-table td:nth-child(1), #fixed-table th:nth-child(1)').show();
-                else 
+                else
                     $('#fixed-table td:nth-child(1), #fixed-table th:nth-child(1)').hide();
                 if (val.dispSubstitute)
                     $('#fixed-table td:nth-child(2), #fixed-table th:nth-child(2)').show();
-                else 
+                else
                     $('#fixed-table td:nth-child(2), #fixed-table th:nth-child(2)').hide();
                 if (val.dispAnnualDay || val.dispAnnualTime)
-                    $('#fixed-table td:nth-child(3), #fixed-table th:nth-child(3)').show(); 
-                else 
+                    $('#fixed-table td:nth-child(3), #fixed-table th:nth-child(3)').show();
+                else
                     $('#fixed-table td:nth-child(3), #fixed-table th:nth-child(3)').hide();
                 if (val.dispReserve)
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').show();
@@ -328,8 +345,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
                     { colorCode: '#BFEA60', labelText: '申請反映' },
                     { colorCode: '#F69164', labelText: '計算値' },
-                    { colorCode: '#FD4D4D', labelText: nts.uk.resource.getText("KDW003_44") },
-                    { colorCode: '#F6F636', labelText: nts.uk.resource.getText("KDW003_45") },
+                    { colorCode: '#FD4D4D', labelText: getText("KDW003_44") },
+                    { colorCode: '#F6F636', labelText: getText("KDW003_45") },
                 ]
             };
         }
@@ -373,9 +390,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initDisplayFormat() {
             var self = this;
             self.displayFormatOptions = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("Enum_DisplayFormat_Individual") },
-                { code: 1, name: nts.uk.resource.getText("Enum_DisplayFormat_ByDate") },
-                { code: 2, name: nts.uk.resource.getText("Enum_DisplayFormat_ErrorAlarm") }
+                { code: 0, name: getText("Enum_DisplayFormat_Individual") },
+                { code: 1, name: getText("Enum_DisplayFormat_ByDate") },
+                { code: 2, name: getText("Enum_DisplayFormat_ErrorAlarm") }
             ]);
             self.displayFormat(0);
         }
@@ -419,105 +436,129 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            // delete grid in localStorage
-            self.deleteGridInLocalStorage();
+            character.restore("characterKdw003a").done((obj: Characteristics) => {
+                if (obj != undefined && __viewContext.user.employeeId == obj.employeeId && __viewContext.user.companyId == obj.companyId) {
+                    self.characteristics = obj;
+                    self.showHeaderNumber(obj.showNumberHeader);
+                    self.showProfileIcon(obj.showProfile);
+                    self.displayWhenZero(obj.showZero);
 
-            let dateRangeParam = nts.uk.ui.windows.getShared('DateRangeKDW003');
-            if (!(_.isEmpty(self.shareObject()))) {
-                self.displayFormat(self.shareObject().displayFormat);
-                if (self.shareObject().transitionDesScreen == undefined || self.shareObject().transitionDesScreen == null) {
+                    self.displayFormat(obj.formatExtract);
+
+                    self.formatCodes(obj.authenSelectFormat);
+                }
+
+                var param = {
+                    dateRange: dateRangeParam ? {
+                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
+                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                    } : null,
+                    displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
+                    initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
+                    mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
+                    lstEmployee: [],
+                    formatCodes: self.formatCodes(),
+                    objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(),
+                    showError: _.isEmpty(self.shareObject()) ? null : self.shareObject().errorRefStartAtr
+                };
+                // delete grid in localStorage
+                self.deleteGridInLocalStorage();
+
+                let dateRangeParam = nts.uk.ui.windows.getShared('DateRangeKDW003');
+                if (!(_.isEmpty(self.shareObject()))) {
+                    self.displayFormat(param.displayFormat);
+                    if (self.shareObject().transitionDesScreen == undefined || self.shareObject().transitionDesScreen == null) {
+                        $("#back-navigate").css("visibility", "hidden");
+                    }
+                } else {
+                    self.displayFormat(param.displayFormat);
                     $("#back-navigate").css("visibility", "hidden");
                 }
-            } else {
-                self.displayFormat(0);
-                $("#back-navigate").css("visibility", "hidden");
-            }
-            self.hideComponent();
-            self.showTextStyle = true;
-
-            var param = {
-                dateRange: dateRangeParam ? {
-                    startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                    endDate: moment(dateRangeParam.endDate).utc().toISOString()
-                } : null,
-                displayFormat: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
-                initScreen: 0,
-                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
-                lstEmployee: [],
-                formatCodes: self.formatCodes(),
-                objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject(),
-                showError: _.isEmpty(self.shareObject()) ? null: self.shareObject().errorRefStartAtr
-            };
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            service.startScreen(param).done((data) => {
-                //self.processMapData(data);
-                if (data.lstEmployee == undefined || data.lstEmployee.length == 0) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_1342" }).then(function() {
-                        self.hasEmployee = false;
-                        nts.uk.ui.block.clear();
+                self.hideComponent();
+                self.showTextStyle = true;
+                character.restore("characterKdw003a").done((obj: Characteristics) => {
+                    self.characteristics.employeeId = __viewContext.user.employeeId;
+                    self.characteristics.companyId = __viewContext.user.companyId;
+                    self.characteristics.showZero = self.displayWhenZero();
+                    self.characteristics.showProfile = self.showProfileIcon();
+                    self.characteristics.showNumberHeader = self.showHeaderNumber();
+                    self.characteristics.formatExtract = param.displayFormat;
+                    self.characteristics.authenSelectFormat = param.formatCodes;
+                    character.save('characterKdw003a', self.characteristics);
+                });
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                service.startScreen(param).done((data) => {
+                    //self.processMapData(data);
+                    if (data.lstEmployee == undefined || data.lstEmployee.length == 0) {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_1342" }).then(function() {
+                            self.hasEmployee = false;
+                            nts.uk.ui.block.clear();
+                            dfd.resolve({ bindDataMap: true, data: data });
+                        });
+                    } else {
                         dfd.resolve({ bindDataMap: true, data: data });
-                    });
-                } else {
-                    dfd.resolve({ bindDataMap: true, data: data });
-                }   
-            }).fail(function(error) {
-                if (error.messageId == "Msg_672") {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_672" });
-                } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                        nts.uk.request.jumpToTopPage();
-                    });
+                    }
+                }).fail(function(error) {
+                    if (error.messageId == "Msg_672") {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_672" });
+                    } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
+                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.request.jumpToTopPage();
+                        });
 
-                } else if((error.messageId == undefined && error.errors.length > 0)){
-                     nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
-                        nts.uk.request.jumpToTopPage();
-                    });
-                }else {
-                    nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
-                    nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                        var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
-                        if (dataTemp != undefined) {
-                            let data = [dataTemp];
+                    } else if ((error.messageId == undefined && error.errors.length > 0)) {
+                        nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                            nts.uk.request.jumpToTopPage();
+                        });
+                    } else {
+                        setShared("selectedPerfFmtCodeList", "");
+                        modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                            var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
+                            if (dataTemp != undefined) {
+                                let data = [dataTemp];
 
-                            let param = {
-                                dateRange: dateRangeParam ? {
-                                    startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                                    endDate: moment(dateRangeParam.endDate).utc().toISOString()
-                                } : null,
-                                displayFormat: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
-                                initScreen: 0,
-                                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
-                                lstEmployee: [],
-                                formatCodes: data,
-                                objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
-                            };
-                            nts.uk.ui.block.invisible();
-                            nts.uk.ui.block.grayout();
-                            service.startScreen(param).done((data) => {
-                                //self.processMapData(data);
-                                nts.uk.ui.block.clear();
-                                dfd.resolve({ bindDataMap: true, data: data });
-                            }).fail(function(error) {
-                                if (error.messageId != undefined) {
-                                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                                        nts.uk.request.jumpToTopPage();
-                                    });
+                                let param = {
+                                    dateRange: dateRangeParam ? {
+                                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
+                                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                                    } : null,
+                                    displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
+                                    initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
+                                    mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
+                                    lstEmployee: [],
+                                    formatCodes: data,
+                                    objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
+                                };
+                                self.characteristics.authenSelectFormat = param.formatCodes;
+                                character.save('characterKdw003a', self.characteristics);
+                                nts.uk.ui.block.invisible();
+                                nts.uk.ui.block.grayout();
+                                service.startScreen(param).done((data) => {
+                                    //self.processMapData(data);
+                                    nts.uk.ui.block.clear();
+                                    dfd.resolve({ bindDataMap: true, data: data });
+                                }).fail(function(error) {
+                                    if (error.messageId != undefined) {
+                                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                                            nts.uk.request.jumpToTopPage();
+                                        });
 
-                                } else if ((error.messageId == undefined && error.errors.length > 0)) {
-                                    nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
-                                        nts.uk.request.jumpToTopPage();
-                                    });
-                
-                                //nts.uk.ui.dialog.alert(error.message);
-                                nts.uk.ui.block.clear();
+                                    } else if ((error.messageId == undefined && error.errors.length > 0)) {
+                                        nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                                            nts.uk.request.jumpToTopPage();
+                                        });
+
+                                        //nts.uk.ui.dialog.alert(error.message);
+                                        nts.uk.ui.block.clear();
+                                    };
+                                });
                             };
                         });
+
                     };
                 });
-
-            };
-                });
+            })
             return dfd.promise();
         }
 
@@ -525,6 +566,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             let startTime: number = performance.now();
             console.log(data);
+            self.loadFirst = false;
             self.lstDomainOld = data.domainOld;
             self.lstDomainEdit = _.cloneDeep(data.domainOld);
             if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
@@ -551,7 +593,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox));
             self.showLock(self.showButton().available12());
             self.unLock(false);
-//            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
+            //            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
             // Fixed Header
             self.fixHeaders(data.lstFixedHeader);
             self.showPrincipal(data.showPrincipal);
@@ -614,7 +656,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (data.changeSPR.change34) {
                             //let objectName = {};
                             //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
-                             self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
+                            self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                             //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                             sprStamp.change34 = true;
                         }
@@ -643,7 +685,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //let objectName = {};
                         //objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
                         //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
-                         self.updateCellSpr("_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
+                        self.updateCellSpr("_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
                         sprStamp.change31 = true;
                     }
 
@@ -651,7 +693,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //let objectName = {};
                         //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
                         //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
-                         self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
+                        self.updateCellSpr("_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                         sprStamp.change34 = true;
                     }
                     if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
@@ -660,23 +702,23 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
-            if(data.showErrorDialog){
-               self.showErrorDialog(); 
+            if (data.showErrorDialog) {
+                self.showErrorDialog();
             }
             //alert("time load ALL: "+ (performance.now() - startTime));
         }
-        
+
         loadRemainNumberTable() {
             let self = this;
             service.getRemainNum(self.selectedEmployee()).done((data: any) => {
                 self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
                 self.referenceVacation(
                     new ReferenceVacation(
-                        data.annualLeave == null ? false : data.annualLeave.manageYearOff, 
-                        data.reserveLeave == null ? false: data.reserveLeave.manageRemainNumber,
-                        data.substitutionLeave == null ? false : data.substitutionLeave.manageAtr, 
-                        data.compensatoryLeave == null ? false : data.compensatoryLeave.manageCompenLeave, 
-                        data.com60HVacation == null ? false : data.com60HVacation.manageAtr, 
+                        data.annualLeave == null ? false : data.annualLeave.manageYearOff,
+                        data.reserveLeave == null ? false : data.reserveLeave.manageRemainNumber,
+                        data.substitutionLeave == null ? false : data.substitutionLeave.manageAtr,
+                        data.compensatoryLeave == null ? false : data.compensatoryLeave.manageCompenLeave,
+                        data.com60HVacation == null ? false : data.com60HVacation.manageAtr,
                         self.showButton()));
             });
         }
@@ -696,7 +738,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         convertMinute(value): string {
             return Math.floor(value / 60) + ':' + value % 60;
         }
@@ -717,7 +759,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                 _.each(listFormatDaily, (item) => {
                     let formatDailyItem = _.find(self.listAttendanceItemId(), { 'itemId': item.attendanceItemId });
-                    if(formatDailyItem){
+                    if (formatDailyItem) {
                         formatDailyItem['columnWidth'] = (!_.isNil(item) && !!item.columnWidth) ? item.columnWidth : 100;
                         formatDailyItem['order'] = item.order;
                     }
@@ -795,7 +837,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         insertUpdate() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                 self.dialogShow.close();
             }
@@ -924,7 +966,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.clickFromExtract = false;
                         self.showTextStyle = false;
                         dataChange = {};
-                        if(!_.isEmpty(dataAfter.flexShortage)){
+                        if (!_.isEmpty(dataAfter.flexShortage)) {
                             if (dataAfter.flexShortage.error && dataAfter.flexShortage.messageError.length != 0) {
                                 $("#next-month").ntsError("clear");
                             } else {
@@ -934,7 +976,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 });
                             }
                         }
-                        
+
                         if (_.isEmpty(dataAfter.errorMap) || (dataAfter.errorMap[5] != undefined)) {
                             if (checkDailyChange) {
                                 // self.reloadScreen();
@@ -972,7 +1014,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         dfd.resolve();
                     }).fail((data) => {
-                        nts.uk.ui.block.clear(); 
+                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.alert(data.message);
                         dfd.resolve();
                     });
@@ -986,19 +1028,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             }
         }
-        
+
         btnCalculation_Click() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.calculate(false);
         }
-        
+
         btnReCalculation_Click() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.calculate(true);
         }
-        
+
         calculate(updateAll: boolean) {
             var self = this;
             if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
@@ -1019,7 +1061,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCheckHolidays([]);
                 self.listCheck28([]);
                 self.listCheckDeviation = [];
-                self.listErrorMonth =[];
+                self.listErrorMonth = [];
                 let dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 var dataSource = $("#dpGrid").mGrid("dataSource");
                 let dataChangeProcess: any = [];
@@ -1100,16 +1142,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.clickFromExtract = false;
                     self.showTextStyle = false;
                     dataChange = {};
-                    if(!_.isEmpty(data.resultError.flexShortage)){
-                            if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
-                                $("#next-month").ntsError("clear");
-                            } else {
-                                $("#next-month").ntsError("clear");
-                                _.each(data.resultError.flexShortage.messageError, value => {
-                                    $("#next-month").ntsError("set", value.message, value.messageId);
-                                });
-                            }
+                    if (!_.isEmpty(data.resultError.flexShortage)) {
+                        if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
+                            $("#next-month").ntsError("clear");
+                        } else {
+                            $("#next-month").ntsError("clear");
+                            _.each(data.resultError.flexShortage.messageError, value => {
+                                $("#next-month").ntsError("set", value.message, value.messageId);
+                            });
                         }
+                    }
                     if (_.isEmpty(data.resultError) || (data.resultError.errorMap[5] != undefined)) {
                         self.lstDomainEdit = data.calculatedRows;
                         let lstValue = data.resultValues;
@@ -1119,14 +1161,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.forEach(cellDatas, cell => {
                                 let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
                                 let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
-                                if ((editedCell == null 
-                                    && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target")))) 
+                                if ((editedCell == null
+                                    && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
                                     || updateAll) {
                                     let itemId = self.getItemIdFromColumnKey(cell.columnKey);
                                     let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
                                     if (itemValue)
                                         $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
-                                } 
+                                }
                             });
                         });
                         self.flagCalculation = true;
@@ -1492,6 +1534,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     objectShare: null,
                     showLock: self.showLock()
                 };
+                self.characteristics.formatExtract = param.displayFormat;
+                character.save('characterKdw003a', self.characteristics);
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
@@ -1549,16 +1593,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" })
                     } else {
-                         if (error.messageId != undefined) {
+                        if (error.messageId != undefined) {
                             nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                                 nts.uk.request.jumpToTopPage();
                             });
-    
+
                         } else if ((error.messageId == undefined && error.errors.length > 0)) {
                             nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
                                 nts.uk.request.jumpToTopPage();
                             });
-    
+
                         };
                     }
                     nts.uk.ui.block.clear();
@@ -1606,7 +1650,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         removeErrorRefer() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.listCareError([]);
             self.listCareInputError([]);
             self.listCheckHolidays([]);
@@ -1618,7 +1662,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnExtraction_Click() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.showTextStyle = false;
             self.clickFromExtract = true;
             if (self.isVisibleMIGrid()) {
@@ -1631,7 +1675,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         showErrorDialog() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             let lstEmployee = [];
             let uiErrors: any = $("#dpGrid").mGrid("errors");
             let errorValidateScreeen: any = [];
@@ -1765,14 +1809,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let object = { date: "", employeeCode: emp.code, employeeName: emp.businessName, value, message: value.message, columnKey: "" };
                 errorValidateScreeen.push(object);
             })
-            
+
             // error month flex
             if (self.displayFormat() === 0) {
                 let lst = _.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 });
                 _.each(self.lstErrorFlex, value => {
-                    let object = { date: "", employeeCode: lst.code, employeeName: lst.businessName, value, itemName: nts.uk.resource.getText("KDW003_78"), columnKey: "" };
+                    let object = { date: "", employeeCode: lst.code, employeeName: lst.businessName, value, itemName: getText("KDW003_78"), columnKey: "" };
                     errorValidateScreeen.push(object);
                 });
             }
@@ -1791,8 +1835,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 },
                 lstEmployee: lstEmployee
             };
-            nts.uk.ui.windows.setShared("paramToGetError", param);
-            nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
+            setShared("paramToGetError", param);
+            setShared("errorValidate", errorValidateScreeen);
             self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml").onClosed(function() {
                 let errorCodes = nts.uk.ui.windows.getShared('shareToKdw003aa');
             });
@@ -1800,7 +1844,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         changeExtractionCondition() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (!nts.uk.ui.errors.hasError()) {
                 self.hideComponent();
                 let lstEmployee = [];
@@ -1813,8 +1857,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //  let errorCodes =["0001","0002","003"];     
                 let errorParam = { initMode: 0, selectedItems: [] };
-                nts.uk.ui.windows.setShared("KDW003D_ErrorParam", errorParam);
-                nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
+                setShared("KDW003D_ErrorParam", errorParam);
+                modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
                     let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
                     if (errorCodes != undefined && errorCodes.length > 0) {
@@ -1853,10 +1897,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         selectDisplayItem() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (!nts.uk.ui.errors.hasError()) {
-                nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", self.formatCodes());
-                nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                setShared("selectedPerfFmtCodeList", self.formatCodes());
+                modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
@@ -1881,8 +1925,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             lstEmployee: lstEmployee,
                             formatCodes: data,
                             objectShare: null,
-                            showLock: self.showLock() 
+                            showLock: self.showLock()
                         };
+                        self.characteristics.authenSelectFormat = data;
+                        character.save('characterKdw003a', self.characteristics);
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.startScreen(param).done((data) => {
@@ -1907,31 +1953,31 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         referencesActualResult() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (!nts.uk.ui.errors.hasError()) {
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    nts.uk.ui.windows.setShared("KDL014A_PARAM", {
+                    setShared("KDL014A_PARAM", {
                         startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         employeeID: lstEmployee[0].code
                     });
-                    nts.uk.ui.windows.sub.modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
+                    modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
                 } else if (self.displayFormat() === 1) {
                     lstEmployee = self.lstEmployee().map((data) => {
                         return data.code;
                     });
-                    nts.uk.ui.windows.setShared("KDL014B_PARAM", {
+                    setShared("KDL014B_PARAM", {
                         startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         lstEmployee: lstEmployee
                     });
-                    nts.uk.ui.windows.sub.modal("/view/kdl/014/b/index.xhtml").onClosed(() => {
+                    modal("/view/kdl/014/b/index.xhtml").onClosed(() => {
                     });
                 }
             }
@@ -1939,10 +1985,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         employmentOk() {
             let _self = this;
-            if(!_self.hasEmployee) return;
+            if (!_self.hasEmployee) return;
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.windows.sub.modal("/view/kdl/006/a/index.xhtml").onClosed(() => {
+                modal("/view/kdl/006/a/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
                 });
             }
@@ -1950,7 +1996,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         tighProcess() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             var dataSource = $("#dpGrid").mGrid("dataSource");
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
@@ -1962,18 +2008,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             nts.uk.ui.block.clear();
         }
-        
-        proceedLock(){
+
+        proceedLock() {
             let self = this;
             //Msg_984
             nts.uk.ui.dialog.info({ messageId: "Msg_984" });
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.showLock(true);
             self.unLock(false);
             self.processLockButton(true);
         }
-        
-        proceedUnLock(){
+
+        proceedUnLock() {
             let self = this;
             //Msg_982
             nts.uk.ui.dialog.caution({ messageId: "Msg_982" }).then(() => {
@@ -1984,10 +2030,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             //nts.uk.ui.dialog.info({ messageId: "Msg_982" });
         }
-        
-        processLockButton(showLock: boolean){
+
+        processLockButton(showLock: boolean) {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let lstData = _.map(self.dailyPerfomanceData(), (map) => {
@@ -2004,7 +2050,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 lstEmployee = self.lstEmployee();
             }
-            let param : any= {
+            let param: any = {
                 lstAttendanceItem: self.lstAttendanceItem(),
                 lstEmployee: lstEmployee,
                 dateRange: self.hasEmployee ? {
@@ -2022,7 +2068,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.lock(param).done((data) => {
                 let dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpdate) => {
-                        $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true)
+                    $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true)
                 })
                 setTimeout(() => {
                     let rowIdsTemp = _.uniqBy(data.lstCellState, function(e) {
@@ -2043,10 +2089,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         btnSetting_Click() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             var container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
@@ -2065,7 +2111,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnVacationRemaining_Click() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             var container = $("#vacationRemaining-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
@@ -2084,7 +2130,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnSaveColumnWidth_Click() {
             var self = this;
-             if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             let command = {
                 lstHeader: {},
                 formatCode: self.autBussCode(),
@@ -2189,18 +2235,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         signAll() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             $("#dpGrid").mGrid("checkAll", "sign", true);
             $("#dpGrid").mGrid("checkAll", "approval", true);
         }
-        
+
         releaseAll() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             $("#dpGrid").mGrid("uncheckAll", "sign", true);
             $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
-        
+
         destroyGrid() {
             $("#dpGrid").mGrid("destroy");
             //            $("#dpGrid").empty();
@@ -2209,7 +2255,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //            $('<table id="dpGrid"></table>').appendTo('#gid');
             $("#dpGrid").off();
         }
-        
+
         setColorWeekend() {
             var self = this;
             self.textColors([]);
@@ -2355,7 +2401,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 systemReference: 1,
                 isDisplayOrganizationName: true,
                 employeeInputList: self.lstEmployee,
-                targetBtnText: nts.uk.resource.getText("KCP009_3"),
+                targetBtnText: getText("KCP009_3"),
                 selectedItem: self.selectedEmployee,
                 tabIndex: 1
             };
@@ -2611,13 +2657,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let lock = data.split("|");
                             let tempD = "<span>";
                             for (let i = 1; i < lock.length; i++) {
-                                if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
-                                if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
-                                if (lock[i] == "S") tempD += nts.uk.resource.getText("KDW003_113") + '<br/>';
-                                if (lock[i] == "CM") tempD += nts.uk.resource.getText("KDW003_112") + '<br/>';
-                                if (lock[i] == "AM") tempD += nts.uk.resource.getText("KDW003_68") + '<br/>';
-                                if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
-                                if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
+                                if (lock[i] == "D" || lock[i] == "M") tempD += getText("KDW003_66") + '<br/>';
+                                if (lock[i] == "C") tempD += getText("KDW003_67") + '<br/>';
+                                if (lock[i] == "S") tempD += getText("KDW003_113") + '<br/>';
+                                if (lock[i] == "CM") tempD += getText("KDW003_112") + '<br/>';
+                                if (lock[i] == "AM") tempD += getText("KDW003_68") + '<br/>';
+                                if (lock[i] == "H") tempD += getText("KDW003_70") + '<br/>';
+                                if (lock[i] == "A") tempD += getText("KDW003_69") + '</span>';
                                 $('#textLock').html(tempD);
                             }
                         }
@@ -2627,12 +2673,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 },
                 { name: 'Image', source: 'image-icon', controlType: 'Image' },
                 {
-                    name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
+                    name: 'Button', controlType: 'Button', text: getText("KDW003_63"), enable: true, click: function(data) {
                         __viewContext.vm.clickButtonApplication(data);
                     }
                 },
                 {
-                    name: 'ButtonList', controlType: 'Button', text: nts.uk.resource.getText("KDW003_110"), enable: true, click: function(data) {
+                    name: 'ButtonList', controlType: 'Button', text: getText("KDW003_110"), enable: true, click: function(data) {
                         __viewContext.vm.clickButtonList(data);
                     }
                 }
@@ -2642,7 +2688,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         loadMIGrid(data: any): void {
             let self = this,
                 dataSourceMIGrid: any[] = [{ monthYear: self.monthYear() }],
-                columnsMIGrid: any[] = [{ headerText: nts.uk.resource.getText("KDW003_40"), key: 'monthYear', dataType: 'string', width: '75px' }],
+                columnsMIGrid: any[] = [{ headerText: getText("KDW003_40"), key: 'monthYear', dataType: 'string', width: '75px' }],
                 totalWidthColumn: number = 75,
                 maxWidth: number = window.screen.availWidth - 200;
 
@@ -2658,7 +2704,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_'+attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value): id.value;
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value) : id.value;
                 totalWidthColumn += id.columnWidth;
             });
 
@@ -2703,8 +2749,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let date = moment(dataShare.date, "YYYY/MM/DD");
             $.when(service.getApplication()).done((data) => {
                 dataShare.listValue = data;
-                nts.uk.ui.windows.setShared("shareToKdw003e", dataShare);
-                nts.uk.ui.windows.sub.modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
+                setShared("shareToKdw003e", dataShare);
+                modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
                     let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
                     if (screen == undefined) screen = 1905;
                     let transfer = {
@@ -2809,6 +2855,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         clickButtonList(data) {
+
+            let self = this;
+            let source: any = $("#dpGrid").mGrid("dataSource");
+            let rowItemSelect: any = _.find(source, function(value: any) {
+                return value.id == data.id;
+            })
+
             let dataShareCmm = {
                 appListAtr: 0,
                 appType: -1,
@@ -2817,13 +2870,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 denialStatus: true,//true
                 agentApprovalStatus: true,//true
                 /**承認状況＿差戻*/
-                remandStatus: true,//true
+                remandStatus: true,//true 
                 /**承認状況＿取消*/
                 cancelStatus: true,//true
                 /**申請表示対象*/
                 appDisplayAtr: 0,//0
                 /**社員IDリスト*/
-                listEmployeeId: [],//[]
+                listEmployeeId: [rowItemSelect.employeeId],//[]
                 /**社員絞込条件*/
                 empRefineCondition: "",//'' ,
                 startDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
@@ -2903,7 +2956,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "halign-right";
-                            } else if(header.constraint.cDisplayType == "TimeWithDay"){
+                            } else if (header.constraint.cDisplayType == "TimeWithDay") {
                                 header.constraint["min"] = "-12:00";
                                 header.constraint["max"] = "71:59"
                             }
@@ -2916,7 +2969,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
                                         header["columnCssClass"] = "halign-right";
                                     }
-                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" ) {
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes") {
                                         header["columnCssClass"] = "halign-right";
                                     }
                                 } else {
@@ -3009,7 +3062,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         displayProfileIcon(mode) {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (mode == 0) return;
             if (self.showProfileIcon()) {
                 $("#dpGrid").mGrid("showColumn", "picture-person");
@@ -3020,7 +3073,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         dislayNumberHeaderText() {
             var self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             self.optionalHeader.map((header) => {
                 let headerText = "";
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
@@ -3070,7 +3123,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         displayNumberZero() {
             let self = this;
-            if(!self.hasEmployee) return;
+            if (!self.hasEmployee) return;
             if (!self.displayWhenZero()) {
                 $("#dpGrid").mGrid("hideZero", true)
             } else {
@@ -3110,7 +3163,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 var object = {};
                 if (val == "") {
-                    dfd.resolve(nts.uk.resource.getText("KDW003_82"));
+                    dfd.resolve(getText("KDW003_82"));
                 } else {
                     $.when(service.findCodeName(param)).done((data) => {
                         if (data != undefined) {
@@ -3137,12 +3190,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 });
                             }
 
-                            dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                            dfd.resolve(data == undefined ? getText("KDW003_81") : data.name);
                         } else {
                             _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
                                 return dataTemp.columnKey == columnKey && dataTemp.rowId == rowId;
                             });
-                            dfd.resolve(data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                            dfd.resolve(data == undefined ? getText("KDW003_81") : data.name);
                         }
                     });
                 }
@@ -3170,7 +3223,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     keyId = columnKey.substring(1, columnKey.length);
                 }
             }
-            
+
             let itemChange = _.find(ITEM_CHANGE, function(o) { return o === Number(keyId); });
             if (itemChange == undefined) {
                 dfd.resolve({ id: rowId, item: columnKey, value: value });
@@ -3228,49 +3281,51 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let path: any = _.isEmpty(self.shareObject()) ? "" : self.shareObject().transitionDesScreen;
             nts.uk.request.jump("at", path);
         }
-        
+
         openKDL020Dialog() {
             let self = this;
-            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] } );
+            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] });
             modal('/view/kdl/020/a/index.xhtml');
         }
-        
+
         openKDL009Dialog() {
             var self = this;
             var param = {
                 employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-','').replace('-','')
-            };       
-            nts.uk.ui.windows.setShared('KDL009_DATA', param);       
-//            if(param.employeeIds.length > 1) {
-//                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
-//            } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
-//            }             
+                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
+            };
+            setShared('KDL009_DATA', param);
+            //            if(param.employeeIds.length > 1) {
+            //                modal("/view/kdl/009/a/multi.xhtml");
+            //            } else {
+            modal("/view/kdl/009/a/single.xhtml");
+            //            }             
         }
-        
+
         openkdl029Dialog() {
             let self = this;
-            let param = {employeeIds: [self.selectedEmployee()],
-                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+            let param = {
+                employeeIds: [self.selectedEmployee()],
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
             setShared('KDL029_PARAM', param);
             modal('/view/kdl/029/a/index.xhtml');
         }
-        
+
         openKDL005Dialog() {
             var self = this;
             var param = {
                 employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-','').replace('-','')
+                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
             };
-            nts.uk.ui.windows.setShared('KDL005_DATA', param);
-//            if(param.employeeIds.length > 1) {
-//                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
-//            } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
-//            }
+            setShared('KDL005_DATA', param);
+            //            if(param.employeeIds.length > 1) {
+            //                modal("/view/kdl/005/a/multi.xhtml");
+            //            } else {
+            modal("/view/kdl/005/a/single.xhtml");
+            //            }
         }
-        
+
     }
 
     export class AuthorityDetailModel {
@@ -3430,17 +3485,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.findAllCodeName(param1).done((data) => {
                         self.listCode([]);
                         self.listCode(_.map(data, 'code'));
-                        nts.uk.ui.windows.setShared('KDL002_Multiple', false, true);
+                        setShared('KDL002_Multiple', false, true);
                         //all possible items
-                        nts.uk.ui.windows.setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
+                        setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
                         //selected items
-                        nts.uk.ui.windows.setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
-                        nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                        setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
+                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                             var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                             if (lst != undefined && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code);
                             } else {
-                                self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                                self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                             }
                         })
                         dfd.resolve();
@@ -3465,11 +3520,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.findAllCodeName(param2).done((data) => {
                         self.listCode([]);
                         self.listCode(_.map(data, 'code'));
-                        nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
-                        nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
-                        nts.uk.ui.windows.setShared('kml001selectedCodeList', [self.selectedCode()]);
-                        nts.uk.ui.windows.setShared('kml001isSelection', true);
-                        nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                        setShared('kml001multiSelectMode', false);
+                        setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
+                        setShared('kml001selectedCodeList', [self.selectedCode()]);
+                        setShared('kml001isSelection', true);
+                        modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
                             if (codes) {
                                 codeName = _.find(data, (item: any) => {
@@ -3478,7 +3533,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (codeName != undefined && codes[0] != "") {
                                     self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
                                 } else {
-                                    self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                                    self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                                 }
                             }
                         });
@@ -3490,8 +3545,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     //KDL010 
                     let dfd3 = $.Deferred();
                     nts.uk.ui.block.invisible();
-                    nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.selectedCode());
-                    nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                    setShared('KDL010SelectWorkLocation', self.selectedCode());
+                    modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                         var self = this;
                         var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                         if (returnWorkLocationCD !== undefined && returnWorkLocationCD != "") {
@@ -3510,7 +3565,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                         }
                         else {
-                            if (returnWorkLocationCD == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if (returnWorkLocationCD == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                             dfd3.resolve();
                         }
                     });
@@ -3525,8 +3580,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         reasonCD: self.selectedCode(),
                         divergenceTimeID: no
                     };
-                    nts.uk.ui.windows.setShared('KDL032', dataSetShare);
-                    nts.uk.ui.windows.sub.modal("/view/kdl/032/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                    setShared('KDL032', dataSetShare);
+                    modal("/view/kdl/032/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                         var self = this;
                         var returnData = nts.uk.ui.windows.getShared("ReturnData");
                         if (returnData !== undefined && returnData != "") {
@@ -3547,7 +3602,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                         }
                         else {
-                            if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                             nts.uk.ui.block.clear();
                             dfd4.resolve();
                         }
@@ -3571,12 +3626,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         codeName = _.find(data5, (item: any) => {
                             return item.code == self.selectedCode();
                         });
-                        //                        nts.uk.ui.windows.setShared('inputCDL008', {
+                        //                        setShared('inputCDL008', {
                         //                            selectedCodes: codeName == undefined ? "" : codeName.id,
                         //                            baseDate: dateCon,
                         //                            isMultiple: false
                         //                        }, true);
-                        nts.uk.ui.windows.setShared('inputCDL008', {
+                        setShared('inputCDL008', {
                             selectedCodes: codeName == undefined ? "" : codeName.id,
                             baseDate: dateCon,
                             isMultiple: false,
@@ -3588,7 +3643,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd5.resolve()
                     });
                     dfd5.promise();
-                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
                         // Check is cancel.
                         if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                             return;
@@ -3601,20 +3656,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                             self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
                         } else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                         }
                     })
                     break;
                 case 6:
                     //KCP002
                     let dfd6 = $.Deferred();
-                    nts.uk.ui.windows.setShared('inputCDL003', {
+                    setShared('inputCDL003', {
                         selectedCodes: self.selectedCode(),
                         showNoSelection: false,
                         isMultiple: false
                     }, true);
 
-                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
+                    modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
                         //view all code of selected item 
                         var output = nts.uk.ui.windows.getShared('outputCDL003');
                         if (output != undefined && output != "") {
@@ -3629,7 +3684,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd.resolve()
                             });
                         } else {
-                            if (output == "") self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            if (output == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                             dfd6.resolve()
                         }
                     })
@@ -3651,7 +3706,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         codeName = _.find(data, (item: any) => {
                             return item.code == self.selectedCode();
                         });
-                        nts.uk.ui.windows.setShared('inputCDL004', {
+                        setShared('inputCDL004', {
                             baseDate: dateCon7,
                             selectedCodes: codeName == undefined ? "" : codeName.id,
                             showNoSelection: false,
@@ -3661,7 +3716,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd7.resolve();
                     });
                     dfd7.promise();
-                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
+                    modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                         var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
                         if (isCancel) {
                             return;
@@ -3673,19 +3728,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                             self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
                         } else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                         }
                     })
                     break;
                 case 8:
                     let dfd8 = $.Deferred();
-                    nts.uk.ui.windows.setShared('CDL002Params', {
+                    setShared('CDL002Params', {
                         isMultiple: false,
                         selectedCodes: self.selectedCode(),
                         showNoSelection: false
                     }, true);
 
-                    nts.uk.ui.windows.sub.modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function(): any {
+                    modal('com', '/view/cdl/002/a/index.xhtml').onClosed(function(): any {
                         // nts.uk.ui.block.clear();
                         var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
                         if (isCancel) {
@@ -3705,7 +3760,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd8.resolve();
                             });
                         } else {
-                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "");
                             dfd8.resolve();
                         }
                     })
@@ -3786,10 +3841,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         annualDay: string;
         annualTime: string;
         reserve: string;
-        
+
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
-        
+
         constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any) {
             this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
@@ -3799,52 +3854,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
             if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
-                this.compensationDay = nts.uk.resource.getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
+                this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
                 if (compensatoryLeave.compenLeaveRemain < 0)
-                    $("#fixed-table td.remain-compen-day").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-compen-day").css("color","");
-            } else 
+                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-compen-day").css("color", "");
+            } else
                 this.compensationDay = "";
             if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
                 this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
                 if (compensatoryLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-compen-time").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-compen-time").css("color","");
-            } else 
+                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-compen-time").css("color", "");
+            } else
                 this.compensationTime = "";
             if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
-                this.substitute = nts.uk.resource.getText("KDW003_8", [substitutionLeave.holidayRemain]);
+                this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
-                    $("#fixed-table td.remain-subst-day").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-subst-day").css("color","");
-            } else 
+                    $("#fixed-table td.remain-subst-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-subst-day").css("color", "");
+            } else
                 this.substitute = "";
             if (this.dispAnnualDay && annualLeave.annualLeaveRemain != null) {
-                this.annualDay = nts.uk.resource.getText("KDW003_8", [annualLeave.annualLeaveRemain]);
+                this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
                 if (annualLeave.annualLeaveRemain < 0)
-                    $("#fixed-table td.remain-annual-day").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-annual-day").css("color","");
-            } else 
+                    $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-annual-day").css("color", "");
+            } else
                 this.annualDay = "";
             if (this.dispAnnualTime && annualLeave.timeRemain != null) {
                 this.annualTime = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
                 if (annualLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-annual-time").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-annual-time").css("color","");
-            } else 
+                    $("#fixed-table td.remain-annual-time").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-annual-time").css("color", "");
+            } else
                 this.annualTime = "";
             if (this.dispReserve && reserveLeave.remainNumber != null) {
-                this.reserve = nts.uk.resource.getText("KDW003_8", [reserveLeave.remainNumber]);
+                this.reserve = getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)
-                    $("#fixed-table td.remain-reserve-day").css("color","#ff0000");
-                else 
-                    $("#fixed-table td.remain-reserve-day").css("color","");
-            } else 
+                    $("#fixed-table td.remain-reserve-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-reserve-day").css("color", "");
+            } else
                 this.reserve = "";
         }
     }
@@ -3943,8 +3998,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         constructor(parent: any, dataCalc: CalcFlex, breakTimeDay: BreakTimeDay) {
             let self = this;
-            this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
-            this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
+            this.nameNoOfHolidays = getText('Com_PaidHoliday');
+            this.nameAbsentDeductionTime = getText('KDW003_79');
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
@@ -3981,12 +4036,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.noOfHolidaysOld(val189);
             self.absentDeductionTimeOld(val190);
 
-            self.messageRed(nts.uk.resource.getText('KDW003_80', [redConditionMessage]));
+            self.messageRed(getText('KDW003_80', [redConditionMessage]));
             self.messageRedValue(redConditionMessage);
             self.messageNoForward(messageNotForward);
 
-            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
-            self.nextMonthTransferredMoneyTime(nts.uk.resource.getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
+            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
             if (error && __viewContext.vm.canFlex()) {
@@ -4137,9 +4192,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataAgreement(data: any): void {
             this.showAgreement(data.showAgreement);
             if (!data.showAgreement) return;
-            this.agreementTime(nts.uk.resource.getText("KDW003_74", [data.agreementTime36, data.maxTime]));
+            this.agreementTime(getText("KDW003_74", [data.agreementTime36, data.maxTime]));
             this.cssAgree = data.cssAgree;
-            this.agreementExcess(nts.uk.resource.getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
+            this.agreementExcess(getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
 
             this.processState(data.cssAgree, data.cssFrequency);
@@ -4147,16 +4202,30 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processState(cssAgree: any, cssFrequency: any) {
             if (cssAgree != "" && cssAgree != null) {
-               $("#agree-time").addClass(cssAgree);
-            }else{
-               $('#agree-time').removeClass(); 
+                $("#agree-time").addClass(cssAgree);
+            } else {
+                $('#agree-time').removeClass();
             }
-            
-            if (cssFrequency != "" &&  cssFrequency != null) {
+
+            if (cssFrequency != "" && cssFrequency != null) {
                 $("#agree-excess").removeClass();
             } else {
                 $("#agree-excess").addClass(cssFrequency);
             }
         }
+    }
+
+    interface Characteristics {
+
+        companyId: string;
+        employeeId: string;
+
+        showZero: boolean;
+        showProfile: boolean;
+        showNumberHeader: boolean;
+
+        formatExtract: number;
+
+        authenSelectFormat: any;
     }
 }
