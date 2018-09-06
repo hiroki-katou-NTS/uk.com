@@ -401,7 +401,7 @@ public class ProgramsManager {
 	/**
 	 * KDL020A
 	 */
-	public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL029_1",
+	public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL020_1",
 			"/view/kdl/020/a/index.xhtml");
 	////////////////////
 	/**
