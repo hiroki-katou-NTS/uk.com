@@ -128,6 +128,7 @@ module nts.uk.at.view.kmk008.f {
                                 let periodName = nts.uk.resource.getText(errorCode[1]);
                                 let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                                nts.uk.ui.block.clear();
                                 return;
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -143,6 +144,7 @@ module nts.uk.at.view.kmk008.f {
                             let periodName = nts.uk.resource.getText(errorCode[1]);
                             let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                            nts.uk.ui.block.clear();
                             return;
                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });

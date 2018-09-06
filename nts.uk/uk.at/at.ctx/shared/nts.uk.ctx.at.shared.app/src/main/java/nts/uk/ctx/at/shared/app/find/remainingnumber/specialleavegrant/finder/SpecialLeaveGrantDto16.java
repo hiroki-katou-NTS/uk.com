@@ -58,16 +58,16 @@ public class SpecialLeaveGrantDto16 extends PeregDomainDto {
 	@PeregItem("IS00714")
 	private double numberDaysOver;
 
-	// 残日数
-	@PeregItem("IS00717")
+	// 上限超過消滅時間
+	@PeregItem("IS00715")
 	private int timeOver;
 
 	// 残時間
-	@PeregItem("IS00718")
+	@PeregItem("IS00717")
 	private double numberDayRemain;
 
-	// 上限超過消滅時間
-	@PeregItem("IS00715")
+	// 残日数
+	@PeregItem("IS00718")
 	private int timeRemain;
 
 	public static SpecialLeaveGrantDto16 createFromDomain(SpecialLeaveGrantRemainingData domain) {

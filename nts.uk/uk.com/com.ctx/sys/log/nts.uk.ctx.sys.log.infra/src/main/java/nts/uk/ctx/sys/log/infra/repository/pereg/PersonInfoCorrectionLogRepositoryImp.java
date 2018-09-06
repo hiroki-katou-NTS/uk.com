@@ -162,49 +162,50 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							 */
 							switch (ii.dataValueAttr) {
 							case 1:
-								if (!ii.valueBefore.isEmpty()) {
+								if (ii.valueBefore != null && !ii.valueBefore.isEmpty()) {
 									rvb = RawValue.asString(ii.valueBefore);
 								}
-								if (!ii.valueAfter.isEmpty()) {
+								if (ii.valueAfter != null && !ii.valueAfter.isEmpty()) {
 									rva = RawValue.asString(ii.valueAfter);
 								}
 								break;
 							case 2:
-								if (!ii.valueBefore.isEmpty()) {
+								if (ii.valueBefore != null && !ii.valueBefore.isEmpty()) {
 									rvb = RawValue.asInteger(Integer.parseInt(ii.valueBefore));
 								}
-								if (!ii.valueAfter.isEmpty()) {
+								if (ii.valueAfter != null && !ii.valueAfter.isEmpty()) {
 									rva = RawValue.asInteger(Integer.parseInt(ii.valueAfter));
 								}
 								break;
 							case 3:
-								if (!ii.valueBefore.isEmpty()) {
+								if (ii.valueBefore != null && !ii.valueBefore.isEmpty()) {
 									rvb = RawValue.asDouble(Double.parseDouble(ii.valueBefore));
 								}
-								if (!ii.valueAfter.isEmpty()) {
+								if (ii.valueAfter != null && !ii.valueAfter.isEmpty()) {
 									rva = RawValue.asDouble(Double.parseDouble(ii.valueAfter));
 								}
 								break;
 							case 4:
-								if (!ii.valueBefore.isEmpty()) {
+								if (ii.valueBefore != null && !ii.valueBefore.isEmpty()) {
 									rvb = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueBefore)));
 								}
-								if (!ii.valueAfter.isEmpty()) {
+								if (ii.valueAfter != null && !ii.valueAfter.isEmpty()) {
 									rva = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueAfter)));
 								}
 								break;
 							case 5:
-								if (!ii.valueBefore.isEmpty()) {
+								if (ii.valueBefore != null && !ii.valueBefore.isEmpty()) {
 									rvb = RawValue.asDate(GeneralDate.fromString(ii.valueBefore, "yyyy/MM/dd"));
 								}
-								if (!ii.valueAfter.isEmpty()) {
+								if (ii.valueAfter != null && !ii.valueAfter.isEmpty()) {
 									rva = RawValue.asDate(GeneralDate.fromString(ii.valueAfter, "yyyy/MM/dd"));
 								}
 								break;
 							}
 							
 							return new ItemInfo(ii.itemInfoLogID, ii.itemID, ii.itemName,
-									new Value(rvb, ii.contentBefore), new Value(rva, ii.contentAfter));
+									new Value(rvb, !ii.contentBefore.isEmpty() ? ii.contentBefore : ""),
+									new Value(rva, !ii.contentAfter.isEmpty() ? ii.contentAfter : ""));
 						}).filter(f -> f != null).collect(Collectors.toList());
 
 						// create reviseInfo from dataHistLog
@@ -213,7 +214,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 									Optional.ofNullable(new YearMonth(r.reviseYM)), Optional.ofNullable(r.reviseY));
 						});
 
-						return new CategoryCorrectionLog("UPDATE_ID", ctgcLog.categoryName,
+						return new CategoryCorrectionLog(ctgcLog.categoryID, ctgcLog.categoryName,
 								EnumAdaptor.valueOf(ctgcLog.infoOperateAttr, InfoOperateAttr.class),
 								dhLog.targetKeyYMD != null ? TargetDataKey.of(dhLog.targetKeyYMD, dhLog.stringKey)
 										: dhLog.targetKeyYM != null

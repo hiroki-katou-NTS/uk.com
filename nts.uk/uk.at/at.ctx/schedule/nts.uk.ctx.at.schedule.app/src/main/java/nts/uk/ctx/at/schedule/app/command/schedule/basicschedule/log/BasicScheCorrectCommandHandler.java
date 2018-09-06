@@ -93,7 +93,8 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
 
 		// set correctionAttr
-		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,38,39,43,44,45,46,47,48,49,50,51,52);
+		// attendanceItemId lien quan den SCHE_TIME (lien quan den tinh toan- CALCULATE)
+		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,39,43,44,45,46,47,48,49,50,51,52,102,103);
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
 			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
