@@ -30,7 +30,13 @@
 		<jar-file>lib/nts.uk.file.pr.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.shr.com.jar</jar-file>
-		
+		<jar-file>lib/nts.uk.ctx.at.auth.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.function.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.record.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.request.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.schedule.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
+
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>
 		<class>nts.uk.shr.infra.i18n.entity.SystemResource</class>
 		<class>nts.uk.shr.infra.arc.task.persist.CisdtAsyncTask</class>
