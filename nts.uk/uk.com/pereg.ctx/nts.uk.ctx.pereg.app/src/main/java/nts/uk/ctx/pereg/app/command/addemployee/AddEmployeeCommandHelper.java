@@ -40,9 +40,14 @@ public class AddEmployeeCommandHelper {
 	@Inject
 	private PersonRepository personRepo;
 
-	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
+	public void addBasicData(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId, String employeeId, String comHistId,
 			String companyId) {
 		Optional<ItemsByCategory> affComHist = command.getInputs().stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		
+		if (!affComHist.isPresent()){
+			affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		}
+		
 		// add newPerson
 
 		addNewPerson(personId, command.getEmployeeName());
