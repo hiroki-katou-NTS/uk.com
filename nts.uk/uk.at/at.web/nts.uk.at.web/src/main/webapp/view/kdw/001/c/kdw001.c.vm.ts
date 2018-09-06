@@ -72,7 +72,7 @@ module nts.uk.at.view.kdw001.c {
 
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -81,7 +81,7 @@ module nts.uk.at.view.kdw001.c {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton()
+                    isShowSelectAllButton: false
                 };
 
 
