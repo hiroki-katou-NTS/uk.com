@@ -324,7 +324,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             this.totalErrorCount = totalErrorCount;
             this.totalErrorCountName = this.totalErrorCount.toString() + getText("CMF002_241");
             this.fileName = fileName;
-            this.fileSize = this.fileName == "" ? "" : fileSize + "KB";
+            this.fileSize = fileSize == null ? "" : fileSize + "KB";
         }
 
         updateDeleteFile(deleteFile) {
