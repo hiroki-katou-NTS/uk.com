@@ -175,8 +175,6 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             } else {
-
-                //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
                     if (config) {
                         _.extend(config, {
@@ -266,15 +264,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
 
             if (nts.uk.ui.errors.hasError() === false) {
-                nts.uk.ui.block.grayout();
+                
                 if (!!self.selectVer27()) {
                     service.update([command]).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.block.clear();
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(msg => {
-                        debugger;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                     });
                 } else {
@@ -286,8 +284,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                     service.saveCom(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.block.clear();
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(() => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
