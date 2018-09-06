@@ -1053,7 +1053,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// remove last , in string and add )
 		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
 				+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
