@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
@@ -123,5 +124,34 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.stream().map(x -> new ApprovalRootStateStatusImport(x.getDate(), x.getEmployeeID(), x.getDailyConfirmAtr()))
 				.collect(Collectors.toList());
 		return lstOutput;
+	}
+	
+	@Override
+	public ApprovalRootOfEmployeeImport getApprovalRootOfEmloyeeNew(GeneralDate startDate, GeneralDate endDate,
+			String approverID, String companyID, Integer rootType) {
+		//ApprovalRootOfEmployeeExport 
+		AppEmpStatusExport export = intermediateDataPub.getApprovalEmpStatus(
+				approverID, new DatePeriod(startDate, endDate), rootType);
+		return convertFromExportNew(export);
+	}
+	
+	private ApprovalRootOfEmployeeImport convertFromExportNew(AppEmpStatusExport export) {
+		//ApprovalRootOfEmployeeExport
+		if(export.getRouteSituationLst() != null && export.getEmployeeID() != null){
+		return new ApprovalRootOfEmployeeImport(export.getEmployeeID(),
+				export.getRouteSituationLst().stream().map(situation -> {
+					return new ApprovalRootSituation("",
+							EnumAdaptor.valueOf(situation.getApproverEmpState(), ApproverEmployeeState.class),
+							situation.getDate(),
+							situation.getEmployeeID(),
+							new ApprovalStatus(
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getApprovalAction()).orElse(null),
+											ApprovalActionByEmpl.class),
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getReleaseAtr()).orElse(null),
+											ReleasedProprietyDivision.class)));
+				}).collect(Collectors.toList()));
+		} else {
+			return null;
+		}
 	}
 }
