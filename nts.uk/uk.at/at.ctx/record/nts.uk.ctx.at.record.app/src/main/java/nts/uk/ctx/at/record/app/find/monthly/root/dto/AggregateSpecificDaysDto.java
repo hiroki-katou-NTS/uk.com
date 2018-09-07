@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -31,8 +31,8 @@ public class AggregateSpecificDaysDto implements ItemConst {
 	private double holidayWorkSpecificDays;
 
 	public AggregateSpecificDays toDomain() {
-		return AggregateSpecificDays.of(new SpecificDateItemNo(no), new AttendanceDaysMonthDom(specificDays),
-				new AttendanceDaysMonthDom(holidayWorkSpecificDays));
+		return AggregateSpecificDays.of(new SpecificDateItemNo(no), new AttendanceDaysMonth(specificDays),
+				new AttendanceDaysMonth(holidayWorkSpecificDays));
 	}
 
 	public static AggregateSpecificDaysDto from(AggregateSpecificDays domain) {

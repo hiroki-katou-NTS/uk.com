@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
 /**
@@ -15,7 +15,7 @@ public class AggregateLeaveDays {
 	/** 休業区分 */
 	private CloseAtr leaveAtr;
 	/** 日数 */
-	private AttendanceDaysMonthDom days;
+	private AttendanceDaysMonth days;
 	
 	/**
 	 * コンストラクタ
@@ -24,7 +24,7 @@ public class AggregateLeaveDays {
 	public AggregateLeaveDays(CloseAtr leaveAtr){
 		
 		this.leaveAtr = leaveAtr;
-		this.days = new AttendanceDaysMonthDom(0.0);
+		this.days = new AttendanceDaysMonth(0.0);
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class AggregateLeaveDays {
 	 */
 	public static AggregateLeaveDays of(
 			CloseAtr leaveAtr,
-			AttendanceDaysMonthDom days){
+			AttendanceDaysMonth days){
 		
 		val domain = new AggregateLeaveDays(leaveAtr);
 		domain.days = days;
