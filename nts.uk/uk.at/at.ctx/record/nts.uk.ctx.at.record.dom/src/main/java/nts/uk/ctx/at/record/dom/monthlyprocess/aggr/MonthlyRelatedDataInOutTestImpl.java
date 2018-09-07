@@ -11,9 +11,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
@@ -209,12 +209,12 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val vGoOut = vWorkTime.getGoOut();
 		val vGoOuts = vGoOut.getGoOuts();
 		val aggrGoOut01 = AggregateGoOut.of(GoingOutReason.PRIVATE,
-				new AttendanceTimesMonthDom(10 + randomVal),
+				new AttendanceTimesMonth(10 + randomVal),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
 		val aggrGoOut02 = AggregateGoOut.of(GoingOutReason.PUBLIC,
-				new AttendanceTimesMonthDom(20 + randomVal),
+				new AttendanceTimesMonth(20 + randomVal),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
@@ -240,34 +240,34 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val vWorkDays = verticalTotal.getWorkDays();
 		val vAbsenceDays = vWorkDays.getAbsenceDays();
 		val vAbsenceDaysMap = vAbsenceDays.getAbsenceDaysList();
-		val aggrAbsenceDays01 = AggregateAbsenceDays.of(1, new AttendanceDaysMonthDom(10.0 + randomVal),
+		val aggrAbsenceDays01 = AggregateAbsenceDays.of(1, new AttendanceDaysMonth(10.0 + randomVal),
 				new AttendanceTimeMonth(0));
-		val aggrAbsenceDays02 = AggregateAbsenceDays.of(2, new AttendanceDaysMonthDom(20.0 + randomVal),
+		val aggrAbsenceDays02 = AggregateAbsenceDays.of(2, new AttendanceDaysMonth(20.0 + randomVal),
 				new AttendanceTimeMonth(0));
 		vAbsenceDaysMap.put(1, aggrAbsenceDays01);
 		if (randomVal >= 6) vAbsenceDaysMap.put(2, aggrAbsenceDays02);
 		val vSpecificDays = vWorkDays.getSpecificDays();
 		val vSpecificDaysMap = vSpecificDays.getSpecificDays();
 		val specificDays01 = AggregateSpecificDays.of(new SpecificDateItemNo(1),
-				new AttendanceDaysMonthDom(30.0 + randomVal),
-				new AttendanceDaysMonthDom(0.0));
+				new AttendanceDaysMonth(30.0 + randomVal),
+				new AttendanceDaysMonth(0.0));
 		val specificDays02 = AggregateSpecificDays.of(new SpecificDateItemNo(2),
-				new AttendanceDaysMonthDom(40.0 + randomVal),
-				new AttendanceDaysMonthDom(0.0));
+				new AttendanceDaysMonth(40.0 + randomVal),
+				new AttendanceDaysMonth(0.0));
 		vSpecificDaysMap.put(new SpecificDateItemNo(1), specificDays01);
 		if (randomVal >= 6) vSpecificDaysMap.put(new SpecificDateItemNo(2), specificDays02);
 		val vLeave = vWorkDays.getLeave();
 		val fixLeaveDays = vLeave.getFixLeaveDays();
 		val anyLeaveDays = vLeave.getAnyLeaveDays();
-		val aggrLeaveDays01 = AggregateLeaveDays.of(CloseAtr.PRENATAL, new AttendanceDaysMonthDom(10.0 + randomVal));
-		val aggrLeaveDays02 = AggregateLeaveDays.of(CloseAtr.POSTPARTUM, new AttendanceDaysMonthDom(20.0 + randomVal));
-		val anyLeave01 = AnyLeave.of(1, new AttendanceDaysMonthDom(30.0 + randomVal));
-		val anyLeave02 = AnyLeave.of(2, new AttendanceDaysMonthDom(40.0 + randomVal));
+		val aggrLeaveDays01 = AggregateLeaveDays.of(CloseAtr.PRENATAL, new AttendanceDaysMonth(10.0 + randomVal));
+		val aggrLeaveDays02 = AggregateLeaveDays.of(CloseAtr.POSTPARTUM, new AttendanceDaysMonth(20.0 + randomVal));
+		val anyLeave01 = AnyLeave.of(1, new AttendanceDaysMonth(30.0 + randomVal));
+		val anyLeave02 = AnyLeave.of(2, new AttendanceDaysMonth(40.0 + randomVal));
 		fixLeaveDays.put(CloseAtr.PRENATAL, aggrLeaveDays01);
 		if (randomVal >= 6) fixLeaveDays.put(CloseAtr.POSTPARTUM, aggrLeaveDays02);
 		anyLeaveDays.put(0, anyLeave01);
 		if (randomVal >= 6) anyLeaveDays.put(1, anyLeave02);
-		vWorkDays.getWorkDays().setDays(new AttendanceDaysMonthDom(20.0 +  randomVal));
+		vWorkDays.getWorkDays().setDays(new AttendanceDaysMonth(20.0 +  randomVal));
 		
 		returnValue.setAttendanceTime(Optional.of(attendanceTime));
 		//*****end（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。

@@ -12,7 +12,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
@@ -464,7 +464,7 @@ public class MonthlyCalculation {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
-			Optional<AttendanceDaysMonthDom> annualLeaveDeductDays,
+			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
@@ -611,11 +611,11 @@ public class MonthlyCalculation {
 	 * @param absenceDeductTime 欠勤控除時間
 	 */
 	private void restoreOriginalData(
-			Optional<AttendanceDaysMonthDom> annualDeductDays,
+			Optional<AttendanceDaysMonth> annualDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime){
 		
 		// 年休控除日数・欠勤控除時間
-		AttendanceDaysMonthDom applyAnnualDeductDays = new AttendanceDaysMonthDom(0.0);
+		AttendanceDaysMonth applyAnnualDeductDays = new AttendanceDaysMonth(0.0);
 		AttendanceTimeMonth applyAbsenceDeductTime = new AttendanceTimeMonth(0);
 		if (annualDeductDays.isPresent() || absenceDeductTime.isPresent()){
 			if (annualDeductDays.isPresent()) applyAnnualDeductDays = annualDeductDays.get();
@@ -709,7 +709,7 @@ public class MonthlyCalculation {
 			String companyId, String employeeId,YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod,
-			Optional<AttendanceDaysMonthDom> annualLeaveDeductDays,
+			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -789,7 +789,7 @@ public class MonthlyCalculation {
 					// 年休控除日数と欠勤控除時間があるか確認する
 					if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
 						if (!annualLeaveDeductDays.isPresent()){
-							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonthDom(0.0));
+							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
 						}
 						if (!absenceDeductTime.isPresent()){
 							absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -19,7 +19,7 @@ public class AggregateGoOut {
 	/** 外出理由 */
 	private GoingOutReason goOutReason;
 	/** 回数 */
-	private AttendanceTimesMonthDom times;
+	private AttendanceTimesMonth times;
 	/** 法定内時間 */
 	private TimeMonthWithCalculation legalTime;
 	/** 法定外時間 */
@@ -33,7 +33,7 @@ public class AggregateGoOut {
 	public AggregateGoOut(GoingOutReason goOutReason){
 		
 		this.goOutReason = goOutReason;
-		this.times = new AttendanceTimesMonthDom(0);
+		this.times = new AttendanceTimesMonth(0);
 		this.legalTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.illegalTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.totalTime = TimeMonthWithCalculation.ofSameTime(0);
@@ -50,7 +50,7 @@ public class AggregateGoOut {
 	 */
 	public static AggregateGoOut of(
 			GoingOutReason goOutReason,
-			AttendanceTimesMonthDom times,
+			AttendanceTimesMonth times,
 			TimeMonthWithCalculation legalTime,
 			TimeMonthWithCalculation illegalTime,
 			TimeMonthWithCalculation totalTime){
