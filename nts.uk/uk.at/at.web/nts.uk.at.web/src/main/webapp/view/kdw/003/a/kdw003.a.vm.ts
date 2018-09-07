@@ -969,11 +969,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (!_.isEmpty(dataAfter.flexShortage)) {
                             if (dataAfter.flexShortage.error && dataAfter.flexShortage.messageError.length != 0) {
                                 $("#next-month").ntsError("clear");
-                            } else {
-                                $("#next-month").ntsError("clear");
                                 _.each(dataAfter.flexShortage.messageError, value => {
                                     $("#next-month").ntsError("set", value.message, value.messageId);
                                 });
+                            } else {
+                                $("#next-month").ntsError("clear");
                             }
                         }
 
@@ -1145,11 +1145,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (!_.isEmpty(data.resultError.flexShortage)) {
                         if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                             $("#next-month").ntsError("clear");
-                        } else {
-                            $("#next-month").ntsError("clear");
-                            _.each(data.resultError.flexShortage.messageError, value => {
+                             _.each(data.resultError.flexShortage.messageError, value => {
                                 $("#next-month").ntsError("set", value.message, value.messageId);
                             });
+                        } else {
+                            $("#next-month").ntsError("clear");
                         }
                     }
                     if (_.isEmpty(data.resultError) || (data.resultError.errorMap[5] != undefined)) {
@@ -4049,9 +4049,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-            if (showLstError) {
-                self.displayListError(lstError);
-            }
+//            if (showLstError) {
+//                self.displayListError(lstError);
+//            }
             self.initLoad = 1;
         }
 

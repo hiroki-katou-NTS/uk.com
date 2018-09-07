@@ -403,7 +403,7 @@ public class ValidatorDataDailyRes {
             	messageIds.add("Msg_1390");
             }
             
-		return null;
+		return messageIds;
 	}
 	
 }
