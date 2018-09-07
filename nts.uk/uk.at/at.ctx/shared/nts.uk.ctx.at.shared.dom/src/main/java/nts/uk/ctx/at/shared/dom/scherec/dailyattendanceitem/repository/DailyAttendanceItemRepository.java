@@ -40,4 +40,7 @@ public interface DailyAttendanceItemRepository {
 	 * @return the list
 	 */
 	List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs);
+	
+	List<DailyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs, List<Integer> dailyAttendanceItemIds);
+	
 }

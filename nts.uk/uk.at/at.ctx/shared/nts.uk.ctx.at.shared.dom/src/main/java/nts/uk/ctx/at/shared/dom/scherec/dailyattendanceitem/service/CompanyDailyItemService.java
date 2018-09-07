@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 
 public interface CompanyDailyItemService {
@@ -21,7 +21,7 @@ public interface CompanyDailyItemService {
 	 *            List＜日次勤怠項目の属性＞
 	 * @return
 	 */
-	List<DailyAttendanceItem> getDailyItems(String cid, Optional<String> roleId, List<Integer> attendanceItemIds,
-			List<DailyAttendanceAtr> attribute);
+	List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> roleId, List<Integer> attendanceItemIds,
+			List<DailyAttendanceAtr> itemAtrs);
 
 }
