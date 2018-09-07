@@ -61,11 +61,12 @@
 	                    <!-- A9 -->
 	                    <div data-bind="visible: printFormat() == 1" class="valign-center control-group ntsControl">
 	                    	<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KWR008_52')}</div>
-	                    	<div tabindex="4" data-bind="ntsDatePicker: { 
+	                    	<div id = "A9_2" tabindex="4" data-bind="ntsDatePicker: { 
 	                    		value: fiscalYear, 
 	                    		dateFormat: 'YYYY',
 	                    		valueFormat: 'YYYY',
 	                    		defaultClass: 'round-orange',
+	                    		required: true,
 	                    		showJumpButtons: true}"></div>
 	                    </div>
 					
