@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
@@ -37,7 +37,7 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 	/** フレックス不足から年休と欠勤を控除する */
 	@Override
 	public DeductFromFlexShortageValue calc(String companyId, String employeeId, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate, DatePeriod period, AttendanceDaysMonthDom annualLeaveDeductDays,
+			ClosureId closureId, ClosureDate closureDate, DatePeriod period, AttendanceDaysMonth annualLeaveDeductDays,
 			AttendanceTimeMonth absenceDeductTime) {
 		
 		DeductFromFlexShortageValue returnValue = new DeductFromFlexShortageValue();

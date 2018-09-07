@@ -98,9 +98,9 @@ module cps008.a.viewmodel {
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
             layout.id(undefined);
-            self.enaBtnSave(false);
-            self.enaBtnCoppy(false);
-            self.enaBtnDel(false);
+            self.enaBtnSave(true);
+            self.enaBtnCoppy(true);
+            self.enaBtnDel(true);
             layout.code(null);
             layout.name(null);
             layout.classifications([]);
