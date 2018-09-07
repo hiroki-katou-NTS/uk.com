@@ -224,10 +224,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		conditions.add(cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
 				cb.lessThan(root.get(EmployeeDataView_.comEndDate), start))));
 
-		Predicate incumbentCondition = cb.conjunction();
-		Predicate workerOnLeaveCondition = cb.conjunction();
-		Predicate occupancyCondition = cb.conjunction();
-		Predicate retireCondition = cb.conjunction();
+		Predicate incumbentCondition = cb.disjunction();
+		Predicate workerOnLeaveCondition = cb.disjunction();
+		Predicate occupancyCondition = cb.disjunction();
+		Predicate retireCondition = cb.disjunction();
 
 		// includeIncumbents
 		if (paramQuery.getIncludeIncumbents()) {
