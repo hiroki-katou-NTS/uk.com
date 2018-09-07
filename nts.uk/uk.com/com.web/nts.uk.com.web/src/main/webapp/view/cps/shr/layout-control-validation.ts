@@ -1,4 +1,9 @@
 module nts.layout {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'];
+    
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import nou = nts.uk.util.isNullOrUndefined;
@@ -1786,7 +1791,7 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbl = grantTbl ? ko.toJS(grantTbl.data.value): null;
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null;
                             
                             // 
 
@@ -1800,7 +1805,7 @@ module nts.layout {
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
-                                grantTable: grantTbl
+                                grantTable: grantTbls
                             }).done(res => {
                                 let x = moment.utc(ko.toJS(res));
                                 if (x._isValid)

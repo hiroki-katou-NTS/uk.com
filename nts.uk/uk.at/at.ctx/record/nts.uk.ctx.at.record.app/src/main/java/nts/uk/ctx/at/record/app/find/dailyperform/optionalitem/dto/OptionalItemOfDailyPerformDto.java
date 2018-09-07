@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -52,6 +53,18 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
 							OptionalItemValueDto.from(c, getAttrFromMasterWith(master, c))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public OptionalItemOfDailyPerformDto clone() {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+			dto.setDate(workingDate());
+			dto.setEmployeeId(employeeId());
+			dto.setOptionalItems(optionalItems == null ? null : optionalItems.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;

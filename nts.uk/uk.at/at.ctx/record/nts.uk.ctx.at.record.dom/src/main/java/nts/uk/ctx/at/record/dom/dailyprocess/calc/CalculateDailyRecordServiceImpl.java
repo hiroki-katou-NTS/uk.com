@@ -233,9 +233,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting
-										,Optional<WorkInfoOfDailyPerformance> yesterDayInfo
-										,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+	public IntegrationOfDaily calculate(CalculateOption calculateOption,
+			IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
+			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 		
@@ -246,14 +247,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			companyCommonSetting.setShareContainer(MasterShareBus.open());
 		}
 		// 実績データの計算
-		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
-		//大塚モードの処理
-		val afterOOtsukaModeCalc = replaceStampForOOtsuka(afterCalcResult, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+		IntegrationOfDaily result = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
 		
-		//任意項目の計算
-		val aftercalcOptionalItemResult = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
-		//エラーチェック
-		IntegrationOfDaily result = calculationErrorCheckService.errorCheck(aftercalcOptionalItemResult,companyCommonSetting);
+		if (!calculateOption.isSchedule()) {
+			//大塚モードの処理
+			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+			
+			//任意項目の計算
+			result = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
+		}
+		
+		if (!calculateOption.isMasterTime()) {
+			//エラーチェック
+			result = calculationErrorCheckService.errorCheck(result, companyCommonSetting);
+		}
 		
 		if(isShareContainerNotInit) {
 			companyCommonSetting.getShareContainer().clearAll();
@@ -261,7 +268,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		return result;
 	}
-
+	
+	
+	
+		
 	//大塚モード(計算項目置き換えと計算)
 	private IntegrationOfDaily replaceStampForOOtsuka(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo, DailyRecordToAttendanceItemConverter converter) {
 		if(integrationOfDaily.getPcLogOnInfo().isPresent()) {
@@ -580,19 +590,25 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			List<OverTimeOfTimeZoneSet> flexOtSetting = Collections.emptyList();
 			List<EmTimeZoneSet> flexWoSetting = Collections.emptyList();
 			if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
-				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone();
-				flexWoSetting = timeSheet.getLstWorkingTimezone();
-				flexOtSetting = timeSheet.getLstOTTimezone();
+				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get();
+				fixRestTimeSet = timeSheet.getRestTimezone().isFixRestTime()?Optional.of(new FixRestTimezoneSet(timeSheet.getRestTimezone().getFixedRestTimezone().getTimezones())):Optional.empty();
+				flexWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+				flexOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
 			}
 			else if(workType.get().getAttendanceHolidayAttr().isMorning()) {
-				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.AM)).findFirst().get().getWorkTimezone();
-				flexWoSetting = timeSheet.getLstWorkingTimezone();
-				flexOtSetting = timeSheet.getLstOTTimezone();
+				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.AM)).findFirst().get();
+				fixRestTimeSet = timeSheet.getRestTimezone().isFixRestTime()?Optional.of(new FixRestTimezoneSet(timeSheet.getRestTimezone().getFixedRestTimezone().getTimezones())):Optional.empty();
+				flexWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+				flexOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
 			}
 			else if(workType.get().getAttendanceHolidayAttr().isAfternoon()) {
-				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.PM)).findFirst().get().getWorkTimezone();
-				flexWoSetting = timeSheet.getLstWorkingTimezone();
-				flexOtSetting = timeSheet.getLstOTTimezone();
+				val timeSheet = flexWorkSetOpt.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.PM)).findFirst().get();
+				fixRestTimeSet = timeSheet.getRestTimezone().isFixRestTime()?Optional.of(new FixRestTimezoneSet(timeSheet.getRestTimezone().getFixedRestTimezone().getTimezones())):Optional.empty();
+				flexWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+				flexOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
+			}
+			else {
+				fixRestTimeSet = flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().isFixRestTime()?Optional.of(new FixRestTimezoneSet(flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones())):Optional.empty();
 			}
 			
 			statutoryOverFrameNoList = flexOtSetting.stream()
@@ -667,19 +683,25 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				List<EmTimeZoneSet> fixWoSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
-					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone();
-					fixWoSetting = timeSheet.getLstWorkingTimezone();
-					fixOtSetting = timeSheet.getLstOTTimezone();
+					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get();
+					fixWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+					fixOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
+					fixRestTimeSet = Optional.of(timeSheet.getRestTimezone());
 				}
 				else if(workType.get().getAttendanceHolidayAttr().isMorning()) {
-					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)).findFirst().get().getWorkTimezone();
-					fixWoSetting = timeSheet.getLstWorkingTimezone();
-					fixOtSetting = timeSheet.getLstOTTimezone();
+					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)).findFirst().get();
+					fixWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+					fixOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
+					fixRestTimeSet = Optional.of(timeSheet.getRestTimezone());
 				}
 				else if(workType.get().getAttendanceHolidayAttr().isAfternoon()) {
-					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.PM)).findFirst().get().getWorkTimezone();
-					fixWoSetting = timeSheet.getLstWorkingTimezone();
-					fixOtSetting = timeSheet.getLstOTTimezone();
+					val timeSheet = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.PM)).findFirst().get();
+					fixWoSetting = timeSheet.getWorkTimezone().getLstWorkingTimezone();
+					fixOtSetting = timeSheet.getWorkTimezone().getLstOTTimezone();
+					fixRestTimeSet = Optional.of(timeSheet.getRestTimezone());
+				}
+				else {
+					fixRestTimeSet = Optional.of(fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone());
 				}
 					
 				
@@ -687,29 +709,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 				ootsukaFixedWorkSet = fixedWorkSetting.get().getCalculationSetting();
 				
-				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
-				if(workType.get().getDailyWork().getAttendanceHolidayAttr().isHoliday()) {
-					a = fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone();
-				}
-				else {
-					if(workType.get().getDailyWork().getWorkTypeUnit().isOneDay()) {
-						a = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
-								  .filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY))
-								  .map(tc -> tc.getRestTimezone().getLstTimezone())
-								  .flatMap(tc -> tc.stream())
-								  .collect(Collectors.toList());
-					}
-					else {
-						a = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
-								  .filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)
-										  		 || tc.getDayAtr().equals(AmPmAtr.PM))
-								  .map(tc -> tc.getRestTimezone().getLstTimezone())
-								  .flatMap(tc -> tc.stream())
-								  .collect(Collectors.toList());
-					}
-
-				}
-				fixRestTimeSet = Optional.of(new FixRestTimezoneSet(a));
+	
+				
 				statutoryOverFrameNoList = fixOtSetting.stream()
 													   .map(tc -> new OverTimeFrameNo(tc.getLegalOTframeNo().v()))
 													   .collect(Collectors.toList());

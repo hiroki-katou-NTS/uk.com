@@ -104,7 +104,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(integraionList, companySetting);
+		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(new CalculateOption(true, true), integraionList, companySetting);
 	}
 
 	/**

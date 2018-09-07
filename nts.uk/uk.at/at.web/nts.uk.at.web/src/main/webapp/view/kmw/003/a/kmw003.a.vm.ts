@@ -863,7 +863,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.actualTimeSelectedCode.subscribe(code => {
                dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
             });
-            $("#dpGrid").ntsGrid({
+            new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
                 headerHeight: '50px',
@@ -887,8 +887,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
-           //});
-                }).create();
+            }).create();
         };
         /**********************************
         * Grid Data Setting 

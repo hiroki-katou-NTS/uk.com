@@ -48,7 +48,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 			Integer timeOfUse, BigDecimal useSavingDays, BigDecimal numberOverdays, Integer timeOver,
 			BigDecimal dayNumberOfRemain, Integer timeOfRemain , String grantDateItemName , String deadlineDateItemName) {
 
-		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, useSavingDays,
+		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays,
 				dayNumberOfRemain , grantDateItemName , deadlineDateItemName);
 		if (check) {
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
@@ -91,27 +91,27 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	
 
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
-			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal useSavingDays,
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
 			BigDecimal dayNumberOfRemain , String grantDateItemName ,String deadlineDateItemName) {
 		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && dayNumberOfUse == null
-				&& useSavingDays == null && dayNumberOfRemain == null)
+				&& numberOverdays == null && dayNumberOfRemain == null)
 			return false;
 
 		if (dayNumberOfGrant != null || dayNumberOfUse != null || dayNumberOfRemain != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
-					throw new BusinessException("Msg_925", grantDateItemName);
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 				}
 				if (deadlineDate == null) {
-					throw new BusinessException("Msg_925", deadlineDateItemName);
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 				}
 			}
 		}
 		if (grantDate == null && deadlineDate != null) {
-			throw new BusinessException("Msg_925", grantDateItemName);
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 		}
 		if (deadlineDate == null && grantDate != null) {
-			throw new BusinessException("Msg_925", deadlineDateItemName);
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 		}
 		if (grantDate != null && deadlineDate != null) {
 			// 付与日＞使用期限の場合はエラー #Msg_1023

@@ -137,11 +137,13 @@ module cps002.a.vm {
                         $('#ccgcomponent').css('visibility', 'hidden');
                     }
 
-                    if (step == 2) {
-                        $('#emp_reg_info_wizard').css('min-height', '740px');
-                    } else {
-                        $('#emp_reg_info_wizard').css('min-height', $('.body.current').height() + 'px');
-                    }
+                    setTimeout(() => {
+                        if (step == 2) {
+                            $('#emp_reg_info_wizard').css('min-height', '740px');
+                        } else {
+                            $('#emp_reg_info_wizard').css('min-height', $('.body.current').height() + 'px');
+                        }
+                    }, 100);
                 }
             });
 
@@ -321,6 +323,8 @@ module cps002.a.vm {
             });
             self.checkLicense();
             self.start();
+            
+            self.currentStep.valueHasMutated();
         }
 
         loadCopySettingItemData() {

@@ -24,4 +24,9 @@ public class WorkScheduleTimeDto implements ItemConst {
 	
 	/** 所定内時間: 勤怠時間 */
 	private Integer withinStatutoryTime;
+	
+	@Override
+	public WorkScheduleTimeDto clone() {
+		return new WorkScheduleTimeDto(total, excessOfStatutoryTime, withinStatutoryTime);
+	}
 }

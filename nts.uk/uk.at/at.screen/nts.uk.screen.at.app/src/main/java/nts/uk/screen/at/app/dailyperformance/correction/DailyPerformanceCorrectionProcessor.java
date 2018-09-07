@@ -1659,5 +1659,9 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setCellSate(rowId, columnKey, COLOR_SAT);
 		}
 	}
+	
+	public void requestForFlush(){
+		this.repo.requestForFlush();
+	}
 }
  

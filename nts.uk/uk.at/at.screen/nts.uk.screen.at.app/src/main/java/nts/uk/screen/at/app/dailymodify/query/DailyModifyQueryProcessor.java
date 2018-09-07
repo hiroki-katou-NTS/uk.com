@@ -31,9 +31,14 @@ public class DailyModifyQueryProcessor {
 		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty() || query.getPeriod() == null){
 			return new ArrayList<>();
 		}
-		return this.fullFinder.find(query.getEmployeeIds(), query.getPeriod()).stream()
-				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, itemIds))
-						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+		
+		return AttendanceItemUtil.toItemValues(this.fullFinder.find(query.getEmployeeIds(), query.getPeriod()), itemIds)
+			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
+						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.collect(Collectors.toList());
+//		return this.fullFinder.find(query.getEmployeeIds(), query.getPeriod()).stream()
+//				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, itemIds))
+//						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//				.collect(Collectors.toList());
 	}
 }

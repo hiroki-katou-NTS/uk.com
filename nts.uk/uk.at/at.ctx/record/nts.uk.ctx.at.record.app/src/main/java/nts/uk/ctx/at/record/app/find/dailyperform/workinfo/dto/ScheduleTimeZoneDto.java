@@ -26,4 +26,9 @@ public class ScheduleTimeZoneDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer leave;
+
+	@Override
+	protected ScheduleTimeZoneDto clone() {
+		return new ScheduleTimeZoneDto(no, working, leave);
+	}
 }

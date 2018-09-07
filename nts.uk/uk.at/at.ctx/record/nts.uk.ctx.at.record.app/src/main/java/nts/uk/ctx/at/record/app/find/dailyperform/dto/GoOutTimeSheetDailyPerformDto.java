@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,6 +55,19 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	/** 補正後時間帯: 外出時間帯 */
 	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = AFTER_CORRECTED, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<GoOutTimeDto> goOutTime;
+	
+	@Override
+	public GoOutTimeSheetDailyPerformDto clone(){
+		return new GoOutTimeSheetDailyPerformDto(
+						valicationUseTime == null ? null : valicationUseTime.clone(), 
+						totalTimeForDeduction == null ? null : totalTimeForDeduction.clone(), 
+						totalTimeForCalc == null ? null : totalTimeForCalc.clone(), 
+						coreTotalTimeForDeduction == null ? null : coreTotalTimeForDeduction.clone(),  
+						coreTotalTimeForCalc == null ? null : coreTotalTimeForCalc.clone(), 
+						times, 
+						attr, 
+						goOutTime == null ? null : goOutTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+	}
 
 	public String enumText() {
 		switch (this.attr) {

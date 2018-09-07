@@ -31,6 +31,7 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleRes
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
+import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
@@ -185,6 +186,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private ScTimeAdapter scTimeAdapter;
 
 
 	/** The Constant DEFAULT_CODE. */
@@ -750,6 +754,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// get info by context
 		val asyncTask = context.asAsync();
+		
+		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
+		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 
 		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
 			
@@ -782,6 +789,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
 					commandReset.setTargetStartDate(period.start());
 					commandReset.setTargetEndDate(period.end());
+					commandReset.setCompanySetting(companySetting);
 					// スケジュールを再設定する (Thiết lập lại schedule)
 					this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
 							empGeneralInfo, listBusTypeOfEmpHis, listBasicSchedule, registrationListDateSchedule);
@@ -789,6 +797,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					// 入力パラメータ「作成方法区分」を判断-check parameter
 					// CreateMethodAtr
 					if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+						command.setCompanySetting(companySetting);
 						this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
 								scheduleExecutionLog, context, betweenDates, empGeneralInfo,
 								mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,

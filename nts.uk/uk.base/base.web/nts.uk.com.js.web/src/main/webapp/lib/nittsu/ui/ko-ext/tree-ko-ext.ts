@@ -44,6 +44,7 @@ module nts.uk.ui.koExtentions {
             if (!nts.uk.util.isNullOrEmpty(rows)) {
                 height = rows* ROW_HEIGHT;    
             }
+            $(element).addClass("ig-tree-background");
             
             let $tree = $(element);
             

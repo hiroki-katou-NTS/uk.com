@@ -107,9 +107,30 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
         displayReasonLst: Array<common.DisplayReason> = []; 
+        //No.65 + No.376
+        pridigCheck: KnockoutObservable<boolean> = ko.observable(true);
+        numberSubHd: KnockoutObservable<number> = ko.observable(0);
+        numberSubVaca: KnockoutObservable<number> = ko.observable(0);
+        settingNo65: KnockoutObservable<common.SettingNo65> = ko.observable(null);
+        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
+        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
+        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
+        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
+        numberRemain: KnockoutObservableArray<any> = ko.observableArray([]);
+        yearDis: KnockoutObservable<boolean> = ko.observable(false);
+        subHdDis: KnockoutObservable<boolean> = ko.observable(false);
+        subVacaDis: KnockoutObservable<boolean> = ko.observable(false);
+        stockDis: KnockoutObservable<boolean> = ko.observable(false);
+        //ver20
+        disAll: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
+            $(document).ajaxStart(function() {
+                nts.uk.ui.block.invisible();
+            }).ajaxStop(function() {
+                nts.uk.ui.block.clear();
+            });
             if(transferData != null){
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
@@ -167,6 +188,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
             });
         }
+        
         /**
          * 
          */
@@ -180,6 +202,35 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
                 $("#inputdate").focus();
+                //No.65
+                if(data.setingNo65 != null){
+                    self.settingNo65(new common.SettingNo65(data.setingNo65.hdType,data.setingNo65.screenMode, data.setingNo65.pridigCheck,
+                        data.setingNo65.subVacaManage, data.setingNo65.subVacaTypeUseFlg, data.setingNo65.subHdManage, data.setingNo65.subHdTypeUseFlg));
+                }
+                //No.376
+                if(data.numberRemain != null){
+                    if(data.numberRemain.yearRemain != null){//年休残数
+                        self.yearRemain(data.numberRemain.yearRemain + '日');
+                        self.yearDis(true);
+                    }
+                    if(data.numberRemain.subHdRemain != null){//代休残数
+                        self.subHdRemain(data.numberRemain.subHdRemain + '日');
+                        self.numberSubHd(data.numberRemain.subHdRemain);
+                        self.subHdDis(true);
+                    }
+                    if(data.numberRemain.subVacaRemain != null){//振休残数
+                        self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.subVacaDis(true);
+                    }
+                    if(data.numberRemain.stockRemain != null){//ストック休暇残数
+                        self.stockRemain(data.numberRemain.stockRemain + '日');
+                        self.numberSubVaca(data.numberRemain.stockRemain);
+                        self.stockDis(true);
+                    }
+                }
+                if(self.yearDis() || self.subHdDis() || self.subVacaDis() || self.stockDis()){
+                    self.disAll(true);
+                }
                 self.initData(data);
                 //ver16
                 self.prePostEnable(data.prPostChange);
@@ -253,6 +304,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.findChangeDisplayHalfDay(value);
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
+                    if(nts.uk.util.isNullOrUndefined(value)){
+                        return;    
+                    }
                     self.findChangeWorkType(value);
                 });
                 self.displayWorkTimeName.subscribe((value) => {
@@ -567,7 +621,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         registerClick() {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
-            $("#workTypes").trigger('validate');
             if (self.displayEndDateFlg()) {
                 $(".ntsStartDatePicker").trigger("validate");
                 $(".ntsEndDatePicker").trigger("validate");
@@ -579,22 +632,53 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(self.holidayTypeCode() == 3 && self.fix()){
                 $("#relaCD-combo").trigger("validate");
             }
+            $("#hdType").trigger('validate');
+            $("#workTypes").trigger('validate');
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();
+            if(self.holidayTypeCode() != 0){
+                self.registerApp();
+            }else{
+                let setNo65 = {
+                                    pridigCheck: self.settingNo65() == null ? 0 : self.settingNo65().pridigCheck,
+                                    subVacaManage: self.settingNo65() == null ? false : self.settingNo65().subVacaManage,
+                                    subVacaTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subVacaTypeUseFlg,
+                                    subHdManage: self.settingNo65() == null ? false : self.settingNo65().subHdManage,
+                                    subHdTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subHdTypeUseFlg,
+                }
+                let paramCheck = {
+                                    setNo65: setNo65,
+                                    numberSubHd: self.numberSubHd(),//代休残数
+                                    numberSubVaca: self.numberSubVaca()//振休残数
+                                };
+                //アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
+                service.checkRegister(paramCheck).done(()=>{
+                    self.registerApp();
+                }).fail((res)=>{
+                    if (res.messageId == 'Msg_1392' || res.messageId == 'Msg_1394') {//エラーメッセージがある場合(t/h có error message)
+                        dialog.alertError({ messageId: res.messageId }).then(function() {
+                            nts.uk.ui.block.clear();
+                            return;
+                        });
+                    } 
+                    //確認メッセージがある場合(t/h có confirm message)
+                    //確認メッセージを表示する (Hiển thị confirm message)
+                    if(res.messageId == 'Msg_1393' || res.messageId == 'Msg_1395'){
+                        dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                            self.registerApp();
+                        }).ifCancel(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }
+                });
+            }
+        }
+        registerApp(){
+            let self = this;
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
             let appReason: string;
-//            appReason = self.getReason(
-//                self.selectedReason(),
-//                self.reasonCombo(),
-//                self.multilContent()
-//            );
-//            let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
-//            if (appReasonError) {
-//                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-//                return;
-//            }
             if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                 return;
             }
@@ -634,6 +718,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 specHd: specHd
                 
             };
+            if(paramInsert.workTypeCode == null){
+                 $("#workTypes").trigger('validate');
+                return;
+            }
             service.createAbsence(paramInsert).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){
@@ -649,7 +737,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     .then(function() { nts.uk.ui.block.clear(); });
-            });
+            });    
         }
         getReason(inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReason: string): string {
             let appReason = '';

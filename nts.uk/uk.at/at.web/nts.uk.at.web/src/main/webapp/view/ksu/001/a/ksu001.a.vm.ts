@@ -892,15 +892,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
                     }
 
-                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
-                    // set color for cell
-                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                        if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
-                        else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
-                        else return { textColor: "#FF7F27" };// color-half-day-work
-                    });
 
                     return true;
+                });
+                
+                // set color for cell
+                $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                    let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': data.workTypeCode }).state;
+                    if (stateWorkTypeCode == 3) return { textColor: "#0000ff" }; // color-attendance
+                    else if (stateWorkTypeCode == 0) return { textColor: "#ff0000" };// color-schedule-sunday
+                    else return { textColor: "#FF7F27" };// color-half-day-work
                 });
             }).always(() => {
                 self.stopRequest(true);
@@ -1068,11 +1069,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             columns: newDetailColumns,
                             dataSource: horzSumContentDs
                         };
-                        // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
-                        $("#extable").find(".ex-body-detail").data("x-det", null);
-                        $("#extable").find(".ex-body-detail").data("copy-history", null);
-                        $("#extable").find(".ex-body-detail").data("edit-history", null);
-                        $("#extable").find(".ex-body-detail").data("stick-history", null);
                         
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
@@ -1152,11 +1148,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             columns: newDetailColumns,
                             dataSource: horzSumContentDs
                         };
-                        // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
-                        $("#extable").find(".ex-body-detail").data("x-det", null);
-                        $("#extable").find(".ex-body-detail").data("copy-history", null);
-                        $("#extable").find(".ex-body-detail").data("edit-history", null);
-                        $("#extable").find(".ex-body-detail").data("stick-history", null);
                         
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
@@ -1844,6 +1835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pasteData(): void {
             let self = this;
             $("#extable").exTable("updateMode", "stick");
+             
             if (self.selectedModeDisplay() == 1) {
                 // set sticker single
                 $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
@@ -1857,6 +1849,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * copy data on cell
          */
         copyData(): void {
+            let self = this;
             $("#extable").exTable("updateMode", "copyPaste");
         }
 

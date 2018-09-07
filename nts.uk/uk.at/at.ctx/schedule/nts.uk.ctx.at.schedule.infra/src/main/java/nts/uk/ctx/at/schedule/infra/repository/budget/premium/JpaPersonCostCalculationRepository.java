@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +10,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
@@ -275,12 +280,87 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
 	@Override
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date) {
-		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
-				.setParameter("companyID", companyID)
-				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a, b, c FROM KmlmtPersonCostCalculation a ");
+		query.append(" LEFT JOIN a.kmlstPremiumSets b ");
+		query.append(" LEFT JOIN b.kmldtPremiumAttendances c ");
+		query.append(" WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
+		query.append(" AND a.startDate <= :date AND a.endDate >= :date");
+		List<Object[]> entities = this.queryProxy().query(query.toString(), Object[].class)
+													.setParameter("companyID", companyID)
+													.setParameter("date", date).getList();
+		List<KmnmtPremiumItem> premiumItem = getPremiumItems(companyID);
+		List<PersonCostCalculation> personCostCals = entities.stream().collect(Collectors.groupingBy(c -> (KmlmtPersonCostCalculation) c[0], Collectors.toList()))
+			.entrySet().stream().map(e -> {
+				List<KmlstPremiumSet> premiumSet = e.getValue().stream().map(x -> (KmlstPremiumSet) x[1])
+																.filter(ps -> ps != null && ps.kmlspPremiumSet.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
+																.distinct().collect(Collectors.toList());
+				
+				List<KmldtPremiumAttendance> preAttendamce = e.getValue().stream().map(x -> (KmldtPremiumAttendance) x[2])
+						.filter(ps -> ps != null && ps.kmldpPremiumAttendancePK.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
+						.distinct().collect(Collectors.toList());
+				return toDomainPersonCostCalculation(e.getKey(), premiumSet, preAttendamce, premiumItem);
+			}).collect(Collectors.toList());
+//		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
+//				.setParameter("companyID", companyID)
+//				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
 		if(CollectionUtil.isEmpty(personCostCals)){
 			return null;
 		}
 		return personCostCals;
+	}
+
+	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ");
+
+			statement.setString(1, comId);
+			List<KmnmtPremiumItem> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KmnmtPremiumItem();
+				entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
+				entity.kmnmpPremiumItemPK.companyID = comId;
+				entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
+				entity.name = rec.getString("PREMIUM_NAME");
+				entity.useAtr = rec.getInt("USE_ATR");
+				return entity;
+			});
+			
+			return krcdtTimeLeaveWorks;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation, 
+			List<KmlstPremiumSet> premiumSet, List<KmldtPremiumAttendance> attendanceItems, List<KmnmtPremiumItem> premiumItem){
+		return new PersonCostCalculation(
+				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID, 
+				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID, 
+				kmlmtPersonCostCalculation.startDate, 
+				kmlmtPersonCostCalculation.endDate,
+				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class), 
+				new Memo(kmlmtPersonCostCalculation.memo),
+				premiumSet.stream().map(x -> toDomainPremiumSetting(x, premiumItem, attendanceItems)).collect(Collectors.toList()));
+	}
+	
+	/**
+	 * convert PremiumSetting Entity Object to PremiumSetting Domain Object
+	 * @param kmlstPremiumSet PremiumSetting Entity Object
+	 * @return PremiumSetting Domain Object
+	 */
+	private PremiumSetting toDomainPremiumSetting(KmlstPremiumSet kmlstPremiumSet, List<KmnmtPremiumItem> premiumItem, List<KmldtPremiumAttendance> attendanceItems) {
+		KmnmtPremiumItem item = premiumItem.stream().filter(x -> x.kmnmpPremiumItemPK.displayNumber == kmlstPremiumSet.kmlspPremiumSet.displayNumber)
+				.findFirst().get();
+		return new PremiumSetting(
+				kmlstPremiumSet.kmlspPremiumSet.companyID, 
+				kmlstPremiumSet.kmlspPremiumSet.historyID, 
+				kmlstPremiumSet.kmlspPremiumSet.displayNumber, 
+				new PremiumRate(kmlstPremiumSet.premiumRate),
+				new PremiumName(item.name),
+				EnumAdaptor.valueOf(item.useAtr, UseAttribute.class),
+				attendanceItems.stream().filter(x -> x.kmldpPremiumAttendancePK.displayNumber == kmlstPremiumSet.kmlspPremiumSet.displayNumber)
+										.map(x -> x.kmldpPremiumAttendancePK.attendanceID).collect(Collectors.toList()));
 	}
 }
