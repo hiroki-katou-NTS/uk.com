@@ -189,7 +189,7 @@ public class CheckBeforeCalcFlexChange {
 			List<DateRange> dates = dailyPerformanceScreenRepo.getWorkConditionFlexDatePeriod(calc.getEmployeeId(),
 					new DatePeriod(periodExportOptNext.get().getClosureStartDate(),
 							periodExportOptNext.get().getClosureEndDate()));
-			List<Integer> listAttTime = attendanceTime.find(calc.getEmployeeId(),
+			List<Integer> listAttTime = attendanceTime.findAtt(calc.getEmployeeId(),
 					convertToListDate(dates));
 			// 「法定労働時間」-「所定労働時間」をパラメータ「翌月繰越可能時間」にセットする
 
