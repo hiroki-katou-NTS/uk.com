@@ -3843,7 +3843,7 @@ var nts;
                         window.location.href = path;
                     }).ifEmpty(function () {
                         //request.jump('/view/ccg/007/a/index.xhtml');
-                        request.jump('/view/ccg/007/b/index.xhtml');
+                        request.jump('com', '/view/ccg/007/b/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -16570,6 +16570,7 @@ var nts;
                                     _self.updateMonthsView.call(_self);
                                 }, 0);
                             }
+                            self.$input.focus();
                         });
                         return self;
                     };
@@ -17485,7 +17486,7 @@ var nts;
                                 this.setupUnit($input, width);
                             }
                             // remove currency symbol if number mode
-                            $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
+                            //                $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
@@ -32450,7 +32451,7 @@ var nts;
                                 optionsText: 'text',
                                 width: '60px'
                             });
-                        }, getMonths = function () { return _.range(1, 13).map(function (m) { return ({ text: m, value: m }); }); }, getDaysInMonth = function (month) { return _.range(1, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m, value: m }); }); };
+                        }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m }); }); };
                         var value = ko.unwrap(data.value);
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
@@ -32470,10 +32471,16 @@ var nts;
                         var monthValueAccessor = getComboBinding(data, ko.observable(1), getMonths()), dayValueAccessor = getComboBinding(data, ko.observable(1), getDaysInMonth(1));
                         // month change
                         monthValueAccessor.value.subscribe(function (v) {
-                            // change options of combobox days
-                            var days = getDaysInMonth(v), curentDay = ko.toJS(dayValueAccessor.value);
-                            dayValueAccessor.value(_.min([curentDay, days.length]));
-                            dayValueAccessor.options(days);
+                            if (v === 0) {
+                                dayValueAccessor.value(0);
+                                dayValueAccessor.options([{ text: "", value: 0 }]);
+                            }
+                            else {
+                                // change options of combobox days
+                                var days = getDaysInMonth(v), curentDay = ko.toJS(dayValueAccessor.value);
+                                dayValueAccessor.value(_.min([curentDay, days.length]));
+                                dayValueAccessor.options(days);
+                            }
                         });
                         // bind data out
                         ko.computed({
