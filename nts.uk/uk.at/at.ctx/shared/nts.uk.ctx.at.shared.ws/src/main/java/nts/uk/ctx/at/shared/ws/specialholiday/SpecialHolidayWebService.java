@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.specialholiday.CreateSpecialHolidayCommandHandler;
@@ -46,10 +47,10 @@ public class SpecialHolidayWebService extends WebService {
 		return sphdFinder.findByCompanyId();
 	}
 
-	@Path("findForScreenJ/{selectedCode}")
+	@Path("findForScreenJ")
 	@POST
-	public List<SpecialHolidayFrameDto> findForScreenJ(@PathParam("selectedCode") int selectedCode) {
-		return sphdFinder.findForScreenJ(selectedCode);
+	public List<SpecialHolidayFrameDto> findForScreenJ(ScreenJParam param) {
+		return sphdFinder.findForScreenJ(param.getSelectedNos());
 	}
 	
 	@Path("findAllItemFrame")
@@ -81,4 +82,10 @@ public class SpecialHolidayWebService extends WebService {
 	public void delete(SpecialHolidayDeleteCommand command) {
 		deleteSphdHandler.handle(command);
 	}
+	
+}
+
+@Value
+class ScreenJParam {
+	private List<Integer> selectedNos;
 }
