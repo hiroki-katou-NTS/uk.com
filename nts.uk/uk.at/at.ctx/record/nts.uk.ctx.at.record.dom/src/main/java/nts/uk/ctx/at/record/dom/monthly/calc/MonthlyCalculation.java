@@ -12,7 +12,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
@@ -421,6 +421,41 @@ public class MonthlyCalculation {
 	}
 	
 	/**
+	 * 集計関連設定のコピー
+	 * @param source コピー元：月別実績の月の計算
+	 */
+	public void copySettings(MonthlyCalculation source){
+		this.companyId = source.companyId;
+		this.employeeId = source.employeeId;
+		this.yearMonth = source.yearMonth;
+		this.closureId = source.closureId;
+		this.closureDate = source.closureDate;
+		this.procPeriod = source.procPeriod;
+		this.workingConditionItem = source.workingConditionItem;
+		this.workingSystem = source.workingSystem;
+		this.employee = source.employee;
+		this.workplaceId = source.workplaceId;
+		this.employmentCd = source.employmentCd;
+		this.isRetireMonth = source.isRetireMonth;
+		this.closureOpt = source.closureOpt;
+		this.settingsByReg = source.settingsByReg;
+		this.settingsByDefo = source.settingsByDefo;
+		this.settingsByFlex = source.settingsByFlex;
+		this.companySets = source.companySets;
+		this.employeeSets = source.employeeSets;
+		
+		this.monthlyCalculatingDailys = source.monthlyCalculatingDailys;
+		this.workInfoOfRecordMap = source.workInfoOfRecordMap;
+		this.originalData = source.originalData;
+		this.attendanceTimeWeeks = source.attendanceTimeWeeks;
+
+		this.startWeekNo = source.startWeekNo;
+		this.year = source.year;
+		this.agreementTimeOfManagePeriod = source.agreementTimeOfManagePeriod;
+		this.errorInfos = source.errorInfos;
+	}
+	
+	/**
 	 * 履歴ごとに月別実績を集計する
 	 * @param aggrPeriod 集計期間
 	 * @param aggrAtr 集計区分
@@ -429,7 +464,7 @@ public class MonthlyCalculation {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
+			Optional<AttendanceDaysMonthDom> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
@@ -576,11 +611,11 @@ public class MonthlyCalculation {
 	 * @param absenceDeductTime 欠勤控除時間
 	 */
 	private void restoreOriginalData(
-			Optional<AttendanceDaysMonth> annualDeductDays,
+			Optional<AttendanceDaysMonthDom> annualDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime){
 		
 		// 年休控除日数・欠勤控除時間
-		AttendanceDaysMonth applyAnnualDeductDays = new AttendanceDaysMonth(0.0);
+		AttendanceDaysMonthDom applyAnnualDeductDays = new AttendanceDaysMonthDom(0.0);
 		AttendanceTimeMonth applyAbsenceDeductTime = new AttendanceTimeMonth(0);
 		if (annualDeductDays.isPresent() || absenceDeductTime.isPresent()){
 			if (annualDeductDays.isPresent()) applyAnnualDeductDays = annualDeductDays.get();
@@ -674,7 +709,7 @@ public class MonthlyCalculation {
 			String companyId, String employeeId,YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod procPeriod,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
+			Optional<AttendanceDaysMonthDom> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -754,7 +789,7 @@ public class MonthlyCalculation {
 					// 年休控除日数と欠勤控除時間があるか確認する
 					if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()){
 						if (!annualLeaveDeductDays.isPresent()){
-							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
+							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonthDom(0.0));
 						}
 						if (!absenceDeductTime.isPresent()){
 							absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));

@@ -569,7 +569,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
 				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
-				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+				scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(),
+				scTimeImport.getFlexTime());
 		bSchedule.setWorkScheduleTime(scheduleTime);
 	}
 
@@ -897,9 +898,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				listId.add(36);
 			if (scheTimeAfter.diffWeekdayTime(scheTimeBefore.getWeekdayTime()))
 				listId.add(37);
-			if (scheTimeAfter.diffChildCareTime(scheTimeBefore.getChildCareTime()))
-				listId.add(38);
-			// TODO 39 chua co
+			if (scheTimeAfter.diffFlexTime(scheTimeBefore.getFlexTime()))
+				listId.add(39);
+			if (scheTimeAfter.diffChildTime(scheTimeBefore.getChildTime()))
+				listId.add(102);
+			if (scheTimeAfter.diffCareTime(scheTimeBefore.getCareTime()))
+				listId.add(103);
 			// compare personFeeTime
 			List<PersonFeeTime> personFeeTimeAfter = scheTimeAfter.getPersonFeeTime();
 			List<PersonFeeTime> personFeeTimeBefore = scheTimeBefore.getPersonFeeTime();
@@ -914,8 +918,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			listId.add(35);
 			listId.add(36);
 			listId.add(37);
-			listId.add(38);
-//			listId.add(39);
+			listId.add(39);
+			listId.add(102);
+			listId.add(103);
 			int sizeFeeTime = 0;
 			if(optScheTimeAfter.isPresent()){
 				sizeFeeTime = optScheTimeAfter.get().getPersonFeeTime().size();

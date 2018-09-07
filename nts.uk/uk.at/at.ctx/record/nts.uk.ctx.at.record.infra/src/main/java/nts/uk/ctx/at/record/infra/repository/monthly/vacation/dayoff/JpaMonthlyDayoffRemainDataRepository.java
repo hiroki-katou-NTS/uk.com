@@ -66,11 +66,16 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				EnumAdaptor.valueOf(c.closureStatus, ClosureStatus.class),
 				c.startDate,
 				c.endDate,
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.occurredDays), Optional.of(new RemainDataTimesMonth(c.occurredTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.usedDays), Optional.of(new RemainDataTimesMonth(c.usedTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays), Optional.of(new RemainDataTimesMonth(c.unUsedTimes))));
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.occurredDays), c.occurredTimes == null ? Optional.empty() :
+						Optional.ofNullable(new RemainDataTimesMonth(c.occurredTimes))),
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.usedDays), 
+						c.usedTimes == null ? Optional.empty() : Optional.ofNullable(new RemainDataTimesMonth(c.usedTimes))),
+				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), 
+						c.remainingTimes == null ? Optional.empty() : Optional.ofNullable(new RemainingMinutes(c.remainingTimes))),
+				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), 
+						c.carryforwardTimes == null ? Optional.empty() : Optional.ofNullable(new RemainingMinutes(c.carryforwardTimes))),
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays),
+						c.unUsedTimes == null ? Optional.empty() : Optional.ofNullable(new RemainDataTimesMonth(c.unUsedTimes))));
 	}
 
 	@Override

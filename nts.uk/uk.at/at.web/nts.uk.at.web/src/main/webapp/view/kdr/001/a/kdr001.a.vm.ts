@@ -327,7 +327,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 isShowNoSelectRow: false,
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
-                isShowSelectAllButton: true,
+                isShowSelectAllButton: false,
                 maxWidth: 550,
                 maxRows: 15
             };

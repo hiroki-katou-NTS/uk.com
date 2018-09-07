@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonDaysOfMonthlyDto;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
@@ -129,21 +129,21 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 
 	public WorkDaysOfMonthly toDomain() {
 		return WorkDaysOfMonthly.of(
-						AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(attendanceDays)),
+						AttendanceDaysOfMonthly.of(new AttendanceDaysMonthDom(attendanceDays)),
 						absenceDays == null ? new AbsenceDaysOfMonthly() : absenceDays.toAbsenceDays(), 
 						predetermineDays == null ? new PredeterminedDaysOfMonthly() : predetermineDays.toDomain(),
-						WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(workDays)),
-						HolidayDaysOfMonthly.of(new AttendanceDaysMonth(holidayDays)), 
+						WorkDaysDetailOfMonthly.of(new AttendanceDaysMonthDom(workDays)),
+						HolidayDaysOfMonthly.of(new AttendanceDaysMonthDom(holidayDays)), 
 						SpecificDaysOfMonthly.of(ConvertHelper.mapTo(specificDays, c -> c.toDomain())),
-						HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(holidayWorkDays)),
+						HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonthDom(holidayWorkDays)),
 						payDays == null ? new PayDaysOfMonthly() : PayDaysOfMonthly.of(
-								new AttendanceDaysMonth(payDays.getPayAttendanceDays()), 
-								new AttendanceDaysMonth(payDays.getPayAbsenceDays())),
-						WorkTimesOfMonthly.of(new AttendanceTimesMonth(workTimes)),
-						TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(twoTimesWorkTimes)), 
-						TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(temporaryWorkTimes)),
+								new AttendanceDaysMonthDom(payDays.getPayAttendanceDays()), 
+								new AttendanceDaysMonthDom(payDays.getPayAbsenceDays())),
+						WorkTimesOfMonthly.of(new AttendanceTimesMonthDom(workTimes)),
+						TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(twoTimesWorkTimes)), 
+						TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(temporaryWorkTimes)),
 						leave == null ? new LeaveOfMonthly() : leave.toDomain(),
-						RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(transferdays)),
+						RecruitmentDaysOfMonthly.of(new AttendanceDaysMonthDom(transferdays)),
 						specialHolidays == null ? new SpcVacationDaysOfMonthly() : specialHolidays.toSpcVacationDays());
 	}
 }

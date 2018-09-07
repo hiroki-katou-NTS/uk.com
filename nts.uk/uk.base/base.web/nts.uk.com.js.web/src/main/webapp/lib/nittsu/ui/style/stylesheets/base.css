@@ -2294,7 +2294,7 @@ button.nts-switch-button[disabled] {
 }
 /* line 46, ../sass/components/_switchbutton.scss */
 button.nts-switch-button[disabled]:hover {
-  background-color: #d9d9d9;
+  background-color: #7b8;
 }
 
 /* line 52, ../sass/components/_switchbutton.scss */
@@ -2782,8 +2782,8 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 22, ../sass/components/_gridlist.scss */
-.ui-iggrid tbody td {
-  white-space: pre;
+.ui-iggrid .nts-gridlist tbody td {
+   white-space: pre; 
 }
 
 /* line 1, ../sass/components/_tabpanel.scss */
@@ -3596,12 +3596,13 @@ button.nts-switch-button[disabled]:hover {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
-/* line 29, ../sass/components/_searchbox.scss */
+/* line 30, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
 }
-/* line 32, ../sass/components/_searchbox.scss */
+/* line 33, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div {
   vertical-align: middle !important;
 }
@@ -5664,4 +5665,8 @@ html {
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
+}
+/* background of igTree */
+.ig-tree-background {
+	background-color: white;	
 }

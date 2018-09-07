@@ -15,10 +15,19 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -29,6 +38,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
+	private WorkingBreakTimeAtr workingBreakAtr;
 	private Finally<GoingOutReason> goOutReason;
 	private Finally<BreakClassification> breakAtr;
 	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr; 
@@ -50,11 +60,14 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet, Finally<GoingOutReason> goOutReason,
+			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			WorkingBreakTimeAtr workingBreakAtr,
+			Finally<GoingOutReason> goOutReason,
 			Finally<BreakClassification> breakAtr, Optional<ShortTimeSheetAtr> shortTimeSheetAtr,
 			DeductionClassification deductionAtr,Optional<ChildCareAtr> childCareAtr) {
 		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
 				specifiedBonusPayTimeSheet, midNighttimeSheet);
+		this.workingBreakAtr = workingBreakAtr;
 		this.goOutReason = goOutReason;
 		this.breakAtr = breakAtr;
 		this.shortTimeSheetAtr = shortTimeSheetAtr;
@@ -78,6 +91,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
 			,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
 			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
+			,WorkingBreakTimeAtr workingBreakAtr
 			,Finally<GoingOutReason> goOutReason
 			,Finally<BreakClassification> breakAtr
 			,Optional<ShortTimeSheetAtr> shortTimeSheetAtr
@@ -92,49 +106,13 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				,bonusPayTimeSheet
 				,specifiedBonusPayTimeSheet
 				,midNighttimeSheet
+				,workingBreakAtr
 				,goOutReason
 				,breakAtr
 				,shortTimeSheetAtr
 				,deductionAtr
 				,childCareAtr
 				);
-	}
-	
-	/**
-	 * 控除項目の時間帯作成　(育児介護区分対応版)
-	 * @param timeSpan
-	 * @param goOutReason
-	 * @param breakAtr
-	 * @param deductionAtr
-	 * @param withinStatutoryAtr
-	 * @return
-	 */
-	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixedForShortTime(TimeZoneRounding withRounding
-			,TimeSpanForCalc timeSpan
-			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
-			,List<TimeSheetOfDeductionItem> deductionTimeSheets
-			,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
-			,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
-			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
-			,Finally<GoingOutReason> goOutReason
-			,Finally<BreakClassification> breakAtr
-			,Optional<ShortTimeSheetAtr> shortTimeSheetAtr
-			,DeductionClassification deductionAtr
-			,Optional<ChildCareAtr> childCareAtr) {
-		
-		return new TimeSheetOfDeductionItem(
-				withRounding
-				,timeSpan
-				,recorddeductionTimeSheets
-				,deductionTimeSheets
-				,bonusPayTimeSheet
-				,specifiedBonusPayTimeSheet
-				,midNighttimeSheet
-				,goOutReason
-				,breakAtr
-				,shortTimeSheetAtr
-				,deductionAtr
-				,childCareAtr);
 	}
 	
 	/**
@@ -152,6 +130,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.bonusPayTimeSheet,
 											this.specBonusPayTimesheet,
 											this.midNightTimeSheet,
+											this.workingBreakAtr,
 											this.goOutReason,
 											this.breakAtr,
 											this.shortTimeSheetAtr,
@@ -168,6 +147,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					this.bonusPayTimeSheet,
 					this.specBonusPayTimesheet,
 					this.midNightTimeSheet,
+					this.workingBreakAtr,
 					this.goOutReason,
 					this.breakAtr,
 					this.shortTimeSheetAtr,
@@ -203,7 +183,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.deductionTimeSheet, 
 											this.bonusPayTimeSheet,
 											this.specBonusPayTimesheet, 
-											this.midNightTimeSheet, 
+											this.midNightTimeSheet,
+											this.workingBreakAtr,
 											this.goOutReason, 
 											this.breakAtr,
 											this.shortTimeSheetAtr,
@@ -259,6 +240,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
 																	   , Optional.empty()
+																	   , this.workingBreakAtr
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
 																	   , Optional.empty()
@@ -273,6 +255,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 							 , Collections.emptyList()
 							 , Collections.emptyList()
 							 , Optional.empty()
+							 , this.workingBreakAtr
 							 , this.getGoOutReason()
 							 , this.breakAtr
 							 , Optional.empty()
@@ -291,6 +274,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
 																	   , Optional.empty()
+																	   , this.workingBreakAtr
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
 																	   , Optional.empty()
@@ -305,6 +289,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 							 , Collections.emptyList()
 							 , Collections.emptyList()
 							 , Optional.empty()
+							 , this.getWorkingBreakAtr()
 							 , this.getGoOutReason()
 							 , this.breakAtr
 							 , Optional.empty()
@@ -343,6 +328,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																		, new ArrayList<>()
 																		, new ArrayList<>()
 																		, Optional.empty()
+																		, compareTimeSheet.getWorkingBreakAtr()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
 																		, Optional.empty()
@@ -356,6 +342,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																		, new ArrayList<>()
 																		, new ArrayList<>()
 																		, Optional.empty()
+																		, compareTimeSheet.getWorkingBreakAtr()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
 																		, Optional.empty()
@@ -422,6 +409,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	, Collections.emptyList()
 																	, Collections.emptyList()
 																	, Optional.empty()
+																	, compareTimeSheet.getWorkingBreakAtr()
 																	, compareTimeSheet.getGoOutReason()
 																	, compareTimeSheet.getBreakAtr()
 																	, Optional.empty()
@@ -435,6 +423,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	, Collections.emptyList()
 																	, Collections.emptyList()
 																	, Optional.empty()
+																	, compareTimeSheet.getWorkingBreakAtr()
 																	, compareTimeSheet.getGoOutReason()
 																	, compareTimeSheet.getBreakAtr()
 																	, Optional.empty()
@@ -461,6 +450,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	, Collections.emptyList()
 																	, Collections.emptyList()
 																	, Optional.empty()
+																	, this.getWorkingBreakAtr()
 																	, this.getGoOutReason()
 																	, this.getBreakAtr()
 																	, Optional.empty()
@@ -474,6 +464,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	, Collections.emptyList()
 																	, Collections.emptyList()
 																	, Optional.empty()
+																	, this.getWorkingBreakAtr()
 																	, this.getGoOutReason()
 																	, this.getBreakAtr()
 																	, Optional.empty()
@@ -569,14 +560,15 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 												deductionTimeSheets,
 												bonusPayTimeSheet,
 												specifiedBonusPayTimeSheet,
-												midNighttimeSheet,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
+												midNighttimeSheet,
+												this.workingBreakAtr,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
 	}
 	
 	/**
 	 * 法定内区分を法定外にして自分自身を作り直す
 	 */
 	public TimeSheetOfDeductionItem createWithExcessAtr(){
-		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.recordedTimeSheet,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
+		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.recordedTimeSheet,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.workingBreakAtr,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
 	}
 	
 	/**
@@ -681,6 +673,174 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 		//自分自身が集計対象外の場合、自分自身が持つ集計対象の時間帯の合計時間のみを返す
 		return includeForcsValue;
+	}
+	
+	/**
+	 * 逆丸めの付与
+	 * @param rounding 基の丸め
+	 * @param actualAtr　実働時間帯区分
+	 * @param dedAtr　控除区分
+	 * @param commonSet　就業時間帯　共通設定
+	 */
+	public void changeReverceRounding(TimeRoundingSetting rounding,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,
+									  Optional<WorkTimezoneCommonSet> commonSetting) {
+		if(!commonSetting.isPresent())
+			return;
+		val result = decisionAddRounding(rounding, actualAtr, dedAtr, commonSetting.get());
+		if(result.isPresent()) {
+			this.timeSheet = new TimeZoneRounding(this.timeSheet.getStart(), this.timeSheet.getEnd(),rounding);
+		}
+	}
+	
+
+	public Optional<TimeRoundingSetting> decisionAddRounding(TimeRoundingSetting rounding,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,
+									WorkTimezoneCommonSet commonSet) {
+		switch(this.getDeductionAtr()) {
+		//休憩
+		case BREAK:
+			if(this.getWorkingBreakAtr().isWorking()) {
+				return Optional.empty();
+			}
+			return Optional.of(rounding);
+		//介護
+		case CHILD_CARE:
+			return getShortTimeRounding(dedAtr, commonSet,rounding);
+		//外出
+		case GO_OUT:
+			if(actualAtr.isWithinWorkTime()) {
+				return goOutingRoundingActual(commonSet.getGoOutSet(), actualAtr, dedAtr,rounding);
+			}
+			return Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+		case NON_RECORD:
+			return Optional.of(rounding);
+		default:
+			throw new RuntimeException("Unknown DeductionAtr:"+this.getDeductionAtr());
+		}
+	}
+	
+	
+	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {
+		switch(dedAtr) {
+			//計上
+			case Appropriate:
+				//控除
+			case Deduction:
+				if(this.getShortTimeSheetAtr().isPresent()) {
+					switch(this.getShortTimeSheetAtr().get()) {
+					//退勤後
+					case AFTER_LEAVING:
+						val afterLeaving = commonSet.getLateEarlySet().getOtherClassSets().stream().filter(tc -> tc.getLateEarlyAtr().equals(LateEarlyAtr.EARLY)).findFirst();
+						return afterLeaving.isPresent()?Optional.of(afterLeaving.get().getDelTimeRoundingSet()):Optional.empty();
+						//出勤前
+					case BEFORE_ATTENDANCE:
+						val beforeAttendance = commonSet.getLateEarlySet().getOtherClassSets().stream().filter(tc -> tc.getLateEarlyAtr().equals(LateEarlyAtr.LATE)).findFirst();
+						return beforeAttendance.isPresent()?Optional.of(beforeAttendance.get().getDelTimeRoundingSet()):Optional.empty();
+						//勤務中
+					case WORKING_TIME:
+						return goOutingRoundingActual(commonSet.getGoOutSet(),ActualWorkTimeSheetAtr.WithinWorkTime,dedAtr,rounding);
+					default:
+						throw new RuntimeException("Unknown shortTimeSheetAtr:"+ this.getShortTimeSheetAtr().get());
+					}
+				}
+				else {
+					return Optional.empty();
+				}
+			default:
+				throw new RuntimeException("Unknown DeductionAtr:"+dedAtr);
+		}
+	}
+	
+	
+	/**
+	 * 就内・残業・休出どの設定を使用するか決定する
+	 * @param goOutSet　外出設定
+	 * @param actualAtr　実働時間帯区分
+	 * @param dedAtr　控除区分
+	 * @return　外出丸め設定
+	 */
+	private Optional<TimeRoundingSetting> goOutingRoundingActual(WorkTimezoneGoOutSet goOutSet,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,TimeRoundingSetting rounding){
+		Optional<TimeRoundingSetting> returnValue = Optional.empty();
+		if(goOutSet.getTotalRoundingSet().getSetSameFrameRounding().isRoundingAndTotal()) {
+			switch(actualAtr) {
+			//就業時間内
+			case WithinWorkTime:
+				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
+			//残業
+			case EarlyWork:
+			case OverTimeWork:
+			case StatutoryOverTimeWork:
+				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
+			//休出
+			case HolidayWork:
+				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
+			default:
+				throw new RuntimeException("Unknown ActualAtr:"+actualAtr);
+			}
+		}
+		return returnValue;
+	}
+	
+	/**
+	 * 外出理由からどの設定を参照するか決定する
+	 * @param dedAtr 控除区分
+	 * @param set　丸め設定
+	 * @return 外出時丸め設定取得(逆丸め、丸め判定)
+	 */
+	private Optional<TimeRoundingSetting> goOutingRounding(DeductionAtr dedAtr,GoOutTypeRoundingSet set,TimeRoundingSetting rounding) {
+		if(this.getGoOutReason() != null
+		 &&this.getGoOutReason().isPresent()) {
+			switch(this.getGoOutReason().get()) {
+			//私用。組合
+			case PRIVATE:
+			case UNION:
+				return Optional.of(goOutingRond(dedAtr,set.getPrivateUnionGoOut(), rounding));
+			//公用、有償
+			case COMPENSATION:
+			case PUBLIC:
+				return Optional.of(goOutingRond(dedAtr,set.getOfficalUseCompenGoOut(), rounding));
+			default:
+				throw new RuntimeException("Unknown GoOutReason:"+this.getGoOutReason().get());
+			}
+		}
+		return Optional.empty();
+	}
+	
+	/**
+	 * 控除or計上どちらを使用する蚊決定する
+	 * @param dedAtr 控除区分
+	 * @param set 丸め設定
+	 * @return　外出時丸め設定取得(逆丸め、丸め判定)
+	 */
+	private TimeRoundingSetting goOutingRond(DeductionAtr dedAtr,DeductGoOutRoundingSet set,TimeRoundingSetting rounding) {
+		switch(dedAtr) {
+		//計上
+		case Appropriate:
+			return getouting(set.getApproTimeRoundingSetting(),rounding);
+		//控除
+		case Deduction:
+			return getouting(set.getDeductTimeRoundingSetting(),rounding);
+		default:
+			throw new RuntimeException("Unknown DedctionAtr:"+dedAtr);
+		}
+	}
+	
+	/**
+	 * 外出時丸め設定取得(逆丸め、丸め判定)
+	 * @param set 丸め設定
+	 * @return　外出時丸め設定取得(逆丸め、丸め判定)
+	 */
+	private TimeRoundingSetting getouting(GoOutTimeRoundingSetting set,TimeRoundingSetting rounding) {
+		switch(set.getRoundingMethod()) {
+		//逆丸め
+		case INDIVIDUAL_ROUNDING:
+			//return set.getRoundingSetting().getReverseRounding();
+			return rounding.getReverseRounding();
+		//個別丸め
+		case REVERSE_ROUNDING_EACH_TIMEZONE:
+			return set.getRoundingSetting();
+		default:
+			throw new RuntimeException("Unknown GetRoundinMethod:"+set.getRoundingMethod());
+		}
 	}
 
 }

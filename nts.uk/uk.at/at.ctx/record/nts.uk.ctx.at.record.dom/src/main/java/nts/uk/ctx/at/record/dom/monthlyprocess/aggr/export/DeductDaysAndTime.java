@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class DeductDaysAndTime {
 
 	/** 年休控除日数 */
-	private AttendanceDaysMonth annualLeaveDeductDays;
+	private AttendanceDaysMonthDom annualLeaveDeductDays;
 	/** 年休控除時間 */
 	private AttendanceTimeMonth annualLeaveDeductTime;
 	/** 欠勤控除時間 */
@@ -40,7 +40,7 @@ public class DeductDaysAndTime {
 	 * @param annualLeaveDeductDays 年休控除日数
 	 * @param absenceDeductTime 欠勤控除時間
 	 */
-	public DeductDaysAndTime(AttendanceDaysMonth annualLeaveDeductDays, AttendanceTimeMonth absenceDeductTime){
+	public DeductDaysAndTime(AttendanceDaysMonthDom annualLeaveDeductDays, AttendanceTimeMonth absenceDeductTime){
 		
 		this.annualLeaveDeductDays = annualLeaveDeductDays;
 		this.annualLeaveDeductTime = new AttendanceTimeMonth(0);

@@ -128,8 +128,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Override
 	//就業計算と集計から呼び出す時の窓口
-	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),Collections.emptyList());
+	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
 	}
 	
 	/**
@@ -202,6 +202,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
 			returnList.addAll(returnValue.getIntegrationOfDailyList());
+			//人数カウントアップ
 			if(counter.isPresent()) {
 				counter.get().accept(ProcessState.SUCCESS);
 			}

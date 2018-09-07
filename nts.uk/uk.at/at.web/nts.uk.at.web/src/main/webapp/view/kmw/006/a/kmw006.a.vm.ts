@@ -191,14 +191,14 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 monthlyClosureUpdateLogId: localStorage.getItem("MonthlyClosureUpdateLogId"),
                 listEmployeeId: listEmpId,
                 closureId: localStorage.getItem("MonthlyClosureId"),
-                startDT: localStorage.getItem("MonthlyClosureStartDT"),
+                startDT: localStorage.getItem("MonthlyClosureStartDT")
 //                endDT: localStorage.getItem("MonthlyClosureEndDT"),
-                currentMonth: localStorage.getItem("MonthlyClosureCurrentMonth"),
-                closureDay: localStorage.getItem("MonthlyClosureDay"),
-                isLastDayOfMonth: localStorage.getItem("MonthlyClosureDayOfMonth"),
-                periodStart: localStorage.getItem("MonthlyClosurePeriodStart"),
-                periodEnd: localStorage.getItem("MonthlyClosurePeriodEnd"),
-                check : null
+//                currentMonth: localStorage.getItem("MonthlyClosureCurrentMonth"),
+//                closureDay: localStorage.getItem("MonthlyClosureDay"),
+//                isLastDayOfMonth: localStorage.getItem("MonthlyClosureDayOfMonth"),
+//                periodStart: localStorage.getItem("MonthlyClosurePeriodStart"),
+//                periodEnd: localStorage.getItem("MonthlyClosurePeriodEnd"),
+//                check : null
             }
             service.getInfors(screenParams).done((results: any) => {
 

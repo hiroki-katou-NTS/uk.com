@@ -48,7 +48,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
 			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ";
-
+	private static final String FIND_BY_EMPLOYEE_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
+			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -148,6 +149,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		});
 		
 		return workInfo.map(c -> c.toDomain());
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId) {
+		return this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override

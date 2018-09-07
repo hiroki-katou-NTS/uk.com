@@ -52,3 +52,6 @@
 	width: 100px;
 	float: left;
 }
+.nowrap{
+	white-space: nowrap !important;
+}

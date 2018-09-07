@@ -16,6 +16,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemBasicInfo;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -295,10 +296,21 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ "AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 "
 			+ "AND i.requiredAtr = 1  ORDER BY io.disporder";
 
-	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
+	
+	private final static String SELECT_COMMON_FIELD_BYCATEGORYCD = String.join(" ", "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,",
+			"i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
+			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
+			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
+			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
+			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition, c.categoryCd");
+
+	private final static String SELECT_NO_WHERE_BYCATEGORYCODE = String.join(" ", SELECT_COMMON_FIELD_BYCATEGORYCD, JOIN_COMMON_TABLE);
+	
+	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE_BYCATEGORYCODE, "WHERE",
 			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
 	
-	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1 AND ic.itemType <> 1";
@@ -1078,7 +1090,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
 		
 		// groupBy categoryId 
-		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[27])));
+		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[31])));
 		
 		// Map to List
 		Map<String, List<PersonInfoItemDefinition>> result = perInfoItemDefByList.entrySet().stream()
@@ -1095,10 +1107,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public Map<String, List<String>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+	public Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd) {
 		
-		Map<String, List<String>> result =  new HashMap<>();
+		Map<String, List<ItemBasicInfo>> result =  new HashMap<>();
 		
 		
 		if (lstPerInfoCategoryId.isEmpty()){
@@ -1115,7 +1127,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		result = perInfoItemDefByList.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
 					List<Object[]> listItem = e.getValue();
-					return listItem.stream().map(x-> String.valueOf(x[0])).collect(Collectors.toList());
+					return listItem.stream().map(x-> new ItemBasicInfo(String.valueOf(x[0]),String.valueOf(x[2]))).collect(Collectors.toList());
 				}));
 
 		return result;
