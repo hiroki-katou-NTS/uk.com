@@ -7,8 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-			</com:ValidatorScript>
 			<com:stylefile path="qmm012.b.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -19,10 +17,72 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				
+				<!-- 新規 -->
+				<button id="B1_1" class="newBtn" data-bind="click : create, enable: true">#{i18n.getText('QMM012_20')}</button>
+				<!-- 登録 -->
+				<button id="B1_2" class="registerBtn proceed" data-bind="click : register, enable: true">#{i18n.getText('QMM012_21')}</button>
+				<!-- コピー -->
+				<button id="B1_3" class="copyBtn" data-bind="click : copy, enable: false">#{i18n.getText('QMM012_22')}</button>
+				<!-- 削除 -->
+				<button id="B1_4" class="deleteBtn danger" data-bind="click : deleteItem, enable: true">#{i18n.getText('QMM012_23')}</button>
+				<!-- Excel出力 -->
+				<button id="B1_5" class="outputExcelBtn" data-bind="click : outputExcel, enable: false">#{i18n.getText('QMM012_24')}</button>
+				<!-- マスタ修正ログ -->
+				<button id="B1_6" class="modifyLogBtn" data-bind="click : modifyLog, enable: true">#{i18n.getText('QMM012_25')}</button>
+				<!-- 印字名称の登録 -->
+				<button id="B1_7" class="registerPrintingBtn" data-bind="click : registerPrintingName, enable: true">#{i18n.getText('QMM012_10')}</button>
 			</div>
 			<div id="contents-area">
-				
+				<div class="fixed-flex-layout-left">
+					<!-- 項目一覧パネル -->
+					<div id="B2_1" data-bind="ntsPanel:{width: '410px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+						<div class="valign-center control-group">
+							<!-- 項目区分 -->
+							<div id="B2_2" data-bind="ntsFormLabel: { }">#{i18n.getText('#QMM012_27')}</div>
+							<!-- 項目区分リスト -->
+							<div id="B2_3" data-bind="ntsComboBox: {name: '#[QMM012_27]',
+																	options: categoryList,
+																	optionsValue: 'code',
+																	visibleItemsCount: 6,
+																	value: selectedCategory,
+																	optionsText: 'name',
+																	enable: true,
+																	required: true,
+																	selectFirstIfNull: true,
+																	columns: [
+																		{ prop: 'name', length: 12 }
+																	]}"></div>
+							<!-- 廃止も表示する -->
+							<div id="B2_5" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('QMM012_28')}</div>
+						</div>
+						<!-- B2_6, B2_7, B2_8 -->
+						<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'highlight',
+																			label: '#[QMM012_29],
+																			targetKey: 'itemNameCd', 
+																			comId: 'statementList', 
+																			items: statementList, 
+																			selected: statementSelected.itemNameCd, 
+																			selectedKey: 'itemNameCd', 
+																			fields: ['...', 'itemNameCd'], 
+																			mode: 'igGrid'}" />
+						<table id="statementList" data-bind="ntsGridList: { name: '#[QMM012_31],
+																			height: 320,
+																			options: statementList,
+																			optionsValue: 'itemNameCd',
+																			columns: [
+																		                { headerText: '#{i18n.getText('QMM012_27')}', key: 'categoryAtr', width: 20 , formatter: _.escape },
+																		                { headerText: '#{i18n.getText('QMM012_32')}', key: 'itemNameCd', width: 340, formatter: _.escape },
+																		                { headerText: '#{i18n.getText('QMM012_33')}', key: 'itemNameCd', width: 340, formatter: _.escape },
+																		                { headerText: '#{i18n.getText('QMM012_34')}', key: 'deprecatedAtr', width: 340, formatter: _.escape }
+																		            ],
+																			multiple: false,
+																			value: statementSelected.itemNameCd
+																		}"></table>
+					</div>
+					
+				</div>
+				<div class="fixed-flex-layout-right">
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
