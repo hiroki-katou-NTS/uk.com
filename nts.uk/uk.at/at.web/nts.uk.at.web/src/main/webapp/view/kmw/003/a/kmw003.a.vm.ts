@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmw003.a.viewmodel {
-    
+    import getText = nts.uk.resource.getText;
     import queryString = nts.uk.request.location.current.queryString;
     export interface EmployeeSearchDto {
         employeeId: string;
@@ -171,8 +171,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
              self.showProfileIcon.subscribe((val) => {
-                 
-                if($("#dpGrid").data('igGrid')) {
+                if($("#dpGrid").data('mGrid')) {
                     $("#dpGrid").mGrid("destroy");
                     $("#dpGrid").off();
                 }
@@ -532,14 +531,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         }
         
         loadRowScreen(loadAll?: boolean) {
-            var self = this;
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
-            let empIds = _.map(_.uniqBy(dataChange, (e: any) => { return e.rowId; }), (value: any) => {
-                return value.rowId;
-            });
-            let employees = _.filter(self.lstEmployee(), (e: any) => {
-                return _.includes(empIds, e.id);
-            });
+            let self = this,
+                dataChange: any = $("#dpGrid").mGrid("updatedCells"),
+                empIds = _.map(_.uniqBy(dataChange, (e: any) => { return e.rowId; }), (value: any) => {
+                    return value.rowId;
+                }),
+                employees = _.filter(self.lstEmployee(), (e: any) => {
+                    return _.includes(empIds, e.id);
+                });
             self.reloadParam().lstEmployees = employees;
             self.reloadParam().processDate = self.yearMonth();
             self.reloadParam().closureId = self.closureId();
@@ -567,7 +566,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 items: [
                     { colorCode: '#94B7FE', labelText: '手修正（本人）' },
                     { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
-                    { colorCode: '#DDDDD2', labelText: nts.uk.resource.getText("KMW003_33") },
+                    { colorCode: '#DDDDD2', labelText: getText("KMW003_33") },
                 ]
             };
         }
@@ -645,19 +644,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         }
         
         insertUpdate2(){
-            var self = this;
-           self.insertUpdate();
+            let self = this;
+            self.insertUpdate();
         }
         
         btnSaveColumnWidth_Click() {
-            var self = this;
-            let command = {
-                lstHeader: {},
-                formatCode: self.dataAll().param.formatCodes
-//                sheetNo : $("#dpGrid").mGrid("selectedSheet")
-            };
-            let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
-            let valueTemp = 0;
+            let self = this,
+                command = {
+                    lstHeader: {},
+                    formatCode: self.dataAll().param.formatCodes
+    //                sheetNo : $("#dpGrid").mGrid("selectedSheet")
+                },
+                jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid'),
+                valueTemp = 0;
             _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
                 if (key.indexOf('A') != -1) {
                     if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
@@ -839,7 +838,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen                    
                     nts.uk.ui.errors.clearAllGridErrors();
-                    if($("#dpGrid").data('igGrid')) {
+                    if($("#dpGrid").data('mGrid')) {
                         $("#dpGrid").mGrid("destroy");
                         $("#dpGrid").off();
                     }
@@ -1179,46 +1178,45 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let ntsControls: Array<any> = [
                 { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                 {
-                    name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KMW003_29"), enable: true, click: function(data) {
+                    name: 'Button', controlType: 'Button', text: getText("KMW003_29"), enable: true, click: function(data) {
                         let self = this;
                         let source: any = $("#dpGrid").mGrid("dataSource");
                         let rowSelect = _.find(source, (value: any) => {
                               return value.id == data.id;
                         })
-                        let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.NORMAL, [rowSelect.employeeId], true, false, null);
-                        let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, rowSelect.startDate, rowSelect.endDate, [rowSelect.employeeId]);
+                        let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.NORMAL, [rowSelect.employeeId], false, false, null, '/view/kmw/003/a/index.xhtml');
+                        let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, rowSelect.startDate, rowSelect.endDate, [rowSelect.employeeId], rowSelect.employeeId);
                         nts.uk.request.jump("/view/kdw/003/a/index.xhtml", { initParam: initParam, extractionParam: extractionParam });
                     }
                 },
                 {
                     name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
-                        let data = $("#dpGrid").igGrid("getCellValue", rowId, key);
+                        let data = $("#dpGrid").mGrid("getCellValue", rowId, key);
                         if (data != "") {
                             let lock = data.split("|");
                             let tempD = "<span>";
                             for (let i = 0; i < lock.length; i++) {
                                 //月別実績のロック
                                 if (lock[i] == "monthlyResultLock")
-                                    tempD += nts.uk.resource.getText("KMW003_35") + '<br/>';
+                                    tempD += getText("KMW003_35") + '<br/>';
                                 //職場の就業確定
                                 if (lock[i] == "employmentConfirmWorkplace")
-                                    tempD += nts.uk.resource.getText("KMW003_36") + '<br/>';
+                                    tempD += getText("KMW003_36") + '<br/>';
                                 //月別実績の承認
                                 if (lock[i] == "monthlyResultApprova")
-                                    tempD += nts.uk.resource.getText("KMW003_37") + '<br/>';
+                                    tempD += getText("KMW003_37") + '<br/>';
                                 //日別実績の不足
                                 if (lock[i] == "monthlyResultLack")
-                                    tempD += nts.uk.resource.getText("KMW003_38") + '<br/>';
+                                    tempD += getText("KMW003_38") + '<br/>';
                                 //日別実績の確認
                                 if (lock[i] == "monthlyResultConfirm")
-                                    tempD += nts.uk.resource.getText("KMW003_39") + '<br/>';
+                                    tempD += getText("KMW003_39") + '<br/>';
                                 //日別実績のエラー
                                 if (lock[i] == "monthlyResultError")
-                                    tempD += nts.uk.resource.getText("KMW003_40") + '<br/>';
+                                    tempD += getText("KMW003_40") + '<br/>';
                                 //過去実績のロック
                                 if (lock[i] == "pastPerformaceLock")
-                                    tempD += nts.uk.resource.getText("KMW003_41") + '<br/>';
-
+                                    tempD += getText("KMW003_41") + '<br/>';
                             }
                             tempD += '</span>';
                             $('#textLock').html(tempD);
@@ -1704,12 +1702,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         paidHours: string;
         fundedPaid: string;
         constructor(compensation: string, substitute: string, paidYear: string, paidHalf: string, paidHours: string, fundedPaid: string) {
-            this.compensation = nts.uk.resource.getText("KMW003_8", [compensation])
-            this.substitute = nts.uk.resource.getText("KMW003_8", [substitute])
-            this.paidYear = nts.uk.resource.getText("KMW003_8", [paidYear])
-            //            this.paidHalf = nts.uk.resource.getText("KMW003_10", paidHalf)
-            //            this.paidHours = nts.uk.resource.getText("KMW003_11", paidHours)
-            this.fundedPaid = nts.uk.resource.getText("KMW003_8", [fundedPaid])
+            this.compensation = getText("KMW003_8", [compensation])
+            this.substitute = getText("KMW003_8", [substitute])
+            this.paidYear = getText("KMW003_8", [paidYear])
+            //            this.paidHalf = getText("KMW003_10", paidHalf)
+            //            this.paidHours = getText("KMW003_11", paidHours)
+            this.fundedPaid = getText("KMW003_8", [fundedPaid])
         }
 
     }
@@ -1758,13 +1756,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         //遷移先の画面
         transitionDesScreen: any;
 
-        constructor(screenMode, lstEmployee, errorRefStartAtr, changePeriodAtr, targetClosue) {
-            var self = this;
+        constructor(screenMode, lstEmployee, errorRefStartAtr, changePeriodAtr, targetClosue, transitionDesScreen) {
+            let self = this;
             self.screenMode = screenMode;
             self.lstEmployee = lstEmployee;
             self.errorRefStartAtr = errorRefStartAtr;
             self.changePeriodAtr = changePeriodAtr;
             self.targetClosue = targetClosue;
+            self.transitionDesScreen = transitionDesScreen;
         }
     }
 
@@ -1781,12 +1780,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         dateTarget: any;
         individualTarget: any;
 
-        constructor(displayFormat, startDate, endDate, lstExtractedEmployee) {
-            var self = this;
+        constructor(displayFormat, startDate, endDate, lstExtractedEmployee, individualTarget) {
+            let self = this;
             self.displayFormat = displayFormat;
             self.startDate = startDate;
             self.endDate = endDate;
             self.lstExtractedEmployee = lstExtractedEmployee;
+            self.individualTarget = individualTarget;
         }
     }
     export enum DPCorrectionDisplayFormat {
