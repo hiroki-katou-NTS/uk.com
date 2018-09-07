@@ -4707,6 +4707,7 @@ div .ex-area-line.x-stay {
 	color: #000;
 	background-color: #CFF1A5;
 	font-weight: bold;
+	text-align: center;
 }
 
 .mgrid .mcell {
@@ -4737,6 +4738,10 @@ div .ex-area-line.x-stay {
 	user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
+}
+
+.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
+	background: #fff;
 }
 
 .mgrid .mgrid-fixed-line, .mgrid .mgrid-line {

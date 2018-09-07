@@ -201,12 +201,12 @@ module nts.uk.ui.gridlist {
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
                             columns: [
-                                { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: false },
+                                { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: true },
                                 { headerText: 'Image', key: 'flexImage', dataType: 'string', width: '60px', ntsControl: 'FlexImage' },
 //                                { headerText: 'Picture', key: "picture", dataType: "string", width: '60px', ntsControl: 'Image' },
 //                                 headerText: 'Common1',
 //                                    group: [
-                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox', hidden: true },
+                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox', hidden: false },
                                             { headerText: 'RULECODE', key: 'ruleCode', dataType: 'number', width: '100px',
                                                             constraint: { 
                                                                 primitiveValue: 'ProcessingNo',
@@ -218,7 +218,7 @@ module nts.uk.ui.gridlist {
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "TimeWithDay",
-                                                                min: "-48:00", max: "30:00",
+                                                                min: "-12:00", max: "71:59",
                                                                 required: true
                                                             }
                                 },
@@ -258,12 +258,17 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Header02', key: 'header02', dataType: 'string', width: '500px', ntsControl: 'Combobox3' },
                                 { headerText: '住所',
                                     group: [
-                                            { headerText: 'Address<br/>Code2', key: 'addressCode2', dataType: 'string', width: '150px' },
+                                            { headerText: 'Address<br/>Code2', key: 'addressCode2', dataType: 'string', width: '150px', inputProcess: inputProcess },
                                             { headerText: 'Address2', key: 'address2', dataType: 'string', width: '150px'}
                                            ]},
                                 { headerText: 'Header12',
                                     group: [
-                                            { headerText: 'Header<br/>1', key: 'header1', dataType: 'string', width: '150px', ntsType: 'code_header2', onChange: search },
+                                            { headerText: 'Header<br/>1', key: 'header1', dataType: 'string', width: '150px', ntsType: 'code_header2', inputProcess: inputProcess, onChange: search,
+                                                constraint: {
+                                                    cDisplayType: "Integer",
+                                                    min: 1, max: 3,
+                                                    required: true
+                                                } },
                                             { headerText: 'Header2', key: 'header2', dataType: 'string', width: '150px', ntsControl: 'Link1' }
                                            ]},
                                 { headerText: 'Header3', key: 'header3', dataType: 'number', width: '150px'/*, ntsControl: 'TextEditor'*/ },
@@ -284,10 +289,14 @@ module nts.uk.ui.gridlist {
                                             }]
                                         },
                                         {
+                                            name: 'WidthSaving'
+                                        },
+                                        {
                                             name: 'Paging',
                                             pageSize: 100,
                                             currentPageIndex: 0
                                         },
+                                        { name: 'Copy' },
                                         { 
                                             name: 'CellStyles',
                                             states: statesTable
@@ -308,7 +317,7 @@ module nts.uk.ui.gridlist {
                                         { name: "Sheet", 
                                           initialDisplay: "sheet1",
                                           sheets: [ 
-                                                    { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1" , "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
+                                                    { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
                                                     { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                   ]
                                         },
@@ -330,7 +339,7 @@ module nts.uk.ui.gridlist {
                                           ]
                                         }
                                       ],
-                            ntsFeatures: [{ name: 'CopyPaste' },
+                            ntsFeatures: [
                                             { name: 'CellEdit' },
 //                                            { name: 'Storage',
 //                                                type: 'Remote',
@@ -376,8 +385,6 @@ module nts.uk.ui.gridlist {
                             })
                             .create();
         $("#run").on("click", function() {
-            var source = $("#grid2").igGrid("option", "dataSource");
-            alert(source[1].flag);
         });
         $("#update-row").on("click", function() {
             $("#grid2").ntsGrid("updateRow", 0, { flag: false, ruleCode: '6', combo: '3' });
@@ -443,6 +450,15 @@ module nts.uk.ui.gridlist {
                 result = "結果02"
             }
             dfd.resolve(result);
+            return dfd.promise();
+        }
+        
+        function inputProcess(id, item, value) {
+            let dfd = $.Deferred();
+            let data = { id: id, item: item, value: value };
+            request.ajax("/sample/lazyload/process", data).done(function(d) {
+                dfd.resolve(d);
+            });
             return dfd.promise();
         }
         
