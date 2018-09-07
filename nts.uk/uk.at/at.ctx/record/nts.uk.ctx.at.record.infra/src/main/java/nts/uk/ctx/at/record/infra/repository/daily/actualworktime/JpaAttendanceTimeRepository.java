@@ -15,14 +15,13 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
@@ -40,6 +39,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
 
 	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+	
+	private static final String FIND_BY_LABOR_TIME;
 	
 	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
 
@@ -60,6 +61,13 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
 		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
+//		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		FIND_BY_LABOR_TIME = builderString.toString();
+		
+		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
 		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
@@ -418,8 +426,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
-	public List<Integer> find(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, Integer.class)
+	public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
+		return this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
 				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList();
+	}
+	
+	@Override
+	public List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd) {
+			return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, KrcdtDayAttendanceTime.class)
+					.setParameter("employeeId", employeeId).setParameter("date", ymd).getList(x -> x.toDomain());
 	}
 }
