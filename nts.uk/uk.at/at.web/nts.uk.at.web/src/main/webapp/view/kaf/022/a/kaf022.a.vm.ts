@@ -2279,7 +2279,6 @@ module nts.uk.at.view.kmf022 {
                 $('#a7_23_2').trigger("validate");
                 $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
-                nts.uk.ui.block.invisible();
                 let self = this,
                     data: any = {},
                     dataA4 = [],
@@ -2620,9 +2619,9 @@ module nts.uk.at.view.kmf022 {
                 if (nts.uk.ui.errors.hasError() === false) {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.block.invisible();
                             //Load data setting
                             self.loadData();
-
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();

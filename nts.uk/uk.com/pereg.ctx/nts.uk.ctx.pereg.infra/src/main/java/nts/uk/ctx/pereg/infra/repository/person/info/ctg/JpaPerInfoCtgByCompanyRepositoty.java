@@ -184,19 +184,15 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		HashMap<String, Integer> items = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
 
-		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, PpemtPerInfoCtgOrder.class)
-			.setParameter("cid", companyId)
-			.setParameter("ctgIds", categoryIds)
-			.getList().stream().forEach(ctg -> {
-				ctgs.putIfAbsent(ctg.ppemtPerInfoCtgPK.perInfoCtgId, ctg.disporder);
-			});
+		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
+				.setParameter("ctgIds", categoryIds).getList().stream().forEach(ctg -> {
+					ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
+				});
 
-		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, PpemtPerInfoItemOrder.class)
-			.setParameter("ctgIds", categoryIds)
-			.setParameter("itIds", itemDefinitionIds)
-			.getList().forEach(it -> {
-				items.putIfAbsent(it.ppemtPerInfoItemPK.perInfoItemDefId, it.disporder);
-			});
+		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", categoryIds)
+				.setParameter("itIds", itemDefinitionIds).getList().forEach(it -> {
+					items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+				});
 
 		return new HashMap<Integer, HashMap<String, Integer>>() {
 			private static final long serialVersionUID = 1L;

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
@@ -16,7 +16,7 @@ public class GoOutForChildCare {
 	/** 育児介護区分 */
 	private ChildCareAtr childCareAtr;
 	/** 回数 */
-	private AttendanceTimesMonth times;
+	private AttendanceTimesMonthDom times;
 	/** 時間 */
 	private AttendanceTimeMonth time;
 	
@@ -26,7 +26,7 @@ public class GoOutForChildCare {
 	public GoOutForChildCare(ChildCareAtr childCareAtr){
 		
 		this.childCareAtr = childCareAtr;
-		this.times = new AttendanceTimesMonth(0);
+		this.times = new AttendanceTimesMonthDom(0);
 		this.time = new AttendanceTimeMonth(0);
 	}
 
@@ -39,7 +39,7 @@ public class GoOutForChildCare {
 	 */
 	public static GoOutForChildCare of(
 			ChildCareAtr childCareAtr,
-			AttendanceTimesMonth times,
+			AttendanceTimesMonthDom times,
 			AttendanceTimeMonth time){
 		
 		val domain = new GoOutForChildCare(childCareAtr);

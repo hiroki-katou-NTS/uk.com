@@ -326,6 +326,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
             });
         }
+        
         helps(event, data) {
             var self = this;
             $('#tooltip').css({
@@ -337,6 +338,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.lockMessage(data);
             $("#tooltip").show();
         }
+        
         initLegendButton() {
             var self = this;
             self.legendOptions = {

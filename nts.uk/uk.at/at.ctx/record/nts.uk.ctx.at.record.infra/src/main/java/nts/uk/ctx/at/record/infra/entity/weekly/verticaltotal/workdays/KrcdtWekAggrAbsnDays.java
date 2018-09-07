@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
@@ -70,7 +70,7 @@ public class KrcdtWekAggrAbsnDays extends UkJpaEntity implements Serializable {
 		
 		return AggregateAbsenceDays.of(
 				this.PK.absenceFrameNo,
-				new AttendanceDaysMonth(this.absenceDays),
+				new AttendanceDaysMonthDom(this.absenceDays),
 				new AttendanceTimeMonth(this.absenceTime));
 	}
 	

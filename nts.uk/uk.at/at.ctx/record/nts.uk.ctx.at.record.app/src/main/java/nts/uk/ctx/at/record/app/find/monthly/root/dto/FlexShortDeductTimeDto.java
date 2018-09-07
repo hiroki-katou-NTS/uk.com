@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -34,7 +34,7 @@ public class FlexShortDeductTimeDto implements ItemConst {
 
 	public FlexShortDeductTime toDomain() {
 		return FlexShortDeductTime.of(
-						new AttendanceDaysMonth(annualLeaveDeductDays),
+						new AttendanceDaysMonthDom(annualLeaveDeductDays),
 						new AttendanceTimeMonth(absenceDeductTime),
 						new AttendanceTimeMonth(flexShortTimeBeforeDeduct));
 	}

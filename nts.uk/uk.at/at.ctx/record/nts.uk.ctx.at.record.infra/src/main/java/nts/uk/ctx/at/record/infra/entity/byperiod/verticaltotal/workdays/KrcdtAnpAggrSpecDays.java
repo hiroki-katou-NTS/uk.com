@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTime;
@@ -66,8 +66,8 @@ public class KrcdtAnpAggrSpecDays extends UkJpaEntity implements Serializable {
 		
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(this.PK.specificDayItemNo),
-				new AttendanceDaysMonth(this.specificDays),
-				new AttendanceDaysMonth(this.holidayWorkSpecificDays));
+				new AttendanceDaysMonthDom(this.specificDays),
+				new AttendanceDaysMonthDom(this.holidayWorkSpecificDays));
 	}
 	
 	/**

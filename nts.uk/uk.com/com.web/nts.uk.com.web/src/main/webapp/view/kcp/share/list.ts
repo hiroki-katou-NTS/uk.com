@@ -369,6 +369,19 @@ module kcp.share.list {
                 _.defer(() => {
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
+
+                    // select all items in multi mode, select first item in single mode
+                    if (!_.isEmpty(self.itemList())) {
+                        let selectedValues;
+                        if (self.isMultipleSelect) {
+                            selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                        } else {
+                            selectedValues = self.listType == ListType.JOB_TITLE ? self.itemList()[0].id : self.itemList()[0].code;
+                        }
+                        self.selectedCodes(selectedValues);
+                        gridList.ntsGridList("setSelectedValue", []);
+                        gridList.ntsGridList("setSelectedValue", selectedValues);
+                    }
                 });
             }
         }
@@ -451,14 +464,13 @@ module kcp.share.list {
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                 self.selectedCodes(selectedIds);
             });
-
-            // update selected codes on ntsGrid
-            self.selectedCodes.subscribe(codes => {
-                if (_.isNil(gridList.data("igGrid"))) {
-                    return;
+            gridList.on('selectChange', evt => {
+                // scroll to top if select all
+                if (self.itemList().length == self.selectedCodes().length) {
+                    gridList.igGrid("virtualScrollTo", '0px');
                 }
-                gridList.ntsGridList("setSelectedValue", codes);
             });
+
         }
 
         private initEmployeeSubscription(data: ComponentOption): void {
