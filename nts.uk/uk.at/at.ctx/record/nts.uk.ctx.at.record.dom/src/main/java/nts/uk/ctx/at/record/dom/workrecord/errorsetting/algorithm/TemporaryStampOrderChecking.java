@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,18 +36,34 @@ public class TemporaryStampOrderChecking {
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public EmployeeDailyPerError temporaryStampOrderChecking(String employeeID, String companyID, GeneralDate processingDate,
-			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
-		
+	public EmployeeDailyPerError temporaryStampOrderChecking(String employeeID, String companyID,
+			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+
 		EmployeeDailyPerError employeeDailyPerError = null;
 
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 
 		if (temporaryTimeOfDailyPerformance != null
 				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
-			timeLeavingWorks.sort((e1, e2) -> e1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()
-					.compareTo(e2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()));
+
+			List<TimeLeavingWork> newTimeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+
+			List<TimeLeavingWork> timeLeavingWorks = newTimeLeavingWorks.stream()
+					.filter(item -> (item.getAttendanceStamp() != null && item.getAttendanceStamp().isPresent())
+							|| (item.getLeaveStamp() != null && item.getLeaveStamp().isPresent()))
+					.collect(Collectors.toList());
+
+			timeLeavingWorks
+					.sort((e1,
+							e2) -> ((e1.getAttendanceStamp().isPresent()
+									&& e1.getAttendanceStamp().get().getStamp().isPresent())
+											? e1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()
+											: Integer.valueOf(0))
+													.compareTo(((e2.getAttendanceStamp().isPresent()
+															&& e2.getAttendanceStamp().get().getStamp().isPresent())
+																	? e2.getAttendanceStamp().get().getStamp().get()
+																			.getTimeWithDay().v()
+																	: Integer.valueOf(0))));
 
 			int workNo = 1;
 			for (TimeLeavingWork item : timeLeavingWorks) {
@@ -58,8 +75,7 @@ public class TemporaryStampOrderChecking {
 				if (item.getLeaveStamp().isPresent()) {
 					leaveStamp = item.getLeaveStamp().get();
 				}
-				item = new TimeLeavingWork(new WorkNo((workNo)), attendanceStamp,
-						leaveStamp);
+				item = new TimeLeavingWork(new WorkNo((workNo)), attendanceStamp, leaveStamp);
 				workNo++;
 			}
 
@@ -78,10 +94,10 @@ public class TemporaryStampOrderChecking {
 
 				StateAttr duplicationStateAttr = StateAttr.NO_DUPLICATION;
 				if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
-						&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null 
+						&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
-						&& timeLeavingWork.getLeaveStamp().get().getStamp() != null 
+						&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
 					if (timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay().lessThanOrEqualTo(
 							timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
@@ -89,15 +105,17 @@ public class TemporaryStampOrderChecking {
 						duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
 								temporaryTimeOfDailyPerformance);
 						if (duplicationStateAttr == StateAttr.DUPLICATION) {
-							if (!attendanceItemIDList.isEmpty()){
-								employeeDailyPerError = new EmployeeDailyPerError(companyID,
-										employeeID, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-										attendanceItemIDList);
+							if (!attendanceItemIDList.isEmpty()) {
+								employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+										new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
 							}
-//							if(!attendanceItemIDList.isEmpty()){
-//								this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
-//										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
-//							}
+							// if(!attendanceItemIDList.isEmpty()){
+							// this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID,
+							// employeeID,
+							// processingDate, new
+							// ErrorAlarmWorkRecordCode("S004"),
+							// attendanceItemIDList);
+							// }
 						}
 					}
 				}
