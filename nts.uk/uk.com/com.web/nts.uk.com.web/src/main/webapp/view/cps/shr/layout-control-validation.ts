@@ -1501,7 +1501,8 @@ module nts.layout {
                 CS00024_IS00280: IFindData = finder.find('CS00024', 'IS00280'),
                 CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
                 CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
-                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283');
+                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283'),
+                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021');
 
             if (CS00024_IS00279 &&
                 CS00024_IS00280 &&
@@ -1511,16 +1512,23 @@ module nts.layout {
                 CS00024_IS00279.data.value.subscribe(x => {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
-                        grantTable = ko.toJS(CS00024_IS00280.data.value);
-
-                    if (!employeeId || !x) {
+                        grantTable = ko.toJS(CS00024_IS00280.data.value),
+                        hireDate: Date = null,
+                        retireDates: Date = null;
+                    if (location.href.indexOf('/view/cps/002') > -1) {
+                        hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                        retireDates = CS00003_IS00021? ko.toJS(CS00003_IS00021.data.value): '9999/12/31';
+                    }
+                    if (!x) {
                         return;
                     }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate:  moment.utc(standardDate).format('YYYY/MM/DD'),
-                        grantTable: grantTable
+                        grantTable: grantTable,
+                        entryDate: moment.utc(hireDate).toDate(),
+                        retireDate: moment.utc(retireDates).toDate()
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
                         CS00024_IS00282.data.value(result.nextTimeGrantDays);
@@ -1813,9 +1821,8 @@ module nts.layout {
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
                                 grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null,
-                                management = manage? ko.toJS(manage.data.value): null;
                             
-                            // 
+                                management = manage ? ko.toJS(manage.data.value) : null;
 
                             if (!sid || !x || !management || management == '0') {
                                 result.data.value('');
@@ -2223,6 +2230,8 @@ module nts.layout {
         employeeId: string;
         standardDate: Date;
         grantTable: string;
+        entryDate: Date;
+        retireDate: Date;
     }
 
     interface IGroupControl {
