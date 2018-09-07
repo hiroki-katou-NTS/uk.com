@@ -13,9 +13,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
@@ -134,26 +134,26 @@ public class KrcdtMonWorkClock extends UkJpaEntity implements Serializable {
 		
 		return WorkClockOfMonthly.of(
 				EndClockOfMonthly.of(
-						new AttendanceTimesMonth(this.endWorkTimes),
+						new AttendanceTimesMonthDom(this.endWorkTimes),
 						new AttendanceTimeMonth(this.endWorkTotalClock),
 						new AttendanceTimeMonth(this.endWorkAverageClock)),
 				PCLogonOfMonthly.of(
 						PCLogonClockOfMonthly.of(
 								AggrPCLogonClock.of(
-										new AttendanceDaysMonth(this.logonTotalDays),
+										new AttendanceDaysMonthDom(this.logonTotalDays),
 										new AttendanceTimeMonth(this.logonTotalClock),
 										new AttendanceTimeMonth(this.logonAverageClock)),
 								AggrPCLogonClock.of(
-										new AttendanceDaysMonth(this.logoffTotalDays),
+										new AttendanceDaysMonthDom(this.logoffTotalDays),
 										new AttendanceTimeMonth(this.logoffTotalClock),
 										new AttendanceTimeMonth(this.logoffAverageClock))),
 						PCLogonDivergenceOfMonthly.of(
 								AggrPCLogonDivergence.of(
-										new AttendanceDaysMonth(this.logonDivDays),
+										new AttendanceDaysMonthDom(this.logonDivDays),
 										new AttendanceTimeMonth(this.logonDivTotalTime),
 										new AttendanceTimeMonth(this.logonDivAverageTime)),
 								AggrPCLogonDivergence.of(
-										new AttendanceDaysMonth(this.logoffDivDays),
+										new AttendanceDaysMonthDom(this.logoffDivDays),
 										new AttendanceTimeMonth(this.logoffDivTotalTime),
 										new AttendanceTimeMonth(this.logoffDivAverageTime)))));
 	}

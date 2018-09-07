@@ -18,7 +18,7 @@ public class JpaTempWorkUseManageRepository extends JpaRepository implements Tem
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtTemporaryWorkUseManage a ");
-		builderString.append("WHERE a.krcdtTemporaryWorkUseManage.companyID = :companyID ");
+		builderString.append("WHERE a.krcdtTemporaryWorkUseManagePK.companyID = :companyID ");
 		FIND_BY_KEY = builderString.toString();
 	}
 

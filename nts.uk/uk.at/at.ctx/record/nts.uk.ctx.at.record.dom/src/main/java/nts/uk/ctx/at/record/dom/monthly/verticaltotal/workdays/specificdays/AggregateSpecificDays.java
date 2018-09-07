@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 
 /**
@@ -16,9 +16,9 @@ public class AggregateSpecificDays {
 	private SpecificDateItemNo specificDayItemNo;
 	
 	/** 特定日数 */
-	private AttendanceDaysMonth specificDays;
+	private AttendanceDaysMonthDom specificDays;
 	/** 休出特定日数 */
-	private AttendanceDaysMonth holidayWorkSpecificDays;
+	private AttendanceDaysMonthDom holidayWorkSpecificDays;
 	
 	/**
 	 * コンストラクタ
@@ -27,8 +27,8 @@ public class AggregateSpecificDays {
 	public AggregateSpecificDays(SpecificDateItemNo specificDayItemNo){
 		
 		this.specificDayItemNo = specificDayItemNo;
-		this.specificDays = new AttendanceDaysMonth(0.0);
-		this.holidayWorkSpecificDays = new AttendanceDaysMonth(0.0);
+		this.specificDays = new AttendanceDaysMonthDom(0.0);
+		this.holidayWorkSpecificDays = new AttendanceDaysMonthDom(0.0);
 	}
 	
 	/**
@@ -40,8 +40,8 @@ public class AggregateSpecificDays {
 	 */
 	public static AggregateSpecificDays of(
 			SpecificDateItemNo specificDayItemNo,
-			AttendanceDaysMonth specificDays,
-			AttendanceDaysMonth holidayWorkSpecificDays){
+			AttendanceDaysMonthDom specificDays,
+			AttendanceDaysMonthDom holidayWorkSpecificDays){
 		
 		val domain = new AggregateSpecificDays(specificDayItemNo);
 		domain.specificDays = specificDays;

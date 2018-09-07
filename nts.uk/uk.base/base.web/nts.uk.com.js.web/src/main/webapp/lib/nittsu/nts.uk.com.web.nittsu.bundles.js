@@ -774,7 +774,7 @@ var nts;
             var messages = window['messages'] || {};
             function getText(code, params) {
                 var text = names[code];
-                if (text) {
+                if (!_.isNil(text)) {
                     text = formatParams(text, params);
                     text = formatCompCustomizeResource(text);
                     return text.replace(/\\r\\n/g, '\r\n');
@@ -8152,6 +8152,8 @@ var nts;
                                         touched = mTouch;
                                         touched.idx = i;
                                     }
+                                    else if (touched && touched.dirty && (!mTouch || !mTouch.dirty)) {
+                                    }
                                     else if (touched && touched.dirty && mTouch && mTouch.dirty) {
                                         touched.idx = -1;
                                     }
@@ -13632,6 +13634,7 @@ var nts;
                         $.data($grid, internal.EDIT_HISTORY, null);
                         $.data($grid, internal.STICK_HISTORY, null);
                         $.data($grid, internal.DET, null);
+                        $.data($grid, internal.D_CELLS_STYLE, null);
                         var exTable = helper.getExTableFromGrid($grid);
                         if (!exTable)
                             return;
@@ -19947,6 +19950,7 @@ var nts;
                     };
                     SwapPart.prototype.resetOriginalDataSource = function () {
                         this.originalDataSource = _.cloneDeep(this.dataSource);
+                        this.$listControl.data("dataSource", this.originalDataSource);
                     };
                     SwapPart.prototype.search = function () {
                         var searchContents = this.$searchBox.val();
@@ -20005,6 +20009,8 @@ var nts;
                                 return;
                             this.bindData(results.data);
                             this.$listControl.trigger("listfilterred");
+                            this.$listControl.data("filter", true);
+                            return results.data;
                         }
                         else {
                             this.highlightSearch();
@@ -20017,6 +20023,7 @@ var nts;
                             }
                             this.bindData(this.originalDataSource);
                             this.$searchBox.val('');
+                            this.$listControl.data("filter", false);
                         }
                     };
                     SwapPart.prototype.build = function () {
@@ -20167,26 +20174,44 @@ var nts;
                         this.swapParts[0].setDataSource(firstSource);
                         this.swapParts[1].setDataSource(secondSource);
                         value(secondSource);
+                        var searchResult;
+                        if (this.swapParts[forward ? 0 : 1].$listControl.data("filter")) {
+                            searchResult = this.swapParts[forward ? 0 : 1].proceedSearch();
+                        }
+                        if (this.swapParts[forward ? 1 : 0].$listControl.data("filter")) {
+                            this.swapParts[forward ? 1 : 0].proceedSearch();
+                        }
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
                         afterMove(forward, oldSource, _.cloneDeep(forward ? secondSource : firstSource));
                         if (forward) {
-                            var selectIndex = firstSource.length === 0 ? -1
-                                : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index);
+                            var arr = searchResult ? searchResult : firstSource;
+                            var selectIndex = arr.length === 0 ? -1
+                                : (arr.length - 1 < firstSelected.index ? arr.length - 1 : firstSelected.index);
                         }
                         else {
-                            var selectIndex = secondSource.length === 0 ? -1
-                                : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);
+                            var arr = searchResult ? searchResult : secondSource;
+                            var selectIndex = arr.length === 0 ? -1
+                                : (arr.length - 1 < firstSelected.index ? arr.length - 1 : firstSelected.index);
                         }
                         setTimeout(function () {
                             $source.igGrid("virtualScrollTo", selectIndex);
                             $dest.igGrid("virtualScrollTo", destList.length - 1);
-                            if (selectIndex >= 0) {
-                                $source.igGridSelection("selectRowById", forward ? firstSource[selectIndex][primaryKey] : secondSource[selectIndex][primaryKey]);
-                            }
-                            if (!forward) {
-                                $dest.ntsGridList("setSelected", selectedIds);
-                            }
+                            //                if(selectIndex >= 0){
+                            //                    let selectId;
+                            //                    if (searchResult) {
+                            //                        selectId = searchResult[selectIndex][primaryKey];
+                            //                    } else if (forward) {
+                            //                        selectId = firstSource[selectIndex][primaryKey];
+                            //                    } else {
+                            //                        selectId = secondSource[selectIndex][primaryKey];
+                            //                    }
+                            //                    
+                            //                    $source.igGridSelection("selectRowById", selectId);    
+                            //                } 
+                            //                if(!forward){
+                            //                    $dest.ntsGridList("setSelected", selectedIds);    
+                            //                }
                         }, 10);
                     };
                     return GridSwapList;
@@ -20315,6 +20340,14 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
+                $.fn.swapList = function (method, param) {
+                    switch (method) {
+                        case "dataSource":
+                            var id = $(this).attr("id") + "-grid" + (param + 1);
+                            var dataSource = $("#" + id).data("dataSource");
+                            return dataSource ? dataSource : [];
+                    }
+                };
             })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -31556,6 +31589,7 @@ var nts;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
                         var uploadFinished = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
+                        var maxSize = data.maxSize;
                         // Container
                         var $container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
@@ -31586,6 +31620,12 @@ var nts;
                                     $container.data(IS_RESTORED_BY_CANCEL, true);
                                     this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                                 }
+                                return;
+                            }
+                            // check file's size if maxSize is defined
+                            if (maxSize && this.files[0].size > (maxSize * 1048576)) {
+                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [maxSize] });
+                                $container.ntsFileUpload("clear");
                                 return;
                             }
                             $container.data(FILES_CACHE_FOR_CANCEL, this.files);

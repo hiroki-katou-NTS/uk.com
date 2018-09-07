@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -42,7 +42,7 @@ public class EndWorkHourOfMonthlyDto implements ItemConst {
 	}
 	
 	public EndClockOfMonthly toDomain(){
-		return EndClockOfMonthly.of(new AttendanceTimesMonth(times),
+		return EndClockOfMonthly.of(new AttendanceTimesMonthDom(times),
 									new AttendanceTimeMonth(totalHours),
 									new AttendanceTimeMonth(averageHours));
 	}

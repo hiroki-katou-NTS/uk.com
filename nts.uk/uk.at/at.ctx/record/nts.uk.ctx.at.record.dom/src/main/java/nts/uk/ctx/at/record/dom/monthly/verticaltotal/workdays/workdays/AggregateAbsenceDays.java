@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -15,7 +15,7 @@ public class AggregateAbsenceDays {
 	/** 欠勤枠NO */
 	private int absenceFrameNo;
 	/** 日数 */
-	private AttendanceDaysMonth days;
+	private AttendanceDaysMonthDom days;
 	/** 時間 */
 	private AttendanceTimeMonth time;
 	
@@ -26,7 +26,7 @@ public class AggregateAbsenceDays {
 	public AggregateAbsenceDays(int absenceFrameNo){
 		
 		this.absenceFrameNo = absenceFrameNo;
-		this.days = new AttendanceDaysMonth(0.0);
+		this.days = new AttendanceDaysMonthDom(0.0);
 		this.time = new AttendanceTimeMonth(0);
 	}
 
@@ -39,7 +39,7 @@ public class AggregateAbsenceDays {
 	 */
 	public static AggregateAbsenceDays of(
 			int absenceFrameNo,
-			AttendanceDaysMonth days,
+			AttendanceDaysMonthDom days,
 			AttendanceTimeMonth time){
 		
 		val domain = new AggregateAbsenceDays(absenceFrameNo);

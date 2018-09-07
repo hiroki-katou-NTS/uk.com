@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedPropriety
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
+import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -37,7 +39,8 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	
 	@Inject
 	private IntermediateDataPub intermediateDataPub;
-
+	@Inject
+	private SprAppRootStatePub sprPub;
 	@Override
 	public List<ApproveRootStatusForEmpImport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
 			String employeeID, String companyID, Integer rootType) {
@@ -111,5 +114,14 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	@Override
 	public void cleanApprovalRootState(String rootStateID, Integer rootType) {
 		approvalRootStatePub.cleanApprovalRootState(rootStateID, rootType);
+	}
+
+	@Override
+	public List<ApprovalRootStateStatusImport> getStatusByEmpAndDate(String employeeID, DatePeriod datePeriod,
+			Integer rootType) {
+		List<ApprovalRootStateStatusImport> lstOutput = sprPub.getStatusByEmpAndDate(employeeID, datePeriod.start(), datePeriod.end(), rootType)
+				.stream().map(x -> new ApprovalRootStateStatusImport(x.getDate(), x.getEmployeeID(), x.getDailyConfirmAtr()))
+				.collect(Collectors.toList());
+		return lstOutput;
 	}
 }
