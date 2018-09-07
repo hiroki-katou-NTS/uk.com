@@ -64,7 +64,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
 			IntegrationOfDaily daily = new IntegrationOfDaily(wi, null, null, Optional.empty(), pc, new ArrayList<>(),
 								Optional.empty(), new ArrayList<>(), attendanceTime, Optional.empty(), tl,
-								Optional.empty(), Optional.empty(), al, anyItem, new ArrayList<>(), Optional.empty());
+								Optional.empty(), Optional.empty(), al, anyItem, new ArrayList<>(), Optional.empty(), new ArrayList<>());
 			
 			addAndUpdate(daily);
 		});
