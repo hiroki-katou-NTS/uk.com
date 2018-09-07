@@ -530,6 +530,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// Find fist.
 		cq.where(conditions.toArray(new Predicate[] {}));
 		List<EmployeeDataView> res = this.getEntityManager().createQuery(cq).getResultList();
+
+		if (CollectionUtil.isEmpty(res)) {
+			return null;
+		}
+
 		EmployeeDataView entity = res.get(0);
 		
 		// Convert.
