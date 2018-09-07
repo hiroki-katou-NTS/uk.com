@@ -22,21 +22,22 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 
 	@Inject
 	private DailyAttdItemAuthRepository dailyAttdItemAuthRepository;
-	
-	@Inject 
+
+	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+
 	@Override
-	public List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> authorityDailyId,
+	public List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
 		List<Integer> dailyAttendanceItemIds = new ArrayList<>();
 		// パラメータ「ロールID」をチェックする (Check the parameter "Roll ID")
-		if (authorityDailyId.isPresent()) {
+		if (authorityId.isPresent()) {
 			// ドメインモデル「権限別日次項目制御」を取得する
 			Optional<DailyAttendanceItemAuthority> itemAuthority = dailyAttdItemAuthRepository
-					.getDailyAttdItemByAttItemId(cid, authorityDailyId.get(), attendanceItemIds);
+					.getDailyAttdItemByAttItemId(cid, authorityId.get(), attendanceItemIds);
 			if (itemAuthority.isPresent()) {
 				dailyAttendanceItemIds = itemAuthority.get().getListDisplayAndInputControl().stream()
 						.map(x -> x.getItemDailyID()).collect(Collectors.toList());
@@ -48,9 +49,10 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 		List<DailyAttendanceItem> dailyItem = dailyAttendanceItemRepository.findByAtrsAndAttItemIds(cid,
 				itemAtrs.stream().map(x -> x.value).collect(Collectors.toList()), dailyAttendanceItemIds);
 		// 取得した勤怠項目の件数をチェックする
-		if(dailyItem.isEmpty()){
+		if (dailyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+		// 勤怠項目に対応する名称を生成する
 		List<DailyAttendanceItemNameAdapterDto> dailyAttItem = dailyAttendanceItemNameAdapter
 				.getDailyAttendanceItemName(dailyAttendanceItemIds);
 		return dailyAttItem;

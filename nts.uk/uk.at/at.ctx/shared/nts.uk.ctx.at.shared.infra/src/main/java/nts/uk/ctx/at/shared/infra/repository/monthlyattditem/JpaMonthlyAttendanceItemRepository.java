@@ -17,12 +17,14 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK_;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem_;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 
 /**
  * The Class JpaMonthlyAttendanceItemRepository.
@@ -183,5 +185,35 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("listAttdID", listAttdID)
 				.setParameter("companyId", companyId)
 				.getList(f -> toDomain(f));
+	}
+
+	@Override
+	public List<MonthlyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs,
+			List<Integer> attendanceItemIds) {
+		boolean hasItemAtrs = itemAtrs != null && !itemAtrs.isEmpty();
+		boolean hasAttendanceAtrs = attendanceItemIds != null && !attendanceItemIds.isEmpty();
+
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a");
+		builderString.append(" FROM KrcmtMonAttendanceItem a");
+		builderString.append(" WHERE a.krcmtMonAttendanceItemPK.cid = :companyId");
+
+		if (hasItemAtrs) {
+			builderString.append("AND a.mAtdItemAtr IN :mAtdItemAtrs ");
+		}
+		if (hasAttendanceAtrs) {
+			builderString.append("AND a.krcmtMonAttendanceItemPK.mAtdItemId IN :mAtdItemIds ");
+		}
+
+		TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy()
+				.query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("companyId", companyId);
+
+		if (hasItemAtrs) {
+			query.setParameter("mAtdItemAtrs", itemAtrs);
+		}
+		if (hasAttendanceAtrs) {
+			query.setParameter("mAtdItemIds", attendanceItemIds);
+		}
+		return query.getList(f -> toDomain(f));
 	}
 }
