@@ -21,7 +21,7 @@ public interface CompanyDailyItemService {
 	 *            List＜日次勤怠項目の属性＞
 	 * @return
 	 */
-	List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> roleId, List<Integer> attendanceItemIds,
+	List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
 			List<DailyAttendanceAtr> itemAtrs);
 
 }

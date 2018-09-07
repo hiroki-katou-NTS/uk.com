@@ -139,17 +139,17 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 
 	@Override
 	public List<DailyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs,
-			List<Integer> dailyAttendanceItemIds) {
+			List<Integer> attendanceItemIds) {
 		boolean hasItemAtrs = itemAtrs != null && !itemAtrs.isEmpty();
-		boolean hasDailyAttendanceAtrs = dailyAttendanceItemIds != null && !dailyAttendanceItemIds.isEmpty();
+		boolean hasAttendanceAtrs = attendanceItemIds != null && !attendanceItemIds.isEmpty();
 
 		StringBuilder builderString = new StringBuilder();
 		builderString.append(FIND_ALL);
 		if (hasItemAtrs) {
 			builderString.append("AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs ");
 		}
-		if (hasDailyAttendanceAtrs) {
-			builderString.append("AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :dailyAttendanceItemIds ");
+		if (hasAttendanceAtrs) {
+			builderString.append("AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds ");
 		}
 
 		TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy()
@@ -158,8 +158,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		if (hasItemAtrs) {
 			query.setParameter("dailyAttendanceAtrs", itemAtrs);
 		}
-		if (hasDailyAttendanceAtrs) {
-			query.setParameter("dailyAttendanceItemIds", dailyAttendanceItemIds);
+		if (hasAttendanceAtrs) {
+			query.setParameter("attendanceItemIds", attendanceItemIds);
 		}
 
 		return query.getList(f -> toDomain(f));
