@@ -50,14 +50,22 @@ public class GoingOutStampOrderChecking {
 
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
 
+//			List<OutingTimeSheet> newOutingTimeSheets2 = outingTimeSheets.stream()
+//					.filter(item -> item.getGoOut() != null && item.getGoOut().isPresent()
+//							&& item.getGoOut().get().getStamp() != null && item.getGoOut().get().getStamp().isPresent()
+//							&& item.getGoOut().get().getStamp().get().getTimeWithDay() != null)
+//					.collect(Collectors.toList());
+
 			List<OutingTimeSheet> newOutingTimeSheets = outingTimeSheets.stream()
-					.filter(item -> item.getGoOut() != null && item.getGoOut().isPresent()
-							&& item.getGoOut().get().getStamp() != null && item.getGoOut().get().getStamp().isPresent()
-							&& item.getGoOut().get().getStamp().get().getTimeWithDay() != null)
+					.filter(item -> item.getComeBack().isPresent() || item.getGoOut().isPresent())
 					.collect(Collectors.toList());
 
-			newOutingTimeSheets.sort((e1, e2) -> e1.getGoOut().get().getStamp().get().getTimeWithDay().v()
-					.compareTo(e2.getGoOut().get().getStamp().get().getTimeWithDay().v()));
+			newOutingTimeSheets.sort((e1,
+					e2) -> ((e1.getGoOut().isPresent() && e1.getGoOut().get().getStamp().isPresent())
+							? e1.getGoOut().get().getStamp().get().getTimeWithDay().v() : Integer.valueOf(0)).compareTo(
+									((e2.getGoOut().isPresent() && e2.getGoOut().get().getStamp().isPresent())
+											? e2.getGoOut().get().getStamp().get().getTimeWithDay().v()
+											: Integer.valueOf(0))));
 
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : newOutingTimeSheets) {
