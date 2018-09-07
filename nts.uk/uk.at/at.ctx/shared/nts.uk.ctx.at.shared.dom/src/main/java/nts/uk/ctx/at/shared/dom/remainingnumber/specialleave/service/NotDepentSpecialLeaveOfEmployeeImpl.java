@@ -133,13 +133,15 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	}
 	@Override
 	public GrantDaysInforByDates getGrantDaysOfTable(RequestGrantData param, SpecialHoliday speHoliday) {
-		GrantDaysInforByDates outputData = new GrantDaysInforByDates(GeneralDate.today(), new ArrayList<>());
+		GrantDaysInforByDates outputData = new GrantDaysInforByDates(param.getGrantDate(), new ArrayList<>());
 		//ドメインモデル「特別休暇付与テーブル」を取得する
 		List<ElapseYear> elapseYear = new ArrayList<>();
 		//パラメータ「特別休暇適用設定」≠所定の条件を適用する　の場合
 		//パラメータ「付与テーブルコード」		
-		if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED
-				&& param.getGrantTblCd().isPresent()) {
+		if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED) {
+			if(!param.getGrantTblCd().isPresent()) {
+				return outputData;
+			}
 			elapseYear = grantTblRepos.findElapseByGrantDateCd(param.getCid(),
 					speHoliday.getSpecialHolidayCode().v(),
 					param.getGrantTblCd().get());
