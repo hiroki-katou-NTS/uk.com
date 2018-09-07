@@ -376,6 +376,8 @@ module nts.uk.at.view.kwr008.a {
                 let self = this;
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
+                }else{
+                    $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
