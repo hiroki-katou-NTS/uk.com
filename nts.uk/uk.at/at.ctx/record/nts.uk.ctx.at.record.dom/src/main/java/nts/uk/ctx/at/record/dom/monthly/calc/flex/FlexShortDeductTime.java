@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class FlexShortDeductTime {
 
 	/** 年休控除日数 */
-	private AttendanceDaysMonth annualLeaveDeductDays;
+	private AttendanceDaysMonthDom annualLeaveDeductDays;
 	/** 欠勤控除時間 */
 	private AttendanceTimeMonth absenceDeductTime;
 	/** 控除前のフレックス不足時間 */
@@ -27,7 +27,7 @@ public class FlexShortDeductTime {
 	 */
 	public FlexShortDeductTime(){
 		
-		this.annualLeaveDeductDays = new AttendanceDaysMonth(0.0);
+		this.annualLeaveDeductDays = new AttendanceDaysMonthDom(0.0);
 		this.absenceDeductTime = new AttendanceTimeMonth(0);
 		this.flexShortTimeBeforeDeduct = new AttendanceTimeMonth(0);
 		this.errorAtrOfExtraDeductTime = false;
@@ -41,7 +41,7 @@ public class FlexShortDeductTime {
 	 * @return フレックス不足控除時間
 	 */
 	public static FlexShortDeductTime of(
-			AttendanceDaysMonth annualLeaveDeductDays,
+			AttendanceDaysMonthDom annualLeaveDeductDays,
 			AttendanceTimeMonth absenceDeductTime,
 			AttendanceTimeMonth flexShortTimeBeforeDeduct){
 		

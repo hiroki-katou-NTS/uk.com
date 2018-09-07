@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author shuichu_ishida
  */
 @IntegerRange(min = 0, max = 99999999)
-public class AttendanceAmountMonth extends IntegerPrimitiveValue<AttendanceAmountMonth> {
+public class AttendanceAmountMonthDom extends IntegerPrimitiveValue<AttendanceAmountMonthDom> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class AttendanceAmountMonth extends IntegerPrimitiveValue<AttendanceAmoun
 	 * コンストラクタ
 	 * @param amount 金額
 	 */
-	public AttendanceAmountMonth(Integer amount){
+	public AttendanceAmountMonthDom(Integer amount){
 		
 		super(amount);
 	}
@@ -27,8 +27,8 @@ public class AttendanceAmountMonth extends IntegerPrimitiveValue<AttendanceAmoun
 	 * @param amount 金額
 	 * @return 加算後の勤怠月間金額
 	 */
-	public AttendanceAmountMonth addAmount(Integer amount){
+	public AttendanceAmountMonthDom addAmount(Integer amount){
 	
-		return new AttendanceAmountMonth(this.v() + amount);
+		return new AttendanceAmountMonthDom(this.v() + amount);
 	}
 }

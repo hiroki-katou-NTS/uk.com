@@ -184,6 +184,7 @@ public class MonthlyCalculatingDailys {
 				val itrPerError = result.employeeDailyPerErrorList.listIterator();
 				while (itrPerError.hasNext()){
 					val perError = itrPerError.next();
+					if (perError.getDate() == null) continue;
 					if (perError.getDate().compareTo(ymd) != 0) continue;
 					itrPerError.remove();
 				}

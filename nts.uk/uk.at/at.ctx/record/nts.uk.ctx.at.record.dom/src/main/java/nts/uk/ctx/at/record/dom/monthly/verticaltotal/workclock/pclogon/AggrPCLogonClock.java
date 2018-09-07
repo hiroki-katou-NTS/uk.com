@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AggrPCLogonClock {
 
 	/** 合計日数 */
-	private AttendanceDaysMonth totalDays;
+	private AttendanceDaysMonthDom totalDays;
 	/** 合計時刻 */
 	private AttendanceTimeMonth totalClock;
 	/** 平均時刻 */
@@ -27,7 +27,7 @@ public class AggrPCLogonClock {
 	 */
 	public AggrPCLogonClock(){
 		
-		this.totalDays = new AttendanceDaysMonth(0.0);
+		this.totalDays = new AttendanceDaysMonthDom(0.0);
 		this.totalClock = new AttendanceTimeMonth(0);
 		this.averageClock = new AttendanceTimeMonth(0);
 	}
@@ -40,7 +40,7 @@ public class AggrPCLogonClock {
 	 * @return 集計PCログオン時刻
 	 */
 	public static AggrPCLogonClock of(
-			AttendanceDaysMonth totalDays,
+			AttendanceDaysMonthDom totalDays,
 			AttendanceTimeMonth totalClock,
 			AttendanceTimeMonth averageClock){
 		

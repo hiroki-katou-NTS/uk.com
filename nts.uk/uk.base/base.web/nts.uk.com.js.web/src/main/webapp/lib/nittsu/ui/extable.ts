@@ -1313,6 +1313,7 @@ module nts.uk.ui.exTable {
                         if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) { 
                             touched = mTouch;
                             touched.idx = i;
+                        } else if (touched && touched.dirty && (!mTouch || !mTouch.dirty)) {
                         } else if (touched && touched.dirty && mTouch && mTouch.dirty) {
                             touched.idx = -1;
                         } else touched = mTouch;
@@ -6675,6 +6676,7 @@ module nts.uk.ui.exTable {
             $.data($grid, EDIT_HISTORY, null);
             $.data($grid, STICK_HISTORY, null);
             $.data($grid, DET, null);
+            $.data($grid, D_CELLS_STYLE, null);
             let exTable = helper.getExTableFromGrid($grid);
             if (!exTable) return;
             exTable.modifications = {};
