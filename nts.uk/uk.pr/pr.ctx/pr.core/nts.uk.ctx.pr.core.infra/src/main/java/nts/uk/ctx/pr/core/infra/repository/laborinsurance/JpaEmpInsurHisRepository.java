@@ -41,19 +41,19 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
         }
         List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<YearMonthHistoryItem>();
         entities.forEach(entity -> {
-            yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.empInsurHisPk.hisId,new YearMonthPeriod(new YearMonth(entity.startDate),new YearMonth(entity.endDate))));
+            yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.empInsurHisPk.hisId,new YearMonthPeriod(new YearMonth(entity.startYearMonth),new YearMonth(entity.endYearMonth))));
         });
         return yearMonthHistoryItemList;
     }
 
     @Override
-    public void add(EmpInsurHis domain){
-        this.commandProxy().insert(QpbmtEmpInsurHis.toEntity(domain));
+    public void add(YearMonthHistoryItem domain, String cId){
+        this.commandProxy().insert(QpbmtEmpInsurHis.toEntity(domain, cId));
     }
 
     @Override
-    public void update(EmpInsurHis domain){
-        this.commandProxy().update(QpbmtEmpInsurHis.toEntity(domain));
+    public void update(YearMonthHistoryItem domain, String cId){
+        this.commandProxy().update(QpbmtEmpInsurHis.toEntity(domain, cId));
     }
 
     @Override

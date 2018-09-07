@@ -7,9 +7,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsurHisFinder {
@@ -19,11 +20,9 @@ public class EmpInsurHisFinder {
 	
 	public List<EmpInsurHisDto>  getListEmplInsurHis(){
 		String cId = AppContexts.user().companyId();
-		Optional<EmpInsurHis> temp =empInsurHisRepository.getEmpInsurHisByCid(cId);
-		if(temp.isPresent()){
-			return null;
-		}
-//		return temp.get().stream().map(item ->EmpInsurHisDto.fromDomain(item));
-		return null;
+		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+		List<EmpInsurHisDto> empInsurHisDto = new ArrayList<EmpInsurHisDto>();
+		empInsurHisDto = empInsurHis.isPresent() ? EmpInsurHisDto.fromDomain(empInsurHis.get()) :empInsurHisDto;
+		return empInsurHisDto;
 	}
 }
