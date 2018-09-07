@@ -100,4 +100,16 @@ public interface ApprovalStatusAdapter {
 	 */
 	public List<ApprovalRootStateStatusImport> getStatusByEmpAndDate(String employeeID, DatePeriod datePeriod, 
 			Integer rootType);
+	
+	/**
+	 * RequestList155
+	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
+	 * getApprovalByListEmplAndListApprovalRecordDate
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDateNew(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 }

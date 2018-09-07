@@ -27,6 +27,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -85,6 +87,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private AnyItemValueOfDailyRepo anyItemValue;
 	@Inject
 	private EditStateOfDailyPerformanceRepository editState;
+	@Inject
+	private RemarksOfDailyPerformRepo remarks;
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporary;
 	@Inject
@@ -186,6 +190,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		Optional<AnyItemValueOfDaily> findAnyItem = anyItemValue.find(employeeId, dateData);
 		//日別実績の編集状態
 		List<EditStateOfDailyPerformance> lstEditState = editState.findByKey(employeeId, dateData);
+		//日別実績の備考
+		List<RemarksOfDailyPerform> remark = remarks.getRemarks(employeeId, dateData);
 		//日別実績の臨時出退勤
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.findByKey(employeeId, dateData);
 		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
@@ -204,7 +210,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 				findLeavingGate, 
 				findAnyItem, 
 				lstEditState,
-				temporaryData);
+				temporaryData,
+				remark);
 		return integration;
 	}
 	
