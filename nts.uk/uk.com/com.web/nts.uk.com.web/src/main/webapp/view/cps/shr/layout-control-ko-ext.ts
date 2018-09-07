@@ -1290,7 +1290,7 @@ module nts.custombinding {
                         targetKey: 'id',
                         selectedKey: 'id',
                         fields: ['itemName'],
-                        //placeHolder: '名称で検索・・・'
+                        placeHolder: '名称で検索・・・'
                     },
                     listbox: {
                         enable: ko.observable(true),
