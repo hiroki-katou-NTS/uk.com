@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,11 +85,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
-		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
+		builderString = new StringBuilder("SELECT a FROM KrcdtDayTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :ymd");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -444,7 +445,10 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_EMPLOYEEID_AND_DATES, KrcdtDayAttendanceTime.class)
-				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList(x -> x.toDomain());
+		val startDay = ymd.stream().sorted((first,second) -> first.compareTo(second)).findFirst();
+		val endDay = ymd.stream().sorted((first,second) -> second.compareTo(first)).findFirst();
+		if(!startDay.isPresent() || !endDay.isPresent()) return Collections.emptyList();
+		return findByPeriodOrderByYmd(employeeId, new DatePeriod(startDay.get(), endDay.get()));
+
 	}
 }
