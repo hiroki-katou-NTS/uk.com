@@ -131,7 +131,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			SrcdtPerCorrectionLog perCorrectionLog = filter.get(0).getSrcdtPerCorrectionLog();
 
 			List<CategoryCorrectionLog> ctgs = filter.stream()
-					.map(lc -> lc.getSrcdtCtgCorrectionLog().ctgCorrectionLogID).distinct().map(lc -> {
+					.map(lc -> lc.getSrcdtCtgCorrectionLog() != null ? lc.getSrcdtCtgCorrectionLog().ctgCorrectionLogID : null)
+					.distinct().filter(f -> f != null).map(lc -> {
 						List<PersonalInfoCorrectionLogQuery> ctgFilter = filter.stream()
 								.filter(f -> f.getSrcdtCtgCorrectionLog().ctgCorrectionLogID.equals(lc))
 								.collect(Collectors.toList());
