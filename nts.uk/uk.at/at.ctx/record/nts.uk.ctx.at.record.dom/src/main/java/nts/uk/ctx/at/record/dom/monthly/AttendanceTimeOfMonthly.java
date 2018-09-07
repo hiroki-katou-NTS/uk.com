@@ -52,7 +52,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	private TotalCountByPeriod totalCount;
 	/** 集計日数 */
 	@Setter
-	private AttendanceDaysMonth aggregateDays;
+	private AttendanceDaysMonthDom aggregateDays;
 
 	/**
 	 * コンストラクタ
@@ -75,7 +75,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.excessOutsideWork = new ExcessOutsideWorkOfMonthly();
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.totalCount = new TotalCountByPeriod();
-		this.aggregateDays = new AttendanceDaysMonth((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
+		this.aggregateDays = new AttendanceDaysMonthDom((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 			ExcessOutsideWorkOfMonthly excessOutsideWork,
 			VerticalTotalOfMonthly verticalTotal,
 			TotalCountByPeriod totalCount,
-			AttendanceDaysMonth aggregateDays){
+			AttendanceDaysMonthDom aggregateDays){
 		
 		val domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, datePeriod);
 		domain.monthlyCalculation = monthlyCalculation;

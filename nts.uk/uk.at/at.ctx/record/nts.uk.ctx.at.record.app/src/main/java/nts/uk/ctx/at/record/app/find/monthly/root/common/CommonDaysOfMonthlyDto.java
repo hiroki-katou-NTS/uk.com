@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
@@ -69,19 +69,19 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 	
 	public AbsenceDaysOfMonthly toAbsenceDays() {
 		return AbsenceDaysOfMonthly.of(
-					new AttendanceDaysMonth(totalAbsenceDays),
+					new AttendanceDaysMonthDom(totalAbsenceDays),
 					new AttendanceTimeMonth(totalAbsenceTime),
 					ConvertHelper.mapTo(daysList, c -> AggregateAbsenceDays.of(c.getNo(),
-									new AttendanceDaysMonth(c.getDays()),
+									new AttendanceDaysMonthDom(c.getDays()),
 									new AttendanceTimeMonth(c.getTime()))));
 	}
 	
 	public SpcVacationDaysOfMonthly toSpcVacationDays() {
 		return SpcVacationDaysOfMonthly.of(
-					new AttendanceDaysMonth(totalAbsenceDays),
+					new AttendanceDaysMonthDom(totalAbsenceDays),
 					new AttendanceTimeMonth(totalAbsenceTime),
 					ConvertHelper.mapTo(daysList, c -> AggregateSpcVacationDays.of(c.getNo(),
-									new AttendanceDaysMonth(c.getDays()),
+									new AttendanceDaysMonthDom(c.getDays()),
 									new AttendanceTimeMonth(c.getTime()))));
 	}
 }

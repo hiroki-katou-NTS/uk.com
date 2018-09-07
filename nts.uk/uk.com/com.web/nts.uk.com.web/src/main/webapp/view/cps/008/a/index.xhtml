@@ -24,11 +24,11 @@
 			<div id="functions-area">
 				<button id="A_BTN_NEW" data-bind="click : createNewLayout">#{i18n.getText('CPS008_3')}</button>
 				<button id="A_BTN_REGISTER" class="proceed"
-					data-bind="click: saveDataLayout, enable: (createNewLayout)||(layout().id() != undefined)">#{i18n.getText('CPS008_4')}</button>
+					data-bind="click: saveDataLayout, enable: enaBtnSave()">#{i18n.getText('CPS008_4')}</button>
 				<button id="A_BTN_COPPY"
-					data-bind="click: copyDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_5')}</button>
+					data-bind="click: copyDataLayout, enable: enaBtnCoppy()">#{i18n.getText('CPS008_5')}</button>
 				<button id="A_BTN_DELETE" class="danger"
-					data-bind="click: removeDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_6')}</button>
+					data-bind="click: removeDataLayout, enable: enaBtnDel()">#{i18n.getText('CPS008_6')}</button>
 				<a class="goout" id="A_BTN_JUMP"
 					data-bind="ntsLinkButton:  { jump: '../../007/a/index.xhtml' }">#{i18n.getText('CPS008_7')}</a>
 			</div>
