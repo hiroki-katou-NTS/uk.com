@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
@@ -88,7 +88,7 @@ public class KrcdtWekAggrGoout extends UkJpaEntity implements Serializable {
 		
 		return AggregateGoOut.of(
 				EnumAdaptor.valueOf(this.PK.goOutReason, GoingOutReason.class),
-				new AttendanceTimesMonth(this.goOutTimes),
+				new AttendanceTimesMonthDom(this.goOutTimes),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.legalTime),
 						new AttendanceTimeMonth(this.calcLegalTime)),
