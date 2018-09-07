@@ -228,64 +228,27 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			// 前回集計結果の退避
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
 			
-			// 計算結果と同月データ・締めID違いの削除
+			// 計算結果と同月データ・締めID違い かつ 期間重複データの削除
 			val attendanceTimeOlds = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
 			for (val oldData : attendanceTimeOlds){
+				if (!this.periodCompareEx(oldData.getDatePeriod(), datePeriod)) continue;
 				boolean isTarget = false;
 				if (oldData.getClosureId().value != closureId.value) isTarget = true;
 				if (!isTarget) continue;
 				this.attendanceTimeRepository.remove(
 						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-			}
-			val anyItemOlds = this.anyItemRepository.findByMonthly(employeeId, yearMonth);
-			for (val oldData : anyItemOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId().value != closureId.value) isTarget = true;
-				if (!isTarget) continue;
-				this.anyItemRepository.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate(), oldData.getAnyItemId());
-			}
-			val annLeaRemNumOlds = this.annLeaRemNumEachMonthRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : annLeaRemNumOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId().value != closureId.value) isTarget = true;
-				if (!isTarget) continue;
+				this.anyItemRepository.removeByMonthlyAndClosure(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
 				this.annLeaRemNumEachMonthRepo.remove(
 						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-			}
-			val rsvLeaRemNumOlds = this.rsvLeaRemNumEachMonthRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : rsvLeaRemNumOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId().value != closureId.value) isTarget = true;
-				if (!isTarget) continue;
 				this.rsvLeaRemNumEachMonthRepo.remove(
 						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-			}
-			val absLeaRemNumOlds = this.absLeaRemRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : absLeaRemNumOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId() != closureId.value) isTarget = true;
-				if (!isTarget) continue;
-				this.absLeaRemRepo.remove(employeeId, yearMonth,
-						EnumAdaptor.valueOf(oldData.getClosureId(), ClosureId.class),
-						new ClosureDate(oldData.getClosureDay(), oldData.isLastDayIs()));
-			}
-			val monDayoffRemNumOlds = this.monDayoffRemRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : monDayoffRemNumOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId() != closureId.value) isTarget = true;
-				if (!isTarget) continue;
-				this.monDayoffRemRepo.remove(employeeId, yearMonth,
-						EnumAdaptor.valueOf(oldData.getClosureId(), ClosureId.class),
-						new ClosureDate(oldData.getClosureDay(), oldData.isLastDayis()));
-			}
-			val spcLeaRemNumOlds = this.spcLeaRemRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : spcLeaRemNumOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId() != closureId.value) isTarget = true;
-				if (!isTarget) continue;
-				this.spcLeaRemRepo.remove(employeeId, yearMonth,
-						EnumAdaptor.valueOf(oldData.getClosureId(), ClosureId.class), oldData.getClosureDate());
+				this.absLeaRemRepo.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+				this.monDayoffRemRepo.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+				this.spcLeaRemRepo.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
 			}
 			
 			// 登録する
@@ -351,5 +314,18 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 					outYmd,
 					errorInfo.getMessage()));
 		}
+	}
+	
+	/**
+	 * 期間重複があるか
+	 * @param period1 期間1
+	 * @param period2 期間2
+	 * @return true：重複あり、false：重複なし
+	 */
+	private boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
+		
+		if (period1.start().after(period2.end())) return false;
+		if (period1.end().before(period2.start())) return false;
+		return true;
 	}
 }

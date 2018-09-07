@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
@@ -30,6 +31,19 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> attendanceLeavingGateTime;
+	
+	@Override
+	public AttendanceLeavingGateOfDailyDto clone() {
+		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();
+		dto.setAttendanceLeavingGateTime(attendanceLeavingGateTime == null ? null 
+				: attendanceLeavingGateTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		if (isHaveData()) {
+			dto.exsistData();
+		}
+		return dto;
+	}
 	
 	public static AttendanceLeavingGateOfDailyDto getDto(AttendanceLeavingGateOfDaily domain){
 		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();

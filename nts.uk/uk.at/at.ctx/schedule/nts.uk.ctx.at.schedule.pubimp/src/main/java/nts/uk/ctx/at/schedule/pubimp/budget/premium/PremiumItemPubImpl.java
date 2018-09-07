@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItem;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PersonCostSettingExport;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemDto;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemPub;
@@ -60,19 +59,14 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		if(CollectionUtil.isEmpty(preiumItems)){
 			return result;
 		}
-		// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
-		for(PremiumItem preium : preiumItems){
-			List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, date);
-			if(personCosts != null){
-				for(PersonCostCalculation person : personCosts){
-					for(PremiumSetting premiumSetting : person.getPremiumSettings()){
-						if(premiumSetting.getDisplayNumber().equals(preium.getDisplayNumber())){
-							PersonCostSettingExport export = new PersonCostSettingExport(premiumSetting.getRate().v(), premiumSetting.getDisplayNumber(), premiumSetting.getAttendanceItems());
-							result.add(export);
-						}
-					}
-				}
-			}
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, date);
+		if(personCosts != null){
+			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
+			personCosts.stream().forEach(pc -> {
+				pc.getPremiumSettings().stream().filter(ps -> preiumItems.contains(ps.getDisplayNumber())).forEach(ps -> {
+					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems()));
+				});
+			});
 		}
 		return result;
 	}

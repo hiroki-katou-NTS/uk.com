@@ -11,8 +11,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImport;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
+import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -50,7 +53,22 @@ public class WorkLocationFunAcFinder implements RecordWorkInfoFunAdapter {
 		
 		return data.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
+
 	
+	@Override
+	public List<WorkInfoOfDailyPerFnImport> findByPeriodOrderByYmd(String employeeId) {
+		List<WorkInfoOfDailyPerExport> workInfo = this.recordWorkInfoPub.findByEmpId(employeeId);
+		if(workInfo.isEmpty())
+			return Collections.emptyList();
+		return workInfo.stream().map(c->convertToWorkInfoOfDailyPerformance(c)).collect(Collectors.toList());
+	}
+	
+	private WorkInfoOfDailyPerFnImport convertToWorkInfoOfDailyPerformance(WorkInfoOfDailyPerExport domain) {
+		return new WorkInfoOfDailyPerFnImport(
+				domain.getEmployeeId(),
+				domain.getYmd()
+				);
+	}
 
 
 

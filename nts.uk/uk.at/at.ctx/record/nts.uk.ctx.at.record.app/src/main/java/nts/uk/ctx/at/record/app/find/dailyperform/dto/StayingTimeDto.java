@@ -40,6 +40,11 @@ public class StayingTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = LOGOFF)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer afterPCLogOffTime;
+	
+	@Override
+	public StayingTimeDto clone() {
+		return new StayingTimeDto(stayingTime, beforeWoringTime, afterLeaveTime, beforePCLogOnTime, afterPCLogOffTime);
+	}
 
 	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {
 		return domain == null ? null : new StayingTimeDto(

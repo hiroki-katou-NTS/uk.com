@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SettingNo65;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -30,13 +32,22 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
@@ -65,9 +76,17 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	@Inject
 	private GetHdDayInPeriodService getHdDayInPeriodSv;
 	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	@Inject
+	private InterimRemainDataMngCheckRegister interimRemainCheckReg;
+	@Inject
+	private HdAppDispNameRepository repoHdAppDispName;
+	@Inject
 	private DisplayReasonRepository displayRep;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
+	@Inject
+	private HdAppSetRepository repoHdAppSet;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
@@ -150,6 +169,17 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		absenceServiceProcess.createAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// 暫定データの登録
+		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		GeneralDate cmdEndDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		List<GeneralDate> listDate = new ArrayList<>();
+		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
+			listDate.add(loopDate);
+		}
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyID, 
+				command.getEmployeeID(), 
+				listDate);
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);
 
@@ -221,7 +251,112 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				}
 			}
 		}
-		
+		//No.376
+		//hoatt - QA#100286
+		//ドメインモデル「休暇申請設定」を取得する(lấy domain 「休暇申請設定」)
+		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
+		/**	・代休チェック区分 */
+		boolean chkSubHoliday = false;
+		/**	・振休チェック区分 */
+		boolean chkPause = false;
+		/**	・年休チェック区分 */
+		boolean chkAnnual = false;
+		/**	・積休チェック区分 */
+		boolean chkFundingAnnual = false;
+		/**	・特休チェック区分 */
+		boolean chkSpecial = true;
+		/**	・公休チェック区分 */
+		boolean chkPublicHoliday = false;
+		/**	・超休チェック区分 */
+		boolean chkSuperBreak = true;
+		if(hdAppSet.isPresent()){
+			HdAppSet hdSet = hdAppSet.get();
+			chkSubHoliday = hdSet.getRegisShortLostHd().value == 0 ? true : false;//休暇申請設定．代休残数不足登録できる
+			chkPause = hdSet.getRegisInsuff().value == 0 ? true : false;//休暇申請設定．振休残数不足登録できる
+			chkAnnual = hdSet.getRegisNumYear().value == 0 ? true : false;//休暇申請設定．年休残数不足登録できる
+			chkFundingAnnual = hdSet.getRegisShortReser().value == 0 ? true : false;//休暇申請設定．積立年休残数不足登録できる
+			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 0 ? true : false;//休暇申請設定．公休残数不足登録できる
+		}
+		//登録時の残数チェック
+		/** ・登録対象一覧 :	申請(List) */
+		//＜INPUT＞
+//		・会社ID＝ログイン会社ID
+//		・社員ID＝申請者社員ID
+//		・集計開始日＝申請開始日
+//		・集計終了日＝申請開始日＋２年
+//		・モード＝その他モード
+//		・基準日＝申請開始日
+//		・登録期間の開始日＝申請開始日
+//		・登録期間の終了日＝申請終了日
+//		・登録対象区分＝申請
+//		・登録対象一覧＝申請データ
+//		・代休チェック区分＝（休暇申請設定．代休残数不足登録できる＝false）
+//		・振休チェック区分＝（休暇申請設定．振休残数不足登録できる＝false）
+//		・年休チェック区分＝（休暇申請設定．年休残数不足登録できる＝false）
+//		・積休チェック区分＝（休暇申請設定．積立年休残数不足登録できる＝false）
+//		・特休チェック区分＝true
+//		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
+//		・超休チェック区分＝true
+		List<AppRemainCreateInfor> appData = new ArrayList<>();
+		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDate.today(), startDate, 
+				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
+				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
+				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 
+				command.getWorkTimeCode() == null ? Optional.empty() : Optional.of(command.getWorkTimeCode()), 
+				Optional.empty(), Optional.empty(), Optional.empty()));
+		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
+				new DatePeriod(startDate, startDate.addYears(2)), false, startDate, new DatePeriod(startDate, endDate),
+				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,
+				chkSpecial, chkPublicHoliday, chkSuperBreak);
+		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
+		//EA.2577
+		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
+		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
+				|| checkResult.isChkFundingAnnual() || checkResult.isChkSpecial()){
+			//ドメインモデル「休暇申請種類表示名」を取得する
+			List<HdAppDispName> lstHdName = repoHdAppDispName.getAllHdApp();
+			String name = "";
+			String nametmp = "";
+			if(checkResult.isChkSubHoliday()){
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
+			}
+			if(checkResult.isChkPause()){
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
+			}
+			if(checkResult.isChkAnnual()){
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
+			}
+			if(checkResult.isChkFundingAnnual()){
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
+			}
+			if(checkResult.isChkSpecial()){
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				name = name != "" && name != "" ? name + "," + nametmp : name;
+			}
+			
+			//エラーメッセージ（Msg_1409）
+			throw new BusinessException("Msg_1409", name);
+		}
+	}
+	private String findHdNameErr(List<HdAppDispName> lstHdName, HdAppType hdType){
+		for (HdAppDispName hdName : lstHdName) {
+			if(hdName.getHdAppType().equals(hdType)){
+				return hdName.getDispName().v();
+			}
+		}
+		return "";
+	}
+	//return エラーメッセージ-確認メッセージ
+	public void checkRegister(ParamCheckRegister param){
+		SettingNo65 setNo65 = param.getSetNo65();
+		//アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
+		absenceServiceProcess.checkDigestPriorityHd(EnumAdaptor.valueOf(setNo65.getPridigCheck(), AppliedDate.class),
+				setNo65.isSubVacaManage(), setNo65.isSubVacaTypeUseFlg(), setNo65.isSubHdManage(), setNo65.isSubHdTypeUseFlg(),
+				param.getNumberSubHd(), param.getNumberSubVaca());
 	}
 
 }

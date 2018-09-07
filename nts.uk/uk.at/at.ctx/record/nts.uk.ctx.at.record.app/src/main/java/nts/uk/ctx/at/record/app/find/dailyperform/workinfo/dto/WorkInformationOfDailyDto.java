@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -113,8 +111,29 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 										c.getWorking() == null ? 0 : c.getWorking(), 
 										c.getLeave() == null ? 0 : c.getLeave())));
 	}
+	
+	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
 		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+	}
+
+	@Override
+	public WorkInformationOfDailyDto clone() {
+		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
+		result.setEmployeeId(employeeId());
+		result.setDate(workingDate());
+		result.setActualWorkInfo(actualWorkInfo == null ? null : actualWorkInfo.clone());
+		result.setBackStraightAtr(backStraightAtr);
+		result.setCalculationState(calculationState);
+		result.setGoStraightAtr(goStraightAtr);
+		result.setPlanWorkInfo(planWorkInfo == null ? null : planWorkInfo.clone());
+		
+		result.setScheduleTimeZone(scheduleTimeZone == null ? null : scheduleTimeZone.stream().map(c -> c.clone()).collect(Collectors.toList()));
+		result.setDayOfWeek(dayOfWeek);
+		if(this.isHaveData()){
+			result.exsistData();
+		}
+		return result;
 	}
 }

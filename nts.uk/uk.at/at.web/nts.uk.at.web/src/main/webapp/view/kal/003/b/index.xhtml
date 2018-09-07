@@ -191,7 +191,7 @@
                                         </td>
                                         <td class="pad_left_5px">
                                             <!-- BA2-4, BA2-5 -->
-                                            <div id="comBoxOperator" class="combo-box" data-bind="ntsComboBox: {
+                                            <div id="comBoxOperator" style = "width : 280px " class="combo-box" data-bind="ntsComboBox: {
                                              name:'#[KAL003_60]',
                                              options: $parent.listCompareTypes,
                                              optionsValue: 'value',
@@ -570,14 +570,14 @@
                                 </colgroup>
                                 <tr class="row">
                                     <!-- B2-1: メッセージ色 - Message color -->
-                                    <td class="pad_left_10px">
+                                    <!-- <td class="pad_left_10px">
 
                                         <div>#{i18n.getText('KAL003_28')}</div>
                                     </td>
                                     <td class="pad_left_5px">
-                                        <!-- B2-2-->
+                                        B2-2
                                         <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 <tr class="row">
                                     <!-- B3-1: 表示するメッセージ - Message content -->
@@ -599,11 +599,11 @@
                                 </tr>
                                 <tr class="row">
 
-                                    <td class="pad_left_10px"></td>
+                                    <!-- <td class="pad_left_10px"></td>
                                     <td>
-                                        <!-- B3-3: ■メッセージを太字にする - Make the message bold-->
+                                        B3-3: ■メッセージを太字にする - Make the message bold
                                         <div data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             </table>
                         </div>

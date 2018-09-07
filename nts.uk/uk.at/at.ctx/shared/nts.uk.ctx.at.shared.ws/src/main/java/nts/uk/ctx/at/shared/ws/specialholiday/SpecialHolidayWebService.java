@@ -46,10 +46,16 @@ public class SpecialHolidayWebService extends WebService {
 		return sphdFinder.findByCompanyId();
 	}
 
-	@Path("findForScreenJ")
+	@Path("findForScreenJ/{selectedCode}")
 	@POST
-	public List<SpecialHolidayFrameDto> findForScreenJ() {
-		return sphdFinder.findForScreenJ();
+	public List<SpecialHolidayFrameDto> findForScreenJ(@PathParam("selectedCode") int selectedCode) {
+		return sphdFinder.findForScreenJ(selectedCode);
+	}
+	
+	@Path("findAllItemFrame")
+	@POST
+	public List<SpecialHolidayFrameDto> findAllItemFrame() {
+		return sphdFinder.findAllItemFrame();
 	}
 
 	@Path("getSpecialHoliday/{specialHolidayCode}")

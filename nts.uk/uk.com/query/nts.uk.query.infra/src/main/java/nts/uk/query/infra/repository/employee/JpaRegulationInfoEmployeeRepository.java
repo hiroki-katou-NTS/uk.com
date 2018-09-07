@@ -205,6 +205,55 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				}
 			}
 		}
+
+		// Filter result list by status of employee
+		GeneralDateTime retireStart = paramQuery.getRetireStart() == null ? paramQuery.getPeriodStart()
+				: paramQuery.getRetireStart();
+		GeneralDateTime retireEnd = paramQuery.getRetireEnd() == null ? paramQuery.getPeriodEnd()
+				: paramQuery.getRetireEnd();
+		GeneralDateTime start = paramQuery.getPeriodStart();
+		GeneralDateTime end = paramQuery.getPeriodEnd();
+
+		Predicate isWorking = cb.or(
+				cb.and(cb.isNull(root.get(EmployeeDataView_.tempAbsFrameNo)),
+						cb.isNull(root.get(EmployeeDataView_.absStrDate))),
+				cb.greaterThan(root.get(EmployeeDataView_.absStrDate), end),
+				cb.lessThan(root.get(EmployeeDataView_.absEndDate), start));
+
+		// is in company
+		conditions.add(cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
+				cb.lessThan(root.get(EmployeeDataView_.comEndDate), start))));
+
+		Predicate incumbentCondition = cb.conjunction();
+		Predicate workerOnLeaveCondition = cb.conjunction();
+		Predicate occupancyCondition = cb.conjunction();
+		Predicate retireCondition = cb.conjunction();
+
+		// includeIncumbents
+		if (paramQuery.getIncludeIncumbents()) {
+			incumbentCondition = isWorking;
+		}
+
+		// workerOnLeave
+		if (paramQuery.getIncludeWorkersOnLeave()) {
+			workerOnLeaveCondition = cb.and(cb.not(isWorking),
+					cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
+		}
+
+		// Occupancy
+		if (paramQuery.getIncludeOccupancy()) {
+			occupancyCondition = cb.and(cb.not(isWorking),
+					cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
+		}
+
+		// retire
+		if (paramQuery.getIncludeRetirees()) {
+			retireCondition = cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireStart),
+					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireEnd));
+		}
+
+		conditions.add(cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition, retireCondition));
+
 		cq.where(conditions.toArray(new Predicate[] {}));
 
 		// getSortConditions
@@ -220,9 +269,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
-
-		// Filter result list by status of employee
-		resultList = resultList.stream().filter(item -> item.isIncluded(paramQuery)).collect(Collectors.toList());
 
 		// Distinct employee in result list.
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))

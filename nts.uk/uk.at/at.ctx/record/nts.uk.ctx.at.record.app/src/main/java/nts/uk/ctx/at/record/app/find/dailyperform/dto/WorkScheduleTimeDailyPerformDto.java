@@ -32,6 +32,13 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer schedulePrescribedLaborTime;
 
+	@Override
+	public WorkScheduleTimeDailyPerformDto clone() {
+		return new WorkScheduleTimeDailyPerformDto(workSchedule == null ? null : workSchedule.clone(),
+													recordPrescribedLaborTime,
+													schedulePrescribedLaborTime);
+	}
+
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {
 		return domain == null ? null : new WorkScheduleTimeDailyPerformDto(
 						getWorkSchedule(domain.getWorkScheduleTime()),

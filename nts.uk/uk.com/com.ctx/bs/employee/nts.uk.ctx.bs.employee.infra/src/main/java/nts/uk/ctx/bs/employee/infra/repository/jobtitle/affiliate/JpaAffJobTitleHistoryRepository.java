@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +11,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -298,6 +302,35 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 				.map(ent -> new DateHistoryItem(ent.bsymtAffJobTitleHistItem.hisId,
 						new DatePeriod(ent.strDate, ent.endDate)))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	@SneakyThrows
+	public Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate) {
+
+		PreparedStatement statement = this.connection().prepareStatement(
+				"select * from BSYMT_AFF_JOB_HIST h"
+				+ " inner join BSYMT_AFF_JOB_HIST_ITEM i"
+				+ " on h.HIST_ID = i.HIST_ID"
+				+ " where h.SID = ?"
+				+ " and h.START_DATE <= ?"
+				+ " and h.END_DATE >= ?");
+		
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		statement.setDate(3, Date.valueOf(baseDate.localDate()));
+		
+		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			return new SingleHistoryItem(
+					rec.getString("SID"),
+					rec.getString("HIST_ID"),
+					new DatePeriod(
+							rec.getGeneralDate("START_DATE"),
+							rec.getGeneralDate("END_DATE")),
+					rec.getString("JOB_TITLE_ID"),
+					rec.getString("NOTE")
+					);
+		});
 	}
 
 

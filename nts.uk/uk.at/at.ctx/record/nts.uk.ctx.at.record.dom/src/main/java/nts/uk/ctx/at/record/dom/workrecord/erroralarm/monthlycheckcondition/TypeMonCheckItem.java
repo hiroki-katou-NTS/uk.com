@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum TypeMonCheckItem {
+	// follow ticket #100108
     /*所定公休日数 */
     CERTAIN_DAY_OFF(0, "Enum_TypeMonCheckItem_CertainDayOff"),
     /* 36協定エラー時間*/

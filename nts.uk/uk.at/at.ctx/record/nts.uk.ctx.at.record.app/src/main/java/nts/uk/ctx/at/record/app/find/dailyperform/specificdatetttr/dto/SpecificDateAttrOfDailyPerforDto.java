@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -36,6 +37,18 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 						c.getSpecificDateAttr() == null ? 0 : c.getSpecificDateAttr().value, 
 						c.getSpecificDateItemNo().v().intValue());
 			}));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public SpecificDateAttrOfDailyPerforDto clone() {
+		SpecificDateAttrOfDailyPerforDto dto = new SpecificDateAttrOfDailyPerforDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setSepecificDateAttrs(sepecificDateAttrs == null ? null : sepecificDateAttrs.stream().map(c -> c.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;

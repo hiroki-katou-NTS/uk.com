@@ -5,7 +5,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -68,7 +67,23 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getLeaveEarlySetting()));
 			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
 			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain.getRasingSalarySetting()));
-			result.setYmd(domain.getYmd());
+			result.exsistData();
+		}
+		return result;
+	}
+	
+	@Override
+	public CalcAttrOfDailyPerformanceDto clone() {
+		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
+		result.setEmployeeId(employeeId());
+		result.setYmd(workingDate());
+		result.setDivergenceTime(divergenceTime);
+		result.setFlexExcessTime(flexExcessTime == null ? null : flexExcessTime.clone());
+		result.setHolidayTimeSetting(holidayTimeSetting == null ? null : holidayTimeSetting.clone());
+		result.setLeaveEarlySetting(leaveEarlySetting == null ? null : leaveEarlySetting.clone());
+		result.setOvertimeSetting(overtimeSetting == null ? null : overtimeSetting.clone());
+		result.setRasingSalarySetting(rasingSalarySetting == null ? null : rasingSalarySetting.clone());
+		if (this.isHaveData()) {
 			result.exsistData();
 		}
 		return result;

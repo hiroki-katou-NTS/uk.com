@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,11 +26,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -56,28 +49,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	/** ドメインサービス：日別計算　（社員の日別実績を計算） */
 	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
-
 	
-	//休暇加算設定
-	@Inject
-	private HolidayAddtionRepository holidayAddtionRepository;
-	//総拘束時間
-	@Inject
-	private SpecificWorkRuleRepository specificWorkRuleRepository;
-	//会社ごとの代休設定
-	@Inject
-	private CompensLeaveComSetRepository compensLeaveComSetRepository;
-	//乖離
-	@Inject 
-	private DivergenceTimeRepository divergenceTimeRepository;
-	
-	//エラーアラーム設定
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
-	
-	@Inject
-	//加給利用単位
-	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
 	
 	/**
 	 * Managerクラス

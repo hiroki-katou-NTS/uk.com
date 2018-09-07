@@ -235,7 +235,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		for (InterimSpecialHolidayMng speHolidayData : tmpInterimSpeData) {
 			List<InterimRemain> lstInterimMngTmp = lstInterimMng.stream().filter(x -> x.getRemainManaID() == speHolidayData.getSpecialHolidayId())
 					.collect(Collectors.toList());
-			if(lstInterimMng.isEmpty()) {
+			if(lstInterimMngTmp.isEmpty()) {
 				continue;
 			}
 			InterimRemain interimMng = lstInterimMngTmp.get(0);

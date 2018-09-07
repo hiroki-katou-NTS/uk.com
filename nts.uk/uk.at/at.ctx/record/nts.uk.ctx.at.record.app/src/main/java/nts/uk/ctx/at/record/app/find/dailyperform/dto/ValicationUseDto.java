@@ -50,4 +50,10 @@ public class ValicationUseDto implements ItemConst {
 		return new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), 
 											new AttendanceTime(0), new AttendanceTime(0));
 	}
+	
+	@Override
+	public ValicationUseDto clone(){
+		return new ValicationUseDto(timeAnnualLeaveUseTime, excessHolidayUseTime, 
+									timeSpecialHolidayUseTime, timeCompensatoryLeaveUseTime);
+	}
 }

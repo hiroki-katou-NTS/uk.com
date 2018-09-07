@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -43,6 +44,19 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setYmd(domain.getYmd());
 			dto.setWorkTimes(domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public TemporaryTimeOfDailyPerformanceDto clone() {
+		TemporaryTimeOfDailyPerformanceDto dto = new TemporaryTimeOfDailyPerformanceDto();
+			dto.setEmployeeId(employeeId());
+			dto.setYmd(workingDate());
+			dto.setWorkTimes(workTimes);
+			dto.setWorkLeaveTime(workLeaveTime == null ? null : workLeaveTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;

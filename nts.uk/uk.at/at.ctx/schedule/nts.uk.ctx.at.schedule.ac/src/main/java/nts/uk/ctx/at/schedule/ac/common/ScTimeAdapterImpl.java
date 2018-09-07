@@ -16,17 +16,19 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 	private ScheduleTimePub scheduleTimePub;
 	
 	@Override
-	public ScTimeImport calculation(ScTimeParam param) {
+	public ScTimeImport calculation(Object companySetting, ScTimeParam param) {
 		ScheduleTimePubImport impTime = new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
 				param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
 				param.getBreakStartTime(), param.getBreakEndTime(), param.getChildCareStartTime(),
 				param.getChildCareEndTime());
-		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(impTime);
+		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(companySetting, impTime);
 		
 		return ScTimeImport.builder()
 				.actualWorkTime(export.getActualWorkTime())
 				.breakTime(export.getBreakTime())
-				.childCareTime(export.getChildCareTime())
+				.childTime(export.getChildTime())
+				.careTime(export.getCareTime())
+				.flexTime(export.getFlexTime())
 				.employeeid(export.getEmployeeid())
 				.personalExpenceTime(export.getPersonalExpenceTime())
 				.preTime(export.getPreTime())
@@ -35,6 +37,11 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 				.ymd(export.getYmd())
 				.personalExpenceTime(export.getPersonalExpenceTime())
 				.build();
+	}
+
+	@Override
+	public Object getCompanySettingForCalculation() {
+		return this.scheduleTimePub.getCompanySettingForCalclationScheduleTimeForMultiPeople();
 	}
 
 }

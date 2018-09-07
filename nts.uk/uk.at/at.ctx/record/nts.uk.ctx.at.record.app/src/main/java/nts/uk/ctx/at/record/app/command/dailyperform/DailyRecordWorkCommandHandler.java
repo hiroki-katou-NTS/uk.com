@@ -373,10 +373,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 									Collectors.collectingAndThen(Collectors.toList(),
 											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
 					List<DailyRecordDto> dtos = finder.find(mapSidDate);
-					List<DailyItemValue> dailyItemNews = dtos.stream()
-							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
-									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
-							.collect(Collectors.toList());
+					List<DailyItemValue> dailyItemNews = AttendanceItemUtil.toItemValues(dtos).entrySet().stream().map(dto -> DailyItemValue.build().createItems(dto.getValue())
+									.createEmpAndDate(dto.getKey().getEmployeeId(), dto.getKey().getDate())).collect(Collectors.toList());
+//					List<DailyItemValue> dailyItemNews = dtos.stream()
+//							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
+//									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
+//							.collect(Collectors.toList());
 					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
 				});
 		executorService.submit(task);

@@ -55,6 +55,22 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	@Override
+	public AffiliationInforOfDailyPerforDto clone(){
+		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
+		dto.setClassificationCode(classificationCode);
+		dto.setEmploymentCode(employmentCode);
+		dto.setJobId(jobId);
+		dto.setSubscriptionCode(subscriptionCode);
+		dto.setWorkplaceID(workplaceID);
+		dto.setBaseDate(workingDate());
+		dto.setEmployeeId(employeeId());
+		if(this.isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
+	}
 
 	@Override
 	public String employeeId() {
