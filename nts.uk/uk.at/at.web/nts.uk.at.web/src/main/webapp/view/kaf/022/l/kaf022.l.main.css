@@ -41,3 +41,20 @@
     margin-left: 20px !important;
     margin-top: 20px !important;
 }
+
+
+table th,
+table td {
+	border: 1px solid #ccc;
+	padding: 0 3px;
+	line-height: 31px;
+}
+
+td div {
+	position: relative;
+	vertical-align: middle;
+}
+
+.contents-area-kaf022l{
+	height: 700px;
+}

@@ -215,8 +215,8 @@ module nts.uk.com.view.cmm020.a {
              */
             public deleteEra(): void {
                 var self = this;
-                blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    blockUI.invisible();
                     self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
                         return e.eraId == self.currentCode();
                     }));
@@ -226,13 +226,11 @@ module nts.uk.com.view.cmm020.a {
                     service.deleteEraName(eraNameDelete).done(function() {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            blockUI.clear();
                             self.loadEraNameList(null);
                         });
                     });
 
                 }).ifNo(function() {
-                    blockUI.clear();
                     return;
                 })
             }
