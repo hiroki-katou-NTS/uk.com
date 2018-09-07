@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AggrPCLogonDivergence {
 
 	/** 日数 */
-	private AttendanceDaysMonth days;
+	private AttendanceDaysMonthDom days;
 	/** 合計時間 */
 	private AttendanceTimeMonth totalTime;
 	/** 平均時間 */
@@ -25,7 +25,7 @@ public class AggrPCLogonDivergence {
 	 */
 	public AggrPCLogonDivergence(){
 		
-		this.days = new AttendanceDaysMonth(0.0);
+		this.days = new AttendanceDaysMonthDom(0.0);
 		this.totalTime = new AttendanceTimeMonth(0);
 		this.averageTime = new AttendanceTimeMonth(0);
 	}
@@ -38,7 +38,7 @@ public class AggrPCLogonDivergence {
 	 * @return 集計PCログオン乖離
 	 */
 	public static AggrPCLogonDivergence of(
-			AttendanceDaysMonth days,
+			AttendanceDaysMonthDom days,
 			AttendanceTimeMonth totalTime,
 			AttendanceTimeMonth averageTime){
 		
