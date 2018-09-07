@@ -94,7 +94,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			ClosureDate closureDate, List<Integer> anyItemIds) {
 
 		return anyItemIds.stream().map(id -> find(employeeId, yearMonth, closureId,
-							closureDate, id)).collect(Collectors.toList());
+							closureDate, id).orElse(null)).filter(d -> d != null).collect(Collectors.toList());
 	}
 	
 	/** 検索　（月度と締め） */

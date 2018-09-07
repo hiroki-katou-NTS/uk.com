@@ -85,7 +85,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		Set<String> workTypeCode = dailies.stream().map(s -> s.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
 												.collect(Collectors.toSet());
 		
-		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
+		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkType(companyId, new ArrayList<>(workTypeCode))
 				.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
 		
 		dailies.stream().forEach(d -> {
