@@ -1338,17 +1338,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
-            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();
-            for (let i: number = 0; i < itemChilds.length; i++) {
-                vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
-                vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
-                vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
-                vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
-                vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
-                vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
-                i = i + 3;
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                itemlength: number = itemChilds.length; 
+            for (let i: number = 0; i < itemlength; i++) {
+                if (itemlength <= 2) {
+                    vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                    vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
+                    i = i + 1;
+                } else {
+                    vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                    vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                    vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
+                    vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
+                    i = i + 3;
+                }
             }
 
         }
