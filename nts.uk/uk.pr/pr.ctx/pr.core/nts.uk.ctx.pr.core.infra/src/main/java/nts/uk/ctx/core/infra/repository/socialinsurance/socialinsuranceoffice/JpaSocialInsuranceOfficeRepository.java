@@ -1,0 +1,8 @@
+package nts.uk.ctx.core.infra.repository.socialinsurance.socialinsuranceoffice;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+
+public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements SocialInsuranceOfficeRepository {
+
+}

@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.dom.socialinsurance;
+package nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice;
 
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;

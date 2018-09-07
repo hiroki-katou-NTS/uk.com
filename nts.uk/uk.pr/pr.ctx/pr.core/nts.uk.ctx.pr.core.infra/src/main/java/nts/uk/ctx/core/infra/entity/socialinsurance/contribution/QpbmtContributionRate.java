@@ -2,6 +2,7 @@ package nts.uk.ctx.core.infra.entity.socialinsurance.contribution;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class QpbmtContributionRate extends UkJpaEntity implements Serializable {
     /**
      * 履歴ID
      */
+    @Basic(optional = false)
     @Column(name = "HISTORY_ID")
     @Id
     public String historyId;
@@ -42,5 +44,11 @@ public class QpbmtContributionRate extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return historyId;
+    }
+
+    public static QpbmtContributionRate toEntity(ContributionRate domain) {
+        return new QpbmtContributionRate(domain.getHistoryId(),
+                domain.getAutomaticCalculationCls().value,
+                domain.getChildContributionRatio().v());
     }
 }

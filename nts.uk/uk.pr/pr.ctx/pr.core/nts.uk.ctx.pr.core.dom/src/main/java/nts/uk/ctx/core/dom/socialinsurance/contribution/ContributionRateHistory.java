@@ -3,7 +3,7 @@ package nts.uk.ctx.core.dom.socialinsurance.contribution;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.socialinsurance.SocialInsuranceOfficeCode;
+import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.ContinuousHistory;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;

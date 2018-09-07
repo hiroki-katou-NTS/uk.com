@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class JpaContributionRateHistoryRepository extends JpaRepository implements ContributionRateHistoryRepository {
 
     /**
-     * Convert entity to domain
+     * Entity to domain
      *
      * @param entity QpbmtContributionRateHistory
      * @return ContributionRateHistory
@@ -35,7 +35,7 @@ public class JpaContributionRateHistoryRepository extends JpaRepository implemen
     }
 
     /**
-     * Convert to Entity
+     * Domain to entity
      *
      * @param socialInsuranceOfficeCd 社会保険事業所コード
      * @param historyId               履歴ID

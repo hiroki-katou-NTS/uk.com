@@ -25,18 +25,6 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
                 contributionByGrade.stream().map(x -> new ContributionByGrade(x.contributionByGradePk.welfarePensionGrade, x.childCareContribution)).collect(Collectors.toList()));
     }
 
-    private QpbmtContributionRate toQpbmtContributionRateEntity(ContributionRate domain) {
-        return new QpbmtContributionRate(domain.getHistoryId(),
-                domain.getAutomaticCalculationCls().value,
-                domain.getChildContributionRatio().v());
-    }
-
-    private List<QpbmtContributionByGrade> toQpbmtContributionByGradeEntity(ContributionRate domain) {
-        return domain.getContributionByGrade().stream().map(x -> new QpbmtContributionByGrade(new QpbmtContributionByGradePk(domain.getHistoryId(),
-                x.getWelfarePensionGrade()),
-                x.getChildCareContribution().v())).collect(Collectors.toList());
-    }
-
     @Override
     public Optional<ContributionRate> getContributionRateByHistoryId(String historyId) {
         Optional<QpbmtContributionRate> contributionRate = this.queryProxy().find(historyId, QpbmtContributionRate.class);
