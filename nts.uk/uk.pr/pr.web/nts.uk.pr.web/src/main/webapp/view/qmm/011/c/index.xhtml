@@ -36,17 +36,17 @@
 		</div>
 		<div class = "content">
 			<div class = "left">
-				<div id="B1_1"
+				<div id="C1_1"
 					 data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
+						<button id ="C1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
+						<button id ="C1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div>
 						<!--B1_4 雇用保険料率一覧 -->
-						<table id="B1_4"
+						<table id="C1_4"
 							   data-bind="ntsGridList: {
 												name: '#QMM011_8',
 												height: 760,
@@ -67,20 +67,20 @@
 				</div>
 			</div>
 			<div class = "right">
-				<div id="B2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
+				<div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
 				<!--B2_2 開始年月 -->
 				<span class="label" data-bind="text: startDate"></span>
 				<!--B2_3 開始年月和暦 -->
 				<span class="label" data-bind="text: monthlyCalendar"></span>
 				<!--B2_4 ～  -->
-				<label id= "B2_4">#{i18n.getText('QMM011_9')}</label>
+				<label id= "C2_4">#{i18n.getText('QMM011_9')}</label>
 				<!--B2_5 終了年月  -->
 				<span class="label" data-bind="text: endDate"></span>
-				<div id ="B2_6" class="set-row">
+				<div id ="C2_6" class="set-row">
 					<hr />
 				</div>
 				<div class = "table">
-					<table id="3_1" >
+					<table id="C3_1" >
 						<colgroup>
 							<col width="20px" />
 							<col width="150px" />
@@ -101,13 +101,13 @@
 						<tr >
 							<td class="bg-green" style="border: 1px solid #CCC">
 								<com:ko-if bind="empPreRateId === 2">
-									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span>
+									<span class = "label" id= "C3_6">#{i18n.getText('QMM011_14')}</span>
 								</com:ko-if>
 								<com:ko-if bind="empPreRateId === 1">
-									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span>
+									<span class = "label" id= "C3_15">#{i18n.getText('QMM011_16')}</span>
 								</com:ko-if>
 								<com:ko-if bind="empPreRateId === 0">
-									<span class = "label" id= "B3_24">#{i18n.getText('QMM011_17')}</span>
+									<span class = "label" id= "C3_24">#{i18n.getText('QMM011_17')}</span>
 								</com:ko-if>
 							</td>
 							<td >
@@ -121,7 +121,7 @@
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div class = "B3_9"
+								<div class = "C3_9"
 									 data-bind="ntsComboBox: {
 																
 																name: '#{i18n.getText('QMM011_15')}',
@@ -135,7 +135,7 @@
 																}"/>
 							</td>
 							<td>
-								<input id = "B3_11"
+								<input id = "C3_11"
 									   data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																value: empContrRatio, 
@@ -145,7 +145,7 @@
 								<span class= "label" id= "B3_12">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div id = "B3_13"
+								<div id = "C3_13"
 									 data-bind="ntsComboBox: {
 																
 																value: busiOwFracClass, 
