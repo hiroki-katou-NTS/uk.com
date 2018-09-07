@@ -186,18 +186,18 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (header.group == undefined && header.group == null) {
                             if (self.showHeaderNumber()) {
                                 headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             } else {
                                 headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             }
                         } else {
                             if (self.showHeaderNumber()) {
                                 headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
-                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             } else {
                                 headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             }
                         }
                     }
@@ -459,7 +459,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             return dfd.promise();
         }
         
-        
         initScreenFormat(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -532,10 +531,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             return dfd.promise();
         }
         
-        
-        
-        
-        
         loadRowScreen(loadAll?: boolean) {
             var self = this;
             let dataChange: any = $("#dpGrid").mGrid("updatedCells");
@@ -559,7 +554,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.dpData = dpDataNew;
                 self.dailyPerfomanceData(dpDataNew);
                 let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
-                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
+                $("#dpGrid").mGrid("resetOrigDataSource", dataSourceNew);
                 $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
                 dfd.resolve();
             });
@@ -584,60 +579,70 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          * A1_1 確定ボタン
          */
         insertUpdate() {
-            var self = this;
-            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            let dataUpdate = { 
-                /** 年月: 年月 */
-               yearMonth : self.yearMonth(),
-                /** 締めID: 締めID */
-                closureId : self.closureId(),
-                /** 締め日: 日付 */
-                closureDate : self.closureDateDto(),
-                mPItemDetails: [],
-                startDate : moment.utc(self.actualTimeSelectedDat().startDate, "YYYY/MM/DD"),
-                endDate : moment.utc(self.actualTimeSelectedDat().endDate, "YYYY/MM/DD")
-            }
-            if (errorGrid == undefined || errorGrid.length == 0) {
-                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
-                var dataSource = $("#dpGrid").mGrid("dataSource");
-                let dataChangeProcess: any = [];
+            let self = this,
+                errorGrid: any = $("#dpGrid").mGrid("errors"),
+                dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 
-                 _.each(dataChange, (data: any) => {
-                     let dataTemp = _.find(dataSource, (item: any) => {
+            if ((errorGrid == undefined || errorGrid.length == 0) && _.size(dataChange) > 0) {
+                let dataSource = $("#dpGrid").mGrid("dataSource"),
+                    dataChangeProcess: any = [],
+                    dataUpdate: any = {
+                        /** 年月: 年月 */
+                        yearMonth: self.yearMonth(),
+                        /** 締めID: 締めID */
+                        closureId: self.closureId(),
+                        /** 締め日: 日付 */
+                        closureDate: self.closureDateDto(),
+                        mPItemDetails: [],
+                        startDate: moment.utc(self.actualTimeSelectedDat().startDate, "YYYY/MM/DD"),
+                        endDate: moment.utc(self.actualTimeSelectedDat().endDate, "YYYY/MM/DD"),
+                        dataCheckSign: [],
+                        dataCheckApproval: []
+                    };
+
+                _.each(dataChange, (data: any) => {
+                    let dataTemp = _.find(dataSource, (item: any) => {
                         return item.id == data.rowId;
                     });
-                     
-                     if (data.columnKey != "sign" && data.columnKey != "approval") {
-                         //get layout , and type
+
+                    if (data.columnKey != "identify" && data.columnKey != "approval") {
+                        //get layout , and type
                         let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                             return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                         });
                         let item = self.lstAttendanceItem()[Number(data.columnKey.substring(1, data.columnKey.length))];
-//                        _.find(self.lstAttendanceItem(), (value) => {
-//                            return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
-//                        })
+                        //                        _.find(self.lstAttendanceItem(), (value) => {
+                        //                            return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                        //                        })
                         let value: any;
                         value = self.getPrimitiveValue(data.value, item.attendanceAtr);
                         let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, 0);
-                        dataChangeProcess.push(dataMap); 
-                     }
-                 });
-                dataUpdate.mPItemDetails = dataChangeProcess;
-                let checkDailyChange = (dataChangeProcess.length > 0);
-                if (checkDailyChange) {   
-                    nts.uk.ui.block.invisible();
-                    nts.uk.ui.block.grayout();
-                    service.addAndUpdate(dataUpdate).done((data) => {
-                        nts.uk.ui.block.clear();
-                        if(self.initMode()!=1){
-                           self.loadRowScreen();
-                           //self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
-//                           self.updateDate(self.yearMonth());   
+                        dataChangeProcess.push(dataMap);
+                    } else {
+                        if (data.columnKey == "identify") {
+                            dataUpdate.dataCheckSign.push({ rowId: data.rowId, itemId: "identify", value: data.value, employeeId: dataTemp.employeeId });
+                        } else {
+                            dataUpdate.dataCheckApproval.push({ rowId: data.rowId, itemId: "approval", value: data.value, employeeId: dataTemp.employeeId });
                         }
-                    })
-                }
+                    }
+                });
+                dataUpdate.mPItemDetails = dataChangeProcess;
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                service.addAndUpdate(dataUpdate).done((data) => {
+                    _.each(dataChange, data => {
+                        $("#dpGrid").mGrid("updateCell", data.rowId, data.columnKey, data.value, true);
+                    });
+                        
+                    nts.uk.ui.block.clear();
+                    if (self.initMode() != 1) {
+                        self.loadRowScreen();
+                        //self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+                        //                           self.updateDate(self.yearMonth());  
+                    }
+                });
             }
-        };
+        }
         
         insertUpdate2(){
             var self = this;
@@ -649,7 +654,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let command = {
                 lstHeader: {},
                 formatCode: self.dataAll().param.formatCodes
-//                sheetNo : $("#dpGrid").ntsGrid("selectedSheet")
+//                sheetNo : $("#dpGrid").mGrid("selectedSheet")
             };
             let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
             let valueTemp = 0;
@@ -862,9 +867,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
            // self.actualTimeSelectedCode.subscribe(code => {
             //   dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
            // });
-           // $("#dpGrid").ntsGrid({
+           // $("#dpGrid").mGrid({
 
-            //$("#dpGrid").ntsGrid({
+            //$("#dpGrid").mGrid({
                 new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
@@ -1402,16 +1407,16 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         signAll() {
             let self = this;
-            $("#dpGrid").ntsGrid("checkAll", "identify");
-            $("#dpGrid").ntsGrid("checkAll", "dailyconfirm");
+            $("#dpGrid").mGrid("checkAll", "identify");
+            $("#dpGrid").mGrid("checkAll", "dailyconfirm");
         }
         /**
          * UnCheck all CheckBox
          */
         releaseAll() {
             let self = this;
-            $("#dpGrid").ntsGrid("uncheckAll", "identify");
-            $("#dpGrid").ntsGrid("uncheckAll", "dailyconfirm");
+            $("#dpGrid").mGrid("uncheckAll", "identify");
+            $("#dpGrid").mGrid("uncheckAll", "dailyconfirm");
         }
         /**
          * ロック解除ボタン　クリック

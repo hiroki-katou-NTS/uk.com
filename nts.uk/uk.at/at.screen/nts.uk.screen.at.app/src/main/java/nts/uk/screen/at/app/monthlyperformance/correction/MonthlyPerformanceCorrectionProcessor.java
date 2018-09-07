@@ -44,6 +44,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
@@ -141,6 +143,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private WorkClosureQueryProcessor workClosureQueryProcessor;
+	
+	@Inject
+	private ConfirmationMonthRepository confirmationMonthRepository;
 
 	/** 月次の勤怠項目の制御 */
 	@Inject
@@ -593,6 +598,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 */
 		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
 		MonthlyPerformanceParam param = screenDto.getParam();
+		List<ConfirmationMonth> listConfirmationMonth = new ArrayList<>();
+		List<String> listEmployeeId = screenDto.getLstEmployee().stream().map(x->x.getId()).collect(Collectors.toList());
 
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
 		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
@@ -669,6 +676,16 @@ public class MonthlyPerformanceCorrectionProcessor {
 			displayItem.getColumnSettings().add(columnSetting);
 		}
 		
+		// 本人確認状況の取得
+		// 取得している「本人確認処理の利用設定．月の本人確認を利用する」をチェックする
+		if(screenDto.getIdentityProcess().getUseMonthSelfCK() == 1){
+			// 月の本人確認を取得する
+			listConfirmationMonth = this.confirmationMonthRepository.findBySomeProperty(listEmployeeId,
+					yearMonth, screenDto.getClosureDate().getLastDayOfMonth()
+							? new YearMonth(yearMonth).lastDateInMonth() : screenDto.getClosureDate().getClosureDay(),
+					closureId);
+		}
+		
 		//get data approve
 		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate =null;
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee =null;
@@ -700,8 +717,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 
 		List<MPDataDto> lstData = new ArrayList<>(); // List all data
-		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell
-																// state
+		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell state
 		screenDto.setLstData(lstData);
 		screenDto.setLstCellState(lstCellState);
 
@@ -721,6 +737,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			}
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
+			
+			// check true false identify
+			boolean identify = listConfirmationMonth.stream().filter(x->x.getEmployeeId().equals(employeeId)).findFirst().isPresent() ;
 
 			// check true false approve
 			boolean approve = false;
@@ -749,11 +768,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 					
 				}
-				
 			}
 			
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
-					employeeId, "", false, approve, false, "");
+					employeeId, "", identify, approve, false, "");
 			
 			
 			// Setting data for dynamic column
