@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.sys.assist.dom.datarestoration.RetentionPeriodIndicator;
 
 /**
  * 明細印字月

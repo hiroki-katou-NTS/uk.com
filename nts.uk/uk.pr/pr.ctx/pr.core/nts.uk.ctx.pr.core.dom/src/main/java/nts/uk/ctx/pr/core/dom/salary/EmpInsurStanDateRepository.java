@@ -1,7 +1,7 @@
-package nts.uk.ctx.sys.assist.dom.salary;
+package nts.uk.ctx.pr.core.dom.salary;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 雇用保険基準日
