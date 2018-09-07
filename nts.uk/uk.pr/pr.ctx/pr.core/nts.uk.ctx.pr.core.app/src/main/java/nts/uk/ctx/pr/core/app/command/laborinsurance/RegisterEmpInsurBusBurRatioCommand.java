@@ -6,7 +6,11 @@ import lombok.Value;
 
 @Value
 public class RegisterEmpInsurBusBurRatioCommand {
-    
-    List<EmpInsurBusBurRatioCommand> listEmpInsurPreRate;
+	
+    private String hisId;
+    private List<EmpInsurBusBurRatioCommand> listEmpInsurPreRate;
+    private Integer endYearMonth;
+    private Integer startYearMonth;
+    private boolean isNewMode;
 
 }

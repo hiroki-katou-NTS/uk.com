@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatioService;
 
@@ -23,10 +24,17 @@ public class RegisterEmpInsurPreRateCommandHandler extends CommandHandler<Regist
 	protected void handle(CommandHandlerContext<RegisterEmpInsurBusBurRatioCommand> context) {
 	    
 	    RegisterEmpInsurBusBurRatioCommand command = context.getCommand();
+	    YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
+	    YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
+	    //String hisId = command.getHisId();
 	    List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
 	        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), item.getIndBdRatio(), item.getEmpContrRatio(), item.getPerFracClass(), item.getBusiOwFracClass());
 	        }).collect(Collectors.toList());
-	    empInsurBusBurRatioService.registerEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
+	    if (command.isNewMode()) {
+	    	empInsurBusBurRatioService.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio, startYearMonth, endYearMonth);
+	    } else {
+	    	empInsurBusBurRatioService.updateEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
+	    }
 	    
 	}
 }

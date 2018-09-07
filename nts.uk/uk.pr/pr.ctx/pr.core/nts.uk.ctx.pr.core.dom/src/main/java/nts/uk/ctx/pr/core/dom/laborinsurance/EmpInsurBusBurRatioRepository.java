@@ -11,9 +11,9 @@ public interface EmpInsurBusBurRatioRepository
     
     List<EmpInsurBusBurRatio> getEmpInsurBusBurRatioByHisId(String hisId);
 
-    void add(EmpInsurBusBurRatio domain);
+    void add(List<EmpInsurBusBurRatio> domain);
 
-    void update(EmpInsurBusBurRatio domain);
+    void update(List<EmpInsurBusBurRatio> domain);
 
     void remove(String hisId, int empPreRateId);
 

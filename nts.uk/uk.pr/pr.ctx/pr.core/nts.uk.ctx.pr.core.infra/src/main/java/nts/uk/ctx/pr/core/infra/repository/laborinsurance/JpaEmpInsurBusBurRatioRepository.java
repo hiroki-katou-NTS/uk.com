@@ -20,12 +20,12 @@ public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements E
     
 
     @Override
-    public void add(EmpInsurBusBurRatio domain){
+    public void add(List<EmpInsurBusBurRatio> domain){
         this.commandProxy().insert(QpbmtEmpInsurBusBurRatio.toEntity(domain));
     }
 
     @Override
-    public void update(EmpInsurBusBurRatio domain){
+    public void update(List<EmpInsurBusBurRatio> domain){
         this.commandProxy().update(QpbmtEmpInsurBusBurRatio.toEntity(domain));
     }
 

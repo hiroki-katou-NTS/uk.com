@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -33,15 +34,15 @@ public class QpbmtEmpInsurHis extends UkJpaEntity implements Serializable
      * 年月期間
      */
     @Basic(optional = false)
-    @Column(name = "START_DATE")
-    public int startDate;
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
 
     /**
      * 年月期間
      */
     @Basic(optional = false)
-    @Column(name = "END_DATE")
-    public int endDate;
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     @Override
     protected Object getKey()
@@ -50,12 +51,9 @@ public class QpbmtEmpInsurHis extends UkJpaEntity implements Serializable
     }
 
 
-    public static List<QpbmtEmpInsurHis> toEntity(EmpInsurHis domain) {
-        List<QpbmtEmpInsurHis> qpbmtEmpInsurHisList = domain.getHistory().stream().map(item -> {
-            return new QpbmtEmpInsurHis(new QpbmtEmpInsurHisPk(domain.getCid(),item.identifier()),item.start().month(),item.end().month());
-        }).collect(Collectors.toList());
-
-        return qpbmtEmpInsurHisList;
+    public static QpbmtEmpInsurHis toEntity(YearMonthHistoryItem domain, String cId) {
+        return new QpbmtEmpInsurHis(new QpbmtEmpInsurHisPk(cId, domain.identifier()),
+        		Integer.parseInt(domain.start().toString()),Integer.parseInt(domain.end().toString()));
     }
 
 }

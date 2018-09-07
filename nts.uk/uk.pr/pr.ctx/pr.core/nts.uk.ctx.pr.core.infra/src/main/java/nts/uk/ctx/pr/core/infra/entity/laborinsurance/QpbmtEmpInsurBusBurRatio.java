@@ -7,6 +7,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * 雇用保険料率
@@ -67,13 +69,14 @@ public class QpbmtEmpInsurBusBurRatio extends UkJpaEntity implements Serializabl
     			this.busiOwFracClass);
     }
     
-    public static QpbmtEmpInsurBusBurRatio toEntity(EmpInsurBusBurRatio domain){
-    	return new QpbmtEmpInsurBusBurRatio(
-    			new QpbmtEmpInsurBusBurRatioPk(domain.getHisId(), domain.getEmpPreRateId().value),
-    			domain.getIndBdRatio().v(),
-    			domain.getEmpContrRatio().v(),
-    			domain.getPerFracClass().value,
-    			domain.getBusiOwFracClass().value);
+    public static List<QpbmtEmpInsurBusBurRatio> toEntity(List<EmpInsurBusBurRatio> domain){
+    	List<QpbmtEmpInsurBusBurRatio> listEmpInsurBusBurRatio = domain.stream().map(item -> {return new QpbmtEmpInsurBusBurRatio(
+    			new QpbmtEmpInsurBusBurRatioPk(item.getHisId(), item.getEmpPreRateId().value),
+    			item.getIndBdRatio().v(),
+    			item.getEmpContrRatio().v(),
+    			item.getPerFracClass().value,
+    			item.getBusiOwFracClass().value);}).collect(Collectors.toList());
+    	return listEmpInsurBusBurRatio;
     }
 
 	public QpbmtEmpInsurBusBurRatio(QpbmtEmpInsurBusBurRatioPk empInsurBusBurRatioPk, BigDecimal indBdRatio,
