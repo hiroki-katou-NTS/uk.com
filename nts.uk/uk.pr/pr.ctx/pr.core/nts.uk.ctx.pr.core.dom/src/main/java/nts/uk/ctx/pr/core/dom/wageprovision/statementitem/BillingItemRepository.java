@@ -9,6 +9,8 @@ import java.util.List;
 public interface BillingItemRepository {
 
 	List<BillingItem> getAllBillingItem();
+	
+	List<BillingItem> getAllItemByCid(String cid);
 
 	Optional<BillingItem> getBillingItemById(String cid, int categoryAtr, int itemNameCd, String salaryItemId);
 

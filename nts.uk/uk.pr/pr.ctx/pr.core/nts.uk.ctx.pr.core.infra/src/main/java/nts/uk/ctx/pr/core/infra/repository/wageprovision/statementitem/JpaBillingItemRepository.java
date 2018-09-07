@@ -15,6 +15,8 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtBillingI
 public class JpaBillingItemRepository extends JpaRepository implements BillingItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBillingItem f";
+	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.billingItemPk.cid =:cid";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.billingItemPk.cid =:cid AND " + " f.billingItemPk.categoryAtr =:categoryAtr AND "
 			+ " f.billingItemPk.itemNameCd =:itemNameCd AND" + " f.billingItemPk.salaryItemId =:salaryItemId";
@@ -22,6 +24,12 @@ public class JpaBillingItemRepository extends JpaRepository implements BillingIt
 	@Override
 	public List<BillingItem> getAllBillingItem() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtBillingItem.class)
+				.getList(item -> item.toDomain());
+	}
+	
+	@Override
+	public List<BillingItem> getAllItemByCid(String cid) {
+		return this.queryProxy().query(SELECT_BY_COMPANY_ID, QpbmtBillingItem.class).setParameter("cid", cid)
 				.getList(item -> item.toDomain());
 	}
 
