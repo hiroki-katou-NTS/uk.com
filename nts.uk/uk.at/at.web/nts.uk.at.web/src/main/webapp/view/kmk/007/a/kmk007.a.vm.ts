@@ -594,7 +594,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 if (data && !!data.length) {
                     lwt(_(data).orderBy(['dispOrder', 'workTypeCode'], ['asc', 'asc'])
                         .map(x => $.extend({
-                            icon: !!x.abolishAtr ? '<i class="icon icon-dot"></i>' : ''
+                            icon: !!x.abolishAtr ? '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />' : ''
                         }, x)).value());
                 }
                 dfd.resolve();
@@ -863,7 +863,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (defaultMenu == 0) {
                 this.icon = "";
             } else {
-                this.icon = '<i class="icon icon-dot"></i>';
+                this.icon = '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
             }
         }
     }
@@ -947,7 +947,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (param.abolishAtr == 0) {
                 this.icon = "";
             } else {
-                this.icon = '<i class="icon icon-dot"></i>';
+                this.icon = '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
             }
         }
     }

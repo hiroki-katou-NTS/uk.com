@@ -39,16 +39,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 	/** The Constant MAX_WHERE_IN. */
 	private static final int MAX_WHERE_IN = 1000;
 
-	private static final String SELECT_ALL = String.join(" ",
-			"SELECT pcl, ccl, dhl, iil",
-			"FROM SrcdtPerCorrectionLog pcl",
-			"LEFT JOIN SrcdtCtgCorrectionLog ccl",
-			"ON pcl.perCorrectionLogID = ccl.perCorrectionLogID",
-			"LEFT JOIN SrcdtDataHistoryLog dhl",
-			"ON ccl.ctgCorrectionLogID = dhl.ctgCorrectionLogID",
-			"LEFT JOIN SrcdtItemInfoLog iil",
-			"ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID",
-			"WHERE pcl.operationID IN :operationIDs",
+	private static final String SELECT_ALL = String.join(" ", "SELECT pcl, ccl, dhl, iil",
+			"FROM SrcdtPerCorrectionLog pcl", "LEFT JOIN SrcdtCtgCorrectionLog ccl",
+			"ON pcl.perCorrectionLogID = ccl.perCorrectionLogID", "LEFT JOIN SrcdtDataHistoryLog dhl",
+			"ON ccl.ctgCorrectionLogID = dhl.ctgCorrectionLogID", "LEFT JOIN SrcdtItemInfoLog iil",
+			"ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID", "WHERE pcl.operationID IN :operationIDs",
 			"AND (:empIdNULL = 'ISNULL' OR pcl.employeeID IN :employeeIDs)",
 			"AND pcl.insDate >= :startDate AND pcl.insDate <= :endDate");
 
@@ -102,7 +97,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			} else {
 				List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
 						.setParameter("operationIDs", subOpts)
-						.setParameter("empIdNULL", listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
+						.setParameter("empIdNULL",
+								listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
 						.setParameter("employeeIDs",
 								listEmployeeId == null || listEmployeeId.size() == 0 ? new ArrayList<String>() {
 									private static final long serialVersionUID = 1L;
@@ -202,10 +198,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 								}
 								break;
 							}
-							
+
 							return new ItemInfo(ii.itemInfoLogID, ii.itemID, ii.itemName,
-									new Value(rvb, !ii.contentBefore.isEmpty() ? ii.contentBefore : ""),
-									new Value(rva, !ii.contentAfter.isEmpty() ? ii.contentAfter : ""));
+									new Value(rvb, ii.contentBefore != null ? ii.contentBefore : ""),
+									new Value(rva, ii.contentAfter != null ? ii.contentAfter : ""));
 						}).filter(f -> f != null).collect(Collectors.toList());
 
 						// create reviseInfo from dataHistLog

@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
  * @author shuichi_ishida
  */
 @HalfIntegerRange(min = 0, max = 99.5)
-public class AttendanceDaysMonth extends HalfIntegerPrimitiveValue<AttendanceDaysMonth> {
+public class AttendanceDaysMonthDom extends HalfIntegerPrimitiveValue<AttendanceDaysMonthDom> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class AttendanceDaysMonth extends HalfIntegerPrimitiveValue<AttendanceDay
 	 * コンストラクタ
 	 * @param days 日数
 	 */
-	public AttendanceDaysMonth(Double days){
+	public AttendanceDaysMonthDom(Double days){
 		
 		super(days);
 	}
@@ -27,8 +27,8 @@ public class AttendanceDaysMonth extends HalfIntegerPrimitiveValue<AttendanceDay
 	 * @param days 日数
 	 * @return 加算後の勤怠月間時間
 	 */
-	public AttendanceDaysMonth addDays(Double days){
+	public AttendanceDaysMonthDom addDays(Double days){
 		
-		return new AttendanceDaysMonth(this.v() + days);
+		return new AttendanceDaysMonthDom(this.v() + days);
 	}
 }

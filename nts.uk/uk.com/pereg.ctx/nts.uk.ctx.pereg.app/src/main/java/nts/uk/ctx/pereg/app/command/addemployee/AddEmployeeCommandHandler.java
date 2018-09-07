@@ -148,7 +148,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 //		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
 
-		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
+		helper.addBasicData(command,inputs, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
 
 		addNewUser(personId, command, userId);

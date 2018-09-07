@@ -19,8 +19,8 @@ module nts.uk.at.view.kmk008.d {
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
 
-            nameErrorWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_43"));
-            nameAlarmWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_42"));
+            nameErrorWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_42"));
+            nameAlarmWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_43"));
             nameLimitWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_44"));
             nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_42"));
             nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_43"));

@@ -12,7 +12,7 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -113,7 +113,7 @@ public class FlexTimeOfMonthly {
 		this.getFlexPredWorkTimeOpt = Optional.empty();
 		this.addedVacationUseTime = new AddedVacationUseTime();
 		this.deductDaysAndTime = new DeductDaysAndTime(
-				new AttendanceDaysMonth(0.0), new AttendanceTimeMonth(0));
+				new AttendanceDaysMonthDom(0.0), new AttendanceTimeMonth(0));
 		this.annualLeaveTimeBeforeDeduct = new AttendanceTimeMonth(0);
 		this.errorInfos = new ArrayList<>();
 		this.perErrors = new ArrayList<>();
