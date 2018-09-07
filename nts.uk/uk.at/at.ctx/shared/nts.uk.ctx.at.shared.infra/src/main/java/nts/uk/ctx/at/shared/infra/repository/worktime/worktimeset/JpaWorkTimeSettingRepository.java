@@ -243,6 +243,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		PreparedStatement statement = this.connection().prepareStatement(
 				"select * from KSHMT_WORK_TIME_SET"
 				+ " where CID = ? and WORKTIME_CD = ?");
+		statement.setString(1, companyId);
+		statement.setString(2, worktimeCode);
 		
 		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
 			KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
