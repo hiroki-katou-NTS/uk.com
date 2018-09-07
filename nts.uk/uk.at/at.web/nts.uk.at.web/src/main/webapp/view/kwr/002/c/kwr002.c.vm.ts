@@ -59,7 +59,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealName6 = ko.observable('');
             self.currentCode = ko.observable(0);
 
-//            console.log(self.attendanceCode());
+            //            console.log(self.attendanceCode());
 
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KWR002_86'), key: 'attendanceItemId', width: 100 },
@@ -244,7 +244,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealStamp().push(self.sealName4());
             self.sealStamp().push(self.sealName5());
             self.sealStamp().push(self.sealName6());
-            setShared('sealStamp', _.reject(self.sealStamp(), (it)=>_.isEmpty(it)), true);
+            setShared('sealStamp', _.reject(self.sealStamp(), (it) => _.isEmpty(it)), true);
             setShared('useSeal', self.useSealValue());
             nts.uk.ui.windows.close();
         }
@@ -355,6 +355,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     }
 
 
+                }).done(() => {
+                    dfd.resolve();
                 });
 
                 service.getSealStamp(code).done(function(sealStampList: Array<String>) {
@@ -369,37 +371,41 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     }
                 });
             }
-            //***
-            service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-                if (listAttendanceItem.length != 0) {
-                    self.attendanceItemListDaily(listAttendanceItem);
-                    self.currentCode(1);
-                }
-
-            });
-
-            service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-                if (listAttendanceItem.length > 0) {
-                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
-                }
-            });
-
-            service.getAttendanceCalculateList(1).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-                if (listAttendanceItem.length > 0) {
-
-                    listAttendanceItem.forEach(item => {
-                        self.attendanceItemListDaily.push(item);
-                    })
-
-                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
-                    self.attendanceItemList(self.attendanceItemListDaily());
-                }
-
-                dfd.resolve();
-            })
 
             blockUI.clear();
             return dfd.promise();
+            //***
+            //            service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length != 0) {
+            //                    self.attendanceItemListDaily(listAttendanceItem);
+            //                    self.currentCode(1);
+            //                }
+            //
+            //            });
+            //
+            //            service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length > 0) {
+            //                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
+            //                }
+            //            });
+            //
+            //            service.getAttendanceCalculateList(1).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length > 0) {
+            //
+            //                    listAttendanceItem.forEach(item => {
+            //                        self.attendanceItemListDaily.push(item);
+            //                    })
+            //
+            //                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
+            //                    self.attendanceItemList(self.attendanceItemListDaily());
+            //                }
+            //
+            //                
+            //            })
+
+
+
+
         }
     }
 
