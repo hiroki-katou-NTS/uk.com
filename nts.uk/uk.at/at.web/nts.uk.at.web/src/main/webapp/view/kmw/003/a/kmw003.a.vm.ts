@@ -159,8 +159,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen()) self.updateDate(value);
-                
+                if (nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen())
+                    self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -729,7 +729,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.monthlyParam().yearMonth = date;
             self.monthlyParam().lstEmployees = self.lstEmployee();
             
-            if($("#dpGrid").data('igGrid')) {
+            if($("#dpGrid").data('mGrid')) {
                 $("#dpGrid").mGrid("destroy");
                 $("#dpGrid").off();
             }
@@ -739,7 +739,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                   nts.uk.ui.block.clear();
             });
             
-        };
+        }
         /**
          * 実績期間: List<DatePeriod> actualTimeDats
          * 実績期間選択: DatePeriod actualTimeSelectedDat
