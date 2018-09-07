@@ -39,5 +39,17 @@ public class AnyItemValue {
 		this.time = Optional.of(new AnyItemTime(0));
 		this.times = Optional.of(new AnyItemTimes(BigDecimal.valueOf(0)));
 	}
+	
+	public void updateTimes(AnyItemTimes times){
+		this.times = Optional.ofNullable(times);
+	}
+	
+	public void updateAmount(AnyItemAmount amount){
+		this.amount = Optional.ofNullable(amount);
+	}
+	
+	public void updateTime(AnyItemTime time){
+		this.time = Optional.ofNullable(time);
+	}
 
 }

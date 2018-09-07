@@ -483,10 +483,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 
 	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
-		calced.stream().forEach(c -> {
-			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
-					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
-		});
+		registerCalcedService.addAndUpdate(calced);
+		//calced.stream().forEach(c -> {
+		//	registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+		//			c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
+		//});
 	}
 
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {

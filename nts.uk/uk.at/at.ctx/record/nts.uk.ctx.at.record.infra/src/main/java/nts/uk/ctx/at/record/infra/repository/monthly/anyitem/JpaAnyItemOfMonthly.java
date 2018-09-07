@@ -89,6 +89,14 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 				.map(c -> c.toDomain());
 	}
 	
+	@Override
+	public List<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, List<Integer> anyItemIds) {
+
+		return anyItemIds.stream().map(id -> find(employeeId, yearMonth, closureId,
+							closureDate, id)).collect(Collectors.toList());
+	}
+	
 	/** 検索　（月度と締め） */
 	@Override
 	public List<AnyItemOfMonthly> findByMonthlyAndClosure(String employeeId, YearMonth yearMonth,
@@ -189,6 +197,12 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		else {
 			entity.fromDomainForUpdate(domain);
 		}
+	}
+	
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(List<AnyItemOfMonthly> domain) {
+		domain.stream().forEach(d -> persistAndUpdate(d));
 	}
 	
 	/** 削除 */
