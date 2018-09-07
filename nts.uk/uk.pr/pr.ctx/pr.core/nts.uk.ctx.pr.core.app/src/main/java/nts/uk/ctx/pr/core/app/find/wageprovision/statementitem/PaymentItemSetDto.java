@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
 
 @Value
 public class PaymentItemSetDto {
+
 	/**
 	 * 会社ID
 	 */
@@ -93,4 +95,20 @@ public class PaymentItemSetDto {
 	 * 備考
 	 */
 	private String note;
+
+	public static PaymentItemSetDto fromDomain(PaymentItemSet domain) {
+		return new PaymentItemSetDto(domain.getCid(), domain.getSalaryItemId(), domain.getBreakdownItemUseAtr().value,
+				domain.getLaborInsuranceCategory().value, domain.getFixedWage().getSettingAtr().value,
+				domain.getFixedWage().getEveryoneEqualSet().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getMonthlySalary().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getHourlyPay().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getDayPayee().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getMonthlySalaryPerday().map(i -> i.value).orElse(null),
+				domain.getAverageWageAtr().value, domain.getSocialInsuranceCategory().value, domain.getTaxAtr().value,
+				domain.getLimitAmountSetting().getTaxableAmountAtr().map(i -> i.value).orElse(null),
+				domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null),
+				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
+				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
+				domain.getNote().orElse(null));
+	}
 }

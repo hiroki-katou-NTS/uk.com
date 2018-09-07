@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.BillingItem;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 
 @Value
 public class StatementItemDto {
@@ -51,7 +51,7 @@ public class StatementItemDto {
 	 */
 	private Integer intergrateCd;
 
-	public static StatementItemDto fromDomain(BillingItem domain) {
+	public static StatementItemDto fromDomain(StatementItem domain) {
 		return new StatementItemDto(domain.getCid(), domain.getDeprecatedAtr().value, domain.getItemNameCd().v(),
 				domain.getSalaryItemId(), domain.getDefaultAtr().value, domain.getValueAtr().value,
 				domain.getDeprecatedAtr().value, domain.getSocialInsuaEditableAtr().map(i -> i.value).orElse(null),

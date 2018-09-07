@@ -11,7 +11,7 @@ import nts.uk.shr.com.enumcommon.Abolition;
  * 明細書項目
  */
 @Getter
-public class BillingItem extends AggregateRoot {
+public class StatementItem extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -58,7 +58,7 @@ public class BillingItem extends AggregateRoot {
 	 */
 	private Optional<IntergrateCd> intergrateCd;
 
-	public BillingItem(String cid, int categoryAtr, int itemNameCd, String salaryItemId, int defaultAtr, int valueAtr,
+	public StatementItem(String cid, int categoryAtr, int itemNameCd, String salaryItemId, int defaultAtr, int valueAtr,
 			int deprecatedAtr, int socialInsuaEditableAtr, int intergrateCd) {
 		super();
 		this.cid = cid;

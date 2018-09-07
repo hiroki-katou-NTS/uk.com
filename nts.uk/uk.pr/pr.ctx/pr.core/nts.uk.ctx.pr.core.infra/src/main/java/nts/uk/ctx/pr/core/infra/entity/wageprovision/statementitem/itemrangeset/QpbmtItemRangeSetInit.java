@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSettingInitialValue;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -154,8 +154,8 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 		return itemRangeSetInitPk;
 	}
 
-	public ItemRangeSettingInitialValue toDomain() {
-		return new ItemRangeSettingInitialValue(this.itemRangeSetInitPk.cid, this.itemRangeSetInitPk.salaryItemId,
+	public ItemRangeSet toDomain() {
+		return new ItemRangeSet(this.itemRangeSetInitPk.cid, this.itemRangeSetInitPk.salaryItemId,
 				this.rangeValueAtr, this.errorUpperLimitSetAtr, this.errorUpRangeValAmount, this.errorUpRangeValTime,
 				this.errorUpRangeValNum, this.errorLowerLimitSetAtr, this.errorLoRangeValAmount,
 				this.errorLoRangeValTime, this.errorLoRangeValNum, this.alarmUpperLimitSetAtr,
@@ -164,7 +164,7 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 				this.alarmLoRangeValNum);
 	}
 
-	public static QpbmtItemRangeSetInit toEntity(ItemRangeSettingInitialValue domain) {
+	public static QpbmtItemRangeSetInit toEntity(ItemRangeSet domain) {
 		return new QpbmtItemRangeSetInit(new QpbmtItemRangeSetInitPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getRangeValueAtr().value,
 				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value,

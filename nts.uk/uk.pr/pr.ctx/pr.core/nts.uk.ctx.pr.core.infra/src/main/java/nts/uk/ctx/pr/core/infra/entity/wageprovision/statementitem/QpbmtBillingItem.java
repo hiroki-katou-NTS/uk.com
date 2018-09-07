@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.BillingItem;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -69,13 +69,13 @@ public class QpbmtBillingItem extends UkJpaEntity implements Serializable {
 		return billingItemPk;
 	}
 
-	public BillingItem toDomain() {
-		return new BillingItem(this.billingItemPk.cid, this.billingItemPk.categoryAtr, this.billingItemPk.itemNameCd,
+	public StatementItem toDomain() {
+		return new StatementItem(this.billingItemPk.cid, this.billingItemPk.categoryAtr, this.billingItemPk.itemNameCd,
 				this.billingItemPk.salaryItemId, this.defaultAtr, this.valueAtr, this.deprecatedAtr,
 				this.socialInsuaEditableAtr, this.intergrateCd);
 	}
 
-	public static QpbmtBillingItem toEntity(BillingItem domain) {
+	public static QpbmtBillingItem toEntity(StatementItem domain) {
 		return new QpbmtBillingItem(
 				new QpbmtBillingItemPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v(),
 						domain.getSalaryItemId()),

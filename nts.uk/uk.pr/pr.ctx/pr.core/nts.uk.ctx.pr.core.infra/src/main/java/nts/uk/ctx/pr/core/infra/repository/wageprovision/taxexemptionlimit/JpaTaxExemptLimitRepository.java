@@ -7,12 +7,12 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptLimit;
-import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptLimitRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionLimitRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.taxexemptionlimit.QpbmtTaxExemptLimit;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.taxexemptionlimit.QpbmtTaxExemptLimitPk;
 
 @Stateless
-public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExemptLimitRepository {
+public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExemptionLimitRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTaxExemptLimit f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
@@ -32,9 +32,9 @@ public class JpaTaxExemptLimitRepository extends JpaRepository implements TaxExe
 	}
 
 	@Override
-	public Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeamountCode) {
+	public Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeAmountCode) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtTaxExemptLimit.class).setParameter("cid", cid)
-				.setParameter("taxFreeamountCode", taxFreeamountCode).getSingle(c -> c.toDomain());
+				.setParameter("taxFreeamountCode", taxFreeAmountCode).getSingle(c -> c.toDomain());
 	}
 
 	@Override

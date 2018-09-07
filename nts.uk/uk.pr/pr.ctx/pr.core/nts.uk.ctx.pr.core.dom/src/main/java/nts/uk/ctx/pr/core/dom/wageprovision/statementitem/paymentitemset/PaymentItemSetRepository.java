@@ -8,7 +8,7 @@ import java.util.List;
  * @author thanh.tq 支給項目設定
  *
  */
-public interface PaymentItemStRepository {
+public interface PaymentItemSetRepository {
 
 	List<PaymentItemSet> getAllPaymentItemSt();
 

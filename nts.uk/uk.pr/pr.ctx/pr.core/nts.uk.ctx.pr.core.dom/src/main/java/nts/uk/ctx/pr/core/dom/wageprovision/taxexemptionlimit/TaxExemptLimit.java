@@ -19,7 +19,7 @@ public class TaxExemptLimit extends AggregateRoot {
 	/**
 	 * 非課税限度額コード
 	 */
-	private TaxLimitAmountCode taxFreeamountCode;
+	private TaxLimitAmountCode taxFreeAmountCode;
 
 	/**
 	 * 非課税限度額名称
@@ -31,10 +31,10 @@ public class TaxExemptLimit extends AggregateRoot {
 	 */
 	private TaxExemption taxExemption;
 
-	public TaxExemptLimit(String cid, String taxFreeamountCode, String taxExemptionName, int taxExemption) {
+	public TaxExemptLimit(String cid, String taxFreeAmountCode, String taxExemptionName, int taxExemption) {
 		super();
 		this.cid = cid;
-		this.taxFreeamountCode = new TaxLimitAmountCode(taxFreeamountCode);
+		this.taxFreeAmountCode = new TaxLimitAmountCode(taxFreeAmountCode);
 		this.taxExemptionName = new TaxExemptionName(taxExemptionName);
 		this.taxExemption = new TaxExemption(taxExemption);
 	}

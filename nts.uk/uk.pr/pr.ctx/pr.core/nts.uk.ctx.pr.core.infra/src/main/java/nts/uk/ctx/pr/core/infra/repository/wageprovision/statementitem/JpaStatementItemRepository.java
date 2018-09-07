@@ -6,13 +6,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.BillingItem;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.BillingItemRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtBillingItem;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtBillingItemPk;
 
 @Stateless
-public class JpaBillingItemRepository extends JpaRepository implements BillingItemRepository {
+public class JpaStatementItemRepository extends JpaRepository implements StatementItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBillingItem f";
 	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
@@ -22,31 +22,31 @@ public class JpaBillingItemRepository extends JpaRepository implements BillingIt
 			+ " f.billingItemPk.itemNameCd =:itemNameCd AND" + " f.billingItemPk.salaryItemId =:salaryItemId";
 
 	@Override
-	public List<BillingItem> getAllBillingItem() {
+	public List<StatementItem> getAllStatementItem() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtBillingItem.class)
 				.getList(item -> item.toDomain());
 	}
 	
 	@Override
-	public List<BillingItem> getAllItemByCid(String cid) {
+	public List<StatementItem> getAllItemByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_COMPANY_ID, QpbmtBillingItem.class).setParameter("cid", cid)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
-	public Optional<BillingItem> getBillingItemById(String cid, int categoryAtr, int itemNameCd, String salaryItemId) {
+	public Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, int itemNameCd, String salaryItemId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtBillingItem.class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
 				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
 	}
 
 	@Override
-	public void add(BillingItem domain) {
+	public void add(StatementItem domain) {
 		this.commandProxy().insert(QpbmtBillingItem.toEntity(domain));
 	}
 
 	@Override
-	public void update(BillingItem domain) {
+	public void update(StatementItem domain) {
 		this.commandProxy().update(QpbmtBillingItem.toEntity(domain));
 	}
 

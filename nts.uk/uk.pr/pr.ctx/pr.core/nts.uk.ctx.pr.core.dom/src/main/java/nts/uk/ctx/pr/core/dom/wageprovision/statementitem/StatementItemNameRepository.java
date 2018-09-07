@@ -8,9 +8,9 @@ import java.util.Optional;
  */
 public interface StatementItemNameRepository {
 
-	List<StatementItemName> getAllSpecItemName();
+	List<StatementItemName> getAllStatementItemName();
 
-	Optional<StatementItemName> getSpecItemNameById(String cid, String salaryItemId);
+	Optional<StatementItemName> getStatementItemNameById(String cid, String salaryItemId);
 
 	void add(StatementItemName domain);
 

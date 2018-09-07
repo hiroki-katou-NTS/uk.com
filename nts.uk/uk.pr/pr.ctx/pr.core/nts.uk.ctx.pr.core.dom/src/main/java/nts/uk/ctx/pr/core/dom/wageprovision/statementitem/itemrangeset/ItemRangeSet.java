@@ -10,7 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * 項目範囲設定初期値
  */
 @Getter
-public class ItemRangeSettingInitialValue extends AggregateRoot {
+public class ItemRangeSet extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -37,7 +37,7 @@ public class ItemRangeSettingInitialValue extends AggregateRoot {
 	 */
 	private AlarmRangeSetting alarmRangeSetting;
 
-	public ItemRangeSettingInitialValue(String cid, String salaryItemId, int rangeValueAtr, int errorUpperLimitSetAtr,
+	public ItemRangeSet(String cid, String salaryItemId, int rangeValueAtr, int errorUpperLimitSetAtr,
 			BigDecimal errorUpRangeValAmount, Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum,
 			int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount, Integer errorLoRangeValTime,
 			BigDecimal errorLoRangeValNum, int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount,

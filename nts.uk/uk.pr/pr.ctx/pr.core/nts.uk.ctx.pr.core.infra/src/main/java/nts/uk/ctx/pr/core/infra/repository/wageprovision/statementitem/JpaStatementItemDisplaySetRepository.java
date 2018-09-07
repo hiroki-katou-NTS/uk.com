@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItem
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItemDispSetPk;
 
 @Stateless
-public class JpaSpecItemDispSetRepository extends JpaRepository implements StatementItemDisplaySetRepository
+public class JpaStatementItemDisplaySetRepository extends JpaRepository implements StatementItemDisplaySetRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecItemDispSet f";

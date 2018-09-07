@@ -7,12 +7,12 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemStRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.breakdownitemset.QpbmtBreakdownItemSt;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.breakdownitemset.QpbmtBreakdownItemStPk;
 
 @Stateless
-public class JpaBreakdownItemStRepository extends JpaRepository implements BreakdownItemStRepository {
+public class JpaBreakdownItemStRepository extends JpaRepository implements BreakdownItemSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBreakdownItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING

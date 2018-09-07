@@ -12,20 +12,20 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItem
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItemNamePk;
 
 @Stateless
-public class JpaSpecItemNameRepository extends JpaRepository implements StatementItemNameRepository
+public class JpaStatementItemNameRepository extends JpaRepository implements StatementItemNameRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecItemName f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specItemNamePk.cid =:cid AND  f.specItemNamePk.salaryItemId =:salaryItemId ";
 
     @Override
-    public List<StatementItemName> getAllSpecItemName(){
+    public List<StatementItemName> getAllStatementItemName(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSpecItemName.class)
                 .getList(item -> item.toDomain());
     }
 
     @Override
-    public Optional<StatementItemName> getSpecItemNameById(String cid, String salaryItemId){
+    public Optional<StatementItemName> getStatementItemNameById(String cid, String salaryItemId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSpecItemName.class)
         .setParameter("cid", cid)
         .setParameter("salaryItemId", salaryItemId)

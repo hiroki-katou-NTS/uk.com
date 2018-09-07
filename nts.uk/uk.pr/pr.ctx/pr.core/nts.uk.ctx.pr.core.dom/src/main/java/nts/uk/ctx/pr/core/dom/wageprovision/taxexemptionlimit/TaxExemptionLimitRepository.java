@@ -8,13 +8,13 @@ import java.util.Optional;
  * @author thanh.tq 非課税限度額の登録
  *
  */
-public interface TaxExemptLimitRepository {
+public interface TaxExemptionLimitRepository {
 
 	List<TaxExemptLimit> getAllTaxExemptLimit();
 
 	List<TaxExemptLimit> getTaxExemptLimitByCompanyId(String cid);
 
-	Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeamountCode);
+	Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeAmountCode);
 
 	void add(TaxExemptLimit domain);
 
