@@ -1289,14 +1289,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             let dfd = $.Deferred();
             service.loadRow(param).done((data) => {
-                self.showTighProcess(data.showTighProcess);
-                self.lstDomainEdit = data.domainOld;
-                self.lstDomainOld = _.cloneDeep(data.domainOld);
                 if (onlyLoadMonth) {
                     self.processFlex(data, true);
                     nts.uk.ui.block.clear();
                     return dfd.resolve();
                 }
+                self.showTighProcess(data.showTighProcess);
+                self.lstDomainEdit = data.domainOld;
+                self.lstDomainOld = _.cloneDeep(data.domainOld);
                 self.processFlex(data, true);
                 let dataSourceRow, dataSource, dataSourceNew, dataRowTemp = [];
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
