@@ -710,12 +710,10 @@ module kcp.share.tree {
                 }
             });
             
-            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selecteds) => {
-                if (self.isMultiSelect) {
-                    self.selectedWorkplaceIds(selecteds);
-                } else {
-                    self.selectedWorkplaceIds(selecteds[0]);
-                }
+            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selectedId) => {
+                // multiple-case: selectedId is an array
+                // single-case: selectedId is a string
+                self.selectedWorkplaceIds(selectedId);
             });
 
             self.selectedWorkplaceIds.subscribe(ids => {
