@@ -1090,9 +1090,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 startDate: moment.utc().format("YYYY/MM"),
                 endDate: moment.utc().format("YYYY/MM")    
                              });
-              self.checkFormatDate('2');  
-               console.log('giatricheckdate1:'+  self.checkFormatDate()); 
-                
+              self.checkFormatDate('2');               
                 }
             
             if(checkLogType==RECORD_TYPE.DATA_CORRECT && targetDataType===""){
@@ -1170,8 +1168,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
         */
         nextScreenI() {
             var self = this;
-            var paramtranfer = ko.observable(self.logTypeSelectedCode());
-            nts.uk.ui.windows.setShared("recordType", paramtranfer);
+            var paramRecordType = ko.observable(self.logTypeSelectedCode());
+            var paramDataType = ko.observable(self.dataTypeSelectedCode());
+            nts.uk.ui.windows.setShared("recordType", paramRecordType);
+            nts.uk.ui.windows.setShared("tarGetDataType", paramDataType);
             $('#contents-area').focus();           
             self.columnsIgAllGrid = ko.observableArray([]);          
             self.listLogBasicInforModel = [];
@@ -1182,11 +1182,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment.utc(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-                endDateTaget: moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+//                endDateTaget: moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
                 startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
                 endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
+            
+            if( self.checkFormatDate()==='2'){              
+                   paramLog.endDateTaget= moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
+                }else{                      
+                   paramLog.endDateTaget= moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();
+              //  moment().endOf('month');
+                }
             //fix itemNo
             let paramOutputItem = {
                 recordType: self.logTypeSelectedCode()
