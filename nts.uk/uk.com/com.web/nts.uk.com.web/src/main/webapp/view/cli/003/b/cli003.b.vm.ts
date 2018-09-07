@@ -493,11 +493,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-                endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+             //   endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
                 startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
                 endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
+              if( self.checkFormatDate()==='2'){              
+                   paramLog.endDateTaget= moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
+                }else{                      
+                   paramLog.endDateTaget= moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();           
+                }
             // set param for get parent header name
             let paramOutputItem = {
                 recordType: self.logTypeSelectedCode()
