@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
@@ -387,10 +385,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 
 	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
-		calced.stream().forEach(c -> {
-			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
-					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
-		});
+		registerCalcedService.addAndUpdate(calced);
+//		calced.stream().forEach(c -> {
+//			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+//					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
+//		});
 //		commands.stream().forEach(c -> {
 //			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
 //					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))

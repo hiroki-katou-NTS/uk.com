@@ -309,6 +309,34 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		}
 		return personCostCals;
 	}
+	
+	@Override
+	public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT b, c FROM KmlmtPersonCostCalculation a ");
+		query.append(" LEFT JOIN a.kmlstPremiumSets b ");
+		query.append(" LEFT JOIN b.kmldtPremiumAttendances c ");
+		query.append(" WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
+		query.append(" AND a.startDate <= :date AND a.endDate >= :date");
+		List<Object[]> entities = this.queryProxy().query(query.toString(), Object[].class)
+													.setParameter("companyID", companyID)
+													.setParameter("date", date).getList();
+		List<KmnmtPremiumItem> premiumItem = getPremiumItems(companyID);
+		List<PremiumSetting> premiumSettings = entities.stream().collect(Collectors.groupingBy(c -> (KmlstPremiumSet) c[0], Collectors.toList()))
+			.entrySet().stream().map(e -> {
+				List<KmldtPremiumAttendance> preAttendamce = e.getValue().stream().map(x -> (KmldtPremiumAttendance) x[1])
+						.filter(ps -> ps != null && ps.kmldpPremiumAttendancePK.historyID.equals(e.getKey().kmlspPremiumSet.historyID))
+						.distinct().collect(Collectors.toList());
+				return toDomainPremiumSetting(e.getKey(), premiumItem, preAttendamce);
+			}).collect(Collectors.toList());
+//		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
+//				.setParameter("companyID", companyID)
+//				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
+		if(CollectionUtil.isEmpty(premiumSettings)){
+			return null;
+		}
+		return premiumSettings;
+	}
 
 	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
 		try {
