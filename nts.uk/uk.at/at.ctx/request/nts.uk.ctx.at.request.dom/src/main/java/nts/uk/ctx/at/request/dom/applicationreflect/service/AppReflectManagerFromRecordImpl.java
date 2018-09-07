@@ -47,8 +47,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private AppReflectManager appRefMng;
 	@Inject
 	private GetClosureStartForEmployee getClosureStartForEmp;
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRegister;
+	
 	@Override
 	public ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
 		val dataSetter = asyncContext.getDataSetter();
@@ -131,10 +130,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			//データ更新
 			if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
-				//暫定データの登録
-				List<GeneralDate> lstDate = new ArrayList<>();
-				lstDate.add(appData.getAppDate());
-				interimRegister.registerDateChange(appData.getCompanyID(), appData.getEmployeeID(), lstDate);
+				
 				//状態確認
 				Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
 				//処理した社員の実行状況を「完了」にする

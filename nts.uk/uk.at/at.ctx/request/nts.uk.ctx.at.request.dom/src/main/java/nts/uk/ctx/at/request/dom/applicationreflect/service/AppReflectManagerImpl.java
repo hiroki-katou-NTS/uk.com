@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -47,6 +50,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplyTi
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.WorkScheduleReflectService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkRecordReflectService;
 
 @Stateless
@@ -71,6 +75,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private AbsenceLeaveAppRepository absenceLeaveRepo;
 	@Inject
 	private RecruitmentAppRepository recruitmentRepo;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRegister;
 	@Override
 	public ReflectResult reflectEmployeeOfApp(Application_New appInfor) {
 		ReflectResult outData = new ReflectResult(true, true);
@@ -189,8 +195,22 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		if(outData.isRecordResult()) {
 			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
-		}		
-		appRepo.updateWithVersion(appInfor);
+		}
+		if(outData.isRecordResult() || outData.isScheResult()) {
+			//暫定データの登録
+			List<GeneralDate> lstDate = new ArrayList<>();
+			if(appInfor.getStartDate().isPresent() && appInfor.getEndDate().isPresent()) {
+				for(int i = 0; appInfor.getStartDate().get().daysTo(appInfor.getEndDate().get()) - i >= 0; i++){
+					GeneralDate loopDate = appInfor.getStartDate().get().addDays(i);
+					lstDate.add(loopDate);
+				}
+			} else {
+				lstDate.add(appInfor.getAppDate());	
+			}			
+			interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);
+			appRepo.updateWithVersion(appInfor);
+		}
+		
 		return outData;
 	}
 	
