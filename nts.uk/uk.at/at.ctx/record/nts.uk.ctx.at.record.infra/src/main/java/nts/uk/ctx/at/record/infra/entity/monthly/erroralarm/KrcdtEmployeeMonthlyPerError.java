@@ -25,7 +25,7 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 	/**
 	 * フレックス: フレックスエラー
 	 */
-	@Column(name = "IS_LAST_DAY")
+	@Column(name = "FLEX")
 	public Integer flex;
 	/**
 	 * 年休: 年休エラー
@@ -46,10 +46,9 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, boolean update){
 	
 		if (!update) {
-			val key = new KrcdtEmployeeMonthlyPerErrorPK(domain.getErrorType().value, domain.getYearMonth().v(),
+			this.krcdtEmployeeMonthlyPerErrorPK =  new KrcdtEmployeeMonthlyPerErrorPK(domain.getErrorType().value, domain.getYearMonth().v(),
 					domain.getEmployeeID(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
 					domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
-			this.krcdtEmployeeMonthlyPerErrorPK = key;
 		}
 		
 		this.flex = domain.getFlex().isPresent() ? domain.getFlex().get().value : null;

@@ -4058,7 +4058,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         calc(): JQueryPromise<any> {
             let dfd = $.Deferred();
             let self = this;
-
+            $("#next-month").ntsError("clear");
             if ((__viewContext.vm.canFlex())) {
                 __viewContext.vm.valueUpdateMonth = {};
                 if (__viewContext.vm.itemMonth.length > 0) {
@@ -4106,7 +4106,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#next-month").ntsError("clear");
             } else {
                 $("#next-month").ntsError("clear");
-                _.foreach(lstError, value => {
+                _.forEach(lstError, value => {
                     $("#next-month").ntsError("set", value.message, value.messageId);
                 });
             }
