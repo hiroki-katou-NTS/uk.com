@@ -44,6 +44,7 @@ public class UpdateMonthAfterProcessDaily {
 			List<IntegrationOfDaily> domainDailyNew, Optional<IntegrationOfMonthly> monthlyWork, UpdateMonthDailyParam month) {
 		String companyId = AppContexts.user().companyId();
 		List<IntegrationOfMonthly> result = new ArrayList<>();
+		if (!monthlyWork.isPresent()){
 		List<Pair<String, GeneralDate>> lstDaily = commandNew.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getWorkDate())).collect(Collectors.toList());
 
@@ -66,7 +67,7 @@ public class UpdateMonthAfterProcessDaily {
 				});
 			}
 		});
-		
+		}
 		// insert domain month
 		if (!domainDailyNew.isEmpty()) {
 			updateAllDomainMonthService.insertUpdateAll(result);

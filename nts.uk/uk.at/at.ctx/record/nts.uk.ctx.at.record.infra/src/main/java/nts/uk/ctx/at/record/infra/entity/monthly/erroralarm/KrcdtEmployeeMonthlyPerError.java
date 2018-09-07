@@ -43,22 +43,19 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 		return krcdtEmployeeMonthlyPerErrorPK;
 	}
 
-	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, Optional<KrcdtEmployeeMonthlyPerErrorPK> entityKey){
-		
-		KrcdtEmployeeMonthlyPerError entity = new KrcdtEmployeeMonthlyPerError();
-		if (!entityKey.isPresent()) {
+	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, boolean update){
+	
+		if (!update) {
 			val key = new KrcdtEmployeeMonthlyPerErrorPK(domain.getErrorType().value, domain.getYearMonth().v(),
 					domain.getEmployeeID(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
-					(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
-			entity.krcdtEmployeeMonthlyPerErrorPK = key;
-
-		}else{
-			entity.krcdtEmployeeMonthlyPerErrorPK = entityKey.get();
+					domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
+			this.krcdtEmployeeMonthlyPerErrorPK = key;
 		}
-		entity.flex = domain.getFlex().isPresent() ? domain.getFlex().get().value : null;
-		entity.annualHoliday = domain.getAnnualHoliday().isPresent() ? domain.getAnnualHoliday().get().value : null;
-		entity.yearlyReserved = domain.getYearlyReserved().isPresent() ? domain.getYearlyReserved().get().value : null;
 		
-		return entity;
+		this.flex = domain.getFlex().isPresent() ? domain.getFlex().get().value : null;
+		this.annualHoliday = domain.getAnnualHoliday().isPresent() ? domain.getAnnualHoliday().get().value : null;
+		this.yearlyReserved = domain.getYearlyReserved().isPresent() ? domain.getYearlyReserved().get().value : null;
+		
+		return this;
 	}
 }
