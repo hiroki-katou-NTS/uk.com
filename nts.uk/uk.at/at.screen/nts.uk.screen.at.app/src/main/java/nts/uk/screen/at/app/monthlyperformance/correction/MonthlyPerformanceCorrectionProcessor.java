@@ -150,6 +150,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	/** 月次の勤怠項目の制御 */
 	@Inject
 	private ControlOfMonthlyFinder controlOfMonthlyFinder;
+	
 	private static final String STATE_DISABLE = "mgrid-disable";
 	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
@@ -381,13 +382,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 				ApprovalProcessingUseSetting approvalProcessingUseSetting = optApprovalProcessingUseSetting.get();
 				if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
 					 //アルゴリズム「ログイン社員の承認対象者の取得」を実行する	
-					
 					//Imported（就業）「基準社員の承認対象者」を取得する request list 133
-					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyee(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+					
 					if(approvalRootOfEmloyee==null){
 						throw new BusinessException("Msg_916");
 					}
-					
 					
 					//社員(list)に対応する処理締めを取得する
 					List<ApprovalRootSituation> approvalRootSituations = approvalRootOfEmloyee.getApprovalRootSituations();
@@ -401,7 +401,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 					if(lstClosureEmployeeOutput.isEmpty()){
 						throw new BusinessException("Msg_916");
 					}
-					
 					
 					List<String> employeeIds = lstClosureEmployeeOutput.stream().map(x->{
 						return x.getEmployeeId();
@@ -689,22 +688,26 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//get data approve
 		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate =null;
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee =null;
-		if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
-			if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){
-				//*10 request list 155
-				 approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(Arrays.asList(screenDto.getSelectedActualTime().getEndDate()), listEmployeeIds, Integer.valueOf(2));
-			}else if(param.getInitMenuMode()==2){
-				//*8 request list 133
-				 approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyee(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
+			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
+				// *10 request list 155
+				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter
+						.getApprovalByListEmplAndListApprovalRecordDateNew(
+								Arrays.asList(screenDto.getSelectedActualTime().getEndDate()), listEmployeeIds,
+								Integer.valueOf(2));
+			} else if (param.getInitMenuMode() == 2) {
+				// *8 request list 133
+				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(
+						screenDto.getSelectedActualTime().getStartDate(),
+						screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId,
+						Integer.valueOf(2));
 			}
-			
 		}
 		
 
 		/**
 		 * Get Data
 		 */
-
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream()
 				.collect(Collectors.toList());
