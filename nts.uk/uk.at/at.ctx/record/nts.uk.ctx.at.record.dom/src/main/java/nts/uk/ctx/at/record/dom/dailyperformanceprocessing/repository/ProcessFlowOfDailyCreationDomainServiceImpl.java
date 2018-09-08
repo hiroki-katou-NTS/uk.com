@@ -162,7 +162,11 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		//承認反映
 		if(finalStatus == ProcessState.SUCCESS
 				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			
 			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
 		}
 		
 		//***** ↑
