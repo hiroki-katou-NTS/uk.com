@@ -210,7 +210,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
-			closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			if(param.getClosureId() == null){
+				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			} else {
+				closureId = param.getClosureId();
+			}
 			screenDto.setClosureId(closureId);
 			
 			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
@@ -291,7 +295,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
-			 closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			if(param.getClosureId() == null){
+				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			} else {
+				closureId = param.getClosureId();
+			}
 			screenDto.setClosureId(closureId);
 			
 			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.

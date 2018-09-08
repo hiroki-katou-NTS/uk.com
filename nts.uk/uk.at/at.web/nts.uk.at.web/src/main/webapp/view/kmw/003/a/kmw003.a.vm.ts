@@ -131,7 +131,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 dispItems: [],
                 correctionOfMonthly: null,
                 errorCodes: [],
-                lstLockStatus: []
+                lstLockStatus: [],
+                closureId: null
             });
             
             self.reloadParam({
@@ -375,20 +376,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         * Initialize Screen 
         **********************************/
         initScreen(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-                nts.uk.ui.block.grayout();
+            nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
             service.startScreen(self.monthlyParam()).done((data) => {
-                if(data.selectedClosure){
-                let closureInfoArray = []
-                  closureInfoArray = _.map(data.lstclosureInfoOuput, function(item: any) {
-                return { code: item.closureName, name: item.closureId };
-                });
-                //self.closureInfoItems(closureInfoArray);
-                self.selectedClosure(data.selectedClosure);
+                if (data.selectedClosure) {
+                    let closureInfoArray = []
+                    closureInfoArray = _.map(data.lstclosureInfoOuput, function(item: any) {
+                        return { code: item.closureName, name: item.closureId };
+                    });
+                    //self.closureInfoItems(closureInfoArray);
+                    self.selectedClosure(data.selectedClosure);
                 }
                 self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
@@ -441,13 +442,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                     //Open KDM003C to select format code
                     self.displayItem().done((x) => {
-                     dfd.resolve();
-                }).fail(function(error) {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                    nts.uk.request.jumpToTopPage();
-                });
-                dfd.reject();
-                });
+                        dfd.resolve();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.request.jumpToTopPage();
+                        });
+                        dfd.reject();
+                    });
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
@@ -725,6 +726,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             //let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
+//            self.monthlyParam().initMenuMode = self.initMode();
+            self.monthlyParam().closureId = self.closureId();
             self.monthlyParam().yearMonth = date;
             self.monthlyParam().lstEmployees = self.lstEmployee();
             
@@ -833,21 +836,16 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
-                    nts.uk.ui.block.invisible();
-                    nts.uk.ui.block.grayout();
+                    self.closureId(dataList.closureId);
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen                    
-                    nts.uk.ui.errors.clearAllGridErrors();
-                    if($("#dpGrid").data('mGrid')) {
-                        $("#dpGrid").mGrid("destroy");
-                        $("#dpGrid").off();
-                    }
-                    self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();                    
-                    $.when(self.initScreen()).done((processDate) => {
-                          nts.uk.ui.block.clear();
-                    });
-//                    self.updateDate(self.yearMonth());
+                    let yearMonthNew: any = +moment.utc(dataList.periodEnd, 'YYYYMMDD').format('YYYYMM'),
+                        yearMonthOld = self.yearMonth();
+                    self.yearMonth(yearMonthNew);
+                    if(yearMonthNew == yearMonthOld){
+                        self.yearMonth.valueHasMutated();                        
+                    }
                 },
             }
         };
@@ -866,10 +864,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
            // self.actualTimeSelectedCode.subscribe(code => {
             //   dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
            // });
-           // $("#dpGrid").mGrid({
 
-            //$("#dpGrid").mGrid({
-                new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
+            new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
                 headerHeight: '50px',
@@ -893,8 +889,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
-           //});
-                }).create();
+            }).create();
         };
         /**********************************
         * Grid Data Setting 
@@ -1778,6 +1773,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         //Optional
         //日付別で起動
         dateTarget: any;
+        
         individualTarget: any;
 
         constructor(displayFormat, startDate, endDate, lstExtractedEmployee, individualTarget) {
