@@ -239,42 +239,53 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	}
 
 	// algorithm for screen D: start screen
-	public List<MonthlyDataInforReturnDto> getFormatMonthlyPerformance() {
+	public MonthlyPerformanceDataReturnDto getFormatMonthlyPerformance() {
 		String companyId = AppContexts.user().companyId();
-		// Get domain 実績修正画面で利用するフォーマット from request list 402
+		// Get domain from request list 402 ドメインモデル「実績修正画面で利用するフォーマット」を取得する
+		MonthlyPerformanceDataReturnDto dto = new MonthlyPerformanceDataReturnDto();
+		
 		Optional<MonthlyFormatPerformanceImport> optFormatPerformanceImport = monthlyFormatPerformanceAdapter
 				.getFormatPerformance(companyId);
 
 		if (!optFormatPerformanceImport.isPresent()) {
-			return new ArrayList<>();
+			dto.setSettingUnitType("Unknown");
+			dto.setListItems(new ArrayList<>());
+			return dto;
 		}
+
 		switch (optFormatPerformanceImport.get().getSettingUnitType()) {
 		case AUTHORITY: // In case of authority
-			// Get domain 会社の月別実績の修正のフォーマット
+			dto.setSettingUnitType("権限");
+			// Get domain ドメインモデル「会社の月別実績の修正のフォーマット」を取得する
 			List<MonPfmCorrectionFormat> lstMonPfmCorrectionFormat = monPfmCorrectionFormatRepository
 					.getAllMonPfm(companyId);
-			return lstMonPfmCorrectionFormat.stream().map(obj -> {
+			dto.setListItems(lstMonPfmCorrectionFormat.stream().map(obj -> {
 				return new MonthlyDataInforReturnDto(obj.getMonthlyPfmFormatCode().v(),
 						obj.getMonPfmCorrectionFormatName().v());
-			}).collect(Collectors.toList());
+			}).collect(Collectors.toList()));
+			break;
 		case BUSINESS_TYPE: // In case of work type
-			// Get domain 勤務種別月別実績の修正のフォーマット
-			List<BusinessTypeFormatMonthly> lstBusinessTypeFormatMonthly = businessTypeFormatMonthlyRepository
-					.getMonthlyDetailByCompanyId(companyId);
-			Set<String> setBusinessTypeFormatMonthlyCode = lstBusinessTypeFormatMonthly.stream()
+			dto.setSettingUnitType("勤務種別");
+			// Get domain ドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
+			List<MonthlyRecordWorkType> lstMonthlyRecordWorkType = monthlyRecordWorkTypeRepository
+					.getAllMonthlyRecordWorkType(companyId);
+			Set<String> setBusinessTypeFormatMonthlyCode = lstMonthlyRecordWorkType.stream()
 					.map(domain -> domain.getBusinessTypeCode().v()).collect(Collectors.toSet());
 
 			// Get domain businessTypeCode ドメインモデル「勤務種別」を取得する
 			List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
 
-			return lstBusinessType.stream()
+			dto.setListItems(lstBusinessType.stream()
 					.filter(domain -> setBusinessTypeFormatMonthlyCode.contains(domain.getBusinessTypeCode().v()))
 					.map(domain -> new MonthlyDataInforReturnDto(domain.getBusinessTypeCode().v(),
 							domain.getBusinessTypeName().v()))
-					.collect(Collectors.toList());
+					.collect(Collectors.toList()));
+			break;
 		default:
-			return new ArrayList<>();
+			dto.setSettingUnitType("Unknown");
+			dto.setListItems(new ArrayList<>());
 		}
+		return dto;
 	}
 
 	// algorithm for screen D: copy

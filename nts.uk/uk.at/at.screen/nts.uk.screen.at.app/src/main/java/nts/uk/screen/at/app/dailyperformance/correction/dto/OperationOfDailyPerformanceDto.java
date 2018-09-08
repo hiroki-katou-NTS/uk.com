@@ -14,4 +14,6 @@ public class OperationOfDailyPerformanceDto {
 	private SettingUnitType settingUnit;
 	
 	private String comment;
+	
+	private boolean showError;
 }

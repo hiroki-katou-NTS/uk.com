@@ -15,6 +15,12 @@
 						<td><div id="E1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_10')}</div></td>
 						<td><span id="E1_3" data-bind="text: logTypeSelectedName"/></td>
 					</tr>
+					<com:ko-if bind="logTypeSelectedCode() === '6'">
+						<tr>
+							<td><div id="E1_12" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_67')}</div></td>
+							<td><span id="E1_13" data-bind="text: tarGetDataTypeSelectedName"/></td>
+						</tr>
+					</com:ko-if>
 					<com:ko-if bind="(isDisplayTarget() == true)">
 						<tr>
 							<td><div id="E1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_15')}</div></td>

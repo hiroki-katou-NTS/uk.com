@@ -88,7 +88,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 			dataSetting.setDutiesMulti(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting);
+		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting,ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		dataSetting.setWorkingData(workingData);
 		
 		return dataSetting;

@@ -33,6 +33,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
@@ -83,6 +85,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private DisplayReasonRepository displayRep;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
+	@Inject
+	private HdAppSetRepository repoHdAppSet;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
@@ -248,8 +252,51 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 			}
 		}
 		//No.376
+		//hoatt - QA#100286
+		//ドメインモデル「休暇申請設定」を取得する(lấy domain 「休暇申請設定」)
+		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
+		/**	・代休チェック区分 */
+		boolean chkSubHoliday = false;
+		/**	・振休チェック区分 */
+		boolean chkPause = false;
+		/**	・年休チェック区分 */
+		boolean chkAnnual = false;
+		/**	・積休チェック区分 */
+		boolean chkFundingAnnual = false;
+		/**	・特休チェック区分 */
+		boolean chkSpecial = true;
+		/**	・公休チェック区分 */
+		boolean chkPublicHoliday = false;
+		/**	・超休チェック区分 */
+		boolean chkSuperBreak = true;
+		if(hdAppSet.isPresent()){
+			HdAppSet hdSet = hdAppSet.get();
+			chkSubHoliday = hdSet.getRegisShortLostHd().value == 0 ? true : false;//休暇申請設定．代休残数不足登録できる
+			chkPause = hdSet.getRegisInsuff().value == 0 ? true : false;//休暇申請設定．振休残数不足登録できる
+			chkAnnual = hdSet.getRegisNumYear().value == 0 ? true : false;//休暇申請設定．年休残数不足登録できる
+			chkFundingAnnual = hdSet.getRegisShortReser().value == 0 ? true : false;//休暇申請設定．積立年休残数不足登録できる
+			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 0 ? true : false;//休暇申請設定．公休残数不足登録できる
+		}
 		//登録時の残数チェック
 		/** ・登録対象一覧 :	申請(List) */
+		//＜INPUT＞
+//		・会社ID＝ログイン会社ID
+//		・社員ID＝申請者社員ID
+//		・集計開始日＝申請開始日
+//		・集計終了日＝申請開始日＋２年
+//		・モード＝その他モード
+//		・基準日＝申請開始日
+//		・登録期間の開始日＝申請開始日
+//		・登録期間の終了日＝申請終了日
+//		・登録対象区分＝申請
+//		・登録対象一覧＝申請データ
+//		・代休チェック区分＝（休暇申請設定．代休残数不足登録できる＝false）
+//		・振休チェック区分＝（休暇申請設定．振休残数不足登録できる＝false）
+//		・年休チェック区分＝（休暇申請設定．年休残数不足登録できる＝false）
+//		・積休チェック区分＝（休暇申請設定．積立年休残数不足登録できる＝false）
+//		・特休チェック区分＝true
+//		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
+//		・超休チェック区分＝true
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
 		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDate.today(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
@@ -259,7 +306,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				Optional.empty(), Optional.empty(), Optional.empty()));
 		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
 				new DatePeriod(startDate, startDate.addYears(2)), false, startDate, new DatePeriod(startDate, endDate),
-				true, new ArrayList<>(), new ArrayList<>(), appData, false, false, false, false, true, false, true);
+				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,
+				chkSpecial, chkPublicHoliday, chkSuperBreak);
 		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
 		//EA.2577
 		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）

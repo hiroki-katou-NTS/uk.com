@@ -17,19 +17,19 @@ public interface MasterCopyCategoryGetMemento {
 	 *
 	 * @return the master copy id
 	 */
-	String getMasterCopyId();
+	MasterCopyCategoryNo getCategoryNo();
 
 	/**
 	 * Gets the master copy category.
 	 *
 	 * @return the master copy category
 	 */
-	MasterCopyCategoryName getMasterCopyCategory();
+	MasterCopyCategoryName getCategoryName();
 
 	/**
 	 * Gets the order.
 	 *
 	 * @return the order
 	 */
-	Integer getOrder();
+	MasterCopyCategoryOrder getOrder();
 }

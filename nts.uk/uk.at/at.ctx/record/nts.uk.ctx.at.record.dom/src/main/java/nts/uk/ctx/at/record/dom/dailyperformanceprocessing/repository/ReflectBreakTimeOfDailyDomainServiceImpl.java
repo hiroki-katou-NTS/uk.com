@@ -277,39 +277,40 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			} else {
 				weekdayHolidayClassification = "休日";
 			}
-			Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
-					WorkInfo.getRecordInfo().getWorkTimeCode().v());
-			WorkTimeSetting workTimeSetting = WorkTimeSettingOptional.get();
-			// WorkTimeDailyAtr = 通常勤務・変形労働用
-			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
+			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
+				Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
+						WorkInfo.getRecordInfo().getWorkTimeCode().v());
+				WorkTimeSetting workTimeSetting = WorkTimeSettingOptional.get();
+				// WorkTimeDailyAtr = 通常勤務・変形労働用
+				if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
 
-				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
-				case 0:// 固定勤務
-					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
+					switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
+					case 0:// 固定勤務
+						checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
+								WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut, checkWorkDay);
+						break;
+					case 2:// 流動勤務
+						checkReflect = this.confirmIntermissionTimeZone(companyId, weekdayHolidayClassification,
+								WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
+
+						break;
+					case 1:// 時差勤務
+						checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, employeeID, processingDate,
+								empCalAndSumExecLogID, weekdayHolidayClassification, WorkInfo, breakTimeZoneSettingOutPut,
+								checkWorkDay);
+						break;
+
+					default:
+						checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
+								WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut, checkWorkDay);
+						break;
+					}
+
+				} else {
+					checkReflect = this.confirmInterFlexWorkSetting(companyId, weekdayHolidayClassification,
 							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut, checkWorkDay);
-					break;
-				case 2:// 流動勤務
-					checkReflect = this.confirmIntermissionTimeZone(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
-
-					break;
-				case 1:// 時差勤務
-					checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, employeeID, processingDate,
-							empCalAndSumExecLogID, weekdayHolidayClassification, WorkInfo, breakTimeZoneSettingOutPut,
-							checkWorkDay);
-					break;
-
-				default:
-					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut, checkWorkDay);
-					break;
-				}
-
-			} else {
-				checkReflect = this.confirmInterFlexWorkSetting(companyId, weekdayHolidayClassification,
-						WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut, checkWorkDay);
+				}				
 			}
-
 		}
 
 		return checkReflect;

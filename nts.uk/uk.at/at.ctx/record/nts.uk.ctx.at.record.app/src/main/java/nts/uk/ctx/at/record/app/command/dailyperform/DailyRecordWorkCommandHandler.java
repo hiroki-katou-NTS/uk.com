@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
@@ -35,10 +34,14 @@ import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAt
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.CheckPairDeviationReason;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthAfterProcessDaily;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
@@ -61,10 +64,10 @@ import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
@@ -275,6 +278,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private AdTimeAndAnyItemAdUpService registerCalcedService;
 	
+	@Inject
+	private UpdateMonthAfterProcessDaily updateMonthAfterProcessDaily;
+	
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
@@ -307,9 +313,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 
 	// fix response
-	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
-			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems) {
-		return handlerRes(commandNew, commandOld, dailyItems, true);
+	public List<DPItemValueRC> handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,  UpdateMonthDailyParam month) {
+		return handlerRes(commandNew, commandOld, dailyItems, true, month);
+	}
+	
+	// fix response
+	public RCDailyCorrectionResult handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode) {
+		return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month, mode);
 	}
 		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
@@ -333,12 +345,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return items;
 	}
 	
-	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerRes(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate) {
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerRes(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+		long time = System.currentTimeMillis();
 		//remove  domain error
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
 		//merge item is edited into old domain  
 		///domainOld
-		List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
 		///domainNew
 		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
 		//TODO insert before <=> domain event
@@ -359,6 +372,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
+		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth(), month);
+		
+		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
@@ -377,43 +393,101 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		return items;
 	}
-
-	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
-		calced.stream().forEach(c -> {
-			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
-					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
-		});
-//		commands.stream().forEach(c -> {
-//			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-//					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-//			.findFirst().ifPresent(d -> {
-//				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
-//					T command = (T) c.getCommand(layout);
-//					Object updatedD = getDomain(layout, d);
-//					if(updatedD != null){
-//						updateCommandData(command, updatedD);
-//						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-//						if(handler != null){
-//							handler.handle(command);
-//						}
-//					}
-//				});
-//				
-//			});
-//		});
+	
+	private <T extends DailyWorkCommonCommand> RCDailyCorrectionResult handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+		long time = System.currentTimeMillis();
+		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 	
+		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
+		if(month == null || !month.getDomainMonth().isPresent()){
+		//remove  domain error
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
+		//merge item is edited into old domain  
+		///domainOld
+		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		///domainNew
+		//TODO insert before <=> domain event
+//		List<DailyRecordWorkCommand> commandNewAfter =  dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
+		
+		domainDailyNew = convertToDomain(commandNew);
+		
+		//caculator
+		domainDailyNew = calcService.calculate(domainDailyNew);
+		//TODO update data
+		registerNotCalcDomain(commandNew, isUpdate);
+		updateDomainAfterCalc(domainDailyNew);
+		
+		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		
+		}
+		if (mode == 0) {
+			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, month == null ? domainDailyNew : Collections.emptyList(),
+					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(), month);
+		}
+		//get error after caculator
+//        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
+//		if(!items.isEmpty()){
+//			return items;
+//		}
+		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					Map<String, List<GeneralDate>> mapSidDate = commandOld.stream()
+							.collect(Collectors.groupingBy(x -> x.getEmployeeId(),
+									Collectors.collectingAndThen(Collectors.toList(),
+											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
+					List<DailyRecordDto> dtos = finder.find(mapSidDate);
+					List<DailyItemValue> dailyItemNews = dtos.stream()
+							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
+									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
+							.collect(Collectors.toList());
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+				});
+		executorService.submit(task);
+		
+		return new RCDailyCorrectionResult(domainDailyNew, lstMonthDomain);
 	}
 	
-	@SuppressWarnings({ "unchecked" })
-	private <T extends DailyWorkCommonCommand> void registerAllCommand(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
-		commands.stream().forEach(c -> {
-			c.getAvailableLayout().stream().forEach(layout -> {
-				T command = (T) c.getCommand(layout);
-				CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-				if(handler != null){
-					handler.handle(command);
-				}
-			});
-		});
+	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+		
+		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
+		
+		registerNotCalcDomain(commandNew, isUpdate);
+		
+		updateDomainAfterCalc(domainDailyNew);
+		
+		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		
+		if (mode == 0) {
+			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+					month == null ? Optional.empty() : month.getDomainMonth(), month);
+		}
+		
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					Map<String, List<GeneralDate>> mapSidDate = commandOld.stream()
+							.collect(Collectors.groupingBy(x -> x.getEmployeeId(),
+									Collectors.collectingAndThen(Collectors.toList(),
+											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
+					List<DailyRecordDto> dtos = finder.find(mapSidDate);
+					List<DailyItemValue> dailyItemNews = dtos.stream()
+							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
+									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
+							.collect(Collectors.toList());
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+				});
+		executorService.submit(task);
+	}
+
+	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
+		registerCalcedService.addAndUpdate(calced);
+		//calced.stream().forEach(c -> {
+		//	registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+		//			c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
+		//});
 	}
 
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
@@ -451,13 +525,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 					if(handler != null){
 						handler.handle((T) command.getCommand(layout));
 					}
-//				if(mapped.contains(layout)){
-//					FinderFacade cFinder = finder.getFinder(layout);
-//					if(cFinder != null){
-//						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
-//						updateCommandData(command.getCommand(layout), updatedD);
-//					}
-//				}
 			});
 		});
 	}
@@ -472,16 +539,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	private List<IntegrationOfDaily> calcIfNeed(List<DailyRecordWorkCommand> commands){
 		return calcService.calculate(commands.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
-	}
-
-	private <T extends DailyWorkCommonCommand> void updateCommandData(T command, Object updatedD) {
-		if(ConvertHelper.isCollection(updatedD)){
-			command.updateDatas((List<?>) updatedD);
-		} else if (ConvertHelper.isOptional(updatedD)) {
-			command.updateDataO((Optional<?>) updatedD);
-		} else {
-			command.updateData(updatedD);
-		}
 	}
 	
 	private CommandFacade<?> getHandler(String layout, boolean isUpdate) {
@@ -520,47 +577,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
 		case DAILY_REMARKS_CODE:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
-		default:
-			return null;
-		}
-	}
-
-	private Object getDomain(String layout, IntegrationOfDaily d) {
-		switch (layout) {
-		case DAILY_WORK_INFO_CODE:
-			return d.getWorkInformation();
-		case DAILY_CALCULATION_ATTR_CODE:
-			return d.getCalAttr();
-		case DAILY_AFFILIATION_INFO_CODE:
-			return d.getAffiliationInfor();
-		case DAILY_BUSINESS_TYPE_CODE:
-			return d.getBusinessType();
-		case DAILY_OUTING_TIME_CODE:
-			return d.getOutingTime();
-		case DAILY_BREAK_TIME_CODE:
-			return d.getBreakTime();
-		case DAILY_ATTENDANCE_TIME_CODE:
-			return d.getAttendanceTimeOfDailyPerformance();
-		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
-			return d.getAttendancetimeByWork();
-		case DAILY_ATTENDACE_LEAVE_CODE:
-			return d.getAttendanceLeave();
-		case DAILY_SHORT_TIME_CODE:
-			return d.getShortTime();
-		case DAILY_SPECIFIC_DATE_ATTR_CODE:
-			return d.getSpecDateAttr();
-		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
-			return d.getAttendanceLeavingGate();
-		case DAILY_OPTIONAL_ITEM_CODE:
-			return d.getAnyItemValue();
-		case DAILY_EDIT_STATE_CODE:
-			return d.getEditState();
-		case DAILY_TEMPORARY_TIME_CODE:
-			return d.getTempTime();
-		case DAILY_PC_LOG_INFO_CODE:
-			return d.getPcLogOnInfo();
-		case DAILY_REMARKS_CODE:
-			return null;
 		default:
 			return null;
 		}
