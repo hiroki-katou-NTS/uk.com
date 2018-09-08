@@ -98,9 +98,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
             return !!self.selectVer27() && isUpdate();
         });
-
+        textKAF022_285 : KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
+            
+            // get text KAF022_285
+            self.textKAF022_285(nts.uk.resource.getText("KAF022_285") + "("
+                        + nts.uk.text.getCharType('Memo').viewName +
+                        + __viewContext.primitiveValueConstraints.Memo.maxLength/2
+                        + "文字)");
 
             _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
