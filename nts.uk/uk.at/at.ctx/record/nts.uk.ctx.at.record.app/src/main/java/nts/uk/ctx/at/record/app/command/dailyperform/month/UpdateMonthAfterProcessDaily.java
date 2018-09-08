@@ -69,8 +69,12 @@ public class UpdateMonthAfterProcessDaily {
 		});
 		}
 		// insert domain month
+		for(IntegrationOfMonthly monthResult : result){
+			if(!monthResult.getEmployeeMonthlyPerErrorList().isEmpty()) return result;
+		}
+		
 		if (!domainDailyNew.isEmpty()) {
-			updateAllDomainMonthService.insertUpdateAll(result);
+			//updateAllDomainMonthService.insertUpdateAll(result);
 		} else if (monthlyWork.isPresent()) {
 			List<IntegrationOfDaily> domainDailyGroupEmp = commandNew.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 			long time = System.currentTimeMillis();
@@ -79,7 +83,8 @@ public class UpdateMonthAfterProcessDaily {
 					monthlyWork);
 			result.add(monthDomainOpt.get());
 			System.out.println("tg tinh toan thang : "+ (System.currentTimeMillis() - time));
-			updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
+			if(!monthDomainOpt.get().getEmployeeMonthlyPerErrorList().isEmpty()) return result;
+			//updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
 		}
 		
 		return result;

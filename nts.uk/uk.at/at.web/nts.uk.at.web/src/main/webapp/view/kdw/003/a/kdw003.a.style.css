@@ -288,6 +288,7 @@
 
 #agree-time, #agree-excess {
 	height: inherit;
+	text-align: center;
 }
 
 .state-exception {
