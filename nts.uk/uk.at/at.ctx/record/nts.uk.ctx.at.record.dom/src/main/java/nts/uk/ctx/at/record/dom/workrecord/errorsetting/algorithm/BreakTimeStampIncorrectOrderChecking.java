@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -28,10 +29,12 @@ public class BreakTimeStampIncorrectOrderChecking {
 		// .findByKey(employeeId, processingDate);
 		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
 
-			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
+			List<BreakTimeSheet> newBreakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
 
-			breakTimeSheets.sort((e1, e2) -> (e1.getStartTime() != null ? e1.getStartTime().v() : Integer.valueOf(0))
-					.compareTo(e2.getStartTime() != null ? e2.getStartTime().v() : Integer.valueOf(0)));
+			List<BreakTimeSheet> breakTimeSheets = newBreakTimeSheets.stream()
+					.filter(item -> item.getStartTime() != null).collect(Collectors.toList());
+
+			breakTimeSheets.sort((e1, e2) -> (e1.getStartTime().v().compareTo(e2.getStartTime().v())));
 
 			int breakFrameNo = 1;
 			for (BreakTimeSheet item : breakTimeSheets) {
