@@ -76,7 +76,7 @@ public class JpaExecutionLogRepository extends JpaRepository implements Executio
 		Optional<KrcdtExecutionLog> monthlyLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 3).findFirst();
 
 		if (createLog.isPresent()) {
-			createLog.get().executionEndDate = executionStartDate;
+			createLog.get().executionStartDate = executionStartDate;
 			createLog.get().executionEndDate = executionEndDate;
 			
 			this.commandProxy().update(createLog.get());
