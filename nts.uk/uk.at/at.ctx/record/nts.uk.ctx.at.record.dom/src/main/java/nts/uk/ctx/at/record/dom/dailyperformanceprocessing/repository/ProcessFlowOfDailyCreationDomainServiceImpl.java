@@ -171,6 +171,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		// 就業計算と集計実行ログ．実行状況　←　実行中止
 		if (finalStatus == ProcessState.INTERRUPTION) {
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
+			asyncContext.finishedAsCancelled();
 		} else {
 			// 完了処理 (Xử lý hoàn thành)
 			List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
