@@ -34,7 +34,16 @@ public class StatementItemDataFinder {
 	@Inject
 	private TaxExemptionLimitRepository taxExemptionLimitRepository;
 
-	// アルゴリズム「選択処理」
+	/**
+	 * アルゴリズム「選択処理」
+	 * 
+	 * @param カテゴリ区分 categoryAtr
+	 * @param 項目名コード itemNameCd
+	 * @param 給与項目ID salaryItemId
+	 * @param 内訳項目コード breakdownItemCode
+	 * @param 非課税限度額コード taxFreeAmountCode
+	 * @return
+	 */
 	public StatementItemDataDto getStatementItemData(int categoryAtr, int itemNameCd, String salaryItemId,
 			Integer breakdownItemCode, String taxFreeAmountCode) {
 		StatementItemDto statementItem = null;
