@@ -447,7 +447,11 @@ module kcp.share.list {
 
                 // setup event
                 self.initEvent();
-
+                
+                //re-set selectedCodes
+                const gridList = $('#' + self.componentGridId);
+                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                
                 // set focus if parent screen has no focus
                 if (document.activeElement.tagName == 'BODY') {
                     _.defer(() => $('#' + self.searchBoxId + ' .ntsSearchBox').focus());
