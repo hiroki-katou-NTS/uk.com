@@ -43,7 +43,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         showProfileIcon: KnockoutObservable<boolean> = ko.observable(false);
         //ccg001 component: search employee
         ccg001: any;
-        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+        yearMonthCcg001: KnockoutObservable<string> = ko.observable();
         lstEmployee: KnockoutObservableArray<any> = ko.observableArray([]);
         displayFormat: KnockoutObservable<number> = ko.observable(null);
         lstDate: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -56,8 +56,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         //A13_1 コメント
         comment: KnockoutObservable<string> = ko.observable('');
         closureName: KnockoutObservable<string> = ko.observable('');
-        // date ranger component
-        dateRanger: KnockoutObservable<any> = ko.observable(null);
         showButton: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
         employmentCode: KnockoutObservable<any> = ko.observable("");
         editValue: KnockoutObservableArray<InfoCellEdit> = ko.observableArray([]);
@@ -159,6 +157,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.updateActualTime();
             });
             self.yearMonth.subscribe(value => {
+                self.yearMonthCcg001(moment.utc(value, 'YYYYMM').format('YYYY/MM'));
                 //期間を変更する
                 if (nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen())
                     self.updateDate(value);
@@ -801,9 +800,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 periodFormatYM: true, // 対象期間精度
 
                 /** Required parameter */
-                //baseDate: self.baseDate().toISOString(), // 基準日
-                //periodStartDate: new Date(self.dateRanger().startDate).toISOString(), // 対象期間開始日
-                //periodEndDate: new Date(self.dateRanger().endDate).toISOString(), // 対象期間終了日
+                periodStartDate: self.yearMonthCcg001(), // 対象期間開始日
+                periodEndDate: self.yearMonthCcg001(), // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
@@ -941,7 +939,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     employmentCode: data.employmentCode,
                     identify: data.identify,
                     approval: data.approval,
-                    dailyConfirm: data.dailyConfirm,
+                    dailyconfirm: data.dailyConfirm,
                     dailyCorrectPerformance: data.dailyCorrectPerformance,
                     typeGroup: data.typeGroup,
                     startDate: self.actualTimeSelectedDat().startDate,
@@ -1401,7 +1399,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         signAll() {
             let self = this;
             $("#dpGrid").mGrid("checkAll", "identify");
-            $("#dpGrid").mGrid("checkAll", "dailyconfirm");
         }
         /**
          * UnCheck all CheckBox
@@ -1409,7 +1406,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         releaseAll() {
             let self = this;
             $("#dpGrid").mGrid("uncheckAll", "identify");
-            $("#dpGrid").mGrid("uncheckAll", "dailyconfirm");
         }
         /**
          * ロック解除ボタン　クリック
