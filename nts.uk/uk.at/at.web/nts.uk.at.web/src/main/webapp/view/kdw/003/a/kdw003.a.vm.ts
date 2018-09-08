@@ -237,30 +237,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
                 if (!self.loadFirst) {
-                    let headerText;
                     self.characteristics.showNumberHeader = val;
                     character.save('characterKdw003a', self.characteristics);
-                    _.each(self.optionalHeader, header => {
-                        if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
-                            if (header.group == undefined && header.group == null) {
-                                if (self.showHeaderNumber()) {
-                                    headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                                    $("#dpGrid").mGrid("headerText", header.key, headerText, false);
-                                } else {
-                                    headerText = header.headerText.split(" ")[0];
-                                    $("#dpGrid").mGrid("headerText", header.key, headerText, false);
-                                }
-                            } else {
-                                if (self.showHeaderNumber()) {
-                                    headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
-                                    $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
-                                } else {
-                                    headerText = header.headerText.split(" ")[0];
-                                    $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
-                                }
-                            }
-                        }
-                    });
+                    self.dislayNumberHeaderText();
                 }
             });
             // show/hide profile icon
@@ -638,6 +617,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dPErrorDto(data.dperrorDto);
             self.displayNumberZero();
             self.displayProfileIcon(self.displayFormat());
+            self.dislayNumberHeaderText();
             console.log("thoi gian load 0: " + (performance.now() - startTime));
             //set SPR
             if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
@@ -927,10 +907,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
                 if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
-                    //                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-                    //                    let dataLiveTime = new InfoCellEdit("", "34", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-                    //                    dataChangeProcess.push(dataGout);
-                    //                    dataChangeProcess.push(dataLiveTime);
                     if (self.sprStampSourceInfo() != null) {
                         sprStampSourceInfo = self.sprStampSourceInfo();
                         sprStampSourceInfo.employeeId = self.shareObject().initClock.employeeId;
@@ -963,10 +939,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataParent).done((dataAfter) => {
                         // alert("done");
-                        self.valueUpdateMonth = null;
-                        self.initScreenSPR = 1;
-                        self.clickFromExtract = false;
-                        self.showTextStyle = false;
                         dataChange = {};
                         let errorFlex = false;
                         if (!_.isEmpty(dataAfter.flexShortage)) {
@@ -982,6 +954,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
 
                         if (_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined && !errorFlex) {
+                            if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
+                                self.valueUpdateMonth.items = [];
+                            }
+                            self.initScreenSPR = 1;
+                            self.clickFromExtract = false;
+                            self.showTextStyle = false;
                             if (checkDailyChange) {
                                 // self.reloadScreen();
                                 self.loadRowScreen(false);
@@ -991,31 +969,44 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         } else {
                             nts.uk.ui.block.clear();
+                            let errorAll = false;
                             if (dataAfter.errorMap[0] != undefined) {
                                 self.listCareError(dataAfter.errorMap[0])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                                errorAll = true;
                             }
                             if (dataAfter.errorMap[1] != undefined) {
                                 self.listCareInputError(dataAfter.errorMap[1])
                                 // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                                errorAll = true;
                             }
                             if (dataAfter.errorMap[2] != undefined) {
                                 self.listCheckHolidays(dataAfter.errorMap[2]);
+                                if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
+                                    self.valueUpdateMonth.items = [];
+                                }
+                                self.initScreenSPR = 1;
+                                self.clickFromExtract = false;
+                                self.showTextStyle = false;
                                 self.loadRowScreen(false);
+                                errorAll = true;
                             }
 
                             if (dataAfter.errorMap[3] != undefined) {
                                 self.listCheck28(dataAfter.errorMap[3]);
+                                errorAll = true;
                             }
 
                             if (dataAfter.errorMap[4] != undefined) {
                                 self.listCheckDeviation = dataAfter.errorMap[4];
+                                errorAll = true;
                             }
                             
                             if (dataAfter.errorMap[5] != undefined) {
                                 self.listErrorMonth = dataAfter.errorMap[5];
+                                errorAll = true;
                             }
-                            self.showErrorDialog();
+                            if(errorAll) self.showErrorDialog();
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -2593,7 +2584,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         name: "Sheet",
                         initialDisplay: self.sheetsGrid()[0].name,
                         sheets: self.sheetsGrid()
-                    }
+                    },
+                    { name: 'Copy' }
                 ],
                 ntsControls: self.ntsMControl
             }).create();
@@ -2938,7 +2930,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             }
-            self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
                 if (header.inputProcess != null && header.inputProcess != undefined) {
                     header.inputProcess = self.inputProcess;
@@ -3079,51 +3070,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dislayNumberHeaderText() {
             var self = this;
             if (!self.hasEmployee) return;
-            self.optionalHeader.map((header) => {
-                let headerText = "";
+            let headerText;
+            _.each(self.optionalHeader, header => {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
-                    if (header.group == undefined || header.group == null || header.group.length == 0) {
+                    if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = header.headerText.split(" ")[0] + " " + header.key.substring(1, header.key.length);
-                            header.headerText = headerText;
-                            return header;
+                            headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
                             headerText = header.headerText.split(" ")[0];
-                            header.headerText = headerText;
-                            return header;
+                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         }
                     } else {
                         if (self.showHeaderNumber()) {
-                            headerText = header.headerText.split(" ")[0] + " " + header.group[1].key.substring(4, header.group[1].key.length);
-                            header.headerText = headerText;
-                            return header;
+                            headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                            $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
                             headerText = header.headerText.split(" ")[0];
-                            header.headerText = headerText;
-                            return header;
+                            $("#dpGrid").mGrid("headerText", headerText + " " + header.group[1].key.substring(4, header.group[1].key.length), headerText, true);
                         }
                     }
                 }
             });
-            //            if (self.showHeaderNumber()) {
-            //                self.optionalHeader.map((header) => {
-            //                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
-            //                        if (header.group == undefined || header.group == null || header.group.length == 0) {
-            //                            header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-            //                        } else {
-            //                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
-            //                        }
-            //                    }
-            //                    return header;
-            //                });
-            //            } else {
-            //                self.optionalHeader.map((header) => {
-            //                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
-            //                        header.headerText = header.headerText.split(" ")[0];
-            //                    }
-            //                    return header;
-            //                });
-            //            }
         }
 
         displayNumberZero() {

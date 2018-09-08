@@ -267,6 +267,10 @@ public class DailyModifyResCommandFacade {
 			if (querys.isEmpty() && !dataParent.isFlagCalculation()
 					&& (dataParent.getMonthValue() == null || dataParent.getMonthValue().getItems() == null)) {
 				// only insert check box
+				// insert sign
+				insertSign(dataParent.getDataCheckSign());
+				// insert approval
+				insertApproval(dataParent.getDataCheckApproval());
 			} else {
 				// if (querys.isEmpty() ? !dataParent.isFlagCalculation() :
 				// true) {
@@ -289,7 +293,11 @@ public class DailyModifyResCommandFacade {
 					hasError = true;
 				}
 
-				// }
+				this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(), resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
+				// insert sign
+				insertSign(dataParent.getDataCheckSign());
+				// insert approval
+				insertApproval(dataParent.getDataCheckApproval());
 			}
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
@@ -304,13 +312,6 @@ public class DailyModifyResCommandFacade {
 			return dataResultAfterIU;
 		}
 		
-		this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(), resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
-		// insert sign
-		insertSign(dataParent.getDataCheckSign());
-
-		// insert approval
-		insertApproval(dataParent.getDataCheckApproval());
-
 		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation()) {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 					dataParent.getDateRange());
