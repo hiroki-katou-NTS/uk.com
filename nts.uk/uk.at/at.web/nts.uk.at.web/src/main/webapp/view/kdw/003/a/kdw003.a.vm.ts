@@ -1301,6 +1301,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#dpGrid").mGrid("updateCell", valueUpate.id, key, value, true)
                     });
                 })
+                
                 setTimeout(() => {
                     $("#dpGrid").mGrid("clearState", _.map(rowIdsTemp, (value) => {
                         return value.rowId;
@@ -1309,7 +1310,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
-                    self.displayNumberZero();
+                    __viewContext.vm.displayNumberZero();
                     nts.uk.ui.block.clear();
                 }, 1000);
                 dfd.resolve();
@@ -3748,6 +3749,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
+             _.remove(__viewContext.vm.workTypeNotFound, dataTemp => {
+                return dataTemp.columnKey == "Code" + itemId && dataTemp.rowId == rowId;
+            });
             __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
                 _.each(value.cellEdits, itemResult => {
                     $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value);
