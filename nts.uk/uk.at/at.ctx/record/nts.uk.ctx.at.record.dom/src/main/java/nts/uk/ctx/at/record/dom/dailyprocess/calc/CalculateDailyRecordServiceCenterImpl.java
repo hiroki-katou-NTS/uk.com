@@ -110,8 +110,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Override
 	//更新処理自動実行から呼び出す窓口
-	public List<IntegrationOfDaily> calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,List<ClosureStatusManagement> closureList){
-		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),closureList).getIntegrationOfDailyList();
+	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.of(companySet),closureList);
 	}
 	
 	@Override
