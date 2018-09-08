@@ -79,6 +79,6 @@ public class DPText {
 	
 	public static final String ITALIC_TEXT ="italic-text"; 
 	
-	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44);
+	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44, 623, 625);
 
 }
