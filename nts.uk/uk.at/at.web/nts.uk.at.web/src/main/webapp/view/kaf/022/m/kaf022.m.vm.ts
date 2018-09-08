@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 3, name: text("KAF022_303") }
         ]);
 
-        timeInputUseAtr = ko.observableArray([
+        timeInputUseAtr = ko.observableArray([  
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
@@ -484,7 +484,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);
@@ -507,7 +507,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);
