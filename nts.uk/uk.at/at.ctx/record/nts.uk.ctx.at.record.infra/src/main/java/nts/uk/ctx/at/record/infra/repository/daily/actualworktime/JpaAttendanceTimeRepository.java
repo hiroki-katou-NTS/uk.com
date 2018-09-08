@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -433,10 +434,9 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd) {
-		val startDay = ymd.stream().sorted((first,second) -> first.compareTo(second)).findFirst();
-		val endDay = ymd.stream().sorted((first,second) -> second.compareTo(first)).findFirst();
-		if(!startDay.isPresent() || !endDay.isPresent()) return Collections.emptyList();
-		return findByPeriodOrderByYmd(employeeId, new DatePeriod(startDay.get(), endDay.get()));
+		Map<String, List<GeneralDate>> map = new HashMap<>();
+		map.put(employeeId, ymd);
+		return finds(map);
 
 	}
 }
