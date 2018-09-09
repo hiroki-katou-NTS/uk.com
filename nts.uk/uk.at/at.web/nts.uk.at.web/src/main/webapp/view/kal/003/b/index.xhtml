@@ -183,10 +183,10 @@
                                                 <!-- BA2-2 -->
                                                 <button id="btnSettingBA2_2" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                 <!-- BA2-3 -->
-                                                <input id="display-target-item" 
-                                                class="display-list-label need-check" data-bind="ntsTextEditor: {
+                                                <input  
+                                                class="display-list-label" data-bind="ntsTextEditor: {
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
-                                         require: true,
+                                         required: true,
                                          readonly: true}" />
                                         </td>
                                         <td class="pad_left_5px">
@@ -1245,7 +1245,7 @@
 										<td class="pad_left_678px">
 											<div>
 												<!-- B1_102-->
-												<input class="value-input needcheck"
+												<input id="B1_102" class="value-input needcheck"
 												tabindex = "6"
 													data-bind="ntsNumberEditor: {
 					                                     name: '#[KAL003_61]',
@@ -1304,7 +1304,7 @@
 										</td>
 										<td class="pad_left_10px" style="margin-left: 30px">
 											<!-- BA3-2--> 
-											<input class="value-input needcheck"  id = "settingtimes"
+											<input class="value-input needcheck" id="BA3_2"
 											tabindex = "8"
 											data-bind="ntsNumberEditor: {
 						                              name: '#[KAL003_182]',
