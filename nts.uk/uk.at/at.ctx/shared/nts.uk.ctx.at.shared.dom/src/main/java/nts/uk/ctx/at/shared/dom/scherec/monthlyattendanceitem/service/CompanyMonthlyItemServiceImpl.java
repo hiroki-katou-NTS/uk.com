@@ -54,7 +54,8 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 		}
 		// 勤怠項目に対応する名称を生成する
 		List<DailyAttendanceItemNameAdapterDto> monthlyAttItem = dailyAttendanceItemNameAdapter
-				.getDailyAttendanceItemName(monthlyAttendanceItemIds);
+				.getDailyAttendanceItemName(
+						monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()));
 		return monthlyAttItem;
 	}
 
