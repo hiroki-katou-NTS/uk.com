@@ -94,7 +94,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
 			res = holidayThreeProcess.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
-					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs);
+					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, app.getEmployeeID());
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
@@ -177,7 +177,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
 			res = holidayThreeProcess.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs);
+					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
