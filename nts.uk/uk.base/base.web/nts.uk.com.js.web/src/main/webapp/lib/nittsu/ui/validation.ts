@@ -269,7 +269,7 @@ module nts.uk.ui.validation {
             let self = this;
             this.name = name;
             this.constraint = getConstraint("EmployeeCode"); 
-            this.charType = text.getCharTypeByType("AlphaNumeric");
+            this.charType = text.getCharTypeByType("EmployeeCode");
             this.options = options;
         }
         
@@ -286,7 +286,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
+            result = checkCharType.call(self, inputText, self.charType);
             if (!result.isValid) return result;
             
             if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
