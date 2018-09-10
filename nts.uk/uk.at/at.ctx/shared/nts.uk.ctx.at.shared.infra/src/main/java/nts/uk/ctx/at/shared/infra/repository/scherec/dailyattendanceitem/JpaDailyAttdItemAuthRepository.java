@@ -83,12 +83,12 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
 			data = this.queryProxy().query(SELECT_BY_KEY, KshstDailyServiceTypeControl.class)
 					.setParameter("companyID", companyID).setParameter("authorityDailyID", authorityDailyId)
-					.setParameter("toUse", NotUseAtr.USE)
+					.setParameter("toUse", NotUseAtr.USE.value)
 					.getList(c -> c.toDomain());
 		} else {
 			data = this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KshstDailyServiceTypeControl.class)
 					.setParameter("companyID", companyID).setParameter("authorityDailyID", authorityDailyId)
-					.setParameter("toUse", NotUseAtr.USE).setParameter("itemDailyIDs", attendanceItemIds)
+					.setParameter("toUse", NotUseAtr.USE.value).setParameter("itemDailyIDs", attendanceItemIds)
 					.getList(c -> c.toDomain());
 		}
 		if (data.isEmpty())

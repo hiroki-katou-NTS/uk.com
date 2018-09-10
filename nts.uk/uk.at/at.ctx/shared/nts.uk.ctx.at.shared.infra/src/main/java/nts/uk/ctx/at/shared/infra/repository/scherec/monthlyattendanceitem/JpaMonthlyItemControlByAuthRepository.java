@@ -134,12 +134,12 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
 			data = this.queryProxy().query(SELECT_BY_KEY, KrcstDisplayAndInputMonthly.class)
 					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
-					.setParameter("toUse", NotUseAtr.USE)
+					.setParameter("toUse", NotUseAtr.USE.value)
 					.getList(c -> c.toDomain());
 		} else {
 			data = this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KrcstDisplayAndInputMonthly.class)
 					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
-					.setParameter("toUse", NotUseAtr.USE).setParameter("itemMonthlyIDs", attendanceItemIds)
+					.setParameter("toUse", NotUseAtr.USE.value).setParameter("itemMonthlyIDs", attendanceItemIds)
 					.getList(c -> c.toDomain());
 		}
 		if (data.isEmpty())
