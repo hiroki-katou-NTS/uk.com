@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm008.c.start.js" />
+			<com:scriptfile path="qmm008.c.vm.js" />
+			<com:stylefile path="qmm008.c.style.css" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<!-- 健康保険 -->
+				<li><a tabindex="-1" href="#tabpanel-2" class="tab-a"
+					role="tab-navigator">#{i18n.getText('QMM008_6')}</a></li>
+				<!-- 厚生年金 -->
+				<li><a tabindex="-1" href="#tabpanel-1" class="tab-b"
+					role="tab-navigator">#{i18n.getText('QMM008_7')}</a></li>
+				<!-- 拠出金 -->
+				<li><a tabindex="-1" href="#tabpanel-3" class="tab-c"
+					role="tab-navigator">#{i18n.getText('QMM008_193')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<h1>Screen B</h1>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div>
+					<div class="sidebar-content-header flex valign-center ">
+						<!-- A2_3 厚生年金 -->
+						<span class="title" style="width: 150px;">#{i18n.getText('QMM008_7')}</span>
+						<!-- A2_1 -> A1_5 -->
+						<div class="flex">
+							<button id="A1_1" class="proceed"
+								data-bind="click: register(), enable: isSelectedPension">#{i18n.getText('QMM008_1')}</button>
+							<button id="A1_2" data-bind="click: printPDF(), enable: true">#{i18n.getText('QMM008_2')}</button>
+							<button id="A1_3"
+								data-bind="click: registerBusinessEstablishment(), enable: isSelectedPension">#{i18n.getText('QMM008_3')}</button>
+							<button id="A1_4"
+								data-bind="click: standardRemunerationMonthlyAmount(), enable: true">#{i18n.getText('QMM008_4')}</button>
+							<button id="A1_5"
+								data-bind="click: masterCorrectionLog(), enable: true">#{i18n.getText('QMM008_5')}</button>
+						</div>
+					</div>
+					<div class="contents-area fixed-flex-layout">
+<!-- C1_1 厚生年金保険料率一覧 -->
+						<div class="fixed-flex-layout-left">
+							<div style="margin-top: 15px; margin-left: 15px;"
+							data-bind="ntsPanel:{width: '300px', height: '460px', direction: 'none', showIcon: false, visible: true}">
+							<!-- C1_2 厚生年金保険料率一覧 -->
+							<div style="width: 300px"
+								data-bind="ntsSearchBox: {
+								targetKey: 'code', 
+								mode:'igTreeDrag', 
+								comId:'C1_5', 
+								items: pensionInsuranceRateTreeList, 
+								selected: selectedInsuranceCode, 
+								selectedKey: 'code', 
+								childField: 'child', 
+								fields: ['code', 'displayText']}" />
+							<div style="width: 100%">
+								<button id="C1_3"
+									data-bind="click: masterCorrectionLog(), enable: true">#{i18n.getText('QMM008_8')}</button>
+								<button style="float: right" id="C1_4"
+									data-bind="click: masterCorrectionLog(), enable: true">#{i18n.getText('QMM008_9')}</button>
+							</div>
+							<div id="C1_5" style="background-color: white; margin-top: 15px;"
+								data-bind="ntsTreeDragAndDrop:{
+							width: 300,
+							rows: 12,
+							dataSource: pensionInsuranceRateTreeList,
+							value: selectedInsuranceCode,
+							primaryKey: 'code',
+							childDataKey: 'child',
+							primaryText: 'displayText',
+							maxDeepLeaf: 1,
+							maxChildInNode: 12,
+							multiple: false,
+							enable: true}">
+							</div>
+						</div>
+						</div>
+						<div class="fixed-flex-layout-right">
+							<div>
+								<div data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('CMF004_51')}</div>
+								<div data-bind="text: fileName" id="C2_2"></div>
+								<div data-bind="text: fileName" id="C2_3"></div>
+								<div data-bind="text: fileName" id="C2_4"></div>
+								<div data-bind="text: fileName" id="C2_5"></div>
+							</div>
+						</div>
+						
+
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<h1>Screen D</h1>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
