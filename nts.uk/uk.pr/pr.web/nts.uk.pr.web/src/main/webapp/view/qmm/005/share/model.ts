@@ -170,7 +170,7 @@ module nts.uk.pr.view.qmm005.share.model {
     export interface IProcessInfomation {
         cid: string,
         processCategoryNO: string,
-        processingYear: number,
+        processingName: string,
         deprecatCategory: Abolition
     }
 
@@ -184,7 +184,7 @@ module nts.uk.pr.view.qmm005.share.model {
         constructor(params:IProcessInfomation){
             this.cid=params.cid;
             this.processCategoryNO=params.processCategoryNO;
-            this.processName=ko.observable(params.processingYear);
+            this.processName=ko.observable(params.processingName);
             this.deprecatCategory=ko.observable(params.deprecatCategory);
         }
     }
@@ -308,21 +308,18 @@ module nts.uk.pr.view.qmm005.share.model {
         numberOfWorkingDays: number;
     }
 
-
+    //基本的な設定
     export class BasicSetting {
         monthlyPaymentDate: MonthlyPaymentDate;
         employeeExtractionreferenceDate: EmployeeExtractionReferenceDate;
         accountingClosureDate: AccountingClosureDate;
         numberOfWorkingDays: number;
 
-        constructor(monthlyPaymentDate: MonthlyPaymentDate,
-                    employeeExtractionreferenceDate: EmployeeExtractionReferenceDate,
-                    accountingClosureDate: AccountingClosureDate,
-                    numberOfWorkingDays: number) {
-            this.monthlyPaymentDate = monthlyPaymentDate;
-            this.employeeExtractionreferenceDate = employeeExtractionreferenceDate;
-            this.accountingClosureDate = accountingClosureDate;
-            this.numberOfWorkingDays = numberOfWorkingDays;
+        constructor(param:IBasicSetting) {
+            this.monthlyPaymentDate = param.monthlyPaymentDate;
+            this.employeeExtractionreferenceDate = param.employeeExtractionreferenceDate;
+            this.accountingClosureDate = param.accountingClosureDate;
+            this.numberOfWorkingDays = param.numberOfWorkingDays;
         }
     }
 
@@ -335,7 +332,6 @@ module nts.uk.pr.view.qmm005.share.model {
             this.refeDate = refeDate;
             this.baseMonth = baseMonth;
         }
-
     }
 
     export class CurrentProcessDate {
@@ -350,7 +346,6 @@ module nts.uk.pr.view.qmm005.share.model {
             this.processCategoryNo = processCategoryNo;
             this.salaryCurrentProcessingDate = this.salaryCurrentProcessingDate;
         }
-
 
     }
 
@@ -393,7 +388,7 @@ module nts.uk.pr.view.qmm005.share.model {
         employmentInsuranceStanDate:EmploymentInsuranceStanDate;
     }
 
-
+    //高度な設定
     export class AdvancedSetting{
         closeDate:CloseDate;
         incomeTaxBaseYear:IncomeTaxBaseYear;
@@ -401,26 +396,36 @@ module nts.uk.pr.view.qmm005.share.model {
         socialInsuranceStanDate:SocialInsuranceStanDate;
         salaryInsuranceCollecMonth:SalaryInsuranceCollecMonth;
         employmentInsuranceStanDate:EmploymentInsuranceStanDate;
-        constructor(){
-
+        constructor(param:IAdvancedSetting){
+            this.closeDate=param.closeDate;
+            this.incomeTaxBaseYear=param.incomeTaxBaseYear;
+            this.detailPrintingMonth=param.detailPrintingMonth;
+            this.socialInsuranceStanDate=param.socialInsuranceStanDate;
+            this.salaryInsuranceCollecMonth=param.salaryInsuranceCollecMonth;
+            this.employmentInsuranceStanDate=param.employmentInsuranceStanDate;
         }
     }
 
 
+    export interface IValPayDateSet{
+        cid: string,
+        processCategoryNo: string,
+        basicSetting: BasicSetting,
+        advancedSetting: AdvancedSetting
+    }
+
+    //支払日の設定の規定値
     export class ValPayDateSet {
         cid: string;
         processCategoryNo: string;
         basicSetting: BasicSetting;
         advancedSetting: AdvancedSetting;
 
-        constructor(cid: string,
-                    processCategoryNo: string,
-                    basicSetting: BasicSetting,
-                    advancedSetting: AdvancedSetting) {
-            this.cid = cid;
-            this.processCategoryNo = processCategoryNo;
-            this.advancedSetting = advancedSetting;
-            this.basicSetting=basicSetting;
+        constructor(param: IValPayDateSet) {
+            this.cid = param.cid;
+            this.processCategoryNo = param.processCategoryNo;
+            this.advancedSetting = param.advancedSetting;
+            this.basicSetting = param.basicSetting;
         }
     }
 
@@ -464,5 +469,13 @@ module nts.uk.pr.view.qmm005.share.model {
             this.accountingClosureDateCheck = ko.observable(params.accountingClosureDateCheck);
         }
     }
+
+
+
+
+
+
+
+
 
 }

@@ -7,6 +7,13 @@ module nts.uk.com.view.qmm005.a.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
+
+        itemTable:ItemTable;
+
+
+
+
+
         value: KnockoutObservable<string>;
         itemListCbb1: KnockoutObservableArray<model.ItemModel>;
         itemListCbb1SelectedCode: KnockoutObservableArray<number>;
@@ -19,6 +26,10 @@ module nts.uk.com.view.qmm005.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.itemTable=new ItemTable();
+
+
+
             self.value = ko.observable('');
             self.itemListCbb1 = ko.observableArray([
                 new model.ItemModel(1, '2016'),
@@ -58,15 +69,6 @@ module nts.uk.com.view.qmm005.a.viewmodel {
 
 
 
-
-
-
-
-
-
-
-
-
             self.itemListCbb1SelectedCode = ko.observable(0);
         }
 
@@ -80,6 +82,25 @@ module nts.uk.com.view.qmm005.a.viewmodel {
         }
 
     }
+
+    export class ItemTable{
+        processInfomations:Array<model.ProcessInfomation>;
+        currentProcessDates:Array<model.CurrentProcessDate>;
+        setDaySupports:Array<model.SetDaySupport>;
+        employmentTiedProcessYears:Array<model.EmploymentTiedProcessYear>;
+        employments:Array<model.Employment>;
+        constructor(){
+            this.processInfomations=new Array(5);
+            this.currentProcessDates=new Array(5);
+            this.setDaySupports=new Array(5);
+            this.employmentTiedProcessYears=new Array(5);
+            this.employments=new Array(5);
+        }
+
+
+    }
+
+
 
 
 }

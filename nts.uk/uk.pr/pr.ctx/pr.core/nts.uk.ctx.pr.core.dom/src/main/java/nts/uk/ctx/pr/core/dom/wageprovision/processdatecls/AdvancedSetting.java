@@ -18,7 +18,7 @@ public class AdvancedSetting extends DomainObject {
 	/**
 	 * 社会保険徴収月
 	 */
-	private SocialInsuColleMonth socialInsuColleMonth;
+	private SalaryInsuColMon socialInsuColleMon;
 
 	/**
 	 * 雇用保険基準日
@@ -40,13 +40,13 @@ public class AdvancedSetting extends DomainObject {
 	 */
 	private CloseDate closeDate;
 
-	public AdvancedSetting(int printingMonth, int socialInsuColleMonth, int empInsurRefeDate, int empInsurBaseMonth,
+	public AdvancedSetting(int printingMonth, int socialInsuColleMon, int empInsurRefeDate, int empInsurBaseMonth,
 			int inComRefeDate, int inComBaseYear, int inComBaseMonth, int sociInsuBaseMonth, int sociInsuBaseYear,
 			int sociInsuRefeDate, int timeCloseDate, int closeDateBaseMonth, int closeDateBaseYear,
 			int closeDateRefeDate) {
 		super();
 		this.itemPrintingMonth = new DetailPrintingMonth(printingMonth);
-		this.socialInsuColleMonth = EnumAdaptor.valueOf(socialInsuColleMonth, SocialInsuColleMonth.class);
+		this.socialInsuColleMon = new SalaryInsuColMon(socialInsuColleMon);
 		this.empInsurStanDate = new EmpInsurStanDate(empInsurRefeDate, empInsurBaseMonth);
 		this.incomTaxBaseYear = new IncomTaxBaseYear(inComRefeDate, inComBaseYear, inComBaseMonth);
 		this.sociInsuStanDate = new SociInsuStanDate(sociInsuBaseMonth, sociInsuBaseYear, sociInsuRefeDate);

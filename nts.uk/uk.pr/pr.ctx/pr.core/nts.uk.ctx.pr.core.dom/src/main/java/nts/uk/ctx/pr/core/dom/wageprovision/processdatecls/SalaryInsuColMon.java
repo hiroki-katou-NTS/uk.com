@@ -12,24 +12,15 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class SalaryInsuColMon extends AggregateRoot {
 
-	/**
-	 * 処理区分NO
-	 */
-	private int processCateNo;
 
-	/**
-	 * 会社ID
-	 */
-	private String cid;
 
 	/**
 	 * 徴収月
 	 */
 	private SocialInsuColleMonth monthCollected;
 	
-	public SalaryInsuColMon(int processCateNo, String cid, int monthCollected) {
-		this.processCateNo = processCateNo;
-		this.cid = cid;
+	public SalaryInsuColMon( int monthCollected) {
+
 		this.monthCollected = EnumAdaptor.valueOf(monthCollected, SocialInsuColleMonth.class);
 	}
 
