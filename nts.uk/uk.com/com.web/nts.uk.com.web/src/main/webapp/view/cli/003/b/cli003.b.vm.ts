@@ -126,29 +126,29 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 //      new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
 
             ]);
-              self.dataTypeList = ko.observableArray([
+            self.dataTypeList = ko.observableArray([
                 new ItemModel(0, getText('Enum_DataType_Schedule')),
                 new ItemModel(1, getText('Enum_DataType_DailyResults')),
                 new ItemModel(2, getText('Enum_DataType_MonthlyResults'))
-//                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
-//                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
-//                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
-//                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
-//                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
-//                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
-//                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
-//                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
+                //                new ItemTypeModel(3, getText('Enum_DataType_AnyPeriodSummary')),
+                //                new ItemTypeModel(4, getText('Enum_DataType_ApplicationApproval')),
+                //                new ItemTypeModel(5, getText('Enum_DataType_Notification')),
+                //                new ItemTypeModel(6, getText('Enum_DataType_SalaryDetail')),
+                //                new ItemTypeModel(7, getText('Enum_DataType_BonusDetail')),
+                //                new ItemTypeModel(8, getText('Enum_DataType_YearEndAdjustment')),
+                //                new ItemTypeModel(9, getText('Enum_DataType_MonthlyCalculation')),
+                //                new ItemTypeModel(10, getText('Enum_DataType_RisingSalaryBack'))
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.logTypeSelectedCode = ko.observable(RECORD_TYPE.LOGIN);
-            self.dataTypeSelectedCode = ko.observable(0);         
+            self.dataTypeSelectedCode = ko.observable(0);
             self.isEnable = ko.observable(true);
             // end screen B
             self.activeStep = ko.observable(0);
             self.displayStep2 = ko.observable(false);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-            self.checkFormatDate=ko.observable('1'); 
+            self.checkFormatDate = ko.observable('1');
 
         }
 
@@ -183,13 +183,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 self.dateValue().endDate = value;
                 self.dateValue.valueHasMutated();
             });
- 
+
             self.dateValue = ko.observable({
-            startDate: moment.utc().format("YYYY/MM/DD"),
-            endDate: moment.utc().format("YYYY/MM/DD")
-                       });
-        
-           
+                startDate: moment.utc().format("YYYY/MM/DD"),
+                endDate: moment.utc().format("YYYY/MM/DD")
+            });
+
+
 
             self.roundingRules = ko.observableArray([
                 { code: EMPLOYEE_SPECIFIC.SPECIFY, name: getText('CLI003_17') },
@@ -434,7 +434,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
-          getTargetDataTypeName() {
+        getTargetDataTypeName() {
             var self = this;
             for (var i = 0; i < self.dataTypeList().length; i++) {
                 let temp = self.dataTypeList()[i];
@@ -443,7 +443,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
-        
+
         getDateOperator() {
             var self = this;
             self.dateOperator(self.startDateOperator() + " ~ " + self.endDateOperator());
@@ -488,21 +488,22 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let recordType = Number(self.logTypeSelectedCode());
 
             // set param log
-             var format = 'YYYY/MM/DD HH:mm:ss';
+            var format = 'YYYY/MM/DD HH:mm:ss';
             let paramLog = {
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-             //   endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
-                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
-                recordType: self.logTypeSelectedCode()
+                //   endDateTaget: moment(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(), format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(), format).toISOString(),
+                recordType: self.logTypeSelectedCode(),
+                targetDataType: self.dataTypeSelectedCode()
             };
-              if( self.checkFormatDate()==='2'){              
-                   paramLog.endDateTaget= moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
-                }else{                      
-                   paramLog.endDateTaget= moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();           
-                }
+            if (self.checkFormatDate() === '2') {
+                paramLog.endDateTaget = moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
+            } else {
+                paramLog.endDateTaget = moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();
+            }
             // set param for get parent header name
             let paramOutputItem = {
                 recordType: self.logTypeSelectedCode()
@@ -581,14 +582,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     nts.uk.ui.block.clear();
                                 });
                             }
-                             dfd.resolve();
+                            dfd.resolve();
                         }).always(() => {
                             block.clear();
-                            errors.clearAll();
+                            nts.uk.ui.errors.clearAll();
                         }).fail(function(error) {
                             alertError(error);
                             block.clear();
-                            errors.clearAll();
+                            nts.uk.ui.errors.clearAll();
                             dfd.resolve();
                         });
 
@@ -598,18 +599,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             nts.uk.ui.block.clear();
                         });
                         block.clear();
-                        errors.clearAll();
+                        nts.uk.ui.errors.clearAll();
                         dfd.resolve();
                     }
 
                 }).fail(function(error) {
                     alertError(error);
                     block.clear();
-                    errors.clearAll();
+                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();
                 });
             }
-             return dfd.promise();
+            return dfd.promise();
         }
 
         getSubHeaderDataCorect(logBasicInfoModel: LogBasicInfoModel) {
@@ -709,7 +710,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
                 rowVirtualization: true,
-                virtualization : true,
+                virtualization: true,
                 virtualizationMode: 'continuous',
                 dataSource: self.listLogBasicInforModel,
                 columns: self.columnsIgGrid()
@@ -764,7 +765,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
-                            { key: "childrentKey", headerText: "", dataType: "string" },
+                            { key: "childrentKey", headerText: "", dataType: "string" , hidden: true },
                             { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
@@ -774,7 +775,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                         ],
                         features: [
-                          
+
                             {
                                 name: 'Selection',
                                 mode: "row",
@@ -851,7 +852,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         primaryKey: "childrentKey",
                         foreignKey: "operationId",
                         columns: [
-                            { key: "childrentKey", headerText: "", dataType: "string" },
+                            { key: "childrentKey", headerText: "", dataType: "string" , hidden: true},
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
                             { key: "itemName", headerText: "itemName", dataType: "string", width: "20%" },
                             { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
@@ -929,14 +930,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("parentkey", -2, recordType));
-            let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
+            let lstSubHeader = [22, 23, 24, 29, 30, 31, 33, 25, 26, 27, 28];
             let flg = true;
-            let lstSubHeaderPersion = [25,26,27,28];
-            let lstSubHeaderDataCorrect = [22,23,24];
+            let lstSubHeaderPersion = [25, 26, 27, 28];
+            let lstSubHeaderDataCorrect = [22, 23, 24];
             _.forEach(listOutputItem, function(item) {
                 if (lstSubHeader.indexOf(item.itemNo) > -1) {
-                    if((recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.UPDATE_PERSION_INFO)
-                        && ITEM_NO.ITEM_NO22 == item.itemNo){
+                    if ((recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.UPDATE_PERSION_INFO)
+                        && ITEM_NO.ITEM_NO22 == item.itemNo) {
                         self.columnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
                     }
                     if (lstSubHeaderPersion.indexOf(item.itemNo) > -1 && recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
@@ -998,7 +999,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
 
-                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ loginBasicInfor: logBaseInfo, lstLogDataCorrectRecordRefeDto : lstDataCorrect , lstLogPerCateCorrectRecordDto : lstPerCorrect });
+                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ loginBasicInfor: logBaseInfo, lstLogDataCorrectRecordRefeDto: lstDataCorrect, lstLogPerCateCorrectRecordDto: lstPerCorrect });
                 self.logBasicInforCsv.push(logBaseInfoTemp);
             });
 
@@ -1033,7 +1034,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         */
         backScreenCtoB() {
             var self = this;
-            
+
             if (self.validateForm()) {
                 self.previous();
                 $("#ccgcomponent").hide();
@@ -1082,25 +1083,25 @@ module nts.uk.com.view.cli003.b.viewmodel {
         //B
         nextScreenCD() {
             let self = this;
-          //  self.initComponentC();
-          //  self.initComponentD();
+            //  self.initComponentC();
+            //  self.initComponentD();
             //present date time C   
             let checkLogType = parseInt(self.logTypeSelectedCode());
-            let targetDataType =self.dataTypeSelectedCode(); 
-            self.checkFormatDate('1'); 
-            if(checkLogType==RECORD_TYPE.DATA_CORRECT
-                && (targetDataType==='2' || targetDataType==='3'
-                || targetDataType==='6' || targetDataType==='7' ) ){
+            let targetDataType = self.dataTypeSelectedCode();
+            self.checkFormatDate('1');
+            if (checkLogType == RECORD_TYPE.DATA_CORRECT
+                && (targetDataType === '2' || targetDataType === '3'
+                    || targetDataType === '6' || targetDataType === '7')) {
                 self.dateValue = ko.observable({
-                startDate: moment.utc().format("YYYY/MM"),
-                endDate: moment.utc().format("YYYY/MM")    
-                             });
-              self.checkFormatDate('2');               
-                }
-            
-            if(checkLogType==RECORD_TYPE.DATA_CORRECT && targetDataType===""){
-                checkLogType=null;
-                }
+                    startDate: moment.utc().format("YYYY/MM"),
+                    endDate: moment.utc().format("YYYY/MM")
+                });
+                self.checkFormatDate('2');
+            }
+
+            if (checkLogType == RECORD_TYPE.DATA_CORRECT && targetDataType === "") {
+                checkLogType = null;
+            }
             switch (checkLogType) {
                 case RECORD_TYPE.LOGIN:
                 case RECORD_TYPE.START_UP:
@@ -1125,7 +1126,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 case RECORD_TYPE.DATA_CORRECT:
                 case RECORD_TYPE.MY_NUMBER: {
                     $("#ex_accept_wizard").ntsWizard("goto", 1);
-                     if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
+                    if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
                         $("#ccgcomponent").show();
                         $("#employeeSearch").show();
                     } else {
@@ -1177,28 +1178,28 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var paramDataType = ko.observable(self.dataTypeSelectedCode());
             nts.uk.ui.windows.setShared("recordType", paramRecordType);
             nts.uk.ui.windows.setShared("tarGetDataType", paramDataType);
-            $('#contents-area').focus();           
-            self.columnsIgAllGrid = ko.observableArray([]);          
+            $('#contents-area').focus();
+            self.columnsIgAllGrid = ko.observableArray([]);
             self.listLogBasicInforModel = [];
             // set param log for export file CSV
-            var format = 'YYYY/MM/DD HH:mm:ss';      
+            var format = 'YYYY/MM/DD HH:mm:ss';
             let paramLog = {
                 // recordType=0,1 k co taget
                 listTagetEmployeeId: self.targetEmployeeIdList(),
                 listOperatorEmployeeId: self.listEmployeeIdOperator(),
                 startDateTaget: moment.utc(self.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-//                endDateTaget: moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment.utc(self.startDateOperator(),format).toISOString(),
-                endDateOperator: moment.utc(self.endDateOperator(),format).toISOString(),
+                //                endDateTaget: moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+                startDateOperator: moment.utc(self.startDateOperator(), format).toISOString(),
+                endDateOperator: moment.utc(self.endDateOperator(), format).toISOString(),
                 recordType: self.logTypeSelectedCode()
             };
-            
-            if( self.checkFormatDate()==='2'){              
-                   paramLog.endDateTaget= moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
-                }else{                      
-                   paramLog.endDateTaget= moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();
-              //  moment().endOf('month');
-                }
+
+            if (self.checkFormatDate() === '2') {
+                paramLog.endDateTaget = moment(self.dateValue().endDate).endOf('month').toDate().toISOString();
+            } else {
+                paramLog.endDateTaget = moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();
+                //  moment().endOf('month');
+            }
             //fix itemNo
             let paramOutputItem = {
                 recordType: self.logTypeSelectedCode()
@@ -1206,32 +1207,32 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
-                let selectCancel=nts.uk.ui.windows.getShared("selectCancel");
+                let selectCancel = nts.uk.ui.windows.getShared("selectCancel");
                 // function get logdisplaysetting by code
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
-                self.listLogSetItemDetailDto=ko.observableArray([]);
-                self.listHeaderSort=ko.observableArray([]);
+                self.listLogSetItemDetailDto = ko.observableArray([]);
+                self.listHeaderSort = ko.observableArray([]);
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
                         let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
-                          paramLog.targetDataType= dataLogDisplaySetting.dataType;
-                       
+                        paramLog.targetDataType = dataLogDisplaySetting.dataType;
+
                         if (dataOutPutItem.length > 0) {
                             _.forEach(dataOutPutItem, function(dataItemNo: any) {
-                                   let dataOupPutItemdetail=dataItemNo.logSetItemDetails;
-                                if(dataOupPutItemdetail && dataOupPutItemdetail.length>0){
-                                    _.forEach(dataOupPutItemdetail ,function(datatemDetail:any){
-                                            if(datatemDetail.isUseCondFlg=='1'){
-                                               self.listLogSetItemDetailDto.push(datatemDetail);
-                                                }
-                                        });
-                                    }
+                                let dataOupPutItemdetail = dataItemNo.logSetItemDetails;
+                                if (dataOupPutItemdetail && dataOupPutItemdetail.length > 0) {
+                                    _.forEach(dataOupPutItemdetail, function(datatemDetail: any) {
+                                        if (datatemDetail.isUseCondFlg == '1') {
+                                            self.listLogSetItemDetailDto.push(datatemDetail);
+                                        }
+                                    });
+                                }
                                 self.listItemNo.push(dataItemNo.itemNo);
                             });
                             paramOutputItem.itemNos = self.listItemNo();
-                          
+
                         }
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
@@ -1240,17 +1241,17 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 service.getLogBasicInfoDataByModifyDate(paramLog).done(function(data: Array<LogBasicInforAllModel>) {
                                     // sort by displayOrder
                                     _.forEach(dataOutPutItem, function(dataItemNoOrder: any) {
-                                        _.forEach(dataOutputItems,function(listdataName:any) {
-                                            if(dataItemNoOrder.itemNo==listdataName.itemNo){
-                                            self.listHeaderSort.push(listdataName);
+                                        _.forEach(dataOutputItems, function(listdataName: any) {
+                                            if (dataItemNoOrder.itemNo == listdataName.itemNo) {
+                                                self.listHeaderSort.push(listdataName);
                                             }
-                                            });
-                                        
                                         });
+
+                                    });
                                     // generate columns header                              
-                                        self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
+                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
                                     if (data && data.length > 0) {
-                                        self.listLogBasicInforAllModel = data;                                       
+                                        self.listLogBasicInforAllModel = data;
                                         self.filterDataExport();
                                     } else {
                                         alertError({ messageId: "Msg_1220" });
@@ -1267,9 +1268,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             alertError(error);
                         });
                     } else {
-                        if(selectCancel==false){
-                             alertError({ messageId: "Msg_1215" });
-                            }                                             
+                        if (selectCancel == false) {
+                            alertError({ messageId: "Msg_1215" });
+                        }
                     }
                 }).fail(function(error) {
                     alertError(error);
@@ -1773,45 +1774,45 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
-        
+
         // filter
-        filterDataExport(){
-             let self = this;
-            self.listLogDataExport =  ko.observableArray([]);;
+        filterDataExport() {
+            let self = this;
+            self.listLogDataExport = ko.observableArray([]);;
             let recordType = Number(self.logTypeSelectedCode());
 
             let params = {
                 recordType: Number(self.logTypeSelectedCode()),
                 listLogBasicInfoAllDto: self.listLogBasicInforAllModel,
                 lstHeaderDto: self.columnsIgAllGrid(),
-                listLogSetItemDetailDto:self.listLogSetItemDetailDto()
+                listLogSetItemDetailDto: self.listLogSetItemDetailDto()
             };
-                      
-            service.filterLogDataExport(params).done(function( dataLogExport: Array<any>) {
-                if(dataLogExport && dataLogExport.length>0){
-                    self.listLogDataExport=dataLogExport;
+
+            service.filterLogDataExport(params).done(function(dataLogExport: Array<any>) {
+                if (dataLogExport && dataLogExport.length > 0) {
+                    self.listLogDataExport = dataLogExport;
                     self.exportCsvI();
-                    }else{
-                     alertError({ messageId: "Msg_1220" });
-                    }
-                });
-            
-            }
+                } else {
+                    alertError({ messageId: "Msg_1220" });
+                }
+            });
+
+        }
         // export 
         exportCsvI() {
             let self = this;
-       
+
             let recordType = Number(self.logTypeSelectedCode());
 
-            let params = {           
+            let params = {
                 lstHeaderDto: self.columnsIgAllGrid(),
-                listDataExport: self.listLogDataExport            
+                listDataExport: self.listLogDataExport
             };
-        
-            service.logSettingExportCsvScreenI(params).done(() => {               
+
+            service.logSettingExportCsvScreenI(params).done(() => {
             });
         }
-        
+
         backScreenDtoBC() {
             var self = this;
             //back to Screen B
@@ -1978,7 +1979,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>;
         subColumnsHeaders: KnockoutObservableArray<IgGridColumnModel>;
         lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>;
-        isDisplayText : boolean;
+        isDisplayText: boolean;
         constructor(param: LogBasicInfoParam) {
             this.userNameLogin = param.loginBasicInfor.userNameLogin;
             this.employeeCodeLogin = param.loginBasicInfor.employeeCodeLogin;
@@ -2072,8 +2073,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
     }
 
     class DataCorrectLogModel {
-        parentKey:string;
-        childrentKey:string;
+        parentKey: string;
+        childrentKey: string;
         operationId: string;
         targetDate: string;
         targetDataType: number;
@@ -2094,8 +2095,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         }
     }
     class PerCateCorrectRecordModel {
-        parentKey:string;
-        childrentKey:string;
+        parentKey: string;
+        childrentKey: string;
         operationId: string;
         targetDate: string;
         categoryName: string;
@@ -2155,7 +2156,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             this.headerText = headerText;
             this.hidden = false;
             this.dataType = ITEM_PROPERTY.ITEM_SRT;
-            this.itemName =headerText;
+            this.itemName = headerText;
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
@@ -2436,16 +2437,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
         itemNo: number;
         frame: number;
         isUseCondFlg: number;
-        condition:string;
-        sybol:number;
+        condition: string;
+        sybol: number;
 
         constructor(logSetId: string, itemNo: string, frame: string, isUseCondFlg: string,condition:string,sybol:number) {
             this.logSetId = logSetId;
             this.itemNo = itemNo;
             this.frame = frame;
             this.isUseCondFlg = isUseCondFlg;
-            this.condition=condition;
-            this.sybol=sybol;
+            this.condition = condition;
+            this.sybol = sybol;
         }
     }
 }
