@@ -45,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -386,14 +386,11 @@ public class SaveHolidayShipmentCommandHandler
 		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (wkTypeOpt.isPresent()) {
 			WorkType wkType = wkTypeOpt.get();
-			if (wkType.getDailyWork().isHolidayWork()) {
+			if (wkType.getDailyWork().isHolidayType()) {
 				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
-
 			}
-
 		}
 		return result;
-
 	}
 
 	private GeneralDate DemOfexpDate(GeneralDate refDate, String companyID, String sID) {
@@ -507,6 +504,7 @@ public class SaveHolidayShipmentCommandHandler
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
+
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
 		if (isSaveAbs(command.getComType()) && isCheck) {
 			String wkTypeCD = absCmd.getWkTypeCD();
@@ -518,14 +516,27 @@ public class SaveHolidayShipmentCommandHandler
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
 					companyID);
-			if (absHolidayType == null || achievementHolidayType == null) {
-				return;
+			boolean isError = compareHoliday(absHolidayType, achievementHolidayType);
+			
+			if (isError) {
+				String nameId = achievementHolidayType != null ? achievementHolidayType.nameId : "設定なし";
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), nameId);
 			}
-			if (!absHolidayType.equals(achievementHolidayType)) {
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), absHolidayType.nameId);
-			}
+
 		}
 
+	}
+
+	private boolean compareHoliday(HolidayAtr absHolidayType, HolidayAtr achievementHolidayType) {
+		boolean isError = false;
+		if (absHolidayType == null && achievementHolidayType == null)
+			isError = true;
+		if (absHolidayType == null && achievementHolidayType != null)
+			isError = true;
+		if (!absHolidayType.equals(achievementHolidayType)) {
+			isError = true;
+		}
+		return isError;
 	}
 
 	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
@@ -639,20 +650,20 @@ public class SaveHolidayShipmentCommandHandler
 		// 休暇使用期限をチェックする
 		GeneralDate resultDate;
 		switch (expTime) {
-		
+
 		case END_OF_YEAR:
 			resultDate = GeneralDate.ymd(recDate.year(), 12, 31);
 			break;
-			
+
 		case UNLIMITED:
 			resultDate = GeneralDate.max();
 			break;
-			
+
 		default:
 			// 期限指定のある使用期限日を作成する
 			resultDate = this.dateDeadline.useDateDeadline(employmentCd, expTime, recDate);
 			break;
-			
+
 		}
 		return resultDate;
 	}

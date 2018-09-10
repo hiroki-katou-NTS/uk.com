@@ -70,10 +70,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = 0"
 			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 	
-	private static final String FIND_WORKTYPE = SELECT_FROM_WORKTYPE + " LEFT JOIN KshmtWorkTypeOrder o"
-			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.worktypeAtr = 0 AND c.oneDayAtr = 2"
-			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	private static final String FIND_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.worktypeAtr = 0 AND c.oneDayAtr = 2" + " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "

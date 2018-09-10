@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -14,4 +15,8 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 public interface AdTimeAndAnyItemAdUpService {
 
 	void addAndUpdate(String empId, GeneralDate ymd, Optional<AttendanceTimeOfDailyPerformance> attendanceTime,Optional<AnyItemValueOfDaily> anyItem);
+	
+	void addAndUpdate(List<IntegrationOfDaily> daily);
+	
+	void addAndUpdate(IntegrationOfDaily daily);
 }

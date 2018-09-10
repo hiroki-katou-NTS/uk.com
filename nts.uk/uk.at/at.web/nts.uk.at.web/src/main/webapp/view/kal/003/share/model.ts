@@ -149,6 +149,7 @@ module nts.uk.at.view.kal003.share.model {
                 isMultiple: true,
                 selectedCodes: self.targetEmployment(),
                 showNoSelection: false,
+                isShowWorkClosure : false
             }, true);
 
             modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
@@ -1815,9 +1816,9 @@ module nts.uk.at.view.kal003.share.model {
                     self.setTextDisplay(modeX);
                 });
             }else{
-                nts.uk.ui.windows.setShared("KDW007BParams", {mode: modeX, data: param}, true);
-                nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
-                    let output = getShared("KDW007BResult");
+                nts.uk.ui.windows.setShared("KAL003CParams", {mode: modeX, data: param}, true);
+                nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml").onClosed(() => {
+                    let output = getShared("KAL003CResult");
                     if (output) {
                         self.targetNO(output.targetNO);
                         self.conditionAtr(output.conditionAtr);
