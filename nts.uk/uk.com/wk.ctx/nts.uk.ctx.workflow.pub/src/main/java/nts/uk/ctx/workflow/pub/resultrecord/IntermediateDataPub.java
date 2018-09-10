@@ -109,6 +109,7 @@ public interface IntermediateDataPub {
 	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType);
 	
 	/**
+	 * RequestList 133
 	 * [No.133](中間データ版)承認状況を取得する
 	 * @param employeeID
 	 * @param period
@@ -116,5 +117,14 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public AppEmpStatusExport getApprovalEmpStatus(String employeeID, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 403
+	 * [No.403](中間データ版)承認状態をクリアする
+	 * @param employeeID
+	 * @param date
+	 * @param rootType
+	 */
+	public void cleanApprovalRootState(String employeeID, GeneralDate date, Integer rootType);
 	
 }
