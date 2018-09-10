@@ -199,7 +199,7 @@ module nts.uk.ui.validation {
                 
                 if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
                     if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                        result.fail('This field is not valid with pattern!', '');
+                        result.fail(nts.uk.resource.getMessage('Msg_1424', [ this.name ]), 'Msg_1424');
                         return result;
                     }  
                 }
