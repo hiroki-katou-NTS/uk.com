@@ -134,7 +134,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
 		//　　付与日数　←　特別休暇基本情報．付与設定．付与日数
 		if(leaveBasicInfo.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED) {
-			grantDays = leaveBasicInfo.getGrantSetting().getGrantDays().isPresent() ? leaveBasicInfo.getGrantSetting().getGrantDays().get().v() : 0;
+			grantDays = leaveBasicInfo.getGrantSetting().getGrantDays().isPresent() && leaveBasicInfo.getGrantSetting().getGrantDays().get().v() != null 
+					? leaveBasicInfo.getGrantSetting().getGrantDays().get().v() : 0;
 		}
 		//　◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
 		// 　　付与日数　←　ドメインモデル「特別休暇．付与情報．固定付与日．固定付与日数」
@@ -158,7 +159,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), grantDays);
 					lstOutput.add(outPut);
 				} else {
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
+					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), 
+							speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
 					lstOutput.add(outPut);
 				}
 			}

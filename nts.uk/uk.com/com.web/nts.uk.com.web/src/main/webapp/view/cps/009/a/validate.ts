@@ -22,17 +22,17 @@ module validationcps009 {
            switch (item.dataType()) {
                case ITEM_SINGLE_TYPE.STRING:
                 item.stringValue.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824") || rmError($element, "FND_E_REQ_INPUT") );
                    });
                 break;
                case ITEM_SINGLE_TYPE.NUMERIC:
                    item.numbereditor.value.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824")|| rmError($element, "FND_E_REQ_INPUT"));
                    });
                    break;
                case ITEM_SINGLE_TYPE.TIME:
                    item.dateWithDay.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824")|| rmError($element, "FND_E_REQ_INPUT"));
                    });
                    break;
                case ITEM_SINGLE_TYPE.TIMEPOINT:

@@ -1399,7 +1399,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 			}
 			 
-			throw new CreateDailyException();
+			//throw new CreateDailyException();
 		}
 		} catch (CreateDailyException ex) {
 			isHasCreateDailyException=true;

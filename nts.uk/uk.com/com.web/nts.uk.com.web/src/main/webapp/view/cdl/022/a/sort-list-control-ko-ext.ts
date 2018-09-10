@@ -29,6 +29,8 @@ module nts.custombinding {
                 padding-left: 10px;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                font-size: 14px;
+                font-family: "DroidSansMono", "Meiryo";
             }
 
             .sortable-container .sort-row-item.ui-sortable-helper {

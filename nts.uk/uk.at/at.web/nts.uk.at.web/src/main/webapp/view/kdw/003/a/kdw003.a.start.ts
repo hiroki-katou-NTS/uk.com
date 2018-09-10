@@ -12,18 +12,18 @@ module nts.uk.at.view.kdw003.a {
             //cursor move direction 
             screenModel.selectedDirection.subscribe((value) => {
                 if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below");
+                    $("#dpGrid").mGrid("directEnter", "below");
                 } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right");
+                    $("#dpGrid").mGrid("directEnter", "right");
                 }
             });
             if (data.bindDataMap) {
                 screenModel.processMapData(data.data);
+                //screenModel.loadKcp009();
             }
-             screenModel.loadKcp009();
             __viewContext.bind(screenModel);
             if (data.bindDataMap) {
-                screenModel.processFlex(data.data);
+                screenModel.processFlex(data.data, false);
             }
             
         });

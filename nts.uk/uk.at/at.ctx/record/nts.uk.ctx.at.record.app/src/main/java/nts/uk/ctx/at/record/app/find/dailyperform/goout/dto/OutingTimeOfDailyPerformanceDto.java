@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.Data;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
@@ -25,6 +31,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
