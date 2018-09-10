@@ -766,12 +766,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         foreignKey: "operationId",
                         columns: [
                             { key: "childrentKey", headerText: "", dataType: "string" , hidden: true },
-                            { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
+                            { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%",formatter: _.escape },
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
-                            { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
+                            { key: "itemName", headerText: "itemName", dataType: "string", width: "15%",formatter: _.escape },
                             { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "20%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%" },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%" }
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%",formatter: _.escape },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%",formatter: _.escape }
 
                         ],
                         features: [
@@ -843,6 +843,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
+                rowVirtualization: true,
+                virtualization: true,
+                virtualizationMode: 'continuous',
                 columnLayouts: [
                     {
                         width: "100%",
@@ -854,9 +857,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         columns: [
                             { key: "childrentKey", headerText: "", dataType: "string" , hidden: true},
                             { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
-                            { key: "itemName", headerText: "itemName", dataType: "string", width: "20%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" },
+                            { key: "itemName", headerText: "itemName", dataType: "string", width: "20%",formatter: _.escape },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%",formatter: _.escape },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%",formatter: _.escape },
                             { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "20%" }
                         ],
                         features: [
