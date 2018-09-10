@@ -21,7 +21,8 @@ public interface HolidayThreeProcess {
 	 * @param overtimeInputs: 申請時間(input time in a ATTENDANCE)
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
-	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> overtimeInputs) ;
+	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, 
+			int attendanceId, List<HolidayWorkInput> overtimeInputs, String employeeID) ;
 	
 	/**
 	 * 03-02_実績超過チェック
