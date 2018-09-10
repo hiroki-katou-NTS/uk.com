@@ -35,7 +35,6 @@ div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90p
 }
 
 #func-notifier-errors.shown {
-    display: none;
     position: absolute;
     bottom: 380px;
 }

@@ -365,6 +365,7 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
+			List<PAttendanceItem> displayItemsTmp = new ArrayList<>();
 			List<PAttendanceItem> displayItems = new ArrayList<>();
 			monthlyRecordWorkTypeDtos.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
@@ -373,12 +374,15 @@ public class MonthlyPerformanceDisplay {
 					pSheet.setSheetName(sheetDto.getSheetName());
 					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
 
-					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
+					displayItemsTmp.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
 							.collect(Collectors.toList()));
 					// displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
+			// xoa nhung column trung nhau
+			displayItems = displayItemsTmp.stream().distinct().collect(Collectors.toList());
+			
 			pSheet.setDisplayItems(displayItems);
 			resultSheets.add(pSheet);
 		}
