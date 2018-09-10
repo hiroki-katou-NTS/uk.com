@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
@@ -183,10 +184,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		if(!acqRule.isPresent()){
 			return;
 		}
-		AnnualHoliday annualHoliday = acqRule.get().getAnnualHoliday();
+		AcquisitionRule rule = acqRule.get();
+		AnnualHoliday annualHoliday = rule.getAnnualHoliday();
 		//振休使用フラグをチェックする (Check restFlag)
 		//休暇の取得ルール．年休より優先する休暇．振休を優先＝ false OR 休暇申請対象勤務種類．休暇種類を利用しない（振休）＝ true OR 振休管理設定．管理区分＝管理しない
-		if(annualHoliday.isPrioritySubstitute() && !subVacaTypeUseFlg && isSubVacaManage){
+//		2018/09/07 muto upd EA#2660
+//		条件の追加： 「休暇の取得ルール．取得する順番をチェックする＝設定しない」
+		if(annualHoliday.isPrioritySubstitute() && !subVacaTypeUseFlg && isSubVacaManage 
+				&& rule.getCategory().equals(SettingDistinct.YES)){
 			//振休残数をチェックする (Check restRemaining)
 			if(numberSubVaca > 0){//振休残数>0(restRemaining >0)
 				if(pridigCheck.equals(AppliedDate.CHECK_IMPOSSIBLE)){//年休より優先消化チェック区分＝チェックする（登録不可）(pridigCheck == CHECK_IMPOSSIBLE)
@@ -200,7 +205,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		//休暇の取得ルール．年休より優先する休暇．代休を優先＝ false OR 休暇申請対象勤務種類．休暇種類を利用しない（代休）＝ true OR 代休管理設定．管理区分＝管理しない
 		//代休使用フラグをチェックする (Check substituteHolidayFlag)
-		if(!annualHoliday.isPriorityPause() || subHdTypeUseFlg || !isSubHdManage){
+//		2018/09/07 muto upd EA#2660
+//		条件の追加： 「休暇の取得ルール．取得する順番をチェックする＝設定しない」
+		if(!annualHoliday.isPriorityPause() || subHdTypeUseFlg || !isSubHdManage || rule.getCategory().equals(SettingDistinct.NO)){
 			return;
 		}
 		if(numberSubHd <= 0){//代休残数<=0

@@ -14,13 +14,13 @@ public class DPCellDataDto {
 	
 	private String columnKey;
 	
-	private String value;
+	private Object value;
 	
 	private String dataType;
 	
 	private String type;
 	
-	public DPCellDataDto(String columnKey, String value, String dataType, String type) {
+	public DPCellDataDto(String columnKey, Object value, String dataType, String type) {
 		this.value = value;
 		this.dataType = dataType;
 		this.columnKey = columnKey;

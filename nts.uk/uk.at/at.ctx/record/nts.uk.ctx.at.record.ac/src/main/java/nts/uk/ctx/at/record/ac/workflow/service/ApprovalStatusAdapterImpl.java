@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
@@ -21,7 +24,9 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
+import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
@@ -123,5 +128,43 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.stream().map(x -> new ApprovalRootStateStatusImport(x.getDate(), x.getEmployeeID(), x.getDailyConfirmAtr()))
 				.collect(Collectors.toList());
 		return lstOutput;
+	}
+	
+	@Override
+	public ApprovalRootOfEmployeeImport getApprovalRootOfEmloyeeNew(GeneralDate startDate, GeneralDate endDate,
+			String approverID, String companyID, Integer rootType) {
+		//ApprovalRootOfEmployeeExport 
+		AppEmpStatusExport export = intermediateDataPub.getApprovalEmpStatus(
+				approverID, new DatePeriod(startDate, endDate), rootType);
+		return convertFromExportNew(export);
+	}
+	
+	private ApprovalRootOfEmployeeImport convertFromExportNew(AppEmpStatusExport export) {
+		//ApprovalRootOfEmployeeExport
+		if(export.getRouteSituationLst() != null && export.getEmployeeID() != null){
+		return new ApprovalRootOfEmployeeImport(export.getEmployeeID(),
+				export.getRouteSituationLst().stream().map(situation -> {
+					return new ApprovalRootSituation("",
+							EnumAdaptor.valueOf(situation.getApproverEmpState(), ApproverEmployeeState.class),
+							situation.getDate(),
+							situation.getEmployeeID(),
+							new ApprovalStatus(
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getApprovalAction()).orElse(null),
+											ApprovalActionByEmpl.class),
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getReleaseAtr()).orElse(null),
+											ReleasedProprietyDivision.class)));
+				}).collect(Collectors.toList()));
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDateNew(
+			List<GeneralDate> approvalRecordDates, List<String> employeeID, Integer rootType) {
+		return intermediateDataPub.getAppRootStatusByEmpsDates(employeeID, approvalRecordDates, rootType).stream()
+				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
+						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
+				.collect(Collectors.toList());
 	}
 }
