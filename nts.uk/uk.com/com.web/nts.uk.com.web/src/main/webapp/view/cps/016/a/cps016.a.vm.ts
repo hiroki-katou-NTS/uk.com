@@ -26,7 +26,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.closeUp = ko.observable(false);
             if (self.param) {
                 self.isDialog(self.param.isDialog);
-
             };
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
@@ -37,7 +36,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
-                    nts.uk.ui.errors.clearAll();
+                    
                     service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem1) => {
                         if (_perInfoSelectionItem) {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
@@ -52,6 +51,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
                         }
+                        nts.uk.ui.errors.clearAll();
                         $("#selectionItemName").focus();
                     });
                     self.checkCreate(false);
@@ -173,7 +173,26 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 self.listItems.removeAll();
                 //画面頛�「選択雮名称一覧�選択雮名称一覧」を登録する
                 self.getAllSelectionItems().done(() => {
-                    
+                    $("#selectionItemName").focus();
+
+                    //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
+                        let params = {
+                            isDialog: true,
+                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                        }
+                        setShared('CPS017_PARAMS', params);
+
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
+                        });
+
+                        self.listItems.valueHasMutated();
+                        $("#selectionItemName").focus();
+                    }).ifNo(() => {
+                        self.listItems.valueHasMutated();
+                        $("#selectionItemName").focus();
+                        return;
+                    })
                     self.listItems.valueHasMutated();
                     self.perInfoSelectionItem().selectionItemId(selectId);
 

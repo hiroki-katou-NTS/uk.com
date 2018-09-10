@@ -16,9 +16,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
@@ -300,13 +300,13 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		if (this.childcareGoOutTimes != 0 || this.childcareGoOutTime != 0){
 			goOutForChildCares.add(GoOutForChildCare.of(
 					ChildCareAtr.CHILD_CARE,
-					new AttendanceTimesMonthDom(this.childcareGoOutTimes),
+					new AttendanceTimesMonth(this.childcareGoOutTimes),
 					new AttendanceTimeMonth(this.childcareGoOutTime)));
 		}
 		if (this.careGoOutTimes != 0 || this.careGoOutTime != 0){
 			goOutForChildCares.add(GoOutForChildCare.of(
 					ChildCareAtr.CARE,
-					new AttendanceTimesMonthDom(this.careGoOutTimes),
+					new AttendanceTimesMonth(this.careGoOutTimes),
 					new AttendanceTimeMonth(this.careGoOutTime)));
 		}
 		
@@ -316,28 +316,28 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		
 		// 月別実績の勤務日数
 		val workDays = WorkDaysOfMonthly.of(
-				AttendanceDaysOfMonthly.of(new AttendanceDaysMonthDom(this.attendanceDays)),
+				AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(this.attendanceDays)),
 				AbsenceDaysOfMonthly.of(
-						new AttendanceDaysMonthDom(this.totalAbsenceDays),
+						new AttendanceDaysMonth(this.totalAbsenceDays),
 						new AttendanceTimeMonth(this.totalAbsenceTime),
 						krcdtMonAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				PredeterminedDaysOfMonthly.of(
-						new AttendanceDaysMonthDom(this.predetermineDays)),
-				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonthDom(this.workDays)),
-				HolidayDaysOfMonthly.of(new AttendanceDaysMonthDom(this.holidayDays)),
+						new AttendanceDaysMonth(this.predetermineDays)),
+				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.workDays)),
+				HolidayDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayDays)),
 				SpecificDaysOfMonthly.of(
 						krcdtMonAggrSpecDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
-				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonthDom(this.holidayWorkDays)),
+				HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(this.holidayWorkDays)),
 				PayDaysOfMonthly.of(
-						new AttendanceDaysMonthDom(this.payAttendanceDays),
-						new AttendanceDaysMonthDom(this.payAbsenceDays)),
-				WorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.workTimes)),
-				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.twoTimesWorkTimes)),
-				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonthDom(this.temporaryWorkTimes)),
+						new AttendanceDaysMonth(this.payAttendanceDays),
+						new AttendanceDaysMonth(this.payAbsenceDays)),
+				WorkTimesOfMonthly.of(new AttendanceTimesMonth(this.workTimes)),
+				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.twoTimesWorkTimes)),
+				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.temporaryWorkTimes)),
 				leave,
-				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonthDom(this.recruitDays)),
+				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(this.recruitDays)),
 				SpcVacationDaysOfMonthly.of(
-						new AttendanceDaysMonthDom(this.totalSpecialVacationDays),
+						new AttendanceDaysMonth(this.totalSpecialVacationDays),
 						new AttendanceTimeMonth(this.totalSpecialVacationTime),
 						krcdtMonAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())));
 		
@@ -383,12 +383,12 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 								new AttendanceTimeMonth(this.calcSpecialHolidayWorkMidnightTime))),
 				LateLeaveEarlyOfMonthly.of(
 						LeaveEarly.of(
-								new AttendanceTimesMonthDom(this.leaveEarlyTimes),
+								new AttendanceTimesMonth(this.leaveEarlyTimes),
 								new TimeMonthWithCalculation(
 										new AttendanceTimeMonth(this.leaveEarlyTime),
 										new AttendanceTimeMonth(this.calcLeaveEarlyTime))),
 						Late.of(
-								new AttendanceTimesMonthDom(this.lateTimes),
+								new AttendanceTimesMonth(this.lateTimes),
 								new TimeMonthWithCalculation(
 										new AttendanceTimeMonth(this.lateTime),
 										new AttendanceTimeMonth(this.calcLateTime)))),

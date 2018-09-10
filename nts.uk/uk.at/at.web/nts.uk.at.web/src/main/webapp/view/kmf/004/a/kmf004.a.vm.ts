@@ -475,7 +475,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_CD", self.currentCode());
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
                 let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");

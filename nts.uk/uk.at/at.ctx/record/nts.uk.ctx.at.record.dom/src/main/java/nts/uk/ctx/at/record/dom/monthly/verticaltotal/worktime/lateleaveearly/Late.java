@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 public class Late {
 
 	/** 回数 */
-	private AttendanceTimesMonthDom times;
+	private AttendanceTimesMonth times;
 	/** 時間 */
 	private TimeMonthWithCalculation time;
 	
@@ -23,7 +23,7 @@ public class Late {
 	 */
 	public Late(){
 		
-		this.times = new AttendanceTimesMonthDom(0);
+		this.times = new AttendanceTimesMonth(0);
 		this.time = TimeMonthWithCalculation.ofSameTime(0);
 	}
 	
@@ -33,7 +33,7 @@ public class Late {
 	 * @param time 時間
 	 * @return 早退
 	 */
-	public static Late of(AttendanceTimesMonthDom times, TimeMonthWithCalculation time){
+	public static Late of(AttendanceTimesMonth times, TimeMonthWithCalculation time){
 		
 		val domain = new Late();
 		domain.times = times;

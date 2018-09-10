@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public class AttendanceDaysOfMonthly {
 
 	/** 日数 */
-	private AttendanceDaysMonthDom days;
+	private AttendanceDaysMonth days;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public AttendanceDaysOfMonthly(){
 		
-		this.days = new AttendanceDaysMonthDom(0.0);
+		this.days = new AttendanceDaysMonth(0.0);
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public class AttendanceDaysOfMonthly {
 	 * @param days 日数
 	 * @return 月別実績の出勤日数
 	 */
-	public static AttendanceDaysOfMonthly of(AttendanceDaysMonthDom days){
+	public static AttendanceDaysOfMonthly of(AttendanceDaysMonth days){
 		
 		val domain = new AttendanceDaysOfMonthly();
 		domain.days = days;

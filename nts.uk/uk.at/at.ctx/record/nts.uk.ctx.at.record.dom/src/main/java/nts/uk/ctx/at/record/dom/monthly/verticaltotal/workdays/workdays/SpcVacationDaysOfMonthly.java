@@ -6,7 +6,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class SpcVacationDaysOfMonthly {
 
 	/** 特別休暇合計日数 */
-	private AttendanceDaysMonthDom totalSpcVacationDays;
+	private AttendanceDaysMonth totalSpcVacationDays;
 	/** 特別休暇合計時間 */
 	private AttendanceTimeMonth totalSpcVacationTime;
 	/** 特別休暇日数 */
@@ -31,7 +31,7 @@ public class SpcVacationDaysOfMonthly {
 	 */
 	public SpcVacationDaysOfMonthly(){
 		
-		this.totalSpcVacationDays = new AttendanceDaysMonthDom(0.0);
+		this.totalSpcVacationDays = new AttendanceDaysMonth(0.0);
 		this.totalSpcVacationTime = new AttendanceTimeMonth(0);
 		this.spcVacationDaysList = new HashMap<>();
 	}
@@ -44,7 +44,7 @@ public class SpcVacationDaysOfMonthly {
 	 * @return 月別実績の特別休暇日数
 	 */
 	public static SpcVacationDaysOfMonthly of(
-			AttendanceDaysMonthDom totalSpcVacationDays,
+			AttendanceDaysMonth totalSpcVacationDays,
 			AttendanceTimeMonth totalSpcVacationTime,
 			List<AggregateSpcVacationDays> spcVacationDaysList){
 		

@@ -1616,6 +1616,7 @@ module nts.layout {
                 specialLeaInfos: Array<ISpeacialLeaInfo> = [{
                     ctgCode: 'CS00025',
                     inpCode: 'IS00295',
+                    mana: 'IS00296',
                     comboboxCode: 'IS00297',
                     inpGrantDay: 'IS00298',
                     comboGrantTbl: 'IS00299',
@@ -1624,6 +1625,7 @@ module nts.layout {
                 }, {
                         ctgCode: 'CS00026',
                         inpCode: 'IS00302',
+                        mana: 'IS00303',
                         comboboxCode: 'IS00304',
                         inpGrantDay: 'IS00305',
                         comboGrantTbl: 'IS00306',
@@ -1632,6 +1634,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00027',
                         inpCode: 'IS00309',
+                        mana: 'IS00310',
                         comboboxCode: 'IS00311',
                         inpGrantDay: 'IS00312',
                         comboGrantTbl: 'IS00313',
@@ -1640,6 +1643,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00028',
                         inpCode: 'IS00316',
+                        mana: 'IS00317',
                         comboboxCode: 'IS00318',
                         inpGrantDay: 'IS00319',
                         comboGrantTbl: 'IS00320',
@@ -1648,6 +1652,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00029',
                         inpCode: 'IS00323',
+                        mana: 'IS00324',
                         comboboxCode: 'IS00325',
                         inpGrantDay: 'IS00326',
                         comboGrantTbl: 'IS00327',
@@ -1656,6 +1661,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00030',
                         inpCode: 'IS00330',
+                        mana: 'IS00331',
                         comboboxCode: 'IS00332',
                         inpGrantDay: 'IS00333',
                         comboGrantTbl: 'IS00334',
@@ -1664,6 +1670,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00031',
                         inpCode: 'IS00337',
+                        mana: 'IS00338',
                         comboboxCode: 'IS00339',
                         inpGrantDay: 'IS00340',
                         comboGrantTbl: 'IS00341',
@@ -1672,6 +1679,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00032',
                         inpCode: 'IS00344',
+                        mana: 'IS00345',
                         comboboxCode: 'IS00346',
                         inpGrantDay: 'IS00347',
                         comboGrantTbl: 'IS00348',
@@ -1680,6 +1688,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00033',
                         inpCode: 'IS00351',
+                        mana: 'IS00352',
                         comboboxCode: 'IS00353',
                         inpGrantDay: 'IS00354',
                         comboGrantTbl: 'IS00355',
@@ -1688,6 +1697,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00034',
                         inpCode: 'IS00358',
+                        mana: 'IS00359',
                         comboboxCode: 'IS00360',
                         inpGrantDay: 'IS00361',
                         comboGrantTbl: 'IS00362',
@@ -1696,6 +1706,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00049',
                         inpCode: 'IS00559',
+                        mana: 'IS00560',
                         comboboxCode: 'IS00561',
                         inpGrantDay: 'IS00562',
                         comboGrantTbl: 'IS00563',
@@ -1704,6 +1715,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00050',
                         inpCode: 'IS00566',
+                        mana: 'IS00567',
                         comboboxCode: 'IS00568',
                         inpGrantDay: 'IS00569',
                         comboGrantTbl: 'IS00570',
@@ -1712,6 +1724,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00051',
                         inpCode: 'IS00573',
+                        mana: 'IS00574',
                         comboboxCode: 'IS00575',
                         inpGrantDay: 'IS00576',
                         comboGrantTbl: 'IS00577',
@@ -1720,6 +1733,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00052',
                         inpCode: 'IS00580',
+                        mana: 'IS00581',
                         comboboxCode: 'IS00582',
                         inpGrantDay: 'IS00583',
                         comboGrantTbl: 'IS00584',
@@ -1728,6 +1742,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00053',
                         inpCode: 'IS00587',
+                        mana: 'IS00588',
                         comboboxCode: 'IS00589',
                         inpGrantDay: 'IS00590',
                         comboGrantTbl: 'IS00591',
@@ -1736,6 +1751,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00054',
                         inpCode: 'IS00594',
+                        mana: 'IS00595',
                         comboboxCode: 'IS00596',
                         inpGrantDay: 'IS00597',
                         comboGrantTbl: 'IS00598',
@@ -1744,6 +1760,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00055',
                         inpCode: 'IS00601',
+                        mana: 'IS00602',
                         comboboxCode: 'IS00603',
                         inpGrantDay: 'IS00604',
                         comboGrantTbl: 'IS00605',
@@ -1752,6 +1769,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00056',
                         inpCode: 'IS00608',
+                        mana: 'IS00609',
                         comboboxCode: 'IS00610',
                         inpGrantDay: 'IS00611',
                         comboGrantTbl: 'IS00612',
@@ -1760,6 +1778,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00057',
                         inpCode: 'IS00615',
+                        mana: 'IS00616',
                         comboboxCode: 'IS00617',
                         inpGrantDay: 'IS00618',
                         comboGrantTbl: 'IS00619',
@@ -1768,6 +1787,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00058',
                         inpCode: 'IS00622',
+                        mana: 'IS00623',
                         comboboxCode: 'IS00624',
                         inpGrantDay: 'IS00625',
                         comboGrantTbl: 'IS00626',
@@ -1780,6 +1800,7 @@ module nts.layout {
                     let inp: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpCode),
                         cbx: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboboxCode),
                         grantDay: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpGrantDay),
+                        manage: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.mana),
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
                         result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result);
 
@@ -1791,11 +1812,13 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null;
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null,
+                                management = manage? ko.toJS(manage.data.value): null;
                             
                             // 
 
-                            if (!sid || !x) {
+                            if (!sid || !x || !management || management == '0') {
+                                result.data.value('');
                                 return;
                             }
                             
@@ -1807,15 +1830,18 @@ module nts.layout {
                                 grantDays: grantDays,
                                 grantTable: grantTbls
                             }).done(res => {
-                                let x = moment.utc(ko.toJS(res));
-                                if (x._isValid)
-                                    result.data.value(x.format('YYYY/MM/DD'));
-                                else
-                                    result.data.value('');
+                                if (res) {
+                                    let x = moment.utc(ko.toJS(res));
+                                    if (x._isValid)
+                                        result.data.value(x.format('YYYY/MM/DD'));
+                                    else
+                                        result.data.value('');
+                                }
                             });
                         });
 
                         cbx.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        manage.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         if (grantDay){
                             grantDay.data.value.subscribe(x => 
                                 inp.data.value.valueHasMutated()
@@ -2248,6 +2274,7 @@ module nts.layout {
     interface ISpeacialLeaInfo {
         ctgCode: string;
         inpCode: string;
+        mana: number;
         comboboxCode: string;
         inpGrantDay: string;
         comboGrantTbl: string;

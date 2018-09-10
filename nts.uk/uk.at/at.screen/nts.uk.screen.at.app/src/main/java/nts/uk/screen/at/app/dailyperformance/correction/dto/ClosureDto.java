@@ -5,6 +5,8 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -19,6 +21,8 @@ public class ClosureDto {
 	private Integer closureMonth;
 	private String sid;
 	private String employmentCode;
+	//KDW003a
+	private DatePeriod datePeriod;
 
 	public ClosureDto(String companyId, Integer closureId, Integer useAtr, Integer closureMonth) {
 		this.companyId = companyId;
@@ -45,6 +49,18 @@ public class ClosureDto {
 		this.closureMonth = closureMonth;
 		this.sid = sid;
 		this.employmentCode = employmentCode;
+	}
+	
+	public ClosureDto(String companyId, Integer closureId, Integer useAtr, Integer closureMonth, String sid,
+			String employmentCode, DatePeriod datePeriod) {
+		super();
+		this.companyId = companyId;
+		this.closureId = closureId;
+		this.useAtr = useAtr;
+		this.closureMonth = closureMonth;
+		this.sid = sid;
+		this.employmentCode = employmentCode;
+		this.datePeriod = datePeriod;
 	}
 
 }

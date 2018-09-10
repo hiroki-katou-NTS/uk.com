@@ -38,7 +38,7 @@ public class CheckCalcMonthService {
 				datePeriod.addAll(valueCheck.getRight());
 			}
 		}
-		return Pair.of(datePeriod.isEmpty(), datePeriod);
+		return Pair.of(!datePeriod.isEmpty(), datePeriod);
 	}
 
 	private Pair<Boolean, List<AggrPeriodEachActualClosure>> isInPeriod(List<AggrPeriodEachActualClosure> periods,
@@ -55,6 +55,6 @@ public class CheckCalcMonthService {
 			;
 		}
 		;
-		return Pair.of(datePeriods.isEmpty(), datePeriods);
+		return Pair.of(!datePeriods.isEmpty(), datePeriods);
 	}
 }

@@ -18,6 +18,10 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	private static final String GET_BY_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
 			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
+	
+	private static final String GET_BY_LIST_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
+			+ " WHERE c.krcdtIdentificationStatusPK.employeeId IN :employeeIds "
+			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
 
 	private static final String GET_BY_CODE = "SELECT c from KrcdtIdentificationStatus c "
 			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
@@ -46,6 +50,13 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	public List<Identification> findByEmployeeID(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(GET_BY_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
 				.setParameter("employeeId", employeeID).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<Identification> findByListEmployeeID(List<String> employeeIDs,GeneralDate startDate,GeneralDate endDate) {
+		return this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
+				.setParameter("employeeIds", employeeIDs).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 	}
 
