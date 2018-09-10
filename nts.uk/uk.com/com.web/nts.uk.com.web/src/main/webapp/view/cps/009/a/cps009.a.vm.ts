@@ -67,7 +67,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return; 
-                
+                $('#date1').trigger('validate');
                 self.getItemList(self.initSettingId(), value);
 
             });
@@ -432,7 +432,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 itemListSetting: Array<any> = _.filter(self.currentCategory().itemList(), function(item) {
                     return item.selectedRuleCode() == 2;
                 });
-            
+            $('#date1').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
@@ -975,6 +975,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                if (value !== 2) {
+                    error.clearAll();
+                }
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
