@@ -133,6 +133,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 				this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			} else {
 				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+				asyncContext.finishedAsCancelled();
 			}
 		}
 		
