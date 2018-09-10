@@ -42,7 +42,7 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 				KscdtScheState.class);
 		if (kscstWorkScheduleState.isPresent()) {
 			kscstWorkScheduleState.get().scheduleEditState = domain.getScheduleEditState().value;
-			this.commandProxy().update(kscstWorkScheduleState);
+			this.commandProxy().update(kscstWorkScheduleState.get());
 			this.getEntityManager().flush();
 		}
 	}
@@ -59,7 +59,7 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 		Optional<KscdtScheState> kscstWorkScheduleState = this.queryProxy().find(pk,KscdtScheState.class);
 		if (kscstWorkScheduleState.isPresent()) {
 			kscstWorkScheduleState.get().scheduleEditState = domain.getScheduleEditState().value;
-			this.commandProxy().update(kscstWorkScheduleState);
+			this.commandProxy().update(kscstWorkScheduleState.get());
 		} else {
 			KscdtScheState entity = new KscdtScheState(pk, domain.getScheduleEditState().value);
 			this.commandProxy().insert(entity);

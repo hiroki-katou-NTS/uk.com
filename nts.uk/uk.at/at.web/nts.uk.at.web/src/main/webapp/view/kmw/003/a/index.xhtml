@@ -69,7 +69,7 @@
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">				
-					<div style="min-width: 100px">
+					<div style="min-width: 50px">
 						<!--A1_11 ロック解除中--> 
 						<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	
 						<!--A2_1 社員範囲選択--> 						
@@ -91,7 +91,7 @@
 						<!--A4_3 実績期間--> 
 						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
 						<!--A4_4 実績期間選択--> 
-						<div  id="dislayFormatLbl" style="width:218px" data-bind="ntsComboBox: {
+						<div  id="dislayFormatLbl" style="width:218px; vertical-align: middle;" data-bind="ntsComboBox: {
 								options: actualTimeOptionDisp,
 								optionsValue: 'code',
 								value: actualTimeSelectedCode,
@@ -174,8 +174,10 @@
 					<div class="compact-grid grid-container" id="gid">
 						<table id="dpGrid"></table>
 					</div>
+					
+					<!-- <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> -->
 					<!--A7_1 コメント--> 
-					<span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span>
+					<div style="margin-top: 705px; width : 50%" data-bind="text: comment"></div>
 				</div>
 				<div id="tooltip"><span id="textLock"></span></div>
 			</div>

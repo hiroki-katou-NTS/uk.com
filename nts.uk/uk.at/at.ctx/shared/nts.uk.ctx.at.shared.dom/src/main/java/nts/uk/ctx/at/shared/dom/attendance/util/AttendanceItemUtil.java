@@ -226,7 +226,7 @@ public class AttendanceItemUtil implements ItemConst {
 					}
 				});
 
-				 correctList(listNoIdx, idxField, itemsForIdx, originalIdx,  list);
+				correctList(idxField, itemsForIdx, originalIdx,  list);
 
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 
@@ -297,7 +297,7 @@ public class AttendanceItemUtil implements ItemConst {
 		return originalL == null ? new ArrayList<>() : originalL;
 	}
 
-	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
+	private static <T> void correctList(Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
 											List<Integer> originalIdx, List<T> list) {
 		if (idxField == null) {
 			return;
@@ -310,9 +310,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return false;
 			}
 
-			int idx = (int) value;
-
-			return !(originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx));
+			return !(originalIdx.contains((int) value) || itemsForIdx.containsKey((int) value));
 		});
 
 	}

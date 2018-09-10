@@ -121,6 +121,9 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 		case 13:
 			return DataValueAttribute.MONEY.value;
 			
+		case 15:
+			return DataValueAttribute.CLOCK.value;	
+			
 		default:
 			return DataValueAttribute.STRING.value;
 		}

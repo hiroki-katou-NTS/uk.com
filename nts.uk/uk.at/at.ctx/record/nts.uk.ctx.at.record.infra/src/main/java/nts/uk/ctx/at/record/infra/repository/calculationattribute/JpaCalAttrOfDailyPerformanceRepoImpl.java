@@ -123,8 +123,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			calcSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
 		}
 		if (domain.getLeaveEarlySetting() != null) {
-			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
-			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
 		}
 		calcSet.overTimeWorkId = overtimeCalc.overTimeWorkId;
 		calcSet.flexExcessTimeId = flexCalc.flexExcessTimeId;

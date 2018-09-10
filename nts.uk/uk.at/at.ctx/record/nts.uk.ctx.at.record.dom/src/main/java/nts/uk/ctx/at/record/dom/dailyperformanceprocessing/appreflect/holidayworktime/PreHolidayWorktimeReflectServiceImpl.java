@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.eclipse.persistence.internal.jpa.metadata.structures.ArrayAccessor;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -101,8 +104,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
 			IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
-			timeAndAnyItemUpService.addAndUpdate(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), 
-					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
+			timeAndAnyItemUpService.addAndUpdate(calculateData);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -139,8 +141,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		daily.setAttendanceLeave(Optional.of(a));
 		daily.setWorkInformation(workInformation);
 		IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
-		timeAndAnyItemUpService.addAndUpdate(employeeId, baseDate, 
-				calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
+		timeAndAnyItemUpService.addAndUpdate(calculateData);
 		return daily;
 	}
 

@@ -30,6 +30,17 @@ public interface ApprovalStatusAdapter {
 	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
 	
 	/**
+	 * <=>RequestList133
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyeeNew(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
+	
+	/**
 	 * <=>RequestList229
 	 * @param approvalRecordDates
 	 * @param employeeID
@@ -89,4 +100,16 @@ public interface ApprovalStatusAdapter {
 	 */
 	public List<ApprovalRootStateStatusImport> getStatusByEmpAndDate(String employeeID, DatePeriod datePeriod, 
 			Integer rootType);
+	
+	/**
+	 * RequestList155
+	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
+	 * getApprovalByListEmplAndListApprovalRecordDate
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDateNew(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 }

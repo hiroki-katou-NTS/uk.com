@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -52,7 +53,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	private TotalCountByPeriod totalCount;
 	/** 集計日数 */
 	@Setter
-	private AttendanceDaysMonthDom aggregateDays;
+	private AttendanceDaysMonth aggregateDays;
 
 	/**
 	 * コンストラクタ
@@ -75,7 +76,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.excessOutsideWork = new ExcessOutsideWorkOfMonthly();
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.totalCount = new TotalCountByPeriod();
-		this.aggregateDays = new AttendanceDaysMonthDom((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
+		this.aggregateDays = new AttendanceDaysMonth((double)(datePeriod.start().daysTo(datePeriod.end()) + 1));
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 			ExcessOutsideWorkOfMonthly excessOutsideWork,
 			VerticalTotalOfMonthly verticalTotal,
 			TotalCountByPeriod totalCount,
-			AttendanceDaysMonthDom aggregateDays){
+			AttendanceDaysMonth aggregateDays){
 		
 		val domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, datePeriod);
 		domain.monthlyCalculation = monthlyCalculation;

@@ -815,6 +815,8 @@ module nts.uk.ui.koExtentions {
                         _self.updateMonthsView.call(_self);
                     }, 0);
                 }
+                
+                self.$input.focus();
             });
             return self;
         }

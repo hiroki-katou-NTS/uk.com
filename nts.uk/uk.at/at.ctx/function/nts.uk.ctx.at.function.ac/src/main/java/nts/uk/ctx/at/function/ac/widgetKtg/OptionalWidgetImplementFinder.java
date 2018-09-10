@@ -257,8 +257,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = GeneralDate.today();
-			grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
@@ -269,7 +268,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, GeneralDate.today());
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
 		}
 	}
 

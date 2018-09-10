@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -62,7 +63,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算　（社員の日別実績を計算）
- * @author shuichu_ishida
+ * @author keisuke_hoshina
  */
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
@@ -136,6 +137,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	/** リポジトリ：日別実績の臨時出退勤 */
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の備考 */
+	@Inject
+	private RemarksOfDailyPerformRepo remarksRepository;
 	
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
@@ -299,7 +304,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					attendanceLeavingGateOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の入退門 */
 					anyItemValueOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の任意項目 */
 					editStateOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のの編集状態 */
-					temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd())/** リポジトリ：日別実績の臨時出退勤 */
+					temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の臨時出退勤 */
+					remarksRepository.getRemarks(employeeId, attendanceTime.getYmd())
 					));
 		}
 		return returnList;
