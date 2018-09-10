@@ -56,8 +56,9 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-
+            caic = ko.mapping.fromJS(param.data);
+            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+            
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
@@ -65,9 +66,9 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 caic.countableSubAtdItems([]);
                 caic.conditionType(0);
                 caic.compareOperator(0);
-                caic.singleAtdItem(null);
-                caic.compareStartValue(null);
-                caic.compareEndValue(null);
+                caic.singleAtdItem(0);
+                caic.compareStartValue(0);
+                caic.compareEndValue(0);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
@@ -493,8 +494,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
             this.countableSubAtdItems = ko.observableArray(param.countableSubAtdItems);
             this.conditionType = ko.observable(param.conditionType);
             this.singleAtdItem = ko.observable(param.singleAtdItem);
-            this.compareStartValue = ko.observable(param.compareStartValue);
-            this.compareEndValue = ko.observable(param.compareEndValue);
+            this.compareStartValue = ko.observable(param.compareStartValue || 0);
+            this.compareEndValue = ko.observable(param.compareEndValue || 0);
             this.compareOperator = ko.observable(param.compareOperator);
         }
         

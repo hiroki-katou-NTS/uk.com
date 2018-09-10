@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 public class CcgmtTopPagePartPK implements Serializable {
-	
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 

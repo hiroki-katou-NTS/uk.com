@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ws.dailyperformanceformat;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttendanceItemsFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Path("at/record/businesstype")
 @Produces("application/json")
@@ -82,6 +86,37 @@ public class AttendanceItemWebService extends WebService {
 	@Path("attendanceItem/daily/findbyanyitem")
 	public List<AttdItemDto> getAttdItemLinkingByAnyItem(AttdItemLinkRequest request) {
 		return this.attendanceItemsFinder.findByAnyItem(request);
+	}
+    /**
+     * added by MinhVV
+     * @param monthlyAttendanceAtr
+     * @return
+     */
+    @POST
+    @Path("attendanceItem/getListMonthlyByAttendanceAtrNew/{monthlyAttendanceAtr}")
+    public List<AttdItemDto> getListMonthlyByAttendanceAtrNew(@PathParam("monthlyAttendanceAtr") int monthlyAttendanceAtr){
+          LoginUserContext login = AppContexts.user();
+          String companyId = login.companyId();
+          ArrayList<Integer> atrs = new ArrayList<>();
+          atrs.add(monthlyAttendanceAtr);
+          Optional<String> roleId = Optional.empty();
+          return this.attendanceItemsFinder.findListMonthlyByAttendanceAtrNew(companyId, roleId, null, atrs);
+    }
+    
+    /**
+     * added by MinhVV
+     * @param dailyAttendanceAtr
+     * @return
+     */
+	@POST
+	@Path("attendanceItem/getListByAttendanceAtrNew/{dailyAttendanceAtr}")
+	public List<AttdItemDto> getListByAttendanceAtrNew(@PathParam("dailyAttendanceAtr") int dailyAttendanceAtr){
+		LoginUserContext login = AppContexts.user();
+        String companyId = login.companyId();
+        ArrayList<Integer> atrs = new ArrayList<>();
+        atrs.add(dailyAttendanceAtr);
+        Optional<String> roleId = Optional.empty();
+		return this.attendanceItemsFinder.findListByAttendanceAtrNew(companyId, roleId, null, atrs);
 	}
 
 }

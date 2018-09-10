@@ -5,17 +5,23 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * @author hungnm
+ * @author hungnm - 代休残数
  *
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CompensLeaveComDto {
 
-	private String companyId;
+	private boolean manageCompenLeave;
 
-	private boolean manageAtr;
+	private boolean manageTimeOff;
+
+	private Double compenLeaveRemain;
+	
+	private Integer timeRemain;
 	
 }

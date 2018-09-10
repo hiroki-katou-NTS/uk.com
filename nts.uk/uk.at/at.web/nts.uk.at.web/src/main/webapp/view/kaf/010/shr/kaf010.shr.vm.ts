@@ -440,7 +440,7 @@ module nts.uk.at.view.kaf010.share {
                 
                 overtimeWork1.yearMonth(overtimeAgreement.currentMonth);
                 let exceptionLimitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.exceptionLimitErrorTime;   
-                if(exceptionLimitErrorTime1 >= 0){
+                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime1)){
                     overtimeWork1.limitTime(Process.convertTime(exceptionLimitErrorTime1));             
                 } else {
                     let limitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.limitErrorTime;
@@ -488,7 +488,7 @@ module nts.uk.at.view.kaf010.share {
                 
                 overtimeWork2.yearMonth(overtimeAgreement.nextMonth);
                 let exceptionLimitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.exceptionLimitErrorTime;   
-                if(exceptionLimitErrorTime2 >= 0){
+                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime2)){
                     overtimeWork2.limitTime(Process.convertTime(exceptionLimitErrorTime2));             
                 } else {
                     let limitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.limitErrorTime;
@@ -543,7 +543,7 @@ module nts.uk.at.view.kaf010.share {
                 let overtimeWork = new common.OvertimeWork("",0,0,0,0,"","");
                 
                 overtimeWork.yearMonth(nts.uk.time.formatYearMonth(appOvertimeDetailDto.yearMonth));
-                if(appOvertimeDetailDto.exceptionLimitErrorTime > 0){
+                if(!nts.uk.util.isNullOrUndefined(appOvertimeDetailDto.exceptionLimitErrorTime)){
                     overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.exceptionLimitErrorTime));    
                 } else {
                     overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.limitErrorTime));    
