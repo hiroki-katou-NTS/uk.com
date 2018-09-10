@@ -7,12 +7,12 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemStRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.timeitemset.QpbmtTimeItemSt;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.timeitemset.QpbmtTimeItemStPk;
 
 @Stateless
-public class JpaTimeItemStRepository extends JpaRepository implements TimeItemStRepository {
+public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTimeItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING

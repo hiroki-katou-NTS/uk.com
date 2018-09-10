@@ -56,7 +56,7 @@ public class StdOutputCondSet extends AggregateRoot {
 	 */
 	private int stringFormat;
 
-	public static StdOutputCondSet createFromJavaType(String cid, String conditionSetCd, String categoryId,
+	public static StdOutputCondSet toDomain(String cid, String conditionSetCd, String categoryId,
 			int delimiter, int itemOutputName, int autoExecution, String conditionSetName, int conditionOutputName,
 			int stringFormat) {
 		StdOutputCondSet stdOutputCondSet = new StdOutputCondSet(cid, conditionSetCd, categoryId, delimiter,
