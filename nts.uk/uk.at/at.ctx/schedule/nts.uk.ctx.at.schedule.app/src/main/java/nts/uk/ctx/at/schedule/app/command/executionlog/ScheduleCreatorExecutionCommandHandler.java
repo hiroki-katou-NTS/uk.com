@@ -814,6 +814,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 				}
 			}
+
+			// 暫定データを作成する (Tạo data tạm)
+			registrationListDateSchedule.getRegistrationListDateSchedule().stream()
+				.filter(x -> x.getEmployeeId().equals(scheduleCreator.getEmployeeId()))
+				.forEach(x -> {
+					// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+				});
 		});
 		
 //		for (val scheduleCreator : scheduleCreators) {
@@ -865,11 +873,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 //			
 //		}
 		
-		// 暫定データを作成する (Tạo data tạm)
-		registrationListDateSchedule.getRegistrationListDateSchedule().stream().forEach(x -> {
-			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-		});
 
 		// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
 		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
