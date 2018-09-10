@@ -756,6 +756,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
+                rowVirtualization: true,
+                virtualization: true,
+                virtualizationMode: 'continuous',
                 columnLayouts: [
                     {
                         width: "100%",
@@ -896,10 +899,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
             $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
                 var headerSetting = $(ui.element).data("headersetting");
                 var header = ui.element.find("th[role='columnheader']");
+                let helpButton = "<button id=\"F3_113\" data-bind=\"ntsHelpButton: {textId: \'CLI003_68\', textParams:[\'{#CLI003_68}\'], position: \'right center\' }\">？</button>";
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
-                    header.filter("th[aria-label='" + currentSetting.key + "']")
-                        .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+                    if (currentSetting.headerText == "項目名") {
+                        header.filter("th[aria-label='" + currentSetting.key + "']")
+                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
+                    } else {
+                        header.filter("th[aria-label='" + currentSetting.key + "']")
+                            .find(".ui-iggrid-headertext").text(currentSetting.headerText)
+                    }
                 }
             });
 
@@ -917,6 +926,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             headerSetting = parentSource[i].subColumnsHeaders;
                             if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                 newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                                newSource = _.orderBy(newSource, ['targetDate','showOrder'], ['asc','asc']);
                             }
                             if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                                 newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
@@ -2086,6 +2096,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         valueAfter: string;
         remarks: string;
         correctionAttr: string;
+        showOrder : number
         constructor(param: DataCorrectParam) {
             this.operationId = param.operationId;
             this.targetDate = param.targetDate;
