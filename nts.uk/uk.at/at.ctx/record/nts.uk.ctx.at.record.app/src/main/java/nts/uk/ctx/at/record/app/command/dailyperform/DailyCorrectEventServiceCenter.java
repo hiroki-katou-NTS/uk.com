@@ -15,6 +15,8 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeHandler;
@@ -55,18 +57,18 @@ public class DailyCorrectEventServiceCenter {
 			173, 175, 177, 178, 179, 181, 183, 184, 185, 187, 189, 190, 191, 193, 195, 196, 197, 199, 201, 202, 203,
 			205, 207, 208, 209, 211, 213, 214, 215);
 	
-	public List<DailyRecordWorkCommand> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
+	public CorrectResult correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(false).triggerBreakTime(true).triggerTimeLeave(true).build();
 		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), 
 				companyId, eventBus);
 	}
 	
-	public List<DailyRecordWorkCommand> correctTimeLeave(List<DailyRecordWorkCommand> sources, String companyId){
+	public CorrectResult correctTimeLeave(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(false).triggerTimeLeave(true).build();
 		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), companyId, eventBus);
 	}
 	
-	public List<DailyRecordWorkCommand> correctBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
+	public CorrectResult correctBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(true).triggerBreakTime(true).triggerTimeLeave(false).build();
 		return prepareSourceAndFireEvent(mapShouldTriggerSources(sources, eventBus), companyId, eventBus);
 	}
@@ -80,18 +82,13 @@ public class DailyCorrectEventServiceCenter {
 		}));
 	}
 	
-	@SafeVarargs
-	private final List<Integer> mergeItems(List<Integer>... sources) {
-		return Stream.of(sources).flatMap(List::stream).collect(Collectors.toList());
-	}
-	
-	private List<DailyRecordWorkCommand> prepareSourceAndFireEvent(Map<DailyRecordWorkCommand, EventTriggerBus> sources, 
+	private CorrectResult prepareSourceAndFireEvent(Map<DailyRecordWorkCommand, EventTriggerBus> sources, 
 			String companyId, EventTrigger eventBus){
 		if(sources.isEmpty()){
-			return new ArrayList<>();
+			return CorrectResult.builder().build();
 		}
 		if(!sources.values().stream().anyMatch(c -> c.shouldTriggerEvent())){
-			return new ArrayList<>(sources.keySet()); 
+			return CorrectResult.builder().build(); 
 		}
 		Set<String> workTypeCode = new HashSet<>();
 		sources.keySet().stream().forEach(s -> {
@@ -103,8 +100,12 @@ public class DailyCorrectEventServiceCenter {
 		
 		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
 				.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
+		
+		CorrectResult result = CorrectResult.builder().workType(workTypes).workCondition(getWorkCondition(eventBus, employeeIds)).build();
 
-		return triggerEvent(sources, companyId, workTypes, getWorkCondition(eventBus, employeeIds), eventBus);
+		result.setData(triggerEvent(sources, companyId, workTypes, result.getWorkCondition(), eventBus));
+		
+		return result;
 	}
 
 	private Map<String, Map<GeneralDate, WorkingConditionItem>> getWorkCondition(EventTrigger eventBus,
@@ -166,6 +167,11 @@ public class DailyCorrectEventServiceCenter {
 			return dailyRecord;
 		}).collect(Collectors.toList());
 	}
+	
+	@SafeVarargs
+	private final List<Integer> mergeItems(List<Integer>... sources) {
+		return Stream.of(sources).flatMap(List::stream).collect(Collectors.toList());
+	}
 
 	private WorkingConditionItem getBySidAndDate(Map<String, Map<GeneralDate, WorkingConditionItem>> workCondition,
 			WorkInfoOfDailyPerformance wi) {
@@ -173,6 +179,19 @@ public class DailyCorrectEventServiceCenter {
 			return null;
 		}
 		return workCondition.get(wi.getEmployeeId()).get(wi.getYmd());
+	}
+
+	@Data
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class CorrectResult {
+		
+		private Map<WorkTypeCode, WorkType> workType;
+		
+		private List<DailyRecordWorkCommand> data;
+		
+		private Map<String, Map<GeneralDate, WorkingConditionItem>> workCondition;
 	}
 	
 	@AllArgsConstructor
