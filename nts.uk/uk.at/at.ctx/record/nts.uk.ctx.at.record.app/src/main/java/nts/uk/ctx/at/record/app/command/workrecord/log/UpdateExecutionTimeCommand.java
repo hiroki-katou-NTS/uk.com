@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.app.command.workrecord.log;
 
 import lombok.Data;
-import lombok.Getter;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * 
@@ -15,7 +13,7 @@ public class UpdateExecutionTimeCommand {
 	
 	private String empCalAndSumExecLogID; 
 
-	private GeneralDateTime executionStartDate;
+	private String executionStartDate;
 	
-	private GeneralDateTime executionEndDate;
+	private String executionEndDate;
 }
