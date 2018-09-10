@@ -28,6 +28,7 @@ import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
@@ -543,22 +544,32 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
 		
-		betweenDates.forEach(dateInPeriod -> {
-//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//					.build(() -> {
-						createScheduleBasedPersonOneDate(
-								command,
-								creator,
-								domain,
-								context,
-								dateInPeriod,
-								masterCache,
-								listBasicSchedule,
-								dateRegistedEmpSche);
-
-						// // Count down latch.
-//						countDownLatch.countDown();
-		});
+		if (masterCache.getListWorkingConItem().size() > 1) {
+			// 労働条件が途中で変化するなら、計算キャッシュは利用しない
+			CalculationCache.clear();
+		} else {
+			CalculationCache.initialize();
+		}
+		try {
+			betweenDates.forEach(dateInPeriod -> {
+	//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+	//					.build(() -> {
+							createScheduleBasedPersonOneDate(
+									command,
+									creator,
+									domain,
+									context,
+									dateInPeriod,
+									masterCache,
+									listBasicSchedule,
+									dateRegistedEmpSche);
+	
+							// // Count down latch.
+	//						countDownLatch.countDown();
+			});
+		} finally {
+			CalculationCache.clear();
+		}
 
 		if(dateRegistedEmpSche.getListDate().size() > 0){
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);

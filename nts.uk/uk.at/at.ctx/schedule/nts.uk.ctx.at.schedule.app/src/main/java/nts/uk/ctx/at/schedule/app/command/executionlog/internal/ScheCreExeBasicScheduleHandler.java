@@ -632,7 +632,10 @@ public class ScheCreExeBasicScheduleHandler {
 	 * 勤務予定時間
 	 */
 	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		ScTimeImport scTimeImport = scTimeAdapter.calculation(companySetting, param);
+		ScTimeImport scTimeImport = CalculationCache.getResult(
+				param.forCache(),
+				() -> scTimeAdapter.calculation(companySetting, param));
+		
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
 			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
