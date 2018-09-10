@@ -250,7 +250,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingColums = ko.observableArray([
                 { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
                 { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
-                { headerText: text('CPS009_11'), key: 'settingName', width: 160 }
+                { headerText: text('CPS009_11'), key: 'settingName', width: 160, formatter: _.escape }
             ]);
 
             self.itemValueLst = ko.observableArray([
