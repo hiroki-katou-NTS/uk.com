@@ -44,7 +44,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         "26": "25"
     }
 
-    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44];
+    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44, 623, 625];
 
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
@@ -2561,7 +2561,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 preventEditInError: false,
                 columns: self.headersGrid,
                 hidePrimaryKey: true,
