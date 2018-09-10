@@ -19,7 +19,7 @@ public class AddSalaryInsuColMonCommandHandler extends CommandHandler<SalaryInsu
 	@Override
 	protected void handle(CommandHandlerContext<SalaryInsuColMonCommand> context) {
 		SalaryInsuColMonCommand addCommand = context.getCommand();
-		repository.add(new SalaryInsuColMon(addCommand.getProcessCateNo(), addCommand.getCid(),
+		repository.add(new SalaryInsuColMon(
 				addCommand.getMonthCollected()));
 
 	}

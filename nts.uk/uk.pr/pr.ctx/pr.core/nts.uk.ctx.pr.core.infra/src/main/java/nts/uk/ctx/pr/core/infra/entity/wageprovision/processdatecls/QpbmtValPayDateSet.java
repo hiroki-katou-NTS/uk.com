@@ -193,7 +193,7 @@ public class QpbmtValPayDateSet extends UkJpaEntity implements Serializable {
 				domain.getBasicSetting().getMonthlyPaymentDate().getDatePayMent().value,
 				domain.getBasicSetting().getWorkDay().v(),
 				domain.getAdvancedSetting().getItemPrintingMonth().getPrintingMonth().value,
-				domain.getAdvancedSetting().getSocialInsuColleMonth().value,
+				domain.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value,
 				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value,
 				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value,
 				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,

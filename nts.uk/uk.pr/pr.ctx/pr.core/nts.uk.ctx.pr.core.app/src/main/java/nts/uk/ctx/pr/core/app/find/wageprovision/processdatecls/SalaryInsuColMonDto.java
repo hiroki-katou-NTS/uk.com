@@ -12,16 +12,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SalaryInsuColMon;
 public class SalaryInsuColMonDto
 {
     
-    /**
-    * 処理区分NO
-    */
-    private int processCateNo;
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
+
     /**
     * 徴収月
     */
@@ -30,7 +21,7 @@ public class SalaryInsuColMonDto
     
     public static SalaryInsuColMonDto fromDomain(SalaryInsuColMon domain)
     {
-        return new SalaryInsuColMonDto(domain.getProcessCateNo(), domain.getCid(), domain.getMonthCollected().value);
+        return new SalaryInsuColMonDto(domain.getMonthCollected().value);
     }
     
 }

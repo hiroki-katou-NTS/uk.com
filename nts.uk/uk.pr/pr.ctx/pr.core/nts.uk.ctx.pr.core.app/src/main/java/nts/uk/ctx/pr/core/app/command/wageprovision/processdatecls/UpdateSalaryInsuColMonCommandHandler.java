@@ -19,7 +19,7 @@ public class UpdateSalaryInsuColMonCommandHandler extends CommandHandler<SalaryI
 	@Override
 	protected void handle(CommandHandlerContext<SalaryInsuColMonCommand> context) {
 		SalaryInsuColMonCommand updateCommand = context.getCommand();
-		repository.update(new SalaryInsuColMon(updateCommand.getProcessCateNo(), updateCommand.getCid(),
+		repository.update(new SalaryInsuColMon(
 				updateCommand.getMonthCollected()));
 
 	}

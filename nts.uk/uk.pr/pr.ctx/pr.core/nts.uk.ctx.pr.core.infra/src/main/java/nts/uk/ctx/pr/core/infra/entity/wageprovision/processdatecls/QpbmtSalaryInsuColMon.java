@@ -44,10 +44,10 @@ public class QpbmtSalaryInsuColMon extends UkJpaEntity implements Serializable
     }
 
     public SalaryInsuColMon toDomain() {
-        return new SalaryInsuColMon(this.salaryInsuColMonPk.processCateNo, this.salaryInsuColMonPk.cid, this.monthCollected);
+        return new SalaryInsuColMon( this.monthCollected);
     }
     public static QpbmtSalaryInsuColMon toEntity(SalaryInsuColMon domain) {
-        return new QpbmtSalaryInsuColMon(new QpbmtSalaryInsuColMonPk(domain.getProcessCateNo(), domain.getCid()), domain.getMonthCollected().value);
+        return new QpbmtSalaryInsuColMon(new QpbmtSalaryInsuColMonPk(), domain.getMonthCollected().value);
     }
 
 }
