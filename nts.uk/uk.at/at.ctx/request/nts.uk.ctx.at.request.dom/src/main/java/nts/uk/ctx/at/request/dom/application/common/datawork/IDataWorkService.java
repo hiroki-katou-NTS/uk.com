@@ -10,7 +10,8 @@ public interface IDataWorkService {
 	 * @param sId
 	 * @param appDate
 	 * @param appCommonSetting
+	 * @param appType 
 	 * @return DataWork
 	 */
-	DataWork getDataWork(String companyId, String sId, GeneralDate appDate, AppCommonSettingOutput appCommonSetting);
+	DataWork getDataWork(String companyId, String sId, GeneralDate appDate, AppCommonSettingOutput appCommonSetting, int appType);
 }

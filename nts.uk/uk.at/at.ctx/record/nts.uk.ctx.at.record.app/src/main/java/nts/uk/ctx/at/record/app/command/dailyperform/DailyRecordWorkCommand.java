@@ -263,6 +263,12 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.withDate(workDate);
 		return this;
 	}
+	
+	public DailyRecordWorkCommand forEmployeeIdAndDate(String employeeId, GeneralDate date) {
+		this.forEmployee(employeeId);
+		this.withDate(date);
+		return this;
+	}
 
 	public DailyRecordWorkCommand fromItems(List<ItemValue> itemValues) {
 		this.itemValues.addAll(itemValues);
@@ -291,7 +297,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 										this.getAttendanceLeavingGate().toDomain(), 
 										this.getOptionalItem().toDomain(), 
 										this.getEditState().toDomain(), 
-										this.getTemporaryTime().toDomain());
+										this.getTemporaryTime().toDomain(),
+										this.getRemarks().toDomain());
 	}
 
 	public List<ItemValue> itemValues() {

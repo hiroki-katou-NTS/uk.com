@@ -244,23 +244,26 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<div tabindex="20" id="period-date-inp" data-bind="ntsDatePicker: { 
+											<div tabindex="20"  class="period-date-inp" data-bind="ntsDatePicker: { 
 												value: startDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'StartDate', 
 												name: '#[KMF004_44]', 
-												enable: startDateEnable }"></div>
+												enable: startDateEnable,
+												required:startDateEnable
+												 }"></div>
 										</div>
 									</td>
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<div tabindex="21" id="period-date-inp" data-bind="ntsDatePicker: { 
+											<div tabindex="21" class="period-date-inp" data-bind="ntsDatePicker: { 
 												value: endDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'EndDate', 
 												name: '#[KMF004_46]', 
-												enable: endDateEnable }"></div>
+												enable: endDateEnable,
+												required:startDateEnable }"></div>
 										</div>
 									</td>
 									<td></td>

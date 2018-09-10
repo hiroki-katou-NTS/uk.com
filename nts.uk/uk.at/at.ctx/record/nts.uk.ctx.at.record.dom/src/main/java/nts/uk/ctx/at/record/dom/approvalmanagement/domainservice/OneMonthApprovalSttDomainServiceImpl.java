@@ -221,9 +221,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			oneMonthApprovalStatusDto.setStartDate(datePeriod.start());
 			oneMonthApprovalStatusDto.setEndDate(datePeriod.end());
 			// Imported「（就業．勤務実績）基準社員の承認対象者」をすべて取得する
-			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport = approvalStatusAdapter.getApprovalRootOfEmloyee(
-					datePeriod.start(), datePeriod.end(), AppContexts.user().employeeId(),
-					AppContexts.user().companyId(), 1);
+			
+			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport = approvalStatusAdapter.getApprovalRootOfEmloyeeNew(datePeriod.start()
+					, datePeriod.end(), AppContexts.user().employeeId(), AppContexts.user().companyId(), 1);
 			if (approvalRootOfEmployeeImport == null
 					|| approvalRootOfEmployeeImport.getApprovalRootSituations().size() == 0) {
 				throw new BusinessException("Msg_874");

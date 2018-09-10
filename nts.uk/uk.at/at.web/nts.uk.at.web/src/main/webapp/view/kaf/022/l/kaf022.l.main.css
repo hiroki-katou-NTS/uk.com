@@ -1,8 +1,8 @@
 #right-content {
 	margin-left: 40px;
-	margin-top: 30px;
-	float: left;
-	width: 735px;
+	margin-top: 20px;
+	/* float: left;
+	width: 735px; */
 }
 #left-content{
 	margin-left: 30px;
@@ -40,4 +40,22 @@
 .fixed-flex-layout-left{
     margin-left: 20px !important;
     margin-top: 20px !important;
+}
+
+
+#right-table th,
+#right-table td {
+	cursor: default;
+	border: 1px solid #ccc;
+	padding: 0 3px; 
+	height: 40px; 
+} 
+
+td div {
+	position: relative;
+	vertical-align: middle;
+}
+
+.contents-area-kaf022l{
+	height: 800px;
 }

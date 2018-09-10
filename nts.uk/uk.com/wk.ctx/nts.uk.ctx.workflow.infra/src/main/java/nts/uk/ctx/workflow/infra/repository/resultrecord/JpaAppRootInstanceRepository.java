@@ -65,7 +65,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.CID = 'companyID'" +
 			" AND appRoot.ROOT_TYPE = rootType" +
-			" order by appRoot.END_DATE desc";
+			" order by appRoot.START_DATE desc";
 	
 	private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
 			BASIC_SELECT + " WHERE appRoot.ROOT_ID NOT IN (SELECT ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <" +
@@ -96,16 +96,19 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	public void insert(AppRootInstance appRootInstance) {
 		this.commandProxy().insert(fromDomain(appRootInstance));
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void update(AppRootInstance appRootInstance) {
 		this.commandProxy().update(fromDomain(appRootInstance));
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void delete(AppRootInstance appRootInstance) {
 		this.commandProxy().remove(WwfdtAppRootInstance.class, appRootInstance.getRootID());
+		this.getEntityManager().flush();
 	}
 	
 	private WwfdtAppRootInstance fromDomain(AppRootInstance appRootInstance){
