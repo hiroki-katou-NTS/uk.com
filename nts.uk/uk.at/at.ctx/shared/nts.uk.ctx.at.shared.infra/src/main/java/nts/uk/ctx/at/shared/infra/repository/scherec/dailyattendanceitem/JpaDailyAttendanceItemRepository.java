@@ -146,10 +146,10 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		StringBuilder builderString = new StringBuilder();
 		builderString.append(FIND_ALL);
 		if (hasItemAtrs) {
-			builderString.append("AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs ");
+			builderString.append(" AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs");
 		}
 		if (hasAttendanceAtrs) {
-			builderString.append("AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds ");
+			builderString.append(" AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds");
 		}
 
 		TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy()

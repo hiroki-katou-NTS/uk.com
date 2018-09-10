@@ -198,10 +198,10 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" WHERE a.krcmtMonAttendanceItemPK.cid = :companyId");
 
 		if (hasItemAtrs) {
-			builderString.append("AND a.mAtdItemAtr IN :mAtdItemAtrs ");
+			builderString.append(" AND a.mAtdItemAtr IN :mAtdItemAtrs");
 		}
 		if (hasAttendanceAtrs) {
-			builderString.append("AND a.krcmtMonAttendanceItemPK.mAtdItemId IN :mAtdItemIds ");
+			builderString.append(" AND a.krcmtMonAttendanceItemPK.mAtdItemId IN :mAtdItemIds");
 		}
 
 		TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy()
