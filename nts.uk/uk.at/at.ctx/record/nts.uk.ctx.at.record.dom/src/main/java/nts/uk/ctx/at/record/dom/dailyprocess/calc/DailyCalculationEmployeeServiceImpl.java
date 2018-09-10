@@ -63,7 +63,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算　（社員の日別実績を計算）
- * @author shuichu_ishida
+ * @author keisuke_hoshina
  */
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless

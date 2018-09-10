@@ -77,6 +77,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("reflectApprovalStatus", ExecutionStatus.INCOMPLETE.nameId);
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -162,7 +163,11 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		//承認反映
 		if(finalStatus == ProcessState.SUCCESS
 				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
 			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
 		}
 		
 		//***** ↑

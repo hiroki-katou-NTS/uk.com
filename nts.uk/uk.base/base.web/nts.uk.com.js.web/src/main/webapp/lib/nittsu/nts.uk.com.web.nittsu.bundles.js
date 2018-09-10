@@ -24115,7 +24115,9 @@ var nts;
                                 if (!ftPrint)
                                     ftPrint = true;
                             };
-                            setShtCellState($cell);
+                            if ($cell) {
+                                setShtCellState($cell);
+                            }
                             _.forEach(_.keys(_mafollicle[SheetDef]), function (s) {
                                 if (s === _currentSheet)
                                     return;
@@ -24995,21 +24997,27 @@ var nts;
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
-                        var $cell, origVal = origDs[coord.rowIdx][coord.columnKey];
+                        var $cell, sumDone, origVal = origDs[coord.rowIdx][coord.columnKey];
                         var transe = function (sheet, zeroHidden, dirties, desc) {
                             var colour, before, after, total, calcCell = lch.cellAt(_$grid[0], coord.rowIdx, coord.columnKey, desc), sum = _summaries[coord.columnKey];
                             if (sum && sum.calculator === "Time" && calcCell) {
-                                after = moment.duration(cellValue);
-                                before = moment.duration($.data(calcCell, v.DATA));
-                                var diff = after.subtract(before);
-                                sum[_currentPage].add(diff);
+                                if (!sumDone) {
+                                    after = moment.duration(cellValue);
+                                    before = moment.duration($.data(calcCell, v.DATA));
+                                    var diff = after.subtract(before);
+                                    sum[_currentPage].add(diff);
+                                    sumDone = true;
+                                }
                                 sum[sheet].textContent = ti.momentToString(sum[_currentPage]);
                             }
                             else if (sum && sum.calculator === "Number" && calcCell) {
-                                after = parseFloat(cellValue);
-                                before = parseFloat($.data(calcCell, v.DATA));
-                                total = sum[_currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
-                                sum[_currentPage] = total;
+                                if (!sumDone) {
+                                    after = parseFloat(cellValue);
+                                    before = parseFloat($.data(calcCell, v.DATA));
+                                    total = sum[_currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
+                                    sum[_currentPage] = total;
+                                    sumDone = true;
+                                }
                                 sum[sheet].textContent = sum[_currentPage];
                             }
                             if (zeroHidden && ti.isZero(origVal)
@@ -25083,7 +25091,7 @@ var nts;
                             var t, formatted, disFormat, maf = _mafollicle[_currentPage][s];
                             if (maf && maf.desc) {
                                 t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
-                                if (!t || !t.c)
+                                if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
                                     return;
                                 formatted = format(column[0], cellValue);
                                 t.c.textContent = formatted;
@@ -25649,6 +25657,15 @@ var nts;
                             return;
                         var $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
                         $container.appendChild($sheetArea);
+                        var $scrollBar = document.createElement("ul");
+                        $scrollBar.classList.add("mgrid-sheet-scrollbar");
+                        $sheetArea.appendChild($scrollBar);
+                        var $up = document.createElement("li");
+                        $up.textContent = "▲";
+                        $scrollBar.appendChild($up);
+                        var $down = document.createElement("li");
+                        $down.textContent = "▼";
+                        $scrollBar.appendChild($down);
                         var $gridSheet = _prtDiv.cloneNode();
                         $gridSheet.classList.add("mgrid-sheet-nav");
                         $sheetArea.appendChild($gridSheet);
@@ -25675,6 +25692,13 @@ var nts;
                                 $btn.classList.add("ui-state-active");
                             });
                             $buttons.appendChild($btn);
+                        });
+                        var sheetNav = $($gridSheet);
+                        $up.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                            sheetNav.scrollTop(sheetNav.scrollTop() - gp.SHEET_HEIGHT);
+                        });
+                        $down.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                            sheetNav.scrollTop(sheetNav.scrollTop() + gp.SHEET_HEIGHT);
                         });
                     }
                     gp.imiSheets = imiSheets;
