@@ -249,12 +249,17 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			String query = FIND_BY_EMP_PERIOD;
-			String employeeIDLstParam = "''";
-			for(int i = 0; i<employeeIDLst.size(); i++){
-				if(i<employeeIDLst.size()-1){
-					employeeIDLstParam+=",";	
+			
+			String employeeIDLstParam = "";
+			if(CollectionUtil.isEmpty(employeeIDLst)){
+				employeeIDLstParam = "''";
+			} else {
+				for(int i = 0; i<employeeIDLst.size(); i++){
+					if(i<employeeIDLst.size()-1){
+						employeeIDLstParam+=",";	
+					}
+					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 				}
-				employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 			}
 			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
 			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
@@ -263,7 +268,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			PreparedStatement pstatement = con.prepareStatement(query);
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
-			if(CollectionUtil.isEmpty(listResult)){
+			if(!CollectionUtil.isEmpty(listResult)){
 				return listResult;
 			} else {
 				return Collections.emptyList();
