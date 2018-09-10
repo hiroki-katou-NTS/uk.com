@@ -1203,8 +1203,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
             let paramOutputItem = {
                 recordType: self.logTypeSelectedCode()
             }
-
+            
+           
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
+                 let dfd = $.Deferred<any>();
+                 block.grayout();
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
                 let selectCancel=nts.uk.ui.windows.getShared("selectCancel");
                 // function get logdisplaysetting by code
@@ -1253,14 +1256,25 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                         self.listLogBasicInforAllModel = data;                                       
                                         self.filterDataExport();
                                     } else {
-                                        alertError({ messageId: "Msg_1220" });
+                                        alertError({ messageId: "Msg_1220" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
+                                        
                                     }
 
                                 }).fail(function(error) {
                                     alertError(error);
                                 });
                             } else {
-                                alertError({ messageId: "Msg_1221" });
+                                alertError({ messageId: "Msg_1221" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
                             }
 
                         }).fail(function(error) {
@@ -1268,14 +1282,26 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         });
                     } else {
                         if(selectCancel==false){
-                             alertError({ messageId: "Msg_1215" });
+                             alertError({ messageId: "Msg_1215" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
                             }                                             
                     }
                 }).fail(function(error) {
                     alertError(error);
                 })
 
+            }).fail(function(error) {
+                alertError(error);
+                dfd.resolve();
+            }).always(() => {
+                block.clear();
+                errors.clearAll();
             });
+            return dfd.promise();;
         }
 
         setListColumnHeaderLogScreenI(recordType: number, listOutputItem: Array<any>) {
@@ -1777,6 +1803,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
         // filter
         filterDataExport(){
              let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
             self.listLogDataExport =  ko.observableArray([]);;
             let recordType = Number(self.logTypeSelectedCode());
 
@@ -1792,15 +1820,29 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     self.listLogDataExport=dataLogExport;
                     self.exportCsvI();
                     }else{
-                     alertError({ messageId: "Msg_1220" });
+                     alertError({ messageId: "Msg_1220" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
+                    
                     }
-                });
+                }).fail(function(error) {
+                alertError(error);
+                dfd.resolve();
+            }).always(() => {
+                block.clear();
+                errors.clearAll();
+            });
+              return dfd.promise();
             
             }
         // export 
         exportCsvI() {
             let self = this;
-       
+            let dfd = $.Deferred<any>();
+            block.grayout();
             let recordType = Number(self.logTypeSelectedCode());
 
             let params = {           
@@ -1809,7 +1851,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
             };
         
             service.logSettingExportCsvScreenI(params).done(() => {               
+            }).fail(function(error) {
+                alertError(error);
+                dfd.resolve();
+            }).always(() => {
+                block.clear();
+                errors.clearAll();
             });
+              return dfd.promise();
         }
         
         backScreenDtoBC() {
