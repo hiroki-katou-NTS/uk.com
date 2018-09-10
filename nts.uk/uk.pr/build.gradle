@@ -70,35 +70,35 @@ subprojects {
 		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.infra:upver',
 		':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.core.infra:upver',
+		':pr.ctx:pr.core:nts.uk.ctx.pr.core.app:upver',
+		':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom:upver',
+		':pr.ctx:pr.core:nts.uk.ctx.pr.core.infra:upver',
 		':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.infra:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.report.pub:upver',
+		':pr.ctx:pr.report:nts.uk.ctx.pr.report.app:upver',
+		':pr.ctx:pr.report:nts.uk.ctx.pr.report.dom:upver',
+		':pr.ctx:pr.report:nts.uk.ctx.pr.report.infra:upver',
+		':pr.ctx:pr.report:nts.uk.ctx.pr.report.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.infra:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.stdremu.pub:upver',
+		':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.app:upver',
+		':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.dom:upver',
+		':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.infra:upver',
+		':pr.ctx:pr.stdremu:nts.uk.ctx.pr.stdremu.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.infra:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.yearend.pub:upver',
+		':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.app:upver',
+		':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.dom:upver',
+		':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.infra:upver',
+		':pr.ctx:pr.yearend:nts.uk.ctx.pr.yearend.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.infra:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.transfer.pub:upver',
+		':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.app:upver',
+		':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.dom:upver',
+		':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra:upver',
+		':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.pub:upver',
 		
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.app:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.dom:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.infra:upver',
-		':pr.ctx:pr.shared:nts.uk.ctx.pr.retire.pub:upver'
+		':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.app:upver',
+		':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.dom:upver',
+		':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra:upver',
+		':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pub:upver'
 	
 	]) { }
 	
