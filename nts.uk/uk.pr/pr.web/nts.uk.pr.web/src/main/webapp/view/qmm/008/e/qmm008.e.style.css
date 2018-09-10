@@ -1,0 +1,24 @@
+#E1_4 {
+	margin-left: 45px;
+}
+#E2_1 {
+	margin-bottom: 15px;
+}
+
+#E2_4 {
+	margin-left: 265px;
+}
+
+#E2_8 {
+	margin-top : 20px;
+	margin-left: 445px;
+}
+
+#E2_9 {
+	
+	margin-left: 445px;
+}
+
+.nts-fixed-header-wrapper, .nts-fixed-body-wrapper {
+	width: auto !important;
+}

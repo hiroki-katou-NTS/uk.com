@@ -1,0 +1,24 @@
+#F1_4 {
+	margin-left: 45px;
+}
+#F2_1 {
+	margin-bottom: 15px;
+}
+
+#F2_4 {
+	margin-left: 265px;
+}
+
+#F2_8 {
+	margin-top : 20px;
+	margin-left: 445px;
+}
+
+#F2_9 {
+	
+	margin-left: 445px;
+}
+
+.nts-fixed-header-wrapper, .nts-fixed-body-wrapper {
+	width: auto !important;
+}

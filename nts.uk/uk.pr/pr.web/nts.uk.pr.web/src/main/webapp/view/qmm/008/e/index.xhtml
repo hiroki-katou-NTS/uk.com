@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 1900, height: 200 };</script>
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.ResidenceCode
+   				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="qmm008.e.vm.js" />
+				<com:scriptfile path="qmm008.e.start.js" />
+				<com:scriptfile path="qmm008.e.service.js" />
+				<com:stylefile path="qmm008.e.style.css" />
+            </ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="margin-left: 65px;">
+				<div style="margin-bottom: 15px;">
+					<button class="proceed" id = "E1_1" >#{i18n.getText('QMM008_1')}</button>
+					<button id ="E1_2">#{i18n.getText('QMM008_2')}</button>
+					<button id ="E1_3">#{i18n.getText('QMM008_141')}</button>
+					<button id ="E1_4" >#{i18n.getText('QMM008_108')}</button>
+				</div>
+				<hr></hr>
+				<div>
+					<div id ="E2_1" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_142')}</div>
+					<span style="margin-bottom: 15px;" id = "E2_2">Demo</span>
+					<span style="margin-bottom: 15px;" id = "E2_3">Demo</span>
+					<div id ="E2_4" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_12')}</div>
+					<span style="margin-bottom: 15px;" id = "E2_5">Demo</span>
+					<span style="margin-bottom: 15px;" id = "E2_6">Demo</span>
+				</div>
+
+				<table id="fixed-table">
+					<colgroup>
+						<col width="30px" />
+						<col width="50px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" style ="text-align: center;" rowspan="4" id = "E3_2">#{i18n.getText('QMM008_145')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" rowspan="4" id = "E3_3">#{i18n.getText('QMM008_146')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" colspan="2" rowspan="2" id = "E3_4" >#{i18n.getText('QMM008_147')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" colspan="8" id = "E3_7">#{i18n.getText('QMM008_150')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style ="text-align: center;" colspan="4" id = "E3_8">#{i18n.getText('QMM008_151')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" colspan="4" id = "E3_9" >#{i18n.getText('QMM008_152')}</th>
+							
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style ="text-align: center;" rowspan="2" id = "E3_5" >#{i18n.getText('QMM008_148')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" rowspan="2" id = "E3_6" >#{i18n.getText('QMM008_149')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_10">#{i18n.getText('QMM008_6')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_11">#{i18n.getText('QMM008_153')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_12">#{i18n.getText('QMM008_154')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_13">#{i18n.getText('QMM008_155')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_14">#{i18n.getText('QMM008_6')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_15">#{i18n.getText('QMM008_153')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_16">#{i18n.getText('QMM008_154')}</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "E3_17">#{i18n.getText('QMM008_155')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style ="text-align: center;" >4 1</th>
+							<th class="ui-widget-header" style ="text-align: center;" >4 2</th>
+							<th class="ui-widget-header" style ="text-align: center;">4 3</th>
+							<th class="ui-widget-header" style ="text-align: center;">4 4</th>
+							<th class="ui-widget-header" style ="text-align: center;" >4 5</th>
+							<th class="ui-widget-header" style ="text-align: center;" >4 6</th>
+							<th class="ui-widget-header" style ="text-align: center;">4 7</th>
+							<th class="ui-widget-header" style ="text-align: center;">4 8</th>
+						</tr>
+						
+					</thead>
+					<tbody data-bind="foreach: dataList">
+						<tr>
+							<td><span class="limited-label"
+								data-bind="text: $data.col1"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col2"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col3"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col4"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col5"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col6"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col7"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col8"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col9"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col10"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col11"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.col12"></span></td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span id = "E2_8" class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM008_143')}</span>
+				</div>
+				<div>
+					<span id = "E2_9" class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM008_144')}</span>
+				</div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+   	</body>
+</html>

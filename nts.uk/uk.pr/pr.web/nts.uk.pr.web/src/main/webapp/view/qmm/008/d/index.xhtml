@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.ResidenceCode
+   				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="qmm008.d.vm.js" />
+				<com:scriptfile path="qmm008.d.start.js" />
+				<com:scriptfile path="qmm008.d.service.js" />
+				<com:stylefile path="qmm008.d.style.css" />
+            </ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div style="margin-bottom: 15px;">
+					<button id ="D1_1">#{i18n.getText('QMM008_106')}</button>
+					<button class="proceed" id = "D1_2">#{i18n.getText('QMM008_1')}</button>
+					<button id ="D1_3">#{i18n.getText('QMM008_2')}</button>
+					<button class="danger" id = "D1_4">#{i18n.getText('QMM008_107')}</button>
+					<button id = "D1_5">#{i18n.getText('QMM008_108')}</button>
+				</div>
+				<hr style="margin-bottom: 20px;"></hr>
+				<div class="pull-left"
+					data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}" id = "D2_1">
+					<div id="D2_2" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'single-list', 
+						items: items, selectedKey: 'code',selected: currentCode, fields: ['name', 'code']}" />
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+							height: 350,
+							name: '#[QMM008_109]',
+							dataSource: items,
+							optionsValue: 'code',
+							columns: columns2,
+							multiple: false,
+							value: currentCode
+						}"></table>
+				</div>
+				<div class="pull-left">
+					<div id="D3_2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div class="tab-content-1">
+							<div class="flex valign-center">
+								<div id = "D4_1" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_114')}</div>
+								<input id = "D4_2" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_110')}'"  />
+								<input id = "D4_3" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_111')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D4_4" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_115')}</div>
+								<input id = "D4_5" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_115')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D4_6" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_116')}</div>
+								<input id = "D4_7" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_116')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D4_8" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_117')}</div>
+								<input id = "D4_9" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_117')}'" />
+							</div>
+							<hr id = "D4_10" style="margin-top: 15px; margin-bottom: 15px;"></hr>
+							<div class="flex valign-center">
+								<div id = "D4_11" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_118')}</div>
+								<input id = "D4_12" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_118')}'" />
+								<button id = "D4_13" style="margin-left: 5px;" class="small">#{i18n.getText('QMM008_119')}</button>
+							</div>
+							
+							<div class="flex valign-center">
+								<div id="D4_14" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_120')}</div>
+								<input id = "D4_15" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_120')}'" />
+							</div>
+							
+							<div style="margin-top: 8px;">
+								<span id ="D4_16" class="label" >#{i18n.getText('QMM008_121')}</span>
+								<input id = "D4_17" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_121')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D4_18" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_122')}</div>
+								<input id ="D4_19" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_122')}'" />
+							</div>
+							
+							<div style="margin-top: 8px;">
+								<span id = "D4_20" class="label">#{i18n.getText('QMM008_123')}</span>
+								<input id = "D4_21" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_123')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D4_22" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_124')}</div>
+								<input id = "D4_23" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_124')}'" />
+							</div>
+							
+						</div>
+						<div class="tab-content-2">
+							
+							<span id = "D5_1" class="label">#{i18n.getText('QMM008_125')}</span>
+							<hr id ="D5_2"></hr>
+							
+							<div class="flex valign-center" >
+								<div id = "D5_3" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_126')}</div>
+								<input id = "D5_4" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_126')}'" />
+								<input id = "D5_5" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_126')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D5_6" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_127')}</div>
+								<input id = "D5_7" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_127')}'" />
+								<input id = "D5_8" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_127')}'" />
+							</div>
+							
+							<span id = "D5_9" class="label">#{i18n.getText('QMM008_128')}</span>
+							<hr id = "D5_10"></hr>
+							
+							<div class="flex valign-center" >
+								<div id = "D5_11" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_129')}</div>
+								<input id = "D5_12" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_129')}'" />
+							</div>
+							
+							<div class="flex valign-center">
+								<div id = "D5_13" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_130')}</div>
+								<input id = "D5_14" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_130')}'" />
+							</div>
+							
+							<span id = "D5_15" class="label">#{i18n.getText('QMM008_131')}</span>
+							<hr id = "D5_16"></hr>
+							
+							<div class="flex valign-center">
+								<div id = "D5_17" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_6')}</div>
+								<span id ="D5_18" class="label">#{i18n.getText('QMM008_132')}</span>
+								<input id = "D5_19" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_133')}'" />
+								<span id ="D5_20" class="label">#{i18n.getText('QMM008_134')}</span>
+								<input id ="D5_21" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_135')}'" />
+							</div>
+							<div>
+								<div style="margin-left: 40px; margin-top: 8px;"
+									class="flex valign-center">
+									<span id="D5_34" class="label">#{i18n.getText('QMM008_')}</span>
+									<div id="D5_35"
+										data-bind="ntsComboBox: {
+										name: 'Sample List',
+										options: itemList,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedCode,
+										optionsText: 'name',
+										editable: isEditable,
+										enable: isEnable,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}"></div>
+								</div>
+							</div>
+
+							<div class="flex valign-center" style="margin-top: 8px;">
+								<div id = "D5_22" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_7')}</div>
+								<span id ="D5_23" class="label">#{i18n.getText('QMM008_132')}</span>
+								<input id = "D5_24" data-bind="ntsTextEditor: {value: simpleValue} , name: '#{i18n.getText('QMM008_136')}'" />
+								<span id ="D5_25" class="label">#{i18n.getText('QMM008_134')}</span>
+								<input id ="D5_26" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_137')}'" />
+							</div>
+							<div>
+								<div style="margin-left: 40px;margin-top: 8px;" class="flex valign-center">
+									<span id = "D5_37" class="label">#{i18n.getText('QMM008_')}</span>
+									<div id="D5_38"
+										data-bind="ntsComboBox: {
+										name: 'Sample List',
+										options: itemList,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedCode,
+										optionsText: 'name',
+										editable: isEditable,
+										enable: isEnable,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}"></div>
+								</div>
+							</div>
+							<hr style="margin-top: 8px;margin-bottom: 8px;"></hr>
+							<div class="flex valign-center">
+								<div id = "D5_28" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_138')}</div>
+								<input id ="D5_29" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_138')}'" />
+							</div>
+							<div class="flex valign-center">
+								<div id = "D5_30" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_139')}</div>
+								<input id= "D5_31" data-bind="ntsTextEditor: {value: simpleValue}, name: '#{i18n.getText('QMM008_139')}'" />
+							</div>
+							
+							<div class="flex valign-center" style="margin-top: 8px;">
+								<div id ="D5_32" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_140')}</div>
+								<textarea id = "D5_33" data-bind="ntsMultilineEditor: { value: values, constraint: 'values' }, name: '#{i18n.getText('QMM008_140')}'" />
+							</div>
+							
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+   	</body>
+</html>
