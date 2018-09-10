@@ -225,7 +225,7 @@ public class MonthlyPerformanceReload {
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
-					employeeId, "", false, false, false, "");
+					employeeId, "", false, false, "〇", "");
 
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
