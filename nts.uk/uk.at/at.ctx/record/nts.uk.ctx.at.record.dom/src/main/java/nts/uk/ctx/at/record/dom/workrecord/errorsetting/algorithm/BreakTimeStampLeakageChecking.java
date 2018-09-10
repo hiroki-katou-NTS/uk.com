@@ -34,7 +34,7 @@ public class BreakTimeStampLeakageChecking {
 
 			for (BreakTimeSheet breakTimeSheet : breakTimeSheets) {
 
-				if (breakTimeSheet.getStartTime() != null && breakTimeSheet.getEndTime() != null) {
+				if (breakTimeSheet.getStartTime() != null || breakTimeSheet.getEndTime() != null) {
 
 					if (breakTimeSheet.getStartTime() == null) {
 

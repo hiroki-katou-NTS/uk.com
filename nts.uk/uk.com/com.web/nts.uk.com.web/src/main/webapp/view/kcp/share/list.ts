@@ -367,6 +367,10 @@ module kcp.share.list {
             const searchBox = $('#' + self.searchBoxId);
             if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
+                    // clear search box before update datasource
+                    searchBox.find('.clear-btn').click();
+
+                    // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 

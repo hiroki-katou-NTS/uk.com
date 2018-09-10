@@ -11,16 +11,17 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.procedure.ProcMonthlyData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -60,6 +60,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 集計期間を取得する */
 	@Inject
 	private GetClosurePeriod getClosurePeriod;
+	/** 月別実績の編集状態 */
+	@Inject
+	private EditStateOfMonthlyPerRepository editStateRepo;
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
 	private RepositoriesRequiredByMonthlyAggr repositories;
@@ -97,7 +100,6 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 月別実績データストアドプロシージャ */
 //	@Inject
 //	private ProcMonthlyData procMonthlyData;
-	
 	@Inject
 	private StoredProcdureProcess storedProcedureProcess;
 	
@@ -205,15 +207,29 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				return status;
 			}
 			
+			// 処理する期間が締められているかチェックする
+			if (employeeSets.checkClosedMonth(datePeriod.end())){
+				continue;
+			}
+			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
 			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
 				continue;
+			}
+			
+			// 再実行の場合
+			if (executionType == ExecutionType.RERUN){
+				
+				// 編集状態を削除
+				this.deleteEditState(employeeId, yearMonth, closureId, closureDate);
 			}
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets,
 					Optional.empty(), Optional.empty());
+			
+			// 状態を確認する
 			if (value.getErrorInfos().size() > 0) {
 
 				// エラー処理
@@ -227,6 +243,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 					status.setState(ProcessState.INTERRUPTION);
 					return status;
 				}
+				
+				break;
 			}
 			
 			// 前回集計結果の退避
@@ -291,6 +309,20 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return status;
+	}
+	
+	/**
+	 * 編集状態を削除
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	private void deleteEditState(
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
+		
+		this.editStateRepo.remove(employeeId, yearMonth, closureId, closureDate);
 	}
 	
 	/**

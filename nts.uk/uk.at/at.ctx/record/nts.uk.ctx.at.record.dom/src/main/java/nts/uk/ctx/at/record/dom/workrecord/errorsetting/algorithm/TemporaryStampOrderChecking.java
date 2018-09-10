@@ -49,21 +49,16 @@ public class TemporaryStampOrderChecking {
 			List<TimeLeavingWork> newTimeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 
 			List<TimeLeavingWork> timeLeavingWorks = newTimeLeavingWorks.stream()
-					.filter(item -> (item.getAttendanceStamp() != null && item.getAttendanceStamp().isPresent())
-							|| (item.getLeaveStamp() != null && item.getLeaveStamp().isPresent()))
+					.filter(item -> (item.getAttendanceStamp() != null && item.getAttendanceStamp().isPresent()
+							&& item.getAttendanceStamp().get().getStamp().isPresent()
+							&& item.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null)
+							&& (item.getLeaveStamp() != null && item.getLeaveStamp().isPresent()
+									&& item.getLeaveStamp().get().getStamp().isPresent()
+									&& item.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null))
 					.collect(Collectors.toList());
 
-			timeLeavingWorks
-					.sort((e1,
-							e2) -> ((e1.getAttendanceStamp().isPresent()
-									&& e1.getAttendanceStamp().get().getStamp().isPresent())
-											? e1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()
-											: Integer.valueOf(0))
-													.compareTo(((e2.getAttendanceStamp().isPresent()
-															&& e2.getAttendanceStamp().get().getStamp().isPresent())
-																	? e2.getAttendanceStamp().get().getStamp().get()
-																			.getTimeWithDay().v()
-																	: Integer.valueOf(0))));
+			timeLeavingWorks.sort((e1, e2) -> (e1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v())
+					.compareTo(e2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()));
 
 			int workNo = 1;
 			for (TimeLeavingWork item : timeLeavingWorks) {
@@ -81,46 +76,48 @@ public class TemporaryStampOrderChecking {
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 
-				if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
-					attendanceItemIDList.add(51);
-					attendanceItemIDList.add(53);
-				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
-					attendanceItemIDList.add(59);
-					attendanceItemIDList.add(61);
-				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
-					attendanceItemIDList.add(67);
-					attendanceItemIDList.add(69);
-				}
-
 				StateAttr duplicationStateAttr = StateAttr.NO_DUPLICATION;
-				if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
-						&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
-						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
-						&& timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
-						&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
-						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-					if (timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay().lessThanOrEqualTo(
-							timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
-						// 他の出退勤との時間帯重複を確認する
-						duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
-								temporaryTimeOfDailyPerformance);
-						if (duplicationStateAttr == StateAttr.DUPLICATION) {
-							if (!attendanceItemIDList.isEmpty()) {
-								employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
-										new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
-							}
-							// if(!attendanceItemIDList.isEmpty()){
-							// this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID,
-							// employeeID,
-							// processingDate, new
-							// ErrorAlarmWorkRecordCode("S004"),
-							// attendanceItemIDList);
-							// }
+
+				TimeWithDayAttr attendanceTimeWithDay = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+						.getTimeWithDay();
+				TimeWithDayAttr leaveTimeWithDay = timeLeavingWork.getLeaveStamp().get().getStamp().get()
+						.getTimeWithDay();
+
+				if (attendanceTimeWithDay.lessThanOrEqualTo(leaveTimeWithDay)) {
+					// 他の出退勤との時間帯重複を確認する
+					duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
+							temporaryTimeOfDailyPerformance);
+					if (duplicationStateAttr == StateAttr.DUPLICATION) {
+						if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
+							attendanceItemIDList.add(51);
+							attendanceItemIDList.add(53);
+						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
+							attendanceItemIDList.add(59);
+							attendanceItemIDList.add(61);
+						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
+							attendanceItemIDList.add(67);
+							attendanceItemIDList.add(69);
 						}
+					}
+				} else {
+					if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
+						attendanceItemIDList.add(51);
+						attendanceItemIDList.add(53);
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
+						attendanceItemIDList.add(59);
+						attendanceItemIDList.add(61);
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
+						attendanceItemIDList.add(67);
+						attendanceItemIDList.add(69);
 					}
 				}
 			}
+			if (!attendanceItemIDList.isEmpty()) {
+				employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+						new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+			}
 		}
+
 		return employeeDailyPerError;
 	}
 
@@ -136,75 +133,72 @@ public class TemporaryStampOrderChecking {
 				.findByKey(employeeID, processingDate);
 
 		if (timeLeavingOfDailyPerformance.isPresent()) {
-			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
-					&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
-					&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
-					&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
-					&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				// 【パラメータ】出退勤が出退勤と重複しているか確認する
-				TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-						.getTimeWithDay();
-				TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().get().getStamp().get()
-						.getTimeWithDay();
-				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
+			// 【パラメータ】出退勤が出退勤と重複しているか確認する
+			TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+					.getTimeWithDay();
+			TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().get().getStamp().get()
+					.getTimeWithDay();
+			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 
-				List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
-				for (TimeLeavingWork leavingWork : timeLeavingWorks) {
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
+			for (TimeLeavingWork leavingWork : timeLeavingWorks) {
 
-					if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
-							&& leavingWork.getAttendanceStamp().get().getStamp() != null
-							&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
-							&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
-							&& leavingWork.getLeaveStamp().get().getStamp() != null
-							&& leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-						TimeWithDayAttr stampStartTimeSecondTime = leavingWork.getAttendanceStamp().get().getStamp()
-								.get().getTimeWithDay();
-						TimeWithDayAttr endStartTimeSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
-								.getTimeWithDay();
-						TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
-								endStartTimeSecondTime);
+				if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
+						&& leavingWork.getAttendanceStamp().get().getStamp() != null
+						&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+						&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+						&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
+						&& leavingWork.getLeaveStamp().get().getStamp() != null
+						&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
+						&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+					TimeWithDayAttr stampStartTimeSecondTime = leavingWork.getAttendanceStamp().get().getStamp().get()
+							.getTimeWithDay();
+					TimeWithDayAttr endStartTimeSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
+							.getTimeWithDay();
+					TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
+							endStartTimeSecondTime);
 
-						DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-								.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-						DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-								.checkStateAtr(duplicateStateAtr);
-						statusOfTimeZones.add(duplicationStatusOfTimeZone);
-					}
+					DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+							.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+					DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+							.checkStateAtr(duplicateStateAtr);
+					statusOfTimeZones.add(duplicationStatusOfTimeZone);
 				}
+			}
 
-				if (statusOfTimeZones.stream().anyMatch(item -> item != DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
-					stateAttr = StateAttr.DUPLICATION;
-				} else {
-					List<DuplicationStatusOfTimeZone> newStatusOfTimeZones = new ArrayList<>();
-					List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
-					for (TimeLeavingWork leavingWork : leavingWorks) {
-						if (!leavingWork.getWorkNo().equals(timeLeavingWork.getWorkNo())) {
-							if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
-									&& leavingWork.getAttendanceStamp().get().getStamp() != null
-									&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
-									&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
-									&& leavingWork.getLeaveStamp().get().getStamp() != null
-									&& leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-								TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().get().getStamp()
-										.get().getTimeWithDay();
-								TimeWithDayAttr endStartSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
-										.getTimeWithDay();
-								TimeSpanForCalc spanTimeSecondTime = new TimeSpanForCalc(stampStartSecondTime,
-										endStartSecondTime);
+			if (statusOfTimeZones.stream().anyMatch(item -> item != DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
+				stateAttr = StateAttr.DUPLICATION;
+			} else {
+				List<DuplicationStatusOfTimeZone> newStatusOfTimeZones = new ArrayList<>();
+				List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				for (TimeLeavingWork leavingWork : leavingWorks) {
+					if (!leavingWork.getWorkNo().equals(timeLeavingWork.getWorkNo())) {
+						if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
+								&& leavingWork.getAttendanceStamp().get().getStamp() != null
+								&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+								&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
+								&& leavingWork.getLeaveStamp().get().getStamp() != null
+								&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
+								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+							TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().get().getStamp()
+									.get().getTimeWithDay();
+							TimeWithDayAttr endStartSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
+									.getTimeWithDay();
+							TimeSpanForCalc spanTimeSecondTime = new TimeSpanForCalc(stampStartSecondTime,
+									endStartSecondTime);
 
-								DuplicateStateAtr newDuplicateStateAtr = this.rangeOfDayTimeZoneService
-										.checkPeriodDuplication(timeSpanFirstTime, spanTimeSecondTime);
-								DuplicationStatusOfTimeZone newDuplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-										.checkStateAtr(newDuplicateStateAtr);
-								newStatusOfTimeZones.add(newDuplicationStatusOfTimeZone);
-							}
+							DuplicateStateAtr newDuplicateStateAtr = this.rangeOfDayTimeZoneService
+									.checkPeriodDuplication(timeSpanFirstTime, spanTimeSecondTime);
+							DuplicationStatusOfTimeZone newDuplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+									.checkStateAtr(newDuplicateStateAtr);
+							newStatusOfTimeZones.add(newDuplicationStatusOfTimeZone);
 						}
 					}
-					if (newStatusOfTimeZones.stream()
-							.anyMatch(item -> item != DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
-						stateAttr = StateAttr.DUPLICATION;
-					}
+				}
+				if (newStatusOfTimeZones.stream()
+						.anyMatch(item -> item != DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
+					stateAttr = StateAttr.DUPLICATION;
 				}
 			}
 		}

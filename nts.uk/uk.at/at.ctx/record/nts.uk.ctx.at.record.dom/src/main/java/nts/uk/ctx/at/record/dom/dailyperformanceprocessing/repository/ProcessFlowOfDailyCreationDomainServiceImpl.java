@@ -77,6 +77,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("reflectApprovalStatus", ExecutionStatus.INCOMPLETE.nameId);
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -162,7 +163,11 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		//承認反映
 		if(finalStatus == ProcessState.SUCCESS
 				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
 			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
 		}
 		
 		//***** ↑
@@ -171,6 +176,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		// 就業計算と集計実行ログ．実行状況　←　実行中止
 		if (finalStatus == ProcessState.INTERRUPTION) {
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
+			asyncContext.finishedAsCancelled();
 		} else {
 			// 完了処理 (Xử lý hoàn thành)
 			List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);

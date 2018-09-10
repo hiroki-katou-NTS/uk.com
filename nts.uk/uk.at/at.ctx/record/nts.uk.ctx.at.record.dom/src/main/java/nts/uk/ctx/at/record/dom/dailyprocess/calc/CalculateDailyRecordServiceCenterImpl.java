@@ -195,7 +195,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @return 対象者の締め一覧
 	 */
 	private List<ClosureStatusManagement> getclosure(String empId,List<ClosureStatusManagement> closureList){
-		return closureList.stream().filter(tc -> tc.getEmployeeId() == empId).collect(Collectors.toList());
+		return closureList.stream().filter(tc -> tc.getEmployeeId().equals(empId)).collect(Collectors.toList());
 	}
 	
 	/**
