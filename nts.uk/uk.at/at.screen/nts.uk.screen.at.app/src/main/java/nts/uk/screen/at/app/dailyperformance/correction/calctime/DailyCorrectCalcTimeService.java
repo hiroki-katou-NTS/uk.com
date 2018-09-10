@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -48,6 +50,8 @@ public class DailyCorrectCalcTimeService {
 		DailyRecordDto dtoEdit = dailyEdits.stream()
 				.filter(x -> equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEdit)).findFirst().orElse(null);
 
+		dtoEdit = addEditState(dtoEdit, itemEdit);
+		
 		val itemValue = new ItemValue(itemEdit.getValue(), ValueType.valueOf(itemEdit.getValueType()),
 				itemEdit.getLayoutCode(), itemEdit.getItemId());
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEdit.getEmployeeId())
@@ -74,6 +78,15 @@ public class DailyCorrectCalcTimeService {
 		calcTime.setDailyEdits(dailyEditsResult);
 
 		return calcTime;
+	}
+	
+	private DailyRecordDto addEditState(DailyRecordDto dtoEdit, DPItemValue itemEdit){
+		if(!dtoEdit.getEditStates().stream().anyMatch(es -> es.getAttendanceItemId() == itemEdit.getItemId())){
+			dtoEdit.getEditStates().add(EditStateOfDailyPerformanceDto.createWith(itemEdit.getEmployeeId(), itemEdit.getItemId(), itemEdit.getDate(), 
+					itemEdit.getEmployeeId().equals(AppContexts.user().employeeId()) ?
+							EditStateSetting.HAND_CORRECTION_MYSELF.value : EditStateSetting.HAND_CORRECTION_OTHER.value));
+		}
+		return dtoEdit;
 	}
 
 	private Object convertData(int valueType, String value) {
