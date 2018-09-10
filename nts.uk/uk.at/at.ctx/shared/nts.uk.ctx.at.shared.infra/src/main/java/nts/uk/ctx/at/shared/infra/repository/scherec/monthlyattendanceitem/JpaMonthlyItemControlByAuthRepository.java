@@ -133,7 +133,7 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 		List<DisplayAndInputMonthly> data = new ArrayList<>();
 		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
 			data = this.queryProxy().query(SELECT_BY_KEY, KrcstDisplayAndInputMonthly.class)
-					.setParameter("companyID", companyID).setParameter("authorityDailyID", authorityMonthlyId)
+					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
 					.setParameter("toUse", NotUseAtr.USE)
 					.getList(c -> c.toDomain());
 		} else {
