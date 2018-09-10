@@ -50,18 +50,22 @@
 	border-top: none;
 	border-right: none;
 	border-left: none;
+	line-height: 22px;
 }
 
-.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
-	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
-	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
-	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
-	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
-	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
-	{
-	border: none;
+.ui-iggrid table tr th.ui-iggrid-header {
+	border-right: none;
+	border-left: none;	
 }
+
 
 .ntsControl .nts-input {
 	width: 110px !important;
+}
+
+.reason {
+    width: 363px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    margin: -28px 0px 0em 165px;
 }

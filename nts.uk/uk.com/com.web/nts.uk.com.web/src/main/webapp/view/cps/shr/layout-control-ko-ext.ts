@@ -1,4 +1,11 @@
 module nts.custombinding {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'];
+
+    // blockui all ajax request on layout
+
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
@@ -133,6 +140,17 @@ module nts.custombinding {
 
                     .layout-control .ui-iggrid-scrolldiv {
                         background-color: #fff;
+                    }
+
+                    .layout-control #cps007_lst_header {
+                        display: block;
+                        line-height: 23px;
+                        background-color: #CFF1A5;
+                        box-sizing: border-box;
+                        border: 1px solid gray;
+                        border-bottom: none;
+                        width: calc(100% - 1px);
+                        padding-left: 3px;
                     }
 
                     .layout-control .add-buttons {
@@ -632,6 +650,7 @@ module nts.custombinding {
                             <div id="cps007_sch_control" class="search-control ntsControl"></div>
                         </div>
                         <div class="form-group">
+                            <div id="cps007_lst_header"></div>
                             <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
                         </div>
                     </div>
@@ -1271,7 +1290,7 @@ module nts.custombinding {
                         targetKey: 'id',
                         selectedKey: 'id',
                         fields: ['itemName'],
-                        placeHolder: '名称で検索…'
+                        placeHolder: '名称で検索・・・'
                     },
                     listbox: {
                         enable: ko.observable(true),
@@ -1751,59 +1770,67 @@ module nts.custombinding {
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.min = first.value() + 1;
+                                                    clone.item.min = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.max = second.value() - 1;
+                                                    clone.item.max = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                         case ITEM_SINGLE_TYPE.TIMEPOINT:
                                             validate(first, second);
-                                            first.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(second);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(first.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(second);
 
-                                                clone.item.timePointItemMin = first.value() + 1;
+                                                    clone.item.timePointItemMin = first.value() + 1;
 
-                                                let primi = primitiveConst(t ? clone : second);
+                                                    let primi = primitiveConst(t ? clone : second);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            first.value.valueHasMutated();
 
-                                            second.value.subscribe(v => {
-                                                let t = typeof v == 'number',
-                                                    clone = _.cloneDeep(first);
+                                            ko.computed({
+                                                read: () => {
+                                                    let v = ko.toJS(second.value),
+                                                        t = typeof v == 'number',
+                                                        clone = _.cloneDeep(first);
 
-                                                clone.item.timePointItemMax = second.value() - 1;
+                                                    clone.item.timePointItemMax = second.value() - 1;
 
-                                                let primi = primitiveConst(t ? clone : first);
+                                                    let primi = primitiveConst(t ? clone : first);
 
-                                                exceptConsts.push(primi.itemCode);
-                                                writeConstraint(primi.itemCode, primi);
+                                                    exceptConsts.push(primi.itemCode);
+                                                    writeConstraint(primi.itemCode, primi);
+                                                }
                                             });
-                                            second.value.valueHasMutated();
                                             break;
                                     }
                                 }
@@ -1870,43 +1897,45 @@ module nts.custombinding {
 
                     //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
-                        let data = ko.toJS(def.lstComboBoxValue),
-                            selected = _.find(data, (f: any) => f.optionValue == def.value());
+                    if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
+                        let fl = true,
+                            val = ko.toJS(def.value),
+                            data = ko.toJS(def.lstComboBoxValue),
+                            selected = _.find(data, (f: any) => _.isEqual(f.optionValue, val));
 
-                        if (!selected) {
-                            def.value(undefined);
+                        if (selected) {
+                            def.defText = selected.optionText;
                         }
-                    }
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON) {
-                        def.value.subscribe(v => {
-                            if (v) {
-                                let data = ko.toJS(def.lstComboBoxValue),
-                                    selected: any = _.find(data, (f: any) => f.optionValue == v);
+                        ko.computed({
+                            read: () => {
+                                let cbv = ko.toJS(def.value);
 
-                                if (selected) {
-                                    def.textValue(selected.optionText);
+                                if (cbv) {
+                                    let data = ko.toJS(def.lstComboBoxValue),
+                                        selected: any = _.find(data, (f: any) => f.optionValue == cbv);
+
+                                    if (selected) {
+                                        def.textValue(selected.optionText);
+                                    } else {
+                                        def.value(undefined);
+                                        def.textValue(text('CPS001_107'));
+                                    }
                                 } else {
-                                    def.value(undefined);
-                                    def.textValue(text('CPS001_107'));
+                                    def.textValue('');
                                 }
-                            } else {
-                                def.textValue('');
                             }
                         });
                     }
 
-                    if (ko.toJS(access.editAble) == 2) {
-                        def.value.subscribe(x => {
-                            calc_data();
-                        });
-                    }
+                    ko.computed({
+                        read: () => {
+                            ko.toJS(def.editable);
+                            ko.toJS(access.editAble);
 
-                    def.editable.subscribe(x => {
-                        def.value.valueHasMutated();
+                            calc_data();
+                        }
                     });
-                    def.editable.valueHasMutated();
                 },
                 calc_data = () => {
                     if (ko.toJS(access.editAble) == 2) {
@@ -1914,7 +1943,10 @@ module nts.custombinding {
                             proc = function(data: any): any {
                                 if (!data.item) {
                                     return {
-                                        value: String(data.value),
+                                        text: undefined,
+                                        value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                        defText: undefined,
+                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                         typeData: 1
                                     };
                                 }
@@ -1923,19 +1955,28 @@ module nts.custombinding {
                                     default:
                                     case ITEM_SINGLE_TYPE.STRING:
                                         return {
-                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 1
                                         };
-                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.NUMERIC:
+                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
                                         return {
-                                            value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.DATE:
                                         return {
-                                            value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? moment.utc(data.defValue, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                             typeData: 3
                                         };
                                     case ITEM_SINGLE_TYPE.SELECTION:
@@ -1944,31 +1985,46 @@ module nts.custombinding {
                                         switch (data.item.referenceType) {
                                             case ITEM_SELECT_TYPE.ENUM:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 2
                                                 };
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 1
                                                 };
                                             case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                let value: number = !nou(data.value) ? Number(data.value) : undefined;
-                                                if (!nou(value)) {
+                                                let value: number = !_.isNil(data.value) ? Number(data.value) : undefined;
+                                                if (!_.isNil(value)) {
                                                     if (String(value) == String(data.value)) {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 2
                                                         };
                                                     } else {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 1
                                                         };
                                                     }
                                                 } else {
                                                     return {
-                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                         typeData: 1
                                                     };
                                                 }
@@ -1978,7 +2034,10 @@ module nts.custombinding {
                                         return null;
                                     case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                         return {
-                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            text: undefined,
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: undefined,
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.READONLY_BUTTON:
@@ -1995,12 +2054,19 @@ module nts.custombinding {
                                     return data ? {
                                         checked: x.checked,
                                         recordId: x.recordId,
+                                        categoryId: x.categoryId,
                                         categoryCd: x.categoryCode,
+                                        categoryName: x.categoryName,
+                                        categoryType: x.ctgType,
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
+                                        itemName: x.itemName,
+                                        text: data.text,
                                         value: data.value,
-                                        dvalue: x.defValue,
-                                        'type': data.typeData
+                                        defText: data.defText,
+                                        defValue: data.defValue,
+                                        'type': data.typeData,
+                                        logType: x.item.dataTypeValue
                                     } : null;
                                 })
                                 .filter(x => !!x)
@@ -2018,21 +2084,30 @@ module nts.custombinding {
                                     deleted = group[recordId].map(m => m.checked).filter(m => !m).length == 0;
 
                                 if (_recordId || (!_recordId && !deleted)) {
+                                    let ctg = _.head(group[recordId]);
                                     // delete check for CARD_NO
-                                    if (_categoryCd == "CS00069" && !group[recordId][0].value) {
+                                    if (_categoryCd == "CS00069" && !ctg.value) {
                                         deleted = true;
                                     }
 
                                     inputs.push({
                                         recordId: _recordId,
                                         categoryCd: _categoryCd,
+                                        categoryId: ctg.categoryId,
+                                        categoryName: ctg.categoryName,
+                                        categoryType: ctg.categoryType,
                                         'delete': deleted,
                                         items: group[recordId].map(m => {
                                             return {
                                                 definitionId: m.definitionId,
                                                 itemCode: m.itemCode,
+                                                itemName: m.itemName,
+                                                text: m.text,
                                                 value: deleted ? m.dvalue : m.value,
-                                                'type': m.type
+                                                defText: m.defText,
+                                                defValue: m.defValue,
+                                                'type': m.type,
+                                                logType: m.logType
                                             };
                                         })
                                     });
@@ -2655,18 +2730,18 @@ module nts.custombinding {
                                         // order by dispOrder asc
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
-                                            .filter(f => {
+                                            .filter((f: IItemDefinition) => {
                                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
-                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    if (item.categoryCode === "CS00001") {
+                                                        return f.itemCode !== "IS00001";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
-                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    if (item.categoryCode === "CS00002") {
+                                                        return f.itemCode !== "IS00003";
                                                     }
 
-                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
-                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    if (item.categoryCode === "CS00003") {
+                                                        return f.itemCode !== "IS00020";
                                                     }
                                                 }
 
@@ -2739,144 +2814,156 @@ module nts.custombinding {
                             .removeClass('selected');
                     }, 0);
                 })
+                .on('dblclick', (evt) => { evt.preventDefault() })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
                     $(evt.target)
                         .removeClass('selected');
                 });
 
 
-            $(ctrls.button).on('click', () => {
-                // アルゴリズム「項目追加処理」を実行する
-                // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value);
+            $(ctrls.button)
+                .data('safeClick', new Date().getTime())
+                .on('click', () => {
+                    let timeClick = new Date().getTime(),
+                        safeClick = $(ctrls.button).data('safeClick');
+                    // prevent multi click
+                    $(ctrls.button).data('safeClick', timeClick);
+                    if (timeClick - safeClick <= 500) {
+                        return;
+                    }
 
-                if (!ids || !ids.length) {
-                    alert({ messageId: 'Msg_203' });
-                    return;
-                }
+                    // アルゴリズム「項目追加処理」を実行する
+                    // Execute the algorithm "項目追加処理"
+                    let ids: Array<string> = ko.toJS(opts.listbox.value);
 
-                // category mode
-                if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
-                    let cid: string = ko.toJS(opts.combobox.value),
-                        cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
-                        cat: IItemCategory = _.find(cats, x => x.id == cid);
+                    if (!ids || !ids.length) {
+                        alert({ messageId: 'Msg_203' });
+                        return;
+                    }
 
-                    if (cat) {
-                        // multiple items
-                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
-                            // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
-                            // if category is exist in sortable box.
-                            let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
-                            if (_catcls) {
-                                alert({
-                                    messageId: 'Msg_202',
-                                    messageParams: [cat.categoryName]
-                                });
-                                return;
-                            }
+                    // category mode
+                    if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
+                        let cid: string = ko.toJS(opts.combobox.value),
+                            cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
+                            cat: IItemCategory = _.find(cats, x => x.id == cid);
 
-                            setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
-                            modal('../../007/b/index.xhtml').onClosed(() => {
-                                let dfds: Array<JQueryDeferred<any>> = [],
-                                    data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
+                        if (cat) {
+                            // multiple items
+                            if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                                // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
+                                // if category is exist in sortable box.
+                                let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
+                                if (_catcls) {
+                                    alert({
+                                        messageId: 'Msg_202',
+                                        messageParams: [cat.categoryName]
+                                    });
+                                    return;
+                                }
 
-                                if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
-                                    services.getCat(data.category.id).done((_cat: IItemCategory) => {
+                                setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
+                                modal('../../007/b/index.xhtml').onClosed(() => {
+                                    let dfds: Array<JQueryDeferred<any>> = [],
+                                        data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
 
-                                        if (!_cat || !!_cat.isAbolition) {
-                                            return;
-                                        }
+                                    if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
+                                        services.getCat(data.category.id).done((_cat: IItemCategory) => {
 
-                                        let ids: Array<string> = data.chooseItems.map(x => x.id);
-                                        services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
-                                            // sort againt by ids
-                                            _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+                                            if (!_cat || !!_cat.isAbolition) {
+                                                return;
+                                            }
 
-                                            _data = _.orderBy(_data, x => x.dispOrder);
+                                            let ids: Array<string> = data.chooseItems.map(x => x.id);
+                                            services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
+                                                // sort againt by ids
+                                                _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
 
-                                            // get set item
-                                            _.each(_data, x => {
-                                                let dfd = $.Deferred<any>();
-                                                if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                                    services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
-                                                        dfd.resolve([x].concat(_items));
-                                                    }).fail(msg => {
+                                                _data = _.orderBy(_data, x => x.dispOrder);
+
+                                                // get set item
+                                                _.each(_data, x => {
+                                                    let dfd = $.Deferred<any>();
+                                                    if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                        services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
+                                                            dfd.resolve([x].concat(_items));
+                                                        }).fail(msg => {
+                                                            dfd.resolve(x);
+                                                        });
+                                                    } else {
                                                         dfd.resolve(x);
-                                                    });
-                                                } else {
-                                                    dfd.resolve(x);
-                                                }
+                                                    }
 
-                                                dfds.push(dfd);
-                                            });
+                                                    dfds.push(dfd);
+                                                });
 
-                                            $.when.apply($, dfds).then(function() {
-                                                let args = _.flatten(arguments),
-                                                    items = _(args)
-                                                        .filter(x => !!x)
-                                                        .map((x: IItemDefinition) => {
-                                                            if (ids.indexOf(x.id) > -1) {
-                                                                x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
-                                                            } else {
-                                                                let parent = _.find(args, p => p.itemCode == x.itemParentCode);
-                                                                if (parent) {
-                                                                    x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                $.when.apply($, dfds).then(function() {
+                                                    let args = _.flatten(arguments),
+                                                        items = _(args)
+                                                            .filter(x => !!x)
+                                                            .map((x: IItemDefinition) => {
+                                                                if (ids.indexOf(x.id) > -1) {
+                                                                    x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
+                                                                } else {
+                                                                    let parent = _.find(args, p => p.itemCode == x.itemParentCode);
+                                                                    if (parent) {
+                                                                        x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                                    }
                                                                 }
-                                                            }
-                                                            return x;
-                                                        })
-                                                        .orderBy(x => x.dispOrder)
-                                                        .value(),
-                                                    item: IItemClassification = {
-                                                        layoutID: random(),
-                                                        dispOrder: -1,
-                                                        className: _cat.categoryName,
-                                                        personInfoCategoryID: _cat.id,
-                                                        layoutItemType: IT_CLA_TYPE.LIST,
-                                                        listItemDf: items
-                                                    };
+                                                                return x;
+                                                            })
+                                                            .orderBy(x => x.dispOrder)
+                                                            .value(),
+                                                        item: IItemClassification = {
+                                                            layoutID: random(),
+                                                            dispOrder: -1,
+                                                            className: _cat.categoryName,
+                                                            personInfoCategoryID: _cat.id,
+                                                            layoutItemType: IT_CLA_TYPE.LIST,
+                                                            listItemDf: items
+                                                        };
 
-                                                opts.sortable.data.push(item);
-                                                opts.listbox.value.removeAll();
-                                                scrollDown();
+                                                    opts.sortable.data.push(item);
+                                                    opts.listbox.value.removeAll();
+                                                    scrollDown();
+                                                });
                                             });
                                         });
-                                    });
-                                }
-                            });
-                        }
-                        else { // set or single item
-                            let idefid: Array<string> = ko.toJS(opts.listbox.value),
-                                idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
-
-                            if (idefs && idefs.length) {
-                                services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
-                                    if (defs && defs.length) {
-                                        opts.sortable.pushAllItems(defs, false);
-                                        scrollDown();
                                     }
                                 });
                             }
+                            else { // set or single item
+                                let idefid: Array<string> = ko.toJS(opts.listbox.value),
+                                    idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
+
+                                if (idefs && idefs.length) {
+                                    services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
+                                        if (defs && defs.length) {
+                                            opts.sortable.pushAllItems(defs, false);
+                                            scrollDown();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    } else { // group mode
+                        let ids: Array<string> = ko.toJS(opts.listbox.value),
+                            groups: Array<any> = ko.unwrap(opts.listbox.options),
+                            filters: Array<any> = _(groups)
+                                .filter(x => ids.indexOf(x.id) > -1)
+                                .map(x => x.id)
+                                .value();
+
+                        if (filters && filters.length) {
+                            services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
+                                if (defs && defs.length) {
+                                    opts.sortable.pushAllItems(defs, true);
+                                    scrollDown();
+                                }
+                            });
                         }
                     }
-                } else { // group mode
-                    let ids: Array<string> = ko.toJS(opts.listbox.value),
-                        groups: Array<any> = ko.unwrap(opts.listbox.options),
-                        filters: Array<any> = _(groups)
-                            .filter(x => ids.indexOf(x.id) > -1)
-                            .map(x => x.id)
-                            .value();
-
-                    if (filters && filters.length) {
-                        services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
-                            if (defs && defs.length) {
-                                opts.sortable.pushAllItems(defs, true);
-                                scrollDown();
-                            }
-                        });
-                    }
-                }
-            });
+                })
+                .on('dblclick', (evt) => { evt.stopImmediatePropagation() });
 
             // set data controls and option to element
             $element.data('options', opts);
@@ -2923,6 +3010,10 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
+
+            // fix header off listbox
+            $('#cps007_lst_header').text(text('CPS007_9'));
+
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }

@@ -251,7 +251,7 @@ module nts.uk.ui.koExtentions {
                     while(!mainD.isRoot){
                         mainD = mainD.parent;
                     }
-                    nts.uk.ui.errors.clearAll();
+                    //nts.uk.ui.errors.clearAll();
                     mainD.globalContext.nts.uk.ui.dialog.error({ message: totalMes, messageId: totalMesCode }).then(() => {
                     });
                 }

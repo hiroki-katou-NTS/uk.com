@@ -79,11 +79,6 @@ module nts.uk.at.view.ksu001.common.viewmodel {
             this.endTime = params.endTime;
             this.workNo = params.workNo;
             this.useAtr = params.useAtr;
-            //            this.timeZone1 = this.workNo == 1 ? nts.uk.time.parseTime(this.startTime, true).format()
-            //                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '';
-            //            this.timeZone2 = this.useAtr == 1 ? (this.workNo == 2 ? nts.uk.time.parseTime(this.startTime, true).format()
-            //                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parsndTime, true).format() : '') : '';
-
             this.timeZone1 = this.workNo == 1 ? formatById("Clock_Short_HM", this.startTime)
                 + nts.uk.resource.getText("KSU001_66") + formatById("Clock_Short_HM", this.endTime) : '';
             this.timeZone2 = this.useAtr == 1 ? (this.workNo == 2 ? formatById("Clock_Short_HM", this.startTime)

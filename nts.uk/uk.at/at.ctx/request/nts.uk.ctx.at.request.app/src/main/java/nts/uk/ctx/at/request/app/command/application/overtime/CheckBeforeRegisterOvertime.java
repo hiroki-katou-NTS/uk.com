@@ -5,22 +5,28 @@ import static java.util.stream.Collectors.groupingBy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -32,6 +38,8 @@ public class CheckBeforeRegisterOvertime {
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject
 	private IFactoryOvertime factoryOvertime;
+	@Inject
+	private OvertimeRestAppCommonSetRepository overTimeSetRepo;
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command) {
 		// 会社ID
@@ -52,7 +60,8 @@ public class CheckBeforeRegisterOvertime {
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
 				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID));
+				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
+				Optional.empty());
 
 		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain);
 	}
@@ -60,7 +69,8 @@ public class CheckBeforeRegisterOvertime {
 	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppOverTime overtime) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
+		String companyID =  app.getCompanyID();
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value);
@@ -74,8 +84,11 @@ public class CheckBeforeRegisterOvertime {
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceType.NORMALOVERTIME);
-		
-		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
+		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = this.overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		if(overTimeSettingOpt.isPresent()){
+			OvertimeRestAppCommonSetting overTimeSetting =  overTimeSettingOpt.get();
+			boolean isPreExcessCheck = overTimeSetting.getPreExcessDisplaySetting().equals(UseAtr.USE);
+		if (overtimeInputs != null && !overtimeInputs.isEmpty() && isPreExcessCheck) {
 			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
 					app.getInputDate(), app.getPrePostAtr(), AttendanceType.NORMALOVERTIME.value, overtimeInputs);
 			if (res.getErrorCode() != 0) {
@@ -88,15 +101,17 @@ public class CheckBeforeRegisterOvertime {
 		
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(app.getCompanyID(), app.getAppDate(), app.getPrePostAtr());
-		// TODO: ３６協定時間上限チェック（月間）
-		beforeCheck.TimeUpperLimitMonthCheck();
+		// ３６協定時間上限チェック（月間）
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = beforeCheck.registerOvertimeCheck36TimeLimit(
+				app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), overtime.getOverTimeInput());
+		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
+		}
 		// 事前否認チェック
 		res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getAppDate(), app.getInputDate(),
 				app.getPrePostAtr(),ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setConfirm(res.isConfirm());
-
 		return result;
 	}
 	
@@ -120,10 +135,11 @@ public class CheckBeforeRegisterOvertime {
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
 				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID));
+				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
+				Optional.empty());
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
-		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
+		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		int calculateFlg = command.getCalculateFlag();
 		// 登録前エラーチェック
@@ -150,8 +166,11 @@ public class CheckBeforeRegisterOvertime {
 		
 		// TODO: 実績超過チェック
 		beforeCheck.OvercountCheck(appRoot.getCompanyID(), appRoot.getAppDate(), appRoot.getPrePostAtr());
-		// TODO: ３６協定時間上限チェック（月間）
-		beforeCheck.TimeUpperLimitMonthCheck();
+		// ３６上限チェック(詳細)
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = beforeCheck.updateOvertimeCheck36TimeLimit(
+				appRoot.getCompanyID(), command.getAppID(), appRoot.getEnteredPersonID(), appRoot.getEmployeeID(),
+				appRoot.getAppDate(), overtimeInputs);
+		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック

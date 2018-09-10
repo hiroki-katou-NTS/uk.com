@@ -66,7 +66,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
 	
-	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT DISTINCT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
 			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
 
 	/** The Constant MAX_ELEMENTS. */
@@ -232,7 +232,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid) {
 		String companyId = AppContexts.user().companyId();
 		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk(pId, sid, histItem.getHistoryId());
-		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, 0, histItem.start(), histItem.end(), null);
+		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, BooleanUtils.toInteger(histItem.isDestinationData()), histItem.start(), histItem.end(), null);
 	}
 
 	@Override

@@ -33,7 +33,7 @@
 .contentF {
 	margin-left: 20px;
 	display: inline-block;
-	width :900px;
+	width :965px;
 }
 
 #lable {
@@ -61,6 +61,7 @@
 }
 .listbox-wrapper {
     margin-left: 20px;
+    float: left;
 }
 #list-box_b_grid_displayContainer {
 	height: 231px !important;
@@ -84,6 +85,9 @@
 	width: 150px;
 	margin-top: 2px;
 }
+.ui-iggrid-filterrow.ui-widget > td {
+	border-width: 1px !important;
+}
  #ccgcomponent{
 	display:none; 
 	margin-left: 252px;
@@ -91,4 +95,41 @@
 
 #igGridLog {
 	white-space: nowrap;
+}
+
+div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	height: 340px !important;
+}
+div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	height: 340px !important;
+}
+
+#com-kcp-searchbox{
+	width: 554px !important;	
+}
+#com-kcp-searchbox div button{
+	margin-left: 2px !important;
+    display: inline-block;	
+}
+
+div#list-box_b1 {
+    float: left;
+    height: 71px;
+    width: 153px;
+}
+#caret{
+	 float: left;
+	 margin-top: 6px;
+	 margin-left: 30px;
+}
+#list-box_b1_grid_scrollContainer {
+	overflow-y: hidden !important ;
+    overflow-x: hidden !important;
+}
+
+#ccg001-part-g {
+	overflow-x: hidden !important;
+}
+#title_dataType {
+	margin-bottom: 30px;
 }

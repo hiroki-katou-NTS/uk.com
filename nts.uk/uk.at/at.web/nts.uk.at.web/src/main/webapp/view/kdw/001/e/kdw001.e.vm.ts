@@ -4,9 +4,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
 
     export class ScreenModel {
-        
+
         numberEmployee: KnockoutObservable<number> = ko.observable(0);
-        
+
         // Time data
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
@@ -20,16 +20,21 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         dailyCreateTotal: KnockoutObservable<number> = ko.observable(0);
         dailyCreateStatus: KnockoutObservable<string> = ko.observable("");
         dailyCreateHasError: KnockoutObservable<string> = ko.observable("");
-        
+
         // daily calculation
-        dailyCalculateCount : KnockoutObservable<number> = ko.observable(0);
-        dailyCalculateStatus : KnockoutObservable<string> = ko.observable("");
-        dailyCalculateHasError : KnockoutObservable<string> = ko.observable("");
-        
+        dailyCalculateCount: KnockoutObservable<number> = ko.observable(0);
+        dailyCalculateStatus: KnockoutObservable<string> = ko.observable("");
+        dailyCalculateHasError: KnockoutObservable<string> = ko.observable("");
+
         // monthly aggregation data
         monthlyAggregateCount: KnockoutObservable<number> = ko.observable(0);
         monthlyAggregateStatus: KnockoutObservable<string> = ko.observable("");
         monthlyAggregateHasError: KnockoutObservable<string> = ko.observable("");
+        
+        //承認反映
+        reflectApprovalCount: KnockoutObservable<number> = ko.observable(0);
+        reflectApprovalStatus: KnockoutObservable<string> = ko.observable("");
+        reflectApprovalHasError: KnockoutObservable<string> = ko.observable("");
 
         // Period Date
         startPeriod: KnockoutObservable<string> = ko.observable("");
@@ -54,11 +59,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         visibleApproval: KnockoutObservable<boolean> = ko.observable(false);
         visibleMonthly: KnockoutObservable<boolean> = ko.observable(false);
 
+        closureId: KnockoutObservable<number> = ko.observable(1);
+
         constructor() {
             var self = this;
             self.elapseTime.start();
-            
+
             self.numberEmployee(0);
+
+            self.closureId(1);
 
             self.columns = ko.observableArray([
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
@@ -80,7 +89,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
+            self.closureId(params.closureID);
 
+            $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
                 if (params.dailyCreation == false) {
@@ -111,7 +122,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 self.contents = res.enumComboBox;
                 //self.executionContents(res.enumComboBox);
                 self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
-                self.startAsyncTask();
+                self.startAsyncTask(res.empCalAndSumExecLogID);
+
                 dfd.resolve();
             });
 
@@ -135,7 +147,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        private startAsyncTask(): void {
+        private startAsyncTask(empCalAndSumExecLogID): void {
             var self = this;
             var data: shareModel.CheckProcessCommand = {
                 empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
@@ -144,27 +156,36 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             };
             service.checkTask(data).done(res => {
                 self.taskId(res.id);
-                self.repeatCheckAsyncResult();
+                self.repeatCheckAsyncResult(empCalAndSumExecLogID);
             });
         }
 
-        private repeatCheckAsyncResult(): void {
+        private repeatCheckAsyncResult(empCalAndSumExecLogID): void {
             var self = this;
-            
-                        self.enableCancelTask(true);
+
+            self.enableCancelTask(true);
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
-                        
+
                         // daily calculation
                         self.dailyCalculateCount(self.getAsyncData(info.taskDatas, "dailyCalculateCount").valueAsNumber);
-                        
-                        // monthly aggregation 
-                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);                        
 
+                        // monthly aggregation 
+                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);
+
+                        self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                        self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                        self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                        
+                        //承認反映
+                        self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
+                        self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                       
+                        
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
                             self.executionContents(self.contents);
@@ -172,33 +193,54 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                             // End count time
                             self.elapseTime.end();
-                            
+
                             // Get EndTime from server, fallback to client
                             self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
-//                            if (nts.uk.text.isNullOrEmpty(endTime))
-//                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
-//                            self.endTime(endTime);
-
+                            //                            if (nts.uk.text.isNullOrEmpty(endTime))
+                            //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+                            //                            self.endTime(endTime);
+    
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
-                            
+
                             // daily calculation
                             self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
                             self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
-                            
+
                             // monthly aggregation
-                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
                             
+                            //承認反映
+                            self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                             self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString)
+
                             // Get Log data
                             self.getLogData();
+                            self.enableCancelTask(false);
+                            if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
+
+                                var paramsUpdate = {
+                                    empCalAndSumExecLogID: empCalAndSumExecLogID,
+                                    executionStartDate: self.startTime(),
+                                    executionEndDate: self.endTime()
+                                };
+                                service.updateExcutionTime(paramsUpdate);
+                            }
                         }
                     });
                 })
                 .while(info => info.pending || info.running)
                 .pause(1000)
             );
+
+            //                var paramsUpdate = {
+            //                    empCalAndSumExecLogID : empCalAndSumExecLogID,
+            //                    executionStartDate: moment.utc(self.startTime()).toISOString(),
+            //                    executionEndDate: self.endTime()
+            //                };
+            //                service.updateExcutionTime(paramsUpdate);
         }
 
         private getAsyncData(data: Array<any>, key: string): any {

@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeDisplayModeModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeDisplayModeModel;
     import ManageEntryExitModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.ManageEntryExitModel;
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
@@ -25,6 +26,8 @@ module nts.uk.at.view.kmk003.a {
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
     import DiffTimeSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.DiffTimeWorkSettingSaveCommand;
     
+    import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
+    import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -64,6 +67,9 @@ module nts.uk.at.view.kmk003.a {
             
             flexWorkManaging: boolean;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
+            
+            //update for storage tab 11
+            backupCommonSetting: WorkTimezoneCommonSetDto
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -93,6 +99,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 //over time work frame options
                 self.overTimeWorkFrameOptions = ko.observableArray([]);
+                
+                self.backupCommonSetting = null;
             }
            
             /**
@@ -128,9 +136,9 @@ module nts.uk.at.view.kmk003.a {
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 50 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 180 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
-                        formatter: isAbolish => {
+                        formatter: (isAbolish: any):string => {
                             if (isAbolish === true || isAbolish === 'true') {
-                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>';
+                                return '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
                             }
                             return '';
                         }
@@ -225,6 +233,16 @@ module nts.uk.at.view.kmk003.a {
                         self.settingEnum.workTimeMethodSet = self.backupOptions;
                         // focus worktime atr
                         $('#search-daily-atr').focus();
+                        //update value model tab 2
+                        self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated();
+                    }
+                    else {
+                        if (self.screenMode() != 2) {
+                            self.enterNewMode();
+                        }
+                        else {
+                            self.enterCopyMode();
+                        }
                     }
                 });
 
@@ -391,6 +409,8 @@ module nts.uk.at.view.kmk003.a {
                         self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
                             self.isLoading(false);
                             self.isLoading(true);
+                            //convert 
+                            self.backupCommonSetting = self.mainSettingModel.commonSetting.toDto();
                         });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                         
@@ -426,7 +446,10 @@ module nts.uk.at.view.kmk003.a {
              * Validate all input
              */
             private validateInput(): void {
-                this.clearAllError();
+                let self = this;
+                let commonDayoff = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[0].subHolTimeSet;
+                let commonOvertime = nts.uk.util.isNullOrEmpty(self.backupCommonSetting)?null : self.backupCommonSetting.subHolTimeSet[1].subHolTimeSet;
+                self.clearAllError();
                 $('.nts-editor').each((index, element) => {
                     if (!element.id) {
                         element.id = nts.uk.util.randomId();
@@ -437,8 +460,107 @@ module nts.uk.at.view.kmk003.a {
                 $('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
+                //validate disabled item tab 1
+                self.validatetab1();
+                
+                //validate disabled item tab 7
+                self.validatetab7();
+                
+                //validate disabled item tab 11
+                if (!nts.uk.util.isNullOrEmpty(self.backupCommonSetting)) {
+                    if (self.mainSettingModel.tabMode() == TabMode.DETAIL) {
+                        self.validateTab11(commonDayoff, commonOvertime);
+                    }
+                    else {
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
+                    }
+                }
             }
-
+            
+            private validatetab1() {
+                let self = this;
+                if (self.mainSettingModel.flexWorkSetting.coreTimeSetting.timesheet() == 0) {
+                    //assign value avoid exception
+                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.startTime(0);
+                    self.mainSettingModel.flexWorkSetting.coreTimeSetting.coreTimeSheet.endTime(0);
+                    $('#coreTimeStart').ntsError('clear');
+                    $('#coreTimeEnd').ntsError('clear');
+                }
+                
+                if (!self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr())
+                {
+                    $('#shiftTwoStart').ntsError('clear');
+                    $('#shiftTwoEnd').ntsError('clear');
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start(0);
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.end(0);
+                }
+            }
+            
+            private validatetab7()
+            {
+                let self = this;
+                if (!self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet()) {
+                    $('#nts-fix-table-a7-flow-notuse-2').find('.nts-input').ntsError('clear');
+                }
+                if (!self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet()) {
+                    $('#nts-fix-table-a7-flex-notuse-2').find('.nts-input').ntsError('clear');
+                }
+            }
+            private validateTab11(commonDayoff: SubHolTransferSetDto,commonOvertime: SubHolTransferSetDto) {
+                let self = this;
+                if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision()) {
+                    if (self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.subHolTransferSetAtr() == 0) {
+                        //一定時間
+                        $('#certainDayTimeHol').ntsError('clear');
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                    }
+                    else {//指定時間
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonDayoff.designatedTime.halfDayTime);
+                        $('#oneDayTimeHol').ntsError('clear');
+                        $('#haflDayTimeHol').ntsError('clear');
+                    }
+                }
+                else {
+                    $('#certainDayTimeHol').ntsError('clear');
+                    $('#oneDayTimeHol').ntsError('clear');
+                    $('#haflDayTimeHol').ntsError('clear');
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonDayoff.designatedTime.halfDayTime);
+                }
+                if (self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.useDivision()) {
+                    if (self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.subHolTransferSetAtr() == 0) {
+                        //一定時間
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                        $('#certainDayTimeOT').ntsError('clear');
+                    }
+                    else {//指定時間
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                        self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
+                        $('#haflDayTimeOT').ntsError('clear');
+                        $('#oneDayTimeOT').ntsError('clear');
+                    }
+                }
+                else {
+                    $('#certainDayTimeOT').ntsError('clear');
+                    $('#haflDayTimeOT').ntsError('clear');
+                    $('#oneDayTimeOT').ntsError('clear');
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.certainTime(commonOvertime.certainTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonOvertime.designatedTime.oneDayTime);
+                    self.mainSettingModel.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonOvertime.designatedTime.halfDayTime);
+                }
+                
+                // Validate Msg_770
+                let shiftTwo: TimezoneModel = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
+                if (shiftTwo.useAtr() && (shiftTwo.start() >= shiftTwo.end())) {
+                    $('#shiftTwoStart').ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText('KMK003_216')]});
+                }
+            }
+            
             //save worktime data
             public save() {
                 let self = this;
@@ -584,7 +706,10 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-
+                
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
 
@@ -599,9 +724,6 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
-                
                 // do interlock if simple mode
                 if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);
@@ -610,8 +732,8 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
-                // focus worktime atr
-                $('#search-daily-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
             }
 
             /**
@@ -959,7 +1081,7 @@ module nts.uk.at.view.kmk003.a {
                         let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
                         let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
-                        
+                                                                
                         if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr() && _self.tabMode() === TabMode.DETAIL) {
                             _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            

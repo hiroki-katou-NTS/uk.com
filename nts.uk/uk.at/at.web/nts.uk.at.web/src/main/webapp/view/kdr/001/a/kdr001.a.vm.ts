@@ -74,8 +74,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
         permissionOfEmploymentForm : KnockoutObservable<PermissionOfEmploymentFormModel> 
-                                        = ko.observable(new PermissionOfEmploymentFormModel(
-                                            '', '', 1, true));
+                         = ko.observable(new PermissionOfEmploymentFormModel('', '', 1, true));
+        closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
 
@@ -216,6 +216,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.applyKCP005ContentSearch(data.listEmployee);
                     self.startDateString(data.periodStart);
                     self.endDateString(data.periodEnd);
+                    self.closureId(data.closureId);
                 }
             }
         }
@@ -326,7 +327,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 isShowNoSelectRow: false,
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
-                isShowSelectAllButton: true,
+                isShowSelectAllButton: false,
                 maxWidth: 550,
                 maxRows: 15
             };
@@ -386,7 +387,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode(),
-                self.baseDate().format("YYYY/MM/DD")
+                self.baseDate().format("YYYY/MM/DD"),
+                self.closureId()
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -591,12 +593,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         outputItemSettingCode: string;
         pageBreak: string;
         baseDate: string;
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, baseDate: string) {
+        closureId: number
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, 
+                baseDate: string, closureId: number) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
+            this.closureId = closureId;
         }
     }
 

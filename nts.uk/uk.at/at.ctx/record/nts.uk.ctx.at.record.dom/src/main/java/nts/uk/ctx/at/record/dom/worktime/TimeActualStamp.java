@@ -93,4 +93,16 @@ public class TimeActualStamp {
 			this.actualStamp.get().setStampFromPcLogOn(pcLogOnStamp);
 		}
 	}
+	
+	/**
+	 * 打刻(Stamp)が計算できる状態であるか判定する
+	 * (null になっていないか) 
+	 * @return 計算できる状態である
+	 */
+	public boolean isCalcStampState() {
+		if(this.getStamp() != null && this.getStamp().isPresent()) {
+			return true;
+		}
+		return false;
+	}
 }

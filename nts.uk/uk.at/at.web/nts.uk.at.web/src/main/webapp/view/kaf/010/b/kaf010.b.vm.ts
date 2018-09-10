@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf010.b {
     import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import util = nts.uk.util;
+
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = "YYYY/MM/DD";
@@ -132,6 +134,8 @@ module nts.uk.at.view.kaf010.b {
             preWorkContent: common.WorkContent;
             inputDate: KnockoutObservable<string> = ko.observable('');
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable(true);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -153,6 +157,7 @@ module nts.uk.at.view.kaf010.b {
                 var dfd = $.Deferred();
                 service.findByAppID(appID).done((data) => { 
                     self.initData(data);
+                    self.checkRequiredBreakTimes();
                     //Check work content Changed
                     self.checkWorkContentChanged();
                     dfd.resolve(); 
@@ -231,26 +236,27 @@ module nts.uk.at.view.kaf010.b {
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
-                    
                     let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                     self.reasonCombo(lstReasonCombo);
-                    
-                    self.multilContent(data.application.applicationReason);
                 }
-                
+                self.multilContent(data.application.applicationReason);
                 if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                     self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
                     let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
-                    self.multilContent2(data.divergenceReasonContent);
                 }
-                
+                self.multilContent2(data.divergenceReasonContent);
                 self.instructInforFlag(data.displayHolidayInstructInforFlg);
                 self.instructInfor(data.holidayInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
+                    self.indicationOvertimeFlg(false);    
+                } else {
+                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);    
+                }
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
 //                // preAppOvertime
                 if (data.preAppHolidayWorkDto != null) {
@@ -411,7 +417,46 @@ module nts.uk.at.view.kaf010.b {
                         null, "","",""));
                 }); 
             }
-            
+
+            checkRequiredBreakTimes() {
+                let self = this;
+                _.each(self.breakTimes(), function(item) {
+                    item.applicationTime.subscribe(function(value) {
+                        self.clearErrorB6_8();
+                        if (!self.hasAppTimeBreakTimes()) {
+                            self.setErrorB6_8();
+                        }
+                    })
+                })
+            }
+
+            hasAppTimeBreakTimes() {
+                let self = this,
+                    hasData = false;
+                _.each(self.breakTimes(), function(item: common.OvertimeCaculation) {
+                    let timeValidator = new nts.uk.ui.validation.TimeValidator(nts.uk.resource.getText("KAF010_56"), "OvertimeAppPrimitiveTime", { required: false, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+                    if (!util.isNullOrEmpty(item.applicationTime())) {
+                        hasData = true;
+                    }
+                    if (item.applicationTime() == null) return;
+
+                    let control = $('input#overtimeHoursCheck_' + item.attendanceID() + '_' + item.frameNo());
+                    let check = timeValidator.validate(control.val());
+                    if (!check.isValid) {
+                        control.ntsError('set', { messageId: check.errorCode, message: check.errorMessage });
+                    }
+                })
+                return hasData;
+            }
+
+            setErrorB6_8() {
+                $('.breakTimesCheck').ntsError('set', { messageId: 'FND_E_REQ_INPUT', messageParams: [nts.uk.resource.getText("KAF010_56")] });
+            }
+
+            clearErrorB6_8() {
+                $('.breakTimesCheck').ntsError('clear');
+            }
+
             update(): JQueryPromise<any> {                
                 let self = this,
                 appReason: string,
@@ -421,6 +466,9 @@ module nts.uk.at.view.kaf010.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
+                if (!self.hasAppTimeBreakTimes()) {
+                    self.setErrorB6_8();
+                }      
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();
@@ -487,6 +535,7 @@ module nts.uk.at.view.kaf010.b {
                 
                 service.checkBeforeUpdate(command).done((data) => {                
                     if (data.errorCode == 0) {
+                        command.appOvertimeDetail = data.appOvertimeDetail;
                         if (data.confirm) {
                             //メッセージNO：829
                             dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {

@@ -6,7 +6,10 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum ShortTimeSheetAtr {
+	//出勤前
 	BEFORE_ATTENDANCE,
+	//退勤後
 	AFTER_LEAVING,
+	//勤務時間中
 	WORKING_TIME
 }

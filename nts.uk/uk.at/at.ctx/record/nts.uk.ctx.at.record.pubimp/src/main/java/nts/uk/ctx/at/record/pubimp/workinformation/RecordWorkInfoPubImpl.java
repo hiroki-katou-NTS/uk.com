@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.pub.workinformation.CommonTimeSheet;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
+import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -122,6 +123,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 					record.setOutingTimePrivate(ot.getRecordTotalTime().getTotalTime().getTime().valueAsMinutes());
 				}
 			});
+			
 			totalWT.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().ifPresent(ovt -> {
 				if(ovt.getFlexTime() != null && ovt.getFlexTime().getFlexTime() != null){
 					record.setFlexTime(ovt.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes());
@@ -189,6 +191,21 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				domain.getEmployeeId(),
 				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTimeCode()==null?null:domain.getRecordInfo().getWorkTimeCode().v()),
 				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTypeCode()==null?null:domain.getRecordInfo().getWorkTypeCode().v())
+				);
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerExport> findByEmpId(String employeeId) {
+		List<WorkInfoOfDailyPerformance> workInfo = this.workInformationRepository.findByEmployeeId(employeeId);
+		if(workInfo.isEmpty())
+			return Collections.emptyList();
+		return workInfo.stream().map(c->convertToWorkInfoOfDailyPerformance(c)).collect(Collectors.toList());
+	}
+	
+	private WorkInfoOfDailyPerExport convertToWorkInfoOfDailyPerformance(WorkInfoOfDailyPerformance domain) {
+		return new WorkInfoOfDailyPerExport(
+				domain.getEmployeeId(),
+				domain.getYmd()
 				);
 	}
 	

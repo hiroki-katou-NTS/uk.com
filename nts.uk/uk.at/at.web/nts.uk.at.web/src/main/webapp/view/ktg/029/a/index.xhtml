@@ -362,10 +362,10 @@
 							<span data-bind="text: childRemainNo.after"></span>#{i18n.getText('KTG029_60')}
 						</td>
 					</tr>
-					<tr data-bind="visible: childRemainNo.showAfter">
+					<!-- <tr data-bind="visible: childRemainNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
 						<td data-bind="text: childRemainNo.grantDate"></td>
-					</tr>
+					</tr> -->
 				</table>
 				<!-- A24 -->
 				<table class="widget-table" data-bind="with:dataRecord(), visible: displayCareLeaveNo">
@@ -381,10 +381,10 @@
 							<span data-bind="text: careLeaveNo.after"></span>#{i18n.getText('KTG029_60')}
 						</td>
 					</tr>
-					<tr data-bind="visible: careLeaveNo.showAfter">
+					<!-- <tr data-bind="visible: careLeaveNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
 						<td data-bind="text: careLeaveNo.grantDate"></td>
-					</tr>
+					</tr> -->
 				</table>
 				<!-- A25 -->
 				<table class="widget-table" data-bind="with:dataRecord(), visible: displaySPHDRamainNo">
@@ -396,11 +396,11 @@
 				<table class="widget-table" data-bind="with:dataRecord()">
 					<tbody data-bind="foreach: sPHDRamainNo">
 						<tr>
-							<td class="tab limited-label">#{i18n.getText('KTG029_31')} <span data-bind="text: _.padStart($index() + 1 , 2, '0')"></span><span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span></td>
+							<td class="tab limited-label"><span data-bind="text: name"></span><span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span></td>
 							<td class="tab"><span data-bind="text: before"></span>#{i18n.getText('KTG029_60')}</td>
 						</tr>	
 						<tr data-bind="visible: showAfter">
-							<td class="tab limited-label">#{i18n.getText('KTG029_31')} <span data-bind="text: _.padStart($index() + 1 , 2, '0')"></span>#{i18n.getText('KTG029_66')}</td>
+							<td class="tab limited-label"><span data-bind="text: name"></span>#{i18n.getText('KTG029_66')}</td>
 							<td class="tab"><span data-bind="text: after"></span>#{i18n.getText('KTG029_60')}</td>
 						</tr>
 						<tr data-bind="visible: showAfter">

@@ -2,16 +2,12 @@
 	margin-top: 10px;
 }
 
-.add, .proceed, .danger, .pdf {
+/* .add, .proceed, .danger, .pdf {
 	width: 80px;
-}
+} */
 
 .add {
 	margin-left: 105px;
-}
-
-.proceed, .pdf {
-	margin-left: 10px;
 }
 
 .danger {

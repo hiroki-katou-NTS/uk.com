@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -8,9 +10,13 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
+import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 
 @Data
 @AllArgsConstructor
@@ -168,7 +174,21 @@ public class AppAbsenceDto {
 	private boolean sendMailWhenRegisterFlg;
 	
 	private CheckDispHolidayType checkDis;
-	
+	private MaxDaySpecHdOutput maxDayObj;
+	//事象に応じた特休フラグ(true, false)
+	private boolean specHdForEventFlag;
+	private List<DateSpecHdRelationOutput> lstRela;
+	/* 上限日数の設定方法 */
+	private Integer maxNumberDayType;
+	/* 忌引とする */
+	private Integer makeInvitation;
+	private AppForSpecLeaveDto specHdDto;
+	private List<DisplayReasonDto> displayReasonDtoLst;
+	//ドメインモデル「申請種類別設定」.事前事後区分を変更できる
+	private boolean prPostChange;
+	private SettingNo65 setingNo65;
+	//No.376
+	private NumberOfRemainOutput numberRemain;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -201,7 +221,15 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null,true, false, false, null);
+								false,null,true, false, false, null, null, false,
+								new ArrayList<>(),
+								null,
+								null,
+								null,
+								Collections.emptyList(),
+								false,
+								null,
+								null);
 	}
 }
 

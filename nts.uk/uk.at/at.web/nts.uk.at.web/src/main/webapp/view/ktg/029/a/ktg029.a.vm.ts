@@ -420,6 +420,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         useSimultaneousGrant: number;
     }
     export interface RemainingNumberDto{
+        name: string;
         before: number;
         after: number;
         grantDate: string;
@@ -489,14 +490,16 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
     }
     export class RemainingNumber{
+        name: string;
         before: number;
         after: number;
         grantDate: string;
         showAfter: boolean;   
         constructor(dto: RemainingNumberDto){
+            this.name = dto.name;
             this.before = dto.before;
             this.after = dto.after;
-            this.grantDate = moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD');
+            this.grantDate = dto.grantDate !=null ? moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD'): '';
             this.showAfter = dto.showAfter;
         }     
     }

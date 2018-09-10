@@ -11,16 +11,16 @@ module ccg018.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.tabs().map((t) => {
-                // set title for tab
-                if (t.active() == true) {
-                    self.title(t.name());
-                }
-            });
-
             self.currentTab = ko.observable(self.tabs()[0]);
             self.baseModel = new base.result.BaseResultModel();
+            self.tabs().map((t) => {
+                    // set title for tab
 
+                    if (t.active() == true) {
+                        self.title(t.name);
+                        self.changeTab(t);
+                    }
+                });
         };
 
         /**
@@ -78,6 +78,10 @@ module ccg018.a.viewmodel {
                             viewmodelB.start().done(function() {
                                 ko.applyBindings(viewmodelB, resultArea.children().get(0));
                                 ko.applyBindings(viewmodelB, resultArea.children().get(1));
+                                _.defer(() => {
+                                    viewmodelB.bindGrid();
+                                    viewmodelB.initCCG001();
+                                });
 
                             });
                         });

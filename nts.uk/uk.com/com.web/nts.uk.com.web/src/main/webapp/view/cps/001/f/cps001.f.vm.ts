@@ -84,14 +84,11 @@ module cps001.f.vm {
                     totalSize = totalSize + item.originalSize;
                     self.items.push(new GridItem(item));
                 });
-
                 let sum = (totalSize / 1024).toFixed(2);
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
-
                 unblock();
                 dfd.resolve();
             });
-
             return dfd.promise();
         }
 
@@ -105,17 +102,20 @@ module cps001.f.vm {
 
                 var fileSize = ((fileInfo.originalSize) / 1024).toFixed(2);
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
-                self.filename(fileInfo.originalName + Math.random());
-
+                //self.filename(fileInfo.originalName + Math.random());
+                $("#file-upload").ntsFileUpload("clear");
                 // save file to domain EmployeeFileManagement
                 var dfd = $.Deferred();
                 service.savedata({
                     pid: dataShare.pid,
+                    sid: dataShare.sid,
                     fileid: fileInfo.id,
                     personInfoCtgId: "",
-                    uploadOrder: 1
+                    uploadOrder: 1,
+                    itemName: nts.uk.resource.getText("CPS001_151"),
+                    fileName: fileInfo.originalName,
+                    categoryName: nts.uk.resource.getText("CPS001_152")
                 }).done(() => {
-                    
                     __viewContext['viewModel'].start().done(() => {
                         init();
                         $('.filenamelabel').hide();
@@ -123,7 +123,6 @@ module cps001.f.vm {
                         unblock();
                         dfd.resolve();
                     });
-
                 });
                 return dfd.promise();
             }
@@ -138,15 +137,34 @@ module cps001.f.vm {
         
 
         deleteItem(rowItem: IEmpFileMana) {
-            let self = this;
+            let self = this,
+            dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                block();
-                service.deletedata(rowItem.fileId).done(() => {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId)
+                .done(function(res) {
+                    self.fileInfo(res);
+                    block();
+                    let command = {
+                        sid: dataShare.sid,
+                        fileid: rowItem.fileId,
+                        itemName: nts.uk.resource.getText("CPS001_151"),
+                        fileName: self.fileInfo() == null ? "File does not exist on server" : self.fileInfo().originalName,
+                        categoryName: nts.uk.resource.getText("CPS001_152")
+                    }; 
+                service.deletedata(command).done(() => {
                     self.restart();
                     unblock();
                 }).fail((mes) => {
                     unblock();
                 });
+                
+                
+                })
+                .fail(function(res) {
+                    console.log(res);
+                });
+                
+                
             }).ifCancel(() => {
 
             });
@@ -180,6 +198,7 @@ module cps001.f.vm {
     // Object truyen tu man A sang
     interface IDataShare {
         pid: string;
+        sid: string;
     }
 
     interface IPersonAuth {

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
@@ -72,6 +72,6 @@ public class AggregateGoOutDto implements ItemConst {
 					new AttendanceTimesMonth(times), 
 					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
 					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 
-					totalTime != null ? new TimeMonthWithCalculation() : totalTime.toDomain());
+					totalTime == null ? new TimeMonthWithCalculation() : totalTime.toDomain());
 	}
 }

@@ -251,14 +251,13 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, DatePeriod datePeriod) {
-		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, datePeriod.end());
+	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date) {
+		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, date);
 		 
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = GeneralDate.today();
-			grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
@@ -269,7 +268,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, GeneralDate.today());
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
 		}
 	}
 

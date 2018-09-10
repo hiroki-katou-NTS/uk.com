@@ -26,11 +26,11 @@ public class InforFormerRemainData {
 	/**	時間代休を利用する */
 	private boolean dayOffTimeIsUse;
 	/**	勤務種類別 */
-	private Optional<WorkTypeRemainInfor> workTypeRemain;
+	private List<WorkTypeRemainInfor> workTypeRemain;
 	/**	時間休暇 */
 	private Optional<VacationTimeInfor> vactionTime;
 	/**	代休振替 */
-	private Optional<DayoffTranferInfor> dayOffTranfer;
+	private List<DayoffTranferInfor> dayOffTranfer;
 	/**
 	 * 会社別休暇管理設定
 	 */
@@ -47,18 +47,27 @@ public class InforFormerRemainData {
 	 */
 	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(WorkTypeClassification workTypeClass) {
 		//勤務種類別残数情報をチェックする
-		if(this.getWorkTypeRemain().isPresent()) {
-			WorkTypeRemainInfor x = this.getWorkTypeRemain().get();
-			List<OccurrenceUseDetail> lstOccurrenceUseDetail = x.getOccurrenceDetailData();
-			List<OccurrenceUseDetail> lstTmp = lstOccurrenceUseDetail.stream()
-					.filter(a ->a.getWorkTypeAtr() == workTypeClass && a.isUseAtr() && a.getDays() > 0)
-					.collect(Collectors.toList());
-			if(!lstTmp.isEmpty()) {
-				return Optional.of(lstTmp.get(0));
-			} else {
-				return Optional.empty();
-			}
+		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemainInfor(workTypeClass);
+		if(!optWorkTypeRemainInfor.isPresent()) {
+			return Optional.empty();
 		}
-		return Optional.empty();	
+		List<OccurrenceUseDetail> lstOccurrenceUseDetail = optWorkTypeRemainInfor.get().getOccurrenceDetailData();
+		List<OccurrenceUseDetail> lstTmp = lstOccurrenceUseDetail.stream()
+				.filter(a ->a.getWorkTypeAtr() == workTypeClass && a.isUseAtr() && a.getDays() > 0)
+				.collect(Collectors.toList());
+		if(!lstTmp.isEmpty()) {
+			return Optional.of(lstTmp.get(0));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public Optional<WorkTypeRemainInfor> getWorkTypeRemainInfor(WorkTypeClassification workTypeClass) {
+		List<WorkTypeRemainInfor> lstWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
+				.filter(x -> x.getWorkTypeClass() == workTypeClass).collect(Collectors.toList());
+		if(lstWorkTypeRemainInfor.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(lstWorkTypeRemainInfor.get(0));
 	}
 }

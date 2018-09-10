@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -26,7 +28,9 @@ import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
@@ -142,7 +146,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 						+ breakTimeSheet.getBreakFrameNo().v() + " , "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
-				statementI.executeUpdate(insertTableSQL);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -282,6 +286,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return Optional.ofNullable(group(krcdtDaiBreakTimes).get(0));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType) {
 		this.getEntityManager().createQuery(REMOVE_BY_BREAKTYPE).setParameter("employeeId", employeeId)

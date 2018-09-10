@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -25,7 +27,9 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
@@ -71,6 +75,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
@@ -103,7 +108,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
-					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0).findFirst().orElse(null);
 			boolean isNew = krcdtTimeLeavingWork == null;
 			if (isNew) {
 				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
@@ -183,7 +189,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 
 			}
-			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+//			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
 			krcdtTimeLeavingWork.daiLeavingWork = entity;
 			if (isNew) {
 				timeWorks.add(krcdtTimeLeavingWork);
@@ -223,7 +229,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_LEAVING_WORK ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
 					+ timeLeavingOfDailyPerformance.getEmployeeId() + "' , '" + timeLeavingOfDailyPerformance.getYmd()
 					+ "' , " + timeLeavingOfDailyPerformance.getWorkTimes().v() + " )";
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
 				// TimeLeavingWork - attendanceStamp - actualStamp
@@ -246,8 +252,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 												
 				// TimeLeavingWork - attendanceStamp - stamp							
@@ -270,8 +276,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
 				Integer attNumberReflec = timeLeavingWork.getAttendanceStamp().isPresent()
@@ -298,8 +304,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;			
 												
 				// TimeLeavingWork - leaveStamp - stamp							
@@ -322,8 +328,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()
 								.isPresent())
-										? timeLeavingWork.getLeaveStamp().get().getStamp().get()
-												.getLocationCode().get().v()
+										? "'" + timeLeavingWork.getLeaveStamp().get().getStamp().get()
+												.getLocationCode().get().v() + "'"
 										: null;
 												
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
@@ -339,24 +345,24 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ timeLeavingOfDailyPerformance.getYmd() + "', "
 						+ 0 + ", "
 						+ attActualRoundingTime + ", "
-						+ attActualTime + ", '"
-						+ attActualStampLocationCode + "' , "
+						+ attActualTime + ", "
+						+ attActualStampLocationCode + " , "
 						+ attActualStampSource + ", "
 						+ attStampRoundingTime + ", "
-						+ attStampTime + ", '"
-						+ attStampLocationCode + "' , "
+						+ attStampTime + ", "
+						+ attStampLocationCode + " , "
 						+ attStampSource + ", "
 						+ attNumberReflec + ", "
 						+ leaveActualRoundingTime + ", "
-						+ leaveActualTime + ", '"
-						+ leaveActualStampLocationCode + "' , "
+						+ leaveActualTime + ", "
+						+ leaveActualStampLocationCode + " , "
 						+ leaveActualStampSource + " , "
 						+ leaveStampRoundingTime + ", "
-						+ leaveStampTime + ", '"
-						+ leaveStampLocationCode + "' , "
+						+ leaveStampTime + ", "
+						+ leaveStampLocationCode + " , "
 						+ leaveStampSource + ", "
 						+ leaveNumberReflec + " )";
-				statementI.executeUpdate(insertTimeLeaving);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
 		} catch (Exception e) {
 			

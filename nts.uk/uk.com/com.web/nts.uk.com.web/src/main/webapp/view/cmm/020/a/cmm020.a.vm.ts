@@ -145,7 +145,8 @@ module nts.uk.com.view.cmm020.a {
              */
             public createEra(): void {
                 var self = this;
-
+                blockUI.grayout();
+                self.activeUpdate(false);
                 let currentDate = moment(self.currentStartDate()).format('YYYY/MM/DD').toString();
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
@@ -157,13 +158,13 @@ module nts.uk.com.view.cmm020.a {
                             if (currentDate > last.startDate) {
                                 var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                 service.saveEraName(eraNameCreate).done(function() {
-                                    blockUI.clear();
+                                    blockUI.grayout();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                         blockUI.clear();
                                         self.loadEraNameList(null);
                                         location.reload();
                                     });
-                                });
+                                }).always(()=> blockUI.clear());
                             } else {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_142" });
                                 return false;
@@ -184,27 +185,29 @@ module nts.uk.com.view.cmm020.a {
                                     } else {
                                         var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                         service.saveEraName(eraNameCreate).done(function() {
-                                            blockUI.clear();
+                                            blockUI.grayout();
                                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                                 blockUI.clear();
                                                 self.loadEraNameList(self.currentCode());
                                             });
-                                        });
+                                        }).always(()=> blockUI.clear());
                                     }
                                 } else {
                                     var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                     service.saveEraName(eraNameCreate).done(function() {
-                                        blockUI.clear();
+                                        blockUI.grayout();
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                             blockUI.clear();
                                             self.loadEraNameList(null);
                                         });
-                                    });
+                                    }).always(()=> blockUI.clear());
                                 }
                             }
                         }
                     }
                 });
+                self.activeUpdate(true);
+                blockUI.clear()
             }
 
             /**
@@ -212,8 +215,8 @@ module nts.uk.com.view.cmm020.a {
              */
             public deleteEra(): void {
                 var self = this;
-                blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    blockUI.invisible();
                     self.indexOfDelete(_.findIndex(self.dataSource(), function(e) {
                         return e.eraId == self.currentCode();
                     }));
@@ -223,13 +226,11 @@ module nts.uk.com.view.cmm020.a {
                     service.deleteEraName(eraNameDelete).done(function() {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            blockUI.clear();
                             self.loadEraNameList(null);
                         });
                     });
 
                 }).ifNo(function() {
-                    blockUI.clear();
                     return;
                 })
             }

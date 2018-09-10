@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.person.dom.person.contact;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,19 +20,25 @@ import nts.arc.layer.dom.AggregateRoot;
 @NoArgsConstructor
 public class EmergencyContact extends AggregateRoot {
 
-	private Memo memo;
+	private Optional<Memo> memo;
 
-	private ContactName contactName;
+	private Optional<ContactName> contactName;
 
-	private PhoneNumber phoneNumber;
+	private Optional<PhoneNumber> phoneNumber;
 
 	public static Optional<EmergencyContact> createFromJavaType(String memo, String contactName, String phoneNumber) {
-		if ((memo == null || memo.isEmpty()) 
-				&& (contactName == null || contactName.isEmpty()) 
-				&& phoneNumber == null || phoneNumber.isEmpty()) {
+		if (StringUtils.isEmpty(memo) && StringUtils.isEmpty(contactName) && StringUtils.isEmpty(phoneNumber)) {
 			return Optional.empty();
 		}
-		return Optional
-				.of(new EmergencyContact(new Memo(memo), new ContactName(contactName), new PhoneNumber(phoneNumber)));
+
+		Optional<Memo> memoValue = StringUtils.isNotEmpty(memo) ? Optional.of(new Memo(memo)) : Optional.empty();
+
+		boolean check = StringUtils.isNotEmpty(contactName);
+		Optional<ContactName> contactNameValue = check ? Optional.of(new ContactName(contactName)) : Optional.empty();
+
+		check = StringUtils.isNotEmpty(phoneNumber);
+		Optional<PhoneNumber> phoneNumberValue = check ? Optional.of(new PhoneNumber(phoneNumber)) : Optional.empty();
+
+		return Optional.of(new EmergencyContact(memoValue, contactNameValue, phoneNumberValue));
 	}
 }

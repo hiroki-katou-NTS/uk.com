@@ -2,7 +2,7 @@
 	width: 1200px;
 }
 
-#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
+.dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
 	#btnExtraction {
 	vertical-align: text-bottom;
 }
@@ -14,7 +14,7 @@
 	margin-left: 50px;
 }
 
-#dislayFormatLbl {
+.dislayFormatLbl {
 	margin-left: 20px;
 }
 
@@ -50,7 +50,7 @@
 
 .grid-container {
 	margin: 15px 0 0 0px;
-    margin-top: -36px;
+    margin-top: 8px;
     float: left;
 }
 
@@ -323,3 +323,21 @@
 .nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
   background-color: #007fff;
 }
+
+.mcell{
+	height: 35px !important;
+}
+.daily-confirm-color{
+	text-align: center;
+	font-size: 18px!important;
+}
+
+.color-cell-approved{
+	background-color: #BFEA60;
+	color: #000!important;
+}
+
+.color-cell-un-approved{
+	color: #ff0000 !important;
+}
+

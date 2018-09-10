@@ -37,6 +37,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
+        
+        optionNoOfHolidays: any = {
+            decimallength: 1
+        }
 
         constructor() {
             let self = this,
@@ -57,6 +61,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+                param.data.compareStartValue = null;
+                param.data.compareEndValue = null;
+                param.data.uncountableAtdItem = null;
+            }
+            
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
             if (caic.compareOperator() > 5) {
@@ -246,6 +256,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         openSelectAtdItemDialogTarget() {
             let self = this;
+            nts.uk.ui.block.invisible();
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
@@ -280,6 +291,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                     });
                 }
             });
+            nts.uk.ui.block.clear();
         }
 
         openSelectAtdItemDialogComparison() {
@@ -301,24 +313,28 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             });
         }
 
-        validateRange() {
+               validateRange() {
             let self = this,
                 caic = ko.toJS(self.currentAtdItemCondition);
-
-            $('.value-input').ntsError('clear');
-
+                $('.value-input').ntsError('clear');
+                $('#endValue').css('border-color' : 'grey');
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
+                // fixbug 99086 : set timeout
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+            $('.value-input').ntsError('clear');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
                 }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
+                // fixbug 99086 : set timeout
+                $('#endValue').css('border-color' : 'grey');
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+            $('.value-input').ntsError('clear');
+                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                        $('#endValue').css('border-color' : 'red');
                     }
                 }, 25);
             }

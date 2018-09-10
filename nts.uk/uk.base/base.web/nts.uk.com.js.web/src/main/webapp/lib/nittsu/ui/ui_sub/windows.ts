@@ -3,6 +3,14 @@
 module nts.uk.ui {
 
     export module windows {
+        
+        export var iframeNameCounter = 0;
+        
+        // this is used for "name" attr of iframe for sub window
+        function createIframeName(): string {
+            iframeNameCounter++;
+            return "window_" + iframeNameCounter;
+        }
 
         var MAIN_WINDOW_ID = 'MAIN_WINDOW';
 
@@ -175,10 +183,12 @@ module nts.uk.ui {
                     .appendTo($('body'))
                     .dialog(options);
 
-                this.$iframe = $('<iframe/>').css({
-                    width: '100%',
-                    height: '100%'
-                }).appendTo(this.$dialog);
+                this.$iframe = $('<iframe/>')
+                    .attr('name', createIframeName())
+                    .css({
+                        width: '100%',
+                        height: '100%'
+                    }).appendTo(this.$dialog);
 
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }

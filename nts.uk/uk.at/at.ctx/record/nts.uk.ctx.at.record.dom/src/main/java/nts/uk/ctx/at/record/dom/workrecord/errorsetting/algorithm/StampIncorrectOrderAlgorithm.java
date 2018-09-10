@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanFo
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
- * 打刻順序不正
+ * 出退勤打刻順序不正
  */
 @Stateless
 public class StampIncorrectOrderAlgorithm {
@@ -53,7 +53,7 @@ public class StampIncorrectOrderAlgorithm {
 			} else {
 				if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2) {
 					if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getWorkNo()
-							.greaterThan(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getWorkNo())) {
+							.lessThan(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getWorkNo())) {
 						attendanceItemIds.add(31);
 						attendanceItemIds.add(34);
 						attendanceItemIds.add(41);
@@ -63,10 +63,12 @@ public class StampIncorrectOrderAlgorithm {
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp() != null
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp() != null
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp() != null
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()) {
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 							// 重複の判断処理
 							TimeWithDayAttr stampStartTimeFirstTime = timeLeavingOfDailyPerformance
 									.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().get()
@@ -80,10 +82,12 @@ public class StampIncorrectOrderAlgorithm {
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp() != null
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent()
+									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp() != null
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
 									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp() != null
-									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()) {
+									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()
+									&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 								TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance
 										.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get()
 										.getTimeWithDay();
@@ -127,10 +131,12 @@ public class StampIncorrectOrderAlgorithm {
 			if (timeLeavingWorking.getLeaveStamp() != null && timeLeavingWorking.getLeaveStamp().isPresent()
 					&& timeLeavingWorking.getLeaveStamp().get().getStamp() != null
 					&& timeLeavingWorking.getLeaveStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
 					&& timeLeavingWorking.getAttendanceStamp() != null
 					&& timeLeavingWorking.getAttendanceStamp().isPresent()
 					&& timeLeavingWorking.getAttendanceStamp().get().getStamp() != null
-					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()) {
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
 				if (timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 						.greaterThanOrEqualTo(timeLeavingWorking.getAttendanceStamp().get().getStamp().get()
 								.getTimeWithDay())) {

@@ -31,7 +31,6 @@ import nts.uk.shr.com.user.UserInfoAdapter;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
-import nts.uk.shr.infra.web.util.QueryStringAnalyzer;
 
 public class StartPageLogWriter implements Filter {
 
@@ -59,7 +58,7 @@ public class StartPageLogWriter implements Filter {
 		
 		ScreenIdentifier targetPg = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
 		
-		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true)){
+		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || FilterHelper.isLoginPage(requestPagePath)){
 			return;
 		}
 		

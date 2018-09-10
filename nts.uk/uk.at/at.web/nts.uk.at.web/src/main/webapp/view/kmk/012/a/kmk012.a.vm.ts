@@ -73,6 +73,15 @@ module nts.uk.at.view.kmk012.a {
                 let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/012/e/index.xhtml");
             }
+            
+            /**
+             * open dialog screen F 
+             */
+            openDialogCalDailyPfm(): void {
+                nts.uk.ui.windows.sub.modal("/view/kmk/012/f/index.xhtml").onClosed(function() {
+                    
+                }); 
+            }
 
             /**
              * start page data 

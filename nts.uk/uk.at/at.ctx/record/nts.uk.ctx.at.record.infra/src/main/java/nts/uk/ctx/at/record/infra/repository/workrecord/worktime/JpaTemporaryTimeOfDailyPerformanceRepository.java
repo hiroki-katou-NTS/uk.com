@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		implements TemporaryTimeOfDailyPerformanceRepository {
@@ -66,6 +69,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_KEY = builderString.toString();
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
@@ -99,11 +103,12 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  		krcdtDaiTemporaryTime.workTimes = domain.getWorkTimes().v();
  		domain.getTimeLeavingWorks().stream().forEach(c -> {
  			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
- 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+ 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+ 								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 1).findFirst().orElse(null);
  			boolean isNew = krcdtTimeLeavingWork == null;
  			if(isNew){
  				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
- 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(), c.getWorkNo().v(), domain.getYmd(), 0);
+ 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(), c.getWorkNo().v(), domain.getYmd(), 1);
  			}
  			if(c.getAttendanceStamp().isPresent()){
  				TimeActualStamp attendanceStamp = c.getAttendanceStamp().get();
@@ -157,7 +162,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = c.getLeaveStamp().get().getNumberOfReflectionStamp();
  			}
  			krcdtTimeLeavingWork.daiTemporaryTime = krcdtDaiTemporaryTime;
- 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 1;
+// 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 1;
  			if(isNew){
  				timeWorks.add(krcdtTimeLeavingWork);
  			}

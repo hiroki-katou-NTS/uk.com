@@ -16,9 +16,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
@@ -342,7 +342,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 						krcdtMonAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())));
 		
 		// 月別実績の勤務時間
-		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						krcdtMonAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				GoOutOfMonthly.of(

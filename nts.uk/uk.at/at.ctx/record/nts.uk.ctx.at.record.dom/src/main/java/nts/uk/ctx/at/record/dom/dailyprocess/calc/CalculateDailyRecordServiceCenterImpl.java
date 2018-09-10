@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
@@ -96,32 +97,41 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	private ZeroTimeRepository zeroTimeRepository;
 	
 	@Override
-	//就業計算と集計以外から呼び出す時の窓口
+	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
-		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty()).getIntegrationOfDailyList();
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList()).getIntegrationOfDailyList();
 	}
 	
 	@Override
 	//会社共通の設定を他のコンテキストで取得できる場合に呼び出す窓口
 	public List<IntegrationOfDaily> calculatePassCompanySetting(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),companySet).getIntegrationOfDailyList();
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),companySet,Collections.emptyList()).getIntegrationOfDailyList();
 	}
 	
 	@Override
-	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter){
-		return commonPerCompany(integrationOfDaily,true,asyncContext,counter,Optional.empty());
+	//更新処理自動実行から呼び出す窓口
+	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.of(companySet),closureList);
+	}
+	
+	@Override
+	//就業計算と集計から呼び出す時の窓口
+	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
 	}
 	
 	/**
 	 * 会社共通の処理達
 	 * @param integrationOfDaily 実績データたち
 	 * @param companySet 
+	 * @param closureList 
 	 * @return 計算後実績データ
 	 */
 	private CalcStatus commonPerCompany(List<IntegrationOfDaily> integrationOfDaily,boolean isManageState,
 													  Optional<AsyncCommandHandlerContext> asyncContext
 													 ,Optional<Consumer<ProcessState>> counter, 
-													 Optional<ManagePerCompanySet> companySet) {
+													 Optional<ManagePerCompanySet> companySet, 
+													 List<ClosureStatusManagement> closureList) {
 		/***会社共通処理***/
 		if(integrationOfDaily.isEmpty()) return new CalcStatus(ProcessState.SUCCESS, integrationOfDaily);
 		//社員毎の実績に纏める
@@ -153,8 +163,12 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		/***会社共通処理***/
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
-		for(List<IntegrationOfDaily> record: recordPerEmpId.values()) {
-			val returnValue = calcOnePerson(comanyId,record,companyCommonSetting,asyncContext);
+		//社員ごとの処理
+		for(Entry<String, List<IntegrationOfDaily>> record: recordPerEmpId.entrySet()) {
+			//対象社員の締め取得
+			List<ClosureStatusManagement> closureByEmpId = getclosure(record.getKey(), closureList);
+			//日毎の処理
+			val returnValue = calcOnePerson(comanyId,record.getValue(),companyCommonSetting,asyncContext,closureByEmpId);
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
@@ -162,6 +176,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
 			returnList.addAll(returnValue.getIntegrationOfDailyList());
+			//人数カウントアップ
 			if(counter.isPresent()) {
 				counter.get().accept(ProcessState.SUCCESS);
 			}
@@ -174,16 +189,27 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 
 	/**
+	 * 対象者の締め一覧を取得する
+	 * @param empId 対象者
+	 * @param closureList 締め一覧
+	 * @return 対象者の締め一覧
+	 */
+	private List<ClosureStatusManagement> getclosure(String empId,List<ClosureStatusManagement> closureList){
+		return closureList.stream().filter(tc -> tc.getEmployeeId().equals(empId)).collect(Collectors.toList());
+	}
+	
+	/**
 	 * 日毎のメイン処理
 	 * @param comanyId 会社 ID
 	 * @param recordList 実績データのリスト
 	 * @param companyCommonSetting 会社共通の設定
+	 * @param closureByEmpId 
 	 * @return　実績データ
 	 */
-	public CalcStatus calcOnePerson(String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
-									Optional<AsyncCommandHandlerContext> asyncContext){
+	private CalcStatus calcOnePerson(String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
+									Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureByEmpId){
 		
-		//社員毎の期間取得
+		//社員の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(recordList);
 		val map = convertMap(recordList);
 		List<GeneralDate> sortedymd = recordList.stream()
@@ -193,18 +219,25 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		val maxGeneralDate = sortedymd.get(0);
 		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		
+		
 		//労働制マスタ取得
 		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
 		
 		//日ごとループ(1人社員の)
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
 		for(IntegrationOfDaily record:recordList) {
-
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
 				asyncContext.get().finishedAsCancelled();
 				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
+			}
+			
+			//締め一覧から、ymdが計算可能な日かを判定する
+			if(!isCalc(closureByEmpId, record.getAffiliationInfor().getYmd())) {
+				returnList.add(record);
+				continue;
 			}
 			
 			//nowIntegrationの労働制取得
@@ -237,7 +270,19 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	
-	
+	/**
+	 * 計算可能な日かを判定する
+	 * @param closureList　締め一覧
+	 * @param ymd　対象年月日
+	 * @return　計算してもよい
+	 */
+	public boolean isCalc(List<ClosureStatusManagement> closureList, GeneralDate ymd) {
+		for(ClosureStatusManagement closure : closureList) {
+			if(closure.getPeriod().contains(ymd))
+				return false;
+		}
+		return true;
+	}
 	
 
 	//社員毎の実績にまとめる

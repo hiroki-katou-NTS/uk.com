@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 @Data
@@ -50,4 +51,8 @@ public class MonthlyPerformanceParam {
 	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
 	
 	private Integer yearMonth;
+	
+	private ActualTime actualTime;
+	
+	private Integer closureId;
 }

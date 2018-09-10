@@ -123,11 +123,11 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "ERAL_CHECK_ID")
 	public String eralCheckId;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false)
 	public KrcmtErAlCondition krcmtErAlCondition;
 
-	@OneToMany(mappedBy = "kwrmtErAlWorkRecord", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(mappedBy = "kwrmtErAlWorkRecord", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	public List<KrcstErAlApplication> krcstErAlApplication;
 
 	@Column(name = "CANCEL_ROLE_ID")
@@ -445,15 +445,19 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			condition.createAlCheckTargetCondition(entity.krcmtErAlCondition.filterByBusinessType == 1,
 					entity.krcmtErAlCondition.filterByJobTitle == 1, entity.krcmtErAlCondition.filterByEmployment == 1,
 					entity.krcmtErAlCondition.filterByClassification == 1,
-					Optional.ofNullable(entity.krcmtErAlCondition.lstBusinessType).orElse(Collections.emptyList())
-							.stream().map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
-							.collect(Collectors.toList()),
-					Optional.ofNullable(entity.krcmtErAlCondition.lstJobTitle).orElse(Collections.emptyList()).stream()
-							.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),
-					Optional.ofNullable(entity.krcmtErAlCondition.lstEmployment).orElse(Collections.emptyList())
-							.stream().map(empt -> empt.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),
-					Optional.ofNullable(entity.krcmtErAlCondition.lstClassification).orElse(Collections.emptyList())
-							.stream().map(clss -> clss.krcstErAlClassPK.clscd).collect(Collectors.toList()));
+					entity.krcmtErAlCondition.lstBusinessType.isEmpty() ? Collections.emptyList()
+							: entity.krcmtErAlCondition.lstBusinessType.stream()
+									.map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
+									.collect(Collectors.toList()),
+					entity.krcmtErAlCondition.lstJobTitle.isEmpty() ? Collections.emptyList()
+							: entity.krcmtErAlCondition.lstJobTitle.stream()
+									.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),
+					entity.krcmtErAlCondition.lstEmployment.isEmpty() ? Collections.emptyList()
+							: entity.krcmtErAlCondition.lstEmployment.stream()
+									.map(empt -> empt.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),
+					entity.krcmtErAlCondition.lstClassification.isEmpty() ? Collections.emptyList()
+							: entity.krcmtErAlCondition.lstClassification.stream()
+									.map(clss -> clss.krcstErAlClassPK.clscd).collect(Collectors.toList()));
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(entity.krcmtErAlCondition.workTypeUseAtr == 1,
 					entity.krcmtErAlCondition.wtCompareAtr);
@@ -517,6 +521,14 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		}
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
+	}
+	
+	public String getGroup1Id() {
+		return this.krcmtErAlCondition.atdItemConditionGroup1;
+	}
+	
+	public String getGroup2Id() {
+		return this.krcmtErAlCondition.atdItemConditionGroup2;
 	}
 
 }

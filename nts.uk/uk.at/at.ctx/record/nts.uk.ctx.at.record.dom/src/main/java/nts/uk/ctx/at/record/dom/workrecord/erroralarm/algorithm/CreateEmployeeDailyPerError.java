@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -18,6 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 
  * @author nampt Minh Hùng 社員の日別実績のエラーを作成する
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class CreateEmployeeDailyPerError {
 
@@ -36,7 +39,7 @@ public class CreateEmployeeDailyPerError {
 
 		}
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createEmployeeError(EmployeeDailyPerError dailyPerError){
 		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(dailyPerError.getEmployeeID(), dailyPerError.getDate(),
 				dailyPerError.getErrorAlarmWorkRecordCode().v());
@@ -70,9 +73,21 @@ public class CreateEmployeeDailyPerError {
 	 *            対象日一覧：List＜年月日＞
 	 * @return 対象日一覧の確認が済んでいる：boolean
 	 */
-	public boolean employeeDailyRecordErrorCheck(String companyID, String employeeID, DatePeriod durationDate) {
-		return employeeDailyPerErrorRepository.checkExistRecordErrorListDate(companyID, employeeID,
-				getDaysBetween(durationDate.start(), durationDate.end()));
+	public boolean employeeDailyRecordErrorCheck(String companyID, String employeeID, DatePeriod durationDate,boolean checkExistRecordErrorListDate) {
+//		return employeeDailyPerErrorRepository.checkExistRecordErrorListDate(companyID, employeeID,
+//				getDaysBetween(durationDate.start(), durationDate.end()));
+		return checkExistRecordErrorListDate;
+	}
+	
+	/**
+	 * 社員の日別実績のエラーを解除する - KIF 001 update
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param errorCode
+	 */
+	public void removeByCidSidDateAndErrorCode(String companyID, String employeeID, GeneralDate date, String errorCode){
+		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
 	}
 
 	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {

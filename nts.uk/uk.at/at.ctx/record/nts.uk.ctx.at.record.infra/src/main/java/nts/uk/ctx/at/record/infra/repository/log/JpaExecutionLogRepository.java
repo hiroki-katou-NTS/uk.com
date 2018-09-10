@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecutionLog;
@@ -58,9 +59,53 @@ public class JpaExecutionLogRepository extends JpaRepository implements Executio
 
 	@Override
 	public void addAllExecutionLog(List<ExecutionLog> listExecutionLog) {
-		List<KrcdtExecutionLog> lstKrcdtExecutionLog = listExecutionLog.stream()
-		.map(c -> KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList());
+		List<KrcdtExecutionLog> lstKrcdtExecutionLog = listExecutionLog.stream().map(c -> KrcdtExecutionLog.toEntity(c))
+				.collect(Collectors.toList());
 		this.commandProxy().insertAll(lstKrcdtExecutionLog);
+	}
+
+	@Override
+	public void updateExecutionDate(String empCalAndSumExecLogID, GeneralDateTime executionStartDate, GeneralDateTime executionEndDate) {
+		
+		List<KrcdtExecutionLog> krcdtExecutionLogs = this.queryProxy().query(SELECT_BY_CAL_AND_SUM_EXE_ID, KrcdtExecutionLog.class)
+		.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getList();
+		
+		Optional<KrcdtExecutionLog> createLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 0).findFirst();
+		Optional<KrcdtExecutionLog> calculateLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 1).findFirst();
+		Optional<KrcdtExecutionLog> log = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 2).findFirst();
+		Optional<KrcdtExecutionLog> monthlyLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 3).findFirst();
+
+		if (createLog.isPresent()) {
+			createLog.get().executionStartDate = executionStartDate;
+			createLog.get().executionEndDate = executionEndDate;
+			
+			this.commandProxy().update(createLog.get());
+			this.getEntityManager().flush();
+		}
+		
+		if (calculateLog.isPresent()) {
+			calculateLog.get().executionStartDate = executionStartDate;
+			calculateLog.get().executionEndDate = executionEndDate;
+			
+			this.commandProxy().update(calculateLog.get());
+			this.getEntityManager().flush();
+		}
+
+		if (log.isPresent()) {
+			log.get().executionStartDate = executionStartDate;
+			log.get().executionEndDate = executionEndDate;
+			
+			this.commandProxy().update(log.get());
+			this.getEntityManager().flush();
+		}
+		
+		if (monthlyLog.isPresent()) {
+			monthlyLog.get().executionStartDate = executionStartDate;
+			monthlyLog.get().executionEndDate = executionEndDate;
+			
+			this.commandProxy().update(monthlyLog.get());
+			this.getEntityManager().flush();
+		}
 	}
 
 }

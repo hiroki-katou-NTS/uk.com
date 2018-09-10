@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -87,7 +88,9 @@ public class RegulationInfoEmployeeFinder {
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
 		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-			return Arrays.asList(this.findCurrentLoginEmployeeInfo());
+			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
+					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
+							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT)));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
@@ -206,7 +209,8 @@ public class RegulationInfoEmployeeFinder {
 			this.changeListWorkplaces(queryDto);
 			break;
 		case DEPARTMENT_AND_CHILD:
-			if (employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+					|| employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
 				this.changeListWorkplaces(queryDto);
 				break;
@@ -342,10 +346,13 @@ public class RegulationInfoEmployeeFinder {
 	 *
 	 * @return the list
 	 */
-	private RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo() {
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, GeneralDateTime.now());
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
+		if (loginEmployee == null) {
+			throw new BusinessException("Msg_317");
+		}
 		return RegulationInfoEmployeeDto.builder()
 				.employeeCode(loginEmployee.getEmployeeCode())
 				.employeeId(loginEmployee.getEmployeeID())

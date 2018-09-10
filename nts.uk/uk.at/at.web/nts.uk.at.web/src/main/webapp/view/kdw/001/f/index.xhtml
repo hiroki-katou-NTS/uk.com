@@ -16,7 +16,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				F1_1
-				<a id="linkButton" class="goback" data-bind="ntsLinkButton: {}, click : openScreenA">#{i18n.getText('KDW001_5')}</a> 
+				<a id="linkButton" tabindex = "0" class="goback" data-bind="ntsLinkButton: {}, click : openScreenA">#{i18n.getText('KDW001_5')}</a> 
 			</div>
 			
 			<div id="contents-area">
@@ -28,7 +28,7 @@
 						<!-- F2_2 -->
 						<div style=" float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_41')}</div>
 						<!-- F2_5 F2_6 -->
-						<div style="margin-top: 4px; float: left;" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+						<div style="margin-top: 4px; float: left;" id="daterangepicker" data-bind="ntsDateRangePicker: { 
 									required: required, 
 									enable: enable, 
 									showNextPrevious: true, 
@@ -41,11 +41,12 @@
 					<div  class="panel">#{i18n.getText('KDW001_42')}</div>
 				</div>
 				<!-- F3_1 -->
-				<div style="margin-top: 7px;margin-left: 50px;">
+				<div style="margin-top: 7px;margin-left: 50px;margin-bottom: 10px;">
 					<table id="single-list" 
 						data-bind="ntsGridList: {
 	                        width: 955,
-	                        rows: 12,
+	                        height: 450,
+	                        rows: 11.4,
 	                        options: empCalAndSumExeLog,
 	                        optionsValue: 'empCalAndSumExecLogID',
 	                        columns: columns ,
