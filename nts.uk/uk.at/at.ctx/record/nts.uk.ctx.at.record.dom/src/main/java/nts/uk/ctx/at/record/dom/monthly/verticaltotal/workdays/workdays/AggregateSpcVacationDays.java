@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -14,7 +14,7 @@ public class AggregateSpcVacationDays {
 	/** 特別休暇枠NO */
 	private int spcVacationFrameNo;
 	/** 日数 */
-	private AttendanceDaysMonthDom days;
+	private AttendanceDaysMonth days;
 	/** 時間 */
 	private AttendanceTimeMonth time;
 	
@@ -25,7 +25,7 @@ public class AggregateSpcVacationDays {
 	public AggregateSpcVacationDays(int spcVacationFrameNo){
 		
 		this.spcVacationFrameNo = spcVacationFrameNo;
-		this.days = new AttendanceDaysMonthDom(0.0);
+		this.days = new AttendanceDaysMonth(0.0);
 		this.time = new AttendanceTimeMonth(0);
 	}
 
@@ -38,7 +38,7 @@ public class AggregateSpcVacationDays {
 	 */
 	public static AggregateSpcVacationDays of(
 			int spcVacationFrameNo,
-			AttendanceDaysMonthDom days,
+			AttendanceDaysMonth days,
 			AttendanceTimeMonth time){
 		
 		AggregateSpcVacationDays domain = new AggregateSpcVacationDays(spcVacationFrameNo);

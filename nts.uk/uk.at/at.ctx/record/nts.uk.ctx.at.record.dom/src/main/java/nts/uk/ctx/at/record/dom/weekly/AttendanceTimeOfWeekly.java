@@ -5,7 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.ExcessOutsideByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -43,7 +43,7 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 	/** 任意項目 */
 	private AnyItemByPeriod anyItem;
 	/** 集計日数 */
-	private AttendanceDaysMonthDom aggregateDays;
+	private AttendanceDaysMonth aggregateDays;
 
 	/**
 	 * コンストラクタ
@@ -70,7 +70,7 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.totalCount = new TotalCountByPeriod();
 		this.anyItem = new AnyItemByPeriod();
-		this.aggregateDays = new AttendanceDaysMonthDom((double)(period.start().daysTo(period.end()) + 1));
+		this.aggregateDays = new AttendanceDaysMonth((double)(period.start().daysTo(period.end()) + 1));
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 			VerticalTotalOfMonthly verticalTotal,
 			TotalCountByPeriod totalCount,
 			AnyItemByPeriod anyItem,
-			AttendanceDaysMonthDom aggregateDays){
+			AttendanceDaysMonth aggregateDays){
 		
 		AttendanceTimeOfWeekly domain =
 				new AttendanceTimeOfWeekly(employeeId, yearMonth, closureId, closureDate, weekNo, period);

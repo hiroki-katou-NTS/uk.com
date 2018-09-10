@@ -110,8 +110,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Override
 	//更新処理自動実行から呼び出す窓口
-	public List<IntegrationOfDaily> calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,List<ClosureStatusManagement> closureList){
-		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),closureList).getIntegrationOfDailyList();
+	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet,List<ClosureStatusManagement> closureList){
+		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.of(companySet),closureList);
 	}
 	
 	@Override
@@ -195,7 +195,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @return 対象者の締め一覧
 	 */
 	private List<ClosureStatusManagement> getclosure(String empId,List<ClosureStatusManagement> closureList){
-		return closureList.stream().filter(tc -> tc.getEmployeeId() == empId).collect(Collectors.toList());
+		return closureList.stream().filter(tc -> tc.getEmployeeId().equals(empId)).collect(Collectors.toList());
 	}
 	
 	/**

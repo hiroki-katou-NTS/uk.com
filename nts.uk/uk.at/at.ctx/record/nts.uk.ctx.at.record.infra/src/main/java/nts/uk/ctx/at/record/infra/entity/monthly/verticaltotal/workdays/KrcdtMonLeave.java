@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
@@ -107,35 +107,35 @@ public class KrcdtMonLeave extends UkJpaEntity implements Serializable {
 		
 		if (this.prenatalLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.PRENATAL, new AttendanceDaysMonthDom(this.prenatalLeaveDays)));
+					CloseAtr.PRENATAL, new AttendanceDaysMonth(this.prenatalLeaveDays)));
 		}
 		if (this.postpartumLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.POSTPARTUM, new AttendanceDaysMonthDom(this.postpartumLeaveDays)));
+					CloseAtr.POSTPARTUM, new AttendanceDaysMonth(this.postpartumLeaveDays)));
 		}
 		if (this.childcareLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CHILD_CARE, new AttendanceDaysMonthDom(this.childcareLeaveDays)));
+					CloseAtr.CHILD_CARE, new AttendanceDaysMonth(this.childcareLeaveDays)));
 		}
 		if (this.careLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.CARE, new AttendanceDaysMonthDom(this.careLeaveDays)));
+					CloseAtr.CARE, new AttendanceDaysMonth(this.careLeaveDays)));
 		}
 		if (this.injuryOrIllnessLeaveDays != 0.0){
 			fixLeaveDaysList.add(AggregateLeaveDays.of(
-					CloseAtr.INJURY_OR_ILLNESS, new AttendanceDaysMonthDom(this.injuryOrIllnessLeaveDays)));
+					CloseAtr.INJURY_OR_ILLNESS, new AttendanceDaysMonth(this.injuryOrIllnessLeaveDays)));
 		}
 		if (this.anyLeaveDays01 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(1, new AttendanceDaysMonthDom(this.anyLeaveDays01)));
+			anyLeaveDaysList.add(AnyLeave.of(1, new AttendanceDaysMonth(this.anyLeaveDays01)));
 		}
 		if (this.anyLeaveDays02 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(2, new AttendanceDaysMonthDom(this.anyLeaveDays02)));
+			anyLeaveDaysList.add(AnyLeave.of(2, new AttendanceDaysMonth(this.anyLeaveDays02)));
 		}
 		if (this.anyLeaveDays03 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(3, new AttendanceDaysMonthDom(this.anyLeaveDays03)));
+			anyLeaveDaysList.add(AnyLeave.of(3, new AttendanceDaysMonth(this.anyLeaveDays03)));
 		}
 		if (this.anyLeaveDays04 != 0.0){
-			anyLeaveDaysList.add(AnyLeave.of(4, new AttendanceDaysMonthDom(this.anyLeaveDays04)));
+			anyLeaveDaysList.add(AnyLeave.of(4, new AttendanceDaysMonth(this.anyLeaveDays04)));
 		}
 		
 		val domain = LeaveOfMonthly.of(fixLeaveDaysList, anyLeaveDaysList);

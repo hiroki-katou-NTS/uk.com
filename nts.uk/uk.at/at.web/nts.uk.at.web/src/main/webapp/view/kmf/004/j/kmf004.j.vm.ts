@@ -11,15 +11,17 @@ module nts.uk.at.view.kmf004.j.viewmodel {
         constructor() {
             let self = this;
             self.currentCodeList(nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS"));
-            self.selectedCode(nts.uk.ui.windows.getShared("KMF004_A_SELECTED_CD"));
             $("#data-items").focus();
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
+            let dfd = $.Deferred(),
+                param = {
+                    selectedNos: _.map(self.currentCodeList(), item => { return item.substring(1) })
+                };
 
-            service.findForScreenJ(self.selectedCode()).done(function(data) {
+            service.findForScreenJ(param).done(function(data) {
                 self.items(_.map(data, (item) => {
                     return new ItemModel(item);
                 }));

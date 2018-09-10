@@ -2,11 +2,17 @@ package nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -26,6 +32,7 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)

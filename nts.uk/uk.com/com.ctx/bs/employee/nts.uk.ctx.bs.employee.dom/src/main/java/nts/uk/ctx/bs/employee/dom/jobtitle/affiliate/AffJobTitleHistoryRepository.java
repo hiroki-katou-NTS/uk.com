@@ -56,6 +56,8 @@ public interface AffJobTitleHistoryRepository {
 	
 	Optional<AffJobTitleHistory> getListByHidSid(String hid, String sid);
 	
+	List<AffJobTitleHistory> getListByListHidSid(List<String> hid, List<String> sid);
+	
 	/**
 	 * Search job title history.
 	 *

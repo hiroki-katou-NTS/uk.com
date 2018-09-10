@@ -6,7 +6,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class AbsenceDaysOfMonthly {
 
 	/** 欠勤合計日数 */
-	private AttendanceDaysMonthDom totalAbsenceDays;
+	private AttendanceDaysMonth totalAbsenceDays;
 	/** 欠勤合計時間 */
 	private AttendanceTimeMonth totalAbsenceTime;
 	/** 欠勤日数 */
@@ -31,7 +31,7 @@ public class AbsenceDaysOfMonthly {
 	 */
 	public AbsenceDaysOfMonthly(){
 		
-		this.totalAbsenceDays = new AttendanceDaysMonthDom(0.0);
+		this.totalAbsenceDays = new AttendanceDaysMonth(0.0);
 		this.totalAbsenceTime = new AttendanceTimeMonth(0);
 		this.absenceDaysList = new HashMap<>();
 	}
@@ -44,7 +44,7 @@ public class AbsenceDaysOfMonthly {
 	 * @return 月別実績の欠勤日数
 	 */
 	public static AbsenceDaysOfMonthly of(
-			AttendanceDaysMonthDom totalAbsenceDays,
+			AttendanceDaysMonth totalAbsenceDays,
 			AttendanceTimeMonth totalAbsenceTime,
 			List<AggregateAbsenceDays> absenceDaysList){
 		
