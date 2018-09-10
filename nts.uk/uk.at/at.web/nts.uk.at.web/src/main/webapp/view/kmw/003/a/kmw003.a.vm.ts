@@ -736,6 +736,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
 
             self.ccg001 = {
+                // fix bug 100434
+                maxPeriodRange: 'oneMonth',
                 /** Common properties */
                 systemType: 2,
                 showEmployeeSelection: false, // 検索タイプ

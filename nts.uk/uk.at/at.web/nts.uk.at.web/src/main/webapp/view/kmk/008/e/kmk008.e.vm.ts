@@ -84,6 +84,12 @@ module nts.uk.at.view.kmk008.e {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+
+                $('#work-place-base-date').prop('tabIndex', -1);
+                $(document).ready(function() {
+                    $('tabindex').removeAttr("tabindex");
+                });
+                
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
                 } else {
