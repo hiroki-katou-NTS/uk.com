@@ -119,4 +119,16 @@ public class AnyItemOfMonthly extends AggregateRoot {
 			}
 		}
 	}
+
+	public void updateTime(AnyTimeMonth time){
+		this.time = Optional.ofNullable(time);
+	}
+	
+	public void updateTimes(AnyTimesMonth times){
+		this.times = Optional.ofNullable(times);
+	}
+	
+	public void updateAmount(AnyAmountMonth amount){
+		this.amount = Optional.ofNullable(amount);
+	}
 }
