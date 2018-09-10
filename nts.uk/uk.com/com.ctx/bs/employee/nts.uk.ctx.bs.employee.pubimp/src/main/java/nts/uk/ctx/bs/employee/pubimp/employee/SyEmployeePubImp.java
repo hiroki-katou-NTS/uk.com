@@ -624,4 +624,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			
 		}).filter(f -> f != null).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod) {
+		// lấy List sid từ dateperiod and list workplaceId
+		List<String> lstSidFromWorkPlace = affWkpItemRepo.getSidByListWkpIdAndDatePeriod(dateperiod, wkpIds);
+		List<String> lstSidResult = affComHistRepo.getLstSidByLstSidAndPeriod(lstSidFromWorkPlace, dateperiod);
+		return lstSidResult;
+	}
 }
