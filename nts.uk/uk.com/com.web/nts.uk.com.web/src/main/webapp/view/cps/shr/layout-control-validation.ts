@@ -3,7 +3,7 @@ module nts.layout {
         _: any = window['_'],
         ko: any = window['ko'],
         moment: any = window['moment'];
-    
+
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import nou = nts.uk.util.isNullOrUndefined;
@@ -203,7 +203,7 @@ module nts.layout {
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
-        get_sphd_nextGrantDate: (param: ISpeacialParam)  => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`,param)
+        get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param)
     }
 
     export class validation {
@@ -1297,25 +1297,9 @@ module nts.layout {
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
                 initCDL008Data = (data: IItemData) => {
-                    if (!!CS00017_IS00082) {
-                        let v = CS00017_IS00082.data.value();
-
-                        if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                            setShared('inputCDL008', {
-                                selectedCodes: [data.value],
-                                baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
-                                isMultiple: false,
-                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
-                                isrestrictionOfReferenceRange: false,
-                                showNoSelection: !data.required,
-                                isShowBaseDate: false
-                            }, true);
-                        } else {
-                            setShared('inputCDL008', null);
-                        }
-                    } else if (location.href.indexOf('/view/cps/002') > -1) {
+                    if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            selectedCodes: [ko.toJS(data.value)],
                             baseDate: ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
@@ -1328,8 +1312,38 @@ module nts.layout {
                             isrestrictionOfReferenceRange: false,
                             showNoSelection: !data.required
                         }, true);
-                    } else {
-                        setShared('inputCDL008', null);
+                    } else if (location.href.indexOf('/view/cps/001') > -1) {
+                        if (!!CS00017_IS00082) {
+                            let v = CS00017_IS00082.data.value();
+
+                            if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        } else {
+                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        }
                     }
                 };
 
@@ -1501,7 +1515,8 @@ module nts.layout {
                 CS00024_IS00280: IFindData = finder.find('CS00024', 'IS00280'),
                 CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
                 CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
-                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283');
+                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283'),
+                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021');
 
             if (CS00024_IS00279 &&
                 CS00024_IS00280 &&
@@ -1511,16 +1526,23 @@ module nts.layout {
                 CS00024_IS00279.data.value.subscribe(x => {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
-                        grantTable = ko.toJS(CS00024_IS00280.data.value);
-
-                    if (!employeeId || !x) {
+                        grantTable = ko.toJS(CS00024_IS00280.data.value),
+                        hireDate: Date = null,
+                        retireDates: Date = null;
+                    if (location.href.indexOf('/view/cps/002') > -1) {
+                        hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                        retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
+                    }
+                    if (!x) {
                         return;
                     }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
-                        standardDate:  moment.utc(standardDate).format('YYYY/MM/DD'),
-                        grantTable: grantTable
+                        standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
+                        grantTable: grantTable,
+                        entryDate: moment.utc(hireDate).toDate(),
+                        retireDate: moment.utc(retireDates).toDate()
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
                         CS00024_IS00282.data.value(result.nextTimeGrantDays);
@@ -1812,19 +1834,18 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null,
-                                management = manage? ko.toJS(manage.data.value): null;
-                            
-                            // 
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value) : null,
+
+                                management = manage ? ko.toJS(manage.data.value) : null;
 
                             if (!sid || !x || !management || management == '0') {
                                 result.data.value('');
                                 return;
                             }
-                            
+
                             fetch.get_sphd_nextGrantDate({
                                 sid: sid,
-                                grantDate:  moment.utc(grantDate).toDate(),
+                                grantDate: moment.utc(grantDate).toDate(),
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
@@ -1842,15 +1863,15 @@ module nts.layout {
 
                         cbx.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         manage.data.value.subscribe(x => inp.data.value.valueHasMutated());
-                        if (grantDay){
-                            grantDay.data.value.subscribe(x => 
+                        if (grantDay) {
+                            grantDay.data.value.subscribe(x =>
                                 inp.data.value.valueHasMutated()
                             );
                         }
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
-                        
+
                         inp.data.value.valueHasMutated();
                     }
                 };
@@ -2223,6 +2244,8 @@ module nts.layout {
         employeeId: string;
         standardDate: Date;
         grantTable: string;
+        entryDate: Date;
+        retireDate: Date;
     }
 
     interface IGroupControl {

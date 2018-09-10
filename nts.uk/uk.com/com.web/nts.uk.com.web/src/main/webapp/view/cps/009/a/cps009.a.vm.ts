@@ -975,6 +975,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                if (value !== 2) {
+                    error.clearAll();
+                }
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }

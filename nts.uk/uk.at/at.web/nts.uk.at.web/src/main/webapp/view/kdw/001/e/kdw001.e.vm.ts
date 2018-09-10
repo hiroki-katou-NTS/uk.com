@@ -199,7 +199,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             //                            if (nts.uk.text.isNullOrEmpty(endTime))
                             //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
                             //                            self.endTime(endTime);
-
+    
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
@@ -223,8 +223,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                                 var paramsUpdate = {
                                     empCalAndSumExecLogID: empCalAndSumExecLogID,
-                                    executionStartDate: moment.utc(self.startTime()).toISOString(),
-                                    executionEndDate: moment.utc(self.endTime()).toISOString()
+                                    executionStartDate: self.startTime(),
+                                    executionEndDate: self.endTime()
                                 };
                                 service.updateExcutionTime(paramsUpdate);
                             }

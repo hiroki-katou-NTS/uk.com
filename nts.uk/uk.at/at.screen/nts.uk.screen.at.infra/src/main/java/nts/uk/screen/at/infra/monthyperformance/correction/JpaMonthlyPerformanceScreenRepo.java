@@ -182,7 +182,9 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 								new DatePeriod(item.startYmd, item.endYmd),
 								item.krcdtEditStateOfMothlyPerPK.processDate,
 								item.krcdtEditStateOfMothlyPerPK.closureID,
-								new ClosureDateDto(item.krcdtEditStateOfMothlyPerPK.closeDay, item.isLastDay),
+								new ClosureDateDto(
+										item.krcdtEditStateOfMothlyPerPK.closeDay,
+										item.krcdtEditStateOfMothlyPerPK.isLastDay),
 								item.stateOfEdit))
 						.collect(Collectors.toList()));
 
@@ -198,6 +200,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 						editStateOfMonthlyPerformanceDto.getProcessDate(),
 						editStateOfMonthlyPerformanceDto.getClosureID(),
 						editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(),
 						editStateOfMonthlyPerformanceDto.getAttendanceItemId()), KrcdtEditStateOfMothlyPer.class);
 		KrcdtEditStateOfMothlyPer newkrcdtEditStateOfMothlyPer = this.toEntity(editStateOfMonthlyPerformanceDto);
 		if (optKrcdtEditStateOfMothlyPer.isPresent()) {
@@ -205,7 +208,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.processDate = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.processDate;
 			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closureID = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closureID;
 			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closeDay = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closeDay;
-			oldkrcdtEditStateOfMothlyPer.isLastDay = newkrcdtEditStateOfMothlyPer.isLastDay;
+			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.isLastDay = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.isLastDay;
 			oldkrcdtEditStateOfMothlyPer.stateOfEdit = newkrcdtEditStateOfMothlyPer.stateOfEdit;
 			this.commandProxy().update(oldkrcdtEditStateOfMothlyPer);
 		} else {
@@ -219,8 +222,8 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 						editStateOfMonthlyPerformanceDto.getProcessDate(),
 						editStateOfMonthlyPerformanceDto.getClosureID(),
 						editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(),
 						editStateOfMonthlyPerformanceDto.getAttendanceItemId()),
-				editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(),
 				editStateOfMonthlyPerformanceDto.getStateOfEdit(),
 				editStateOfMonthlyPerformanceDto.getDatePeriod().start(),
 				editStateOfMonthlyPerformanceDto.getDatePeriod().end());
