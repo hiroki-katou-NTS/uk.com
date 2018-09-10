@@ -486,7 +486,7 @@ module nts.uk.at.view.kbt002.b {
                     if (item.childs && item.childs.length > 0) {
                         res = res.concat(self.convertTreeToArray(item.childs));
                     }
-                    res.push({ workplaceId: item.workplaceId, hierarchyCode: item.hierarchyCode, name: item.name });
+                    res.push({ workplaceId: item.workplaceId, hierarchyCode: item.code, name: item.name });
                 })
                 return res;
             }

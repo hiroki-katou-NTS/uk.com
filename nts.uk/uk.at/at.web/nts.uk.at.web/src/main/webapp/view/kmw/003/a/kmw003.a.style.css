@@ -50,7 +50,7 @@
 
 .grid-container {
 	margin: 15px 0 0 0px;
-    margin-top: -36px;
+    margin-top: 8px;
     float: left;
 }
 
@@ -322,4 +322,8 @@
 .nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
   background-color: #007fff;
+}
+
+.mcell{
+	height: 35px !important;
 }

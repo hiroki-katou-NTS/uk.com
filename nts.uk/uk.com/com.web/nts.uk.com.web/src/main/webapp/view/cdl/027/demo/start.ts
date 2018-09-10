@@ -209,12 +209,12 @@ module nts.uk.com.view.cdl027.demo {
 
         openCdl027Dialog() {
             let self = this,
-                params = { 
+                params: Params = { 
                     pgid: __viewContext.program.programId, 
                     functionId: self.functionId(), 
                     listEmployeeId: self.selectedEmployee(), 
                     period: self.period(), 
-                    displayFormat: self.displayFormat() 
+                    displayFormat: self.displayFormat(),
                 };
             setShared("CDL027Params", params);
             modal("com", "/view/cdl/027/a/index.xhtml");
@@ -224,5 +224,15 @@ module nts.uk.com.view.cdl027.demo {
     class Period {
         startDate: string;
         endDate: string;
+    }
+    
+    interface Params {
+        pgid: string; //__viewContext.program.programId
+        functionId: number;
+        listEmployeeId: Array<string>;
+        period: any; // {startDate: string, endDate: string}
+        displayFormat: number;
+        period2?: any; // {startDate: string, endDate: string}; only from the monthly correction to calling
+        // when period2 != null: period2: ymd, period: ym
     }
 }

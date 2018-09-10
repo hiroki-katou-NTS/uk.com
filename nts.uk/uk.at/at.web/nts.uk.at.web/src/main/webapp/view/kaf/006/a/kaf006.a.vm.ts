@@ -220,11 +220,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                     if(data.numberRemain.subVacaRemain != null){//振休残数
                         self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.numberSubVaca(data.numberRemain.subVacaRemain);
                         self.subVacaDis(true);
                     }
                     if(data.numberRemain.stockRemain != null){//ストック休暇残数
                         self.stockRemain(data.numberRemain.stockRemain + '日');
-                        self.numberSubVaca(data.numberRemain.stockRemain);
                         self.stockDis(true);
                     }
                 }

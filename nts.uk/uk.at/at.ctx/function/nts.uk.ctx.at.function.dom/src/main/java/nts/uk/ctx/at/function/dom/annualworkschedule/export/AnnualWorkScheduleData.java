@@ -390,7 +390,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setNumMonth(monthlyAttendanceResult.size());
 		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
@@ -432,7 +432,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setNumMonth(listAgreementTimeBymonth.size());
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
 		annualWorkScheduleData.setAgreementTime(true);

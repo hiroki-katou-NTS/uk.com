@@ -36,6 +36,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -408,6 +409,16 @@ public class LogBasicInformationAllFinder {
 						if (!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)) {
 							for (CategoryCorrectionLog categoryCorrectionLog : rsListCategoryCorrectionLog) {
 								List<ItemInfo> rsItemInfo = categoryCorrectionLog.getItemInfos();
+								Optional<ReviseInfo> rsReviseInfo=categoryCorrectionLog.getReviseInfo();
+								if(rsReviseInfo.isPresent()){
+									// item 34
+									logBasicInfoDto.setItemEditAddition(rsReviseInfo.get().getItemName());
+									// item 35
+									if(rsReviseInfo.get().getDate().isPresent()){									
+										logBasicInfoDto.setTarGetYmdEditAddition(rsReviseInfo.get().getDate().get().toString());
+									}									
+								
+								}
 								if (!CollectionUtil.isEmpty(rsItemInfo)) {
 									for (ItemInfo itemInfo : rsItemInfo) {
 
@@ -416,7 +427,9 @@ public class LogBasicInformationAllFinder {
 										// item 24
 										logBasicInfoDto.setMethodCorrection(this.getinfoOperateAttr(
 												categoryCorrectionLog.getInfoOperateAttr().value));
-										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
+										
+										if (!Objects.isNull(categoryCorrectionLog.getTargetKey()) && 
+											categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
 											
 											Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
 														.getDateKey();
@@ -440,19 +453,22 @@ public class LogBasicInformationAllFinder {
 										// item 29
 										logBasicInfoDto.setItemName(itemInfo.getName());
 										// item 30
-										logBasicInfoDto.setItemvalueBefor(itemInfo.getValueBefore().getViewValue());
+										if(!Objects.isNull(itemInfo.getValueBefore().getRawValue())){
+											logBasicInfoDto.setItemvalueBefor(itemInfo.getValueBefore().getRawValue().getValue().toString());
+										
+										}
 										// item 31
 										logBasicInfoDto
 												.setItemContentValueBefor(itemInfo.getValueBefore().getViewValue());
 										// item 32
-										logBasicInfoDto.setItemvalueAppter(itemInfo.getValueAfter().getViewValue());
+										if(!Objects.isNull(itemInfo.getValueAfter().getRawValue())){
+											logBasicInfoDto.setItemvalueAppter(itemInfo.getValueAfter().getRawValue().getValue().toString());
+										}
+										
 										// item 33
 										logBasicInfoDto
 												.setItemContentValueAppter(itemInfo.getValueAfter().getViewValue());
-										// item 34
-										logBasicInfoDto.setItemEditAddition("");
-										// item 35
-										logBasicInfoDto.setTarGetYmdEditAddition("");
+										
 
 										lstLogBacsicInfo.add(logBasicInfoDto);
 									}
@@ -634,19 +650,19 @@ public class LogBasicInformationAllFinder {
 		PersonInfoProcessAttr personInfoProcessAttr = PersonInfoProcessAttr.valueOf(attr);
 		switch (personInfoProcessAttr) {
 		case ADD:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_ADD");
+			return TextResource.localize("Enum_PersonInfoProcess_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_UPDATE");
+			return TextResource.localize("Enum_PersonInfoProcess_UPDATE");
 		case LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_LOGICAL_DELETE");
 		case COMPLETE_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_COMPLETE_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_COMPLETE_DELETE");
 		case RESTORE_LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RESTORE_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_RESTORE_LOGICAL_DELETE");
 		case TRANSFER:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_TRANSFER");
+			return TextResource.localize("Enum_PersonInfoProcess_TRANSFER");
 		case RETURN:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RETURN");
+			return TextResource.localize("Enum_PersonInfoProcess_RETURN");
 		default:
 			return "";
 		}
@@ -656,15 +672,15 @@ public class LogBasicInformationAllFinder {
 		InfoOperateAttr infoOperateAttr = InfoOperateAttr.valueOf(attr);
 		switch (infoOperateAttr) {
 		case ADD:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD");
+			return TextResource.localize("Enum_InfoOperate_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_InfoOperateAttr_UPDATE");
+			return TextResource.localize("Enum_InfoOperate_UPDATE");
 		case DELETE:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE");
+			return TextResource.localize("Enum_InfoOperate_DELETE");
 		case ADD_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_ADD_HISTORY");
 		case DELETE_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_DELETE_HISTORY");
 		default:
 			return "";
 		}
