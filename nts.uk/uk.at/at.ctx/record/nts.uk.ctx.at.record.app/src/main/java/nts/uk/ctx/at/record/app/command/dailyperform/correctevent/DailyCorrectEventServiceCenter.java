@@ -74,6 +74,9 @@ public class DailyCorrectEventServiceCenter {
 			173, 175, 177, 178, 179, 181, 183, 184, 185, 187, 189, 190, 191, 193, 195, 196, 197, 199, 201, 202, 203,
 			205, 207, 208, 209, 211, 213, 214, 215);
 	
+	public final static List<Integer> START_BREAK_TIME_CLOCK_ITEMS = Arrays.asList(157, 163, 169, 175, 181, 187, 193, 199, 205, 211);
+	public final static List<Integer> END_BREAK_TIME_CLOCK_ITEMS = Arrays.asList(159, 165, 171, 177, 183, 189, 195, 201, 207, 213);
+	
 	public EventCorrectResult correctRunTime(DailyRecordDto baseDto, DailyModifyRCResult updated, String companyId){
 		EventTrigger eventBus = EventTrigger.builder().isTriggerRelatedEvent(false).triggerBreakTime(true).triggerTimeLeave(true).build();
 		EventTriggerBus triggerBus = judgeEventTriggerType(updated.getItems());
