@@ -149,6 +149,7 @@ module nts.uk.at.view.kal003.share.model {
                 isMultiple: true,
                 selectedCodes: self.targetEmployment(),
                 showNoSelection: false,
+                isShowWorkClosure : false
             }, true);
 
             modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
