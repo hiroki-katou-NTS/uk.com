@@ -8,9 +8,11 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.socialinsuranceoffice.QpbmtS
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class JpaSocialInsurancePrefectureHistoryRepository extends JpaRepository implements SocialInsurancePrefectureHistoryRepository {
     /**
      * Entity to domain
