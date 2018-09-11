@@ -6,16 +6,6 @@ import lombok.Value;
 public class StatementItemDisplaySetCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * ゼロ表示区分
 	 */
 	private int zeroDisplayAtr;

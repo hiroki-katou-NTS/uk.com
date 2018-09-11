@@ -10,16 +10,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.Deduc
 public class DeductionItemSetDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 控除項目区分
 	 */
 	private int deductionItemAtr;
@@ -35,8 +25,8 @@ public class DeductionItemSetDto {
 	private String note;
 
 	public static DeductionItemSetDto fromDomain(DeductionItemSet domain) {
-		return new DeductionItemSetDto(domain.getCid(), domain.getSalaryItemId(), domain.getDeductionItemAtr().value,
-				domain.getBreakdownItemUseAtr().value, domain.getNote().orElse(null));
+		return new DeductionItemSetDto(domain.getDeductionItemAtr().value, domain.getBreakdownItemUseAtr().value,
+				domain.getNote().orElse(null));
 	}
 
 }

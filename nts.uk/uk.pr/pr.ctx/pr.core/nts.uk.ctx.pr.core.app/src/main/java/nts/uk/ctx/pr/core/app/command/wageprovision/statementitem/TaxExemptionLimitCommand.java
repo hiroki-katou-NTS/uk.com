@@ -4,10 +4,6 @@ import lombok.Value;
 
 @Value
 public class TaxExemptionLimitCommand {
-	/**
-	 * 会社ID
-	 */
-	private String cid;
 
 	/**
 	 * 非課税限度額コード

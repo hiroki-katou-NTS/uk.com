@@ -5,15 +5,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemName;
 
 @Value
 public class StatementItemNameDto {
-	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
 
 	/**
 	 * 名称
@@ -36,8 +27,8 @@ public class StatementItemNameDto {
 	private String englishName;
 
 	public static StatementItemNameDto fromDomain(StatementItemName domain) {
-		return new StatementItemNameDto(domain.getCid(), domain.getSalaryItemId(), domain.getName().v(),
-				domain.getShortName().v(), domain.getOtherLanguageName().map(i -> i.v()).orElse(null),
+		return new StatementItemNameDto(domain.getName().v(), domain.getShortName().v(),
+				domain.getOtherLanguageName().map(i -> i.v()).orElse(null),
 				domain.getEnglishName().map(i -> i.v()).orElse(null));
 	}
 }

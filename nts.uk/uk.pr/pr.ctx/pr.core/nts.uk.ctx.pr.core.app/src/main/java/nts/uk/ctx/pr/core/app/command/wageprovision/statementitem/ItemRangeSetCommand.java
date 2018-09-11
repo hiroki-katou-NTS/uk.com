@@ -8,16 +8,6 @@ import lombok.Value;
 public class ItemRangeSetCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 範囲値の属性
 	 */
 	private int rangeValueAtr;

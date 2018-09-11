@@ -5,10 +5,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptLimit;
 
 @Value
 public class TaxExemptionLimitDto {
-	/**
-	 * 会社ID
-	 */
-	private String cid;
 
 	/**
 	 * 非課税限度額コード
@@ -26,7 +22,7 @@ public class TaxExemptionLimitDto {
 	private int taxExemption;
 
 	public static TaxExemptionLimitDto fromDomain(TaxExemptLimit domain) {
-		return new TaxExemptionLimitDto(domain.getCid(), domain.getTaxExemptionName().v(),
-				domain.getTaxExemptionName().v(), domain.getTaxExemption().v());
+		return new TaxExemptionLimitDto(domain.getTaxExemptionName().v(), domain.getTaxExemptionName().v(),
+				domain.getTaxExemption().v());
 	}
 }

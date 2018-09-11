@@ -11,16 +11,6 @@ import lombok.Value;
 public class TimeItemSetCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 平均賃金区分
 	 */
 	private Integer averageWageAtr;

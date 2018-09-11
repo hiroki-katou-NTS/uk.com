@@ -7,11 +7,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.Break
 public class BreakdownItemSetDto {
 
 	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 内訳項目コード
 	 */
 	private int breakdownItemCode;
@@ -22,7 +17,6 @@ public class BreakdownItemSetDto {
 	private String breakdownItemName;
 
 	public static BreakdownItemSetDto fromDomain(BreakdownItemSet domain) {
-		return new BreakdownItemSetDto(domain.getSalaryItemId(), domain.getBreakdownItemCode().v(),
-				domain.getBreakdownItemName().v());
+		return new BreakdownItemSetDto(domain.getBreakdownItemCode().v(), domain.getBreakdownItemName().v());
 	}
 }

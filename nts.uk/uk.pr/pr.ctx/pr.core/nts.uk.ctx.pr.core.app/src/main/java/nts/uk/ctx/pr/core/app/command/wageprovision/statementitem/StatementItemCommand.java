@@ -6,11 +6,6 @@ import lombok.Value;
 public class StatementItemCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
 	 * カテゴリ区分
 	 */
 	private int categoryAtr;

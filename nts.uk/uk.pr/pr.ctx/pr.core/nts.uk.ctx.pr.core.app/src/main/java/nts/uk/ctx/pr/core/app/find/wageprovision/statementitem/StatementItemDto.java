@@ -7,11 +7,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 public class StatementItemDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
 	 * カテゴリ区分
 	 */
 	private int categoryAtr;
@@ -52,7 +47,7 @@ public class StatementItemDto {
 	private Integer intergrateCd;
 
 	public static StatementItemDto fromDomain(StatementItem domain) {
-		return new StatementItemDto(domain.getCid(), domain.getDeprecatedAtr().value, domain.getItemNameCd().v(),
+		return new StatementItemDto(domain.getDeprecatedAtr().value, domain.getItemNameCd().v(),
 				domain.getSalaryItemId(), domain.getDefaultAtr().value, domain.getValueAtr().value,
 				domain.getDeprecatedAtr().value, domain.getSocialInsuaEditableAtr().map(i -> i.value).orElse(null),
 				domain.getIntergrateCd().map(i -> i.v()).orElse(null));
