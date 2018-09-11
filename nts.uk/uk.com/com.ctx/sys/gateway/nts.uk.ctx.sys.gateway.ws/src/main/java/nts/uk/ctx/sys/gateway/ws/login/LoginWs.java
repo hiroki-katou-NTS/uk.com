@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ws.login;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
@@ -194,6 +198,11 @@ public class LoginWs extends WebService {
 		return this.submitForm3.handle(command);
 	}
 	
+	/**
+	 * Gets the windows account.
+	 *
+	 * @return the windows account
+	 */
 	@Path("account")
 	@POST
 	public WindowsAccountDto getWindowsAccount() {
@@ -202,5 +211,24 @@ public class LoginWs extends WebService {
 		dto.domain = account != null ? account.getDomain() : null;
 		dto.userName = account != null ? account.getUserName() : null;
 		return dto;
+	}
+	
+	/**
+	 * Gets the builds the time.
+	 *
+	 * @return the builds the time
+	 */
+	@POST
+	@Path("build_info_time")
+	public VerDto getBuildTime(@Context ServletContext context) {
+
+		File file = new File(context.getRealPath("/view/ccg/007/a/ccg007.a.start.js"));
+
+		if (!file.exists()) {
+			return VerDto.builder().ver("Please build js file!").build();
+		}
+
+		return VerDto.builder().ver(GeneralDateTime.legacyDateTime(new Date(file.lastModified()))
+				.toString("yyyy/MM/dd HH:mm")).build();
 	}
 }

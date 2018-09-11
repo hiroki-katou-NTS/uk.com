@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,9 +85,18 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	@Override
 	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE, KrcdtIdentificationStatus.class)
-		.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_CONFIRMATION_DAY Where SID = " + "'" + employeeId + "'" + " and PROCESSING_YMD = " + "'" + processingYmd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE, KrcdtIdentificationStatus.class)
+//		.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
