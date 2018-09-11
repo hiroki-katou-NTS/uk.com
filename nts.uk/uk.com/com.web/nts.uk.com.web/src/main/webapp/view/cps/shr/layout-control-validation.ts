@@ -1353,7 +1353,8 @@ module nts.layout {
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
                     // If input date out of range
-                    if (moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
                     
@@ -1383,7 +1384,8 @@ module nts.layout {
                         comboData = ko.toJS(CS00017_IS00084.data);
                     
                     // If input date out of range
-                    if (moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                   if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
                         return;
                     }
                     
@@ -1414,7 +1416,8 @@ module nts.layout {
                         comboData = ko.toJS(CS00017_IS00085.data);
                     
                     // If input date out of range
-                    if (moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
                         return;
                     }
                     
