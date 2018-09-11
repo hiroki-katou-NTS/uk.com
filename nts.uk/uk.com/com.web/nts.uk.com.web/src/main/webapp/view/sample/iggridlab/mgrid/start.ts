@@ -251,7 +251,8 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo2',
                                     group: [
-                                            { headerText: 'ComboCode2', key: 'comboCode2', dataType: 'number', width: '60px', ntsType: 'comboCode_header01' },
+                                            { headerText: 'ComboCode2', key: 'comboCode2', dataType: 'string', width: '60px', ntsType: 'comboCode_header01', 
+                                                constraint: { primitiveValue: "JobTitleCode" }},
                                             { headerText: 'Header01', key: 'header01', dataType: 'string', width: '500px', ntsControl: 'Combobox2' }
                                         ]
                                 },
@@ -275,7 +276,8 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Header4', key: 'header4', dataType: 'string', width: '150px'},
                                 { headerText: 'Header56',
                                     group: [
-                                            { headerText: 'Header<br/>5', key: 'header5', dataType: 'string', width: '150px', ntsType: 'code_header6', onChange: search },
+                                            { headerText: 'Header<br/>5', key: 'header5', dataType: 'string', width: '150px', ntsType: 'code_header6', onChange: search,
+                                                constraint: { primitiveValue: "JobTitleCode" }},
                                             { headerText: 'Header6', key: 'header6', dataType: 'string', width: '150px', ntsControl: 'Link2' }
                                            ]},
 //                                { headerText: 'Delete', key: 'delete', dataType: 'string', width: '90px', unbound: true, ntsControl: 'DeleteButton' }

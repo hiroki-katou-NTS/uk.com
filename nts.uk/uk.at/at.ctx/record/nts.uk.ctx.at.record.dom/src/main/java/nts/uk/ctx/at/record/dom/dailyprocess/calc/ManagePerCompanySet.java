@@ -52,26 +52,16 @@ public class ManagePerCompanySet {
 	//加給利用単位
 	Optional<BPUnitUseSetting> bpUnitSetting;
 	
-	//労働条件
-	@Setter
-	Optional<WorkingConditionItem> personInfo;
-	//法定労働
-	@Setter
-	DailyUnit dailyUnit;
-	
 	@Setter
 	MasterShareContainer shareContainer;
 	
 	//任意項目
-	@Setter
 	List<OptionalItem> optionalItems;
 	
 	// 任意項目計算式
-	@Setter
 	List<Formula> formulaList;
 	
 	//適用する雇用条件
-	@Setter
 	List<EmpCondition> empCondition;
 	
 	//0時跨ぎの設定
@@ -85,6 +75,9 @@ public class ManagePerCompanySet {
 			List<DivergenceTime> divergenceTime,
 			List<ErrorAlarmWorkRecord> errorAlarm,
 			Optional<BPUnitUseSetting> bpUnitSetting,
+			List<OptionalItem> optionalItems,
+			List<Formula> formulaList,
+			List<EmpCondition> empCondition,
 			Optional<ZeroTime> zeroTime) {
 		super();
 		this.holidayAddition = holidayAddition;
@@ -94,9 +87,9 @@ public class ManagePerCompanySet {
 		this.divergenceTime = divergenceTime;
 		this.errorAlarm = errorAlarm;
 		this.bpUnitSetting = bpUnitSetting;
-		this.optionalItems = new ArrayList<>();
-		this.formulaList = new ArrayList<>();
-		this.empCondition = new ArrayList<>();
+		this.optionalItems = optionalItems;
+		this.formulaList = formulaList;
+		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
 	}
 }

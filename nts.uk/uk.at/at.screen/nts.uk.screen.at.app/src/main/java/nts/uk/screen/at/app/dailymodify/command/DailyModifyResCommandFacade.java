@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandl
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
@@ -43,19 +43,18 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfCo
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
@@ -87,6 +86,12 @@ public class DailyModifyResCommandFacade {
 
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private RegisterProvisionalData registerProvisionalData;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -293,12 +298,21 @@ public class DailyModifyResCommandFacade {
 					hasError = true;
 				}
 
-				this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(), resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
-				// insert sign
-				insertSign(dataParent.getDataCheckSign());
-				// insert approval
-				insertApproval(dataParent.getDataCheckApproval());
+				if (!hasError) {
+					this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
+							resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
+					// insert sign
+					insertSign(dataParent.getDataCheckSign());
+					// insert approval
+					insertApproval(dataParent.getDataCheckApproval());
+				}
 			}
+			// 暫定データを登録する - Register provisional data
+			List<DailyModifyResult> resultNews = dailyEdits.stream()
+					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+							.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+					.collect(Collectors.toList());
+			registerTempData(dataParent.getMode(), resultOlds, resultNews);
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
 			resultError.put(TypeError.COUPLE.value, itemInputErors);
@@ -359,4 +373,58 @@ public class DailyModifyResCommandFacade {
 		final Set<Object> seen = new HashSet<>();
 		return t -> seen.add(keyExtractor.apply(t));
 	}
+	
+	public void registerTempData(int displayFormat, List<DailyModifyResult> resultOlds,
+			List<DailyModifyResult> resultNews) {
+		switch (displayFormat) {
+		case 0: // person
+			List<Pair<String, GeneralDate>> listEmpDate = checkEditedItems(resultOlds, resultNews);
+			if (!listEmpDate.isEmpty()) {
+				interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+						listEmpDate.get(0).getLeft(),
+						listEmpDate.stream().map(i -> i.getRight()).collect(Collectors.toList()));
+			}
+			break;
+		case 1: // date
+			listEmpDate = checkEditedItems(resultOlds, resultNews);
+			if (!listEmpDate.isEmpty()) {
+				registerProvisionalData.registerProvisionalData(AppContexts.user().companyId(),
+						listEmpDate.stream().map(i -> new EmpProvisionalInput(i.getLeft(), Arrays.asList(i.getRight())))
+								.collect(Collectors.toList()));
+			}
+			break;
+		default: // error
+			listEmpDate = checkEditedItems(resultOlds, resultNews);
+			Map<String, List<Pair<String, GeneralDate>>> mapEmpDate = listEmpDate.stream()
+					.collect(Collectors.groupingBy(x -> x.getLeft()));
+			mapEmpDate.entrySet().forEach(x -> {
+				interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), x.getKey(),
+						x.getValue().stream().map(i -> i.getRight()).collect(Collectors.toList()));
+			});
+			break;
+		}
+	}
+
+	public List<Pair<String, GeneralDate>> checkEditedItems(List<DailyModifyResult> resultOlds,
+			List<DailyModifyResult> resultNews) {
+		Set<Pair<String, GeneralDate>> editedDate = new HashSet<>();
+		for (DailyModifyResult r : resultOlds) {
+			val newR = resultNews.stream()
+					.filter(n -> n.getEmployeeId().equals(r.getEmployeeId()) && n.getDate().equals(r.getDate()))
+					.findFirst();
+			if (newR.isPresent()) {
+				List<ItemValue> oldItems = r.getItems();
+				List<ItemValue> newItems = newR.get().getItems();
+				oldItems.forEach(ov -> {
+					val nv = newItems.stream().filter(n -> n.getItemId() == ov.getItemId()).findFirst();
+					if (nv.isPresent() && nv.get().getValue() != null && !nv.get().getValue().equals(ov.getValue())
+							&& DPText.TMP_DATA_CHECK_ITEMS.contains(nv.get().getItemId())) {
+						editedDate.add(Pair.of(r.getEmployeeId(), r.getDate()));
+					}
+				});
+			}
+		}
+		return new ArrayList<>(editedDate);
+	}
+	
 }

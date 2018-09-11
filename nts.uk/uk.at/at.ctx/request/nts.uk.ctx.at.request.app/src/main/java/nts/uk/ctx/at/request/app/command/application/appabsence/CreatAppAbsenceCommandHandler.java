@@ -271,11 +271,12 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		boolean chkSuperBreak = true;
 		if(hdAppSet.isPresent()){
 			HdAppSet hdSet = hdAppSet.get();
-			chkSubHoliday = hdSet.getRegisShortLostHd().value == 0 ? true : false;//休暇申請設定．代休残数不足登録できる
-			chkPause = hdSet.getRegisInsuff().value == 0 ? true : false;//休暇申請設定．振休残数不足登録できる
-			chkAnnual = hdSet.getRegisNumYear().value == 0 ? true : false;//休暇申請設定．年休残数不足登録できる
-			chkFundingAnnual = hdSet.getRegisShortReser().value == 0 ? true : false;//休暇申請設定．積立年休残数不足登録できる
-			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 0 ? true : false;//休暇申請設定．公休残数不足登録できる
+			//Bug#100448
+			chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 ? true : false;//休暇申請設定．代休残数不足登録できる
+			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;//休暇申請設定．振休残数不足登録できる
+			chkAnnual = hdSet.getRegisNumYear().value == 1 ? true : false;//休暇申請設定．年休残数不足登録できる
+			chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;//休暇申請設定．積立年休残数不足登録できる
+			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;//休暇申請設定．公休残数不足登録できる
 		}
 		//登録時の残数チェック
 		/** ・登録対象一覧 :	申請(List) */

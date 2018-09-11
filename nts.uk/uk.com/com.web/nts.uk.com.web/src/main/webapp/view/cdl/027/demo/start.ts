@@ -13,6 +13,7 @@ module nts.uk.com.view.cdl027.demo {
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         selectedEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
         period: KnockoutObservable<any> = ko.observable({});
+        period2: KnockoutObservable<any> = ko.observable({});
         periodType: KnockoutObservable<string>;
         functionId: KnockoutObservable<number> = ko.observable(1);
         displayFormats: KnockoutObservableArray<any> = ko.observableArray([{ code: 0, name: '日付別' }, { code: 1, name: '個人別' }]);
@@ -27,6 +28,7 @@ module nts.uk.com.view.cdl027.demo {
             { name: '月額算定', code: 8 },
             { name: '昇給遡り', code: 9 }
         ]);
+        monthlyChecked: KnockoutObservable<boolean> = ko.observable(false);
         listEmployee: KnockoutObservableArray<any> = ko.observableArray([
             { employeeId: "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570", employeeCode: "000001", employeeName: "大塚　太郎ビ" },
             { employeeId: "8f9edce4-e135-4a1e-8dca-ad96abe405d6", employeeCode: "000002", employeeName: "大塚　次郎" },
@@ -205,6 +207,9 @@ module nts.uk.com.view.cdl027.demo {
                         return "year";
                 }
             });
+            self.periodType.subscribe((value) => {
+                if (value != "yearmonth") self.monthlyChecked(false);
+            });
         }
 
         openCdl027Dialog() {
@@ -215,6 +220,7 @@ module nts.uk.com.view.cdl027.demo {
                     listEmployeeId: self.selectedEmployee(), 
                     period: self.period(), 
                     displayFormat: self.displayFormat(),
+                    period2: self.monthlyChecked() ? self.period2() : null 
                 };
             setShared("CDL027Params", params);
             modal("com", "/view/cdl/027/a/index.xhtml");
