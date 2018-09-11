@@ -34,12 +34,12 @@ module kdl002.a.viewmodel {
             //selected items
             var selectCode = nts.uk.ui.windows.getShared('KDL002_SelectedItemId');
             
-            self.currentCodeList(selectCode);
             //set source
             if(self.posibleItems == null || self.posibleItems === undefined){
                 self.items();
                 return;
             }
+            
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.WorkTypeInfor>) {
                     let lstItemOrder = self.sortbyList(lstItem);
@@ -49,13 +49,14 @@ module kdl002.a.viewmodel {
                     });
                     self.initNotSelectItem(!self.isMulti, lstItemMapping);
                     self.items(lstItemMapping);
+                    self.currentCodeList(selectCode);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
             }
+            
         }
 
-        
         initNotSelectItem(isSingle: boolean, data: any) {
             let self = this;
             if (!isSingle) return;
@@ -160,5 +161,4 @@ module kdl002.a.viewmodel {
         }
     
     }
-
 }
