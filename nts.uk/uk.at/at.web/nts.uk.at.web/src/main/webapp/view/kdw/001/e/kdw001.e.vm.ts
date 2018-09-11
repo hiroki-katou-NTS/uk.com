@@ -30,7 +30,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         monthlyAggregateCount: KnockoutObservable<number> = ko.observable(0);
         monthlyAggregateStatus: KnockoutObservable<string> = ko.observable("");
         monthlyAggregateHasError: KnockoutObservable<string> = ko.observable("");
-        
+
         //承認反映
         reflectApprovalCount: KnockoutObservable<number> = ko.observable(0);
         reflectApprovalStatus: KnockoutObservable<string> = ko.observable("");
@@ -180,12 +180,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                         self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
                         self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
-                        
+
                         //承認反映
                         self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
                         self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
-                       
-                        
+
+
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
                             self.executionContents(self.contents);
@@ -199,22 +199,38 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             //                            if (nts.uk.text.isNullOrEmpty(endTime))
                             //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
                             //                            self.endTime(endTime);
-    
+                            //9: {key: "monthlyAggregateStatus", valueAsString: "処理中
                             // DailyCreate
-                            self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString === "処理中") {
+                                self.dailyCreateStatus("実行中止");
+                            } else {
+                                self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                            }
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
 
                             // daily calculation
-                            self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString === "処理中") {
+                                self.dailyCreateStatus("実行中止");
+                            } else {
+                                self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                            }
                             self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
 
                             // monthly aggregation
-                            self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString === "処理中") {
+                                self.dailyCreateStatus("実行中止");
+                            } else {
+                                self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            }
                             self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
-                            
+
                             //承認反映
-                            self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
-                             self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString)
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString === "処理中") {
+                                self.dailyCreateStatus("実行中止");
+                            } else {
+                                self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                            }
+                            self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString)
 
                             // Get Log data
                             self.getLogData();
