@@ -3194,6 +3194,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
                     return data.columnKey == columnKey && data.rowId == rowId;
                 });
+                _.remove(__viewContext.vm.listCheck28(), error =>{
+                     return Number(error.itemId) == Number(keyId) && error.rowId == rowId;
+                })
             } else {
                 if (columnKey.indexOf("NO") != -1) {
                     keyId = columnKey.substring(2, columnKey.length);
@@ -3252,6 +3255,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         __viewContext.vm.lstDomainEdit = value.dailyEdits;
                         nts.uk.ui.block.clear();
                         dfd.resolve(value.cellEdits);
+                    }).fail(error => {
+                         __viewContext.vm.listCheck28.push({ itemId: keyId, layoutCode: error.message, rowId: rowId});
+                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                         nts.uk.ui.block.clear();
+                         dfd.resolve({ id: rowId, item: columnKey, value: value });
                     });
                 }
             }
