@@ -18,4 +18,14 @@ public class SortingConditionOrderDto {
 	
 	/** The type. */
 	private RegularSortingType type;
+
+	public SortingConditionOrderDto() {
+		super();
+	}
+	
+	public SortingConditionOrderDto(int order, RegularSortingType type) {
+		super();
+		this.order = order;
+		this.type = type;
+	}
 }
