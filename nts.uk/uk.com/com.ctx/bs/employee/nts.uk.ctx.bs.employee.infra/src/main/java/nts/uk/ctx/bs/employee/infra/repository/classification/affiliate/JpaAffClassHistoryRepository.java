@@ -13,10 +13,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.eclipse.persistence.jpa.rs.util.metadatasources.CollectionWrapperMetadataSource;
+
 import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem;
@@ -122,9 +126,12 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		if (employeeIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BsymtAffClassHistory> entities = this.queryProxy()
-				.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", employeeIds)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+		List<BsymtAffClassHistory> entities = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
+			entities.addAll(this.queryProxy()
+					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", subEmployeeIds)
+					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList());
+		});
 		
 		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entities.stream()
 				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
