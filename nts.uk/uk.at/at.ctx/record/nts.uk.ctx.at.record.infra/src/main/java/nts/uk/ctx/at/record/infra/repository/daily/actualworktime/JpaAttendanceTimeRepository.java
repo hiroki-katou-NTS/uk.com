@@ -62,12 +62,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
-		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
+		builderString = new StringBuilder("SELECT a FROM KrcdtDayTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
 		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		FIND_BY_LABOR_TIME = builderString.toString();
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :ymd");
+		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 		
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
