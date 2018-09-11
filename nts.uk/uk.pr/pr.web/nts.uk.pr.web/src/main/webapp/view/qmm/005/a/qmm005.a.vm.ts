@@ -1,14 +1,22 @@
-module nts.uk.com.view.qmm005.a.viewmodel {
+module nts.uk.pr.view.qmm005.a.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
-    import model = nts.uk.com.view.qmm005.share.model;
+    import model = nts.uk.pr.view.qmm005.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
+        //A2_2
+        itemTable:KnockoutObservableArray<ItemTable>;
 
-        itemTable:ItemTable;
+        //A3_4 対象雇用
+        targetEmployment:KnockoutObservableArray<number>;
+
+        processCategoryNO:KnockoutObservable<number>;
+
+
+
 
 
 
@@ -27,10 +35,17 @@ module nts.uk.com.view.qmm005.a.viewmodel {
         constructor() {
             var self = this;
             self.itemTable=new ItemTable();
+            //A3_4 対象雇用
+            self.targetEmployment=ko.observable([]);
 
 
 
-            self.value = ko.observable('');
+            //A2_2
+            self.itemTable=ko.observableArray([]);
+            self.processCategoryNO=ko.observable(0);
+            self.processCategoryNO=self.itemTable()
+
+
             self.itemListCbb1 = ko.observableArray([
                 new model.ItemModel(1, '2016'),
                 new model.ItemModel(2, '2017')
@@ -92,7 +107,7 @@ module nts.uk.com.view.qmm005.a.viewmodel {
         constructor(){
             this.processInfomations=new Array(5);
             this.currentProcessDates=new Array(5);
-            this.setDaySupports=new Array(5);
+            this.setDaySupports=new Array();
             this.employmentTiedProcessYears=new Array(5);
             this.employments=new Array(5);
         }

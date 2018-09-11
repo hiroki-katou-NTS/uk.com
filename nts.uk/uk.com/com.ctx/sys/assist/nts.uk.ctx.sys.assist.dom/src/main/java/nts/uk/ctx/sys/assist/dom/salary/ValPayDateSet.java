@@ -21,4 +21,6 @@ public class ValPayDateSet extends AggregateRoot {
 	 */
 	private int processCateNo;
 
+
+
 }

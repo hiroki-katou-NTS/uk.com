@@ -15,11 +15,13 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtValPayD
 public class JpaValPayDateSetRepository extends JpaRepository implements ValPayDateSetRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtValPayDateSet f";
+
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtValPayDateSet f ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.valPayDateSetPk.cid =:cid AND  f.valPayDateSetPk.processCateNo =:processCateNo ";
 
     @Override
     public List<ValPayDateSet> getAllValPayDateSet(){
+
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtValPayDateSet.class)
                 .getList(item -> item.toDomain());
     }

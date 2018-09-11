@@ -3,7 +3,9 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.AdvancedSetting;
-
+/**
+ * 高度な設定
+ */
 @AllArgsConstructor
 @Value
 public class AdvancedSettingDto {

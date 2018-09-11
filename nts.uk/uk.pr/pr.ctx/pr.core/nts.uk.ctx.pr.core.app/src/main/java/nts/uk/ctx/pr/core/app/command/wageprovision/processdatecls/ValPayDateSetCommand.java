@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
 import lombok.Value;
+import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.AdvancedSettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.BasicSettingDto;
 
 @Value
 public class ValPayDateSetCommand
@@ -16,6 +18,10 @@ public class ValPayDateSetCommand
     */
     private int processCateNo;
     
-    private Long version;
+    private BasicSettingDto basicSetting;
+
+    private AdvancedSettingDto advancedSetting;
+
+
 
 }

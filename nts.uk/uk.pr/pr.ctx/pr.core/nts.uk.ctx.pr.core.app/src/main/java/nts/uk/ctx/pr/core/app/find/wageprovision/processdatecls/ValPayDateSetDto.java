@@ -21,8 +21,24 @@ public class ValPayDateSetDto {
 	 */
 	private int processCateNo;
 
+	/**
+	 * 基本的な設定
+	 */
+	private BasicSettingDto basicSettingDto;
+
+	/**
+	 * 高度な設定
+	 */
+	private AdvancedSettingDto advancedSettingDto;
+
+
 	public static ValPayDateSetDto fromDomain(ValPayDateSet domain) {
-		return new ValPayDateSetDto(domain.getCid(), domain.getProcessCateNo());
+		return new ValPayDateSetDto(
+				domain.getCid(),
+				domain.getProcessCateNo(),
+				BasicSettingDto.fromDomain(domain.getBasicSetting()),
+				AdvancedSettingDto.fromDomain(domain.getAdvancedSetting())
+		);
 	}
 
 }

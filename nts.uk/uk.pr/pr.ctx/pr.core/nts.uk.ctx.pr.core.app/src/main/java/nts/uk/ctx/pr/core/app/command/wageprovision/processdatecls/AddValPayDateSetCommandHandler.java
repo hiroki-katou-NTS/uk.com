@@ -19,7 +19,31 @@ public class AddValPayDateSetCommandHandler extends CommandHandler<ValPayDateSet
 	@Override
 	protected void handle(CommandHandlerContext<ValPayDateSetCommand> context) {
 		ValPayDateSetCommand addCommand = context.getCommand();
-		//repository.add(new ValPayDateSet(addCommand.getCid(), addCommand.getProcessCateNo()));
+		repository.add(new ValPayDateSet(
+				addCommand.getCid(),
+				addCommand.getProcessCateNo(),
+				addCommand.getBasicSetting().getAccountingClosureDate().getProcessMonth(),
+				addCommand.getBasicSetting().getAccountingClosureDate().getDisposalDay(),
+				addCommand.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth(),
+				addCommand.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate(),
+				addCommand.getBasicSetting().getMonthlyPaymentDate().getDatePayMent(),
+				addCommand.getBasicSetting().getWorkDay(),
+				addCommand.getAdvancedSetting().getDetailPrintingMon().getPrintingMonth(),
+				addCommand.getAdvancedSetting().getSalaryInsuColMon().getMonthCollected(),
+				addCommand.getAdvancedSetting().getEmpInsurStanDate().getRefeDate(),
+				addCommand.getAdvancedSetting().getEmpInsurStanDate().getBaseMonth(),
+				addCommand.getAdvancedSetting().getIncomTaxBaseYear().getRefeDate(),
+				addCommand.getAdvancedSetting().getIncomTaxBaseYear().getBaseYear(),
+				addCommand.getAdvancedSetting().getIncomTaxBaseYear().getBaseMonth(),
+				addCommand.getAdvancedSetting().getSociInsuStanDate().getBaseMonth(),
+				addCommand.getAdvancedSetting().getSociInsuStanDate().getBaseYear(),
+				addCommand.getAdvancedSetting().getSociInsuStanDate().getRefeDate(),
+				addCommand.getAdvancedSetting().getCloseDate().getTimeCloseDate(),
+				addCommand.getAdvancedSetting().getCloseDate().getBaseMonth(),
+				addCommand.getAdvancedSetting().getCloseDate().getBaseYear(),
+				addCommand.getAdvancedSetting().getCloseDate().getRefeDate()
+				)
+		);
 
 	}
 }
