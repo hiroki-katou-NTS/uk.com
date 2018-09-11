@@ -127,6 +127,7 @@ public class SpecialHolidayFinder {
 
 	private List<Integer> getDuplicateHEvent(List<Integer> selectedNos, List<Integer> settingCodes,
 			List<SpecialHolidayDto> shs) {
+		if (selectedNos != null) {
 			shs.forEach(x -> {
 				if (x.getTargetItemDto() != null) {
 					List<Integer> absFrames = x.getTargetItemDto().getAbsenceFrameNo();
@@ -147,7 +148,7 @@ public class SpecialHolidayFinder {
 					}
 				}
 			});
-		
+		}
 
 		return settingCodes;
 	}
@@ -163,6 +164,6 @@ public class SpecialHolidayFinder {
 	}
 
 	public List<SpecialHolidayFrameDto> findAllItemFrame() {
-		return findForScreenJ(Collections.emptyList());
+		return findForScreenJ(null);
 	}
 }
