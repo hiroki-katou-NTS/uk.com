@@ -462,22 +462,21 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 												 .filter(tc -> tc.getGoOutReason().isPresent())
 												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
 														 || tc.getGoOutReason().get().isCompensation())
-												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+												 .map(tc -> tc.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
 												 .collect(Collectors.summingInt(tc -> tc)));
 												 
 					}
 				}
 				else {
-					val dupRange = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
-					if(dupRange.isPresent()) {
+					val dupRangeList = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
+					for(TimeSpanForCalc newSpan : dupRangeList) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
-												 .map(tc -> tc.replaceTimeSpan(dupRange))
-												 .filter(tc -> tc.getGoOutReason().isPresent())
-												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
-														 || tc.getGoOutReason().get().isCompensation())
-												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
-												 .collect(Collectors.summingInt(tc -> tc)));
-												 
+																			  .map(tc -> tc.replaceTimeSpan(Optional.of(newSpan)))
+																			  .filter(tc -> tc.getGoOutReason().isPresent())
+																			  .filter(tc -> tc.getGoOutReason().get().isPrivate()
+																					  || tc.getGoOutReason().get().isCompensation())
+																			  .map(tc -> tc.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
+																			  .collect(Collectors.summingInt(tc -> tc)));
 					}
 				}
 			}

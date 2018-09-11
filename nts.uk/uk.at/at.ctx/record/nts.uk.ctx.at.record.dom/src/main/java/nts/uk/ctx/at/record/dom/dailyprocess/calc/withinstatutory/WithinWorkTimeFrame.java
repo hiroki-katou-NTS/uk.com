@@ -482,7 +482,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                    optional,
                    coreTimeSetting,breakTimeList,workType,predetermineTimeForSet);
   		//遅刻時間を計算する
-  		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);  	
+  		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);  	
   		if(lateDesClock.isPresent()) {//←のifはフレックスの最低勤務時間利用の場合に下記処理を走らせたくない為追加
   	  		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
   	  			//就業時間内時間帯から控除するか判断し控除する      
@@ -522,7 +522,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                      optional,
                      coreTimeSetting, breakTimeList,workType,predetermineTimeForSet);  
   		//早退時間を計算する
-  		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
+  		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);
   		
   		if(leaveEarlyDesClock.isPresent()) {//←のifはフレックスの最低勤務時間利用の場合に下記処理を走らせたくない為追加
   	  		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {

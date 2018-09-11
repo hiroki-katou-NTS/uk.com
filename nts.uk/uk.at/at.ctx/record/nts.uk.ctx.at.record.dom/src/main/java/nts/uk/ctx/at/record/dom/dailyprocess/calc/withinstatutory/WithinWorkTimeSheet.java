@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -63,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -1557,7 +1559,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
 											   .filter(tc -> tc.getMidNightTimeSheet().isPresent())
-											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
+											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Deduction).v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		
 //		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
@@ -1600,7 +1602,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			totalTime = totalTime.addMinutes(addTime+forLateAddTime+forLeaveAddTime);
 		}
 		if(dedAtr.isAppropriate() && (atr.isCare() || atr.isChild()))
-				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.testSAIKI(dedAtr, atr).valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
+				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.forcs(atr, dedAtr).valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
 		
 		return totalTime;
 	}
@@ -1646,20 +1648,22 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 	
 	
-	
-//	/**
-//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
-//	 * @param dedAtr
-//	 * @param conAtr
-//	 * @return
-//	 */
-//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
-//		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-//		for(WithinWorkTimeFrame timeSheet : this.getWithinWorkTimeFrame()) {
-//			returnList.addAll(timeSheet.getDedTimeSheetByDedAtr(dedAtr, conAtr));
-//		}
-//		return returnList;
-//	}
+	/**
+	 * 休憩未取得用の処理(大塚要件)
+	 * 就業時間内時間帯に含まれている休憩時間を計算する
+	 * @param restTimeSheet　就業時間帯マスタの休憩時間帯
+	 * @return　取得した休憩時間
+	 */
+	public AttendanceTime getDupRestTime(DeductionTime restTimeSheet) {
+		List<TimeSpanForCalc> notDupSpanList = Arrays.asList(new TimeSpanForCalc(restTimeSheet.getStart(), restTimeSheet.getEnd()));
+		for(WithinWorkTimeFrame frame : this.getWithinWorkTimeFrame()) {
+			notDupSpanList = notDupSpanList.stream()
+										   .filter(tc -> tc.getDuplicatedWith(frame.getTimeSheet().getTimeSpan()).isPresent())
+										   .map(tc -> tc.getDuplicatedWith(frame.getTimeSheet().getTimeSpan()).get())
+										   .collect(Collectors.toList());
+		}
+		return new AttendanceTime(notDupSpanList.stream().map(ts -> ts.getSpan().lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+	}
 	/**
 	 * 大塚モード使用時専用の遅刻、早退削除処理
 	 */
