@@ -15,11 +15,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.auth.dom.kmk013.WorkPlaceAuthority;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -1042,7 +1044,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(calcResultIntegrationOfDaily != null && calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			
 			//割増時間の計算
-			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(personnelCostSettingAdapter.findAll(companyId, targetDate), Optional.of(forCalcDivergenceDto));
+			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformance(getPersonalSetting(companyId, targetDate, companyCommonSetting), Optional.of(forCalcDivergenceDto));
 			
 			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(forCalcDivergenceDto,
 																						divergenceTimeList,
@@ -1069,12 +1071,30 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
 		//Repositoryが作成されたらそちらから取得(今は仮置き)
-		Optional<UpperLimitTotalWorkingHour> upperControl = specificWorkRuleRepository.findUpperLimitWkHourByCid(AppContexts.user().companyId()); 
+		Optional<UpperLimitTotalWorkingHour> upperControl = companyCommonSetting.getUpperControl().isPresent() ? companyCommonSetting.getUpperControl() 
+																													: specificWorkRuleRepository.findUpperLimitWkHourByCid(AppContexts.user().companyId()); 
 		upperControl.ifPresent(tc ->{
 			tc.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime());
 		});
 		
 		return calcResultIntegrationOfDaily;
+	}
+
+
+
+
+	private List<PersonnelCostSettingImport> getPersonalSetting(String companyId, GeneralDate targetDate, ManagePerCompanySet companyCommonSetting) {
+		if(!CollectionUtil.isEmpty(companyCommonSetting.getPersonnelCostSettings())){
+			
+			List<PersonnelCostSettingImport> current = companyCommonSetting.getPersonnelCostSettings().stream().filter(pcs -> {
+				return pcs.getPeriod().contains(targetDate);
+			}).collect(Collectors.toList());
+			
+			if(!current.isEmpty()){
+				return current;
+			}
+		}
+		return personnelCostSettingAdapter.findAll(companyId, targetDate);
 	}
 
 	/**

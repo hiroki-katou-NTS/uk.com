@@ -16,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PersonCostSettingExport;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemDto;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemPub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -64,7 +65,29 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
 				pc.getPremiumSettings().stream().filter(ps -> preiumItems.contains(ps.getDisplayNumber())).forEach(ps -> {
-					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems()));
+					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(), 
+							new DatePeriod(pc.getStartDate(), pc.getEndDate())));
+				});
+			});
+		}
+		return result;
+	}
+
+	@Override
+	public List<PersonCostSettingExport> getPersonCostSetting(String companyID, DatePeriod period) {
+		List<PersonCostSettingExport> result = new ArrayList<>();
+		// ドメインモデル「割増時間項目」を取得する
+		List<PremiumItem> preiumItems = this.premiumItemRepository.findAllIsUse(companyID);
+		if(CollectionUtil.isEmpty(preiumItems)){
+			return result;
+		}
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, period);
+		if(personCosts != null){
+			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
+			personCosts.stream().forEach(pc -> {
+				pc.getPremiumSettings().stream().filter(ps -> preiumItems.contains(ps.getDisplayNumber())).forEach(ps -> {
+					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(), 
+							new DatePeriod(pc.getStartDate(), pc.getEndDate())));
 				});
 			});
 		}
