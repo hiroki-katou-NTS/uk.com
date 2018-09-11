@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
 * 給与支払日設定
@@ -61,7 +62,7 @@ public class SetDaySupport extends AggregateRoot
     /**
     * 処理年月
     */
-    private int processDate;
+    private YearMonth processDate;
     
     /**
     * 所得税基準日
