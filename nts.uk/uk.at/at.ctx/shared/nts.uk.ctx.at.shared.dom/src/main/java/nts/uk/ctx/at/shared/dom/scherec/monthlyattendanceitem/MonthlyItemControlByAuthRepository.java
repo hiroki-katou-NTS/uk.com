@@ -20,4 +20,6 @@ public interface MonthlyItemControlByAuthRepository {
 	 */
 	Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByAttItemId(String companyID, String authorityMonthlyId,
 			List<Integer> attendanceItemIds);
+			
+	Optional<MonthlyItemControlByAuthority> getAllMonthlyAttdItemByUse(String companyID,String authorityMonthlyId, int toUse);
 }

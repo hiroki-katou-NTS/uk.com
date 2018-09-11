@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface StartPageLogRepository {
@@ -21,4 +22,7 @@ public interface StartPageLogRepository {
 	List<StartPageLog> findBySid(String sId);
 	
 	List<StartPageLog> findBySid(List<String> sIds);
+	
+	List<StartPageLog> findBy(String companyId, List<String> listEmployeeId,
+			GeneralDateTime start, GeneralDateTime end);
 }

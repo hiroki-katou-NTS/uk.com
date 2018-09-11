@@ -81,92 +81,92 @@ public class ItemsByCategory {
 			Field fieldDeadlineDateItemName = commandClass.getField("deadlineDateItemName");
 			switch (this.categoryCd) {
 			case "CS00039":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00409").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00410").itemName());
+				if(inputsMap.get("IS00409") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00409").itemName());
+				if(inputsMap.get("IS00410") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00410").itemName());
 				break;
 			case "CS00040":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00424").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00425").itemName());
+				if(inputsMap.get("IS00424") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00424").itemName());
+				if(inputsMap.get("IS00425") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00425").itemName());
 				break;
 			case "CS00041":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00439").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00440").itemName());
+				if(inputsMap.get("IS00439") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00439").itemName());
+				if(inputsMap.get("IS00440") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00440").itemName());
 				break;
 			case "CS00042":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00454").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00455").itemName());
+				if(inputsMap.get("IS00454") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00454").itemName());
+				if(inputsMap.get("IS00455") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00455").itemName());
 				break;
 			case "CS00043":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00469").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00470").itemName());
+				if(inputsMap.get("IS00469") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00469").itemName());
+				if(inputsMap.get("IS00470") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00470").itemName());
 				break;
 			case "CS00044":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00484").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00485").itemName());
+				if(inputsMap.get("IS00484") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00484").itemName());
+				if(inputsMap.get("IS00485") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00485").itemName());
 				break;
 			case "CS00045":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00499").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00500").itemName());
+				if(inputsMap.get("IS00499") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00499").itemName());
+				if(inputsMap.get("IS00500") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00500").itemName());
 				break;
 			case "CS00046":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00514").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00515").itemName());
+				if(inputsMap.get("IS00514") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00514").itemName());
+				if(inputsMap.get("IS00515") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00515").itemName());
 				break;
 			case "CS00047":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00529").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00530").itemName());
+				if(inputsMap.get("IS00529") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00529").itemName());
+				if(inputsMap.get("IS00530") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00530").itemName());
 				break;
 			case "CS00048":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00544").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00545").itemName());
+				if(inputsMap.get("IS00544") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00544").itemName());
+				if(inputsMap.get("IS00545") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00545").itemName());
 				break;
 			case "CS00059":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00629").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00630").itemName());
+				if(inputsMap.get("IS00629") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00629").itemName());
+				if(inputsMap.get("IS00630") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00630").itemName());
 				break;
 			case "CS00060":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00644").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00645").itemName());
+				if(inputsMap.get("IS00644") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00644").itemName());
+				if(inputsMap.get("IS00645") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00645").itemName());
 				break;
 			case "CS00061":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00659").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00660").itemName());
+				if(inputsMap.get("IS00659") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00659").itemName());
+				if(inputsMap.get("IS00660") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00660").itemName());
 				break;
 			case "CS00062":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00674").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00675").itemName());
+				if(inputsMap.get("IS00674") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00674").itemName());
+				if(inputsMap.get("IS00675") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00675").itemName());
 				break;
 			case "CS00063":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00689").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00690").itemName());
+				if(inputsMap.get("IS00689") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00689").itemName());
+				if(inputsMap.get("IS00690") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00690").itemName());
 				break;
 			case "CS00064":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00704").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00705").itemName());
+				if(inputsMap.get("IS00704") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00704").itemName());
+				if(inputsMap.get("IS00705") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00705").itemName());
 				break;
 			case "CS00065":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00719").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00720").itemName());
+				if(inputsMap.get("IS00719") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00719").itemName());
+				if(inputsMap.get("IS00720") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00720").itemName());
 				break;
 			case "CS00066":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00734").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00735").itemName());
+				if(inputsMap.get("IS00734") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00734").itemName());
+				if(inputsMap.get("IS00735") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00735").itemName());
 				break;
 			case "CS00067":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00749").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00750").itemName());
+				if(inputsMap.get("IS00749") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00749").itemName());
+				if(inputsMap.get("IS00750") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00750").itemName());
 				break;
 			case "CS00068":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00764").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00765").itemName());
+				if(inputsMap.get("IS00764") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00764").itemName());
+				if(inputsMap.get("IS00765") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00765").itemName());
 				break;
 			case "CS00037":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00385").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00386").itemName());
+				if(inputsMap.get("IS00385") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00385").itemName());
+				if(inputsMap.get("IS00386") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00386").itemName());
 				break;
 			case "CS00038":
-				fieldGrantDateItemName.set(command , inputsMap.get("IS00398").itemName());
-				fieldDeadlineDateItemName.set(command , inputsMap.get("IS00399").itemName());
+				if(inputsMap.get("IS00398") != null) fieldGrantDateItemName.set(command , inputsMap.get("IS00398").itemName());
+				if(inputsMap.get("IS00399") != null) fieldDeadlineDateItemName.set(command , inputsMap.get("IS00399").itemName());
 				break;
 			default:
 				break;

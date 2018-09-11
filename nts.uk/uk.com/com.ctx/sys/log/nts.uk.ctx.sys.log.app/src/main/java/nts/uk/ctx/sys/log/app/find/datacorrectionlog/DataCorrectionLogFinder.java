@@ -41,7 +41,13 @@ public class DataCorrectionLogFinder {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
-		if (params.getStartYmd() != null && params.getEndYmd() != null) {
+		if (params.getStartYmd() != null && params.getEndYmd() != null && params.getStartYm() != null
+				&& params.getEndYm() != null) {
+			// ※この分岐は月別修正から呼び出し時のみ - ※ This branch only from the monthly correction to calling
+			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
+					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()),
+					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
+		} else if (params.getStartYmd() != null && params.getEndYmd() != null) {
 			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
 					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()));
 		} else if (params.getStartYm() != null && params.getEndYm() != null) {

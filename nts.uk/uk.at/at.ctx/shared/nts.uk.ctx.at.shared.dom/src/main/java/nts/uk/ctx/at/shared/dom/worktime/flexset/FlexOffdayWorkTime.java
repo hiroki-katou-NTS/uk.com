@@ -126,4 +126,14 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject {
 			this.restTimezone.correctData(screenMode, oldDomain.getOffdayWorkTime().getRestTimezone());
 		}
 	}
+	
+	/**
+	 * Sort work time of off day.
+	 */
+	public void sortWorkTimeOfOffDay()
+	{
+		this.lstWorkTimezone = this.lstWorkTimezone.stream()
+				.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
+				.collect(Collectors.toList());
+	}
 }

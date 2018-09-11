@@ -140,10 +140,11 @@ module ccg013.a.viewmodel {
                     });
 
                 });
-
             }).fail(function(error) {             
                 self.isDefaultMenu(true);
-                nts.uk.ui.dialog.alertError(error.message);
+//                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function() {
+                });
             }).always(function() {
                 nts.uk.ui.block.clear();
             });

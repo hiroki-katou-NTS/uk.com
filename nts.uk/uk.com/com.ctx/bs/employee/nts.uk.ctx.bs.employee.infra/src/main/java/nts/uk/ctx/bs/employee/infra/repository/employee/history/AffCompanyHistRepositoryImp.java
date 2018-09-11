@@ -66,7 +66,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
 	
-	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT DISTINCT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
 			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
 
 	/** The Constant MAX_ELEMENTS. */
