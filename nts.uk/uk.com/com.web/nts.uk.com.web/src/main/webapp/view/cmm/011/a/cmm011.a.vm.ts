@@ -54,7 +54,7 @@ module nts.uk.com.view.cmm011.a {
                 self.isWkpConfigHistLatest = ko.observable(false);
                 //code anh Dan
                 $(document).delegate("#single-tree-grid", "igtreedragstop", function(evt, ui) {
-                    let newDataSource = $("#single-tree-grid").igTree('option', 'dataSource').__ds;
+                    let newDataSource  = $("#single-tree-grid").igTree('option', 'dataSource')._rootds._data;
                     //set hierarchyCd for root
                     console.log(newDataSource);
                     self.listWorkplaceSave = [];
