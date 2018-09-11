@@ -276,7 +276,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			
 			//入れ替えた打刻で実際にレコード作成
 			val ootsukaRecord = this.createRecord(test, TimeSheetAtr.RECORD, companyCommonSetting, personCommonSetting,yesterDayInfo, tomorrowDayInfo);
-			ootsukaRecord.setCompanyCommonSetting(companyCommonSetting);
+			ootsukaRecord.setCompanyCommonSetting(companyCommonSetting,personCommonSetting);
 			//計算
 			val calcrecordFromPcLogInfo = calcRecord(ootsukaRecord, ootsukaRecord, companyCommonSetting, personCommonSetting, converter);
 			return ootsukaProcessService.integrationConverter(integrationOfDaily, calcrecordFromPcLogInfo);
@@ -293,8 +293,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val schedule = createSchedule(integrationOfDaily,companyCommonSetting,personCommonSetting,converter,yesterDayInfo,tomorrowDayInfo);
 		//実績の時間帯
 		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD,companyCommonSetting,personCommonSetting,yesterDayInfo,tomorrowDayInfo);
-		schedule.setCompanyCommonSetting(companyCommonSetting);
-		record.setCompanyCommonSetting(companyCommonSetting);
+		schedule.setCompanyCommonSetting(companyCommonSetting,personCommonSetting);
+		record.setCompanyCommonSetting(companyCommonSetting,personCommonSetting);
 		//実績が入力されていなくてもor実績側が休日でも、予定時間は計算する必要があるため
 		if (!record.getCalculatable() && (!record.getWorkType().isPresent())) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
