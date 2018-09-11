@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.event.attendanceitem;
+package nts.uk.ctx.at.shared.dom.scherec.service;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -215,7 +215,7 @@ public enum MonthlyItemList {
 		this.optionalItemNo = optionalItemNo;
 	}
 
-	public static Optional<MonthlyItemList> getOption(int itemId) {
-		return Arrays.stream(MonthlyItemList.values()).filter(x -> x.itemId == itemId).findFirst();
+	public static Optional<MonthlyItemList> getOption(Integer optionalItemNo) {
+		return Arrays.stream(MonthlyItemList.values()).filter(x -> x.optionalItemNo == optionalItemNo).findFirst();
 	}
 }

@@ -42,5 +42,6 @@ public interface DailyAttendanceItemRepository {
 	List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs);
 	
 	List<DailyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs, List<Integer> attendanceItemIds);
-	
+
+	void update(DailyAttendanceItem domain);
 }

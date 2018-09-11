@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.event.attendanceitem;
+package nts.uk.ctx.at.shared.dom.scherec.service;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -104,7 +104,7 @@ public enum DailyItemList {
 	OPTION_98(738, "任意項目98", 98),
 	OPTION_99(739, "任意項目99", 99),
 	OPTION_100(740, "任意項目100", 100);
-	
+
 	public final int itemId;
 	public final String itemName;
 	public final Integer optionalItemNo;
@@ -115,7 +115,7 @@ public enum DailyItemList {
 		this.optionalItemNo = optionalItemNo;
 	}
 
-	public static Optional<DailyItemList> getOption(int itemId) {
-		return Arrays.stream(DailyItemList.values()).filter(x -> x.itemId == itemId).findFirst();
+	public static Optional<DailyItemList> getOption(Integer optionalItemNo) {
+		return Arrays.stream(DailyItemList.values()).filter(x -> x.optionalItemNo == optionalItemNo).findFirst();
 	}
 }

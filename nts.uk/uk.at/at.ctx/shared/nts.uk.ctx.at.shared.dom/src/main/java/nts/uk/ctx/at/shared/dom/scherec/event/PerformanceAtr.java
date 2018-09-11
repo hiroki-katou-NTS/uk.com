@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.scherec.event.attendanceitem;
+package nts.uk.ctx.at.shared.dom.scherec.event;
 
 /**
  * The Enum PerformanceClassification.
