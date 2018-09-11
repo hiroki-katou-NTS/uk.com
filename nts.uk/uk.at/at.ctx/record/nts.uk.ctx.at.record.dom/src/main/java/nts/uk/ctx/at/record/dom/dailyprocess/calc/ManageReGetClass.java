@@ -333,7 +333,6 @@ public class ManageReGetClass {
 	 */
 	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany) {
 		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
-		this.dailyUnit = managePerCompany.dailyUnit;
 	}
 
 }
