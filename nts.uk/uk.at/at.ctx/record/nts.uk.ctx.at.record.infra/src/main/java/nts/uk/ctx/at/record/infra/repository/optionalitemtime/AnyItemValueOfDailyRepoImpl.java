@@ -156,7 +156,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 					e.setData(c);
 					/** Comment for response */
 					/** TODO: need check */
-//					commandProxy().update(e);
+					/** Comment V2: by above, find with jdbc => need for merge */
+					commandProxy().update(e);
 				});
 			} else {
 				commandProxy().insert(KrcdtDayAnyItemValue.create(domain.getEmployeeId(), domain.getYmd(), c));

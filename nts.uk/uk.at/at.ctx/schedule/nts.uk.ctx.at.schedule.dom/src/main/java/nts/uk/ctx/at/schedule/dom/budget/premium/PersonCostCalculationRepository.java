@@ -77,4 +77,6 @@ public interface PersonCostCalculationRepository {
 	 * @return
 	 */
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
+	
+	public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
 }

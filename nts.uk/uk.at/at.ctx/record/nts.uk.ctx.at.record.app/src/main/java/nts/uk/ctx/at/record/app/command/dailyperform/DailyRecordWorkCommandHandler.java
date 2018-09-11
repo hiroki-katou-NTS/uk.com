@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
@@ -331,7 +330,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if(!items.isEmpty()){
 			return items;
 		}
-		updateDomainAfterCalc(calced);
+		updateDomainAfterCalc(calced, null);
 		
 		registerErrorWhenCalc(toMapParam(commands), 
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
@@ -347,7 +346,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		///domainNew
 		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
 		//TODO insert before <=> domain event
-		List<DailyRecordWorkCommand> commandNewAfter =  dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
+		CorrectResult correctResult = dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
+		List<DailyRecordWorkCommand> commandNewAfter = correctResult.getData();
 		
 		domainDailyNew = convertToDomain(commandNewAfter);
 		
@@ -361,7 +361,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		}
 		//TODO update data
 		registerNotCalcDomain(commandNewAfter, isUpdate);
-		updateDomainAfterCalc(domainDailyNew);
+		updateDomainAfterCalc(domainDailyNew, correctResult);
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
@@ -386,11 +386,16 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return items;
 	}
 
-	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
-		calced.stream().forEach(c -> {
-			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
-					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
-		});
+	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced, CorrectResult correctResult) {
+		if(correctResult != null){
+			registerCalcedService.addAndUpdate(calced, correctResult.getWorkType());
+			return;
+		}
+		registerCalcedService.addAndUpdate(calced);
+//		calced.stream().forEach(c -> {
+//			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+//					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
+//		});
 //		commands.stream().forEach(c -> {
 //			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
 //					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))

@@ -15,6 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
@@ -94,8 +95,11 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	/** 月別実績データストアドプロシージャ */
+//	@Inject
+//	private ProcMonthlyData procMonthlyData;
+	
 	@Inject
-	private ProcMonthlyData procMonthlyData;
+	private StoredProcdureProcess storedProcedureProcess;
 	
 	/** 社員の月別実績を集計する */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -124,7 +128,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		// 出力したデータに関連するキー値でストアドプロシージャを実行する
 		for (val aggrPeriod : aggrStatus.getOutAggrPeriod()){
-			this.procMonthlyData.execute(
+			this.storedProcedureProcess.monthlyProcessing(
 					companyId,
 					employeeId,
 					aggrPeriod.getYearMonth(),
