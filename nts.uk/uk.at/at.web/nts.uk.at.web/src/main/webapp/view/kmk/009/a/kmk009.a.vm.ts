@@ -92,6 +92,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
+                self.clearError();
             });
 
             //subscribe upper Limit
