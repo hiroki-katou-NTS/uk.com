@@ -1409,7 +1409,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 nts.uk.ui.block.grayout(); // block ui
-                service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                service.searchEmployeeByLogin(moment.utc().toDate())
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
