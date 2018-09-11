@@ -107,7 +107,7 @@
                                     || checkItem() == 4
                                     || checkItem() == 6">
 
-                                                <div id="ba1_2" class="div_radiobox_right" align="right" data-bind="ntsRadioBoxGroup: {
+                                                <div id="ba1_2" tabindex ="2" class="div_radiobox_right" align="right" data-bind="ntsRadioBoxGroup: {
                                      options: $parent.itemListTargetServiceType_BA1_2,
                                      optionsValue: 'value',
                                      optionsText: 'localizedName',
@@ -761,9 +761,9 @@
 																textalign: 'right'}),
 															required: required,enable : enable, constraint: 'NumberRangeValue'}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
                                                         </com:ko>
-                                                        <!--<com:ko bind="typeInput() === 1" tag="if">
+                                                        <com:ko bind="typeInput() === 1" tag="if">
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: { name :inputName, value: value ,constraint: 'MinMaxTime',required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
-                                                        </com:ko>-->
+                                                        </com:ko>
                                                     </com:ko>
                                                     <span data-bind="text : textLabel"></span>
                                                 </com:ko>
@@ -1375,7 +1375,7 @@
 			</div>
 			
 			<div id="functions-area-bottom">
-				<com:ko-if bind="category() == 5 || category() == 7">
+				<com:ko-if bind="category() == 7">
 					<!-- B4-2 : Decision-->
 					<button id="btnDecision" class="proceed large" tabindex="2"
 						data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
@@ -1384,7 +1384,7 @@
 						data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
 				</com:ko-if>
 			
-				<com:ko-if bind="category() == 9">
+				<com:ko-if bind="category() == 9 || category() == 5">
 					<!-- B4-2 : Decision-->
 					<button id="btnDecision" class="proceed large" tabindex="11"
 						data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
