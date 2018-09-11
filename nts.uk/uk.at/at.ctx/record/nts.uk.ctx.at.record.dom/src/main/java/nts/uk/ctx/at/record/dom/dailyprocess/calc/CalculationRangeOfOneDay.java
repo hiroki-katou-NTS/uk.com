@@ -388,6 +388,7 @@ public class CalculationRangeOfOneDay {
 																									 Collections.emptyList(), 
 																									 Optional.empty(), 
 																									 Optional.empty())),
+																			 Collections.emptyList(),
 																			 Optional.empty(),
 																			 Optional.empty()));
 		}
@@ -491,20 +492,20 @@ public class CalculationRangeOfOneDay {
 			//割増時間帯が作成されているか確認
 			if(timeSheet.getPremiumTimeSheetInPredetermined().isPresent()) {
 				
-					val newTimeSpan = timeSheet.timeSheet.getTimeSpan().getNotDuplicationWith(timeSheet.getPremiumTimeSheetInPredetermined().get().getTimeSheet());
+					val newTimeSpanList = timeSheet.timeSheet.getTimeSpan().getNotDuplicationWith(timeSheet.getPremiumTimeSheetInPredetermined().get().getTimeSheet());
 					//就業時間枠時間帯と割増時間帯の重なっていない部分で、
 					//就業時間枠時間帯を作り直す
-					if(newTimeSpan.isPresent()) {
+					for(TimeSpanForCalc newTimeSpan : newTimeSpanList) {
 						renewWithinFrame.add(new WithinWorkTimeFrame(timeSheet.getWorkingHoursTimeNo(),
-																	 new TimeZoneRounding(newTimeSpan.get().getStart(),newTimeSpan.get().getEnd(),timeSheet.getTimeSheet().getRounding()),
-																	 newTimeSpan.get().getSpan(),
-																	 timeSheet.duplicateNewTimeSpan(newTimeSpan.get()),
-																	 timeSheet.duplicateNewTimeSpan(newTimeSpan.get()),
-																	 timeSheet.getDuplicatedBonusPayNotStatic(timeSheet.getBonusPayTimeSheet(), newTimeSpan.get()),//加給
+																	 new TimeZoneRounding(newTimeSpan.getStart(),newTimeSpan.getEnd(),timeSheet.getTimeSheet().getRounding()),
+																	 newTimeSpan.getSpan(),
+																	 timeSheet.duplicateNewTimeSpan(newTimeSpan),
+																	 timeSheet.duplicateNewTimeSpan(newTimeSpan),
+																	 timeSheet.getDuplicatedBonusPayNotStatic(timeSheet.getBonusPayTimeSheet(), newTimeSpan),//加給
 																	 timeSheet.getMidNightTimeSheet().isPresent()
-																	 	?timeSheet.getDuplicateMidNightNotStatic(timeSheet.getMidNightTimeSheet().get(),newTimeSpan.get())
+																	 	?timeSheet.getDuplicateMidNightNotStatic(timeSheet.getMidNightTimeSheet().get(),newTimeSpan)
 																	 	:Optional.empty(),//深夜
-																	 timeSheet.getDuplicatedSpecBonusPayzNotStatic(timeSheet.getSpecBonusPayTimesheet(), newTimeSpan.get()),//特定日加給
+																	 timeSheet.getDuplicatedSpecBonusPayzNotStatic(timeSheet.getSpecBonusPayTimesheet(), newTimeSpan),//特定日加給
 																	 timeSheet.getLateTimeSheet(),
 																	 timeSheet.getLeaveEarlyTimeSheet()
 											 ));
@@ -775,7 +776,7 @@ public class CalculationRangeOfOneDay {
 		 /*コアタイ�?のセ�?��*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 		 if(this.withinWorkingTimeSheet.isPresent())
-			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting(),deductionTimeSheet));
 	 }
 	
 //	 /**

@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
-import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
@@ -60,8 +60,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private RsvLeaRemNumEachMonthDto rsvLeave;
 
 	/** 特別休暇月別残数データ: 特別休暇残数月別データ */
-	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE)
-	private SpecialHolidayRemainDataDto specialHoliday;
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE, 
+			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<SpecialHolidayRemainDataDto> specialHoliday = new ArrayList<>();
 
 	/** 代休月別残数データ: 代休月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_OFF_REMAIN_NAME, layout = MONTHLY_OFF_REMAIN_CODE)
@@ -130,8 +131,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDto specialHoliday){
-		this.specialHoliday = specialHoliday;
+	public MonthlyRecordWorkDto withSpecialHoliday(List<SpecialHolidayRemainDataDto> specialHoliday){
+		this.specialHoliday = new ArrayList<>(specialHoliday);
 		return this;
 	}
 	
@@ -146,11 +147,11 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public AffiliationInfoOfMonthly toAffiliation(){
-		return this.affiliation.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.affiliation == null ? null : this.affiliation.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public AttendanceTimeOfMonthly toAttendanceTime(){
-		return this.attendanceTime.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.attendanceTime == null ? null : this.attendanceTime.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public List<AnyItemOfMonthly> toAnyItems(){
@@ -158,31 +159,28 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public AnnLeaRemNumEachMonth toAnnLeave(){
-		return this.annLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.annLeave == null ? null : this.annLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public RsvLeaRemNumEachMonth toRsvLeave(){
-		return this.rsvLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.rsvLeave == null ? null : this.rsvLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
-	public SpecialHolidayRemainData toSpecialHoliday(){
-		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	public List<SpecialHolidayRemainData> toSpecialHoliday(){
+		return this.specialHoliday.stream().map(s -> s.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
 	}
 	
 	public MonthlyDayoffRemainData toDayOff(){
-		return this.dayOff.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.dayOff == null ? null : this.dayOff.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public AbsenceLeaveRemainData toAbsenceLeave(){
-		return this.absenceLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.absenceLeave == null ? null :  this.absenceLeave.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		if (this.attendanceTime == null) return new IntegrationOfMonthly();
-		List<SpecialHolidayRemainData> specialHolidayRemainDatas = new ArrayList<>();
-		val specialHolidayDomain = this.specialHoliday == null ? null : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate);
-		if (specialHolidayDomain != null) specialHolidayRemainDatas.add(specialHolidayDomain);
 		return new IntegrationOfMonthly(
 				Optional.ofNullable(this.attendanceTime == null ? null : this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.affiliation == null ? null : this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
@@ -192,6 +190,6 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				specialHolidayRemainDatas);
+				this.specialHoliday.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()));
 	}
 }

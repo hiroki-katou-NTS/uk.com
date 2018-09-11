@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable("");
         endTime: KnockoutObservable<string> = ko.observable("");
-        elapseTime: kibanTimer = new kibanTimer('elapseTime');
+        elapseTime: kibanTimer = new kibanTimer('elapseTime', 100);
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
 
         // dailyCreate data
