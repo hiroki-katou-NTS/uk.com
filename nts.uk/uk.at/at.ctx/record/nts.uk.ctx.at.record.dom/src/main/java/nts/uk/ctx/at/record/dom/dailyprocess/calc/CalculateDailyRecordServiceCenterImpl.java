@@ -374,14 +374,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			//nowIntegrationの労働制取得
 			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(integration.getAffiliationInfor().getYmd(),integration.getAffiliationInfor().getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
-				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
+				DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
 																		integration.getAffiliationInfor().getEmploymentCode().toString(),
 																		integration.getAffiliationInfor().getEmployeeId(),
 																		integration.getAffiliationInfor().getYmd(),
 																		nowWorkingItem.get().getValue().getLaborSystem());
-				if(dailyUnit == null) {
-					returnList.add(integration);
-				}
+				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
+					dailyUnit = new DailyUnit(new TimeOfDay(0));
 				else {
 					returnList.add(calculationErrorCheckService.errorCheck(integration, 
 																		   new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
