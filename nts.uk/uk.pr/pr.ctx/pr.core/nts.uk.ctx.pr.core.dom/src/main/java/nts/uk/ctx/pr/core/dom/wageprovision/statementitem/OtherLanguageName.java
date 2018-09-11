@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * その他言語名称
  */
-@StringMaxLength(20)
+@StringMaxLength(12)
 public class OtherLanguageName extends StringPrimitiveValue<OtherLanguageName> {
 
 	private static final long serialVersionUID = 1L;
