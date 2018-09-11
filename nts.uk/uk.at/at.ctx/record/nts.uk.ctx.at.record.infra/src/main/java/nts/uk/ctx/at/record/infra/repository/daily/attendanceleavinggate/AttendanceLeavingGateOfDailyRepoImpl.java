@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,9 +174,18 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
-				.setParameter("ymd", baseDate).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAY_LEAVE_GATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", baseDate).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 	
 

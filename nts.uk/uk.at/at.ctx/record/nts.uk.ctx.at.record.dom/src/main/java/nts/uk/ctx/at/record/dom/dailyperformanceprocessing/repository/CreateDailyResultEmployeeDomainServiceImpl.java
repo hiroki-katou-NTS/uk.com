@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
@@ -86,6 +87,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ClosureStatusManagementRepository closureStatusManagementRepository;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
 
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
@@ -199,8 +203,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
 			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement) {
+		
+		List<ProcessState> process = new ArrayList<>();
 
-		for (GeneralDate day : executedDate) {
+		this.managedParallelWithContext.forEach(executedDate , day -> {
 			// 締めIDを取得する
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, employmentCode);
@@ -210,7 +216,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 			if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
 					&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
-				return ProcessState.SUCCESS;
+				process.add(ProcessState.SUCCESS);
+				return;
+				//return ProcessState.SUCCESS;
 			} else {
 				if (!closureStatusManagement.isPresent() || (closureStatusManagement.isPresent() && !closureStatusManagement.get().getPeriod().contains(day))) {
 					EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
@@ -253,11 +261,15 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				}
 					if (asyncContext.hasBeenRequestedToCancel()) {
 						asyncContext.finishedAsCancelled();
-						return ProcessState.INTERRUPTION;
+						process.add(ProcessState.INTERRUPTION);
+						return;
+						//return ProcessState.INTERRUPTION;
 					}
 				}
+		});
+		if(process.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0){
+			return ProcessState.INTERRUPTION;
 		}
-
 		// Return
 		return ProcessState.SUCCESS;
 	}

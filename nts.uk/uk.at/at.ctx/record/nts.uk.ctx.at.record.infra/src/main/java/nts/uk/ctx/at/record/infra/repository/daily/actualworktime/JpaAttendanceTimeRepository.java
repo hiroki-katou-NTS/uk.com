@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -381,11 +383,20 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		//this.queryProxy().find(new KrcdtDayAttendanceTimePK(employeeId, ymd), KrcdtDayAttendanceTime.class).ifPresent(c -> {
-		this.queryProxy().find(new KrcdtDayTimePK(employeeId, ymd), KrcdtDayTime.class).ifPresent(c -> {
-			this.commandProxy().remove(c);
-			this.getEntityManager().flush();
-		});
+//		this.queryProxy().find(new KrcdtDayTimePK(employeeId, ymd), KrcdtDayTime.class).ifPresent(c -> {
+//			this.commandProxy().remove(c);
+//			this.getEntityManager().flush();
+//		});
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
 //				.setParameter("ymd", ymd).executeUpdate();
