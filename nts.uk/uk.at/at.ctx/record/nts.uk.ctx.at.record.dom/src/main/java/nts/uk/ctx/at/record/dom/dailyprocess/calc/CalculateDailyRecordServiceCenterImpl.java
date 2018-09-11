@@ -36,7 +36,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -227,22 +229,19 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			//nowIntegrationの労働制取得
 			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getAffiliationInfor().getYmd(),record.getAffiliationInfor().getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
-				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(comanyId,
+				DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(comanyId,
 																		record.getAffiliationInfor().getEmploymentCode().toString(),
 																		record.getAffiliationInfor().getEmployeeId(),
 																		record.getAffiliationInfor().getYmd(),
 																		nowWorkingItem.get().getValue().getLaborSystem());
-				if(dailyUnit == null) {
-					returnList.add(record);
-				}
-				else {
-					//実績計算
-					returnList.add(calculate.calculate(record, 
+				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
+					dailyUnit = new DailyUnit(new TimeOfDay(0));
+				//実績計算
+				returnList.add(calculate.calculate(record, 
 													   companyCommonSetting,
 													   new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
 													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(-1)),
 													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1))));
-				}
 			}
 			else {
 				returnList.add(record);
