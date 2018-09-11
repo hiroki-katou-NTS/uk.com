@@ -120,7 +120,7 @@ public class LoginRecordRegistService {
 			userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
 		} else {
 			if (infor.employeeId != null) {
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(user.employeeId());
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(infor.employeeId);
 			}
 		}
 		// set operationId
