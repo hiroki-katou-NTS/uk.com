@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,6 +163,14 @@ public class SpecialHolidayFinder {
 	}
 
 	public List<SpecialHolidayFrameDto> findAllItemFrame() {
-		return findForScreenJ(null);
+		List<SpecialHolidayFrameDto> result = new ArrayList<SpecialHolidayFrameDto>();
+		List<SpecialHolidayFrameDto> shFrames = this.shFrameFinder.findAll();
+		List<SpecialHolidayFrameDto> absenceFrames = this.absenceFrameFinder.findAll().stream()
+				.map(x -> SpecialHolidayFrameDto.fromAbsenDto(x)).collect(Collectors.toList());
+
+		result.addAll(shFrames);
+		result.addAll(absenceFrames);
+		
+		return result;
 	}
 }
