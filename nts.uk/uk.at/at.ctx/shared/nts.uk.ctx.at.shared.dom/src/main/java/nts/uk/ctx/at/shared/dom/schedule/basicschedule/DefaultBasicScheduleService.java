@@ -46,7 +46,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
 
 		if (!workType.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+			return SetupType.OPTIONAL;
 		}
 		DailyWork dailyWork = workType.get().getDailyWork();
 		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
@@ -109,7 +109,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 				.filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
 
 		if (!workType.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+			return SetupType.OPTIONAL;
 		}
 		DailyWork dailyWork = workType.get().getDailyWork();
 		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();

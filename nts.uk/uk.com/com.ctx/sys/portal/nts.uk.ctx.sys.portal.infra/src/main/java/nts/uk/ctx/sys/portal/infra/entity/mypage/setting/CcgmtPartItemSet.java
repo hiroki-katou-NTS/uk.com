@@ -28,7 +28,7 @@ public class CcgmtPartItemSet extends UkJpaEntity {
 
 	@EmbeddedId
 	public CcgmtPartItemSetPK ccgmtPartItemSetPK;
-	
+
 	/** The use atr. */
 	@Column(name = "USE_ATR")
 	public int useAtr;

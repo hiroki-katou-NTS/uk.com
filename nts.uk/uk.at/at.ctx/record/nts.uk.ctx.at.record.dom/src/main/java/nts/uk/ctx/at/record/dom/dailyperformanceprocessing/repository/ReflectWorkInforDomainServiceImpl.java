@@ -1213,9 +1213,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Override
 	public SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
 			String workPlaceID, PeriodInMasterList periodInMasterList) {
-		List<MasterList> masterLists = periodInMasterList.getMasterLists();
-		Optional<MasterList> newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day))
-				.findFirst();
+		List<MasterList> masterLists = new ArrayList<>();
+		Optional<MasterList> newMasterLists = Optional.empty();
+		if (periodInMasterList != null) {
+			masterLists = periodInMasterList.getMasterLists();
+			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day))
+					.findFirst();
+		}
 
 		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
 		if (newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()) {
@@ -1494,8 +1498,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(
 				baseAutoCalSetting.getLeaveEarly().isLate(), baseAutoCalSetting.getLeaveEarly().isLeaveEarly());
 		// 乖離時間: 乖離時間の自動計算設定
-		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
-				EnumAdaptor.valueOf(baseAutoCalSetting.getDivergenceTime().getDivergenceTime().value, DivergenceTimeAttr.class));
+		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(EnumAdaptor
+				.valueOf(baseAutoCalSetting.getDivergenceTime().getDivergenceTime().value, DivergenceTimeAttr.class));
 
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
@@ -1587,19 +1591,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						// 出勤
 						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
+								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
+										? stampSet.getRoundingSets().stream()
+												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
+												.get()
+										: null;
 
-						int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
+						int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(
+								sheet.getAttendance().v(),
 								atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
 								new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
-										.intValue());
+										.intValue())
+								: sheet.getAttendance().v();
 						// 退勤
 						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();
-						int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
+								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
+										? stampSet.getRoundingSets().stream()
+												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
+												.findFirst().get()
+										: null;
+
+						int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(
+								sheet.getLeaveWork().v(),
 								leavingRoundingSet.getRoundingSet().getFontRearSection().value,
 								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
-										.intValue());
+										.intValue())
+								: sheet.getLeaveWork().v();
 
 						// ドメインモデル「所属職場履歴」を取得する
 						attendanceStampTemp
@@ -1653,24 +1670,30 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											companyId,
 											workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v());
 									WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
+
 									// 出勤
 									RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
-											.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
-											.get();
-									int attendanceTimeAfterRouding = this.roudingTime(timezone.getStart().v(),
+											.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent() ?
+													stampSet.getRoundingSets().stream()
+													.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get() : null;
+
+									int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(timezone.getStart().v(),
 											atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
 											new Integer(atendanceRoundingSet.getRoundingSet()
-													.getRoundingTimeUnit().description).intValue());
+													.getRoundingTimeUnit().description).intValue()) : timezone.getStart().v();
 
 									actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
+									
 									// 退勤
 									RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
-											.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
-											.get();
-									int leaveTimeAfterRounding = this.roudingTime(timezone.getEnd().v(),
+											.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent() ?
+													stampSet.getRoundingSets().stream()
+													.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get() : null;
+													
+									int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(timezone.getEnd().v(),
 											leavingRoundingSet.getRoundingSet().getFontRearSection().value,
 											new Integer(leavingRoundingSet.getRoundingSet()
-													.getRoundingTimeUnit().description).intValue());
+													.getRoundingTimeUnit().description).intValue()) : timezone.getEnd().v();
 
 									leaveActualStamp.setAfterRoundingTime(new TimeWithDayAttr(leaveTimeAfterRounding));
 

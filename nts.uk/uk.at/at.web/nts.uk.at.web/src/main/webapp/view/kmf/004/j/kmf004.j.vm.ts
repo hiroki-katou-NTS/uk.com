@@ -6,6 +6,7 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             { headerText: nts.uk.resource.getText('KMF004_148'), key: 'name', width: 320 }
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
             let self = this;
@@ -15,9 +16,12 @@ module nts.uk.at.view.kmf004.j.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
+            let dfd = $.Deferred(),
+                param = {
+                    selectedNos: _.map(self.currentCodeList(), item => { return item.substring(1) })
+                };
 
-            service.findForScreenJ().done(function(data) {
+            service.findForScreenJ(param).done(function(data) {
                 self.items(_.map(data, (item) => {
                     return new ItemModel(item);
                 }));

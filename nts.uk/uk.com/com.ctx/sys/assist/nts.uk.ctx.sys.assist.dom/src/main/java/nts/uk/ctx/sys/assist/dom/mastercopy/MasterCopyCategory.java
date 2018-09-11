@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 // マスタコピーカテゴリ
 @Getter
 @Setter
+@NoArgsConstructor
 public class MasterCopyCategory extends AggregateRoot {
 	
 	/** The system type. */
@@ -18,15 +20,15 @@ public class MasterCopyCategory extends AggregateRoot {
 	
 	/** The master copy id. */
 	// マスタコピーID
-	private String masterCopyId;
+	private MasterCopyCategoryNo categoryNo;
 	
 	/** The master copy category. */
 	// マスタコピーカテゴリ
-	private MasterCopyCategoryName masterCopyCategory;
+	private MasterCopyCategoryName categoryName;
 	
 	/** The order. */
 	// 並び順
-	private Integer order;
+	private MasterCopyCategoryOrder order;
 
 	/**
 	 * Instantiates a new master copy category.
@@ -35,8 +37,8 @@ public class MasterCopyCategory extends AggregateRoot {
 	 */
 	public MasterCopyCategory(MasterCopyCategoryGetMemento memento) {
 		this.systemType = memento.getSystemType();
-		this.masterCopyId = memento.getMasterCopyId();
-		this.masterCopyCategory = memento.getMasterCopyCategory();
+		this.categoryNo = memento.getCategoryNo();
+		this.categoryName = memento.getCategoryName();
 		this.order = memento.getOrder();
 	}
 
@@ -47,8 +49,8 @@ public class MasterCopyCategory extends AggregateRoot {
 	 */
 	public void saveToMemento(MasterCopyCategorySetMemento memento) {
 		memento.setSystemType(this.systemType);
-		memento.setMasterCopyId(this.masterCopyId);
-		memento.setMasterCopyCategory(this.masterCopyCategory);
+		memento.setCategoryNo(this.categoryNo);
+		memento.setMasterCopyCategory(this.categoryName);
 		memento.setOrder(this.order);
 	}
 	

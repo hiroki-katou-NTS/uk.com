@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -73,11 +74,11 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		MasterWkpOutput wkpRootOutput = new MasterWkpOutput(new HashMap<>(), new ArrayList<>());
 		MasterEmployeeOutput empRootOutput = new MasterEmployeeOutput(new HashMap<>(), new ArrayList<>());
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
-		if(isCompany) {
+		if(isCompany) {//Lay data COMPANY
 			comMasterInfor = this.getComApprovalInfor(companyID, baseDate);
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
-		if(isWorkplace) {
+		if(isWorkplace) {//Lay data WORKPLACE
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
 			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);
 			//データが１件以上取得した場合(có 1 data trở lên)
@@ -86,7 +87,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
-		if(isPerson) {
+		if(isPerson) {//Lay data PERSON
 			//ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
 			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate);
 			//データが１件以上取得した場合(có 1 data trở lên)
@@ -122,16 +123,23 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
 				psWootInfor = psApp.getPsRootInfo();
-				psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
+				psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID);
 				continue;
 			}
 			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
 			PersonImport psInfos = psInfor.getPersonInfo(root.getEmployeeId());
 			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getSID(), psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
-			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
+			psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
 			lstEmployeeInfo.add(empInfor);
+		}
+		//QA#100181
+		for (Map.Entry<String, PersonApproverOutput> entry : mapPsRootInfor.entrySet()){
+			PersonApproverOutput ps = entry.getValue();
+			List<ApprovalForApplication> psRootSort = this.sortByAppTypeConfirm(ps.getPsRootInfo());
+			ps.setPsRootInfo(psRootSort);
+			entry.setValue(ps);
 		}
 		Collections.sort(lstEmployeeInfo, Comparator.comparing(EmployeeApproverOutput:: getEmpCD));
 		return new MasterEmployeeOutput(mapPsRootInfor, lstEmployeeInfo);
@@ -168,18 +176,23 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
 				continue;
 			}
-			
-			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
+			//Lay thong tin detail cua workplace
+			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」)
 			Optional<WorkplaceImport> wpOp = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);
-			WorkplaceImport wpInfors = wpOp.isPresent() ? wpOp.get() : new WorkplaceImport(root.getWorkplaceId(), "", "マスタ未登録");			
-			// fix data
-			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpId(),wpInfors.getWkpCode(), wpInfors.getWkpName());
+			WorkplaceImport wpDto = wpOp.isPresent() ? wpOp.get() : new WorkplaceImport(root.getWorkplaceId(), "", "マスタ未登録");
 			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data
 			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 			lstWpInfor.add(wpDto);
+		}
+		//QA#100181
+		for (Map.Entry<String, WorkplaceApproverOutput> entry : mapWpRootInfor.entrySet()){
+			WorkplaceApproverOutput wkp = entry.getValue();
+			List<ApprovalForApplication> wpRootSort = this.sortByAppTypeConfirm(wkp.getWpRootInfor());
+			wkp.setWpRootInfor(wpRootSort);
+			entry.setValue(wkp);
 		}
 		Collections.sort(lstWpInfor, Comparator.comparing(WorkplaceImport:: getWkpCode));
 		return new MasterWkpOutput(mapWpRootInfor, lstWpInfor);
@@ -189,29 +202,47 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//ApprovalForApplication wpAppInfo = null;
 		//neu la 就業ルート区分 la 共通(common)
 		String appName = "";
-		int appId = 0;
+		int appType = 0;
 		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value) {
 			appName = ROOT_COMMON;
 		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
-			appId = root.getApplicationType();
+			appType = root.getApplicationType();
 			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
 		}else if(root.getEmploymentRootAtr()== EmploymentRootAtr.CONFIRMATION.value){
-			appId = 0;
+			appType = root.getConfirmationRootType();
 			appName = EnumAdaptor.valueOf(root.getConfirmationRootType(), ConfirmationRootType.class).nameId;
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstAppInfo = getPhaseApprover(companyID, root.getBranchId(), root.getStartDate());
-		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
+		ApprovalForApplication wpAppInfo = new ApprovalForApplication(root.getEmploymentRootAtr(), appType, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
-		if(!CollectionUtil.isEmpty(wpRootInfor)) {
-			Collections.sort(wpRootInfor, Comparator.comparing(ApprovalForApplication:: getAppType));
-		}
-		
 		return wpRootInfor;
 	}
-
-	
+	/**
+	 * ソート順： 申請種類（昇順）、確認ルート種類（昇順）
+	 * @param wpRootInfor
+	 * @return
+	 */
+	private List<ApprovalForApplication> sortByAppTypeConfirm(List<ApprovalForApplication> wpRootInfor){
+		List<ApprovalForApplication>  lstWpRootSort = new ArrayList<>();
+		List<ApprovalForApplication> lstCommon = wpRootInfor.stream()
+					.filter(c -> c.getEmpRootAtr() == 0).collect(Collectors.toList());
+		List<ApprovalForApplication> lstApp = wpRootInfor.stream()
+				.filter(c -> c.getEmpRootAtr() == 1).collect(Collectors.toList());
+		List<ApprovalForApplication> lstConfirm = wpRootInfor.stream()
+				.filter(c -> c.getEmpRootAtr() == 2).collect(Collectors.toList());
+		if(!CollectionUtil.isEmpty(lstApp)) {
+			Collections.sort(lstApp, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}
+		if(!CollectionUtil.isEmpty(lstConfirm)) {
+			Collections.sort(lstConfirm, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}
+		lstWpRootSort.addAll(lstCommon);
+		lstWpRootSort.addAll(lstApp);
+		lstWpRootSort.addAll(lstConfirm);
+		return lstWpRootSort;
+	}
 	/**
 	 * get phase, approver of company
 	 * @param approvalForApplication
@@ -223,8 +254,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//find name
 		String nameRoot = this.findNameRoot(comRoot.getEmploymentRootAtr(), comRoot.getApplicationType(), comRoot.getConfirmationRootType());
 		//khoi tao
-		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getApplicationType() == null ? null : 
-			comRoot.getApplicationType().value,nameRoot , null, null, null);
+		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getEmploymentRootAtr().value, comRoot.getEmploymentRootAtr().value == 0 ? null : 
+			comRoot.getEmploymentRootAtr().value == 1 ? comRoot.getApplicationType().value : comRoot.getConfirmationRootType().value,
+					nameRoot , null, null, null);
 		approvalForApp.setStartDate(comRoot.getEmploymentAppHistoryItems().get(0).start());
 		approvalForApp.setEndDate(comRoot.getEmploymentAppHistoryItems().get(0).end());
 		
@@ -256,14 +288,17 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		}
 		for(ApprovalPhase phase: getAllIncludeApprovers) {
 			List<String> lstApprovers = new ArrayList<>();
-			for(Approver approver: phase.getApprovers()) {
+			List<Approver> lstApprover  = phase.getApprovers();
+			if(!CollectionUtil.isEmpty(lstApprover)) {
+				Collections.sort(lstApprover, Comparator.comparing(Approver:: getOrderNumber));
+			}
+			for(Approver approver: lstApprover) {
 				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
 				if(approver.getApprovalAtr() == ApprovalAtr.PERSON){
 					lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 				}else{
 					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobTitleId(), baseDate).getPositionName());
 				}
-				
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
@@ -284,7 +319,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//CompanyApprovalInfor comMasterInfor = null;
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
+		//Thong tin company
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
+		//list root by COM
 		List<ApprovalForApplication> comApproverRoots =  new ArrayList<>();
 		if(CollectionUtil.isEmpty(lstComs)) {
 			return null;
@@ -298,7 +335,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID);
 			comApproverRoots.add(comApprover);
 		}
-		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoots);
+		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, this.sortByAppTypeConfirm(comApproverRoots));
 		return comMasterInfor;
 	}
 }

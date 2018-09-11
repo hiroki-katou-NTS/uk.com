@@ -167,15 +167,16 @@ public class FacadeUtils {
 
 	public List<ItemValue> getListDefaultCS00034() {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
-		String[][] cs00034Item = { { "IS00359", numberType, "0" },
-				{ "IS00369", numberType, String.valueOf(NotUseAtr.NOT_USE.value) },
-				{ "IS00370", numberType, String.valueOf(NotUseAtr.NOT_USE.value) } };
+		String[][] cs00034Item = { { "IS00359", numberType,String.valueOf(NotUseAtr.NOT_USE.value) } };
 		return FacadeUtils.createListItems(cs00034Item);
 	}
 	
 	public List<ItemValue> getListDefaultCS00035() {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
-		String[][] cs00035Item = { { "IS00371", numberType, String.valueOf(NotUseAtr.NOT_USE.value) },
+		String[][] cs00035Item = {
+				{ "IS00369",numberType, "0" },
+				{ "IS00370", numberType, String.valueOf(NotUseAtr.NOT_USE.value) },
+				{ "IS00371", numberType,  "0" },
 				{ "IS00372", numberType, String.valueOf(PaymentMethod.VACATION_OCCURRED.value) } };
 		return FacadeUtils.createListItems(cs00035Item);
 	}
@@ -310,7 +311,7 @@ public class FacadeUtils {
 		return FacadeUtils.createListItems(cs00056Item);
 	}
 	
-	public List<ItemValue> getListDefaultCS0007() {
+	public List<ItemValue> getListDefaultCS00057() {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		String[][] cs00057Item = { { "IS00616", numberType, String.valueOf(NotUseAtr.NOT_USE.value) }};
 		return FacadeUtils.createListItems(cs00057Item);
@@ -377,6 +378,20 @@ public class FacadeUtils {
 	}
 	
 	/**
+	 * Get history item for CPS007
+	 * @param categoryCode
+	 * @return
+	 */
+	private List<String> getListHistoryItem(String categoryCode){
+		List<String> result = new ArrayList<>();
+		if (historyCategoryCodeList.contains(categoryCode)) {
+			result.add(startDateItemCodes.get(categoryCode));
+			result.add(endDateItemCodes.get(categoryCode));
+		}
+		return result;
+	}
+	
+	/**
 	 * Set default item for history category
 	 * @param categoryCode
 	 * @param listItemCodeInScreen
@@ -423,4 +438,33 @@ public class FacadeUtils {
 		}
 		return Optional.empty();
 	}
+	
+	/**
+	 * Get list Default item for CPS007
+	 * @param listCategoryCode
+	 * @return
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public List<String> getListDefaultItem(List<String> listCategoryCode) {
+		
+		List<String> listItemResult = new ArrayList<>();
+		listCategoryCode.forEach(category -> {
+			try {
+				Method method = FacadeUtils.class.getMethod(FUNCTION_NAME + category);
+				@SuppressWarnings("unchecked")
+				List<ItemValue> value = (List<ItemValue>) method.invoke(new FacadeUtils());
+				listItemResult.addAll(value.stream().map(i->i.itemCode()).collect(Collectors.toList()));
+			} catch (Exception e){
+				System.out.println(e.getMessage());
+			}
+			
+			listItemResult.addAll(getListHistoryItem(category));		
+		});
+		return listItemResult;
+	}
+	
 }

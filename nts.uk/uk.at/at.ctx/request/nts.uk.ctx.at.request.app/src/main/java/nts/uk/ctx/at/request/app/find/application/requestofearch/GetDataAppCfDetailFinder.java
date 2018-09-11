@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class GetDataAppCfDetailFinder {
@@ -128,6 +129,8 @@ public class GetDataAppCfDetailFinder {
 				//　⇒事前受付制限日 = システム日付 + 「事前の受付制限」．日数
 				toDateSystem = toDateSystem.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
 				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+				deadline = strMessageFirst + strDate + strKara;
+				chkShow = true;
 			}
 			//「事前の受付制限」．チェック方法が時刻
 			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {		
@@ -136,19 +139,21 @@ public class GetDataAppCfDetailFinder {
 					RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
 					int minuteData = 0;
 					if(retrictPreTimeDay.v()==null){
-						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+						strDate = "[error data]";
 					} else {
 						if(appType==ApplicationType.ABSENCE_APPLICATION||
 							appType==ApplicationType.WORK_CHANGE_APPLICATION||
 							appType==ApplicationType.BREAK_TIME_APPLICATION||
 							appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
-							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+							strDate = "[error data]";
 						} else {
 							minuteData = retrictPreTimeDay.v();
 							//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
-							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+							strDate = formatTime(minuteData).toString();
 						}
 					}
+					deadline = TextResource.localize("KAF000_41",strDate);
+					chkShow = true;
 				} else {
 					Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 					List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
@@ -158,19 +163,19 @@ public class GetDataAppCfDetailFinder {
 					if(!CollectionUtil.isEmpty(receptionRestrictionSetting)){
 						if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){
 							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v();
-							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+							strDate = formatTime(minuteData).toString();
 						} else if(overtimeAtr == OverTimeAtr.REGULAROVERTIME.value){
 							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v();
-							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+							strDate = formatTime(minuteData).toString();
 						} else {
 							int minuteData = receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v();
-							strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+							strDate = formatTime(minuteData).toString();
 						}
+						deadline = TextResource.localize("KAF000_41",strDate);
+						chkShow = true;
 					}
 				}
 			}
-			deadline = strMessageFirst + strDate + strKara;
-			chkShow = true;
 		}
 		//ドメインモデル「事後の受付制限」．未来日許可しないがtrue
 		toDateSystem = GeneralDate.today();

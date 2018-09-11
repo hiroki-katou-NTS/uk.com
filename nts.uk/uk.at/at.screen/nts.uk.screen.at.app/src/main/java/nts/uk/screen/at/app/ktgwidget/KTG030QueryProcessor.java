@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class KTG030QueryProcessor {
@@ -21,13 +22,10 @@ public class KTG030QueryProcessor {
 	@Inject
 	private ShClosurePub shClosurePub;
 
-	/**
-	 * 日別実績確認すべきデータ有無表示
-	 * 
-	 * @return
-	 */
 	@Inject
 	private DailyPerformanceAdapter dailyPerformanceAdapter;
+	
+
 
 	@Inject
 	private ShareEmploymentAdapter shareEmpAdapter;
@@ -60,12 +58,14 @@ public class KTG030QueryProcessor {
 		// "Acquire 「日別実績確認有無取得」"
 		/*
 		 * input · Employee ID · Date (start date) <= Tightening start date ·
-		 * Date (end date) <= closing end date + 1 month · 
+		 * 
+		 * Date (end date) <= closing end date
 		 * Route type <= Employment application
 		 */
 
 		// RootType(就業日別確認) = 2
-		boolean checkMonthApproved = dailyPerformanceAdapter.checkDataApproveed(closureStartDate, closureEndDate.addMonths(1), employeeID, 2, cid);
+		DatePeriod period = new DatePeriod(closureStartDate, closureEndDate);
+		boolean checkMonthApproved = dailyPerformanceAdapter.isDataExist(employeeID, period, 2);
 
 		return checkMonthApproved;
 	}

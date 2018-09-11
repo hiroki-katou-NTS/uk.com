@@ -21,7 +21,7 @@ public class ApprovalRootStateStatus {
 	 */
 	private String employeeID;
 	/**
-	 * 承認状況
+	 * 承認状況:  0:"未承認", 1:"承認中 ", 2:"承認済"
 	 */
 	private DailyConfirmAtr dailyConfirmAtr;
 	
