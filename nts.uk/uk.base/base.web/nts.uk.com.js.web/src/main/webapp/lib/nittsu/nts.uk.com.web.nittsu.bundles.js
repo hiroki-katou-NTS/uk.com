@@ -23159,7 +23159,7 @@ var nts;
                     kt._widths = {};
                     kt._columnWidths = {};
                     var ColumnAdjuster = /** @class */ (function () {
-                        function ColumnAdjuster(widths, height, sizeUi) {
+                        function ColumnAdjuster(widths, height, sizeUi, unshift) {
                             var _this = this;
                             this.headerColGroup = [];
                             this.bodyColGroup = [];
@@ -23169,6 +23169,7 @@ var nts;
                             this.headerWrappers = sizeUi.headerWrappers;
                             this.bodyWrappers = sizeUi.bodyWrappers;
                             this.sumWrappers = sizeUi.sumWrappers;
+                            this.unshiftRight = unshift;
                             _.forEach(sizeUi.headerColGroup, function (g) {
                                 if (g) {
                                     var vCols = g.filter(function (c) { return c.style.display !== "none"; });
@@ -23274,7 +23275,7 @@ var nts;
                         ColumnAdjuster.prototype.cursorDown = function (event) {
                             var self = this;
                             if (self.actionDetails) {
-                                self.cursorUp(event);
+                                self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
                             }
                             var $targetGrip = event.target;
                             var gripIndex = $.data($targetGrip, kt.RESIZE_NO);
@@ -23321,9 +23322,115 @@ var nts;
                                     right: rightWidth ? parseFloat(rightWidth) : undefined
                                 }
                             };
-                            self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.cursorMove.bind(self));
-                            self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.cursorUp.bind(self));
+                            self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
+                            self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
                             event.preventDefault();
+                        };
+                        ColumnAdjuster.prototype.cursorMoveShift = function (event) {
+                            var self = this;
+                            if (!self.actionDetails)
+                                return;
+                            var distance = getCursorX(event) - self.actionDetails.xCoord;
+                            if (distance === 0)
+                                return;
+                            var leftWidth, leftAreaWidth, rightAreaWidth, leftAlign;
+                            leftWidth = self.actionDetails.widths.left + distance;
+                            if (leftWidth <= 20)
+                                return;
+                            if (self.actionDetails.breakArea || self.actionDetails.isFixed) {
+                                leftAreaWidth = self.actionDetails.widths.wrapperLeft + distance;
+                                _maxFixedWidth = leftAreaWidth;
+                                rightAreaWidth = self.actionDetails.widths.wrapperRight - distance;
+                                leftAlign = self.actionDetails.leftAlign + distance;
+                                var $header = _$grid[0].querySelector("." + FREE + "." + HEADER);
+                                var sWrap = _$grid[0].querySelector("." + gp.SHEET_CLS);
+                                var pWrap = _$grid[0].querySelector("." + gp.PAGING_CLS);
+                                var btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth))
+                                    + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                                if (sWrap)
+                                    sWrap.style.width = btmw;
+                                if (pWrap)
+                                    pWrap.style.width = btmw;
+                            }
+                            self.actionDetails.changedWidths.left = leftWidth;
+                            var bodyGroup, sumGroup;
+                            if (self.actionDetails.isFixed) {
+                                bodyGroup = self.bodyColGroup[0];
+                                if (self.sumWrappers.length > 0)
+                                    sumGroup = self.sumColGroup[0];
+                            }
+                            else {
+                                bodyGroup = self.bodyColGroup[1];
+                                if (self.sumWrappers.length > 0)
+                                    sumGroup = self.sumColGroup[1];
+                            }
+                            if (self.actionDetails.$leftCol) {
+                                self.setWidth(self.actionDetails.$leftCol, leftWidth);
+                                var $contentLeftCol = bodyGroup[self.actionDetails.gripIndex];
+                                self.setWidth($contentLeftCol, leftWidth);
+                                if (self.sumWrappers.length > 0) {
+                                    var $sumLeftCol = sumGroup[self.actionDetails.gripIndex];
+                                    self.setWidth($sumLeftCol, leftWidth);
+                                }
+                                if (leftAreaWidth) {
+                                    self.setWidth(self.headerWrappers[0], leftAreaWidth);
+                                    self.setWidth(self.bodyWrappers[0], leftAreaWidth);
+                                    if (self.sumWrappers.length > 0)
+                                        self.setWidth(self.sumWrappers[0], leftAreaWidth);
+                                    kt._widths._fixed = leftAreaWidth;
+                                }
+                            }
+                            if (rightAreaWidth) {
+                                self.setWidth(self.headerWrappers[1], rightAreaWidth);
+                                self.setWidth(self.bodyWrappers[1], rightAreaWidth + ti.getScrollWidth());
+                                self.headerWrappers[1].style.left = leftAlign + "px";
+                                self.bodyWrappers[1].style.left = leftAlign + "px";
+                                if (self.sumWrappers.length > 0) {
+                                    self.setWidth(self.sumWrappers[1], rightAreaWidth);
+                                    self.sumWrappers[1].style.left = leftAlign + "px";
+                                }
+                                kt._widths._unfixed = rightAreaWidth;
+                            }
+                        };
+                        ColumnAdjuster.prototype.cursorUpShift = function (event) {
+                            var self = this;
+                            self.$ownerDoc.removeXEventListener(ssk.MOUSE_MOVE);
+                            self.$ownerDoc.removeXEventListener(ssk.MOUSE_UP);
+                            self.syncLines();
+                            var leftCol, tidx = self.actionDetails.gripIndex;
+                            if (!_vessel() || !_vessel().desc) {
+                                self.actionDetails = null;
+                                return;
+                            }
+                            if (self.actionDetails.isFixed) {
+                                _.forEach(_fixedHiddenColumns, function (c) {
+                                    var idx = _vessel().desc.fixedColIdxes[c];
+                                    if (parseFloat(idx) <= self.actionDetails.gripIndex) {
+                                        tidx++;
+                                    }
+                                });
+                                _.forEach(_.keys(_vessel().desc.fixedColIdxes), function (k) {
+                                    var i = parseFloat(_vessel().desc.fixedColIdxes[k]);
+                                    if (i === tidx) {
+                                        leftCol = k;
+                                        if (self.actionDetails.breakArea || leftCol)
+                                            return false;
+                                        return;
+                                    }
+                                });
+                                replenLargeur(leftCol, self.actionDetails.changedWidths.left, "reparer");
+                            }
+                            else {
+                                _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
+                                    var i = parseFloat(_vessel().desc.colIdxes[k]);
+                                    if (i === self.actionDetails.gripIndex) {
+                                        leftCol = k;
+                                        return false;
+                                    }
+                                });
+                                replenLargeur(leftCol, self.actionDetails.changedWidths.left);
+                            }
+                            self.actionDetails = null;
                         };
                         /**
                          * Cursor move.
@@ -23475,14 +23582,14 @@ var nts;
                         ColumnAdjuster.prototype.syncLines = function () {
                             var self = this;
                             self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                            var left = 0;
-                            _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function ($td, index) {
-                                if ($td.style.display === "none")
+                            var left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                            _.forEach(group, function ($td, index) {
+                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
                                     return;
-                                if (index > self.actionDetails.gripIndex)
+                                if (self.unshiftRight && index > self.actionDetails.gripIndex)
                                     return false;
                                 var lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
                                 var div = lineArr[index];
@@ -24519,9 +24626,9 @@ var nts;
                                 var column_1 = _columnsMap[editor.columnKey];
                                 if (!column_1)
                                     return;
-                                var formatted = format(column_1[0], inputVal_1);
+                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : format(column_1[0], inputVal_1);
                                 $bCell.textContent = formatted;
-                                var disFormat_1 = inputVal_1 === "" ? "" : formatSave(column_1[0], inputVal_1);
+                                var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : formatSave(column_1[0], inputVal_1);
                                 wedgeCell($grid, editor, disFormat_1);
                                 $.data($bCell, v.DATA, disFormat_1);
                                 if ($editor.classList.contains(hpl.CURRENCY_CLS)) {
@@ -24569,7 +24676,7 @@ var nts;
                                 }
                                 else if ((sCol_1 = _specialLinkColumn[editor.columnKey]) && sCol_1.changed) {
                                     var data = _mafollicle[_currentPage].origDs[editor.rowIdx];
-                                    sCol_1.changed(editor.columnKey, data[_pk], inputVal_1, data[editor.columnKey]).done(function (res) {
+                                    sCol_1.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(function (res) {
                                         var $linkCell = lch.cellAt($grid, editor.rowIdx, sCol_1.column);
                                         if ($linkCell) {
                                             $linkCell.querySelector("a").textContent = res;
@@ -24874,9 +24981,13 @@ var nts;
                         if (uk.util.isNullOrEmpty(_.trim(value)))
                             return value;
                         if (column.constraint) {
-                            var constraint = column.constraint;
-                            var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
-                                : constraint.cDisplayType;
+                            var contrainte = void 0, valueType = void 0, constraint = column.constraint;
+                            if (constraint.primitiveValue) {
+                                contrainte = ui.validation.getConstraint(constraint.primitiveValue);
+                                valueType = contrainte.valueType;
+                            }
+                            else
+                                valueType = constraint.cDisplayType;
                             if (!_.isNil(value) && value !== "") {
                                 if (valueType === "TimeWithDay") {
                                     var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -24917,8 +25028,9 @@ var nts;
                                     else
                                         value = rawValue;
                                 }
-                                // TODO: Format code
-                                // uk.text.padLeft();
+                                else if (valueType === "String" && contrainte && contrainte.maxLength && contrainte.isZeroPadded) {
+                                    value = uk.text.padLeft(value, '0', parseInt(contrainte.maxLength));
+                                }
                             }
                         }
                         return value;
@@ -25864,7 +25976,9 @@ var nts;
                                 if (sCol) {
                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
                                     if ($cCell) {
-                                        $cCell.textContent = value;
+                                        var column = _columnsMap[sCol];
+                                        var formatted = su.format(column[0], value);
+                                        $cCell.textContent = formatted;
                                         su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol }, value);
                                         $.data($cCell, v.DATA, value);
                                     }
@@ -26411,9 +26525,18 @@ var nts;
                                     this.options.mode = "time";
                                     return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
-                                case "TimeWithDay":
+                                case "StandardTimeWithDay":
                                     this.options.timeWithDay = true;
                                     var result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                                    if (result.isValid) {
+                                        var formatter = new uk.text.TimeWithDayFormatter(this.options);
+                                        result.parsedValue = formatter.format(result.parsedValue);
+                                    }
+                                    return result;
+                                case "TimeWithDay":
+                                    this.options.timeWithDay = true;
+                                    var result = new nts.uk.ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
                                     if (result.isValid) {
                                         var formatter = new uk.text.TimeWithDayFormatter(this.options);
