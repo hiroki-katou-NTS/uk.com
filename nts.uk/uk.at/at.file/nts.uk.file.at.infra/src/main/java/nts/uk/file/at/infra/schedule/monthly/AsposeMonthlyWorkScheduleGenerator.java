@@ -368,9 +368,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		else
 			headerData.companyName = "";
 		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
-			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
-		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.YEARMONTH);
+		} else {
+			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
 		}
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.CLOSURE_DATE);
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.REMARK);
