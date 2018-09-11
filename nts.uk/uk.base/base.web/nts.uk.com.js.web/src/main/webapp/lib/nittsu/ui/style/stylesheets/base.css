@@ -2979,6 +2979,11 @@ button.nts-switch-button[disabled].selected {
   display: none;
 }
 
+/* line 24, ../sass/components/_treegridview.scss */
+.nts-treegridview .ui-igtreegrid-expandcell{
+	margin-top: -10px !important;
+}
+
 /* line 2, ../sass/components/_combobox.scss */
 #contents-area input.ui-igcombo-field {
   font-family: "DroidSansMono", "Meiryo";
