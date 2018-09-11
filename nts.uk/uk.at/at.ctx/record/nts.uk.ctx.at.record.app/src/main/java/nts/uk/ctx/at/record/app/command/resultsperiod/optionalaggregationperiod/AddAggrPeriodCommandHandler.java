@@ -71,10 +71,11 @@ public class AddAggrPeriodCommandHandler
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
 				
-				if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
-				AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
-				inforRepository.addPeriodInfor(periodInfors);
-				}
+				// Thêm lỗi khi chưa có xử lý tính toán
+//				if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
+//				AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
+//				inforRepository.addPeriodInfor(periodInfors);
+//				}
 
 			} else {
 				throw new BusinessException("Msg_1165");
@@ -91,11 +92,11 @@ public class AddAggrPeriodCommandHandler
 			// Add Aggr Period Excution
 			excutionrRepository.addExcution(periodExcution);
 
-			// Add 
-			if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
-			AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
-			inforRepository.addPeriodInfor(periodInfors);
-			}
+			// Thêm lỗi khi chưa có xử lý tính toán
+//			if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
+//			AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
+//			inforRepository.addPeriodInfor(periodInfors);
+//			}
 			
 
 		}

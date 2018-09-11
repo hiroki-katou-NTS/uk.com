@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
@@ -69,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
@@ -307,6 +309,30 @@ public class ScheCreExeBasicScheduleHandler {
 			this.basicScheduleRepository.update(command.toDomain());
 		} else {
 			this.basicScheduleRepository.insert(command.toDomain());
+		}
+	}
+	
+	/**
+	 * Save basic schedule, also add work schedule state
+	 *
+	 * @param command
+	 *            the command
+	 */
+	// 勤務予定情報を登録する
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<WorkScheduleState> lstWorkScheState) {
+
+		// find basic schedule by id
+        boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
+                command.getYmd());
+
+        BasicSchedule basicSchedule = command.toDomain();
+        basicSchedule.setWorkScheduleStates(lstWorkScheState);
+        
+        // check exist data
+        if (optionalBasicSchedule) {
+			this.basicScheduleRepository.update(basicSchedule);
+		} else {
+			this.basicScheduleRepository.insert(basicSchedule);
 		}
 	}
 	
@@ -604,7 +630,7 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
-				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(), scTimeImport.getFlexTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
 		return commandSave;
 	}
@@ -689,25 +715,25 @@ public class ScheCreExeBasicScheduleHandler {
 			return WorkScheduleState.createFromJavaType(
 					basicSchedule.getEmployeeId().equals(sid) ? ScheduleEditState.HAND_CORRECTION_PRINCIPAL.value : ScheduleEditState.HAND_CORRECTION_ORDER.value, 
 					Integer.parseInt(x.getScheduleItemId()), 
-					basicSchedule.getDate(), sid);
+					basicSchedule.getDate(), employeeId);
 		}).collect(Collectors.toList());
 		
 
-		saveBasicSchedule(basicScheduleSaveCommand);
+		saveBasicSchedule(basicScheduleSaveCommand, lstWorkScheduleState);
 		
-		this.basicScheduleRepository.removeScheState(employeeId, baseDate, lstWorkScheduleState);
-		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
+//		this.basicScheduleRepository.removeScheState(employeeId, baseDate, lstWorkScheduleState);
+//		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
 		
 		
 		// 修正ログ情報を作成する
-		addEditDetailsLog(companyId, basicSchedule, basicScheduleSaveCommand, lstScheduleItem, sid, optBasicSchedule.isPresent());
+		addEditDetailsLog(companyId, basicSchedule, basicScheduleSaveCommand, lstScheduleItem, employeeId, baseDate, optBasicSchedule.isPresent());
 	}
 	
 	/**
 	 * 修正ログ情報を作成する
 	 * @param basicScheduleSaveCommand
 	 */
-	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItem, String sid, boolean isUpdate) {
+	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItem, String employeeId, GeneralDate targetDate, boolean isUpdate) {
 		
 		
 		//勤務種類コード
@@ -734,7 +760,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// 育児介護終了時刻 1~2
 		List<ScheduleItem> optScheduleItemChildEndTime = lstScheduleItem.stream().filter(x -> IntStream.of(CHILD_END_TIME).anyMatch(y -> y == Integer.parseInt(x.getScheduleItemId()))).collect(Collectors.toList());
 		
-		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(sid);
+		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(employeeId);
 		StartPageLog lastLog = lstStartPageLog.get(lstStartPageLog.size() - 1);
 		
 		// 「データ修正記録のパラメータ」を生成する
@@ -744,30 +770,30 @@ public class ScheCreExeBasicScheduleHandler {
 		String operationId = IdentifierUtil.randomUniqueId();
 		
 		// Recreate new log basic information using new operation id
-		LogBasicInformation logBasicInformationNew = new LogBasicInformation(operationId, logBasicInformation.getCompanyId(), logBasicInformation.getUserInfo(), logBasicInformation.getLoginInformation(), logBasicInformation.getModifiedDateTime(), logBasicInformation.getAuthorityInformation(), logBasicInformation.getTargetProgram(), logBasicInformation.getNote());
+		LogBasicInformation logBasicInformationNew = new LogBasicInformation(operationId, logBasicInformation.getCompanyId(), logBasicInformation.getUserInfo(), logBasicInformation.getLoginInformation(), GeneralDateTime.now(), logBasicInformation.getAuthorityInformation(), new ScreenIdentifier("KSU007", "B", ""), logBasicInformation.getNote());
 		
-		lstDataCorrectionLog.add(createWorkTypeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkType));
-		lstDataCorrectionLog.add(createWorkTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkTime));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, lstScheduleItemStartTime, 0));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, lstScheduleItemEndTime, 1));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemBreakStartTime, 2));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemBreakEndTime, 3));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemChildStartTime, 4));
-		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemChildEndTime, 5));
+		lstDataCorrectionLog.add(createWorkTypeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkType));
+		lstDataCorrectionLog.add(createWorkTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkTime));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, lstScheduleItemStartTime, 0));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, lstScheduleItemEndTime, 1));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemBreakStartTime, 2));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemBreakEndTime, 3));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemChildStartTime, 4));
+		lstDataCorrectionLog.addAll(createTimeCorrectionLog(employeeId, targetDate, operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemChildEndTime, 5));
 		
 		dataCorrectionLogWriter.save(lstDataCorrectionLog);
 		
 		logBasicInformationWriter.save(logBasicInformationNew);
 	}
 	
-	private DataCorrectionLog createWorkTypeCorrectionLog(String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkType) {
+	private DataCorrectionLog createWorkTypeCorrectionLog(String employeeId, GeneralDate targetDate, String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkType) {
 		ScheduleItem workTypeItem = optScheduleItemWorkType.get(); // Supposely won't null
 		LoginUserContext userContext = AppContexts.user();
-		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(userContext.employeeId());
+		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(employeeId);
 		DataCorrectionLog log = new DataCorrectionLog(operationId,
-				new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
+				new UserInfo(userContext.userId(), employeeId, employeeDto.getEmployeeName()),
 				TargetDataType.SCHEDULE, 
-				new TargetDataKey(CalendarKeyType.DATE, GeneralDate.today(), workTypeItem.scheduleItemName), 
+				new TargetDataKey(CalendarKeyType.DATE, targetDate, workTypeItem.scheduleItemName), 
 				CorrectionAttr.EDIT, 
 				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, backupBasicSchedule.getWorkTypeCode(), basicScheduleSaveCommand.getWorktypeCode()),
 				workTypeItem.getDispOrder());
@@ -775,14 +801,14 @@ public class ScheCreExeBasicScheduleHandler {
 		return log;
 	}
 	
-	private DataCorrectionLog createWorkTimeCorrectionLog(String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkTime) {
+	private DataCorrectionLog createWorkTimeCorrectionLog(String employeeId, GeneralDate targetDate, String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkTime) {
 		ScheduleItem workTypeItem = optScheduleItemWorkTime.get(); // Supposely won't null
 		LoginUserContext userContext = AppContexts.user();
-		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(userContext.employeeId());
+		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(employeeId);
 		DataCorrectionLog log = new DataCorrectionLog(operationId,
-				new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
+				new UserInfo(userContext.userId(), employeeId, employeeDto.getEmployeeName()),
 				TargetDataType.SCHEDULE, 
-				new TargetDataKey(CalendarKeyType.DATE, GeneralDate.today(), workTypeItem.scheduleItemName), 
+				new TargetDataKey(CalendarKeyType.DATE, targetDate, workTypeItem.scheduleItemName), 
 				CorrectionAttr.EDIT, 
 				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, backupBasicSchedule.getWorkTimeCode(), basicScheduleSaveCommand.getWorktimeCode()),
 				workTypeItem.getDispOrder());
@@ -790,9 +816,9 @@ public class ScheCreExeBasicScheduleHandler {
 		return log;
 	}
 	
-	private List<DataCorrectionLog> createTimeCorrectionLog(String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItemStartTime, int timeType) {
+	private List<DataCorrectionLog> createTimeCorrectionLog(String employeeId, GeneralDate targetDate, String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItemStartTime, int timeType) {
 		LoginUserContext userContext = AppContexts.user();
-		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(userContext.employeeId());
+		EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(employeeId);
 		
 		List<DataCorrectionLog> lstLog = new ArrayList<>();
 		
@@ -801,10 +827,17 @@ public class ScheCreExeBasicScheduleHandler {
 		List<WorkScheduleBreak> lstOldBreakTime = backupBasicSchedule.getWorkScheduleBreaks();
 		List<ChildCareSchedule> lstOldChildTime = backupBasicSchedule.getChildCareSchedules();
 		
+		int lstOldScheTimeZoneCount = lstOldScheTimeZone.size();
+		int lstOldBreakTimeCount = lstOldBreakTime.size();
+		int lstOldChildTimeCount = lstOldChildTime.size();
+		
 		// Get update basic schedule data
 		List<WorkScheduleTimeZoneSaveCommand> lstSaveScheTimeZone = basicScheduleSaveCommand.getWorkScheduleTimeZones();
 		List<WorkScheduleBreakSaveCommand> lstSaveBreakTime = basicScheduleSaveCommand.getWorkScheduleBreaks();
 		List<ChildCareScheduleSaveCommand> lstSaveChildTime = basicScheduleSaveCommand.getChildCareSchedules();
+		int lstSaveScheTimeZoneCount = lstSaveScheTimeZone.size();
+		int lstSaveBreakTimeCount = lstSaveBreakTime.size();
+		int lstSaveChildTimeCount = lstSaveChildTime.size();
 		
 		try {
 			for (int i = 0; i < lstScheduleItemStartTime.size(); i++) {
@@ -813,27 +846,27 @@ public class ScheCreExeBasicScheduleHandler {
 				
 				switch(timeType) {
 				case 0:
-					if (i == lstOldScheTimeZone.size()) break;
+					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleStartClock().v(), lstSaveScheTimeZone.get(i).getScheduleStartClock().v());
 					break;
 				case 1:
-					if (i == lstOldScheTimeZone.size()) break;
+					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleEndClock().v(), lstSaveScheTimeZone.get(i).getScheduleEndClock().v());
 					break;
 				case 2:
-					if (i == lstOldBreakTime.size()) break;
+					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledStartClock().v(), lstSaveBreakTime.get(i).getScheduledStartClock().v());
 					break;
 				case 3:
-					if (i == lstOldBreakTime.size()) break;
+					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledEndClock().v(), lstSaveBreakTime.get(i).getScheduledEndClock().v());
 					break;
 				case 4:
-					if (i == lstOldChildTime.size()) break;
+					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleStart().v(), lstSaveChildTime.get(i).getChildCareScheduleStart().v());
 					break;
 				case 5:
-					if (i == lstOldChildTime.size()) break;
+					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
 					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleEnd().v(), lstSaveChildTime.get(i).getChildCareScheduleEnd().v());
 					break;
 				}
@@ -841,9 +874,9 @@ public class ScheCreExeBasicScheduleHandler {
 				if (itemInfo == null) break;
 				
 				DataCorrectionLog log = new DataCorrectionLog(operationId,
-						new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
+						new UserInfo(userContext.userId(), employeeId, employeeDto.getEmployeeName()),
 						TargetDataType.SCHEDULE, 
-						new TargetDataKey(CalendarKeyType.DATE, GeneralDate.today(), item.scheduleItemName), 	
+						new TargetDataKey(CalendarKeyType.DATE, targetDate, item.scheduleItemName), 	
 						CorrectionAttr.EDIT, 
 						itemInfo,
 						item.getDispOrder());

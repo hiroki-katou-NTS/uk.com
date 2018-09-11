@@ -155,7 +155,7 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
 		List<BsymtAffJobTitleHistItem> data = this.queryProxy()
 				.query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
-				.setParameter("sid", lstSid.toArray().toString())
+				.setParameter("lstSid", lstSid)
 				.setParameter("referDate", referDate).getList();
 		
 		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();

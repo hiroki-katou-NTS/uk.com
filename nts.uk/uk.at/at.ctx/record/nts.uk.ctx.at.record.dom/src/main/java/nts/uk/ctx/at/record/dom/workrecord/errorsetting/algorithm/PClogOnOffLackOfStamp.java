@@ -41,8 +41,8 @@ public class PClogOnOffLackOfStamp {
 				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
 				for (LogOnInfo logOnInfo : logOnInfos) {
 					// ログオフのみ存在している(only has Logoff time)
-					if ((logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() != null && !logOnInfo.getLogOn().isPresent())
-							|| (logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() != null 
+					if ((logOnInfo.getLogOff().get() != null && logOnInfo.getLogOff().isPresent() && !logOnInfo.getLogOn().isPresent())
+							|| (logOnInfo.getLogOff().get() != null && logOnInfo.getLogOff().isPresent()
 								&& logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() == null)) {
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(794);
@@ -51,8 +51,8 @@ public class PClogOnOffLackOfStamp {
 						}
 					}
 					// ログオンのみ存在している(only has Logon time)
-					if ((logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() != null && !logOnInfo.getLogOff().isPresent())
-							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() != null 
+					if ((logOnInfo.getLogOn().get() != null && logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
+							|| (logOnInfo.getLogOn().get() != null && logOnInfo.getLogOn().isPresent() 
 							&& logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() == null)) {
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(795);
@@ -64,7 +64,6 @@ public class PClogOnOffLackOfStamp {
 					if ((!logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
 							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()
 							&& logOnInfo.getLogOn().get() == null && logOnInfo.getLogOff().get() == null)) {
-						attendanceItemIDList = new ArrayList<>();
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(794);
 							attendanceItemIDList.add(795);

@@ -97,7 +97,7 @@ module nts.uk.ui.koExtentions {
 
                     if (option) {
                         _.each(_.keys(option), k => {
-                            _template = _template.replace(`\$\{${k}\}`, option[k]);
+                            _template = _template.replace(`\$\{${k}\}`, _.escape(option[k]));
                         });
 
                         $show.html(_template);
@@ -117,7 +117,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         // show text
                         if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
-                            $show.html($('<div>', { 'class': 'nts-combo-column', text: ko.toJS(accessor.nullText), css: { 'line-height': '27px' } }));
+                            $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '27px' } }));
                         } else {
                             $show.empty();
                         }
