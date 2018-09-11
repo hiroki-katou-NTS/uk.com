@@ -102,7 +102,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
 				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-						TextResource.localize(msgErrorId));
+						TextResource.localize(msgErrorId), em.getEmployeeId());
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -140,7 +140,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		}
 		
 		// アルゴリズム「ログイン記録」を実行する１
-		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
+		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
 		
 		return new CheckChangePassDto(false, null,false);
@@ -219,7 +219,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			return em.get();
 		} else {
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"));
+					TextResource.localize("Msg_301"), null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -239,7 +239,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			return user.get();
 		} else {
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"));
+					TextResource.localize("Msg_301"), null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -255,7 +255,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	private void checkLimitTime(UserImportNew user, String companyId) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_316"));
+					TextResource.localize("Msg_316"), null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
