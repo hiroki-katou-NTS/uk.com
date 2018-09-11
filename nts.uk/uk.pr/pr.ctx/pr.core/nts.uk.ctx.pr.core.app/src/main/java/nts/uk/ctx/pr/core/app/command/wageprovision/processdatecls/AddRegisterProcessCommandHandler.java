@@ -25,6 +25,7 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 	private CurrProcessDateRepository repoCurrProcessDate;
 	@Inject
 	private EmpTiedProYearRepository repoEmpTiedProYear;
+
 	@Override
 	protected void handle(CommandHandlerContext<AddRegisterProcessCommand> context) {
 		AddRegisterProcessCommand addCommand = context.getCommand();
@@ -41,8 +42,16 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 				int giveCurrTreatYear = 0;
 				CurrProcessDate currProcessDate = new CurrProcessDate(cid, processCateNo, giveCurrTreatYear);
 				repoCurrProcessDate.update(currProcessDate);
-				//ドメインモデル「処理年月に紐づく雇用」を取得する
-				Optional<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid, processCateNo);
+				// ドメインモデル「処理年月に紐づく雇用」を取得する
+				Optional<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid,
+						processCateNo);
+				if (dataEmpTiedProYear.isPresent()) {
+					// ドメインモデル「処理年月に紐づく雇用」を更新する
+
+				} else {
+					// ドメインモデル「処理年月に紐づく雇用」を新規追加する
+
+				}
 			}
 		}
 	}
