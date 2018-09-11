@@ -1405,9 +1405,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             getEmployeeLogin(): void {
                 let self = this;
-                if (!self.isValidInput() || self.isInvalidBaseDate()) {
-                    return;
-                }
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchEmployeeByLogin(moment.utc().toDate())
                     .done(data => {
@@ -1679,6 +1676,28 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 self.queryParam.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
+            }
+
+            /**
+             * Search current login employee
+             */
+            public searchCurrentLoginEmployee(): void {
+                let self = this;
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
+                    return;
+                }
+
+                // A：締め状態更新
+                if (self.systemType == ConfigEnumSystemType.EMPLOYMENT && self.showClosure) {
+                    service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
+                        if (self.selectedClosure() != id) {
+                            self.selectedClosure(id);
+                        }
+                        self.getEmployeeLogin();
+                    });
+                } else {
+                    self.getEmployeeLogin();
+                }
             }
             
             /**
@@ -2101,7 +2120,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showOnlyMe -->
                         <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: getEmployeeLogin">
+                                data-bind="click: searchCurrentLoginEmployee">
                                 <i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
                                 <label class="labelBigButton">`+CCG001TextResource.CCG001_35+`</label> 
                             </div>
