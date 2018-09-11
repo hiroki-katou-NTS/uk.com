@@ -216,10 +216,11 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 	private Map<Integer, TimeZone> getTimeZone(List<Integer> startClock, List<Integer> endClock) {
 		Map<Integer, TimeZone> timeList = new HashMap<>();
 		
-		for(int workNo = 1 ; workNo < startClock.size() ; workNo++) {
+		for(int workNo = 1 ; workNo <= startClock.size() ; workNo++) {
 			if(startClock.size() >= workNo
 			&& endClock.size() >= workNo) {
-				timeList.put(1,new TimeZone(new TimeWithDayAttr(startClock.get(workNo).intValue()),new TimeWithDayAttr(endClock.get(workNo).intValue())));
+				timeList.put(workNo,new TimeZone(new TimeWithDayAttr(startClock.get(workNo - 1).intValue()),
+							   		new TimeWithDayAttr(endClock.get(workNo - 1).intValue())));
 			}
 		}
 		return timeList;

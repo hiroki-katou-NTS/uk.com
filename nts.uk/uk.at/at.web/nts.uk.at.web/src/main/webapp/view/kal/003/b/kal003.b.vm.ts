@@ -1635,11 +1635,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.minTimesValue(minVal);
                 self.maxTimesValue(maxVal);
                 //金額 - 2: check amount of money
-                self.minAmountOfMoneyValue(minVal || 0);
-                self.maxAmountOfMoneyValue(maxVal || 0);
+                self.minAmountOfMoneyValue(minVal);
+                self.maxAmountOfMoneyValue(maxVal);
                 //時刻の場合 - 3: time within day
-                self.minTimeWithinDayValue(minVal || 0);
-                self.maxTimeWithinDayValue(maxVal || 0);
+                self.minTimeWithinDayValue(minVal);
+                self.maxTimeWithinDayValue(maxVal);
 
                 //時間 - 0: check time
                 //連続時間 - 4:  check time

@@ -288,7 +288,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				RemainType.SPECIAL,
-				RemainAtr.SINGLE);
+				RemainAtr.COMPOSITE);
 		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
 		lstRecAbsData.add(recAbsData);
 		mngData.setRecAbsData(lstRecAbsData);

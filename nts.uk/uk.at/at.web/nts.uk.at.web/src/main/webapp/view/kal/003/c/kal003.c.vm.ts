@@ -20,12 +20,12 @@ module nts.uk.at.view.kal003.c.viewmodel {
         ]);
 
         enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "等しい（＝）" },
-            { code: 1, name: "等しくない（≠）" },
-            { code: 2, name: "より大きい（＞）" },
+            { code: 0, name: "等しくない（≠）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 2, name: "以下（≦）" },
             { code: 3, name: "以上（≧）" },
             { code: 4, name: "より小さい（＜）" },
-            { code: 5, name: "以下（≦）" },
+            { code: 5, name: "より大きい（＞）" },
             { code: 6, name: "範囲の間（境界値を含まない）（＜＞）" },
             { code: 7, name: "範囲の間（境界値を含む）（≦≧）" },
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
