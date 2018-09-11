@@ -2,12 +2,18 @@ package nts.uk.screen.at.app.dailyperformance.correction.calctime;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.ErrorMessage;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
@@ -18,6 +24,8 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
@@ -39,6 +47,9 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	@Inject
+	private ValidatorDataDailyRes validatorDataDaily;
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits) {
 
@@ -60,6 +71,8 @@ public class DailyCorrectCalcTimeService {
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
 				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
 
+		checkInput28And1(dtoEdit, itemEditCalc);
+		
 		String companyId = AppContexts.user().companyId();
 		
 		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
@@ -146,5 +159,14 @@ public class DailyCorrectCalcTimeService {
 			}
 			return itemEdit;
 		}).collect(Collectors.toList());
+	}
+	
+	private void checkInput28And1(DailyRecordDto dailyEdit, DPItemValue itemEditCalc) {
+		DailyModifyResult updated = DailyModifyResult.builder().employeeId(dailyEdit.getEmployeeId())
+				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtil.toItemValues(dailyEdit)).completed();
+		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(Arrays.asList(itemEditCalc),
+				Arrays.asList(updated));
+		if (!resultError.isEmpty())
+			throw new BusinessException(resultError.get(0).getMessage());
 	}
 }
