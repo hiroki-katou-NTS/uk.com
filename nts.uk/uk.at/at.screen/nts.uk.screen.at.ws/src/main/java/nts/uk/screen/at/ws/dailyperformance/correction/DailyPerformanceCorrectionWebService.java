@@ -235,7 +235,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("calcTime")
 	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
-		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdit());
+		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdits());
 	}
 	
 	@POST
