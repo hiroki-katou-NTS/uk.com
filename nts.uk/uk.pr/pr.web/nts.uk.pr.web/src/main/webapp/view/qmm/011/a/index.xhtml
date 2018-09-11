@@ -35,47 +35,12 @@
 			<!-- A2_1 -->
 			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelA">
 				<!-- A1 -->
-				<div
-					class="sidebar-content-header flex valign-center header-content">
-					<span class="title">#{i18n.getText('KDM001_149')}</span>
 
-					<div style="margin-left: 100px">
-						<div>
-							<!-- A1_1-->
-							<button class="proceed" id="A1_1" tabindex="1"
-								data-bind="click: openNewSubstituteData">#{i18n.getText('qmm011_1')}</button>
-							<!-- A1_2 -->
-							<button id="A1_2" tabindex="2"
-								data-bind="click: openNewSubstituteData, disable: newDataDisable">#{i18n.getText('qmm011_2')}</button>
-							<!-- A1_3-->
-							<button id="A1_3" tabindex="3"
-								data-bind="click: openNewSubstituteData, disable: newDataDisable">#{i18n.getText('qmm011_3')}</button>
-						</div>
-					</div>
-
-				</div>
 				<ui:include src="../b/index.xhtml" />
 			</div>
 			<!-- 残数管理データ登録_代休管理 -->
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
-				<div
-					class="sidebar-content-header flex valign-center header-content">
-					<span class="title">#{i18n.getText('KDM001_149')}</span>
-					<div style="margin-left: 100px">
-						<div>
-							<!-- A1_1-->
-							<button class="proceed" id="A1_1" tabindex="1"
-									data-bind="click: openNewSubstituteData">#{i18n.getText('qmm011_1')}</button>
-							<!-- A1_2 -->
-							<button id="A1_2" tabindex="2"
-									data-bind="click: openNewSubstituteData, disable: newDataDisable">#{i18n.getText('qmm011_2')}</button>
-							<!-- A1_3-->
-							<button id="A1_3" tabindex="3"
-									data-bind="click: openNewSubstituteData, disable: newDataDisable">#{i18n.getText('qmm011_3')}</button>
-						</div>
-					</div>
 
-				</div>
 				<ui:include src="../c/index.xhtml" />
 			</div>
 		</ui:define>

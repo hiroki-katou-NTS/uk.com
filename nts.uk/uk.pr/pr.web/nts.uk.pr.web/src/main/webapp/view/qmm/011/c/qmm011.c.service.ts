@@ -13,7 +13,11 @@ module nts.uk.com.view.qmm011.c {
         }
         export function getOccAccIsPrRate(param :any): JQueryPromise<any> {
             let _path = nts.uk.text.format(path.getOccAccIsPrRate, param);
-            return nts.uk.request.ajax("com", _path);
+            return nts.uk.request.ajax("pr", _path);
+        }
+        export function getOccAccInsurBus(param :any): JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getOccAccIsPrRate, param);
+            return nts.uk.request.ajax("pr", _path);
         }
 
     }

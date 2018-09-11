@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
+import nts.uk.shr.com.context.AppContexts;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -40,6 +42,11 @@ public class WorkersComInsurService {
         return getEmpInsurHisByCid;
 
 
+    }
+
+    public Optional<OccAccInsurBus> getOccAccInsurBus(String companyId){
+        Optional<OccAccInsurBus> occAccInsurBus =  occAccInsurBusRepository.getOccAccInsurBus(companyId);
+        return occAccInsurBus;
     }
 
 

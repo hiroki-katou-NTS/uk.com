@@ -28,7 +28,7 @@ public class QpbmtOccAccInsurBus extends UkJpaEntity implements Serializable
     * 利用する
     */
     @Basic(optional = false)
-    @Column(name = "TO_USE")
+    @Column(name = "USE_ATR")
     public int toUse;
     
     /**

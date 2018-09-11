@@ -7,19 +7,21 @@ module nts.uk.com.view.qmm011.c.viewmodel {
     import block = nts.uk.ui.block;
     import model = qmm011.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
+    import service = nts.uk.com.view.qmm011.c.service;
     export class ScreenModel {
 
         listPerFracClass:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());
-        listEmpInsHis:              KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
-        listEmpInsurPreRate:        KnockoutObservableArray<EmpInsurPreRate> = ko.observableArray([]);
+        listOccAccIsHis:              KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
+        listOccAccIsPrRate:        KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
+        listOccAccInsurBus: KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
         selectedEmpInsHis:          KnockoutObservable<IOccAccIsHis> = ko.observable();
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
         selectedEmpInsHisId:        KnockoutObservable<string> = ko.observable('');
         monthlyCalendar:            KnockoutObservable<string> = ko.observable('2010/1');
-        startDate:                  KnockoutObservable<string> = ko.observable('2010/1');
-        endDate:                    KnockoutObservable<string> = ko.observable('2010/1');
-        lastStartDate:              KnockoutObservable<string> = ko.observable('2010/1');
+        startYearMonth:                  KnockoutObservable<string> = ko.observable('2010/1');
+        endYearMonth:                    KnockoutObservable<string> = ko.observable('2010/1');
+        laststartYearMonth:              KnockoutObservable<string> = ko.observable('2010/1');
         indBdRatio:                 KnockoutObservable<string> = ko.observable('');
         perFracClass:               KnockoutObservable<number> = ko.observable();
         empContrRatio:              KnockoutObservable<string> = ko.observable('');
@@ -30,25 +32,26 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) =>{
                 let self = this;
-                self.selectedEmpInsHis(self.listEmpInsHis()[self.index()]);
-                self.setEmplInsurHis(self.selectedEmpInsHis());
-                self.getEmpInsurPreRate();
+                self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
+                self.setOccAccIsHis(self.selectedEmpInsHis());
+                self.getOccAccIsPrRate();
+                self.getOccAccInsurBus();
             });
         }
 
 
-        // 「初期データ取得処理
+        // 初期データ取得処理
         initScreen(hisId: string){
             let self = this;
             block.invisible();
-            service.getListOccAccIsHis().done((listEmpInsHis: Array<IOccAccIsHis>) =>{
-                if (listEmpInsHis && listEmpInsHis.length > 0) {
-                    self.listEmpInsHis(listEmpInsHis);
+            service.getListOccAccIsHis().done((listOccAccIsHis: Array<IOccAccIsHis>) =>{
+                if (listOccAccIsHis && listOccAccIsHis.length > 0) {
+                    self.listOccAccIsHis(listOccAccIsHis);
                     self.index(self.getIndex(null));
                     if (hisId != null) {
                         self.index(self.getIndex(hisId));
                     }
-                    self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
+                    self.selectedEmpInsHisId(self.listOccAccIsHis()[self.index()].hisId);
                 } else {
                     self.isNewMode(false);
                 }
@@ -56,11 +59,20 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 block.clear();
             });
         }
-        getEmpInsurPreRate(){
+        getOccAccIsPrRate(){
             let self = this;
-            service.getOccAccIsPrRate(self.selectedEmpInsHisId()).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) =>{
-                if(listEmpInsurPreRate && listEmpInsurPreRate.length > 0) {
-                    self.listEmpInsurPreRate(EmpInsurPreRate.fromApp(listEmpInsurPreRate));
+            service.getOccAccIsPrRate(self.selectedEmpInsHisId()).done((listOccAccIsPrRate: Array<IOccAccIsPrRate>) =>{
+                if(listOccAccIsPrRate && listOccAccIsPrRate.length > 0) {
+                    self.listOccAccIsPrRate(OccAccIsPrRate.fromApp(listOccAccIsPrRate));
+                    self.isNewMode(false);
+                }
+            });
+        }
+        getOccAccInsurBus(){
+            let self = this;
+            service.getOccAccInsurBus(self.selectedEmpInsHisId()).done((listOccAccInsurBus: Array<IOccAccInsurBus>) =>{
+                if(listOccAccInsurBus && listOccAccInsurBus.length > 0) {
+                    self.listOccAccInsurBus(OccAccInsurBus.fromApp(listOccAccInsurBus));
                     self.isNewMode(false);
                 }
             });
@@ -69,13 +81,13 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         setIOccAccIsHis(param: IOccAccIsHis){
             let self = this;
             self.hisId(param.hisId);
-            self.startDate(param.startDate);
-            self.endDate(param.endDate);
+            self.startYearMonth(param.startYearMonth);
+            self.endYearMonth(param.startYearMonth);
         }
 
         getIndex(hisId: string){
             let self = this;
-            let temp = _.findLast(self.listEmpInsHis(), function(x) {
+            let temp = _.findLast(self.listOccAccIsHis(), function(x) {
                 return x.hisId == hisId;
             });
             if (temp) {
@@ -87,7 +99,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         openEscreen(){
             let self = this;
             setShared('QMM011_E_PARAMS', {
-                startDate:  self.startDate()
+                startYearMonth:  self.startYearMonth()
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
@@ -104,25 +116,25 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         register(){
             let self = this;
             let data: any = {
-                listEmpInsurPreRate : self.listEmpInsurPreRate();
+                listOccAccIsPrRate : self.listOccAccIsPrRate();
         }
             service.register(data).done(() =>{
             });
         }
 
-        setEmplInsurHis(emplInsurHis: IOccAccIsHis){
+        setOccAccIsHis(emplInsurHis: IOccAccIsHis){
             let self = this
             self.hisId(emplInsurHis.hisId);
-            self.startDate(self.convertMonthYearToString(emplInsurHis.startDate));
-            self.endDate(self.convertMonthYearToString(emplInsurHis.endDate));
+            self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
+            self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
         }
 
         openFscreen(){
             let self = this;
             setShared('QMM011_F_PARAMS', {
-                startDate:  self.listEmpInsHis(),
-                endDate: self.startDate(),
-                lastStartDate: self.lastStartDate()
+                startYearMonth:  self.listOccAccIsHis(),
+                endYearMonth: self.startYearMonth(),
+                laststartYearMonth: self.laststartYearMonth()
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_B_Param');
@@ -145,56 +157,105 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         }
     }
 
+
     class IOccAccIsHis{
         hisId: string
-        startDate: string;
-        endDate: string;
+        startYearMonth: string;
+        endYearMonth: string;
         between: string;
     }
 
     class OccAccIsHis{
         hisId: string
-        startDate: string;
-        endDate: string;
+        startYearMonth: string;
+        endYearMonth: string;
         between: string;
         constructor(param: IOccAccIsHis) {
-            this.hisId(param.hisId || '');
-            this.startDate(param.startDate || '');
-            this.endDate(param.endDate || '');
-            this.between('~');
+            this.hisId =param.hisId ;
+            this.startYearMonth =param.startYearMonth ;
+            this.endYearMonth =param.endYearMonth;
+            this.between ='~';
+
+        }
+
+    }
+    /*労災保険事業*/
+    class IOccAccInsurBus{
+        /**
+         * 会社ID
+         */
+        cid:string;
+
+        /**
+         * 労災保険事業No
+         */
+        occAccInsurBusNo:number;
+
+        /**
+         * 利用する
+         */
+        toUse:number;
+
+        /**
+         * 名称
+         */
+        name:string;
+    }
+
+    class OccAccInsurBus{
+        cid:string;
+        occAccInsurBusNo:number;
+        toUse:number;
+        name:string;
+        constructor() {
+
+
+        }
+        static fromApp(app) {
+            let listEmp = [];
+            _.each(app, (item) => {
+                let dto: OccAccInsurBus = new OccAccInsurBus();
+                dto.cid = item.cid;
+                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.toUse = item.toUse;
+                dto.name = item.name;
+
+                listEmp.push(dto);
+            })
+            return listEmp;
         }
 
     }
 
-    class IEmpInsurPreRate{
+    class IOccAccIsPrRate{
         hisId: string;
-        empPreRateId: string;
-        indBdRatio: number;
-        empContrRatio: string;
-        perFracClass: number;
-        busiOwFracClass: number;
+        occAccInsurBusNo: number;
+        fracClass: number;
+        empConRatio: string;
     }
 
-    class EmpInsurPreRate {
+    class OccAccIsPrRate {
+        /*履歴ID*/
         hisId: string;
-        empPreRateId: string;
-        indBdRatio: number;
-        empContrRatio: string;
-        perFracClass: KnockoutObservable<number>;
-        busiOwFracClass: number;
+        /*労災保険事業No*/
+        occAccInsurBusNo: number;
+        /*端数区分*/
+        fracClass: number;
+        /*事業主負担率*/
+        empConRatio: string;
         constructor() {
+
         }
 
         static fromApp(app) {
             let listEmp = [];
             _.each(app, (item) => {
-                let dto: EmpInsurPreRate = new EmpInsurPreRate();
+                let dto: OccAccIsPrRate = new OccAccIsPrRate();
                 dto.hisId = item.hisId;
-                dto.empPreRateId = item.empPreRateId;
-                dto.indBdRatio = ko.observable(item.indBdRatio);
-                dto.empContrRatio = ko.observable(item.empContrRatio);
-                dto.perFracClass = ko.observable(item.perFracClass);
-                dto.busiOwFracClass = ko.observable(item.busiOwFracClass);
+                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.fracClass = ko.observable(item.fracClass);
+                dto.empConRatio = ko.observable(item.empConRatio);
+
                 listEmp.push(dto);
             })
             return listEmp;

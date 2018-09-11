@@ -25,7 +25,7 @@ public class QpbmtOccAccIsPrRatePk implements Serializable
      * 労災保険事業No
      */
     @Basic(optional = false)
-    @Column(name = "OCC_ACC_INSUR_BUS_NO")
+    @Column(name = "OCC_ACC_IS_BUS_NO")
     public int occAccInsurBusNo;
     /**
     * 履歴ID
