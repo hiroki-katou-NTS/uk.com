@@ -71,7 +71,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		dto.setAnyItem(anyItemFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setDayOff(dayOffFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setAbsenceLeave(absenceLeaveFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setSpecialHoliday(specialHolidayFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setSpecialHoliday(Arrays.asList(specialHolidayFinder.find(employeeId, yearMonth, closureId, closureDate)));
 		return dto;
 	}
 
@@ -114,7 +114,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 			dto.setAnyItem(filterItem(any, a));
 			dto.setDayOff(filterItem(dayOff, a));
 			dto.setAbsenceLeave(filterItem(absenceLeave, a));
-			dto.setSpecialHoliday(filterItem(specialHoliday, a));
+			dto.setSpecialHoliday(filterItems(specialHoliday, a));
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -125,5 +125,13 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				&& at.employeeId().equals(a.employeeId()) 
 				&& at.yearMonth().equals(a.yearMonth()) 
 				&& at.getClosureID() == a.getClosureID()).findFirst().orElse(null);
+	}
+	
+	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> List<T> filterItems(List<T> att, U a) {
+		return att.stream().filter(at -> 
+				at.getClosureDate().equals(a.getClosureDate()) 
+				&& at.employeeId().equals(a.employeeId()) 
+				&& at.yearMonth().equals(a.yearMonth()) 
+				&& at.getClosureID() == a.getClosureID()).collect(Collectors.toList());
 	}
 }

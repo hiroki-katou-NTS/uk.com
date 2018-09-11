@@ -554,7 +554,7 @@ public class DailyPerformanceCorrectionProcessor {
 				if (showLock == null || showLock) {
 					lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
 					lockHist = lockHist(dpLock.getLockHist(), data);
-					lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
 					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist,
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
@@ -1192,8 +1192,8 @@ public class DailyPerformanceCorrectionProcessor {
 								// -> {
 								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay()
-												: "",
+										value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay())
+												: value.getErrorAlarmMessage(),
 										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
 										errorSetting.getMessageColor(),
 										appMapDateSid
@@ -1206,7 +1206,7 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : ""));
+									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
 						}
 					}
 				}
