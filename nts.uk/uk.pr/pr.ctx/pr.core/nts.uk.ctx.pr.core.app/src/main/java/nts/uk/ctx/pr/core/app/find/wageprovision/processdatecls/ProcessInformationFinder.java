@@ -13,18 +13,19 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
-* 処理区分基本情報
-*/
-public class ProcessInformationFinder
-{
+ * 処理区分基本情報
+ */
+public class ProcessInformationFinder {
 
-    @Inject
-    private ProcessInformationRepository finder;
+	@Inject
+	private ProcessInformationRepository finder;
 
-    public List<ProcessInformationDto> getAllProcessInformation(){
-        return finder.getAllProcessInformation().stream().map(item -> ProcessInformationDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
+	public List<ProcessInformationDto> getAllProcessInformation() {
+		return finder.getAllProcessInformation().stream().map(item -> ProcessInformationDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	
 
 
     public ProcessInformationDto getProcessInformation(int processCateNo){
