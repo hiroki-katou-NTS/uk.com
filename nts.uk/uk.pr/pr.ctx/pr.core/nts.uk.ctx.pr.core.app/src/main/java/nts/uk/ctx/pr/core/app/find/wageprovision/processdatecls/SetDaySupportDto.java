@@ -76,7 +76,7 @@ public class SetDaySupportDto
     
     public static SetDaySupportDto fromDomain(SetDaySupport domain)
     {
-        return new SetDaySupportDto(domain.getCid(), domain.getProcessCateNo(), domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(), domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(), domain.getSocialInsurdCollecMonth(), domain.getProcessDate(), domain.getIncomeTaxDate(), domain.getNumberWorkDay());
+        return new SetDaySupportDto(domain.getCid(), domain.getProcessCateNo(), domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(), domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(), domain.getSocialInsurdCollecMonth(), domain.getProcessDate().v(), domain.getIncomeTaxDate(), domain.getNumberWorkDay());
     }
     
 }

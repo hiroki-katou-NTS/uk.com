@@ -41,7 +41,7 @@ public class InitialDisplayRegisterProcessingFinder {
 		SetDaySupportDto setDaySupportDto = optSetDaySupport.map(x -> new SetDaySupportDto(x.getCid(),
 				x.getProcessCateNo(), x.getCloseDateTime(), x.getEmpInsurdStanDate(), x.getClosureDateAccounting(),
 				x.getPaymentDate(), x.getEmpExtraRefeDate(), x.getSocialInsurdStanDate(),
-				x.getSocialInsurdCollecMonth(), x.getProcessDate(), x.getIncomeTaxDate(), x.getNumberWorkDay()))
+				x.getSocialInsurdCollecMonth(), x.getProcessDate().v(), x.getIncomeTaxDate(), x.getNumberWorkDay()))
 				.orElse(null);
 		CurrProcessDateDto currProcessDateDto = optCurrProcessDate
 				.map(x -> new CurrProcessDateDto(x.getCid(), x.getProcessCateNo(), x.getGiveCurrTreatYear()))

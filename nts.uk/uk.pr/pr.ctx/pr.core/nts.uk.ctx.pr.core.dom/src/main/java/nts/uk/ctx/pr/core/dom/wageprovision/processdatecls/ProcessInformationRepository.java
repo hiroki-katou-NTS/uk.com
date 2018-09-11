@@ -12,6 +12,8 @@ public interface ProcessInformationRepository
     List<ProcessInformation> getAllProcessInformation();
 
     Optional<ProcessInformation> getProcessInformationById(String cid, int processCateNo);
+    
+    Optional<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory);
 
     void add(ProcessInformation domain);
 
