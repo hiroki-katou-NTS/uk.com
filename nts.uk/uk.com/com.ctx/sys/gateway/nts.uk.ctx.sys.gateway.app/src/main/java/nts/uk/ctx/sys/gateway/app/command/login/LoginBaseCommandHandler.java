@@ -646,11 +646,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_281"));
+					TextResource.localize("Msg_1419"));
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
-			throw new BusinessException("Msg_281");
+			throw new BusinessException("Msg_1419");
 		}
 
 		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();

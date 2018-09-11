@@ -2,11 +2,17 @@ package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -25,6 +31,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD, 

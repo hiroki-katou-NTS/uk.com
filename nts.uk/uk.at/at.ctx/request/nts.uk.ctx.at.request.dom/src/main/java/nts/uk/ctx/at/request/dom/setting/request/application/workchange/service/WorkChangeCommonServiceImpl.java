@@ -72,7 +72,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
+		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting,ApplicationType.WORK_CHANGE_APPLICATION.value);
 		wcBasicData.setWorkingData(workingData);
 		
 		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));

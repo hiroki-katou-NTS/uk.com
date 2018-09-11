@@ -41,7 +41,7 @@ public class MonthModifyCommandFacade {
 		this.commandHandler.handleUpdate(createMultiCommand(query));
 	}
 
-	private MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
+	public MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
 		MonthlyRecordWorkDto oldValues = finder.find(query.getEmployeeId(), new YearMonth(query.getYearMonth()),
 				ClosureId.valueOf(query.getClosureId()),
 				new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth()));

@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.Data;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
@@ -25,6 +31,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
@@ -39,8 +46,8 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut().orElse(null)),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack().orElse(null)),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
 							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
 							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
 							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));

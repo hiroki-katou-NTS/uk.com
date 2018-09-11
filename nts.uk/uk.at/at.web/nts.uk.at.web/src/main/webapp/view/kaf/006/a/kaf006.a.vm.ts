@@ -126,6 +126,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         constructor(transferData :any) {
 
             let self = this;
+            $(document).ajaxStart(function() {
+                nts.uk.ui.block.invisible();
+            }).ajaxStop(function() {
+                nts.uk.ui.block.clear();
+            });
             if(transferData != null){
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
@@ -215,11 +220,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                     if(data.numberRemain.subVacaRemain != null){//振休残数
                         self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.numberSubVaca(data.numberRemain.subVacaRemain);
                         self.subVacaDis(true);
                     }
                     if(data.numberRemain.stockRemain != null){//ストック休暇残数
                         self.stockRemain(data.numberRemain.stockRemain + '日');
-                        self.numberSubVaca(data.numberRemain.stockRemain);
                         self.stockDis(true);
                     }
                 }
@@ -299,6 +304,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.findChangeDisplayHalfDay(value);
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
+                    if(nts.uk.util.isNullOrUndefined(value)){
+                        return;    
+                    }
                     self.findChangeWorkType(value);
                 });
                 self.displayWorkTimeName.subscribe((value) => {
@@ -613,7 +621,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         registerClick() {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
-            $("#workTypes").trigger('validate');
             if (self.displayEndDateFlg()) {
                 $(".ntsStartDatePicker").trigger("validate");
                 $(".ntsEndDatePicker").trigger("validate");
@@ -625,6 +632,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if(self.holidayTypeCode() == 3 && self.fix()){
                 $("#relaCD-combo").trigger("validate");
             }
+            $("#hdType").trigger('validate');
+            $("#workTypes").trigger('validate');
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();

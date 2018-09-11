@@ -194,12 +194,25 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         return;
                     })
                     self.listItems.valueHasMutated();
-                    $("#selectionItemName").focus();
-                });
-                self.listItems.valueHasMutated();
-                self.perInfoSelectionItem().selectionItemId(selectId);
-                $("#selectionItemName").focus();
+                    self.perInfoSelectionItem().selectionItemId(selectId);
 
+                    //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
+                    setTimeout(() => {
+                        confirm({ messageId: "Msg_456" }).ifYes(() => {
+                            let params = {
+                                isDialog: true,
+                                selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                            }
+                            setShared('CPS017_PARAMS', params);
+
+                            modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
+                            });
+
+                        }).then(() => {
+                            $("#selectionItemName").focus();
+                        })
+                    }, 1);
+                });
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
             }).always(()=>block.clear());

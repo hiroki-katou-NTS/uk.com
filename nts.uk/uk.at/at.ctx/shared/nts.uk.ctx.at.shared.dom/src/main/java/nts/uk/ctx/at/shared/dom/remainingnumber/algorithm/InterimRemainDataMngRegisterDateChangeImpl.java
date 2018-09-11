@@ -40,6 +40,11 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, lstDate);
 		//「残数作成元の申請を取得する」
 		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, lstDate);
+		if(lstRecordData.isEmpty()
+				&& lstAppData.isEmpty()
+				&& lstScheData.isEmpty()) {
+			return;
+		}
 		//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);

@@ -270,12 +270,12 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	@Override
 	public ApprovalPersonInstance getApproverAndAgent(String approverID, DatePeriod period, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
-		ApprovalPersonInstance approvalPersonInstance = new ApprovalPersonInstance();
+		ApprovalPersonInstance approvalPersonInstance = new ApprovalPersonInstance(new ArrayList<>(), new ArrayList<>());
 		// 承認者と期間から承認ルート中間データを取得する
 		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByEmpLstPeriod(Arrays.asList(approverID), period, rootType);
 		// 取得した「承認ルート中間データ」をOUTPUTに追加する
 		appRootInstanceLst.forEach(appRootInstance -> {
-			ApprovalRouteDetails approvalRouteDetails = new ApprovalRouteDetails(appRootInstance, approverID, null, null, null);
+			ApprovalRouteDetails approvalRouteDetails = new ApprovalRouteDetails(appRootInstance, approverID, Optional.empty(), Optional.empty(), Optional.empty());
 			approvalPersonInstance.getApproverRoute().add(approvalRouteDetails);
 		});
 		// ドメインモデル「代行承認」を取得する
@@ -306,7 +306,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
 		ApprovalPersonInstance approvalPersonInstance = this.getApproverAndAgent(approverID, period, rootType);
 		// 取得した「承認者になる中間データ」．承認者としての承認ルートと代行者としての承認ルートの件数をチェックする
-		if(CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute()) || 
+		if(CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute()) && 
 				CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
 			return false;
 		}

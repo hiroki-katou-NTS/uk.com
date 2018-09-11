@@ -260,3 +260,6 @@
 .has-state.disabled .ccg-lbl-vertical, .has-state.disabled label {
 	cursor: default;
 }
+#ccgcomponent > div:first-child {
+    min-width: 475px;
+}
