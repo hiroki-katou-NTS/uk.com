@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -77,6 +78,8 @@ public interface PersonCostCalculationRepository {
 	 * @return
 	 */
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
+	
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, DatePeriod date);
 	
 	public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
 }

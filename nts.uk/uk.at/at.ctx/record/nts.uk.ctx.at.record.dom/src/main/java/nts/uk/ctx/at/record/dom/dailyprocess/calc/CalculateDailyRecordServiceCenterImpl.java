@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -97,6 +98,10 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private ZeroTimeRepository zeroTimeRepository;
 	
+	//割増計算用に追加
+	@Inject
+	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
+	
 	@Override
 	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
@@ -172,6 +177,10 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		});
 		
 		companyCommonSetting.setShareContainer(shareContainer);
+		
+		companyCommonSetting.setUpperControl(specificWorkRuleRepository.findUpperLimitWkHourByCid(comanyId));
+		
+		companyCommonSetting.setPersonnelCostSettings(personnelCostSettingAdapter.findAll(comanyId, getDateSpan(integrationOfDaily)));
 		
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		if (!calcOption.isSchedule()) {
