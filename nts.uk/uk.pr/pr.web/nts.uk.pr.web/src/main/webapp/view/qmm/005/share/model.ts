@@ -471,11 +471,56 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
 
+    export class SetPaymentDateTransfer {
+        processingYear: KnockoutObservable<number>;
+        listSettingPayment: KnockoutObservableArray<PaymentDateItem>;
 
+        constructor(processingYear: KnockoutObservable<number>, listSettingPayment: KnockoutObservableArray<PaymentDateItem>) {
+            this.processingYear = ko.observable(processingYear);
+            this.listSettingPayment = listSettingPayment;
+        }
+    }
 
+    interface IPaymentDateItem {
+        paymentDate: string;
+        employeeExtractionReferenceDate: string;
+        socialInsuranceCollectionMonth: string;
+        specificationPrintDate: string;
+        numberOfWorkingDays: number;
+        targetMonth: string;
+        incomeTaxReferenceDate: string;
+        accountingClosureDate: string;
+        socialInsuranceStandardDate: string;
+        employmentInsuranceStandardDate: string;
+        timeClosingDate: string;
+    }
 
+    export class PaymentDateItem {
+        paymentDate: KnockoutObservable<Date>;
+        employeeExtractionReferenceDate: KnockoutObservable<string>;
+        socialInsuranceCollectionMonth: KnockoutObservable<string>;
+        specificationPrintDate: KnockoutObservable<string>;
+        numberOfWorkingDays: KnockoutObservable<number>;
+        targetMonth: KnockoutObservable<string>;
+        incomeTaxReferenceDate: KnockoutObservable<string>;
+        accountingClosureDate: KnockoutObservable<string>;
+        socialInsuranceStandardDate: KnockoutObservable<string>;
+        employmentInsuranceStandardDate: KnockoutObservable<string>;
+        timeClosingDate: KnockoutObservable<string>;
 
-
-
+        constructor(params: IPaymentDateItem) {
+            this.paymentDate = ko.observable(params.paymentDate);
+            this.employeeExtractionReferenceDate = ko.observable(params.employeeExtractionReferenceDate);
+            this.socialInsuranceCollectionMonth = ko.observable(params.socialInsuranceCollectionMonth);
+            this.specificationPrintDate = ko.observable(params.specificationPrintDate);
+            this.numberOfWorkingDays = ko.observable(params.numberOfWorkingDays);
+            this.targetMonth = ko.observable(params.targetMonth);
+            this.incomeTaxReferenceDate = ko.observable(params.incomeTaxReferenceDate);
+            this.accountingClosureDate = ko.observable(params.accountingClosureDate);
+            this.socialInsuranceStandardDate = ko.observable(params.socialInsuranceStandardDate);
+            this.employmentInsuranceStandardDate = ko.observable(params.employmentInsuranceStandardDate);
+            this.timeClosingDate = ko.observable(params.timeClosingDate);
+        }
+    }
 
 }

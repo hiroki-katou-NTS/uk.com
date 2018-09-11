@@ -29,6 +29,13 @@ th{
 	!important;
 }
 
-body{
-	width: 1550px;
+.margin-top-12 {
+	margin-top: 12px;
+}
+.margin-top-6 {
+	margin-top: 6px;
+}
+
+.number-editor {
+    width: 35px;
 }
