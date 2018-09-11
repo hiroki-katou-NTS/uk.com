@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
@@ -25,6 +26,9 @@ public class PClogOnOffLackOfStamp {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
 
 	public EmployeeDailyPerError pClogOnOffLackOfStamp(String companyId, String employeeId, GeneralDate processingDate,
 			PCLogOnInfoOfDaily pCLogOnInfoOfDaily, WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
@@ -39,7 +43,7 @@ public class PClogOnOffLackOfStamp {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				
 				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
-				for (LogOnInfo logOnInfo : logOnInfos) {
+				this.managedParallelWithContext.forEach (logOnInfos,logOnInfo -> {
 					// ログオフのみ存在している(only has Logoff time)
 					if ((logOnInfo.getLogOff().get() != null && logOnInfo.getLogOff().isPresent() && !logOnInfo.getLogOn().isPresent())
 							|| (logOnInfo.getLogOff().get() != null && logOnInfo.getLogOff().isPresent()
@@ -72,7 +76,7 @@ public class PClogOnOffLackOfStamp {
 							attendanceItemIDList.add(797);
 						}
 					}
-				}
+				});
 
 				if (!attendanceItemIDList.isEmpty()){
 					employeeDailyPerError = new EmployeeDailyPerError(companyId,
