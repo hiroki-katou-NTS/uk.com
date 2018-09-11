@@ -349,7 +349,10 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 16
 					//RequestList201
 					KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, systemDate);
-					boolean showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) ;
+					boolean showAfter = false;
+					if(KTGRsvLeaveInfoImport.getGrantDay() != null) {
+						showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && KTGRsvLeaveInfoImport.getAftRemainDay() > 0.0 ;
+					}
 					dto.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getBefRemainDay(), KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/

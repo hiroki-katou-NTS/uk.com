@@ -39,6 +39,9 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	private static final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.hisId = :hisId";
 	
+	private static final String GET_BY_LIST_HID_SID = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid IN :sids and h.hisId IN :hisIds";
+	
 	private static final String GET_BY_EMPIDS_PERIOD = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid IN :lstSid and h.strDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.strDate";
@@ -197,6 +200,29 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		return Optional.empty();
 	}
 	
+	@Override
+	public List<AffJobTitleHistory> getListByListHidSid(List<String> hids, List<String> sids) {
+		if(hids.isEmpty() || sids.isEmpty())
+			return Collections.emptyList();
+		
+		List<BsymtAffJobTitleHist> optHist = this.queryProxy()
+				.query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
+				.setParameter("hisIds", hids).setParameter("sids", sids).getList();
+		List<AffJobTitleHistory> listAffJobTitleHistory = new ArrayList<>();
+		for(String sid :sids ) {
+			List<BsymtAffJobTitleHist> listBsymtAffJobTitleHist = new ArrayList<>();
+			for(BsymtAffJobTitleHist bsymtAffJobTitleHist :optHist ) {
+				if(sid.equals(bsymtAffJobTitleHist.getSid())) {
+					listBsymtAffJobTitleHist.add(bsymtAffJobTitleHist);
+				}
+			}
+			if(!listBsymtAffJobTitleHist.isEmpty()) {
+				listAffJobTitleHistory.add(toAffJobTitleHist(listBsymtAffJobTitleHist));
+			}
+		}
+		return listAffJobTitleHistory;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -273,5 +299,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 						new DatePeriod(ent.strDate, ent.endDate)))
 				.collect(Collectors.toList());
 	}
+
+
 
 }

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
@@ -58,7 +59,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	@Inject
 	private ExecutionLogRepository executionLogRepository;
-	
+	@Inject
+	private AppReflectManagerFromRecordImport appReflectService;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
@@ -75,6 +77,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("reflectApprovalStatus", ExecutionStatus.INCOMPLETE.nameId);
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -131,6 +134,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 				this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			} else {
 				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+				asyncContext.finishedAsCancelled();
 			}
 		}
 		
@@ -157,12 +161,23 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			finalStatus = this.monthlyAggregationService.manager(asyncContext, companyId, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, monthlyAggregationLog);
 		}
+		//承認反映
+		if(finalStatus == ProcessState.SUCCESS
+				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
+			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
+		}
+		
 		//***** ↑
 		
 		// ドメインモデル「就業計算と修正実行ログ」を更新する
 		// 就業計算と集計実行ログ．実行状況　←　実行中止
 		if (finalStatus == ProcessState.INTERRUPTION) {
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
+			asyncContext.finishedAsCancelled();
 		} else {
 			// 完了処理 (Xử lý hoàn thành)
 			List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
@@ -172,7 +187,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			} else {
 				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.DONE_WITH_ERROR.value);
 			}
-		}		
+		}	
+		
+		
 	}
 	
 	private void updateExecutionState(TaskDataSetter dataSetter, String empCalAndSumExecLogID){

@@ -114,7 +114,7 @@ public class SendMailInfoCommandHandler extends CommandHandlerWithResult<SendMai
 		
 		// get URL from CCG033
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis(programId, screenId, timePeriod, numberPeriod, employeeId,
-				command.getContractCode(), command.getLoginId(), employeeCode, new ArrayList<>());
+				command.getContractCode(), command.getLoginId(), employeeCode, 1, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") +" \n" + url);
 
