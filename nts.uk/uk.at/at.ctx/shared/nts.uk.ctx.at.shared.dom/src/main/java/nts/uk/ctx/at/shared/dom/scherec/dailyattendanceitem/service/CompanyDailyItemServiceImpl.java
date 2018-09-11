@@ -32,6 +32,8 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 	@Override
 	public List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
+		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
+		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
 		List<Integer> dailyAttendanceItemIds = new ArrayList<>();
 		// パラメータ「ロールID」をチェックする (Check the parameter "Roll ID")
 		if (authorityId.isPresent()) {

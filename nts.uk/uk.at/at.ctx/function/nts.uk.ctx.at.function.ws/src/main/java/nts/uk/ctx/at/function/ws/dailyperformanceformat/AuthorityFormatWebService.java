@@ -79,7 +79,7 @@ public class AuthorityFormatWebService extends WebService {
 	@POST
 	@Path("getAuthorityDailyFormat/{dailyPerformanceFormatCode}/{sheetNo}")
 	public DailyAttendanceItemAuthorityDto getDetail(@PathParam("dailyPerformanceFormatCode") String dailyPerformanceFormatCode,@PathParam("sheetNo") BigDecimal sheetNo) {
-		return this.dailyPerformanceAuthorityFinder.getTimeItems(dailyPerformanceFormatCode,sheetNo);
+		return this.dailyPerformanceAuthorityFinder.findAll(dailyPerformanceFormatCode,sheetNo);
 	}
 	
 	@POST

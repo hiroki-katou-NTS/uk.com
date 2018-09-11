@@ -32,6 +32,8 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 	@Override
 	public List<DailyAttendanceItemNameAdapterDto> getMonthlyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
+		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
+		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
 		List<Integer> monthlyAttendanceItemIds = new ArrayList<>();
 		// パラメータ「ロールID」をチェックする (Check the parameter "Roll ID")
 		if (authorityId.isPresent()) {
