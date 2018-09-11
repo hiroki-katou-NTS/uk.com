@@ -28,20 +28,12 @@ module nts.uk.com.view.cmm011.a {
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
             isSelectedWpkId: KnockoutObservable<boolean>;
-
-            draggedList: Array<TreeWorkplace>;
-            justDraggedItem: KnockoutObservable<TreeWorkplace>;
-            justParentDraggedItem: KnockoutObservable<TreeWorkplace>;
-
+            listWorkplaceSave: Array<TreeWorkplace>;
             constructor() {
                 let self = this;
 
                 self.isNewMode = ko.observable(false);
-
-                self.draggedList = [];
-                self.justDraggedItem = ko.observable(null);
-                self.justParentDraggedItem = ko.observable(null);
-
+                self.listWorkplaceSave = [];
                 self.wkpConfigHistId = null;
                 self.strDWorkplace = ko.observable(null);
                 self.endDWorkplace = ko.observable(nts.uk.resource.getText("CMM011_27"));
@@ -53,7 +45,6 @@ module nts.uk.com.view.cmm011.a {
                 self.workplaceName = ko.observable('');
                 self.wkpDisplayName = ko.observable(null);
                 self.wkpFullName = ko.observable(null);
-
                 self.creationType = null;
 
                 self.isWkpHistoryLatest = ko.computed(function() {
@@ -64,17 +55,21 @@ module nts.uk.com.view.cmm011.a {
                 //code anh Dan
                 $(document).delegate("#single-tree-grid", "igtreedragstop", function(evt, ui) {
                     let newDataSource = $("#single-tree-grid").igTree('option', 'dataSource').__ds;
-                    self.treeWorkplace().lstWorkplace(newDataSource);
+                    //set hierarchyCd for root
                     console.log(newDataSource);
-                    self.setNewHierarchyCD(self.justDraggedItem(), self.treeWorkplace().lstWorkplace());
-
+                    self.listWorkplaceSave = [];
+                    let rootParentCd: string = null;
+                    for (let i = 0; i < newDataSource.length; i++) {
+                        self.setNewHierarchyCd(newDataSource[i], rootParentCd, i + 1);
+                        self.listWorkplaceSave.push(newDataSource[i]);
+                        self.setHierarchyCdChild(newDataSource[i]);
+                    }
+                    console.log("after set cd");
+                    console.log(newDataSource);
+                    console.log("list save");
+                    console.log(self.listWorkplaceSave);
+                    self.treeWorkplace().lstWorkplace(newDataSource);
                 });
-                $(document).delegate("#single-tree-grid", "igtreedragstart", function(evt, ui) {
-                    //                    self.draggedList.push(ui.data);
-                    self.justDraggedItem(ui.data);
-                });
-
-
                 self.isSelectedWpkId = ko.computed(() => {
                     if (!nts.uk.text.isNullOrEmpty(self.treeWorkplace().selectedWpkId())) {
                         return true;
@@ -87,10 +82,8 @@ module nts.uk.com.view.cmm011.a {
                     // check case unselect item in grid
                     return !self.isNewMode();
                 })
-
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
-
                     // check null or empty
                     if (nts.uk.text.isNullOrEmpty(newValue)) {
                         self.openWkpConfigDialog();
@@ -110,8 +103,6 @@ module nts.uk.com.view.cmm011.a {
                     });
                 });
                 self.workplaceName.subscribe((newValue: string) => {
-
-
                     // set workplace name, workplace full name
                     let wkpFullName: string = self.treeWorkplace().findPathNameByWkpIdSelected();
                     if (wkpFullName) {
@@ -155,13 +146,10 @@ module nts.uk.com.view.cmm011.a {
             private findAllHistory(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
                 nts.uk.ui.block.grayout();
-
                 // find list workplace config history
                 service.findLstWkpConfigHistory().done(function(data: Array<IHistory>) {
                     nts.uk.ui.block.clear();
-
                     // set start date, end date
                     if (data && data.length > 0) {
                         self.isWkpConfigHistLatest(true);
@@ -186,12 +174,9 @@ module nts.uk.com.view.cmm011.a {
              */
             public removeWorkplace() {
                 let self = this;
-
                 // show message confirm
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
-
                     let parentWorkplaceId: string = self.getParentWorkplaceId(self.treeWorkplace().selectedWpkId());
-
                     // to JsObject
                     let command: any = {};
                     command.historyIdWkpConfigInfo = self.wkpConfigHistId;
@@ -209,15 +194,9 @@ module nts.uk.com.view.cmm011.a {
 
                             // find list workplace
                             self.treeWorkplace().findLstWorkplace(self.strDWorkplace(), true).done(() => {
-
                                 // set choose item first of list
                                 if (self.treeWorkplace().lstWorkplace().length > 0) {
                                     self.treeWorkplace().selectFirst();
-                                    //                                    if (nts.uk.util.isNullOrEmpty(parentWorkplaceId)) {
-                                    //                                        self.treeWorkplace().selectFirst();
-                                    //                                    } else {
-                                    //                                        self.treeWorkplace().selectedWpkId(parentWorkplaceId);
-                                    //                                    }                                 
                                 }
                             });
                         });
@@ -227,93 +206,40 @@ module nts.uk.com.view.cmm011.a {
                     });
                 });
             }
-
-            public setNewHierarchyCD(dragItem: TreeWorkplace, dataSources: Array<TreeWorkplace>) {
+            //set hierarchyCd for treeWorkplace
+            public setHierarchyCdChild(parentWorkplace: TreeWorkplace): void {
                 var self = this;
-                for (var i = 0; i < dataSources.length; i++) {
-                    //find by hierarchyCode
-                    if (dataSources[i].hierarchyCode == dragItem.hierarchyCode) {
-                        alert('tim thay no roi');
-                        console.log('anh em ba con dong ho cua no');
-                        console.log(dataSources);
-                        var currentParentHierarchyCd: string = !_.isEmpty(self.justParentDraggedItem()) ? self.justParentDraggedItem().hierarchyCode : null;
-                        alert('parent hierarchyCD: ' + currentParentHierarchyCd);
-                        var indexAHeadWorkplace = i - 1;
-                        var aHeadWorkplace = (indexAHeadWorkplace >= 0) ? dataSources[indexAHeadWorkplace] : null;
-                        // thay doi hierarchyCode trong cay, check xem thang parent co nam trong list draggedList ko, neu co thi dung thang draggedList 
-                        if (!_.isEmpty(self.draggedList)) {
-                            //truong hop aheadworkplace vua duoc move vao thang cha, nhung chua duoc cap nhat hierarchyCD
-                            var newAHeadWorkplace = self.draggedList.filter(e => e.workplaceId == aHeadWorkplace.workplaceId)[0];
-                            aHeadWorkplace = !_.isEmpty(newAHeadWorkplace) ? newAHeadWorkplace : aHeadWorkplace;
-                            let newParentDragg = self.draggedList.filter(e => e.workplaceId == self.justParentDraggedItem().workplaceId)[0];
-                            var currentParentHierarchyCd = (!_.isEmpty(newParentDragg)) ? newParentDragg.hierarchyCode : currentParentHierarchyCd;
-                        }
-                        //set new hierarchyCd and add to list update
-                        self.generateHierarchyCdDraggItem(aHeadWorkplace, dragItem, currentParentHierarchyCd);
-                        _.remove(self.draggedList, function(e) {
-                            return e.workplaceId == dragItem.workplaceId;
-                        });
-                        self.draggedList.push(dragItem);
-                        //check duplicate hierarchyCd
-                        var indexNextItem = i + 1;
-                        if (indexNextItem < dataSources.length - 1) {
-                            if (self.compareHierarchyCd(dragItem.hierarchyCode, dataSources[i + 1].hierarchyCode)) {
-                                //will increase 1 if new hierarchyCode duplicate with below item
-                                var sliceArray = _.slice(dataSources, indexNextItem, dataSources.length)
-                                for (let k = 0; k < sliceArray.length; k++) {
-                                    self.generateHierarchyCdDraggItem(dragItem, sliceArray[k], currentParentHierarchyCd);
-                                    _.remove(self.draggedList, function(e) {
-                                        return e.workplaceId == sliceArray[k].workplaceId;
-                                    });
-                                    self.draggedList.push(sliceArray[k]);
-                                    dragItem = (k + 1 < sliceArray.length - 1) ? sliceArray[k + 1] : dragItem;
-                                }
-                            }
-                        }
-                        console.log(self.draggedList);
-                        return;
-                    } else {
-                        if (!_.isEmpty(dataSources[i].childs)) {
-                            self.justParentDraggedItem(dataSources[i]);
-                            self.setNewHierarchyCD(dragItem, dataSources[i].childs);
-                        }
+                var parentHierarchyCd: string = parentWorkplace.hierarchyCode;
+                if (!_.isEmpty(parentWorkplace.childs)) {
+                    for (let i = 0; i < parentWorkplace.childs.length; i++) {
+                        let currentWorkplace: TreeWorkplace = parentWorkplace.childs[i];
+                        //set hierarchyCd by currentWorkplace, parentCd,index in current child
+                        self.setNewHierarchyCd(currentWorkplace, parentHierarchyCd, i + 1);
+                        self.listWorkplaceSave.push(currentWorkplace);
+                        self.setHierarchyCdChild(currentWorkplace);
                     }
                 }
             }
-            //generate hierarchyCd
-            public generateHierarchyCdDraggItem(aheadWorkplace: TreeWorkplace, dragItem: TreeWorkplace, parentHierarchyCd: String) {
+            /**
+             * set new hierarchy cd
+             */
+            public setNewHierarchyCd(treeWorkplace: TreeWorkplace, parentHierarchyCd: string, currentIndex: number) {
                 var self = this;
-                var frontHierarchyCd: string;
-                if (_.isEmpty(aheadWorkplace)) {
-                    frontHierarchyCd = self.createNewHierarchyCd(parentHierarchyCd + HIERARCHY_ORIGIN);
-                } else {
-                    frontHierarchyCd = self.createNewHierarchyCd(aheadWorkplace.hierarchyCode);
-                }
-                dragItem.hierarchyCode = frontHierarchyCd;
-                dragItem.histId = self.wkpConfigHistId;
-                alert('new hierachy Code: ' + dragItem.hierarchyCode);
-            }
-            //create new hierarchy cd
-            public createNewHierarchyCd(hierarchyCd: string): string {
-                let tempNumber = + hierarchyCd;
-                tempNumber++;
+                if (_.isEmpty(parentHierarchyCd)) parentHierarchyCd = "";
+                parentHierarchyCd += HIERARCHY_ORIGIN;
+                let tempNumber = + parentHierarchyCd;
+                tempNumber += currentIndex;
                 var result = tempNumber.toString();
                 //reverse 
                 result = result.split("").reverse().join("");
                 var charZero = '0';
-                while (result.length < hierarchyCd.length) {
+                while (result.length < parentHierarchyCd.length) {
                     result += charZero;
                 }
-                return result.split("").reverse().join("");
+                let newHierarchyCd = result.split("").reverse().join("");
+                treeWorkplace.hierarchyCode = newHierarchyCd;
+                treeWorkplace.histId = self.wkpConfigHistId;
             }
-            //compare two hierarchyCd
-            public compareHierarchyCd(hierarchyCd1: string, hierarchyCd2: string): boolean {
-                let numHierarchy1: number = +hierarchyCd1;
-                let numHierarchy2: number = +hierarchyCd2;
-                if (numHierarchy1 - numHierarchy2 >= 0) return true;
-                return false;
-            }
-
             /**
              * save workplace
              */
@@ -323,9 +249,8 @@ module nts.uk.com.view.cmm011.a {
                 if (!self.validate()) {
                     return;
                 }
-                if (!_.isEmpty(self.draggedList)) {
-                    service.updateTree(self.draggedList).done(function() {
-                        alert('service done');
+                if (!_.isEmpty(self.listWorkplaceSave)) {
+                    service.updateTree(self.listWorkplaceSave).done(function() {
                     });
                 }
 
