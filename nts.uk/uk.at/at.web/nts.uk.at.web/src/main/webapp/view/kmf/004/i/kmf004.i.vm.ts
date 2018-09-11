@@ -285,8 +285,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
 
     }
     export class AgeRange {
-        ageLowerLimit: KnockoutObservable<number> = ko.observable(null);
-        ageHigherLimit: KnockoutObservable<number> = ko.observable(null);
+        ageLowerLimit: KnockoutObservable<number> = ko.observable();
+        ageHigherLimit: KnockoutObservable<number> = ko.observable();
         constructor(data?) {
             if (data) {
                 this.ageLowerLimit(data.ageLowerLimit);

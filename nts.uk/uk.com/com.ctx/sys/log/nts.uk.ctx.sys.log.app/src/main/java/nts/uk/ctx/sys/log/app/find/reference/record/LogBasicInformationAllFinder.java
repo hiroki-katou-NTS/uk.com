@@ -79,8 +79,7 @@ public class LogBasicInformationAllFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 		// get company id
 		String cid = loginUserContext.companyId();
-		Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
-		
+		Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);	
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
 		List<LogBasicInformation> lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
 				logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
