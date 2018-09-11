@@ -9,7 +9,7 @@ import java.util.List;
 public interface ValPayDateSetRepository
 {
 
-    List<ValPayDateSet> getAllValPayDateSet();
+	List<ValPayDateSet> getAllValPayDateSet();
 
     Optional<ValPayDateSet> getValPayDateSetById(String cid, int processCateNo);
 
