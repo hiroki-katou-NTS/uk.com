@@ -205,6 +205,7 @@ module nts.uk.at.view.kwr006.a {
                     } else {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
                     }
+                    
                 });
                 return dfd.promise();
             }
@@ -339,7 +340,10 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
-                    self.loadListOutputItemMonthlyWorkSchedule();    
+                    self.loadListOutputItemMonthlyWorkSchedule().done(() => {
+                        let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
+                        self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                    });
                 });
             }
 
