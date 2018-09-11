@@ -60,7 +60,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		if(CollectionUtil.isEmpty(preiumItems)){
 			return result;
 		}
-		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, date);
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, date);
 		if(personCosts != null){
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
@@ -81,7 +81,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		if(CollectionUtil.isEmpty(preiumItems)){
 			return result;
 		}
-		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, period);
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, period);
 		if(personCosts != null){
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {

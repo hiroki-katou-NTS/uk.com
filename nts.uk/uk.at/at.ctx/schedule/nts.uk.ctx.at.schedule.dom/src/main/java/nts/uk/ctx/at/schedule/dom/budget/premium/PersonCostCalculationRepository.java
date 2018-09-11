@@ -79,7 +79,11 @@ public interface PersonCostCalculationRepository {
 	 */
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
 	
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, GeneralDate date);
+	
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, DatePeriod date);
+	
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date);
 	
 	public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
 }

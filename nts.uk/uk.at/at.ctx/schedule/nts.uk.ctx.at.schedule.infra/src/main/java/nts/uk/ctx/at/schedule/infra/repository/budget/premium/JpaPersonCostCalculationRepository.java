@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -312,6 +313,44 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 	
 	@Override
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, GeneralDate date) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, c.ATTENDANCE_ID FROM KMLMT_COST_CALC_SET a ");
+		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ");
+		query.append(" ON a.CID = b.CID AND a.HIS_ID = b.HIS_ID");
+		query.append(" LEFT JOIN KMLDT_PREMIUM_ATTENDANCE c ");
+		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
+		query.append(" WHERE a.CID = ?");
+		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
+
+			statement.setString(1, companyID);
+			statement.setDate(2, Date.valueOf(date.localDate()));
+			statement.setDate(3, Date.valueOf(date.localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return rec;
+			}).stream().collect(Collectors.groupingBy(c -> c.getString("HIS_ID"), Collectors.toList())).entrySet()
+			.stream().map(et -> {
+				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> r.getInt("PREMIUM_NO"), 
+																		Collectors.toList())).entrySet().stream().map(ps -> {
+							return new PremiumSetting(companyID, et.getKey(), ps.getKey(), 
+									new PremiumRate(ps.getValue().get(0).getInt("PREMIUM_RATE")), null, null, 
+									ps.getValue().stream().map(at -> at.getInt("ATTENDANCE_ID")).collect(Collectors.toList()));
+						}).collect(Collectors.toList());
+				return new PersonCostCalculation(companyID, et.getKey(), et.getValue().get(0).getGeneralDate("START_DATE"), 
+						et.getValue().get(0).getGeneralDate("END_DATE"), null, null, premiumSettings);
+			}).collect(Collectors.toList());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	@Override
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, DatePeriod date) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a, b, c FROM KmlmtPersonCostCalculation a ");
@@ -342,6 +381,43 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			return null;
 		}
 		return personCostCals;
+	}
+	
+	@Override
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, c.ATTENDANCE_ID FROM KMLMT_COST_CALC_SET a ");
+		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ");
+		query.append(" ON a.CID = b.CID AND a.HIS_ID = b.HIS_ID");
+		query.append(" LEFT JOIN KMLDT_PREMIUM_ATTENDANCE c ");
+		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
+		query.append(" WHERE a.CID = ?");
+		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(query.toString());
+
+			statement.setString(1, companyID);
+			statement.setDate(2, Date.valueOf(date.end().localDate()));
+			statement.setDate(3, Date.valueOf(date.start().localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return rec;
+			}).stream().collect(Collectors.groupingBy(c -> c.getString("HIS_ID"), Collectors.toList())).entrySet()
+			.stream().map(et -> {
+				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> r.getInt("PREMIUM_NO"), 
+																		Collectors.toList())).entrySet().stream().map(ps -> {
+							return new PremiumSetting(companyID, et.getKey(), ps.getKey(), 
+									new PremiumRate(ps.getValue().get(0).getInt("PREMIUM_RATE")), null, null, 
+									ps.getValue().stream().map(at -> at.getInt("ATTENDANCE_ID")).collect(Collectors.toList()));
+						}).collect(Collectors.toList());
+				return new PersonCostCalculation(companyID, et.getKey(), et.getValue().get(0).getGeneralDate("START_DATE"), 
+						et.getValue().get(0).getGeneralDate("END_DATE"), null, null, premiumSettings);
+			}).collect(Collectors.toList());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
 	}
 	
 	@Override
