@@ -15,5 +15,5 @@ public class DCCalcTimeParam {
 	
 	 private List<DailyRecordDto> dailyEdits;
 	
-     private DPItemValue itemEdit;
+     private List<DPItemValue> itemEdits;
 }

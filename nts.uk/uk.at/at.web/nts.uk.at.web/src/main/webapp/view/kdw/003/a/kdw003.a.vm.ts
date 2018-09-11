@@ -3183,9 +3183,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         inputProcess(rowId, columnKey, value) {
             let dfd = $.Deferred(),
                 keyId: any,
-                valueError: any;
+                valueError: any,
+                dataChange: any,
+                dataChageRow: any;
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
+            
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
@@ -3209,6 +3212,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
+                    
                     let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
                         return item.id == rowId;
                     });
@@ -3222,9 +3226,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
                     let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
+                    // get item change in row
+                    dataChange = $("#dpGrid").mGrid("updatedCells");
+                    dataChageRow = _.map(_.filter(dataChange, row => {
+                        return row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
+                    }), allValue => {
+                        let itemTemp, keyIdRow;
+                        keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
+                        itemTemp = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
+                        return value.id === keyIdRow;
+                         })
+                       let valueTemp: any = __viewContext.vm.getPrimitiveValue(allValue.value, itemTemp.attendanceAtr);
+                       let layoutTemp: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
+                           return item.itemId == keyIdRow;
+                       });
+                       return new InfoCellEdit(rowId, keyIdRow, valueTemp, layoutTemp == undefined ? "" : layoutTemp.valueType, layoutTemp == undefined ? "" : layoutTemp.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), itemTemp.typeGroup, "USE");
+                    });
+                    dataChageRow.push(dataMap);
+                    
                     let param = {
                         dailyEdits: __viewContext.vm.lstDomainEdit,
-                        itemEdit: dataMap
+                        itemEdits: dataChageRow
                     };
                     service.calcTime(param).done((value) => {
                         __viewContext.vm.lstDomainEdit = value.dailyEdits;

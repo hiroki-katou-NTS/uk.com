@@ -48,6 +48,12 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		dto.exsistData();
 		return dto;
 	}
+	
+	public static EditStateOfDailyPerformanceDto createWith(String employeeId, int itemId, GeneralDate ymd, int state) {
+		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(employeeId, itemId, ymd, state);
+		dto.exsistData();
+		return dto;
+	}
 
 	@Override
 	public String employeeId() {

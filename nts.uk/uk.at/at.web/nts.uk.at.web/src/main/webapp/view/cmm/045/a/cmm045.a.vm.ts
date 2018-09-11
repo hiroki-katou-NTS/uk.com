@@ -168,6 +168,7 @@ module cmm045.a.viewmodel {
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
+                    self.lstSidFilter(obj.listEmployeeId);
                 }
                 if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
@@ -178,7 +179,7 @@ module cmm045.a.viewmodel {
 
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
                 let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {

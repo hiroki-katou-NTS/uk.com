@@ -137,9 +137,9 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		List<Integer> result = new ArrayList<>();
 		
 		for(int i = 0; i < startItemsToMerge.size(); i++){
-			int itemNo = DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS.indexOf(i);
+			int itemNo = DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS.indexOf(startItemsToMerge.get(i));
 			
-			if(endItemsToMerge.get(i) == DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.get(itemNo)){
+			if(endItemsToMerge.size() > i && endItemsToMerge.get(i) == DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.get(itemNo)){
 				result.add(startItemsToMerge.get(i));
 				result.add(endItemsToMerge.get(i));
 			}
@@ -149,10 +149,11 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	}
 
 	private List<Integer> getItemBys(List<EditStateOfDailyPerformance> editStates, List<Integer> toGet) {
-		return editStates.stream()
-												.filter(e -> toGet.contains(e.getAttendanceItemId()) && !isInputByHands(e.getEditStateSetting()))
-												.map(c -> c.getAttendanceItemId())
+		
+		List<Integer> edited = editStates.stream().filter(e -> toGet.contains(e.getAttendanceItemId()) && isInputByHands(e.getEditStateSetting()))
+												.map(c -> c.getAttendanceItemId()) 
 												.collect(Collectors.toList());
+		return toGet.stream().filter(i -> !edited.contains(i)).collect(Collectors.toList());
 	}
 
 	/** 手修正の勤怠項目を判断する */
