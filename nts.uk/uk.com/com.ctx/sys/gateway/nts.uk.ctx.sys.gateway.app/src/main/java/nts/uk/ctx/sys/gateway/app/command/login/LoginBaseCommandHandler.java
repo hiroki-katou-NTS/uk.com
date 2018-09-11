@@ -680,7 +680,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the company id
 	 */
 	// ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
-	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon) {
+	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon, String employeeId) {
 
 		// ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model
 		// "company")
@@ -706,10 +706,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException(message);
 		}
 		
-		String employeeId = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
 		DatePeriod periodEmployee = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		if (employeeId != null) {
+		
+		if (employeeId != null) { // employeeId = null when single sign on
 			boolean isEmployeeHis;
 			lstEmployeeId.add(employeeId);
 			// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)

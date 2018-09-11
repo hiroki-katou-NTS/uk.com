@@ -65,6 +65,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		String companyCode = command.getCompanyCode();
 		String contractCode = command.getContractCode();
 		String companyId = contractCode + "-" + companyCode;
+		String employeeId = null;
 		
 		if (command.isSignOn()) {
 			// アルゴリズム「アカウント照合」を実行する
@@ -110,10 +111,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			
 			// check time limit
 			this.checkLimitTime(user, companyId);
+			employeeId = em.getEmployeeId();
 		}
 		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
-		this.errorCheck2(companyId, contractCode, user.getUserId(), command.isSignOn());
+		this.errorCheck2(companyId, contractCode, user.getUserId(), command.isSignOn(), employeeId);
 		
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
