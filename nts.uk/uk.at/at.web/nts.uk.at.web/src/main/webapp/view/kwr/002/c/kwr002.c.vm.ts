@@ -321,6 +321,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.sealName4(sealStamp[3]);
                 self.sealName5(sealStamp[4]);
                 self.sealName6(sealStamp[5]);
+
+                dfd.resolve();
             }
             else {
                 self.useSealValue(useSeal)
@@ -355,9 +357,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     }
 
 
-                }).done(() => {
-                    dfd.resolve();
-                });
+                })
+
 
                 service.getSealStamp(code).done(function(sealStampList: Array<String>) {
                     if (sealStampList.length > 0) {
@@ -369,9 +370,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         self.sealName6(sealStampList[5]);
 
                     }
-                });
-            }
+                }).done(() => {
 
+                    dfd.resolve();
+                });
+
+            }
             blockUI.clear();
             return dfd.promise();
             //***

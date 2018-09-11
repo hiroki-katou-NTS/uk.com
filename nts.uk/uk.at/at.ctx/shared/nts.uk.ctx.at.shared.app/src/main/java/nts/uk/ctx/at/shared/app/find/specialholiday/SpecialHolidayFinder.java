@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -127,6 +126,7 @@ public class SpecialHolidayFinder {
 
 	private List<Integer> getDuplicateHEvent(List<Integer> selectedNos, List<Integer> settingCodes,
 			List<SpecialHolidayDto> shs) {
+		if (selectedNos != null) {
 			shs.forEach(x -> {
 				if (x.getTargetItemDto() != null) {
 					List<Integer> absFrames = x.getTargetItemDto().getAbsenceFrameNo();
@@ -147,7 +147,7 @@ public class SpecialHolidayFinder {
 					}
 				}
 			});
-		
+		}
 
 		return settingCodes;
 	}
@@ -163,6 +163,14 @@ public class SpecialHolidayFinder {
 	}
 
 	public List<SpecialHolidayFrameDto> findAllItemFrame() {
-		return findForScreenJ(Collections.emptyList());
+		List<SpecialHolidayFrameDto> result = new ArrayList<SpecialHolidayFrameDto>();
+		List<SpecialHolidayFrameDto> shFrames = this.shFrameFinder.findAll();
+		List<SpecialHolidayFrameDto> absenceFrames = this.absenceFrameFinder.findAll().stream()
+				.map(x -> SpecialHolidayFrameDto.fromAbsenDto(x)).collect(Collectors.toList());
+
+		result.addAll(shFrames);
+		result.addAll(absenceFrames);
+		
+		return result;
 	}
 }
