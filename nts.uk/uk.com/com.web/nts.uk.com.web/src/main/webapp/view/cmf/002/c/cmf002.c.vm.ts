@@ -113,7 +113,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 self.selectedExOutputCateItemDatas([]);
                 self.clearSetting();
 
-                service.getAllCategoryItem(self.categoryId(), code).done((listExOutCateItemData: Array<any>) => {
+                service.getAllCategoryItem(self.categoryId(), self.itemType()).done((listExOutCateItemData: Array<any>) => {
                     if (listExOutCateItemData && listExOutCateItemData.length) {
                         listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
                         let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
