@@ -57,7 +57,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
-									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime), employeeID);
 							if(overtimeCheckResult.getErrorCode() != 0){
 								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
 							}
@@ -138,7 +138,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
-									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime), employeeID);
 							if(overtimeCheckResult.getErrorCode() != 0){
 								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
 							}

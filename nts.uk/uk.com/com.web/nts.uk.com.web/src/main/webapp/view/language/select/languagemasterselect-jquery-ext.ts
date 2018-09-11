@@ -82,7 +82,7 @@ module nts.uk.ui.jqueryExtentions {
                             
                             document.getElementById($container.attr('id')).dispatchEvent(changingEvent);
                         });
-                        $functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                        $functionArea.find(".ntsClose").text("キャンセル").click(function(evt){
                             clearArea($languageSelect, $languageCbx);
                         });   
                     },

@@ -11,10 +11,10 @@ module nts.uk.at.view.kmf004.a.service {
         getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
         findEmpByCodes: "bs/employee/employment/findByCodes",
         findClsByCodes: "bs/employee/classification/getClsNameByCds",
-        findAllItemFrame: "shared/specialholiday/findForScreenJ",
+        findAllItemFrame: "shared/specialholiday/findAllItemFrame",
     }
 
-    export function findAllItemFrame(): JQueryPromise<Array<any>> {
+    export function findAllItemFrame(selectedCode): JQueryPromise<Array<any>> {
         var path = paths.findAllItemFrame;
         return nts.uk.request.ajax("at", path);
     }

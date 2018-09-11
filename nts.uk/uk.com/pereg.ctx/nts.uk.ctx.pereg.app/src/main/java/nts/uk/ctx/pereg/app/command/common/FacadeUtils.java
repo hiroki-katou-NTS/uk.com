@@ -311,7 +311,7 @@ public class FacadeUtils {
 		return FacadeUtils.createListItems(cs00056Item);
 	}
 	
-	public List<ItemValue> getListDefaultCS0007() {
+	public List<ItemValue> getListDefaultCS00057() {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		String[][] cs00057Item = { { "IS00616", numberType, String.valueOf(NotUseAtr.NOT_USE.value) }};
 		return FacadeUtils.createListItems(cs00057Item);

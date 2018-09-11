@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.app.command.dailyperform.DailyEventCommonCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyEventCommonCommand;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
