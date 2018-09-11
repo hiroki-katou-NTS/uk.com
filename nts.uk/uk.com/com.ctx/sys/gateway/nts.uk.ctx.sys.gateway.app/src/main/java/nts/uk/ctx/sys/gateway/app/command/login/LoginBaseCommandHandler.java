@@ -249,7 +249,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"));
+					TextResource.localize("Msg_301"), null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -582,7 +582,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (!opWindowAccount.isPresent()) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"));
+					TextResource.localize("Msg_876"), null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -599,7 +599,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (windows.isEmpty()? true : windows.get(0).getUseAtr() == UseAtr.NotUse ? true : false) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"));
+					TextResource.localize("Msg_876"), null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -624,7 +624,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				
 				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-						TextResource.localize("Msg_316"));
+						TextResource.localize("Msg_316"), null);
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -658,7 +658,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_1419"));
+					TextResource.localize("Msg_1419"), null);
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
@@ -692,7 +692,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_281"));
+					TextResource.localize("Msg_281"), employeeId);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -723,7 +723,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 				}
 				ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
-						TextResource.localize("Msg_1420"));
+						TextResource.localize("Msg_1420"), employeeId);
 				
 				// アルゴリズム「ログイン記録」を実行する２ (Execute algorithm "login recording")
 				this.service.callLoginRecord(param);
@@ -853,7 +853,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 					}
 					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
-							accountLockPolicy.getLockOutMessage().v());
+							accountLockPolicy.getLockOutMessage().v(), null);
 					
 					// アルゴリズム「ログイン記録」を実行する１
 					this.service.callLoginRecord(param);
