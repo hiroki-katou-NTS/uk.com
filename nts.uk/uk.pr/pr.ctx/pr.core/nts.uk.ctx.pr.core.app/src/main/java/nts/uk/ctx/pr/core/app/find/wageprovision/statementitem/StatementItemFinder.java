@@ -15,7 +15,11 @@ public class StatementItemFinder {
 	@Inject
 	private StatementItemRepository statementItemRepository;
 
-	// ドメインモデル「明細書項目」を取得する
+	/**
+	 * ドメインモデル「明細書項目」を取得する
+	 * 
+	 * @return
+	 */
 	public List<StatementItemDto> findAllStatementItem() {
 		String cid = AppContexts.user().companyId();
 		val listStatementItem = statementItemRepository.getAllItemByCid(cid);
@@ -23,4 +27,34 @@ public class StatementItemFinder {
 			return StatementItemDto.fromDomain(item);
 		}).collect(Collectors.toList());
 	}
+	
+	/**
+	 * ドメインモデル「明細書項目」を取得する
+	 * 
+	 * @param カテゴリ区分
+	 * @param 項目名コード
+	 * @return 
+	 */
+	public List<StatementItemDto> findByItemNameCd(int categoryAtr, int itemNameCd) {
+		String cid = AppContexts.user().companyId();
+		val listStatementItem = statementItemRepository.getByItemNameCd(cid, categoryAtr, itemNameCd);
+		return listStatementItem.stream().map(item -> {
+			return StatementItemDto.fromDomain(item);
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * ドメインモデル「明細書項目」を取得する
+	 * 
+	 * @param カテゴリ区分
+	 * @return
+	 */
+	public List<StatementItemDto> findByCategory(int categoryAtr) {
+		String cid = AppContexts.user().companyId();
+		val listStatementItem = statementItemRepository.getByCategory(cid, categoryAtr);
+		return listStatementItem.stream().map(item -> {
+			return StatementItemDto.fromDomain(item);
+		}).collect(Collectors.toList());
+	}
+
 }

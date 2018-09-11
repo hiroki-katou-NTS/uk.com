@@ -7,6 +7,8 @@ public class StatementItemDataDto {
 	private StatementItemDto statementItem;
 	private StatementItemNameDto statementItemName;
 	private PaymentItemSetDto paymentItemSet;
+	private DeductionItemSetDto deductionItemSet;
+	private TimeItemSetDto timeItemSet;
 	private StatementItemDisplaySetDto statementDisplaySet;
 	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;

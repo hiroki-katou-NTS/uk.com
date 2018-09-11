@@ -8,7 +8,7 @@ import java.util.Optional;
  * @author thanh.tq 勤怠項目設定
  *
  */
-public interface TimeItemStRepository {
+public interface TimeItemSetRepository {
 
 	List<TimeItemSet> getAllTimeItemSt();
 

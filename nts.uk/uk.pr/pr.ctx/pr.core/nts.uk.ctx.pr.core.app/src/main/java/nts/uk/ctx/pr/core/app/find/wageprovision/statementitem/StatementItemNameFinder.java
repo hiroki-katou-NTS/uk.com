@@ -12,7 +12,12 @@ public class StatementItemNameFinder {
 	@Inject
 	private StatementItemNameRepository statementItemNameRepository;
 
-	// ドメインモデル「明細書項目名称」を取得する
+	/**
+	 * ドメインモデル「明細書項目名称」を取得する
+	 * 
+	 * @param 給与項目ID
+	 * @return
+	 */
 	public StatementItemNameDto findStatementItemName(String salaryItemId) {
 		String cid = AppContexts.user().companyId();
 		val statementItemName = statementItemNameRepository.getStatementItemNameById(cid, salaryItemId);

@@ -15,8 +15,12 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtBillingI
 public class JpaStatementItemRepository extends JpaRepository implements StatementItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBillingItem f";
-	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.billingItemPk.cid =:cid";
+	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.billingItemPk.cid =:cid";
+	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING + " WHERE  f.billingItemPk.cid =:cid AND "
+			+ " f.billingItemPk.categoryAtr =:categoryAtr";
+	private static final String SELECT_BY_ITEM_NAME_CD = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.billingItemPk.cid =:cid AND " + " f.billingItemPk.categoryAtr =:categoryAtr AND "
+			+ " f.billingItemPk.itemNameCd =:itemNameCd ";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.billingItemPk.cid =:cid AND " + " f.billingItemPk.categoryAtr =:categoryAtr AND "
 			+ " f.billingItemPk.itemNameCd =:itemNameCd AND" + " f.billingItemPk.salaryItemId =:salaryItemId";
@@ -26,7 +30,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtBillingItem.class)
 				.getList(item -> item.toDomain());
 	}
-	
+
 	@Override
 	public List<StatementItem> getAllItemByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_COMPANY_ID, QpbmtBillingItem.class).setParameter("cid", cid)
@@ -34,7 +38,21 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	}
 
 	@Override
-	public Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, int itemNameCd, String salaryItemId) {
+	public List<StatementItem> getByCategory(String cid, int categoryAtr) {
+		return this.queryProxy().query(SELECT_BY_CATEGORY, QpbmtBillingItem.class).setParameter("cid", cid)
+				.setParameter("categoryAtr", categoryAtr).getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<StatementItem> getByItemNameCd(String cid, int categoryAtr, int itemNameCd) {
+		return this.queryProxy().query(SELECT_BY_ITEM_NAME_CD, QpbmtBillingItem.class).setParameter("cid", cid)
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
+				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, int itemNameCd,
+			String salaryItemId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtBillingItem.class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
 				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
@@ -55,4 +73,5 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		this.commandProxy().remove(QpbmtBillingItem.class,
 				new QpbmtBillingItemPk(cid, categoryAtr, itemNameCd, salaryItemId));
 	}
+
 }

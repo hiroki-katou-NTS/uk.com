@@ -8,7 +8,7 @@ import java.util.List;
  * @author thanh.tq 控除項目設定
  *
  */
-public interface DeductionItemStRepository {
+public interface DeductionItemSetRepository {
 
 	List<DeductionItemSet> getAllDeductionItemSt();
 
