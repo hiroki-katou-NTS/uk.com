@@ -1352,7 +1352,12 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
-
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1377,7 +1382,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
-
+                    
+                    // If input date out of range
+                   if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1403,7 +1414,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
-
+                    
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1533,7 +1550,10 @@ module nts.layout {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
                     }
-                    if (!x) {
+                    if (!x || !grantTable) {
+                         CS00024_IS00281.data.value('');
+                        CS00024_IS00282.data.value('');
+                        CS00024_IS00283.data.value('');
                         return;
                     }
 
