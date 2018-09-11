@@ -267,7 +267,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	 */
 	@Override
 	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs) {
+			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs, String employeeID) {
+		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setFrameNo(-1);
 		// 社員ID
@@ -282,8 +283,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_424",employeeName,"");
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -291,8 +291,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_424",employeeName,"");
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -323,9 +322,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			// 事前申請の申請時間＞事後申請の申請時間
 			if (afterTime.getApplicationTime()!= null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
-				result.setErrorCode(1);
-				result.setFrameNo(frameNo);
-				return result;
+				Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyId), frameNo);
+				throw new BusinessException("Msg_424",employeeName, workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "",
+						"", String.valueOf(frameNo), String.valueOf(1));
 			}
 		}
 		result.setErrorCode(0);

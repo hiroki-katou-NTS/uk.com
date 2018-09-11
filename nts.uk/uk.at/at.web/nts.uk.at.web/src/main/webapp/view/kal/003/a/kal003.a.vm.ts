@@ -243,15 +243,19 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }
-            }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){
-                //fixed-table2
-                $(".nts-input").trigger("validate");
+            }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){ 
+                $(".nameAlarm").trigger("validate");
                 $(".nameWKRecordIDDaily").ntsError("clear");
                 $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
-                if ($(".nts-input").ntsError("hasError")) {
+                $("#A3_2").trigger("validate");
+                $("#A3_4").trigger("validate");
+                if ($(".nameAlarm").ntsError("hasError")) {
                     return; 
-                }        
+                } 
+                if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
+                    return;
+                }     
             }
             
 

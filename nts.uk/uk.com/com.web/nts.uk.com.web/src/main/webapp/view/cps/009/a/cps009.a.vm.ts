@@ -67,7 +67,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return; 
-                
+                $('#date1').trigger('validate');
                 self.getItemList(self.initSettingId(), value);
 
             });
@@ -251,7 +251,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingColums = ko.observableArray([
                 { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
                 { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
-                { headerText: text('CPS009_11'), key: 'settingName', width: 160 }
+                { headerText: text('CPS009_11'), key: 'settingName', width: 160, formatter: _.escape }
             ]);
 
             self.itemValueLst = ko.observableArray([
@@ -432,7 +432,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 itemListSetting: Array<any> = _.filter(self.currentCategory().itemList(), function(item) {
                     return item.selectedRuleCode() == 2;
                 });
-            
+            $('#date1').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
