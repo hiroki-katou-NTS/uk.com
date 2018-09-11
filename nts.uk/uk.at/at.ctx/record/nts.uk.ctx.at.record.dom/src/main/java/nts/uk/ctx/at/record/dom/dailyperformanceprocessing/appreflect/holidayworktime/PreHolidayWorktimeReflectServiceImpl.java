@@ -103,7 +103,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
+			IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty());
 			timeAndAnyItemUpService.addAndUpdate(calculateData);
 			return true;
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		TimeLeavingOfDailyPerformance a = new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(1), lstTimeLeavingWork, baseDate);
 		daily.setAttendanceLeave(Optional.of(a));
 		daily.setWorkInformation(workInformation);
-		IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
+		IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty());
 		timeAndAnyItemUpService.addAndUpdate(calculateData);
 		return daily;
 	}
