@@ -230,8 +230,12 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 
 		}
-		String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" :
-						repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
+		String workTypeName = "マスタ未登録";
+		if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
+			
+			Optional<WorkType> wtOp = repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v());
+			workTypeName = wtOp.isPresent() ? wtOp.get().getName().v() : "マスタ未登録";
+		}
 		String workTimeName = "";
 		if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
 			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v());
@@ -264,8 +268,11 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId) {
 		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
 		AppWorkChange appWkChange = workChange.get();
-		String workTypeName = appWkChange.getWorkTypeCd() == null ||  Strings.isBlank(appWkChange.getWorkTypeCd()) ? "" :
-					repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd()).get().getName().v();
+		String workTypeName = "マスタ未登録";
+		if(appWkChange.getWorkTypeCd() != null && !Strings.isBlank(appWkChange.getWorkTypeCd())){
+			Optional<WorkType> wt = repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd());
+			workTypeName = wt.isPresent() ? wt.get().getName().v() : "マスタ未登録";
+		}
 		String workTimeName = "";
 		if(appWkChange.getWorkTimeCd() != null && !appWkChange.getWorkTimeCd().equals("000")){
 			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,appWkChange.getWorkTimeCd());
@@ -504,8 +511,11 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 							hd.getEndTime() == null ? null : hd.getEndTime().v()));
 				}
 			}
-			String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" :
-							repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
+			String workTypeName = "マスタ未登録";
+			if(hdWork.getWorkTypeCode() != null && !Strings.isBlank(hdWork.getWorkTypeCode().v())){
+				Optional<WorkType> wt = repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v());
+				workTypeName = wt.isPresent() ? wt.get().getName().v() : "マスタ未登録";
+			}
 			String workTimeName = "";
 			if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
 				String wkTimeCD = hdWork.getWorkTimeCode().v();
@@ -602,7 +612,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 					workTypeName = mapWorkTypeName.get(wkTypeCD);
 				}else{
 					Optional<WorkType> wt = repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd());
-					workTypeName = wt.isPresent() ? wt.get().getName().v() : "";
+					workTypeName = wt.isPresent() ? wt.get().getName().v() : "マスタ未登録";
 					mapWorkTypeName.put(wkTypeCD, workTypeName);
 				}
 			}

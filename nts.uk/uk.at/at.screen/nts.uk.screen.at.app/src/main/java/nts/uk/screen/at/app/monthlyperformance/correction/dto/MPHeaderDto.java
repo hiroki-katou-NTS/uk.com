@@ -66,7 +66,7 @@ public class MPHeaderDto {
 	public static List<MPHeaderDto> GenerateFixedHeader() {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
 		
-		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", false, "Label", true, true));
+		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", true, "Label", true, true));
 		//G_1   状態
 		//lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"), "state", "String", "30px", "", false, "FlexImage", true, true));
 		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", "", false, "FlexImage", true, true));
@@ -85,7 +85,7 @@ public class MPHeaderDto {
 		//G_7 
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_26"), "approval", "boolean", "35px", "", false, "Checkbox", true, true));
 		//G_8 日別確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", "", false, "Checkbox", true, true));
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", "", false, "Label", true, true));
 		//G_9 日別実績の修正
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "85px", "", false, "Button", true, true));
 		return lstHeader;

@@ -53,6 +53,9 @@ module nts.uk.ui.koExtentions {
         format: string = "YYYY/MM/DD H:mm:ss";
         rangeUnit: string;
         maxRange: number;
+        name: string;
+        startName: string;
+        endName: string;
         
         constructor($root: JQuery) {
             this.$root = $root;
@@ -63,19 +66,12 @@ module nts.uk.ui.koExtentions {
             self.$root.find(".control-container").ntsError('clearKibanError');
             let mStart = moment(start, self.format);
             let mEnd = moment(end, self.format);
-            if(!mEnd.isValid()){
-                self.$end.find(".datetimepair-container")
-                        .ntsError('set', "end date is not valid", 'Not defined code', false);
-                return false;
-            }
-            if(!mStart.isValid()){
-                self.$start.find(".datetimepair-container")
-                        .ntsError('set', "start date is not valid", 'Not defined code', false);
+            if(!mEnd.isValid() || !mStart.isValid()){
                 return false;
             }
             if(mEnd.isBefore(mStart)){
                 self.$root.find(".datetimepairrange-container")
-                        .ntsError('set', "end is smaller than start value", 'Not defined code', false);
+                        .ntsError('set', nts.uk.resource.getMessage('FND_E_SPAN_REVERSED', [self.name]) , 'FND_E_SPAN_REVERSED', false);
                 return false;
             }
             if(self.maxRange > 0){
@@ -93,6 +89,9 @@ module nts.uk.ui.koExtentions {
             let self = this;
             self.rangeUnit = _.isNil(allBindData.rangeUnit) ? "years" : ko.unwrap(allBindData.rangeUnit);
             self.maxRange = _.isNil(allBindData.maxRange) ? 0 : ko.unwrap(allBindData.maxRange);
+            self.name = _.isNil(allBindData.name) ? "Input" : ko.unwrap(allBindData.name);
+            self.startName = _.isNil(allBindData.startName) ? "Start Date" : ko.unwrap(allBindData.startName);
+            self.endName = _.isNil(allBindData.endName) ? "End Date" : ko.unwrap(allBindData.endName);
             self.startValueBind = ko.observable();
             self.endValueBind = ko.observable();
             self.startValue = ko.computed({

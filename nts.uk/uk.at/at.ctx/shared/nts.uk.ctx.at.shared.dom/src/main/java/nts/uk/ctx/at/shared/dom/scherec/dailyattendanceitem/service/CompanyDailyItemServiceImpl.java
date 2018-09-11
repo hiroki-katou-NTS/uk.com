@@ -46,8 +46,8 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			dailyAttendanceItemIds = attendanceItemIds;
 		}
 		// ドメインモデル「日次の勤怠項目」を取得する
-		List<DailyAttendanceItem> dailyItem = dailyAttendanceItemRepository.findByAtrsAndAttItemIds(cid,
-				itemAtrs.stream().map(x -> x.value).collect(Collectors.toList()), dailyAttendanceItemIds);
+		List<DailyAttendanceItem> dailyItem = dailyAttendanceItemRepository.findByAttendanceItemIdAndAtr(cid,
+				dailyAttendanceItemIds, itemAtrs.stream().map(x -> x.value).collect(Collectors.toList()));
 		// 取得した勤怠項目の件数をチェックする
 		if (dailyItem.isEmpty()) {
 			return Collections.emptyList();

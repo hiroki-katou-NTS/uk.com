@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -139,31 +140,33 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				.setParameter("dailyAttendanceAtrs", dailyAttendanceAtrs).getList(f -> toDomain(f));
 	}
 
+	/**
+	 * add by HoiDD
+	 */
 	@Override
-	public List<DailyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs,
-			List<Integer> attendanceItemIds) {
-		boolean hasItemAtrs = itemAtrs != null && !itemAtrs.isEmpty();
-		boolean hasAttendanceAtrs = attendanceItemIds != null && !attendanceItemIds.isEmpty();
-
-		StringBuilder builderString = new StringBuilder();
-		builderString.append(FIND_ALL);
-		if (hasItemAtrs) {
-			builderString.append(" AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs");
+	public List<DailyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds,
+			List<Integer> dailyAttendanceAtr) {
+		StringBuilder builderString = new StringBuilder();	
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtDailyAttendanceItem b");
+		builderString.append(" WHERE");
+		builderString.append(" b.krcmtDailyAttendanceItemPK.companyId = :companyId");
+		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
+			builderString.append(" AND b.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds");
 		}
-		if (hasAttendanceAtrs) {
-			builderString.append(" AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds");
+		if (!CollectionUtil.isEmpty(dailyAttendanceAtr)) {
+			builderString.append(" AND b.dailyAttendanceAtr IN :itemAtrs");
 		}
-
-		TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy()
-				.query(builderString.toString(), KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId);
-
-		if (hasItemAtrs) {
-			query.setParameter("dailyAttendanceAtrs", itemAtrs);
-		}
-		if (hasAttendanceAtrs) {
+		
+		TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtDailyAttendanceItem.class);
+		query.setParameter("companyId", companyId);
+		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
 			query.setParameter("attendanceItemIds", attendanceItemIds);
 		}
-
+		
+		if (!CollectionUtil.isEmpty(dailyAttendanceAtr)) {
+			query.setParameter("itemAtrs", dailyAttendanceAtr);
+		}
 		return query.getList(f -> toDomain(f));
 	}
 

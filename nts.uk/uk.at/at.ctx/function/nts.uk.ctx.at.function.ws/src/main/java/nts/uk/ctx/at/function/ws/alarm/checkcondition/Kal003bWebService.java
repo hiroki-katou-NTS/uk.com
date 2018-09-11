@@ -30,12 +30,12 @@ public class Kal003bWebService extends WebService{
 	public List<EnumConstant> getEnumSingleValueCompareType(){
 
 	    return EnumAdaptor.convertToValueNameList(SingleValueCompareType.class, 
-	            SingleValueCompareType.EQUAL,
 	            SingleValueCompareType.NOT_EQUAL,
-	            SingleValueCompareType.GREATER_THAN,
+	            SingleValueCompareType.EQUAL,
+	            SingleValueCompareType.LESS_OR_EQUAL,
 	            SingleValueCompareType.GREATER_OR_EQUAL,
 	            SingleValueCompareType.LESS_THAN,
-	            SingleValueCompareType.LESS_OR_EQUAL);
+	            SingleValueCompareType.GREATER_THAN);
 	} 
 	
 	@POST

@@ -30,6 +30,11 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         monthlyAggregateCount: KnockoutObservable<number> = ko.observable(0);
         monthlyAggregateStatus: KnockoutObservable<string> = ko.observable("");
         monthlyAggregateHasError: KnockoutObservable<string> = ko.observable("");
+        
+        //承認反映
+        reflectApprovalCount: KnockoutObservable<number> = ko.observable(0);
+        reflectApprovalStatus: KnockoutObservable<string> = ko.observable("");
+        reflectApprovalHasError: KnockoutObservable<string> = ko.observable("");
 
         // Period Date
         startPeriod: KnockoutObservable<string> = ko.observable("");
@@ -175,6 +180,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                         self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
                         self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                        
+                        //承認反映
+                        self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
+                        self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                       
+                        
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
                             self.executionContents(self.contents);
@@ -188,7 +199,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             //                            if (nts.uk.text.isNullOrEmpty(endTime))
                             //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
                             //                            self.endTime(endTime);
-
+    
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
@@ -200,6 +211,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // monthly aggregation
                             self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
                             self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
+                            
+                            //承認反映
+                            self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                             self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString)
 
                             // Get Log data
                             self.getLogData();
@@ -208,8 +223,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                                 var paramsUpdate = {
                                     empCalAndSumExecLogID: empCalAndSumExecLogID,
-                                    executionStartDate: moment.utc(self.startTime()).toISOString(),
-                                    executionEndDate: moment.utc(self.endTime()).toISOString()
+                                    executionStartDate: self.startTime(),
+                                    executionEndDate: self.endTime()
                                 };
                                 service.updateExcutionTime(paramsUpdate);
                             }

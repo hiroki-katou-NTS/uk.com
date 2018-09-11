@@ -46,8 +46,8 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 			monthlyAttendanceItemIds = attendanceItemIds;
 		}
 		// ドメインモデル「月次の勤怠項目」を取得する
-		List<MonthlyAttendanceItem> monthlyItem = monthlyAttendanceItemRepository.findByAtrsAndAttItemIds(cid,
-				itemAtrs.stream().map(x -> x.value).collect(Collectors.toList()), monthlyAttendanceItemIds);
+		List<MonthlyAttendanceItem> monthlyItem = monthlyAttendanceItemRepository.findByAttendanceItemIdAndAtr(cid,
+				monthlyAttendanceItemIds, itemAtrs.stream().map(x -> x.value).collect(Collectors.toList()));
 		// 取得した勤怠項目の件数をチェックする
 		if (monthlyItem.isEmpty()) {
 			return Collections.emptyList();

@@ -13,6 +13,13 @@ public interface DailyAttdItemAuthRepository {
 	void updateDailyAttdItemAuth(DailyAttendanceItemAuthority dailyAttendanceItemAuthority);
 	
 	void addDailyAttdItemAuth(DailyAttendanceItemAuthority dailyAttendanceItemAuthority);
+
+	Optional<DailyAttendanceItemAuthority> getDailyAttdItemByUse(String companyId,
+			String roleId,List<Integer> attendanceItemIds,int toUse);
+	
+	Optional<DailyAttendanceItemAuthority> getAllDailyAttdItemByUse(String companyId,
+			String roleId, int toUse);
+	
 	
 	/**
 	 * 権限別日次項目制御

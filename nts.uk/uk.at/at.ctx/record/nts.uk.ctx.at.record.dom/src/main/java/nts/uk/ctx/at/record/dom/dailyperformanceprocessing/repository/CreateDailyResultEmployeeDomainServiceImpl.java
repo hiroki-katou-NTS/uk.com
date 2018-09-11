@@ -389,7 +389,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					}
 				}
 				if (asyncContext.hasBeenRequestedToCancel()) {
-					asyncContext.finishedAsCancelled();
+//					asyncContext.finishedAsCancelled();
 					return ProcessState.INTERRUPTION;
 				}
 			}

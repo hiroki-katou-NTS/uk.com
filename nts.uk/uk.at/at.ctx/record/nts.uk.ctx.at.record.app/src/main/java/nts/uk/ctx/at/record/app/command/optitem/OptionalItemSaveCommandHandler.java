@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemUpdateDomainEvent;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
@@ -88,6 +89,10 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			this.formulaRepo.create(formulas);
 			this.orderRepo.create(dispOrders);
 
+			// Fire optional item update event
+			// ドメインモデル「任意項目．属性」を更新した場合Event「任意項目の属性が更新された」を発行する
+			OptionalItemUpdateDomainEvent event = new OptionalItemUpdateDomainEvent(dom.getOptionalItemNo(), dom.getOptionalItemAtr(), dom.getPerformanceAtr());
+			event.toBePublished();
 		}
 		// Event
 		OptionalItemAtrDomainEvent event = new OptionalItemAtrDomainEvent(dom.getPerformanceAtr(),
