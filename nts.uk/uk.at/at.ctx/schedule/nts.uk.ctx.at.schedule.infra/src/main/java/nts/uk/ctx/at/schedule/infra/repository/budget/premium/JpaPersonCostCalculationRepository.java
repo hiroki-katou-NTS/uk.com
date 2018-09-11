@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -401,17 +403,25 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			statement.setDate(3, Date.valueOf(date.start().localDate()));
 			
 			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				return rec;
-			}).stream().collect(Collectors.groupingBy(c -> c.getString("HIS_ID"), Collectors.toList())).entrySet()
+				Map<String, Object> val = new HashMap<>();
+				val.put("HIS_ID", rec.getString("HIS_ID"));
+				val.put("PREMIUM_NO", rec.getInt("PREMIUM_NO"));
+				val.put("PREMIUM_RATE", rec.getInt("PREMIUM_RATE"));
+				val.put("ATTENDANCE_ID", rec.getInt("ATTENDANCE_ID"));
+				val.put("END_DATE", rec.getGeneralDate("END_DATE"));
+				val.put("START_DATE", rec.getGeneralDate("START_DATE"));
+				return val;
+			}).stream().collect(Collectors.groupingBy(c -> (String) c.get("HIS_ID"), Collectors.toList())).entrySet()
 			.stream().map(et -> {
-				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> r.getInt("PREMIUM_NO"), 
+				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> (Integer) r.get("PREMIUM_NO"), 
 																		Collectors.toList())).entrySet().stream().map(ps -> {
 							return new PremiumSetting(companyID, et.getKey(), ps.getKey(), 
-									new PremiumRate(ps.getValue().get(0).getInt("PREMIUM_RATE")), null, null, 
-									ps.getValue().stream().map(at -> at.getInt("ATTENDANCE_ID")).collect(Collectors.toList()));
+									new PremiumRate((Integer) ps.getValue().get(0).get("PREMIUM_RATE")), null, null, 
+									 ps.getValue().stream().map(at -> (Integer) at.get("ATTENDANCE_ID")).filter(at -> at != null)
+									 	.collect(Collectors.toList()));
 						}).collect(Collectors.toList());
-				return new PersonCostCalculation(companyID, et.getKey(), et.getValue().get(0).getGeneralDate("START_DATE"), 
-						et.getValue().get(0).getGeneralDate("END_DATE"), null, null, premiumSettings);
+				return new PersonCostCalculation(companyID, et.getKey(), (GeneralDate) et.getValue().get(0).get("START_DATE"), 
+						(GeneralDate) et.getValue().get(0).get("END_DATE"), null, null, premiumSettings);
 			}).collect(Collectors.toList());
 			
 		} catch (SQLException e) {
