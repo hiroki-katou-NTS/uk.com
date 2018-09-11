@@ -13,7 +13,7 @@ public interface ProcessInformationRepository
 
     Optional<ProcessInformation> getProcessInformationById(String cid, int processCateNo);
     
-    Optional<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory);
+    List<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory);
 
     void add(ProcessInformation domain);
 

@@ -48,10 +48,10 @@ public class JpaProcessInformationRepository extends JpaRepository implements Pr
 	}
 
 	@Override
-	public Optional<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory) {
+	public List<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory) {
 		// TODO Auto-generated method stub SELECT_BY_DEPRECATED_CATEGORY
 		return this.queryProxy().query(SELECT_BY_DEPRECATED_CATEGORY, QpbmtProcessInformation.class)
 				.setParameter("cid", cid).setParameter("deprecatedCategory", deprecatedCategory)
-				.getSingle(c -> c.toDomain());
+				.getList(c -> c.toDomain());
 	}
 }
