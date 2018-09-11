@@ -46,7 +46,8 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			+ "AND awh.strDate <= :refDate "
 			+ "AND awh.endDate >= :refDate "
 			+ "AND wkphist.strD <= :refDate "
-			+ "AND wkphist.endD >= :refDate";
+			+ "AND wkphist.endD >= :refDate "
+			+ "AND e.delStatus = 0";
 	
 
 	/*
@@ -72,29 +73,24 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 
 		return employees.parallelStream().filter(employee -> input.getEmpStatus().stream().anyMatch(status -> {
 			GeneralDate refDate = input.getReferenceDate();
-			GeneralDate comStart = (GeneralDate) employee[4];
 			GeneralDate comEnd = (GeneralDate) employee[5];
 			GeneralDate absStart = (GeneralDate) employee[6];
 			GeneralDate absEnd = (GeneralDate) employee[7];
 			Integer absNo = (Integer) employee[8];
 
+			Boolean isWorking = absStart == null || (absStart.beforeOrEquals(refDate) && absEnd.afterOrEquals(refDate));
 			switch (StatusOfEmployment.valueOf(status)) {
-			case INCUMBENT:
-				return absStart == null && comStart.beforeOrEquals(input.getReferenceDate())
-						&& comEnd.afterOrEquals(input.getReferenceDate());
-			case HOLIDAY:
-				return absStart != null && absNo != LEAVE_ABSENCE_QUOTA_NO && absStart.beforeOrEquals(refDate)
-						&& absEnd.afterOrEquals(refDate) && comStart.beforeOrEquals(refDate)
-						&& comEnd.afterOrEquals(refDate);
-			case LEAVE_OF_ABSENCE:
-				return absStart != null && absNo == LEAVE_ABSENCE_QUOTA_NO && absStart.beforeOrEquals(refDate)
-						&& absEnd.afterOrEquals(refDate) && comStart.beforeOrEquals(refDate)
-						&& comEnd.afterOrEquals(refDate);
-			case RETIREMENT:
-				return absStart == null && comEnd.beforeOrEquals(input.getReferenceDate());
-			default:
-				return false;
-			}
+	        case INCUMBENT:
+	            return isWorking;
+	        case HOLIDAY:
+	            return !isWorking && absNo != LEAVE_ABSENCE_QUOTA_NO;
+	        case LEAVE_OF_ABSENCE:
+	            return !isWorking && absNo == LEAVE_ABSENCE_QUOTA_NO;
+	        case RETIREMENT:
+	            return comEnd.before(refDate);
+	        default:
+	            return false;
+	        }					
 		})).map(filteredItem -> {
 			return EmployeeSearchOutput.builder()
 					.employeeId((String) filteredItem[0])
