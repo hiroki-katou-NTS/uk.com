@@ -185,6 +185,7 @@
                                                 <!-- BA2-3 -->
                                                 <input  
                                                 class="display-list-label" data-bind="ntsTextEditor: {
+                                                name:'#[KAL003_59]',
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
                                          required: true,
                                          readonly: true}" />
@@ -645,7 +646,7 @@
                                             <!-- B1-1: チェック項目 - Item check-->
                                             <td class="pad_left_10px">
                                                 <com:ko bind="typeCheckItem() !== 8" tag="if">
-                                                    <div>#{i18n.getText('チェック条件')}</div>
+                                                    <div style= "margin-top: -30px ! important">#{i18n.getText('チェック条件')}</div>
                                                 </com:ko>
                                             </td>
                                             <td class="pad_left_5px">
@@ -691,6 +692,7 @@
                                                         <input id="display-target-item" 
                                                         class="display-list-label nts-input "
                                                          data-bind="ntsTextEditor: {
+                                                          name:'#[KAL003_59]',
 											   value: selectText,
 											   required: true,
 											   readonly: true}" />
@@ -915,6 +917,7 @@
                                             <textarea style="width: 400px;height: 100px;" 
                                             id="message"
                                              data-bind="ntsMultilineEditor: { value: displayMessage,
+                                            					name: '#[KAL003_25]',
                                              					constraint: 'MessageDisplay'
                                              					}" />
                                         </td>

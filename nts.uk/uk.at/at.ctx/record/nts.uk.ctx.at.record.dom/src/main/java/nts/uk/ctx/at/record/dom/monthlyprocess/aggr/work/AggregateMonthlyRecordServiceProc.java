@@ -748,7 +748,7 @@ public class AggregateMonthlyRecordServiceProc {
 						this.employeeId,
 						this.closureId,
 						this.closureDate,
-						Flex.FLEX_EXCESS_CARRYOVER_TIME,	// 仮
+						null,
 						null,
 						null));
 			}

@@ -3,7 +3,7 @@ module nts.layout {
         _: any = window['_'],
         ko: any = window['ko'],
         moment: any = window['moment'];
-    
+
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import nou = nts.uk.util.isNullOrUndefined;
@@ -203,7 +203,7 @@ module nts.layout {
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
-        get_sphd_nextGrantDate: (param: ISpeacialParam)  => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`,param)
+        get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param)
     }
 
     export class validation {
@@ -1297,25 +1297,9 @@ module nts.layout {
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
                 initCDL008Data = (data: IItemData) => {
-                    if (!!CS00017_IS00082) {
-                        let v = CS00017_IS00082.data.value();
-
-                        if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                            setShared('inputCDL008', {
-                                selectedCodes: [data.value],
-                                baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
-                                isMultiple: false,
-                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
-                                isrestrictionOfReferenceRange: false,
-                                showNoSelection: !data.required,
-                                isShowBaseDate: false
-                            }, true);
-                        } else {
-                            setShared('inputCDL008', null);
-                        }
-                    } else if (location.href.indexOf('/view/cps/002') > -1) {
+                    if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            selectedCodes: [ko.toJS(data.value)],
                             baseDate: ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
@@ -1328,8 +1312,38 @@ module nts.layout {
                             isrestrictionOfReferenceRange: false,
                             showNoSelection: !data.required
                         }, true);
-                    } else {
-                        setShared('inputCDL008', null);
+                    } else if (location.href.indexOf('/view/cps/001') > -1) {
+                        if (!!CS00017_IS00082) {
+                            let v = CS00017_IS00082.data.value();
+
+                            if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        } else {
+                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        }
                     }
                 };
 
@@ -1501,7 +1515,8 @@ module nts.layout {
                 CS00024_IS00280: IFindData = finder.find('CS00024', 'IS00280'),
                 CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
                 CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
-                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283');
+                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283'),
+                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021');
 
             if (CS00024_IS00279 &&
                 CS00024_IS00280 &&
@@ -1511,16 +1526,23 @@ module nts.layout {
                 CS00024_IS00279.data.value.subscribe(x => {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
-                        grantTable = ko.toJS(CS00024_IS00280.data.value);
-
-                    if (!employeeId || !x) {
+                        grantTable = ko.toJS(CS00024_IS00280.data.value),
+                        hireDate: Date = null,
+                        retireDates: Date = null;
+                    if (location.href.indexOf('/view/cps/002') > -1) {
+                        hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                        retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
+                    }
+                    if (!x) {
                         return;
                     }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
-                        standardDate:  moment.utc(standardDate).format('YYYY/MM/DD'),
-                        grantTable: grantTable
+                        standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
+                        grantTable: grantTable,
+                        entryDate: moment.utc(hireDate).toDate(),
+                        retireDate: moment.utc(retireDates).toDate()
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
                         CS00024_IS00282.data.value(result.nextTimeGrantDays);
@@ -1616,6 +1638,7 @@ module nts.layout {
                 specialLeaInfos: Array<ISpeacialLeaInfo> = [{
                     ctgCode: 'CS00025',
                     inpCode: 'IS00295',
+                    mana: 'IS00296',
                     comboboxCode: 'IS00297',
                     inpGrantDay: 'IS00298',
                     comboGrantTbl: 'IS00299',
@@ -1624,6 +1647,7 @@ module nts.layout {
                 }, {
                         ctgCode: 'CS00026',
                         inpCode: 'IS00302',
+                        mana: 'IS00303',
                         comboboxCode: 'IS00304',
                         inpGrantDay: 'IS00305',
                         comboGrantTbl: 'IS00306',
@@ -1632,6 +1656,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00027',
                         inpCode: 'IS00309',
+                        mana: 'IS00310',
                         comboboxCode: 'IS00311',
                         inpGrantDay: 'IS00312',
                         comboGrantTbl: 'IS00313',
@@ -1640,6 +1665,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00028',
                         inpCode: 'IS00316',
+                        mana: 'IS00317',
                         comboboxCode: 'IS00318',
                         inpGrantDay: 'IS00319',
                         comboGrantTbl: 'IS00320',
@@ -1648,6 +1674,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00029',
                         inpCode: 'IS00323',
+                        mana: 'IS00324',
                         comboboxCode: 'IS00325',
                         inpGrantDay: 'IS00326',
                         comboGrantTbl: 'IS00327',
@@ -1656,6 +1683,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00030',
                         inpCode: 'IS00330',
+                        mana: 'IS00331',
                         comboboxCode: 'IS00332',
                         inpGrantDay: 'IS00333',
                         comboGrantTbl: 'IS00334',
@@ -1664,6 +1692,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00031',
                         inpCode: 'IS00337',
+                        mana: 'IS00338',
                         comboboxCode: 'IS00339',
                         inpGrantDay: 'IS00340',
                         comboGrantTbl: 'IS00341',
@@ -1672,6 +1701,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00032',
                         inpCode: 'IS00344',
+                        mana: 'IS00345',
                         comboboxCode: 'IS00346',
                         inpGrantDay: 'IS00347',
                         comboGrantTbl: 'IS00348',
@@ -1680,6 +1710,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00033',
                         inpCode: 'IS00351',
+                        mana: 'IS00352',
                         comboboxCode: 'IS00353',
                         inpGrantDay: 'IS00354',
                         comboGrantTbl: 'IS00355',
@@ -1688,6 +1719,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00034',
                         inpCode: 'IS00358',
+                        mana: 'IS00359',
                         comboboxCode: 'IS00360',
                         inpGrantDay: 'IS00361',
                         comboGrantTbl: 'IS00362',
@@ -1696,6 +1728,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00049',
                         inpCode: 'IS00559',
+                        mana: 'IS00560',
                         comboboxCode: 'IS00561',
                         inpGrantDay: 'IS00562',
                         comboGrantTbl: 'IS00563',
@@ -1704,6 +1737,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00050',
                         inpCode: 'IS00566',
+                        mana: 'IS00567',
                         comboboxCode: 'IS00568',
                         inpGrantDay: 'IS00569',
                         comboGrantTbl: 'IS00570',
@@ -1712,6 +1746,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00051',
                         inpCode: 'IS00573',
+                        mana: 'IS00574',
                         comboboxCode: 'IS00575',
                         inpGrantDay: 'IS00576',
                         comboGrantTbl: 'IS00577',
@@ -1720,6 +1755,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00052',
                         inpCode: 'IS00580',
+                        mana: 'IS00581',
                         comboboxCode: 'IS00582',
                         inpGrantDay: 'IS00583',
                         comboGrantTbl: 'IS00584',
@@ -1728,6 +1764,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00053',
                         inpCode: 'IS00587',
+                        mana: 'IS00588',
                         comboboxCode: 'IS00589',
                         inpGrantDay: 'IS00590',
                         comboGrantTbl: 'IS00591',
@@ -1736,6 +1773,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00054',
                         inpCode: 'IS00594',
+                        mana: 'IS00595',
                         comboboxCode: 'IS00596',
                         inpGrantDay: 'IS00597',
                         comboGrantTbl: 'IS00598',
@@ -1744,6 +1782,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00055',
                         inpCode: 'IS00601',
+                        mana: 'IS00602',
                         comboboxCode: 'IS00603',
                         inpGrantDay: 'IS00604',
                         comboGrantTbl: 'IS00605',
@@ -1752,6 +1791,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00056',
                         inpCode: 'IS00608',
+                        mana: 'IS00609',
                         comboboxCode: 'IS00610',
                         inpGrantDay: 'IS00611',
                         comboGrantTbl: 'IS00612',
@@ -1760,6 +1800,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00057',
                         inpCode: 'IS00615',
+                        mana: 'IS00616',
                         comboboxCode: 'IS00617',
                         inpGrantDay: 'IS00618',
                         comboGrantTbl: 'IS00619',
@@ -1768,6 +1809,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00058',
                         inpCode: 'IS00622',
+                        mana: 'IS00623',
                         comboboxCode: 'IS00624',
                         inpGrantDay: 'IS00625',
                         comboGrantTbl: 'IS00626',
@@ -1780,6 +1822,7 @@ module nts.layout {
                     let inp: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpCode),
                         cbx: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboboxCode),
                         grantDay: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpGrantDay),
+                        manage: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.mana),
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
                         result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result);
 
@@ -1791,40 +1834,44 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null;
-                            
-                            // 
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value) : null,
 
-                            if (!sid || !x) {
+                                management = manage ? ko.toJS(manage.data.value) : null;
+
+                            if (!sid || !x || !management || management == '0') {
+                                result.data.value('');
                                 return;
                             }
-                            
+
                             fetch.get_sphd_nextGrantDate({
                                 sid: sid,
-                                grantDate:  moment.utc(grantDate).toDate(),
+                                grantDate: moment.utc(grantDate).toDate(),
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
                                 grantTable: grantTbls
                             }).done(res => {
-                                let x = moment.utc(ko.toJS(res));
-                                if (x._isValid)
-                                    result.data.value(x.format('YYYY/MM/DD'));
-                                else
-                                    result.data.value('');
+                                if (res) {
+                                    let x = moment.utc(ko.toJS(res));
+                                    if (x._isValid)
+                                        result.data.value(x.format('YYYY/MM/DD'));
+                                    else
+                                        result.data.value('');
+                                }
                             });
                         });
 
                         cbx.data.value.subscribe(x => inp.data.value.valueHasMutated());
-                        if (grantDay){
-                            grantDay.data.value.subscribe(x => 
+                        manage.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        if (grantDay) {
+                            grantDay.data.value.subscribe(x =>
                                 inp.data.value.valueHasMutated()
                             );
                         }
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
-                        
+
                         inp.data.value.valueHasMutated();
                     }
                 };
@@ -2197,6 +2244,8 @@ module nts.layout {
         employeeId: string;
         standardDate: Date;
         grantTable: string;
+        entryDate: Date;
+        retireDate: Date;
     }
 
     interface IGroupControl {
@@ -2248,6 +2297,7 @@ module nts.layout {
     interface ISpeacialLeaInfo {
         ctgCode: string;
         inpCode: string;
+        mana: number;
         comboboxCode: string;
         inpGrantDay: string;
         comboGrantTbl: string;

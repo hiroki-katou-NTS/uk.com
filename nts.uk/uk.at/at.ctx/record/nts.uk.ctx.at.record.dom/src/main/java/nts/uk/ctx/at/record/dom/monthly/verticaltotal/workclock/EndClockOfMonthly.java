@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonthDom;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 public class EndClockOfMonthly {
 
 	/** 回数 */
-	private AttendanceTimesMonthDom times;
+	private AttendanceTimesMonth times;
 	/** 合計時刻 */
 	private AttendanceTimeMonth totalClock;
 	/** 平均時刻 */
@@ -28,7 +28,7 @@ public class EndClockOfMonthly {
 	 */
 	public EndClockOfMonthly(){
 		
-		this.times = new AttendanceTimesMonthDom(0);
+		this.times = new AttendanceTimesMonth(0);
 		this.totalClock = new AttendanceTimeMonth(0);
 		this.averageClock = new AttendanceTimeMonth(0);
 	}
@@ -41,7 +41,7 @@ public class EndClockOfMonthly {
 	 * @return 月別実績の終業時刻
 	 */
 	public static EndClockOfMonthly of(
-			AttendanceTimesMonthDom times,
+			AttendanceTimesMonth times,
 			AttendanceTimeMonth totalClock,
 			AttendanceTimeMonth averageClock){
 		

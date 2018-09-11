@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -25,39 +26,39 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 public class WorkTypeDaysCountTable {
 
 	/** 出勤日数 */
-	private AttendanceDaysMonthDom attendanceDays;
+	private AttendanceDaysMonth attendanceDays;
 	/** 休日日数 */
-	private AttendanceDaysMonthDom holidayDays;
+	private AttendanceDaysMonth holidayDays;
 	/** 公休日数 */
-	private AttendanceDaysMonthDom publicHolidayDays;
+	private AttendanceDaysMonth publicHolidayDays;
 	/** 休出日数 */
-	private AttendanceDaysMonthDom holidayWorkDays;
+	private AttendanceDaysMonth holidayWorkDays;
 	/** 年休日数 */
-	private AttendanceDaysMonthDom annualLeaveDays;
+	private AttendanceDaysMonth annualLeaveDays;
 	/** 積立年休日数 */
-	private AttendanceDaysMonthDom retentionYearlyDays;
+	private AttendanceDaysMonth retentionYearlyDays;
 	/** 特休日数 */
 	private Map<Integer, AggregateSpcVacationDays> spcVacationDaysMap;
 	/** 欠勤日数 */
 	private Map<Integer, AggregateAbsenceDays> absenceDaysMap;
 	/** 代休日数 */
-	private AttendanceDaysMonthDom compensatoryLeaveDays;
+	private AttendanceDaysMonth compensatoryLeaveDays;
 	/** 振出日数 */
-	private AttendanceDaysMonthDom transferAttendanceDays;
+	private AttendanceDaysMonth transferAttendanceDays;
 	/** 振休発生日数 */
-	private AttendanceDaysMonthDom transferHolidayGenerateDays;
+	private AttendanceDaysMonth transferHolidayGenerateDays;
 	/** 振休使用日数 */
-	private AttendanceDaysMonthDom transferHolidayUseDays;
+	private AttendanceDaysMonth transferHolidayUseDays;
 	/** 休業日数 */
-	private Map<CloseAtr, AttendanceDaysMonthDom> leaveDays;
+	private Map<CloseAtr, AttendanceDaysMonth> leaveDays;
 	/** 時消日数 */
-	private AttendanceDaysMonthDom timeDigestionDays;
+	private AttendanceDaysMonth timeDigestionDays;
 	/** 所定日数 */
-	private AttendanceDaysMonthDom predetermineDays;
+	private AttendanceDaysMonth predetermineDays;
 	/** 勤務日数 */
-	private AttendanceDaysMonthDom workDays;
+	private AttendanceDaysMonth workDays;
 	/** 年休出勤率用労働日数 */
-	private AttendanceDaysMonthDom workingDaysForAttendanceRate;
+	private AttendanceDaysMonth workingDaysForAttendanceRate;
 
 	/** 年休を加算する */
 	private boolean addAnnualLeave;
@@ -79,23 +80,23 @@ public class WorkTypeDaysCountTable {
 			VacationAddSet vacationAddSet, Optional<VerticalTotalMethodOfMonthly> verticalTotalMethod){
 		
 		// init
-		this.attendanceDays = new AttendanceDaysMonthDom(0.0);
-		this.holidayDays = new AttendanceDaysMonthDom(0.0);
-		this.publicHolidayDays = new AttendanceDaysMonthDom(0.0);
-		this.holidayWorkDays = new AttendanceDaysMonthDom(0.0);
-		this.annualLeaveDays = new AttendanceDaysMonthDom(0.0);
-		this.retentionYearlyDays = new AttendanceDaysMonthDom(0.0);
+		this.attendanceDays = new AttendanceDaysMonth(0.0);
+		this.holidayDays = new AttendanceDaysMonth(0.0);
+		this.publicHolidayDays = new AttendanceDaysMonth(0.0);
+		this.holidayWorkDays = new AttendanceDaysMonth(0.0);
+		this.annualLeaveDays = new AttendanceDaysMonth(0.0);
+		this.retentionYearlyDays = new AttendanceDaysMonth(0.0);
 		this.spcVacationDaysMap = new HashMap<>();
 		this.absenceDaysMap = new HashMap<>();
-		this.compensatoryLeaveDays = new AttendanceDaysMonthDom(0.0);
-		this.transferAttendanceDays = new AttendanceDaysMonthDom(0.0);
-		this.transferHolidayGenerateDays = new AttendanceDaysMonthDom(0.0);
-		this.transferHolidayUseDays = new AttendanceDaysMonthDom(0.0);
+		this.compensatoryLeaveDays = new AttendanceDaysMonth(0.0);
+		this.transferAttendanceDays = new AttendanceDaysMonth(0.0);
+		this.transferHolidayGenerateDays = new AttendanceDaysMonth(0.0);
+		this.transferHolidayUseDays = new AttendanceDaysMonth(0.0);
 		this.leaveDays = new HashMap<>();
-		this.timeDigestionDays = new AttendanceDaysMonthDom(0.0);
-		this.predetermineDays = new AttendanceDaysMonthDom(0.0);
-		this.workDays = new AttendanceDaysMonthDom(0.0);
-		this.workingDaysForAttendanceRate = new AttendanceDaysMonthDom(0.0);
+		this.timeDigestionDays = new AttendanceDaysMonth(0.0);
+		this.predetermineDays = new AttendanceDaysMonth(0.0);
+		this.workDays = new AttendanceDaysMonth(0.0);
+		this.workingDaysForAttendanceRate = new AttendanceDaysMonth(0.0);
 		
 		this.addAnnualLeave = vacationAddSet.isAnnualLeave();
 		this.addRetentionYearly = vacationAddSet.isRetentionYearly();
@@ -246,7 +247,7 @@ public class WorkTypeDaysCountTable {
 			break;
 		case Closure:
 			if (closeAtr != null){
-				this.leaveDays.putIfAbsent(closeAtr, new AttendanceDaysMonthDom(0.0));
+				this.leaveDays.putIfAbsent(closeAtr, new AttendanceDaysMonth(0.0));
 				this.leaveDays.compute(closeAtr, (k, v) -> v.addDays(addDays));
 			}
 			this.predetermineDays = this.predetermineDays.addDays(addDays);

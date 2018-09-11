@@ -63,6 +63,17 @@
 							value: period, 
 							maxRange: 'none'}"/>
 					</span>
+					<div data-bind="ntsCheckBox: { checked: monthlyChecked, text: '※この分岐は月別修正から呼び出し時のみ ' }, visible: periodType() == 'yearmonth'"></div>
+					<span data-bind="if: monthlyChecked">
+						<div id="ymdrangepicker" style="display: inline-block; vertical-align: inherit; padding-left: 28px" 
+						data-bind="ntsDateRangePicker: { 
+							required: true, 
+							enable: true, 
+							type: 'fullDate',
+							showNextPrevious: false, 
+							value: period2, 
+							maxRange: 'none'}"/>
+					</span>
 				</div>
 				<div class="valign-center control-group cf">
 					<div data-bind="ntsFormLabel: { required: true, text: 'Select Employee' }"></div>

@@ -50,7 +50,7 @@
 								primaryKey: 'id',
 								columns: [
 									 { headerText: '', key: 'id',  hidden: true },
-                					 { headerText: '#{i18n.getText('CPS005_4')}', key: 'categoryName', width: 283 }, 
+                					 { headerText: '#{i18n.getText('CPS005_4')}', key: 'categoryName', width: 283, formatter: _.escape }, 
 								],
 								multiple: false,
 								value: perInfoCtgSelectCode

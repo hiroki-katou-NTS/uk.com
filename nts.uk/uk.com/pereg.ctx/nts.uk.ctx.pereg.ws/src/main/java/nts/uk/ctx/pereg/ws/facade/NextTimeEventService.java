@@ -38,8 +38,8 @@ public class NextTimeEventService extends WebService{
 			return new NextTimeEventDto();
 		}
 		AnnLeaEmpBasicInfo annLea = new AnnLeaEmpBasicInfo(param.getEmployeeId(),
-				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(), null, null, null,
-				null);
+				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(), null, null, param.getEntryDate(),
+				param.getRetireDate());
 		return NextTimeEventDto.fromDomain(getYearHolidayInfo.getYearHolidayInfo(annLea));
 	}
 

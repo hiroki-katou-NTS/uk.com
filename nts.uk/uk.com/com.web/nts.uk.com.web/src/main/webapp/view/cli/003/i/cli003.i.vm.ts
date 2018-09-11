@@ -8,11 +8,14 @@ module nts.uk.com.view.cli003.i {
         export class ScreenModel {
             listCode: KnockoutObservableArray<model.LogDisplaySetting>;
             recordType: KnockoutObservable<string>;
+            tarGetDataType: KnockoutObservable<string>;
          
             constructor() {
                 let self = this;
-                self.recordType = ko.observable(getShared('recordType').toString());        
+                self.recordType = ko.observable(getShared('recordType').toString());
+                self.tarGetDataType = ko.observable(getShared('tarGetDataType').toString());        
                 console.log(self.recordType());
+                console.log(self.tarGetDataType());
                 self.listCode = ko.observableArray([]);
                 self.currentCode = ko.observable(null);
                 self.columns = ko.observableArray([
@@ -27,7 +30,11 @@ module nts.uk.com.view.cli003.i {
             private getListLogDisplaySettingByRecordType() {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getLogDisplaySettingByRecordType(self.recordType()).done(function(data: any) {
+                let paramInputLog={
+                    recordType:self.recordType(),
+                    targetDataType:self.tarGetDataType()
+                    }
+                service.getLogDisplaySettingByRecordType(paramInputLog).done(function(data: any) {
                     console.log(data);
                     if (data && data.length > 0) {
                         data = _.orderBy(data, ['code'], ['asc', 'asc']);

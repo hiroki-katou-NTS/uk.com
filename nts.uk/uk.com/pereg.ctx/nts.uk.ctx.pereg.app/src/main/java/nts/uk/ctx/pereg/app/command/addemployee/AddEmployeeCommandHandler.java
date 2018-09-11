@@ -179,6 +179,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<ItemsByCategory> CS00020Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
 		
 		Optional<ItemsByCategory> CS00070Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
+		
+		Optional<ItemsByCategory> affComHist = command.getInputs().stream()
+				.filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		if (!affComHist.isPresent()) {
+			affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		}
+		GeneralDate inputCompanyDate = null;
+		if(affComHist.isPresent()) {
+			Optional<ItemValue>  jobIntryDate = affComHist.get().getItems().stream().filter( c ->  c.itemCode().equals("IS00020") && c.value() != null).findFirst();
+			if(jobIntryDate.isPresent()) {
+				inputCompanyDate = jobIntryDate.get().value();
+			}
+		}
+
 		if(CS00070Opt.isPresent()) {
 			inputs.remove(CS00070Opt.get());
 		}
@@ -269,7 +283,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00070": // WorkingCondition
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD, lstItemInfo,
-						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
+						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode == null? inputCompanyDate: startDateItemCode, null), Optional.empty());
 				break;
 
 			case "CS00022": // PersonContact
