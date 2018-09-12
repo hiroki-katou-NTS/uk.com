@@ -1559,7 +1559,7 @@ module nts.layout {
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
                     if (!x || !grantTable) {
-                         CS00024_IS00281.data.value('');
+                        CS00024_IS00281.data.value('');
                         CS00024_IS00282.data.value('');
                         CS00024_IS00283.data.value('');
                         return;
@@ -1583,6 +1583,15 @@ module nts.layout {
 
                 CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 CS00024_IS00280.data.value.valueHasMutated();
+                if (CS00003_IS00021){
+                    CS00003_IS00021.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00119){
+                    CS00020_IS00119.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00253){
+                    CS00020_IS00253.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
             }
         }
 
@@ -1896,12 +1905,18 @@ module nts.layout {
                                 retireDate: moment.utc(retireDates).toDate(),
                                 yearRefDate: moment.utc(yearRefDates).toDate()
                             }).done(res => {
-                                if (res && result) {
+                                if (!result) {
+                                    return;
+                                }
+
+                                if (res) {
                                     let x = moment.utc(ko.toJS(res));
                                     if (x._isValid)
                                         result.data.value(x.format('YYYY/MM/DD'));
                                     else
                                         result.data.value('');
+                                } else {
+                                    result.data.value('');
                                 }
                             });
                         });
@@ -1915,6 +1930,14 @@ module nts.layout {
                         }
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        
+                        if (CS00003_IS00021) {
+                            CS00003_IS00021.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        
+                        if (CS00024_IS00279) {
+                            CS00024_IS00279.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
 
                         inp.data.value.valueHasMutated();
