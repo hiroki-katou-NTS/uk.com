@@ -120,6 +120,17 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 }
             });
         }
+        openDscreen(){
+            let self = this;
+            // setShared('CMF002_D_PARAMS', {
+            //     categoryName: self.categoryName(),
+            //     categoryId: self.conditionSetData().categoryId(),
+            //     cndSetCd: self.conditionSetData().conditionSetCode(),
+            //     cndSetName: self.conditionSetData().conditionSetName()
+            // });
+            modal("/view/qmm/011/d/index.xhtml");
+
+        }
 
         register(){
             let self = this;
