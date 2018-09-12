@@ -1,7 +1,5 @@
 module nts.uk.com.view.qmm011.c.viewmodel {
-    import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
-    import dialog  = nts.uk.ui.dialog;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
@@ -14,6 +12,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         listOccAccIsHis:              KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
         listOccAccIsPrRate:        KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
         listOccAccInsurBus: KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
+        listAccInsurPreRate:KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([]);
         selectedEmpInsHis:          KnockoutObservable<IOccAccIsHis> = ko.observable();
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
@@ -34,8 +33,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 let self = this;
                 self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                 self.setOccAccIsHis(self.selectedEmpInsHis());
-                self.getOccAccIsPrRate();
-                self.getOccAccInsurBus();
+                self.getAccInsurPreRate();
             });
         }
 
@@ -78,6 +76,16 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             });
         }
 
+        getAccInsurPreRate() {
+            let self = this;
+            service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<AccInsurPreRate>) => {
+                if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
+                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
+                    self.isNewMode(false);
+                }
+            });
+        }
+
         setIOccAccIsHis(param: IOccAccIsHis){
             let self = this;
             self.hisId(param.hisId);
@@ -112,14 +120,54 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 }
             });
         }
+        openDscreen(){
+            let self = this;
+            // setShared('CMF002_D_PARAMS', {
+            //     categoryName: self.categoryName(),
+            //     categoryId: self.conditionSetData().categoryId(),
+            //     cndSetCd: self.conditionSetData().conditionSetCode(),
+            //     cndSetName: self.conditionSetData().conditionSetName()
+            // });
+            modal("/view/qmm/011/d/index.xhtml");
+
+        }
 
         register(){
             let self = this;
             let data: any = {
-                listOccAccIsPrRate : self.listOccAccIsPrRate();
-        }
-            service.register(data).done(() =>{
+
+                listOccAccIsPrRate: self.listOccAccIsPrRate(),
+                isNewMode: self.isNewMode(),
+                startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
+                endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
+
+            }
+            service.register(data).done(() => {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.isNewMode(false);
+                    self.initScreen(null);
+                });
             });
+        }
+        convertToCommand(dto :Array<OccAccIsPrRate>){
+            let listOccAccIsPrRate :Array <OccAccIsPrRate> = [];
+            _.each(dto, function(item: OccAccIsPrRate) {
+                let temp = new OccAccIsPrRate();
+                temp.hisId = item.hisId;
+                temp = item.empPreRateId;
+                temp.indBdRatio = Number(item.indBdRatio());
+                temp.empContrRatio = Number(item.empContrRatio());
+                temp.perFracClass = item.perFracClass();
+                temp.busiOwFracClass = item.busiOwFracClass();
+                listOccAccIsPrRate.push(temp);
+            })
+            return listOccAccIsPrRate;
+        }
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return yearMonth;
         }
 
         setOccAccIsHis(emplInsurHis: IOccAccIsHis){
@@ -224,6 +272,33 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             })
             return listEmp;
         }
+
+    }
+
+    class AccInsurPreRate {
+
+        occAccInsurBusNo: number;
+        name: string;
+        fracClass: number;
+        empConRatio: string;
+        constructor() {
+
+        }
+
+        static fromApp(app) {
+            let listEmp = [];
+            _.each(app, (item) => {
+                let dto: AccInsurPreRate = new AccInsurPreRate();
+                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.name = item.name;
+                dto.fracClass = ko.observable(item.fracClass);
+                dto.empConRatio = item.empConRatio;
+
+                listEmp.push(dto);
+            })
+            return listEmp;
+        }
+
 
     }
 

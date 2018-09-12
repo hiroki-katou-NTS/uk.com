@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class RegisterEmpInsurPreRateCommandHandler extends CommandHandler<Regist
 	    YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
 	    //String hisId = command.getHisId();
 	    List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
-	        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), item.getIndBdRatio(), item.getEmpContrRatio(), item.getPerFracClass(), item.getBusiOwFracClass());
+	        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
 	        }).collect(Collectors.toList());
 	    if (command.isNewMode()) {
 	    	empInsurBusBurRatioService.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio, startYearMonth, endYearMonth);

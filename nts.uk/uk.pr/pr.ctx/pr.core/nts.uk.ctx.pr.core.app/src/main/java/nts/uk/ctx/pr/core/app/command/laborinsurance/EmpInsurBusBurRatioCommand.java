@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 
 @Value
@@ -9,9 +7,10 @@ public class EmpInsurBusBurRatioCommand {
     
     private String hisId;
     private int empPreRateId;
-    private BigDecimal indBdRatio;
-    private BigDecimal empContrRatio;
+    private Long indBdRatio;
+    private Long empContrRatio;
     private int perFracClass;
     private int busiOwFracClass;
+;
 
 }

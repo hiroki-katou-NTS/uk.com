@@ -15,6 +15,7 @@ public interface EmpInsurBusBurRatioRepository
 
     void update(List<EmpInsurBusBurRatio> domain);
 
-    void remove(String hisId, int empPreRateId);
+    void remove(String hisId);
+   
 
 }

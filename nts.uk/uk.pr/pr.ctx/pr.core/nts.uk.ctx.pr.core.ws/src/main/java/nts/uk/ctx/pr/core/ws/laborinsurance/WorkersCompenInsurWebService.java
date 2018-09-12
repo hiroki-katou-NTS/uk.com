@@ -2,6 +2,10 @@ package nts.uk.ctx.pr.core.ws.laborinsurance;
 
 import nts.arc.layer.ws.WebService;
 
+import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.OccAccIsPrRateCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurBusBurRatioCommand;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
 
 
@@ -22,6 +26,15 @@ public class WorkersCompenInsurWebService extends WebService {
     @Inject
     private OccAccIsPrRateFinder occAccIsPrRateFinder;
 
+    @Inject
+    private AccInsurPreRateFinder accInsurPreRateFinder;
+
+    @Inject
+    private OccAccInsurBusFinder occAccInsurBusFinder;
+
+    @Inject
+    private AddOccAccIsPrRateCommandHandler addOccAccIsPrRateCommandHandler;
+
     @POST
     @Path("getListOccAccIsHis")
     public  List<OccAccIsHisDto> getListOccAccIsHis() {
@@ -31,17 +44,25 @@ public class WorkersCompenInsurWebService extends WebService {
     @POST
     @Path("getOccAccIsPrRate/{hisId}")
     public List<OccAccIsPrRateDto> getOccAccIsPrRate(@PathParam("hisId") String hisId) {
-        List<OccAccIsPrRateDto> a = occAccIsPrRateFinder.getAllOccAccIsPrRate(hisId);
-        System.out.println(a);
         return occAccIsPrRateFinder.getAllOccAccIsPrRate(hisId);
     }
 
     @POST
     @Path("getOccAccInsurBus")
     public  List<OccAccInsurBusDto> getOccAccInsurBus() {
-        return occAccIsHisFinder.getOccAccInsurBus();
+        return occAccInsurBusFinder.getOccAccInsurBus();
     }
 
+    @POST
+    @Path("getAccInsurPreRate/{hisId}")
+    public  List<AccInsurPreRateDto> getAccInsurPreRate(@PathParam("hisId") String hisId) {
+        return accInsurPreRateFinder.getAccInsurPreRate(hisId);
+    }
+    @POST
+    @Path("register")
+    public void registerEmpInsurPreRate(AddOccAccIsPrRateCommand command){
+        addOccAccIsPrRateCommandHandler.handle(command);
+    }
 
 
 }

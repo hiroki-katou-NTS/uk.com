@@ -33,7 +33,7 @@ public class WorkersComInsurService {
         *ドメインモデル「労災保険履歴」を全て取得する
         * */
         Optional<OccAccIsHis> getEmpInsurHisByCid = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
-        if(acceptCode.get().getEachBusiness() == null || getEmpInsurHisByCid == null ){
+        if(acceptCode.get().getEachBusiness() == null || getEmpInsurHisByCid.get().getHistory() == null ){
             /*選択処理*/
           return null;
 

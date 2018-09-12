@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHis;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -47,12 +48,9 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
     {
         return occAccIsHisPk;
     }
-    public static List<QpbmtOccAccIsHis> toEntity(OccAccIsHis domain) {
-        List<QpbmtOccAccIsHis> qpbmtEmpInsurHisList = domain.getHistory().stream().map(item -> {
-            return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(domain.getCid(),item.identifier()),item.start().month(),item.end().month());
-        }).collect(Collectors.toList());
-
-        return qpbmtEmpInsurHisList;
+    public static QpbmtOccAccIsHis toEntity(YearMonthHistoryItem domain, String cId) {
+        return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(cId, domain.identifier()),
+                Integer.parseInt(domain.start().toString()),Integer.parseInt(domain.end().toString()));
     }
 
 

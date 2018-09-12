@@ -41,6 +41,7 @@ public class EmpInsurBusBurRatio {
 	public EmpInsurBusBurRatio(String hisId, int empPreRateId, BigDecimal indBdRatio, BigDecimal empContrRatio,
 			int perFracClass, int busiOwFracClass) {
 		super();
+		this.hisId = hisId;
 		this.empPreRateId = EnumAdaptor.valueOf(empPreRateId, EmpInsurRateId.class);
 		this.indBdRatio = new InsuranceRate(indBdRatio);
 		this.empContrRatio = new InsuranceRate(empContrRatio);

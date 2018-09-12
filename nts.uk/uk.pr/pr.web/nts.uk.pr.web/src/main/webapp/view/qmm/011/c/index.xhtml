@@ -24,10 +24,10 @@
                 <div>
                     <!-- A1_1-->
                     <button class="proceed" id="A1_1" tabindex="1"
-                            data-bind="">#{i18n.getText('qmm011_1')}</button>
+                            data-bind="click: register">#{i18n.getText('qmm011_1')}</button>
                     <!-- A1_2 -->
                     <button id="A1_2" tabindex="2"
-                            data-bind="">#{i18n.getText('qmm011_2')}</button>
+                            data-bind="click: function(){$vm.openDscreen()}">#{i18n.getText('qmm011_2')}</button>
                     <!-- A1_3-->
                     <button id="A1_3" tabindex="3"
                             data-bind="">#{i18n.getText('qmm011_3')}</button>
@@ -70,13 +70,13 @@
             <div class = "right">
                 <div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
                 <!--C2_2 開始年月 -->
-                <span class="label" data-bind="text: startDate"></span>
+                <span class="label" data-bind="text: startYearMonth"></span>
                 <!--C2_3 開始年月和暦 -->
                 <span class="label" data-bind="text: monthlyCalendar"></span>
                 <!--C2_4 ～  -->
                 <label id= "C2_4">#{i18n.getText('QMM011_9')}</label>
                 <!--C2_5 終了年月  -->
-                <span class="label" data-bind="text: endDate"></span>
+                <span class="label" data-bind="text: endYearMonth"></span>
                 <div id ="C2_6" class="set-row">
                     <hr />
                 </div>
@@ -96,7 +96,7 @@
                             <th class="bg-green">#{i18n.getText('QMM011_12')}</th>
                         </tr>
                         </thead>
-                        <tbody data-bind="foreach: listOccAccInsurBus()">
+                        <tbody data-bind="foreach: listAccInsurPreRate()">
                         <tr >
                             <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: occAccInsurBusNo">
 
@@ -107,7 +107,7 @@
                                 <input id = "C3_11"
                                        data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
-																value: empContrRatio,
+																value: empConRatio,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
@@ -117,7 +117,7 @@
                                 <div id = "C3_13"
                                      data-bind="ntsComboBox: {
 
-																value: busiOwFracClass,
+																value: fracClass,
 																name:'#{i18n.getText('QMM011_12')}',
 																options: $parent.listPerFracClass,
 																optionsText: 'name',

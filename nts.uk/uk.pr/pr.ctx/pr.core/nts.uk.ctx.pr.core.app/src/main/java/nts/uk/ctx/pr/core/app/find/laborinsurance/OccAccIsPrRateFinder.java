@@ -21,7 +21,7 @@ public class OccAccIsPrRateFinder
 
     public List<OccAccIsPrRateDto> getAllOccAccIsPrRate(String hisId){
         OccAccIsPrRate temp = finder.getOccAccIsPrRateByHisId(hisId);
-        if(temp == null){
+        if(temp.getEachBusBurdenRatio()==null){
             return null;
         }
         return OccAccIsPrRateDto.fromDomain(temp);

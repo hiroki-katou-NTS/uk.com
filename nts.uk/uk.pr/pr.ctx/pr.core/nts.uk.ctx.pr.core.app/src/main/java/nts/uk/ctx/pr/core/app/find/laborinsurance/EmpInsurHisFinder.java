@@ -22,7 +22,9 @@ public class EmpInsurHisFinder {
 		String cId = AppContexts.user().companyId();
 		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
 		List<EmpInsurHisDto> empInsurHisDto = new ArrayList<EmpInsurHisDto>();
-		empInsurHisDto = empInsurHis.isPresent() ? EmpInsurHisDto.fromDomain(empInsurHis.get()) :empInsurHisDto;
+		if (empInsurHis.isPresent() && empInsurHis.get().getHistory() != null) {
+			empInsurHisDto = EmpInsurHisDto.fromDomain(empInsurHis.get());
+		}
 		return empInsurHisDto;
 	}
 }

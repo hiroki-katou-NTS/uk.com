@@ -1,5 +1,4 @@
 module nts.uk.com.view.qmm011.b.viewmodel {
-    import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
     import setShared = nts.uk.ui.windows.setShared;
@@ -16,15 +15,11 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         hisId: KnockoutObservable<string> = ko.observable('');
         index: KnockoutObservable<number> = ko.observable(0);
         selectedEmpInsHisId: KnockoutObservable<string> = ko.observable('');
-        monthlyCalendar: KnockoutObservable<string> = ko.observable('2010/1');
-        startYearMonth: KnockoutObservable<string> = ko.observable('2010/1');
-        endYearMonth: KnockoutObservable<string> = ko.observable('2010/1');
-        lastStartDate: KnockoutObservable<string> = ko.observable('2010/1');
-        indBdRatio: KnockoutObservable<string> = ko.observable('');
-        perFracClass: KnockoutObservable<number> = ko.observable();
-        empContrRatio: KnockoutObservable<string> = ko.observable('');
-        busiOwFracClass: KnockoutObservable<string> = ko.observable('');
-        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        monthlyCalendar: KnockoutObservable<string> = ko.observable('');
+        startYearMonth: KnockoutObservable<number> = ko.observable();
+        endYearMonth: KnockoutObservable<number> = ko.observable();
+        laststartYearMonth: KnockoutObservable<string> = ko.observable('');
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.initScreen(null);
@@ -49,19 +44,21 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                         self.index(self.getIndex(hisId));
                     }
                     self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
-                } else {
-                    self.isNewMode(false);
                 }
             }).always(() => {
                 block.clear();
             });
         }
+        
         getEmpInsurPreRate() {
             let self = this;
             service.getEmpInsurPreRate(self.selectedEmpInsHisId()).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) => {
                 if (listEmpInsurPreRate && listEmpInsurPreRate.length > 0) {
                     self.listEmpInsurPreRate(EmpInsurPreRate.fromApp(listEmpInsurPreRate));
                     self.isNewMode(false);
+                } else {
+                    self.isNewMode(true);
+                    self.addEmpInsurPreRate();
                 }
             });
         }
@@ -69,8 +66,38 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         setIEmplInsurHis(param: IEmplInsurHis) {
             let self = this;
             self.hisId(param.hisId);
-            self.startDate(param.startDate);
-            self.endDate(param.endDate);
+            self.startYearMonth(param.startYearMonth);
+            self.endYearMonth(param.endYearMonth);
+        }
+        
+        addEmpInsurPreRate(){
+            let self = this;
+            let empInsurPreRate: EmpInsurPreRate;
+            for(let i = 0; i< 3; i++) {
+                empInsurPreRate = new EmpInsurPreRate();
+                empInsurPreRate.hisId = self.hisId();
+                empInsurPreRate.empPreRateId = i;
+                empInsurPreRate.indBdRatio = ko.observable();
+                empInsurPreRate.empContrRatio = ko.observable();
+                empInsurPreRate.perFracClass = ko.observable(1);
+                empInsurPreRate.busiOwFracClass = ko.observable(1);
+                self.listEmpInsurPreRate.push(empInsurPreRate);
+            }
+        }
+        
+        convertToCommand(dto :Array<EmpInsurPreRate>){
+            let listEmpInsurPreRate :Array <EmpInsurPreRate> = [];
+            _.each(dto, function(item: EmpInsurPreRate) {
+                let temp = new EmpInsurPreRate();
+                temp.hisId = item.hisId;
+                temp.empPreRateId = item.empPreRateId;
+                temp.indBdRatio = Number(item.indBdRatio());
+                temp.empContrRatio = Number(item.empContrRatio());
+                temp.perFracClass = item.perFracClass();
+                temp.busiOwFracClass = item.busiOwFracClass();
+                listEmpInsurPreRate.push(temp);
+            })
+            return listEmpInsurPreRate;
         }
 
         getIndex(hisId: string) {
@@ -87,7 +114,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         openEscreen() {
             let self = this;
             setShared('QMM011_E_PARAMS', {
-                startDate: self.startDate()
+                startYearMonth: self.startYearMonth()
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
@@ -104,11 +131,11 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         register() {
             let self = this;
             let data: any = {
-                listEmpInsurPreRate: self.listEmpInsurPreRate();
-                isNewMode: self.isNewMode();
-                hisId: self.hisId();
-                startYearMonth: self.startYearMonth();
-                endYearMonth:  self.endYearMonth();
+                listEmpInsurPreRate: self.convertToCommand(self.listEmpInsurPreRate()),
+                isNewMode: self.isNewMode(),
+                hisId: self.hisId(),
+                startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
+                endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
             }
             service.register(data).done(() => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -117,20 +144,23 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 });
             });
         }
-
+        
+        
+        
         setEmplInsurHis(emplInsurHis: IEmplInsurHis) {
             let self = this
             self.hisId(emplInsurHis.hisId);
-            self.startDate(self.convertMonthYearToString(emplInsurHis.startDate));
-            self.endDate(self.convertMonthYearToString(emplInsurHis.endDate));
+            self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
+            self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
         }
 
         openFscreen() {
             let self = this;
             setShared('QMM011_F_PARAMS', {
-                startDate: self.listEmpInsHis(),
-                endDate: self.startDate(),
-                lastStartDate: self.lastStartDate()
+                startYearMonth: self.listEmpInsHis(),
+                endYearMonth: self.startYearMonth(),
+                insurrance: INSURRANCE.EMPLOYMENT_INSURRANCE_RATE,
+                hisId: self.hisId()
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_B_Param');
@@ -143,6 +173,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 }
             });
         }
+        
         convertMonthYearToString(yearMonth: any) {
             let self = this;
             let year: string, month: string;
@@ -151,24 +182,32 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             month = yearMonth.slice(4, 6);
             return year + "/" + month;
         }
+        
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return yearMonth;
+        }
     }
+    
 
     class IEmplInsurHis {
         hisId: string
-        startDate: string;
-        endDate: string;
+        startYearMonth: string;
+        endYearMonth: string;
         between: string;
     }
 
     class EmplInsurHis {
         hisId: string
-        startDate: string;
-        endDate: string;
+        startYearMonth: string;
+        endYearMonth: string;
         between: string;
         constructor(param: IEmplInsurHis) {
             this.hisId(param.hisId || '');
-            this.startDate(param.startDate || '');
-            this.endDate(param.endDate || '');
+            this.startYearMonth(param.startYearMonth || '');
+            this.endYearMonth(param.endYearMonth || '');
             this.between('~');
         }
 
@@ -176,18 +215,18 @@ module nts.uk.com.view.qmm011.b.viewmodel {
 
     class IEmpInsurPreRate {
         hisId: string;
-        empPreRateId: string;
+        empPreRateId: number;
         indBdRatio: number;
-        empContrRatio: string;
+        empContrRatio: number;
         perFracClass: number;
         busiOwFracClass: number;
     }
 
     class EmpInsurPreRate {
         hisId: string;
-        empPreRateId: string;
+        empPreRateId: number;
         indBdRatio: number;
-        empContrRatio: string;
+        empContrRatio: number;
         perFracClass: KnockoutObservable<number>;
         busiOwFracClass: number;
         constructor() {
@@ -208,7 +247,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             return listEmp;
         }
     }
-
+    
     export function getListPerFracClass(): Array<model.ItemModel> {
         return [
             new model.ItemModel('0', getText('CMF002_358')),
@@ -217,5 +256,10 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             new model.ItemModel('3', getText('CMF002_361')),
             new model.ItemModel('4', getText('CMF002_362'))
         ];
+    }
+    
+    export enum INSURRANCE {
+        EMPLOYMENT_INSURRANCE_RATE = 1,
+        ACCIDENT_INSURRANCE_RATE = 0
     }
 }
