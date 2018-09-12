@@ -13,9 +13,16 @@ public class JpaSocialInsurancePrefectureInformationRepository extends JpaReposi
 	private static final String QUERY = "select * from QpbmtSocialInsuracePrefectureInfomation where socialInsPreInfoPk.historyId  IN"
 			+ " (SELECT historyId FROM QpbmtSocialInsurancePrefectureHistory )";
 
+<<<<<<< HEAD
 	@Override
 	public List<SocialInsurancePrefectureInformation> findByHistory() {
 		return this.queryProxy().query(QUERY, QpbmtSocialInsuracePrefectureInfomation.class)
 				.getList(c -> c.toDomain(c));
 	}
+=======
+import javax.ejb.Stateless;
+
+@Stateless
+public class JpaSocialInsurancePrefectureInformationRepository extends JpaRepository implements SocialInsurancePrefectureInformationRepository {
+>>>>>>> d68710f4dfb09f47f45fc50bfa98733219413d35
 }

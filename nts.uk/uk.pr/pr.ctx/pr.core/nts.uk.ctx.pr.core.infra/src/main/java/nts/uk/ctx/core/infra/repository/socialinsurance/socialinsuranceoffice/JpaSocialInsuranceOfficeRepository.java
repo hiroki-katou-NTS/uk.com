@@ -9,6 +9,9 @@ import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurance
 import nts.uk.ctx.core.infra.entity.socialinsurance.socialinsuranceoffice.QpbmtSocialInsuranceOffice;
 import nts.uk.ctx.core.infra.entity.socialinsurance.socialinsuranceoffice.QpbmtSocialInsuranceOfficePk;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements SocialInsuranceOfficeRepository {
 	
 	public static final String QUERY = "select * from QpbmtSocialInsuranceOffice where socialInsuranceOfficePk.cid = :cid";
