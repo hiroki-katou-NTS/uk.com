@@ -382,7 +382,7 @@ public class TotalWorkingTime {
 																							 Optional.of(leaveLateSet)
 																							 );
 			
-			//コアタイム無しの遅刻時間計算
+			//控除用コアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Deduction, 
 					 																				  PremiumAtr.RegularWork,
 					 																				  recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
@@ -724,8 +724,18 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	private int calcWithinTime() {
-		return this.withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
-				+ this.withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes();
+		if(this.getWithinStatutoryTimeOfDaily() != null) {
+			int workTime = this.getWithinStatutoryTimeOfDaily().getWorkTime() != null
+							?this.getWithinStatutoryTimeOfDaily().getWorkTime().valueAsMinutes()
+							:0;
+			int premiumTime = this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime() != null
+							? this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime().valueAsMinutes()
+							:0;
+			return workTime + premiumTime;
+		}
+		else {
+			return 0;
+		}
 	}
 	
 	/**

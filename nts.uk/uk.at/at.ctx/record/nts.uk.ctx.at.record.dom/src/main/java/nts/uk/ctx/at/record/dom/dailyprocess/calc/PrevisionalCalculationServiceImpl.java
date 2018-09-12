@@ -202,7 +202,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				.setOutingTime(Optional.of(new OutingTimeOfDailyPerformance(employeeId, ymd, outingTimeSheets)));
 		List<BreakTimeOfDailyPerformance> addElement = new ArrayList<>();
 		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
-		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
+		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_SCHEDULE, breakTimeSheets, ymd));
 		provisionalRecord.setBreakTime(addElement);
 		provisionalRecord
 				.setShortTime(Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortWorkingTimeSheets, ymd)));
