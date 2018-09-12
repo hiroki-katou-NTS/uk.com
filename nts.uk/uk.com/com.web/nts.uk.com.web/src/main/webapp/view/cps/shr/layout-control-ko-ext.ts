@@ -32,7 +32,7 @@ module nts.custombinding {
             let $element = $(element),
                 accessor = valueAccessor();
 
-            window.setInterval(() => {
+            let inter = window.setInterval(() => {
                 if (_.has(accessor, "width") && ko.isObservable(accessor.width)) {
                     accessor.width(element.offsetWidth);
                 }
@@ -87,7 +87,12 @@ module nts.custombinding {
                         $element.css('max-height', ((h * l) + 4) + 'px');
                     }
                 }
-            }, 0);
+
+                if (!element) {
+                    console.log('disposed');
+                    clearInterval(inter);
+                }
+            }, 100);
         }
     }
 
@@ -815,8 +820,8 @@ module nts.custombinding {
                                                                 <!-- /ko -->
                                                             </tr>
                                                         </thead>
-                                                        <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { setTimeout(function() { $(element[1]).find('input').unbind('blur'); }, 100) } } }">
-                                                            <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#aaa' : '#fff'}">
+                                                        <tbody data-bind="foreach: { data: renders(), as: 'row', afterRender: function(element, data) { let _renders = _.map(ko.toJS(renders), function(m) { return m.recordId; }); if(_.indexOf(_renders, data.recordId) == _renders.length - 1) { let tout = setTimeout(function() { $(element[1]).find('input').unbind('blur'); clearTimeout(tout); }, 100) } } }">
+                                                            <tr data-bind="attr: { 'data-id': row.recordId }, style: {'background-color': ko.toJS(row.checked) ? '#ccc' : '#fff'}">
                                                                 <td>
                                                                     <span data-bind="ntsCheckBox: { checked: row.checked, enable: row.enable }"></span>
                                                                 </td>
@@ -1242,8 +1247,9 @@ module nts.custombinding {
 
             opts.sortable.removeItem(item, false);
 
-            setTimeout(() => {
+            let tout = setTimeout(() => {
                 $(ctrls.sortable).scrollTop(clst);
+                clearInterval(tout);
             }, 0);
         };
 
@@ -1724,7 +1730,7 @@ module nts.custombinding {
                                             $(document).data('_nts_bind', _bind);
 
                                             $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                                setTimeout(() => {
+                                                let tout = setTimeout(() => {
                                                     let dom1 = $(id1),
                                                         dom2 = $(id2),
                                                         pv = ko.toJS(prev.value),
@@ -1747,6 +1753,7 @@ module nts.custombinding {
                                                     } else {
                                                         rmError(dom2, "Msg_858");
                                                     }
+                                                    clearTimeout(tout);
                                                 }, 5);
                                             });
                                         }
@@ -1756,16 +1763,20 @@ module nts.custombinding {
                                     switch (first.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
                                             first.startDate = ko.observable();
-                                            first.endDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
-                                                    //.add(ko.toJS(second.value) ? -1 : 0, "days")
-                                                    .toDate();
+                                            first.endDate = ko.computed({
+                                                read: () => {
+                                                    return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
+                                                        .toDate();
+                                                },
+                                                disposeWhen: () => !second.value
                                             });
 
-                                            second.startDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
-                                                    //.add(ko.toJS(first.value) ? 1 : 0, "days")
-                                                    .toDate();
+                                            second.startDate = ko.computed({
+                                                read: () => {
+                                                    return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
+                                                        .toDate();
+                                                },
+                                                disposeWhen: () => !first.value
                                             });
                                             second.endDate = ko.observable();
                                             break;
@@ -1783,7 +1794,8 @@ module nts.custombinding {
 
                                                     exceptConsts.push(primi.itemCode);
                                                     writeConstraint(primi.itemCode, primi);
-                                                }
+                                                },
+                                                disposeWhen: () => !first.value
                                             });
 
                                             ko.computed({
@@ -1798,7 +1810,8 @@ module nts.custombinding {
 
                                                     exceptConsts.push(primi.itemCode);
                                                     writeConstraint(primi.itemCode, primi);
-                                                }
+                                                },
+                                                disposeWhen: () => !second.value
                                             });
                                             break;
                                         case ITEM_SINGLE_TYPE.TIMEPOINT:
@@ -1815,7 +1828,8 @@ module nts.custombinding {
 
                                                     exceptConsts.push(primi.itemCode);
                                                     writeConstraint(primi.itemCode, primi);
-                                                }
+                                                },
+                                                disposeWhen: () => !first.value
                                             });
 
                                             ko.computed({
@@ -1830,7 +1844,8 @@ module nts.custombinding {
 
                                                     exceptConsts.push(primi.itemCode);
                                                     writeConstraint(primi.itemCode, primi);
-                                                }
+                                                },
+                                                disposeWhen: () => !second.value
                                             });
                                             break;
                                     }
@@ -1896,8 +1911,6 @@ module nts.custombinding {
 
                     def.defValue = ko.toJS(def.value);
 
-                    //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
-
                     if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let fl = true,
                             val = ko.toJS(def.value),
@@ -1925,126 +1938,118 @@ module nts.custombinding {
                                 } else {
                                     def.textValue('');
                                 }
-                            }
+                            },
+                            disposeWhen: () => !def.value
                         });
                     }
-
-                    ko.computed({
-                        read: () => {
-                            ko.toJS(def.editable);
-                            ko.toJS(access.editAble);
-
-                            calc_data();
-                        }
-                    });
                 },
-                calc_data = () => {
-                    if (ko.toJS(access.editAble) == 2) {
-                        let inputs = [],
-                            proc = function(data: any): any {
-                                if (!data.item) {
+                proc = function(data: any): any {
+                    if (!data.item) {
+                        return {
+                            text: undefined,
+                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                            defText: undefined,
+                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                            typeData: 1
+                        };
+                    }
+
+                    switch (data.item.dataTypeValue) {
+                        default:
+                        case ITEM_SINGLE_TYPE.STRING:
+                            return {
+                                text: undefined,
+                                value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                defText: undefined,
+                                defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                typeData: 1
+                            };
+                        case ITEM_SINGLE_TYPE.NUMERIC:
+                        case ITEM_SINGLE_TYPE.TIME:
+                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                            return {
+                                text: undefined,
+                                value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                defText: undefined,
+                                defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                typeData: 2
+                            };
+                        case ITEM_SINGLE_TYPE.DATE:
+                            return {
+                                text: undefined,
+                                value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                defText: undefined,
+                                defValue: !_.isNil(data.defValue) ? moment.utc(data.defValue, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                typeData: 3
+                            };
+                        case ITEM_SINGLE_TYPE.SELECTION:
+                        case ITEM_SINGLE_TYPE.SEL_RADIO:
+                        case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                            switch (data.item.referenceType) {
+                                case ITEM_SELECT_TYPE.ENUM:
                                     return {
-                                        text: undefined,
-                                        value: !_.isNil(data.value) ? String(data.value) : undefined,
-                                        defText: undefined,
+                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                        typeData: 2
+                                    };
+                                case ITEM_SELECT_TYPE.CODE_NAME:
+                                    return {
+                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                         defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                         typeData: 1
                                     };
-                                }
-
-                                switch (data.item.dataTypeValue) {
-                                    default:
-                                    case ITEM_SINGLE_TYPE.STRING:
+                                case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                    let value: number = !_.isNil(data.value) ? Number(data.value) : undefined;
+                                    if (!_.isNil(value)) {
+                                        if (String(value) == String(data.value)) {
+                                            return {
+                                                text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                                typeData: 2
+                                            };
+                                        } else {
+                                            return {
+                                                text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                                value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                                typeData: 1
+                                            };
+                                        }
+                                    } else {
                                         return {
-                                            text: undefined,
-                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
-                                            defText: undefined,
+                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
+                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                             defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 1
                                         };
-                                    case ITEM_SINGLE_TYPE.NUMERIC:
-                                    case ITEM_SINGLE_TYPE.TIME:
-                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        return {
-                                            text: undefined,
-                                            value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
-                                            defText: undefined,
-                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                            typeData: 2
-                                        };
-                                    case ITEM_SINGLE_TYPE.DATE:
-                                        return {
-                                            text: undefined,
-                                            value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
-                                            defText: undefined,
-                                            defValue: !_.isNil(data.defValue) ? moment.utc(data.defValue, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
-                                            typeData: 3
-                                        };
-                                    case ITEM_SINGLE_TYPE.SELECTION:
-                                    case ITEM_SINGLE_TYPE.SEL_RADIO:
-                                    case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                                        switch (data.item.referenceType) {
-                                            case ITEM_SELECT_TYPE.ENUM:
-                                                return {
-                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
-                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                                    typeData: 2
-                                                };
-                                            case ITEM_SELECT_TYPE.CODE_NAME:
-                                                return {
-                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
-                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                                    typeData: 1
-                                                };
-                                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                let value: number = !_.isNil(data.value) ? Number(data.value) : undefined;
-                                                if (!_.isNil(value)) {
-                                                    if (String(value) == String(data.value)) {
-                                                        return {
-                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
-                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                                            typeData: 2
-                                                        };
-                                                    } else {
-                                                        return {
-                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
-                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                                            typeData: 1
-                                                        };
-                                                    }
-                                                } else {
-                                                    return {
-                                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
-                                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                                        typeData: 1
-                                                    };
-                                                }
-                                        }
-                                    case ITEM_SINGLE_TYPE.READONLY:
-                                    case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
-                                        return null;
-                                    case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
-                                        return {
-                                            text: undefined,
-                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
-                                            defText: undefined,
-                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
-                                            typeData: 2
-                                        };
-                                    case ITEM_SINGLE_TYPE.READONLY_BUTTON:
-                                        return null;
-                                }
-                            },
+                                    }
+                            }
+                        case ITEM_SINGLE_TYPE.READONLY:
+                        case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                            return null;
+                        case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                            return {
+                                text: undefined,
+                                value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                defText: undefined,
+                                defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                typeData: 2
+                            };
+                        case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                            return null;
+                    }
+                },
+                calc_data = () => {
+                    if ($editable === 2) {
+                        let inputs = [],
                             grbc = _(opts.sortable.data())
                                 .filter(x => _.has(x, "items") && !!x.items)
                                 .map(x => ko.toJS(x.items))
@@ -2283,10 +2288,6 @@ module nts.custombinding {
                                         items: []
                                     };
 
-                                _row.checked.subscribe(c => {
-                                    calc_data();
-                                });
-
                                 _(row.items).each(r => {
                                     let c = ko.toJS(r),
                                         _r = _.omit(c, [
@@ -2317,7 +2318,6 @@ module nts.custombinding {
                                     });
 
                                     _r.value.subscribe(v => {
-                                        calc_data();
                                         if (!!v) {
                                             let rids = _.map(cls.renders(), m => m.recordId);
                                             if (rids.indexOf(_row.recordId) == rids.length - 1) {
@@ -2349,9 +2349,6 @@ module nts.custombinding {
                                     renders.removeAll();
                                 } else {
                                     _.each(renders(), (row, rid) => {
-                                        row.checked.subscribe(c => {
-                                            calc_data();
-                                        });
                                         _(row.items).each(r => {
                                             ko.utils.extend(r, {
                                                 checked: row.checked,
@@ -2419,10 +2416,11 @@ module nts.custombinding {
                     // scroll to bottom
                     $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
                     // select lastest item
-                    setTimeout(() => {
+                    let tout = setTimeout(() => {
                         $(ctrls.sortable)
                             .find('.form-group.item-classification:last-child')
                             .addClass('selected');
+                        clearTimeout(tout);
                     }, 0);
                 };
 
@@ -2443,6 +2441,10 @@ module nts.custombinding {
             // binding output data value 
             if (access.outData) {
                 $.extend(opts.sortable, { outData: access.outData });
+                // add refresh method
+                $.extend(opts.sortable.outData, {
+                    refresh: calc_data
+                });
             }
 
             // change color text
@@ -2519,10 +2521,18 @@ module nts.custombinding {
             opts.sortable.isEditable.valueHasMutated();
 
             // extend option
-            $.extend(opts.combobox, { enable: ko.computed(() => !opts.radios.value()) });
+            $.extend(opts.combobox, {
+                enable: ko.computed({
+                    read: () => !opts.radios.value(),
+                    disposeWhen: () => !opts.radios.value
+                })
+            });
 
             $.extend(opts.searchbox, {
-                items: ko.computed(opts.listbox.options),
+                items: ko.computed({
+                    read: opts.listbox.options,
+                    disposeWhen: () => !opts.listbox.options
+                }),
                 selected: opts.listbox.value
             });
 
@@ -2531,7 +2541,6 @@ module nts.custombinding {
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 //opts.sortable.isEditable.valueHasMutated();
-
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
@@ -2576,18 +2585,20 @@ module nts.custombinding {
                     hierarchies(x);
                 });
 
-                // clear all error on switch new layout
-                clearError();
+                if ($editable === 2) {
+                    // clear all error on switch new layout
+                    clearError();
 
-                // write date/time/timepoint 
-                // primitive constraint to viewContext
-                dateTimeConsts();
+                    // write date/time/timepoint 
+                    // primitive constraint to viewContext
+                    dateTimeConsts();
+                }
 
                 // write primitive constraints to viewContext
                 primitiveConsts();
 
-                // init data for save layout
-                if (ko.toJS(access.editAble) != 2) {
+                if (typeof $editable === 'boolean' ? $editable === true : $editable === 0) {
+                    // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
                         return {
                             dispOrder: Number(i) + 1,
@@ -2616,46 +2627,49 @@ module nts.custombinding {
                 line: $element.find('#cps007_btn_line')[0]
             });
 
-            // change text of label
-            $(ctrls.label).text(text('CPS007_5'));
-            $(ctrls.line).text(text('CPS007_19'));
-            $(ctrls.button).text(text('CPS007_11'));
+            if (typeof $editable == 'boolean' ? $editable === true : $editable === 0) {
+                // change text of label
+                $(ctrls.label).text(text('CPS007_5'));
+                $(ctrls.line).text(text('CPS007_19'));
+                $(ctrls.button).text(text('CPS007_11'));
 
 
-            // subscribe handle
-            // load combobox data
-            opts.radios.value.subscribe(mode => {
-                if (typeof $editable == 'boolean' ? $editable !== true : $editable !== 0) {
-                    return;
-                }
+                // subscribe handle
+                // load combobox data
+                opts.radios.value.subscribe(mode => {
+                    // remove all data in listbox
+                    opts.listbox.options.removeAll();
 
-                // remove all data in listbox
-                opts.listbox.options.removeAll();
+                    if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
+                        opts.combobox.options.removeAll();
+                        services.getCats().done((data: any) => {
+                            if (data && data.categoryList && data.categoryList.length) {
+                                let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
 
-                if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
-                    opts.combobox.options.removeAll();
-                    services.getCats().done((data: any) => {
-                        if (data && data.categoryList && data.categoryList.length) {
-                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                    cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
+                                }
 
-                            if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
-                            }
+                                if (cats && cats.length) {
+                                    opts.combobox.options(cats);
 
-                            if (cats && cats.length) {
-                                opts.combobox.options(cats);
+                                    // set first id
+                                    let options = ko.toJS(opts.combobox.options);
 
-                                // set first id
-                                let options = ko.toJS(opts.combobox.options);
-
-                                if (options[0]) {
-                                    if (ko.toJS(opts.combobox.value) != options[0].id) {
-                                        opts.combobox.value(options[0].id);
+                                    if (options[0]) {
+                                        if (ko.toJS(opts.combobox.value) != options[0].id) {
+                                            opts.combobox.value(options[0].id);
+                                        } else {
+                                            opts.combobox.value.valueHasMutated();
+                                        }
                                     } else {
-                                        opts.combobox.value.valueHasMutated();
+                                        opts.combobox.value(undefined);
                                     }
                                 } else {
-                                    opts.combobox.value(undefined);
+                                    // show message if hasn't any category
+                                    if (ko.toJS(opts.sortable.isEnabled)) {
+                                        alert({ messageId: 'Msg_288' }).then(opts.callback);
+                                    }
                                 }
                             } else {
                                 // show message if hasn't any category
@@ -2663,310 +2677,299 @@ module nts.custombinding {
                                     alert({ messageId: 'Msg_288' }).then(opts.callback);
                                 }
                             }
-                        } else {
-                            // show message if hasn't any category
-                            if (ko.toJS(opts.sortable.isEnabled)) {
-                                alert({ messageId: 'Msg_288' }).then(opts.callback);
+                        });
+                    } else { // get item by group
+                        // change text in add-button to [グループを追加　→]
+                        $(ctrls.button).text(text('CPS007_20'));
+                        services.getGroups().done((data: Array<IItemGroup>) => {
+                            // prevent if slow networks
+                            if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
+                                return;
                             }
-                        }
-                    });
-                } else { // get item by group
-                    // change text in add-button to [グループを追加　→]
-                    $(ctrls.button).text(text('CPS007_20'));
-                    services.getGroups().done((data: Array<IItemGroup>) => {
-                        // prevent if slow networks
-                        if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
-                            return;
-                        }
 
-                        if (data && data.length) {
-                            // map Array<IItemGroup> to Array<IItemDefinition>
-                            // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
-                            // remove groups when it does not contains any item definition (by hql)
-                            let _opts = _.map(data, group => {
-                                return {
-                                    id: group.personInfoItemGroupID,
-                                    itemName: group.fieldGroupName,
-                                    itemTypeState: undefined,
-                                    dispOrder: group.dispOrder
-                                }
-                            });
-
-                            opts.listbox.options(_opts);
-                        }
-                    });
-                }
-
-                // remove listbox data
-                opts.listbox.value.removeAll();
-            });
-            opts.radios.value.valueHasMutated();
-
-            // load listbox data
-            opts.combobox.value.subscribe(cid => {
-                if (typeof $editable == 'boolean' ? $editable !== true : $editable !== 0) {
-                    return;
-                }
-
-                if (cid) {
-                    let data: Array<IItemCategory> = ko.toJS(opts.combobox.options),
-                        item: IItemCategory = _.find(data, x => x.id == cid);
-
-                    // remove all item in list item for init new data
-                    opts.listbox.options.removeAll();
-                    if (item) {
-                        switch (item.categoryType) {
-                            case IT_CAT_TYPE.SINGLE:
-                            case IT_CAT_TYPE.CONTINU:
-                            case IT_CAT_TYPE.CONTINUWED:
-                            case IT_CAT_TYPE.NODUPLICATE:
-                                $(ctrls.button).text(text('CPS007_11'));
-                                services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
-                                    // prevent if slow networks
-                                    if (opts.radios.value() != CAT_OR_GROUP.CATEGORY) {
-                                        return;
-                                    }
-                                    if (data && data.length) {
-                                        // get all item defined in category with abolition = 0
-                                        // order by dispOrder asc
-                                        data = _(data)
-                                            .filter(m => !m.isAbolition)
-                                            .filter((f: IItemDefinition) => {
-                                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                                    if (item.categoryCode === "CS00001") {
-                                                        return f.itemCode !== "IS00001";
-                                                    }
-
-                                                    if (item.categoryCode === "CS00002") {
-                                                        return f.itemCode !== "IS00003";
-                                                    }
-
-                                                    if (item.categoryCode === "CS00003") {
-                                                        return f.itemCode !== "IS00020";
-                                                    }
-                                                }
-
-                                                return true;
-                                            })
-                                            .orderBy(m => m.dispOrder).value();
-
-                                        opts.listbox.options(data);
-                                        opts.listbox.value.removeAll();
+                            if (data && data.length) {
+                                // map Array<IItemGroup> to Array<IItemDefinition>
+                                // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
+                                // remove groups when it does not contains any item definition (by hql)
+                                let _opts = _.map(data, group => {
+                                    return {
+                                        id: group.personInfoItemGroupID,
+                                        itemName: group.fieldGroupName,
+                                        itemTypeState: undefined,
+                                        dispOrder: group.dispOrder
                                     }
                                 });
-                                break;
-                            case IT_CAT_TYPE.MULTI:
-                            case IT_CAT_TYPE.DUPLICATE:
-                                $(ctrls.button).text(text('CPS007_10'));
 
-                                // create item for listbox
-                                // itemname: categoryname + text('CPS007_21')
-                                let def: IItemDefinition = {
-                                    id: item.id,
-                                    itemName: item.categoryName + text('CPS007_21'),
-                                    itemTypeState: undefined, // item.categoryType
-                                };
-                                opts.listbox.value.removeAll();
-                                opts.listbox.options.push(def);
-                                break;
-                        }
-                    } else {
-                        // select undefine
-                        opts.listbox.value.removeAll();
+                                opts.listbox.options(_opts);
+                            }
+                        });
                     }
-                }
-            });
 
-            opts.listbox.options.subscribe(x => {
-                if (!x || !x.length) {
-                    $(ctrls.button).prop('disabled', true);
-                } else {
-                    $(ctrls.button).prop('disabled', false);
-                }
-            });
+                    // remove listbox data
+                    opts.listbox.value.removeAll();
+                });
+                opts.radios.value.valueHasMutated();
 
-            // disable group if not has any group
-            if (typeof $editable == 'boolean' ? $editable === true : $editable === 0) {
+                // load listbox data
+                opts.combobox.value.subscribe(cid => {
+                    if (cid) {
+                        let data: Array<IItemCategory> = ko.toJS(opts.combobox.options),
+                            item: IItemCategory = _.find(data, x => x.id == cid);
+
+                        // remove all item in list item for init new data
+                        opts.listbox.options.removeAll();
+                        if (item) {
+                            switch (item.categoryType) {
+                                case IT_CAT_TYPE.SINGLE:
+                                case IT_CAT_TYPE.CONTINU:
+                                case IT_CAT_TYPE.CONTINUWED:
+                                case IT_CAT_TYPE.NODUPLICATE:
+                                    $(ctrls.button).text(text('CPS007_11'));
+                                    services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
+                                        // prevent if slow networks
+                                        if (opts.radios.value() != CAT_OR_GROUP.CATEGORY) {
+                                            return;
+                                        }
+                                        if (data && data.length) {
+                                            // get all item defined in category with abolition = 0
+                                            // order by dispOrder asc
+                                            data = _(data)
+                                                .filter(m => !m.isAbolition)
+                                                .filter((f: IItemDefinition) => {
+                                                    if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                        if (item.categoryCode === "CS00001") {
+                                                            return f.itemCode !== "IS00001";
+                                                        }
+
+                                                        if (item.categoryCode === "CS00002") {
+                                                            return f.itemCode !== "IS00003";
+                                                        }
+
+                                                        if (item.categoryCode === "CS00003") {
+                                                            return f.itemCode !== "IS00020";
+                                                        }
+                                                    }
+
+                                                    return true;
+                                                })
+                                                .orderBy(m => m.dispOrder).value();
+
+                                            opts.listbox.options(data);
+                                            opts.listbox.value.removeAll();
+                                        }
+                                    });
+                                    break;
+                                case IT_CAT_TYPE.MULTI:
+                                case IT_CAT_TYPE.DUPLICATE:
+                                    $(ctrls.button).text(text('CPS007_10'));
+
+                                    // create item for listbox
+                                    // itemname: categoryname + text('CPS007_21')
+                                    let def: IItemDefinition = {
+                                        id: item.id,
+                                        itemName: item.categoryName + text('CPS007_21'),
+                                        itemTypeState: undefined, // item.categoryType
+                                    };
+                                    opts.listbox.value.removeAll();
+                                    opts.listbox.options.push(def);
+                                    break;
+                            }
+                        } else {
+                            // select undefine
+                            opts.listbox.value.removeAll();
+                        }
+                    }
+                });
+
+                opts.listbox.options.subscribe(x => {
+                    if (!x || !x.length) {
+                        $(ctrls.button).prop('disabled', true);
+                    } else {
+                        $(ctrls.button).prop('disabled', false);
+                    }
+                });
+
+                // disable group if not has any group
                 services.getGroups().done((data: Array<any>) => {
                     if (!data || !data.length) {
                         opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
                     }
                 });
-            }
 
-            // events handler
-            $(ctrls.line).on('click', function() {
-                let item: IItemClassification = {
-                    layoutID: random(),
-                    dispOrder: -1,
-                    personInfoCategoryID: undefined,
-                    listItemDf: undefined,
-                    layoutItemType: IT_CLA_TYPE.SPER
-                };
+                // events handler
+                $(ctrls.line).on('click', function() {
+                    let item: IItemClassification = {
+                        layoutID: random(),
+                        dispOrder: -1,
+                        personInfoCategoryID: undefined,
+                        listItemDf: undefined,
+                        layoutItemType: IT_CLA_TYPE.SPER
+                    };
 
-                // add line to list sortable
-                opts.sortable.pushItem(item);
-                scrollDown();
-            });
-
-            $(ctrls.sortable)
-                .on('click', (evt) => {
-                    setTimeout(() => {
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification')
-                            .removeClass('selected');
-                    }, 0);
-                })
-                .on('dblclick', (evt) => { evt.preventDefault() })
-                .on('mouseover', '.form-group.item-classification', (evt) => {
-                    $(evt.target)
-                        .removeClass('selected');
+                    // add line to list sortable
+                    opts.sortable.pushItem(item);
+                    scrollDown();
                 });
 
+                $(ctrls.sortable)
+                    .on('click', (evt) => {
+                        let tout = setTimeout(() => {
+                            $(ctrls.sortable)
+                                .find('.form-group.item-classification')
+                                .removeClass('selected');
+                            clearTimeout(tout);
+                        }, 0);
+                    })
+                    .on('mouseover', '.form-group.item-classification', (evt) => {
+                        $(evt.target)
+                            .removeClass('selected');
+                    });
 
-            $(ctrls.button)
-                .data('safeClick', new Date().getTime())
-                .on('click', () => {
-                    let timeClick = new Date().getTime(),
-                        safeClick = $(ctrls.button).data('safeClick');
-                    // prevent multi click
-                    $(ctrls.button).data('safeClick', timeClick);
-                    if (timeClick - safeClick <= 500) {
-                        return;
-                    }
 
-                    // アルゴリズム「項目追加処理」を実行する
-                    // Execute the algorithm "項目追加処理"
-                    let ids: Array<string> = ko.toJS(opts.listbox.value);
+                $(ctrls.button)
+                    .data('safeClick', new Date().getTime())
+                    .on('click', () => {
+                        let timeClick = new Date().getTime(),
+                            safeClick = $(ctrls.button).data('safeClick');
 
-                    if (!ids || !ids.length) {
-                        alert({ messageId: 'Msg_203' });
-                        return;
-                    }
+                        // prevent multi click
+                        $(ctrls.button).data('safeClick', timeClick);
+                        if (timeClick - safeClick <= 500) {
+                            return;
+                        }
 
-                    // category mode
-                    if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
-                        let cid: string = ko.toJS(opts.combobox.value),
-                            cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
-                            cat: IItemCategory = _.find(cats, x => x.id == cid);
+                        // アルゴリズム「項目追加処理」を実行する
+                        // Execute the algorithm "項目追加処理"
+                        let ids: Array<string> = ko.toJS(opts.listbox.value);
 
-                        if (cat) {
-                            // multiple items
-                            if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
-                                // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
-                                // if category is exist in sortable box.
-                                let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
-                                if (_catcls) {
-                                    alert({
-                                        messageId: 'Msg_202',
-                                        messageParams: [cat.categoryName]
-                                    });
-                                    return;
-                                }
+                        if (!ids || !ids.length) {
+                            alert({ messageId: 'Msg_203' });
+                            return;
+                        }
 
-                                setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
-                                modal('../../007/b/index.xhtml').onClosed(() => {
-                                    let dfds: Array<JQueryDeferred<any>> = [],
-                                        data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
+                        // category mode
+                        if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
+                            let cid: string = ko.toJS(opts.combobox.value),
+                                cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
+                                cat: IItemCategory = _.find(cats, x => x.id == cid);
 
-                                    if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
-                                        services.getCat(data.category.id).done((_cat: IItemCategory) => {
+                            if (cat) {
+                                // multiple items
+                                if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                                    // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
+                                    // if category is exist in sortable box.
+                                    let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
+                                    if (_catcls) {
+                                        alert({
+                                            messageId: 'Msg_202',
+                                            messageParams: [cat.categoryName]
+                                        });
+                                        return;
+                                    }
 
-                                            if (!_cat || !!_cat.isAbolition) {
-                                                return;
-                                            }
+                                    setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
+                                    modal('../../007/b/index.xhtml').onClosed(() => {
+                                        let dfds: Array<JQueryDeferred<any>> = [],
+                                            data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
 
-                                            let ids: Array<string> = data.chooseItems.map(x => x.id);
-                                            services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
-                                                // sort againt by ids
-                                                _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+                                        if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
+                                            services.getCat(data.category.id).done((_cat: IItemCategory) => {
 
-                                                _data = _.orderBy(_data, x => x.dispOrder);
+                                                if (!_cat || !!_cat.isAbolition) {
+                                                    return;
+                                                }
 
-                                                // get set item
-                                                _.each(_data, x => {
-                                                    let dfd = $.Deferred<any>();
-                                                    if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                                        services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
-                                                            dfd.resolve([x].concat(_items));
-                                                        }).fail(msg => {
+                                                let ids: Array<string> = data.chooseItems.map(x => x.id);
+                                                services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
+                                                    // sort againt by ids
+                                                    _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+
+                                                    _data = _.orderBy(_data, x => x.dispOrder);
+
+                                                    // get set item
+                                                    _.each(_data, x => {
+                                                        let dfd = $.Deferred<any>();
+                                                        if (x.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                            services.getItemsByIds(x.itemTypeState.items).done((_items: Array<IItemDefinition>) => {
+                                                                dfd.resolve([x].concat(_items));
+                                                            }).fail(msg => {
+                                                                dfd.resolve(x);
+                                                            });
+                                                        } else {
                                                             dfd.resolve(x);
-                                                        });
-                                                    } else {
-                                                        dfd.resolve(x);
-                                                    }
+                                                        }
 
-                                                    dfds.push(dfd);
-                                                });
+                                                        dfds.push(dfd);
+                                                    });
 
-                                                $.when.apply($, dfds).then(function() {
-                                                    let args = _.flatten(arguments),
-                                                        items = _(args)
-                                                            .filter(x => !!x)
-                                                            .map((x: IItemDefinition) => {
-                                                                if (ids.indexOf(x.id) > -1) {
-                                                                    x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
-                                                                } else {
-                                                                    let parent = _.find(args, p => p.itemCode == x.itemParentCode);
-                                                                    if (parent) {
-                                                                        x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                    $.when.apply($, dfds).then(function() {
+                                                        let args = _.flatten(arguments),
+                                                            items = _(args)
+                                                                .filter(x => !!x)
+                                                                .map((x: IItemDefinition) => {
+                                                                    if (ids.indexOf(x.id) > -1) {
+                                                                        x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
+                                                                    } else {
+                                                                        let parent = _.find(args, p => p.itemCode == x.itemParentCode);
+                                                                        if (parent) {
+                                                                            x.dispOrder += (ids.indexOf(parent.id) + 1) * 1000;
+                                                                        }
                                                                     }
-                                                                }
-                                                                return x;
-                                                            })
-                                                            .orderBy(x => x.dispOrder)
-                                                            .value(),
-                                                        item: IItemClassification = {
-                                                            layoutID: random(),
-                                                            dispOrder: -1,
-                                                            className: _cat.categoryName,
-                                                            personInfoCategoryID: _cat.id,
-                                                            layoutItemType: IT_CLA_TYPE.LIST,
-                                                            listItemDf: items
-                                                        };
+                                                                    return x;
+                                                                })
+                                                                .orderBy(x => x.dispOrder)
+                                                                .value(),
+                                                            item: IItemClassification = {
+                                                                layoutID: random(),
+                                                                dispOrder: -1,
+                                                                className: _cat.categoryName,
+                                                                personInfoCategoryID: _cat.id,
+                                                                layoutItemType: IT_CLA_TYPE.LIST,
+                                                                listItemDf: items
+                                                            };
 
-                                                    opts.sortable.data.push(item);
-                                                    opts.listbox.value.removeAll();
-                                                    scrollDown();
+                                                        opts.sortable.data.push(item);
+                                                        opts.listbox.value.removeAll();
+                                                        scrollDown();
+                                                    });
                                                 });
                                             });
-                                        });
-                                    }
-                                });
-                            }
-                            else { // set or single item
-                                let idefid: Array<string> = ko.toJS(opts.listbox.value),
-                                    idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
-
-                                if (idefs && idefs.length) {
-                                    services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
-                                        if (defs && defs.length) {
-                                            opts.sortable.pushAllItems(defs, false);
-                                            scrollDown();
                                         }
                                     });
                                 }
+                                else { // set or single item
+                                    let idefid: Array<string> = ko.toJS(opts.listbox.value),
+                                        idefs = _.filter(ko.toJS(opts.listbox.options), (x: IItemDefinition) => idefid.indexOf(x.id) > -1);
+
+                                    if (idefs && idefs.length) {
+                                        services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
+                                            if (defs && defs.length) {
+                                                opts.sortable.pushAllItems(defs, false);
+                                                scrollDown();
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        } else { // group mode
+                            let ids: Array<string> = ko.toJS(opts.listbox.value),
+                                groups: Array<any> = ko.unwrap(opts.listbox.options),
+                                filters: Array<any> = _(groups)
+                                    .filter(x => ids.indexOf(x.id) > -1)
+                                    .map(x => x.id)
+                                    .value();
+
+                            if (filters && filters.length) {
+                                services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
+                                    if (defs && defs.length) {
+                                        opts.sortable.pushAllItems(defs, true);
+                                        scrollDown();
+                                    }
+                                });
                             }
                         }
-                    } else { // group mode
-                        let ids: Array<string> = ko.toJS(opts.listbox.value),
-                            groups: Array<any> = ko.unwrap(opts.listbox.options),
-                            filters: Array<any> = _(groups)
-                                .filter(x => ids.indexOf(x.id) > -1)
-                                .map(x => x.id)
-                                .value();
-
-                        if (filters && filters.length) {
-                            services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
-                                if (defs && defs.length) {
-                                    opts.sortable.pushAllItems(defs, true);
-                                    scrollDown();
-                                }
-                            });
-                        }
-                    }
-                })
-                .on('dblclick', (evt) => { evt.stopImmediatePropagation() });
+                    });
+            }
 
             // set data controls and option to element
             $element.data('options', opts);
@@ -2983,7 +2986,7 @@ module nts.custombinding {
                 editable: boolean | number = ko.toJS(valueAccessor().editAble);
 
             if (editable === true || editable === 0) {
-                ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, () => ({}), allBindingsAccessor, viewModel, bindingContext);
                 // init radio box group
                 ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
@@ -3007,7 +3010,7 @@ module nts.custombinding {
                 editable: boolean | number = ko.toJS(valueAccessor().editAble);
 
             if (editable === true || editable === 0) {
-                ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, () => ({}), allBindingsAccessor, viewModel, bindingContext);
 
                 ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
@@ -3016,15 +3019,12 @@ module nts.custombinding {
                 ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
                 ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
+
+                // fix header off listbox
+                $('#cps007_lst_header').text(text('CPS007_9'));
             }
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
-
-            // fix header off listbox
-            $('#cps007_lst_header').text(text('CPS007_9'));
-
-            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
-            return { controlsDescendantBindings: true };
         }
     }
 

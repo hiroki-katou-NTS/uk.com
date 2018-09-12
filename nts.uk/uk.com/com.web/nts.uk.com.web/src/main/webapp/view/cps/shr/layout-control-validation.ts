@@ -53,7 +53,7 @@ module nts.layout {
                     }
                 });
 
-            setTimeout(() => {
+            let tout = setTimeout(() => {
                 let _item: any = _(items)
                     .filter(x => _.has(x, "items") && !!x.items)
                     .map(x => x.items)
@@ -66,6 +66,7 @@ module nts.layout {
                 if (_item) {
                     _item.hasFocus(true);
                 }
+                clearTimeout(tout);
             }, 50);
         },
         checkError: (items: Array<any>) => {
@@ -213,7 +214,7 @@ module nts.layout {
 
             self.finder = new constraint(lstCls);
 
-            setTimeout(() => {
+            let tout = setTimeout(() => {
                 self.textBox();
                 self.radio();
                 self.button();
@@ -240,6 +241,8 @@ module nts.layout {
                 // self.annLeaGrantRemnNum();
 
                 validate.initCheckError(lstCls);
+                
+                clearTimeout(tout);
             }, 50);
         }
 
@@ -286,6 +289,7 @@ module nts.layout {
 
 
             if (CS00020_IS00248) {
+
                 CS00020_IS00248.data.value.subscribe(x => {
                     let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
 
@@ -296,8 +300,9 @@ module nts.layout {
                     });
                 });
 
-                setTimeout(() => {
+                let tout = setTimeout(() => {
                     CS00020_IS00248.data.value.valueHasMutated();
+                    clearTimeout(tout);
                 }, 0);
             }
 
@@ -315,8 +320,9 @@ module nts.layout {
                     });
                 });
 
-                setTimeout(() => {
+                let tout = setTimeout(() => {
                     CS00020_IS00121.data.value.valueHasMutated();
+                    clearTimeout(tout);
                 }, 0);
             }
         }
@@ -569,8 +575,9 @@ module nts.layout {
                             });
                         });
 
-                        setTimeout(() => {
+                        let tout = setTimeout(() => {
                             rd.data.value.valueHasMutated();
+                            clearTimeout(tout);
                         }, 0);
                     }
                 };
@@ -788,7 +795,7 @@ module nts.layout {
                     if (firstTimes && secondTimes) {
                         if (firstTimes.end && secondTimes.start) {
                             $(`${firstTimes.end.id}, ${secondTimes.start.id}`).on('blur', () => {
-                                setTimeout(() => {
+                                let tout = setTimeout(() => {
                                     let dom1 = $(firstTimes.end.id),
                                         dom2 = $(secondTimes.start.id),
                                         pv = ko.toJS(firstTimes.end.data.value),
@@ -819,6 +826,7 @@ module nts.layout {
                                             dom2.parent().removeClass('error');
                                         }
                                     }
+                                    clearTimeout(tout);
                                 }, 50);
                             });
                         }
@@ -1353,11 +1361,11 @@ module nts.layout {
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
                     // If input date out of range
-                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
-                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-                    
+
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1382,13 +1390,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
-                    
+
                     // If input date out of range
-                   if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
-                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-                    
+
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1414,13 +1422,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
-                    
+
                     // If input date out of range
-                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
-                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-                    
+
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1559,7 +1567,7 @@ module nts.layout {
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
                     if (!x || !grantTable) {
-                         CS00024_IS00281.data.value('');
+                        CS00024_IS00281.data.value('');
                         CS00024_IS00282.data.value('');
                         CS00024_IS00283.data.value('');
                         return;
@@ -1572,7 +1580,7 @@ module nts.layout {
                         entryDate: moment.utc(hireDate).toDate(),
                         retireDate: moment.utc(retireDates).toDate(),
                         startWorkCond: moment.utc(startWork).toDate(),
-                        endWorkCond:  moment.utc(endWork).toDate(),
+                        endWorkCond: moment.utc(endWork).toDate(),
                         contactTime: conTime
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
@@ -1856,8 +1864,8 @@ module nts.layout {
                         manage: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.mana),
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
                         result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result),
-                        CS00003_IS00021: IFindData = finder.find('CS00003','IS00021'),
-                        CS00024_IS00279: IFindData = finder.find('CS00024','IS00279');
+                        CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021'),
+                        CS00024_IS00279: IFindData = finder.find('CS00024', 'IS00279');
 
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
@@ -1872,11 +1880,11 @@ module nts.layout {
                                 hireDate: String = null,
                                 retireDates: String = null,
                                 yearRefDates: String = null;
-                            
+
                             if (location.href.indexOf('/view/cps/002') > -1) {
                                 hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                                 retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
-                                yearRefDates = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null; 
+                                yearRefDates = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null;
                             }
                             if (!x || !appSet || !management || management == '0') {
                                 if (result) {
@@ -1957,7 +1965,7 @@ module nts.layout {
                                     vl2 = ko.toJS(group[1].value),
                                     nnb = !_.isNumber(vl1) && !_.isNumber(vl2);
 
-                                setTimeout(() => {
+                                let tout = setTimeout(() => {
                                     if (hvl && nnb) {
                                         if (!ctrl1.is(':disabled') && !ctrl1.ntsError('hasError')) {
                                             ctrl1.ntsError('set', {
@@ -1978,6 +1986,7 @@ module nts.layout {
                                             ctrl2.parent().removeClass('error');
                                         }
                                     }
+                                    clearTimeout(tout);
                                 }, 50);
                             });
                         }
