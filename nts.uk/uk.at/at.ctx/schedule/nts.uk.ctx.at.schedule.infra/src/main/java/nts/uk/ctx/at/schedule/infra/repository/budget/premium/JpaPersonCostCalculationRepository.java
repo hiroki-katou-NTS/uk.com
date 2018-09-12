@@ -315,7 +315,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 	
 	@Override
-	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, GeneralDate date) {
+	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date, List<Integer> itemNos) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, c.ATTENDANCE_ID FROM KMLMT_COST_CALC_SET a ");
 		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ");
@@ -324,83 +324,16 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
 		query.append(" WHERE a.CID = ?");
 		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(
-					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
-
-			statement.setString(1, companyID);
-			statement.setDate(2, Date.valueOf(date.localDate()));
-			statement.setDate(3, Date.valueOf(date.localDate()));
-			
-			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				return rec;
-			}).stream().collect(Collectors.groupingBy(c -> c.getString("HIS_ID"), Collectors.toList())).entrySet()
-			.stream().map(et -> {
-				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> r.getInt("PREMIUM_NO"), 
-																		Collectors.toList())).entrySet().stream().map(ps -> {
-							return new PremiumSetting(companyID, et.getKey(), ps.getKey(), 
-									new PremiumRate(ps.getValue().get(0).getInt("PREMIUM_RATE")), null, null, 
-									ps.getValue().stream().map(at -> at.getInt("ATTENDANCE_ID")).collect(Collectors.toList()));
-						}).collect(Collectors.toList());
-				return new PersonCostCalculation(companyID, et.getKey(), et.getValue().get(0).getGeneralDate("START_DATE"), 
-						et.getValue().get(0).getGeneralDate("END_DATE"), null, null, premiumSettings);
-			}).collect(Collectors.toList());
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-	
-	@Override
-	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, DatePeriod date) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a, b, c FROM KmlmtPersonCostCalculation a ");
-		query.append(" LEFT JOIN a.kmlstPremiumSets b ");
-		query.append(" LEFT JOIN b.kmldtPremiumAttendances c ");
-		query.append(" WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
-		query.append(" AND a.startDate <= :endDate AND a.endDate >= :startDate");
-		List<Object[]> entities = this.queryProxy().query(query.toString(), Object[].class)
-													.setParameter("companyID", companyID)
-													.setParameter("startDate", date.start())
-													.setParameter("endDate", date.end()).getList();
-		List<KmnmtPremiumItem> premiumItem = getPremiumItems(companyID);
-		List<PersonCostCalculation> personCostCals = entities.stream().collect(Collectors.groupingBy(c -> (KmlmtPersonCostCalculation) c[0], Collectors.toList()))
-			.entrySet().stream().map(e -> {
-				List<KmlstPremiumSet> premiumSet = e.getValue().stream().map(x -> (KmlstPremiumSet) x[1])
-																.filter(ps -> ps != null && ps.kmlspPremiumSet.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
-																.distinct().collect(Collectors.toList());
-				
-				List<KmldtPremiumAttendance> preAttendamce = e.getValue().stream().map(x -> (KmldtPremiumAttendance) x[2])
-						.filter(ps -> ps != null && ps.kmldpPremiumAttendancePK.historyID.equals(e.getKey().kmlmpPersonCostCalculationPK.historyID))
-						.distinct().collect(Collectors.toList());
-				return toDomainPersonCostCalculation(e.getKey(), premiumSet, preAttendamce, premiumItem);
-			}).collect(Collectors.toList());
-//		List<PersonCostCalculation> personCostCals = this.queryProxy().query(FIND_BY_DISPLAY_NUMBER, KmlmtPersonCostCalculation.class)
-//				.setParameter("companyID", companyID)
-//				.setParameter("date", date).getList(c -> toDomainPersonCostCalculation(c));
-		if(CollectionUtil.isEmpty(personCostCals)){
-			return null;
-		}
-		return personCostCals;
-	}
-	
-	@Override
-	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date) {
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, c.ATTENDANCE_ID FROM KMLMT_COST_CALC_SET a ");
-		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ");
-		query.append(" ON a.CID = b.CID AND a.HIS_ID = b.HIS_ID");
-		query.append(" LEFT JOIN KMLDT_PREMIUM_ATTENDANCE c ");
-		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
-		query.append(" WHERE a.CID = ?");
-		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
+		query.append(" and b.PREMIUM_NO in (" + itemNos.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		try {
 			PreparedStatement statement = this.connection().prepareStatement(query.toString());
 
 			statement.setString(1, companyID);
 			statement.setDate(2, Date.valueOf(date.end().localDate()));
 			statement.setDate(3, Date.valueOf(date.start().localDate()));
+			for(int i = 0; i < itemNos.size(); i++){
+				statement.setInt(i + 4, itemNos.get(i));
+			}
 			
 			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				Map<String, Object> val = new HashMap<>();

@@ -60,7 +60,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		if(CollectionUtil.isEmpty(preiumItems)){
 			return result;
 		}
-		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, date);
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumber(companyID, date);
 		if(personCosts != null){
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
@@ -81,11 +81,13 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		if(CollectionUtil.isEmpty(preiumItems)){
 			return result;
 		}
-		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, period);
+		
+		List<Integer> itemNos = preiumItems.stream().map(c -> c.getDisplayNumber()).collect(Collectors.toList());
+		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, period, itemNos);
 		if(personCosts != null){
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
-				pc.getPremiumSettings().stream().filter(ps -> preiumItems.contains(ps.getDisplayNumber())).forEach(ps -> {
+				pc.getPremiumSettings().stream().forEach(ps -> {
 					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(), 
 							new DatePeriod(pc.getStartDate(), pc.getEndDate())));
 				});
