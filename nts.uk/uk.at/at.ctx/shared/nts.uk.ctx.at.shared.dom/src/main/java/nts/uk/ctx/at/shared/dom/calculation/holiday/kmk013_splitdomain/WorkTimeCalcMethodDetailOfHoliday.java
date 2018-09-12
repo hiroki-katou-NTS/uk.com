@@ -109,7 +109,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 			}
 			return false;
 		}
-		if (this.notDeductLateLeaveEarly.isDeduct()) {
+		if (!this.notDeductLateLeaveEarly.isDeduct()) {
 			return false;
 		} 
 		return true;
