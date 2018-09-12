@@ -1549,7 +1549,7 @@ module nts.layout {
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value),
                         hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
-                        retireDates: string = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : null,
+                        retireDates: string = null,
                         startWork: string = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : null,
                         endWork: string = CS00020_IS00120 ? ko.toJS(CS00020_IS00120.data.value) : null,
                         conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
@@ -1560,6 +1560,15 @@ module nts.layout {
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
+                    
+                    if (CS00003_IS00021 && !retireDates){
+                        let retireTemp = ko.toJS(CS00003_IS00021.data.value);
+                        retireDates = '9999/12/31';
+                        if (retireTemp) {
+                            retireDates = retireTemp;
+                        }
+                    } 
+                    
                     if (!x || !grantTable) {
                         CS00024_IS00281.data.value('');
                         CS00024_IS00282.data.value('');
@@ -1885,13 +1894,22 @@ module nts.layout {
                                 grantTbls = grantTbl ? ko.toJS(grantTbl.data.value) : null,
                                 management = manage ? ko.toJS(manage.data.value) : null,
                                 hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
-                                retireDates: string = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : null,
+                                retireDates: string = null,
                                 yearRefDates: String = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null;
                             
                             if (location.href.indexOf('/view/cps/002') > -1) {
                                 hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                                 retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
                             }
+                            
+                            if (CS00003_IS00021 && !retireDates) {
+                                let retireTemp = ko.toJS(CS00003_IS00021.data.value);
+                                retireDates = '9999/12/31';
+                                if (retireTemp) {
+                                    retireDates = retireTemp;
+                                }
+                            }
+
                             if (!x || !appSet || !management || management == '0') {
                                 if (result) {
                                     result.data.value('');
