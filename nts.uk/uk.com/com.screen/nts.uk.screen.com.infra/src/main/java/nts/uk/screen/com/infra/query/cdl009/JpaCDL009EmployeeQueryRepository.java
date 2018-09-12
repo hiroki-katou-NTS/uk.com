@@ -78,7 +78,7 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			GeneralDate absEnd = (GeneralDate) employee[7];
 			Integer absNo = (Integer) employee[8];
 
-			Boolean isWorking = absStart == null || (absStart.beforeOrEquals(refDate) && absEnd.afterOrEquals(refDate));
+			Boolean isWorking = absStart == null || (absStart.afterOrEquals(refDate) || absEnd.beforeOrEquals(refDate));
 			switch (StatusOfEmployment.valueOf(status)) {
 	        case INCUMBENT:
 	            return isWorking;
