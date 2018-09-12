@@ -33,8 +33,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapt
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -72,6 +74,12 @@ public class AttendanceItemsFinder {
 	
 	@Inject
 	private DailyAttdItemAuthRepository dailyAttdItemAuthRepository;
+
+	@Inject 
+	private CompanyDailyItemService companyDailyItemService;
+
+	@Inject
+	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
@@ -192,6 +200,18 @@ public class AttendanceItemsFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		List<DailyAttendanceAtr> attAtrList = new ArrayList<>();
+		attAtrList.add(EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class));
+		List<AttdItemDto> attendanceItemDtos = companyDailyItemService
+				.getDailyItems(companyId, Optional.empty(), null, attAtrList).stream().map(x -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemId(x.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(x.getAttendanceItemName());
+					attdItemDto.setDisplayNumber(x.getAttendanceItemDisplayNumber());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		/*
 		List<AttdItemDto> attendanceItemDtos = this.dailyAttendanceItemRepository
 				.findByAtr(companyId, EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class)).stream()
 				.map(f -> {
@@ -202,7 +222,7 @@ public class AttendanceItemsFinder {
 					attdItemDto.setDailyAttendanceAtr(f.getDailyAttendanceAtr().value);
 					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
 					return attdItemDto;
-				}).collect(Collectors.toList());
+				}).collect(Collectors.toList());*/
 
 		return attendanceItemDtos;
 	}
@@ -216,7 +236,18 @@ public class AttendanceItemsFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepository
+		List<MonthlyAttendanceItemAtr> attAtrList = new ArrayList<>();
+		attAtrList.add(EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class));
+		List<AttdItemDto> attendanceItemDtos = companyMonthlyItemService
+				.getMonthlyItems(companyId, Optional.empty(), null, attAtrList).stream().map(x -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemId(x.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(x.getAttendanceItemName());
+					attdItemDto.setDisplayNumber(x.getAttendanceItemDisplayNumber());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		/*List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepository
 				.findByAtr(companyId, EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class)).stream()
 				.map(f -> {
 					AttdItemDto attdItemDto = new AttdItemDto();
@@ -226,7 +257,7 @@ public class AttendanceItemsFinder {
 					attdItemDto.setDailyAttendanceAtr(f.getMonthlyAttendanceAtr().value);
 					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
 					return attdItemDto;
-				}).collect(Collectors.toList());
+				}).collect(Collectors.toList());*/
 
 		return attendanceItemDtos;
 	}
