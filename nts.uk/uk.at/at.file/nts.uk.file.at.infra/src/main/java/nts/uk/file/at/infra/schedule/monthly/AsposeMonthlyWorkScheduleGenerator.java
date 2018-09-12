@@ -680,9 +680,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
-		TotalWorkplaceHierachy outputSetting = condition.getTotalOutputSetting().getWorkplaceHierarchyTotal();
+		WorkScheduleSettingTotalOutput totalOutputSetting = condition.getTotalOutputSetting();
+		TotalWorkplaceHierachy outputSetting = totalOutputSetting.getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if (lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) {
+		if ((lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) && !totalOutputSetting.isDetails()
+				&& !totalOutputSetting.isGrossTotal() && !totalOutputSetting.isPersonalTotal() && !totalOutputSetting.isTotalNumberDay()
+				&& !totalOutputSetting.isWorkplaceTotal()) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
