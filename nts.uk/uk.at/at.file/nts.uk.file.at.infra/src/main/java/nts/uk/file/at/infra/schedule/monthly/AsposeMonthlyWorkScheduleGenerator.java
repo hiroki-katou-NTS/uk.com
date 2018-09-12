@@ -359,7 +359,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (lstAttendanceDto.isEmpty())
 			throw new BusinessException(new RawErrorMessage("Msg_1417"));
 //		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
-//		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
+		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
 			DailyAttendanceItemNameAdapterDto attendanceItem = lstAttendanceDto.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
