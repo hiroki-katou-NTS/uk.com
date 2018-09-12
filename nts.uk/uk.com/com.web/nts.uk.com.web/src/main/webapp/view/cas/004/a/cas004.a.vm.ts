@@ -232,7 +232,9 @@ module nts.uk.com.view.cas004.a {
                             let index = _.findIndex(list, function(x: model.UserDto)
                             { return x.userID == userId });
                             let nextUserID = null;
-                            if(index != lastIndex) nextUserID = list[index+1].userID;
+                            if (index != lastIndex)
+                                nextUserID = list[index + 1].userID;
+                            else nextUserID = list[index - 1].userID;
                             self.loadUserGridList(null, nextUserID);
                         });
                     }).fail((res) => {
