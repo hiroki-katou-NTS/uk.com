@@ -272,7 +272,7 @@ public class LogBasicInformationFinder {
 					lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
 				break;
 			case DATA_CORRECT:
-				TargetDataType targetDataType=null;
+				TargetDataType targetDataType= TargetDataType.of(logParams.getTargetDataType()) ;
 				Map<String,LogBasicInfoDto> mapCheckLogBasic = new HashMap<>();
 					// get data correct log
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(

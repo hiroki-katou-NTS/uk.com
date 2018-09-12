@@ -34,7 +34,6 @@ public interface CalculateDailyRecordServiceCenter{
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
-	List<IntegrationOfDaily> calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet, List<ClosureStatusManagement> closureList);
+	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList);
 	
-
 }

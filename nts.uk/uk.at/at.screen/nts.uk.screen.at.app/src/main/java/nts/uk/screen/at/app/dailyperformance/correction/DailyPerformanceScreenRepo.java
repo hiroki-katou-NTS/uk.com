@@ -49,6 +49,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.Re
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -71,16 +72,16 @@ public interface DailyPerformanceScreenRepo {
 	List<ClosureDto> getClosureId(Map<String, String> sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
-	YearHolidaySettingDto getYearHolidaySetting();
+//	YearHolidaySettingDto getYearHolidaySetting();
 
 	/** Query select KSVST_COM_SUBST_VACATION 振休（会社） by company id */
-	SubstVacationDto getSubstVacationDto();
+//	SubstVacationDto getSubstVacationDto();
 
 	/** Query select KCLMT_COMPENS_LEAVE_COM 代休管理設定(会社) by company id */
-	CompensLeaveComDto getCompensLeaveComDto();
+//	CompensLeaveComDto getCompensLeaveComDto();
 
 	/** Query select KSHST_COM_60H_VACATION 60H超休（会社） by company id */
-	Com60HVacationDto getCom60HVacationDto();
+//	Com60HVacationDto getCom60HVacationDto();
 
 	/** Get list sorted job titles */
 	List<String> getListJobTitle(DateRange dateRange);
@@ -227,9 +228,13 @@ public interface DailyPerformanceScreenRepo {
 	
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
 	
-	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
+	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, DateRange rangeDate);
 
 	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
 	
 	void requestForFlush();
+
+	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
+	
+	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
 }

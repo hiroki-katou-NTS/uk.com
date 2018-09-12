@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
@@ -79,6 +80,12 @@ public class DailyPerformanceCorrectionDto {
 	private List<TextStyle> textStyles;
 	
 	private Set<String> autBussCode;
+	
+	private List<DailyRecordDto> domainOld;
+	
+	private boolean showTighProcess;
+	
+	private boolean showErrorDialog;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -91,6 +98,7 @@ public class DailyPerformanceCorrectionDto {
 		this.changeSPR = new ChangeSPR(false, false);
 		this.textStyles = new ArrayList<>();
 		this.autBussCode = new HashSet<>();
+		this.showTighProcess = false;
 	}
 
 	/** Check if employeeId is login user */
@@ -303,4 +311,7 @@ public class DailyPerformanceCorrectionDto {
 
 	}
 
+	public void checkShowTighProcess(int displayMode, boolean userLogin, boolean checkIndentityDay){
+		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && checkIndentityDay;
+	}
 }

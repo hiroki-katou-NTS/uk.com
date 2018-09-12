@@ -401,7 +401,7 @@ public class ProgramsManager {
 	/**
 	 * KDL020A
 	 */
-	public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL029_1",
+	public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL020_1",
 			"/view/kdl/020/a/index.xhtml");
 	////////////////////
 	/**
@@ -1961,6 +1961,9 @@ public class ProgramsManager {
 
 	public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
 			"/view/cmm/001/e/index.xhtml");
+	/** KMW003 */
+	public static final Program KMW003A = new Program(WebAppId.AT, ProgramIdConsts.KMW003A, "KMW003_1",
+			"/view/kmw/003/a/index.xhtml");
 	/** KMW006 */
 	public static final Program KMW006A = new Program(WebAppId.AT, ProgramIdConsts.KMW006A, "KMW006_41",
 			"/view/kmw/006/a/index.xhtml");

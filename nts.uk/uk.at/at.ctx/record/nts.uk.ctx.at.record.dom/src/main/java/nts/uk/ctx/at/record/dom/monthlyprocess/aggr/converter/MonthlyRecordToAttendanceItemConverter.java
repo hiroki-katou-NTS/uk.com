@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * 月別実績と勤怠項目の相互変換
@@ -32,6 +35,9 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	IntegrationOfMonthly toDomain();
 	
 	MonthlyRecordToAttendanceItemConverter setData(IntegrationOfMonthly domain);
+
+	MonthlyRecordToAttendanceItemConverter withBase(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate);
 	
 	MonthlyRecordToAttendanceItemConverter withAffiliation(AffiliationInfoOfMonthly domain);
 
@@ -45,7 +51,7 @@ public interface MonthlyRecordToAttendanceItemConverter {
 
 	MonthlyRecordToAttendanceItemConverter withDayOff(MonthlyDayoffRemainData domains);
 
-	MonthlyRecordToAttendanceItemConverter withSpecialLeave(SpecialHolidayRemainData domain);
+	MonthlyRecordToAttendanceItemConverter withSpecialLeave(List<SpecialHolidayRemainData> domain);
 
 	MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain);
 
@@ -63,7 +69,7 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	
 	Optional<MonthlyDayoffRemainData> toDayOff();
 	
-	Optional<SpecialHolidayRemainData> toSpecialHoliday();
+	List<SpecialHolidayRemainData> toSpecialHoliday();
 	
 	Optional<AbsenceLeaveRemainData> toAbsenceLeave();
 }

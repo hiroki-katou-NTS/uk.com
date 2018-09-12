@@ -475,7 +475,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_CD", self.currentCode());
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
                 let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");
@@ -560,20 +559,22 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 grantTime: grantTime
             };
             
-            let start = "";
-            let end = "";
-            if(self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
-                start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                start = self.startDate() != "" ? self.startDate() : "1900/01/01";
+            let start = null;
+            let end = null;
+            if (self.startDate()) {
+                if (self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
+                    start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    start = self.startDate() != "" ? self.startDate() : null;
+                }
             }
-            
-            if(self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
-                end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                end = self.endDate() != "" ? self.endDate() : "1900/01/01";
+            if (self.endDate()) {
+                if (self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
+                    end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    end = self.endDate() != "" ? self.endDate() : null;
+                }
             }
-            
             let availabilityPeriod : service.AvailabilityPeriod = {
                 startDate: start,
                 endDate: end

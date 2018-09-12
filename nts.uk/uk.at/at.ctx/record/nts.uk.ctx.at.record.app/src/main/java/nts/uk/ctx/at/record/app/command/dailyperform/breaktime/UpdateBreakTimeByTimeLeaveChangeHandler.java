@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,9 +13,10 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
-import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleAction;
-import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleResult;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter.EventHandleAction;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter.EventHandleResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -112,31 +115,65 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	/** 取得したドメインモデル「編集状態」を見て、マージする */
 	private BreakTimeOfDailyPerformance mergeWithEditStates(UpdateBreakTimeByTimeLeaveChangeCommand command,
 			BreakTimeOfDailyPerformance breakTime, BreakTimeOfDailyPerformance breakTimeRecord) {
-		List<Integer> inputByHandItems = getEditStateByItems(command).stream()
-																	.filter(es -> isInputByHands(es.getEditStateSetting()))
-																	.map(c -> c.getAttendanceItemId())
-																	.collect(Collectors.toList());
-		if (!inputByHandItems.isEmpty()) {
-			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTimeRecord),
-					inputByHandItems);
-			if(ipByHandValues != null){
-				return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues.stream().filter(c -> c != null).collect(Collectors.toList()))
-					.toDomain(command.employeeId, command.targetDate);
+		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(command);
+		if(CollectionUtil.isEmpty(editStates)){
+			return breakTime;
+		}
+		List<Integer> itemsToMerge = getItemsToMerge(editStates);
+		if (!itemsToMerge.isEmpty()) {
+			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTime), itemsToMerge);
+			
+			return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTimeRecord), ipByHandValues.stream()
+						.filter(c -> c != null).collect(Collectors.toList())).toDomain(command.employeeId, command.targetDate);
+		}
+		
+		return breakTimeRecord;
+	}
+	
+	private List<Integer> getItemsToMerge(List<EditStateOfDailyPerformance> editStates) {
+		List<Integer> endItemsToMerge = getItemBys(editStates, DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS)
+											.stream().sorted().collect(Collectors.toList());
+		List<Integer> startItemsToMerge = getItemBys(editStates, DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS)
+											.stream().sorted().collect(Collectors.toList());
+		
+		List<Integer> result = new ArrayList<>();
+		
+		for(int i = 0; i < startItemsToMerge.size(); i++){
+			int itemNo = DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS.indexOf(startItemsToMerge.get(i));
+			
+			if(endItemsToMerge.size() > i && endItemsToMerge.get(i) == DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.get(itemNo)){
+				result.add(startItemsToMerge.get(i));
+				result.add(endItemsToMerge.get(i));
 			}
 		}
-		return breakTime;
+		
+		return result;
+	}
+
+	private List<Integer> getItemBys(List<EditStateOfDailyPerformance> editStates, List<Integer> toGet) {
+		
+		List<Integer> edited = editStates.stream().filter(e -> toGet.contains(e.getAttendanceItemId()) && isInputByHands(e.getEditStateSetting()))
+												.map(c -> c.getAttendanceItemId()) 
+												.collect(Collectors.toList());
+		return toGet.stream().filter(i -> !edited.contains(i)).collect(Collectors.toList());
 	}
 
 	/** 手修正の勤怠項目を判断する */
 	private boolean isInputByHands(EditStateSetting es) {
+		
 		return es == EditStateSetting.HAND_CORRECTION_MYSELF || es == EditStateSetting.HAND_CORRECTION_OTHER;
 	}
 
 	private List<EditStateOfDailyPerformance> getEditStateByItems(UpdateBreakTimeByTimeLeaveChangeCommand command) {
-		List<Integer> needCheckItems = DailyCorrectEventServiceCenter.BREAK_TIME_ITEMS;
-		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, needCheckItems))
+		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, getBreakTimeClockItems()))
 											.stream().filter(e -> needCheckItems.contains(e.getAttendanceItemId()))
 											.collect(Collectors.toList());
+	}
+
+	private List<Integer> getBreakTimeClockItems() {
+		return Stream.concat(DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS.stream(), 
+							DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.stream())
+                	.collect(Collectors.toList());
 	}
 
 	private BreakTimeOfDailyPerformance getBreakTimeDefault(String employeeId, GeneralDate workingDate) {

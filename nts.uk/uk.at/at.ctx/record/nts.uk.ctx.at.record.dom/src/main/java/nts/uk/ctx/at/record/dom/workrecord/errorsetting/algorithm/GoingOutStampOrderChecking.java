@@ -50,14 +50,25 @@ public class GoingOutStampOrderChecking {
 
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
 
+			// List<OutingTimeSheet> newOutingTimeSheets2 =
+			// outingTimeSheets.stream()
+			// .filter(item -> item.getGoOut() != null &&
+			// item.getGoOut().isPresent()
+			// && item.getGoOut().get().getStamp() != null &&
+			// item.getGoOut().get().getStamp().isPresent()
+			// && item.getGoOut().get().getStamp().get().getTimeWithDay() !=
+			// null)
+			// .collect(Collectors.toList());
+
 			List<OutingTimeSheet> newOutingTimeSheets = outingTimeSheets.stream()
-					.filter(item -> item.getGoOut() != null && item.getGoOut().isPresent()
-							&& item.getGoOut().get().getStamp() != null && item.getGoOut().get().getStamp().isPresent()
-							&& item.getGoOut().get().getStamp().get().getTimeWithDay() != null)
+					.filter(item -> (item.getComeBack().isPresent() && item.getComeBack().get().getStamp().isPresent()
+							&& item.getComeBack().get().getStamp().get().getTimeWithDay() != null)
+							&& (item.getGoOut().isPresent() && item.getGoOut().get().getStamp().isPresent()
+									&& item.getGoOut().get().getStamp().get().getTimeWithDay() != null))
 					.collect(Collectors.toList());
 
-			newOutingTimeSheets.sort((e1, e2) -> e1.getGoOut().get().getStamp().get().getTimeWithDay().v()
-					.compareTo(e2.getGoOut().get().getStamp().get().getTimeWithDay().v()));
+			newOutingTimeSheets.sort((e1, e2) -> (e1.getGoOut().get().getStamp().get().getTimeWithDay().v()
+					.compareTo(e2.getGoOut().get().getStamp().get().getTimeWithDay().v())));
 
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : newOutingTimeSheets) {
@@ -74,105 +85,94 @@ public class GoingOutStampOrderChecking {
 			List<OutingTimeSheet> outingTimeSheetsTemp = new ArrayList<>();
 
 			for (OutingTimeSheet outingTimeSheet : newOutingTimeSheets) {
-				if (outingTimeSheet.getComeBack() != null && outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp() != null
-						&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay() != null
-						&& outingTimeSheet.getGoOut() != null && outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp() != null
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay() != null) {
-					if (outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay()
-							.lessThanOrEqualTo(outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay())) {
+				if (outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay()
+						.lessThanOrEqualTo(outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay())) {
 
-						List<Integer> attendanceItemIDList = new ArrayList<>();
+					List<Integer> attendanceItemIDList = new ArrayList<>();
 
-						if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(1))) {
-							attendanceItemIDList.add(88);
-							attendanceItemIDList.add(91);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(2))) {
-							attendanceItemIDList.add(95);
-							attendanceItemIDList.add(98);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(3))) {
-							attendanceItemIDList.add(102);
-							attendanceItemIDList.add(105);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(4))) {
-							attendanceItemIDList.add(109);
-							attendanceItemIDList.add(112);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(5))) {
-							attendanceItemIDList.add(116);
-							attendanceItemIDList.add(119);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(6))) {
-							attendanceItemIDList.add(123);
-							attendanceItemIDList.add(126);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(7))) {
-							attendanceItemIDList.add(130);
-							attendanceItemIDList.add(133);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(8))) {
-							attendanceItemIDList.add(137);
-							attendanceItemIDList.add(140);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(9))) {
-							attendanceItemIDList.add(144);
-							attendanceItemIDList.add(147);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(10))) {
-							attendanceItemIDList.add(151);
-							attendanceItemIDList.add(154);
-						}
+					if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(1))) {
+						attendanceItemIDList.add(88);
+						attendanceItemIDList.add(91);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(2))) {
+						attendanceItemIDList.add(95);
+						attendanceItemIDList.add(98);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(3))) {
+						attendanceItemIDList.add(102);
+						attendanceItemIDList.add(105);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(4))) {
+						attendanceItemIDList.add(109);
+						attendanceItemIDList.add(112);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(5))) {
+						attendanceItemIDList.add(116);
+						attendanceItemIDList.add(119);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(6))) {
+						attendanceItemIDList.add(123);
+						attendanceItemIDList.add(126);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(7))) {
+						attendanceItemIDList.add(130);
+						attendanceItemIDList.add(133);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(8))) {
+						attendanceItemIDList.add(137);
+						attendanceItemIDList.add(140);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(9))) {
+						attendanceItemIDList.add(144);
+						attendanceItemIDList.add(147);
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(10))) {
+						attendanceItemIDList.add(151);
+						attendanceItemIDList.add(154);
+					}
 
-						// list contain different
-						outingTimeSheetsTemp = outingTimeSheets.stream()
-								.filter(item -> !item.getOutingFrameNo().equals(outingTimeSheet.getOutingFrameNo().v()))
-								.collect(Collectors.toList());
+					// list contain different
+					outingTimeSheetsTemp = newOutingTimeSheets.stream()
+							.filter(item -> !item.getOutingFrameNo().equals(outingTimeSheet.getOutingFrameNo().v()))
+							.collect(Collectors.toList());
 
-						TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()
+					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()
+							.getTimeWithDay();
+					TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get().getStamp().get()
+							.getTimeWithDay();
+					TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
+							endStartTimeFirstTime);
+
+					List<DuplicationStatusOfTimeZone> newList = new ArrayList<>();
+
+					// 他の時間帯との時間帯重複を確認する
+					// check with another outingFrameNo
+					for (OutingTimeSheet timeSheet : outingTimeSheetsTemp) {
+						TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().get().getStamp().get()
 								.getTimeWithDay();
-						TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get().getStamp().get()
+						TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().get().getStamp().get()
 								.getTimeWithDay();
-						TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
-								endStartTimeFirstTime);
+						TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
+								endStartTimesecondTime);
 
-						List<DuplicationStatusOfTimeZone> newList = new ArrayList<>();
+						DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+								.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+						DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+								.checkStateAtr(duplicateStateAtr);
+						newList.add(duplicationStatusOfTimeZone);
+					}
 
-						// 他の時間帯との時間帯重複を確認する
-						// check with another outingFrameNo
-						for (OutingTimeSheet timeSheet : outingTimeSheetsTemp) {
-							TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().get().getStamp().get()
-									.getTimeWithDay();
-							TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().get().getStamp().get()
-									.getTimeWithDay();
-							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
-									endStartTimesecondTime);
-
-							DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-									.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-							DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-									.checkStateAtr(duplicateStateAtr);
-							newList.add(duplicationStatusOfTimeZone);
-						}
-
-						if (newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
-							// if (!attendanceItemIDList.isEmpty()) {
-							// createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
-							// employeeId,
-							// processingDate, new
-							// ErrorAlarmWorkRecordCode("S004"),
-							// attendanceItemIDList);
-							// }
-							for (Integer iD : attendanceItemIDList) {
-								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-										employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"), iD);
-								employeeDailyPerErrorList.add(employeeDailyPerError);
-							}
-						} else {
-							// 出退勤時間帯に包含されているか確認する
-							CheckState checkState = checkConjugation(companyId, employeeId, processingDate,
-									outingTimeSheet, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
-							if (checkState == CheckState.NON_INCLUSION) {
-								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-										employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-										attendanceItemIDList);
-								employeeDailyPerErrorList.add(employeeDailyPerError);
-							}
+					if (newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
+						// if (!attendanceItemIDList.isEmpty()) {
+						// createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
+						// employeeId,
+						// processingDate, new
+						// ErrorAlarmWorkRecordCode("S004"),
+						// attendanceItemIDList);
+						// }
+						EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+								processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+						employeeDailyPerErrorList.add(employeeDailyPerError);
+					} else {
+						// 出退勤時間帯に包含されているか確認する
+						CheckState checkState = checkConjugation(companyId, employeeId, processingDate, outingTimeSheet,
+								timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
+						if (checkState == CheckState.NON_INCLUSION) {
+							EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+									employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+									attendanceItemIDList);
+							employeeDailyPerErrorList.add(employeeDailyPerError);
 						}
 					}
 				}
@@ -193,9 +193,12 @@ public class GoingOutStampOrderChecking {
 		TimeSpanForCalc timeSpanFirstTime = null;
 		if (outingTimeSheet.getGoOut() != null && outingTimeSheet.getGoOut().isPresent()
 				&& outingTimeSheet.getGoOut().get().getStamp() != null
-				&& outingTimeSheet.getGoOut().get().getStamp().isPresent() && outingTimeSheet.getComeBack() != null
-				&& outingTimeSheet.getComeBack().isPresent() && outingTimeSheet.getComeBack().get().getStamp() != null
-				&& outingTimeSheet.getComeBack().get().getStamp().isPresent()) {
+				&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
+				&& outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay() != null
+				&& outingTimeSheet.getComeBack() != null && outingTimeSheet.getComeBack().isPresent()
+				&& outingTimeSheet.getComeBack().get().getStamp() != null
+				&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
+				&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay() != null) {
 			TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()
 					.getTimeWithDay();
 			TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get().getStamp().get()
@@ -240,10 +243,12 @@ public class GoingOutStampOrderChecking {
 										&& leavingWork.getAttendanceStamp().isPresent()
 										&& leavingWork.getAttendanceStamp().get().getStamp() != null
 										&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+										&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
 										&& leavingWork.getLeaveStamp() != null
 										&& leavingWork.getLeaveStamp().isPresent()
 										&& leavingWork.getLeaveStamp().get().getStamp() != null
-										&& leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
+										&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
+										&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 									TimeWithDayAttr newStampStartTimeSecondTime = leavingWork.getAttendanceStamp().get()
 											.getStamp().get().getTimeWithDay();
 									TimeWithDayAttr newEndStartTimesecondTime = leavingWork.getLeaveStamp().get()

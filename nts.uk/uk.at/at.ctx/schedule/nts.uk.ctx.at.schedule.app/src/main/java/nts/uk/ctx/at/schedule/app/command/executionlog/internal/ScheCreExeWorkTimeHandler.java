@@ -524,7 +524,7 @@ public class ScheCreExeWorkTimeHandler {
 			} else {
 
 				// check default code by working code
-				if (command.getWorkingCode() == null) {
+				if (StringUtil.isNullOrEmpty(command.getWorkingCode(), true)) {
 					return null;
 				}
 

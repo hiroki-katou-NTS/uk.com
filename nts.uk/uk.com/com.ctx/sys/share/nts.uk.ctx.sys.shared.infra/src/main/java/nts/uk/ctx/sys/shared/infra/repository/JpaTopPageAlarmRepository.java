@@ -30,7 +30,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 		return TopPageAlarm.createFromJavaType(entity.companyId, entity.executionLogId, 
 												entity.managerId, entity.finishDateTime, 
 												entity.executionContent, entity.existenceError, 
-												entity.rogerFlag);
+												entity.rogerFlag, entity.isCancelled);
 	}
 	
 	// convert from entity to toppage alarm detail domain

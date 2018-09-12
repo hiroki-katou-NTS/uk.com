@@ -382,7 +382,7 @@ public class TotalWorkingTime {
 																							 Optional.of(leaveLateSet)
 																							 );
 			
-			//コアタイム無しの遅刻時間計算
+			//控除用コアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Deduction, 
 					 																				  PremiumAtr.RegularWork,
 					 																				  recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),

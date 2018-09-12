@@ -14,6 +14,7 @@ public interface LogDisplaySettingRepository {
 	List<LogDisplaySetting> getAllLogDisplaySet(String cid);
 	
 	List<LogDisplaySetting> getLogDisplaySettingByRecordType(String logSetRecordType,String cid);
+	List<LogDisplaySetting> getLogDisplaySettingByRecordType(String logSetRecordType,String targetDataType,String cid);
 	
 	void add(LogDisplaySetting domain);
 	

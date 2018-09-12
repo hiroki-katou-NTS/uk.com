@@ -9,7 +9,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attdstatus.AttendanceStatus;
@@ -85,17 +87,28 @@ public class AttendanceStatusList {
 			// 出退勤の確認
 			val timeLeavingWorks = timeLeaving.getTimeLeavingWorks();
 			
-			// 出退勤時刻がある時、出勤あり
-			if (!timeLeavingWorks.isEmpty()) this.map.get(ymd).setExistAttendance(true);
-			
-			// 2回目の打刻があるか確認する
+			// 出勤あり・2回目の打刻があるか確認する
 			for (val timeLeavingWork : timeLeavingWorks){
-				if (timeLeavingWork.getWorkNo().v() != 2) continue;
+				int workNo = timeLeavingWork.getWorkNo().v();
 				if (timeLeavingWork.getAttendanceStamp().isPresent()){
-					this.map.get(ymd).setExistTwoTimesStamp(true);
+					TimeActualStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().get();
+					if (attendanceStamp.getStamp().isPresent()){
+						WorkStamp stamp = attendanceStamp.getStamp().get();
+						if (stamp.getTimeWithDay() != null){
+							this.map.get(ymd).setExistAttendance(true);
+							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
+						}
+					}
 				}
 				if (timeLeavingWork.getLeaveStamp().isPresent()){
-					this.map.get(ymd).setExistTwoTimesStamp(true);
+					TimeActualStamp leaveStamp = timeLeavingWork.getLeaveStamp().get();
+					if (leaveStamp.getStamp().isPresent()){
+						WorkStamp stamp = leaveStamp.getStamp().get();
+						if (stamp.getTimeWithDay() != null){
+							this.map.get(ymd).setExistAttendance(true);
+							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
+						}
+					}
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
@@ -25,6 +26,9 @@ public class PClogOnOffLackOfStamp {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
 
 	public EmployeeDailyPerError pClogOnOffLackOfStamp(String companyId, String employeeId, GeneralDate processingDate,
 			PCLogOnInfoOfDaily pCLogOnInfoOfDaily, WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
@@ -39,10 +43,10 @@ public class PClogOnOffLackOfStamp {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				
 				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
-				for (LogOnInfo logOnInfo : logOnInfos) {
+				this.managedParallelWithContext.forEach (logOnInfos,logOnInfo -> {
 					// ログオフのみ存在している(only has Logoff time)
-					if ((logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() != null && !logOnInfo.getLogOn().isPresent())
-							|| (logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() != null 
+					if ((logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent() && !logOnInfo.getLogOn().isPresent())
+							|| (logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()
 								&& logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() == null)) {
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(794);
@@ -51,8 +55,8 @@ public class PClogOnOffLackOfStamp {
 						}
 					}
 					// ログオンのみ存在している(only has Logon time)
-					if ((logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() != null && !logOnInfo.getLogOff().isPresent())
-							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() != null 
+					if ((logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
+							|| (logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() 
 							&& logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() == null)) {
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(795);
@@ -64,7 +68,6 @@ public class PClogOnOffLackOfStamp {
 					if ((!logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
 							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()
 							&& logOnInfo.getLogOn().get() == null && logOnInfo.getLogOff().get() == null)) {
-						attendanceItemIDList = new ArrayList<>();
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(794);
 							attendanceItemIDList.add(795);
@@ -73,7 +76,7 @@ public class PClogOnOffLackOfStamp {
 							attendanceItemIDList.add(797);
 						}
 					}
-				}
+				});
 
 				if (!attendanceItemIDList.isEmpty()){
 					employeeDailyPerError = new EmployeeDailyPerError(companyId,

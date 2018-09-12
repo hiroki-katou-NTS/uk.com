@@ -1,16 +1,12 @@
 package nts.uk.ctx.sys.log.app.find.reference;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySettingRepository;
-import nts.uk.ctx.sys.log.dom.reference.LogSetOutputItem;
+import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -41,14 +37,9 @@ public class LogDisplaySettingFinder {
        LoginUserContext loginUserContext = AppContexts.user();
         // get company id
        String cid = loginUserContext .companyId();
-       List<String> rs=new ArrayList<>();
        Optional<LogDisplaySetting> optLogDisplaySetting = this.logDisplaySettingRepository.getLogDisplaySettingByCodeAndCidAndIsUseFlg(code, cid);
 		if (optLogDisplaySetting.isPresent()) {
-	/*	List<LogSetOutputItem> listOutput=optLogDisplaySetting.get().getLogSetOutputItems();
-		for(LogSetOutputItem logSetOutputItem:listOutput){
-			String item=String.valueOf(logSetOutputItem.getItemNo()) ;
-			rs.add(item);
-		}*/
+	
 			return LogDisplaySettingDto.fromDomain(optLogDisplaySetting.get());
 		}
 		 
@@ -67,14 +58,21 @@ public class LogDisplaySettingFinder {
    }
     
     
-    public List<LogDisplaySettingDto> getLogDisplaySettingByRecordType(String logSetRecordType){
+    public List<LogDisplaySettingDto> getLogDisplaySettingByRecordType(String logSetRecordType,String targetDataType){
     	 // get login info
         LoginUserContext loginUserContext = AppContexts.user();
          // get company id
         String cid = loginUserContext .companyId();
-          return this.logDisplaySettingRepository.getLogDisplaySettingByRecordType(logSetRecordType,cid)
-       		   .stream().map(s -> LogDisplaySettingDto.fromDomainNotLogSetOutputItems(s))
-       		   .collect(Collectors.toList());
+        if(Integer.valueOf(logSetRecordType).intValue()==RecordTypeEnum.DATA_CORRECT.code){
+        	 return this.logDisplaySettingRepository.getLogDisplaySettingByRecordType(logSetRecordType, targetDataType, cid)
+             		   .stream().map(s -> LogDisplaySettingDto.fromDomainNotLogSetOutputItems(s))
+             		   .collect(Collectors.toList());
+        }else{
+        	 return this.logDisplaySettingRepository.getLogDisplaySettingByRecordType(logSetRecordType,cid)
+             		   .stream().map(s -> LogDisplaySettingDto.fromDomainNotLogSetOutputItems(s))
+             		   .collect(Collectors.toList());
+        }
+         
       }
     
 }

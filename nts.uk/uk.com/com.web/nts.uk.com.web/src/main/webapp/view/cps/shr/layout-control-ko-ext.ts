@@ -1290,7 +1290,7 @@ module nts.custombinding {
                         targetKey: 'id',
                         selectedKey: 'id',
                         fields: ['itemName'],
-                        placeHolder: '名称で検・・・'
+                        placeHolder: '名称で検索・・・'
                     },
                     listbox: {
                         enable: ko.observable(true),
@@ -1538,6 +1538,7 @@ module nts.custombinding {
                     line: undefined,
                 },
                 access = valueAccessor(),
+                $editable: boolean | number = ko.toJS(valueAccessor().editAble),
                 editable = (x: any) => {
                     if (typeof x == 'number') {
                         opts.sortable.isEditable(x);
@@ -1882,7 +1883,7 @@ module nts.custombinding {
                     def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                     def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
                     def.editable = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable());
-                    def.numberedit = ko.observable(false);
+                    def.numberedit = ko.observable(true);
 
                     def.showColor = _.has(def, "showColor") ? (ko.isObservable(def.showColor) ? def.showColor : ko.observable(def.showColor)) :
                         (ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor));
@@ -2529,7 +2530,7 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                opts.sortable.isEditable.valueHasMutated();
+                //opts.sortable.isEditable.valueHasMutated();
 
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
@@ -2624,12 +2625,12 @@ module nts.custombinding {
             // subscribe handle
             // load combobox data
             opts.radios.value.subscribe(mode => {
-                // remove all data in listbox
-                opts.listbox.options.removeAll();
-
-                if (opts.sortable.isEditable() != 0) {
+                if (typeof $editable == 'boolean' ? $editable !== true : $editable !== 0) {
                     return;
                 }
+
+                // remove all data in listbox
+                opts.listbox.options.removeAll();
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     opts.combobox.options.removeAll();
@@ -2703,7 +2704,7 @@ module nts.custombinding {
 
             // load listbox data
             opts.combobox.value.subscribe(cid => {
-                if (opts.sortable.isEditable() != 0) {
+                if (typeof $editable == 'boolean' ? $editable !== true : $editable !== 0) {
                     return;
                 }
 
@@ -2785,11 +2786,13 @@ module nts.custombinding {
             });
 
             // disable group if not has any group
-            services.getGroups().done((data: Array<any>) => {
-                if (!data || !data.length) {
-                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
-                }
-            });
+            if (typeof $editable == 'boolean' ? $editable === true : $editable === 0) {
+                services.getGroups().done((data: Array<any>) => {
+                    if (!data || !data.length) {
+                        opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
+                    }
+                });
+            }
 
             // events handler
             $(ctrls.line).on('click', function() {
@@ -2976,17 +2979,20 @@ module nts.custombinding {
 
             let $element = $(element),
                 opts: any = $element.data('options'),
-                ctrls: any = $element.data('controls');
+                ctrls: any = $element.data('controls'),
+                editable: boolean | number = ko.toJS(valueAccessor().editAble);
 
-            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
-            // init radio box group
-            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
+            if (editable === true || editable === 0) {
+                ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
+                // init radio box group
+                ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
+            }
 
             ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2997,17 +3003,20 @@ module nts.custombinding {
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let $element = $(element),
                 opts: any = $element.data('options'),
-                ctrls: any = $element.data('controls');
+                ctrls: any = $element.data('controls'),
+                editable: boolean | number = ko.toJS(valueAccessor().editAble);
 
-            ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
+            if (editable === true || editable === 0) {
+                ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
+            }
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 

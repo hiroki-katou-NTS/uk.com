@@ -7,8 +7,8 @@ module nts.uk.com.view.cli003.i {
             getLogDisplaySettingByRecordType: "ctx/sys/log/app/get-log-display-setting-by-record-type"
         }
 
-        export function getLogDisplaySettingByRecordType(logSetRecordType: string): JQueryPromise<any> {         
-            return ajax('com', paths.getLogDisplaySettingByRecordType, logSetRecordType);
+        export function getLogDisplaySettingByRecordType(paramInputLog): JQueryPromise<any> {         
+            return ajax('com', paths.getLogDisplaySettingByRecordType,paramInputLog);
         };
    
     }
