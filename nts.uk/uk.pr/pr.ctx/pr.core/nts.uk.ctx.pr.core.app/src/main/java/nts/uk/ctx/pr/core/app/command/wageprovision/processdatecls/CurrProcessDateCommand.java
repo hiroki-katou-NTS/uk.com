@@ -21,6 +21,6 @@ public class CurrProcessDateCommand
     */
     private int giveCurrTreatYear;
     
-    private Long version;
+
 
 }

@@ -26,6 +26,6 @@ public class SpecPrintYmSetCommand
     */
     private int printDate;
     
-    private Long version;
+
 
 }

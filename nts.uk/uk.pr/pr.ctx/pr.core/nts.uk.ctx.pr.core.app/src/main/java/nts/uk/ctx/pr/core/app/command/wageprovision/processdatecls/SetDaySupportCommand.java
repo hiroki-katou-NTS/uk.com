@@ -67,6 +67,6 @@ public class SetDaySupportCommand
     */
     private String numberWorkDay;
     
-    private Long version;
+
 
 }

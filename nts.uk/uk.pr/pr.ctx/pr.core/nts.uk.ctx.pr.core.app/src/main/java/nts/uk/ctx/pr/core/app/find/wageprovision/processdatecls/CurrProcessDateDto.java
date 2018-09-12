@@ -30,7 +30,7 @@ public class CurrProcessDateDto
     
     public static CurrProcessDateDto fromDomain(CurrProcessDate domain)
     {
-        return new CurrProcessDateDto(domain.getCid(), domain.getProcessCateNo(), domain.getGiveCurrTreatYear());
+        return new CurrProcessDateDto(domain.getCid(), domain.getProcessCateNo(), domain.getGiveCurrTreatYear().v());
     }
     
 }
