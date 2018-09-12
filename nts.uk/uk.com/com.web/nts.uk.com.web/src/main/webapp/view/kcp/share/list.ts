@@ -402,6 +402,8 @@ module kcp.share.list {
                 self.initSelectedValue();
                 
                 let options;
+                // fix bug constructor of value of knockoutObservableArray != Array.
+                const selectedCodes = [].slice.call(self.selectedCodes());
                 
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
@@ -423,7 +425,7 @@ module kcp.share.list {
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
                         multiple: self.isMultipleSelect,
-                        value: self.selectedCodes(),
+                        value: selectedCodes,
                         name: self.getItemNameForList(),
                         rows: self.maxRows,
                     };
@@ -434,7 +436,7 @@ module kcp.share.list {
                     targetKey: self.targetKey,
                     comId: self.componentGridId,
                     items: self.itemList(),
-                    selected: self.selectedCodes(),
+                    selected: selectedCodes,
                     selectedKey: self.targetKey,
                     fields: ['name', 'code'],
                     mode: 'igGrid'
