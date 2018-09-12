@@ -13,20 +13,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class ClosureGetMonthDay {
 
-	/** The Constant ONE_HUNDRED_COUNT. */
-	public static final int ONE_HUNDRED_COUNT = 100;
-
-	/** The Constant TOTAL_MONTH_OF_YEAR. */
-	public static final int TOTAL_MONTH_OF_YEAR = 12;
-
 	/** The Constant NEXT_DAY_MONT. */
 	public static final int NEXT_DAY_MONTH = 1;
 
 	/** The Constant ZERO_DAY_MONT. */
 	public static final int ZERO_DAY_MONTH = 0;
-
-	/** The Constant FORMAT_DATE. */
-	public static final String FORMAT_DATE_STR = "yyyy/MM/dd";
 
 	/** The end month. */
 	private YearMonth yearMonth;
@@ -96,8 +87,9 @@ public class ClosureGetMonthDay {
 	 * @return the date
 	 */
 	public GeneralDate lastMonth() {
-		return this.previousDay(GeneralDate.ymd(this.yearMonth.year(),
-				this.yearMonth.month() + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+		return this.previousDay(
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -106,8 +98,9 @@ public class ClosureGetMonthDay {
 	 * @return the date
 	 */
 	public GeneralDate lastMonthNextMonth() {
-		return this.previousDay(GeneralDate.ymd(this.yearMonth.year(),
-				this.yearMonth.month() + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+		return this.previousDay(
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -116,9 +109,9 @@ public class ClosureGetMonthDay {
 	 * @return the date
 	 */
 	public GeneralDate lastMonthNextMonthNext() {
-		return this.previousDay(GeneralDate.ymd(this.yearMonth.year(),
-				this.yearMonth.month() + NEXT_DAY_MONTH + NEXT_DAY_MONTH + NEXT_DAY_MONTH,
-				NEXT_DAY_MONTH));
+		return this.previousDay(
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH + NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -136,8 +129,8 @@ public class ClosureGetMonthDay {
 	 * @return the date
 	 */
 	public GeneralDate beginMonthNextMonth() {
-		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month() + NEXT_DAY_MONTH,
-				NEXT_DAY_MONTH);
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+				.addMonths(NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -146,8 +139,8 @@ public class ClosureGetMonthDay {
 	 * @return the date
 	 */
 	public GeneralDate beginMonthNextMonthNext() {
-		return GeneralDate.ymd(this.yearMonth.year(),
-				this.yearMonth.month() + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH);
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+				.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -371,12 +364,13 @@ public class ClosureGetMonthDay {
 		return change;
 	}
 
-//	public static void main(String[] args) {
-//		ClosureGetMonthDay test = new ClosureGetMonthDay();
-//		ClosureDate input = new ClosureDate(28, false);
-//		int yearMonth = 201804;
-//		DatePeriod period = test.getDayMonth(input, yearMonth);
-//		System.out.println(period.start().toString() + " - " + period.end().toString());
-//	}
+	// public static void main(String[] args) {
+	// ClosureGetMonthDay test = new ClosureGetMonthDay();
+	// ClosureDate input = new ClosureDate(28, false);
+	// int yearMonth = 201804;
+	// DatePeriod period = test.getDayMonth(input, yearMonth);
+	// System.out.println(period.start().toString() + " - " +
+	// period.end().toString());
+	// }
 
 }
