@@ -960,12 +960,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.initScreenSPR = 1;
                             self.clickFromExtract = false;
                             self.showTextStyle = false;
-                            if (checkDailyChange) {
-                                // self.reloadScreen();
-                                self.loadRowScreen(false);
-                            } else {
-                                self.loadRowScreen(true);
-                                //nts.uk.ui.block.clear();
+                            if (!self.flagCalculation) {
+                                if (checkDailyChange) {
+                                    // self.reloadScreen();
+                                    self.loadRowScreen(false, false);
+                                } else {
+                                    self.loadRowScreen(true, false);
+                                    //nts.uk.ui.block.clear();
+                                }
+                            }else{
+                              self.loadRowScreen(false, true);
                             }
                         } else {
                             nts.uk.ui.block.clear();
@@ -1226,7 +1230,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return itemId;
         }
 
-        loadRowScreen(onlyLoadMonth: boolean) {
+        loadRowScreen(onlyLoadMonth: boolean, onlyCalc: boolean) {
             var self = this;
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
@@ -1244,6 +1248,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let rowIdsTemp = _.uniqBy(dataChange, function(e) {
                 return e.rowId;
             });
+            
+            if (onlyCalc) {
+                rowIdsTemp = _.map(_.uniqBy(dataSource, function(e) {
+                    return e.id;
+                }), mapRow =>{
+                   return {rowId: mapRow.id} 
+                });
+            }
+            
             let rowIds = _.map(_.cloneDeep(rowIdsTemp), (value) => {
                 return value.rowId.substring(1, value.rowId.length);
             });
