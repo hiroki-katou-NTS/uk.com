@@ -1,5 +1,4 @@
-package nts.uk.ctx.core.app.command.system.welfarepensioninsurance.command;
-
+package nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.command;
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;

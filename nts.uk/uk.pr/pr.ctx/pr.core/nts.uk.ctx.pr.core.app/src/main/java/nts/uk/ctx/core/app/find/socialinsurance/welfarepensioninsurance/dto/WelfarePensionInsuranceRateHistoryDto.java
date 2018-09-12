@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.system.welfarepensioninsurance.dto;
+package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto;
 
 import java.util.List;
 import java.util.Optional;

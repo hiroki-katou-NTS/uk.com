@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.system.welfarepensioninsurance.dto;
+package nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployee
  */
 @Getter
 @AllArgsConstructor
-public class BonusEmployeePensionInsuranceRateDto{
+public class BonusEmployeePensionInsuranceRateCommand{
 
     /**
      * 履歴ID
@@ -24,17 +24,17 @@ public class BonusEmployeePensionInsuranceRateDto{
     /**
      * 男子負担率
      */
-    private EmployeesPensionContributionRateDto maleContributionRate;
+    private EmployeesPensionContributionRateCommand maleContributionRate;
 
     /**
      * 女子負担率
      */
-    private EmployeesPensionContributionRateDto femaleContributionRate;
+    private EmployeesPensionContributionRateCommand femaleContributionRate;
 
     /**
      * 端数区分
      */
-    private EmployeesPensionClassificationDto fractionClassification;
+    private EmployeesPensionClassificationCommand fractionClassification;
 
     /**
      * 賞与厚生年金保険料率
@@ -45,7 +45,7 @@ public class BonusEmployeePensionInsuranceRateDto{
      * @param femaleContributionRate    女子負担率
      * @param fractionClassification    端数区分
      */
-    public static BonusEmployeePensionInsuranceRateDto fromDomainToDto (BonusEmployeePensionInsuranceRate domain) {
-        return new BonusEmployeePensionInsuranceRateDto(domain.getHistoryId(), domain.getEmployeeShareAmountMethod().value, EmployeesPensionContributionRateDto.fromDomainToDto(domain.getMaleContributionRate()), EmployeesPensionContributionRateDto.fromDomainToDto(domain.getFemaleContributionRate()), EmployeesPensionClassificationDto.fromDomainToDto(domain.getFractionClassification()));
+    public BonusEmployeePensionInsuranceRate fromCommandToDomain () {
+    	return new BonusEmployeePensionInsuranceRate(this.historyId, this.employeeShareAmountMethod, maleContributionRate.fromCommandToDomain(), femaleContributionRate.fromCommandToDomain(), this.fractionClassification.fromCommandToDomain());
     }
 }

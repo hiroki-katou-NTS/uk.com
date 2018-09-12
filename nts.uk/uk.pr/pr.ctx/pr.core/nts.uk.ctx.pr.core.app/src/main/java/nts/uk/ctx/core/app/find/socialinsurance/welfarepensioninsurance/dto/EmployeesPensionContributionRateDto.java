@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.system.welfarepensioninsurance.dto;
+package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

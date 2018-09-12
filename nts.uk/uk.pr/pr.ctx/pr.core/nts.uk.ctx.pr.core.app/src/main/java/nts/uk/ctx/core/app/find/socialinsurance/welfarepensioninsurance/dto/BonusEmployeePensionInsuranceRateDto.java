@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.command.system.welfarepensioninsurance.command;
+package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployee
  */
 @Getter
 @AllArgsConstructor
-public class BonusEmployeePensionInsuranceRateCommand{
+public class BonusEmployeePensionInsuranceRateDto{
 
     /**
      * 履歴ID
@@ -24,17 +24,17 @@ public class BonusEmployeePensionInsuranceRateCommand{
     /**
      * 男子負担率
      */
-    private EmployeesPensionContributionRateCommand maleContributionRate;
+    private EmployeesPensionContributionRateDto maleContributionRate;
 
     /**
      * 女子負担率
      */
-    private EmployeesPensionContributionRateCommand femaleContributionRate;
+    private EmployeesPensionContributionRateDto femaleContributionRate;
 
     /**
      * 端数区分
      */
-    private EmployeesPensionClassificationCommand fractionClassification;
+    private EmployeesPensionClassificationDto fractionClassification;
 
     /**
      * 賞与厚生年金保険料率
@@ -45,7 +45,7 @@ public class BonusEmployeePensionInsuranceRateCommand{
      * @param femaleContributionRate    女子負担率
      * @param fractionClassification    端数区分
      */
-    public BonusEmployeePensionInsuranceRate fromCommandToDomain () {
-    	return new BonusEmployeePensionInsuranceRate(this.historyId, this.employeeShareAmountMethod, maleContributionRate.fromCommandToDomain(), femaleContributionRate.fromCommandToDomain(), this.fractionClassification.fromCommandToDomain());
+    public static BonusEmployeePensionInsuranceRateDto fromDomainToDto (BonusEmployeePensionInsuranceRate domain) {
+        return new BonusEmployeePensionInsuranceRateDto(domain.getHistoryId(), domain.getEmployeeShareAmountMethod().value, EmployeesPensionContributionRateDto.fromDomainToDto(domain.getMaleContributionRate()), EmployeesPensionContributionRateDto.fromDomainToDto(domain.getFemaleContributionRate()), EmployeesPensionClassificationDto.fromDomainToDto(domain.getFractionClassification()));
     }
 }

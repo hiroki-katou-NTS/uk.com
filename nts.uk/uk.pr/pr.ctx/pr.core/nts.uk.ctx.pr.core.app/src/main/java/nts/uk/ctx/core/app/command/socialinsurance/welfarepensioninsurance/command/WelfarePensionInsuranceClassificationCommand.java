@@ -1,5 +1,4 @@
-package nts.uk.ctx.core.app.find.system.welfarepensioninsurance.dto;
-
+package nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.command;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.FundClassification;
@@ -10,7 +9,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensio
  */
 @AllArgsConstructor
 @Data
-public class WelfarePensionInsuranceClassificationDto {
+public class WelfarePensionInsuranceClassificationCommand {
 	/**
      * 履歴ID
      */
@@ -19,9 +18,9 @@ public class WelfarePensionInsuranceClassificationDto {
     /**
      * 厚生年金基金加入区分
      */
-    private FundClassification fundClassification;
+    private int fundClassification;
 
-    public static WelfarePensionInsuranceClassificationDto fromDomainToDto(WelfarePensionInsuranceClassification domain) {
-        return new WelfarePensionInsuranceClassificationDto(domain.getHistoryId(), domain.getFundClassification());
+    public WelfarePensionInsuranceClassification fromDomainToDto() {
+        return new WelfarePensionInsuranceClassification(this.historyId, this.fundClassification);
     }
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.system.welfarepensioninsurance;
+package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance;
 
 import java.util.ArrayList;
 import java.util.List;
