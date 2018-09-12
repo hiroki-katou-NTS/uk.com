@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
@@ -28,6 +29,9 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	
+	@Inject
+	private MonthlyAttendanceItemNameAdapter monthlyAttendanceItemNameAdapter;
 
 	@Override
 	public List<DailyAttendanceItemNameAdapterDto> getMonthlyItems(String cid, Optional<String> authorityId,
@@ -53,9 +57,14 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<DailyAttendanceItemNameAdapterDto> monthlyAttItem = dailyAttendanceItemNameAdapter
-				.getDailyAttendanceItemName(
-						monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()));
+//		List<DailyAttendanceItemNameAdapterDto> monthlyAttItem = dailyAttendanceItemNameAdapter
+//				.getDailyAttendanceItemName(
+//						monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()));
+		// HoangNDH correct function
+		List<DailyAttendanceItemNameAdapterDto> monthlyAttItem = monthlyAttendanceItemNameAdapter.
+				getNameOfMonthlyAttendanceItem(monthlyAttendanceItemIds).stream().map(item -> {
+			return new DailyAttendanceItemNameAdapterDto(item.getAttendanceItemId(), item.getAttendanceItemName(), item.getAttendanceItemDisplayNumber());
+		}).collect(Collectors.toList());
 		return monthlyAttItem;
 	}
 
