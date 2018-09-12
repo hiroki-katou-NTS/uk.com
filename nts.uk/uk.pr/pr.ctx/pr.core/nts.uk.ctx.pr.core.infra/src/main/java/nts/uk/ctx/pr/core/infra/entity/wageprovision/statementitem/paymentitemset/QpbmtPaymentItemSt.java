@@ -118,7 +118,7 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "LIMIT_AMOUNT")
-	public Integer limitAmount;
+	public Long limitAmount;
 
 	/**
 	 * 限度金額区分
@@ -168,7 +168,7 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 				domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null),
 				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
 				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 
 }

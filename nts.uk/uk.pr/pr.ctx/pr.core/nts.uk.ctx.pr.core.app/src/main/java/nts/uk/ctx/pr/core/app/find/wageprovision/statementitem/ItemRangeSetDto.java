@@ -9,16 +9,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRange
 public class ItemRangeSetDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 範囲値の属性
 	 */
 	private int rangeValueAtr;
@@ -102,25 +92,37 @@ public class ItemRangeSetDto {
 	 * アラーム上限値回数
 	 */
 	private BigDecimal alarmLowerRangeValueNum;
-	
+
 	public static ItemRangeSetDto fromDomain(ItemRangeSet domain) {
-		return new ItemRangeSetDto(domain.getCid(), domain.getSalaryItemId(), domain.getRangeValueAtr().value, 
+		return new ItemRangeSetDto(domain.getRangeValueAtr().value,
 				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value,
-				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i -> i.v()).orElse(null), 
-				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueTime().map(i -> i.v()).orElse(null), 
-				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueNum().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerLimitSettingAtr().value, 
-				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueAmount().map(i -> i.v()).orElse(null), 
-				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueNum().map(i -> i.v()).orElse(null), 
-				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperLimitSettingAtr().value, 
-				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueAmount().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueTime().map(i -> i.v()).orElse(null), 
-				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueNum().map(i -> i.v()).orElse(null), 
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount()
+						.map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueTime().map(i -> i.v())
+						.orElse(null),
+				domain.getErrorRangeSetting().getErrorUpperLimitSetting().getErrorUpperRangeValueNum().map(i -> i.v())
+						.orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerLimitSettingAtr().value,
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueAmount()
+						.map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueTime().map(i -> i.v())
+						.orElse(null),
+				domain.getErrorRangeSetting().getErrorLowerLimitSetting().getErrorLowerRangeValueNum().map(i -> i.v())
+						.orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperLimitSettingAtr().value,
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueAmount()
+						.map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueTime().map(i -> i.v())
+						.orElse(null),
+				domain.getAlarmRangeSetting().getAlarmUpperLimitSetting().getAlarmUpperRangeValueNum().map(i -> i.v())
+						.orElse(null),
 				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerLimitSettingAtr().value,
-				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueAmount().map(i -> i.v()).orElse(null), 
-				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueTime().map(i -> i.v()).orElse(null),
-				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueNum().map(i -> i.v()).orElse(null));
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueAmount()
+						.map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueTime().map(i -> i.v())
+						.orElse(null),
+				domain.getAlarmRangeSetting().getAlarmLowerLimitSetting().getAlarmLowerRangeValueNum().map(i -> i.v())
+						.orElse(null));
 	}
-	
+
 }

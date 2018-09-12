@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.AverageWageAtr;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 
@@ -63,12 +64,12 @@ public class PaymentItemSet extends AggregateRoot {
 	/**
 	 * 備考
 	 */
-	private Optional<String> note;
+	private Optional<Memo> note;
 
 	public PaymentItemSet(String cid, String salaryItemId, int breakdownItemUseAtr, int laborInsuranceCategory,
 			int settingAtr, int everyoneEqualSet, int monthlySalary, int hourlyPay, int dayPayee,
 			int monthlySalaryPerday, int averageWageAtr, int socialInsuranceCategory, int taxAtr, int taxableAmountAtr,
-			int limitAmount, int limitAmountAtr, String taxLimitAmountCode, String note) {
+			long limitAmount, int limitAmountAtr, String taxLimitAmountCode, String note) {
 		super();
 		this.cid = cid;
 		this.salaryItemId = salaryItemId;
@@ -81,6 +82,6 @@ public class PaymentItemSet extends AggregateRoot {
 		this.taxAtr = EnumAdaptor.valueOf(taxAtr, TaxAtr.class);
 		this.limitAmountSetting = new LimitAmountSetting(taxableAmountAtr, limitAmount, limitAmountAtr,
 				taxLimitAmountCode);
-		this.note = Optional.ofNullable(note);
+		this.note = note == null ? Optional.empty() : Optional.of(new Memo(note));
 	}
 }

@@ -71,7 +71,7 @@ public class QpbmtTimeItemSt extends UkJpaEntity implements Serializable {
 		return new QpbmtTimeItemSt(new QpbmtTimeItemStPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getAverageWageAtr().map(i -> i.value).orElse(null),
 				domain.getWorkingDaysPerYear().map(i -> i.value).orElse(null), domain.getTimeCountAtr().value,
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 
 }

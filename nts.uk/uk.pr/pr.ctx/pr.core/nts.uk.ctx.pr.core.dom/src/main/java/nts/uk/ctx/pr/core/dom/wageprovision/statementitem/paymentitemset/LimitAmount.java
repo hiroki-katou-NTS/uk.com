@@ -1,30 +1,24 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.LongPrimitiveValue;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
 
 /**
  * 
  * @author thanh.tq 限度金額
  *
  */
-@IntegerMaxValue(999999999)
-@IntegerMinValue(1)
-public class LimitAmount extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param rawValue
-	 */
-	public LimitAmount(int rawValue) {
-		super(rawValue);
-		// TODO Auto-generated constructor stub
-	}
+@LongMinValue(0L)
+@LongMaxValue(9999999999L)
+public class LimitAmount extends LongPrimitiveValue<LimitAmount>
+{
+    
+    private static final long serialVersionUID = 1L;
+    
+    public LimitAmount(long rawValue)
+    {
+         super(rawValue);
+    }
+    
 }

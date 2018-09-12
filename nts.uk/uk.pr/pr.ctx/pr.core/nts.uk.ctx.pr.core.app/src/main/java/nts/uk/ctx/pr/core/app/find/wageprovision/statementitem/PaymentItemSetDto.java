@@ -7,16 +7,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.Payment
 public class PaymentItemSetDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 内訳項目利用区分
 	 */
 	private int breakdownItemUseAtr;
@@ -79,7 +69,7 @@ public class PaymentItemSetDto {
 	/**
 	 * 限度金額
 	 */
-	private Integer limitAmount;
+	private Long limitAmount;
 
 	/**
 	 * 限度金額区分
@@ -97,18 +87,19 @@ public class PaymentItemSetDto {
 	private String note;
 
 	public static PaymentItemSetDto fromDomain(PaymentItemSet domain) {
-		return new PaymentItemSetDto(domain.getCid(), domain.getSalaryItemId(), domain.getBreakdownItemUseAtr().value,
-				domain.getLaborInsuranceCategory().value, domain.getFixedWage().getSettingAtr().value,
+		return new PaymentItemSetDto(domain.getBreakdownItemUseAtr().value, domain.getLaborInsuranceCategory().value,
+				domain.getFixedWage().getSettingAtr().value,
 				domain.getFixedWage().getEveryoneEqualSet().map(i -> i.value).orElse(null),
 				domain.getFixedWage().getPerSalaryContractType().getMonthlySalary().map(i -> i.value).orElse(null),
 				domain.getFixedWage().getPerSalaryContractType().getHourlyPay().map(i -> i.value).orElse(null),
 				domain.getFixedWage().getPerSalaryContractType().getDayPayee().map(i -> i.value).orElse(null),
-				domain.getFixedWage().getPerSalaryContractType().getMonthlySalaryPerday().map(i -> i.value).orElse(null),
+				domain.getFixedWage().getPerSalaryContractType().getMonthlySalaryPerday().map(i -> i.value)
+						.orElse(null),
 				domain.getAverageWageAtr().value, domain.getSocialInsuranceCategory().value, domain.getTaxAtr().value,
 				domain.getLimitAmountSetting().getTaxableAmountAtr().map(i -> i.value).orElse(null),
 				domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null),
 				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
 				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 }

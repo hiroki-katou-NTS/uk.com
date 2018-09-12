@@ -64,7 +64,7 @@ public class QpbmtDeductionItemSt extends UkJpaEntity implements Serializable {
 		return new QpbmtDeductionItemSt(new QpbmtDeductionItemStPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getDeductionItemAtr().value,
 				domain.getBreakdownItemUseAtr().value,
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 
 }

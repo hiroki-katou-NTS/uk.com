@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.AverageWageAtr;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class TimeItemSet extends AggregateRoot {
 	/**
 	 * 備考
 	 */
-	private Optional<String> note;
+	private Optional<Memo> note;
 
 	public TimeItemSet(String cid, String salaryItemId, int averageWageAtr, int workingDaysPerYear, int timeCountAtr,
 			String note) {
@@ -54,7 +55,7 @@ public class TimeItemSet extends AggregateRoot {
 		this.workingDaysPerYear = Optional
 				.ofNullable(EnumAdaptor.valueOf(workingDaysPerYear, ClassifiedWorkingDaysPerYear.class));
 		this.timeCountAtr = EnumAdaptor.valueOf(timeCountAtr, TimeCountAtr.class);
-		this.note = Optional.ofNullable(note);
+		this.note = note == null ? Optional.empty() : Optional.of(new Memo(note));
 	}
 
 }

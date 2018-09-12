@@ -29,7 +29,7 @@ public class StatementItemName extends AggregateRoot {
 	/**
 	 * 略名
 	 */
-	private ShortName shortName;
+	private ItemShortName shortName;
 
 	/**
 	 * その他言語名称
@@ -46,7 +46,7 @@ public class StatementItemName extends AggregateRoot {
 		this.cid = cid;
 		this.salaryItemId = salaryItemId;
 		this.name = new ItemName(name);
-		this.shortName = new ShortName(shortName);
+		this.shortName = new ItemShortName(shortName);
 		this.otherLanguageName = otherLanguageName == null ? Optional.empty()
 				: Optional.of(new OtherLanguageName(otherLanguageName));
 		this.englishName = englishName == null ? Optional.empty() : Optional.of(new EnglishName(englishName));

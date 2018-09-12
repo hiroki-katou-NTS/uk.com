@@ -55,8 +55,8 @@ public class StatementItemDataFinder {
 	 *            taxFreeAmountCode
 	 * @return
 	 */
-	public StatementItemDataDto getStatementItemData(int categoryAtr, int itemNameCd, String salaryItemId,
-			Integer breakdownItemCode, String taxFreeAmountCode) {
+	public StatementItemDataDto getStatementItemData(int categoryAtr, String itemNameCd, String salaryItemId,
+			String breakdownItemCode, String taxFreeAmountCode) {
 		StatementItemDto statementItem = null;
 		StatementItemNameDto statementItemName = null;
 		PaymentItemSetDto paymentItemSet = null;
