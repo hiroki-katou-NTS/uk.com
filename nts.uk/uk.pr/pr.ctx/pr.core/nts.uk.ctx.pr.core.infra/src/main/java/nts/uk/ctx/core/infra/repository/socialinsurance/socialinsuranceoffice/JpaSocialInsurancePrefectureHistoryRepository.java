@@ -11,8 +11,13 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class JpaSocialInsurancePrefectureHistoryRepository extends JpaRepository implements SocialInsurancePrefectureHistoryRepository {
-    /**
+    
+	private static final String FINDALL = "SELECT sh FROM QpbmtSocialInsurancePrefectureHistory sh";
+	/**
      * Entity to domain
      *
      * @param entity QpbmtContributionRateHistory
@@ -38,4 +43,10 @@ public class JpaSocialInsurancePrefectureHistoryRepository extends JpaRepository
     private QpbmtSocialInsurancePrefectureHistory toEntity(String historyId, int startYearMonth, int endYearMonth) {
         return new QpbmtSocialInsurancePrefectureHistory(historyId, startYearMonth, endYearMonth);
     }
+
+	@Override
+	public SocialInsurancePrefectureHistory findAll() {
+		return toDomain(this.queryProxy().query(FINDALL, QpbmtSocialInsurancePrefectureHistory.class)
+       		 .getList());
+	}
 }

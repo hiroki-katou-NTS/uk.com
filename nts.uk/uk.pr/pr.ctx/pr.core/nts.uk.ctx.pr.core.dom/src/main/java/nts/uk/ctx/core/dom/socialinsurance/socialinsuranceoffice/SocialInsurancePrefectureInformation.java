@@ -1,6 +1,5 @@
 package nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 

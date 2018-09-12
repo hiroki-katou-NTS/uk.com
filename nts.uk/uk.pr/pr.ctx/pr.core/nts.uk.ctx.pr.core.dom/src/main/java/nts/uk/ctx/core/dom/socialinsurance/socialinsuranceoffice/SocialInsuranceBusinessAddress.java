@@ -60,4 +60,11 @@ public class SocialInsuranceBusinessAddress extends DomainObject {
         this.addressKana2 = Objects.isNull(addressKana2) ? Optional.empty() : Optional.of(new AddressKana2(addressKana2));
         this.phoneNumber = Objects.isNull(phoneNumber) ? Optional.empty() : Optional.of(new PhoneNumber(phoneNumber));
     }
+
+	public SocialInsuranceBusinessAddress() {
+		super();
+	}
+    
+    
+    
 }
