@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.InitialDisplayRe
 
 @Path("ctx.pr.core.ws.wageprovision.processdatecls")
 @Produces("application/json")
-public class DisplayRegisterProcessScreen {
+public class DisplayRegisterProcessScreenWebService {
 	@Inject
 	private InitialDisplayRegisterProcessingFinder finder;
 
@@ -19,6 +19,6 @@ public class DisplayRegisterProcessScreen {
 	@Path("findDisplayRegister/{processingCategoryNo}")
 	public InitialDisplayRegisterProcessingDto findDisplayRegister(
 			@PathParam("processingCategoryNo") int processCateNo) {
-		return finder.getProcessInformationByProcessingCategoryNo(processCateNo);
+		return finder.getInitialDisplayRegisterProcessing(processCateNo);
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 //import nts.uk.com.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -15,6 +16,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class InitialDisplayRegisterProcessingFinder {
 	@Inject
 	private ProcessInformationRepository finderProcessInformation;
@@ -27,7 +29,7 @@ public class InitialDisplayRegisterProcessingFinder {
 	// @Inject
 	// private EmploymentRepository finderEmployment;
 
-	public InitialDisplayRegisterProcessingDto getProcessInformationByProcessingCategoryNo(int processCateNo) {
+	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing(int processCateNo) {
 		String cid = AppContexts.user().companyId();
 		Optional<ProcessInformation> optProcessInformation = finderProcessInformation.getProcessInformationById(cid,
 				processCateNo);

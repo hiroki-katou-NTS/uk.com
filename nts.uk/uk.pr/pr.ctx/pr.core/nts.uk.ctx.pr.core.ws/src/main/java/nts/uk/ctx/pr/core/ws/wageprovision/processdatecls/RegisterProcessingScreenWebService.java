@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.AddRegisterPr
 
 @Path("ctx.pr.core.ws.wageprovision.processdatecls")
 @Produces("application/json")
-public class RegisterProcessingScreen {
+public class RegisterProcessingScreenWebService {
 	@Inject
 	private AddRegisterProcessCommandHandler addRegisterProcessCommandHandler;
 	@POST
