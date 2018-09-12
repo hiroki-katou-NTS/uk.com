@@ -618,16 +618,16 @@ public class MonthlyAggregateProcessService {
 	private CompareOperatorText convertCompareType(int compareOperator) {
 		CompareOperatorText compare = new CompareOperatorText();
 		switch(compareOperator) {
-		case 0 :/* 等しい（＝） */
-			compare.setCompareLeft("＝");
-			compare.setCompareright("");
-			break; 
-		case 1 :/* 等しくない（≠） */
+		case 0 :/* 等しくない（≠） */
 			compare.setCompareLeft("≠");
 			compare.setCompareright("");
 			break; 
-		case 2 :/* より大きい（＞） */
-			compare.setCompareLeft("＞");
+		case 1 :/* 等しい（＝） */
+			compare.setCompareLeft("＝");
+			compare.setCompareright("");
+			break; 
+		case 2 :/* 以下（≦） */
+			compare.setCompareLeft("≦");
 			compare.setCompareright("");
 			break;
 		case 3 :/* 以上（≧） */
@@ -638,8 +638,8 @@ public class MonthlyAggregateProcessService {
 			compare.setCompareLeft("＜");
 			compare.setCompareright("");
 			break;
-		case 5 :/* 以下（≦） */
-			compare.setCompareLeft("≦");
+		case 5 :/* より大きい（＞） */
+			compare.setCompareLeft("＞");
 			compare.setCompareright("");
 			break;
 		case 6 :/* 範囲の間（境界値を含まない）（＜＞） */
