@@ -547,7 +547,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		Field idxField = getField(idxFieldName, targetClass);
 
-		List<T> returnList = new ArrayList<>(list);
+		List<T> returnList = new ArrayList<>(list.stream().filter(c -> c != null).collect(Collectors.toList()));
 
 		if (returnList.size() < max) {
 
