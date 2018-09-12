@@ -7,12 +7,6 @@ import nts.arc.time.GeneralDateTime;
 @Value
 public class OccAccIsPrRateCommand
 {
-    
-    /**
-    * 履歴ID
-    */
-    private String hisId;
-    
     /**
     * 労災保険事業No
     */
@@ -26,7 +20,7 @@ public class OccAccIsPrRateCommand
     /**
     * 事業主負担率
     */
-    private String empConRatio;
+    private Long empConRatio;
 
 
 

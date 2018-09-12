@@ -20,6 +20,9 @@ table th{
     text-align: center;
 
 }
+table td:nth-child(3) {
+    text-align: left;
+}
 
 table td {
 	text-align: center;

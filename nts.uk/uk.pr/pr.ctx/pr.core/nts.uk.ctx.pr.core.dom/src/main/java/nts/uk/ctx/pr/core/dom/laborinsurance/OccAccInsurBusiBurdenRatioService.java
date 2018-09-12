@@ -17,7 +17,8 @@ public class OccAccInsurBusiBurdenRatioService {
     private OccAccIsHisRepository occAccIsHisRepository;
 
     @Inject
-    private OccAccInsurBusiBurdenRatioRepository occAccInsurBusiBurdenRatioRepository;
+    private OccAccIsPrRateRepository occAccIsPrRateRepository;
+
 
     public void addOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatioList, YearMonth start, YearMonth end){
         String cId = AppContexts.user().companyId();
@@ -31,11 +32,11 @@ public class OccAccInsurBusiBurdenRatioService {
         itemtoBeAdded.add(yearMonthItem);
         this.addOccAccIsHis(itemtoBeAdded);
         this.updateItemBefore(occAccIsHis.get(), yearMonthItem, cId);
-        this.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatioList);
+        this.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatioList,newHistID);
 
     }
-    public void updateOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatioList){
-        occAccInsurBusiBurdenRatioRepository.update(occAccInsurBusiBurdenRatioList);
+    public void updateOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatioList,String hisId){
+        occAccIsPrRateRepository.update(occAccInsurBusiBurdenRatioList,hisId);
     }
     private void addOccAccIsHis(OccAccIsHis itemtoBeAdded){
         if(itemtoBeAdded.getHistory().isEmpty()){
@@ -50,7 +51,7 @@ public class OccAccInsurBusiBurdenRatioService {
         }
         occAccIsHisRepository.update(itemToBeUpdated.get(),cId);
     }
-    private void addOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> domain){
-        occAccInsurBusiBurdenRatioRepository.add(domain);
+    private void addOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> domain,String hisId){
+        occAccIsPrRateRepository.add(domain,hisId);
     }
 }

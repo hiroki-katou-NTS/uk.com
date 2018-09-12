@@ -2,10 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.laborinsurance.InsuPremiumFractionClassification;
-import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
-import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
-import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
+import nts.uk.ctx.pr.core.dom.laborinsurance.*;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsPrRate;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccIsPrRatePk;
 
@@ -37,7 +34,7 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
         List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatio = new ArrayList<OccAccInsurBusiBurdenRatio>();
         entities.forEach(entity -> {
             occAccInsurBusiBurdenRatio.add( new OccAccInsurBusiBurdenRatio(entity.occAccIsPrRatePk.occAccInsurBusNo,
-                    EnumAdaptor.valueOf(entity.fracClass,InsuPremiumFractionClassification.class),entity.empConRatio));
+                    EnumAdaptor.valueOf(entity.fracClass,InsuPremiumFractionClassification.class),new InsuranceRate(entity.empConRatio)));
         });
         return occAccInsurBusiBurdenRatio;
     }
@@ -45,5 +42,15 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
     @Override
     public void remove(int occAccInsurBusNo, String hisId){
         this.commandProxy().remove(QpbmtOccAccIsPrRate.class, new QpbmtOccAccIsPrRatePk(occAccInsurBusNo, hisId));
+    }
+
+    @Override
+    public void add(List<OccAccInsurBusiBurdenRatio> domain,String hisId) {
+        this.commandProxy().insertAll(QpbmtOccAccIsPrRate.toEntity(domain,hisId));
+    }
+
+    @Override
+    public void update(List<OccAccInsurBusiBurdenRatio> domain,String hisId) {
+        this.commandProxy().updateAll(QpbmtOccAccIsPrRate.toEntity(domain,hisId));
     }
 }

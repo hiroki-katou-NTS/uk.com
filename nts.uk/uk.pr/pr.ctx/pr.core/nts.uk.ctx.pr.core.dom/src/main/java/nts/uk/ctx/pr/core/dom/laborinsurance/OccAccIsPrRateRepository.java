@@ -11,5 +11,7 @@ public interface OccAccIsPrRateRepository
 
     OccAccIsPrRate getOccAccIsPrRateByHisId(String hisId);
     void remove(int occAccInsurBusNo, String hisId);
+    void add(List<OccAccInsurBusiBurdenRatio> domain,String hisId);
 
+    void update(List<OccAccInsurBusiBurdenRatio> domain,String newhisId);
 }

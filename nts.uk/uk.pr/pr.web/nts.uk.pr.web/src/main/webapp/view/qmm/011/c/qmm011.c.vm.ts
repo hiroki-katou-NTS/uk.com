@@ -6,6 +6,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
     import model = qmm011.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
     import service = nts.uk.com.view.qmm011.c.service;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
 
         listPerFracClass:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());
@@ -34,6 +35,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                 self.setOccAccIsHis(self.selectedEmpInsHis());
                 self.getAccInsurPreRate();
+                self.getOccAccIsPrRate();
             });
         }
 
@@ -64,6 +66,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                     self.listOccAccIsPrRate(OccAccIsPrRate.fromApp(listOccAccIsPrRate));
                     self.isNewMode(false);
                 }
+                
             });
         }
         getOccAccInsurBus(){
@@ -78,7 +81,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
         getAccInsurPreRate() {
             let self = this;
-            service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<AccInsurPreRate>) => {
+            service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
                     self.isNewMode(false);
@@ -134,12 +137,17 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
         register(){
             let self = this;
+            block.invisible();
+            if (nts.uk.ui.errors.hasError()) {
+                block.clear();
+                return;
+            }
             let data: any = {
-
-                listOccAccIsPrRate: self.listOccAccIsPrRate(),
+                listAccInsurPreRate: self.convertToCommand(self.listAccInsurPreRate()),
                 isNewMode: self.isNewMode(),
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
-                endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
+                endYearMonth:  self.convertStringToYearMonth(self.endYearMonth()),
+                hisId: self.hisId()
 
             }
             service.register(data).done(() => {
@@ -149,16 +157,13 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 });
             });
         }
-        convertToCommand(dto :Array<OccAccIsPrRate>){
-            let listOccAccIsPrRate :Array <OccAccIsPrRate> = [];
-            _.each(dto, function(item: OccAccIsPrRate) {
-                let temp = new OccAccIsPrRate();
-                temp.hisId = item.hisId;
-                temp = item.empPreRateId;
-                temp.indBdRatio = Number(item.indBdRatio());
-                temp.empContrRatio = Number(item.empContrRatio());
-                temp.perFracClass = item.perFracClass();
-                temp.busiOwFracClass = item.busiOwFracClass();
+        convertToCommand(dto :Array<AccInsurPreRate>){
+            let listOccAccIsPrRate :Array <AccInsurPreRate> = [];
+            _.each(dto, function(item: AccInsurPreRate) {
+                let temp = new AccInsurPreRate();
+                temp.occAccIsBusNo = item.occAccIsBusNo;
+                temp.empConRatio = Number(item.empConRatio());
+                temp.fracClass = item.fracClass;
                 listOccAccIsPrRate.push(temp);
             })
             return listOccAccIsPrRate;
@@ -237,7 +242,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         /**
          * 労災保険事業No
          */
-        occAccInsurBusNo:number;
+        occAccIsBusNo:number;
 
         /**
          * 利用する
@@ -252,7 +257,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
     class OccAccInsurBus{
         cid:string;
-        occAccInsurBusNo:number;
+        occAccIsBusNo:number;
         toUse:number;
         name:string;
         constructor() {
@@ -264,7 +269,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             _.each(app, (item) => {
                 let dto: OccAccInsurBus = new OccAccInsurBus();
                 dto.cid = item.cid;
-                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.occAccIsBusNo = item.occAccIsBusNo;
                 dto.toUse = item.toUse;
                 dto.name = item.name;
 
@@ -274,13 +279,19 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         }
 
     }
+    class IAccInsurPreRate {
 
-    class AccInsurPreRate {
-
-        occAccInsurBusNo: number;
+        occAccIsBusNo: number;
         name: string;
         fracClass: number;
-        empConRatio: string;
+        empConRatio: number;
+    }
+    class AccInsurPreRate {
+
+        occAccIsBusNo: number;
+        name: string;
+        fracClass: number;
+        empConRatio: number;
         constructor() {
 
         }
@@ -289,10 +300,10 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             let listEmp = [];
             _.each(app, (item) => {
                 let dto: AccInsurPreRate = new AccInsurPreRate();
-                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.occAccIsBusNo = item.occAccInsurBusNo;
                 dto.name = item.name;
                 dto.fracClass = ko.observable(item.fracClass);
-                dto.empConRatio = item.empConRatio;
+                dto.empConRatio = ko.observable(item.empConRatio);
 
                 listEmp.push(dto);
             })
@@ -304,20 +315,20 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
     class IOccAccIsPrRate{
         hisId: string;
-        occAccInsurBusNo: number;
+        occAccIsBusNo: number;
         fracClass: number;
-        empConRatio: string;
+        empConRatio: number;
     }
 
     class OccAccIsPrRate {
         /*履歴ID*/
         hisId: string;
         /*労災保険事業No*/
-        occAccInsurBusNo: number;
+        occAccIsBusNo: number;
         /*端数区分*/
         fracClass: number;
         /*事業主負担率*/
-        empConRatio: string;
+        empConRatio: number;
         constructor() {
 
         }
@@ -327,7 +338,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             _.each(app, (item) => {
                 let dto: OccAccIsPrRate = new OccAccIsPrRate();
                 dto.hisId = item.hisId;
-                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.occAccIsBusNo = item.occAccInsurBusNo;
                 dto.fracClass = ko.observable(item.fracClass);
                 dto.empConRatio = ko.observable(item.empConRatio);
 
