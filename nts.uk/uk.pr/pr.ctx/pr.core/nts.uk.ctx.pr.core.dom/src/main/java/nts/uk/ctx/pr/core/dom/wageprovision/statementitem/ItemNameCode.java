@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset;
+package nts.uk.ctx.pr.core.dom.wageprovision.statementitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
@@ -7,17 +7,17 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 
- * @author thanh.tq 内訳項目コード
+ * @author thanh.tq 項目名コード
  *
  */
-@StringMaxLength(2)
+@StringMaxLength(4)
 @StringCharType(CharType.NUMERIC)
-public class BreakdownItemCode extends StringPrimitiveValue<BreakdownItemCode>
+public class ItemNameCode extends StringPrimitiveValue<ItemNameCode>
 {
     
     private static final long serialVersionUID = 1L;
     
-    public BreakdownItemCode(String rawValue)
+    public ItemNameCode(String rawValue)
     {
          super(rawValue);
     }

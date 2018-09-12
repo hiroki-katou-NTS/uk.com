@@ -32,13 +32,17 @@ public class LimitAmountSetting extends DomainObject {
 	 */
 	private Optional<TaxLimitAmountCode> taxLimitAmountCode;
 
-	public LimitAmountSetting(int taxableAmountAtr, int limitAmount, int limitAmountAtr, String taxLimitAmountCode) {
+	public LimitAmountSetting(Integer taxableAmountAtr, Long limitAmount, Integer limitAmountAtr,
+			String taxLimitAmountCode) {
 		super();
-		this.taxableAmountAtr = Optional
-				.ofNullable(EnumAdaptor.valueOf(taxableAmountAtr, TaxableAmountClassification.class));
-		this.limitAmount = Optional.ofNullable(new LimitAmount(limitAmount));
-		this.limitAmountAtr = Optional.ofNullable(EnumAdaptor.valueOf(limitAmountAtr, LimitAmountClassification.class));
-		this.taxLimitAmountCode = Optional.ofNullable(new TaxLimitAmountCode(taxLimitAmountCode));
+
+		this.taxableAmountAtr = taxableAmountAtr == null ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(taxableAmountAtr, TaxableAmountClassification.class));
+		this.limitAmount = limitAmount == null ? Optional.empty() : Optional.of(new LimitAmount(limitAmount));
+		this.limitAmountAtr = limitAmountAtr == null ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(limitAmountAtr, LimitAmountClassification.class));
+		this.taxLimitAmountCode = taxLimitAmountCode == null ? Optional.empty()
+				: Optional.of(new TaxLimitAmountCode(taxLimitAmountCode));
 	}
 
 }

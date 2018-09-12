@@ -10,15 +10,15 @@ import java.util.Optional;
  */
 public interface TaxExemptionLimitRepository {
 
-	List<TaxExemptLimit> getAllTaxExemptLimit();
+	List<TaxExemptionLimit> getAllTaxExemptLimit();
 
-	List<TaxExemptLimit> getTaxExemptLimitByCompanyId(String cid);
+	List<TaxExemptionLimit> getTaxExemptLimitByCompanyId(String cid);
 
-	Optional<TaxExemptLimit> getTaxExemptLimitById(String cid, String taxFreeAmountCode);
+	Optional<TaxExemptionLimit> getTaxExemptLimitById(String cid, String taxFreeAmountCode);
 
-	void add(TaxExemptLimit domain);
+	void add(TaxExemptionLimit domain);
 
-	void update(TaxExemptLimit domain);
+	void update(TaxExemptionLimit domain);
 
 	void remove(String cid, String taxFreeamountCode);
 

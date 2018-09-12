@@ -9,7 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-public class TaxExemptLimit extends AggregateRoot {
+public class TaxExemptionLimit extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -31,7 +31,7 @@ public class TaxExemptLimit extends AggregateRoot {
 	 */
 	private TaxExemption taxExemption;
 
-	public TaxExemptLimit(String cid, String taxFreeAmountCode, String taxExemptionName, int taxExemption) {
+	public TaxExemptionLimit(String cid, String taxFreeAmountCode, String taxExemptionName, long taxExemption) {
 		super();
 		this.cid = cid;
 		this.taxFreeAmountCode = new TaxLimitAmountCode(taxFreeAmountCode);

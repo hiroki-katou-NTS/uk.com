@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  */
 @IntegerMaxValue(99)
 @IntegerMinValue(1)
-public class IntergrateCd extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
+public class IntegrationItemCod extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/**
 	 * 
 	 */
@@ -23,7 +23,7 @@ public class IntergrateCd extends IntegerPrimitiveValue<PrimitiveValue<Integer>>
 	 * 
 	 * @param rawValue
 	 */
-	public IntergrateCd(int rawValue) {
+	public IntegrationItemCod(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

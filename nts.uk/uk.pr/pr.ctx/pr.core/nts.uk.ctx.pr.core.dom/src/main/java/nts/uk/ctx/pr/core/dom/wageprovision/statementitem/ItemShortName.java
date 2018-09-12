@@ -7,11 +7,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * 項目名略名
  */
 @StringMaxLength(12)
-public class ShortName extends StringPrimitiveValue<ShortName> {
+public class ItemShortName extends StringPrimitiveValue<ItemShortName> {
 
 	private static final long serialVersionUID = 1L;
 
-	public ShortName(String rawValue) {
+	public ItemShortName(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

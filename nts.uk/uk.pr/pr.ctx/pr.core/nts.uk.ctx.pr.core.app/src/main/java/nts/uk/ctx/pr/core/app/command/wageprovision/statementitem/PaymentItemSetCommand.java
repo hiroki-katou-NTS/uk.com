@@ -6,16 +6,6 @@ import lombok.Value;
 public class PaymentItemSetCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 内訳項目利用区分
 	 */
 	private int breakdownItemUseAtr;

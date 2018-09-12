@@ -33,13 +33,17 @@ public class PerSalaryContractType extends DomainObject {
 	 */
 	private Optional<CategoryFixedWage> monthlySalaryPerday;
 
-	public PerSalaryContractType(int monthlySalary, int hourlyPay, int dayPayee, int monthlySalaryPerday) {
+	public PerSalaryContractType(Integer monthlySalary, Integer hourlyPay, Integer dayPayee,
+			Integer monthlySalaryPerday) {
 		super();
-		this.monthlySalary = Optional.ofNullable(EnumAdaptor.valueOf(monthlySalary, CategoryFixedWage.class));
-		this.hourlyPay = Optional.ofNullable(EnumAdaptor.valueOf(hourlyPay, CategoryFixedWage.class));
-		this.dayPayee = Optional.ofNullable(EnumAdaptor.valueOf(dayPayee, CategoryFixedWage.class));
-		this.monthlySalaryPerday = Optional
-				.ofNullable(EnumAdaptor.valueOf(monthlySalaryPerday, CategoryFixedWage.class));
+		this.monthlySalary = monthlySalary == null ? Optional.empty()
+				: Optional.ofNullable(EnumAdaptor.valueOf(monthlySalary, CategoryFixedWage.class));
+		this.hourlyPay = hourlyPay == null ? Optional.empty()
+				: Optional.ofNullable(EnumAdaptor.valueOf(hourlyPay, CategoryFixedWage.class));
+		this.dayPayee = dayPayee == null ? Optional.empty()
+				: Optional.ofNullable(EnumAdaptor.valueOf(dayPayee, CategoryFixedWage.class));
+		this.monthlySalaryPerday = monthlySalaryPerday == null ? Optional.empty()
+				: Optional.ofNullable(EnumAdaptor.valueOf(monthlySalaryPerday, CategoryFixedWage.class));
 	}
 
 }

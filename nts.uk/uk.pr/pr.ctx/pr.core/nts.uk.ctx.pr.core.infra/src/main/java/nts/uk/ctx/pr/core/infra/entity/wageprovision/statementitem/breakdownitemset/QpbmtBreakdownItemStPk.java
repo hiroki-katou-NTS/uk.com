@@ -32,6 +32,6 @@ public class QpbmtBreakdownItemStPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "BREAKDOWN_ITEM_CODE ")
-	public int breakdownItemCode;
+	public String breakdownItemCode;
 
 }

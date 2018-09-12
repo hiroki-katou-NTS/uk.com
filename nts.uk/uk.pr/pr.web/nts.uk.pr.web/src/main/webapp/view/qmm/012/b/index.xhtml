@@ -7,6 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCd
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemName
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ShortName
+			</com:ValidatorScript>
 			<com:stylefile path="qmm012.b.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -35,7 +40,7 @@
 			<div id="contents-area">
 				<div class="fixed-flex-layout-left">
 					<!-- 項目一覧パネル -->
-					<div id="B2_1" data-bind="ntsPanel:{width: '410px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+					<div id="B2_1" data-bind="ntsPanel:{width: '410px', height: '470px', direction: 'right', showIcon: true, visible: true}">
 						<div class="valign-center control-group">
 							<!-- 項目区分 -->
 							<div id="B2_2" data-bind="ntsFormLabel: { }">#{i18n.getText('#QMM012_27')}</div>
@@ -56,32 +61,80 @@
 							<div id="B2_5" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('QMM012_28')}</div>
 						</div>
 						<!-- B2_6, B2_7, B2_8 -->
-						<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'highlight',
-																			label: '#[QMM012_29],
-																			targetKey: 'itemNameCd', 
+						<div style="width: 410px" data-bind="ntsSearchBox: {searchMode: 'highlight',
+																			label: '#[QMM012_29]',
+																			targetKey: 'salaryItemId', 
 																			comId: 'statementList', 
-																			items: statementList, 
-																			selected: statementSelected.itemNameCd, 
-																			selectedKey: 'itemNameCd', 
-																			fields: ['...', 'itemNameCd'], 
+																			items: statementItemDataList, 
+																			selected: statementItemDataSelected().salaryItemId, 
+																			selectedKey: 'salaryItemId',
+																			searchText: '#[QMM012_30]',
+																			fields: ['itemNameCd'], 
 																			mode: 'igGrid'}" />
-						<table id="statementList" data-bind="ntsGridList: { name: '#[QMM012_31],
-																			height: 320,
-																			options: statementList,
-																			optionsValue: 'itemNameCd',
-																			columns: [
-																		                { headerText: '#{i18n.getText('QMM012_27')}', key: 'categoryAtr', width: 20 , formatter: _.escape },
-																		                { headerText: '#{i18n.getText('QMM012_32')}', key: 'itemNameCd', width: 340, formatter: _.escape },
-																		                { headerText: '#{i18n.getText('QMM012_33')}', key: 'itemNameCd', width: 340, formatter: _.escape },
-																		                { headerText: '#{i18n.getText('QMM012_34')}', key: 'deprecatedAtr', width: 340, formatter: _.escape }
-																		            ],
-																			multiple: false,
-																			value: statementSelected.itemNameCd
-																		}"></table>
+						<!-- B2_9 -->
+						<table  id="statementList" 
+							    data-bind="ntsGridList: { name: '#[QMM012_31]',
+								options: statementItemDataList,
+								primaryKey: 'salaryItemId',
+								columns: gridColumns,
+								multiple: false,
+								rows: 15,
+								value: statementItemDataSelected().salaryItemId
+							}"></table>
 					</div>
 					
 				</div>
-				<div class="fixed-flex-layout-right">
+				<div class="fixed-flex-layout-right" data-bind="with: statementItemDataSelected">
+					<div class="valign-center control-group">
+						<!-- コード/名称 -->
+						<div id="B3_1" data-bind="ntsFormLabel: {required: true, constraint: ['ItemNameCd', 'ItemName'] }">#{i18n.getText('#QMM012_29')}</div>
+						<!-- 項目名コード -->
+						<input id="B3_2"
+								data-bind="ntsTextEditor :{
+									name: '#[QMM012_32]',
+									value: statementItem.itemNameCd,
+									constraint: 'ItemNameCd',
+									option: {width: '40px'},
+									required: true,
+									enable: true,
+									readonly: false}" />
+						<!-- 項目名コード -->
+						<input id="B3_3"
+								data-bind="ntsTextEditor :{
+									name: '#[QMM012_33]',
+									value: statementItemName.name,
+									constraint: 'ItemName',
+									option: {width: '200px'},
+									required: true,
+									enable: true,
+									readonly: false}" />
+						<!-- この項目名を廃止する -->
+						<div id="B3_12" data-bind="ntsCheckBox: { checked: statementItem.deprecatedAtr, style: 'warnpanel'}">
+							#{i18n.getText('#QMM012_38')}
+						</div>
+						<!-- 廃止区分について -->
+						<button id="B3_13" data-bind="ntsHelpButton: {image: '../resource/QMM012_1.png', position: 'bottom right', enable: true }">?</button>
+					</div>
+					<div class="valign-center control-group">
+					 	<!-- 略名 -->
+						<div id="B3_4" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('#QMM012_35')}</div>
+						<!-- 項目名コード -->
+						<input id="B3_5"
+								data-bind="ntsTextEditor :{
+									name: '#[QMM012_35]',
+									value: statementItemName.shortName,
+									constraint: 'ShortName',
+									option: {width: '200px'},
+									required: true,
+									enable: true,
+									readonly: false}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- 項目区分 -->
+						<div id="B3_6" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('#QMM012_27')}</div>
+						<label data-bind="text: statementItem.categoryName"></label>
+					</div>
+					<hr />
 				</div>
 			</div>
 		</ui:define>

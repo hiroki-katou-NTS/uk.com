@@ -1,5 +1,23 @@
-.contents-area {
-	padding: 20px;
+.fixed-flex-layout-left {
+	padding: 10px;
+	float: left;
+}
+
+.fixed-flex-layout-right {
+	padding: 10px;
+	float: left;
+}
+
+#B1_2 {
+	margin-right: 100px;
+}
+
+#B1_4 {
+	margin-right: 0px !important;
+}
+
+#B1_6 {
+	margin-right: 100px;
 }
 
 #B2_3 {
@@ -8,4 +26,12 @@
 
 #B2_7 input {
 	width: 128px;
+}
+
+#B3_1, #B3_4, #B3_6 {
+	width: 150px;
+}
+
+#B3_12 {
+	margin-left: 30px;
 }

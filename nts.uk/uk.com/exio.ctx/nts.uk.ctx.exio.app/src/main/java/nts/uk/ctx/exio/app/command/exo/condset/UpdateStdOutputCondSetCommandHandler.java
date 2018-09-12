@@ -19,7 +19,7 @@ public class UpdateStdOutputCondSetCommandHandler extends CommandHandler<StdOutp
 	@Override
 	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
 		StdOutputCondSetCommand updateCommand = context.getCommand();
-		repository.update(StdOutputCondSet.createFromJavaType(updateCommand.getCid(), updateCommand.getConditionSetCd(),
+		repository.update(StdOutputCondSet.toDomain(updateCommand.getCid(), updateCommand.getConditionSetCd(),
 				updateCommand.getCategoryId(), updateCommand.getDelimiter(), updateCommand.getItemOutputName(),
 				updateCommand.getAutoExecution(), updateCommand.getConditionSetName(),
 				updateCommand.getConditionOutputName(), updateCommand.getStringFormat()));

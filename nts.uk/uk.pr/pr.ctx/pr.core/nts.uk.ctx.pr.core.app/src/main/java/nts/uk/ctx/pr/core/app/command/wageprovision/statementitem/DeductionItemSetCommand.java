@@ -9,16 +9,6 @@ import lombok.Value;
 public class DeductionItemSetCommand {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 控除項目区分
 	 */
 	private int deductionItemAtr;

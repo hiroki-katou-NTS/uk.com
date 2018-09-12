@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.BreakdownItemUseAtr;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 控除項目設定
@@ -36,7 +37,7 @@ public class DeductionItemSet extends AggregateRoot {
 	/**
 	 * 備考
 	 */
-	private Optional<String> note;
+	private Optional<Memo> note;
 
 	public DeductionItemSet(String cid, String salaryItemId, int deductionItemAtr, int breakdownItemUseAtr,
 			String note) {
@@ -45,7 +46,7 @@ public class DeductionItemSet extends AggregateRoot {
 		this.salaryItemId = salaryItemId;
 		this.deductionItemAtr = EnumAdaptor.valueOf(deductionItemAtr, DeductionItemAtr.class);
 		this.breakdownItemUseAtr = EnumAdaptor.valueOf(breakdownItemUseAtr, BreakdownItemUseAtr.class);
-		this.note = Optional.ofNullable(note);
+		this.note = note == null ? Optional.empty() : Optional.of(new Memo(note));
 	}
 
 }
