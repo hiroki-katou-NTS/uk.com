@@ -17,11 +17,19 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBreakdownItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.breakdownItemStPk.salaryItemId =:salaryItemId AND  f.breakdownItemStPk.breakdownItemCode =:breakdownItemCode ";
+	private static final String SELECT_BY_SALARYID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.breakdownItemStPk.salaryItemId =:salaryItemId";
 
 	@Override
 	public List<BreakdownItemSet> getAllBreakdownItemSt() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtBreakdownItemSt.class)
 				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<BreakdownItemSet> getBreakdownItemStBySalaryId(String salaryItemId) {
+		return this.queryProxy().query(SELECT_BY_SALARYID, QpbmtBreakdownItemSt.class)
+				.setParameter("salaryItemId", salaryItemId).getList(i -> i.toDomain());
 	}
 
 	@Override
@@ -46,4 +54,5 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 		this.commandProxy().remove(QpbmtBreakdownItemSt.class,
 				new QpbmtBreakdownItemStPk(salaryItemId, breakdownItemCode));
 	}
+
 }
