@@ -79,9 +79,10 @@ public class GetYearHolidayInfo {
 		}
 		
 		// Set contract time
-		if (annLea.getPeriodCond() != null && annLea.getContractTime() != null
-				&& baseDate.afterOrEquals(annLea.getPeriodCond().start()) && baseDate.beforeOrEquals(annLea.getPeriodCond().end())){
-			contractTime =Optional.ofNullable(new LimitedTimeHdTime(annLea.getContractTime()));
+		if (annLea.getPeriodCond() != null && annLea.getContractTime() != null && annLea.getPeriodCond().start() != null
+				&& annLea.getPeriodCond().end() != null && baseDate.afterOrEquals(annLea.getPeriodCond().start())
+				&& baseDate.beforeOrEquals(annLea.getPeriodCond().end())) {
+			contractTime = Optional.ofNullable(new LimitedTimeHdTime(annLea.getContractTime()));
 		} else {
 			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 			Optional<WorkingConditionItem> workCond = workingConditionItemRepository
