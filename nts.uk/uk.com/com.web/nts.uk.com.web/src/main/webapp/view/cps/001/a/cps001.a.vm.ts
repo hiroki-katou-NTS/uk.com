@@ -211,13 +211,13 @@ module cps001.a.vm {
 
         saveData() {
             let self = this,
-                emp = self.employee;
+                emp = self.employee,
+                controls = self.layout.listItemCls();
 
-            // reload outData
+            // refresh data from layout
             self.layout.outData.refresh();
             
-            let controls = self.layout.listItemCls(),
-                inputs = self.layout.outData(),
+            let inputs = self.layout.outData(),
                 command: IPeregCommand = {
                     personId: emp.personId(),
                     employeeId: emp.employeeId(),
@@ -239,7 +239,7 @@ module cps001.a.vm {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
                     });
-                }).fail((me : any) => {
+                }).fail((mes: any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
                         let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
@@ -347,30 +347,32 @@ module cps001.a.vm {
                     self.unblock();
                 });
             }
-        } 
-        checkLicenseStart(): voi d{
+        }
+
+        checkLicenseStart(): void {
             var self = this;
             service.licenseCheckStart().done((data: ILicensenCheck) => {
                 self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 self.licenseCheckDipslay(data.display);
-                i f(data.message != '' ){
+                if (data.message != '') {
                     self.classWarning('color-schedule-error');
-                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered ]});
-                 }els e{
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] });
+                } else {
                     self.classWarning('');
-                 
+                }
             });
-          
-        checkLicense( ){
+        }
+
+        checkLicense() {
             var self = this;
-            i f(self.licenseCheckDipslay() ){
+            if (self.licenseCheckDipslay()) {
                 service.licenseCheck().done((data: ILicensenCheck) => {
                     self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
-                    i f(data.status === 'NORMAL' ){
+                    if (data.status === 'NORMAL') {
                         self.classWarning('');
-                     }els e{
+                    } else {
                         self.classWarning('color-schedule-error');
-                     
+                    }
                 });
             }
         }
@@ -528,14 +530,16 @@ module cps001.a.vm {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
-    } 
+    }
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
         available: boolean;
         description: string;
         orderNumber: number;
-    } 
+    }
+
     enum FunctionNo {
         No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
         No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
@@ -548,7 +552,8 @@ module cps001.a.vm {
         No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
-    } 
+    }
+
     interface ILicensenCheck {
         display: boolean;
         registered: number;
