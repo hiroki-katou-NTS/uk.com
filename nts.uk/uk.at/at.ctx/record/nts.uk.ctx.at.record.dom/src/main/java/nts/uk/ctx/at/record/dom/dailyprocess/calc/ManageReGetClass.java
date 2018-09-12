@@ -333,8 +333,9 @@ public class ManageReGetClass {
 	/**
 	 * 会社共通で使いまわしをする設定をこのクラスにも設定する
 	 */
-	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany) {
+	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany, ManagePerPersonDailySet managePerPerson) {
 		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
+		this.dailyUnit = managePerPerson.getDailyUnit();
 	}
 
 }
