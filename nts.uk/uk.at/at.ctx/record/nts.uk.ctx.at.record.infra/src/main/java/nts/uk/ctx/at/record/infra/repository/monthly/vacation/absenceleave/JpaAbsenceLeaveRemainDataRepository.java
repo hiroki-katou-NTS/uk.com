@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.monthly.vacation.absenceleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -49,6 +50,21 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 				.setParameter("ym", ym.v())
 				.setParameter("status", status.value)
 				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public Optional<AbsenceLeaveRemainData> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		return this.queryProxy()
+				.find(new KrcdtMonSubOfHdRemainPK(
+						employeeId,
+						yearMonth.v(),
+						closureId.value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0)),
+						KrcdtMonSubOfHdRemain.class)
+				.map(c -> toDomain(c));
 	}
 	
 	@Override
