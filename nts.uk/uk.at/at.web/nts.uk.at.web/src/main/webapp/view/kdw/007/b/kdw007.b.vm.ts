@@ -317,7 +317,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             let self = this,
                 caic = ko.toJS(self.currentAtdItemCondition);
                 $('.value-input').ntsError('clear');
-                $('#endValue').css('border-color' : 'grey');
+                $('#endValue').css('border-color' , 'grey');
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 // fixbug 99086 : set timeout
                 setTimeout(() => {
@@ -329,12 +329,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
                 // fixbug 99086 : set timeout
-                $('#endValue').css('border-color' : 'grey');
+                $('#endValue').css('border-color' , 'grey');
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
             $('.value-input').ntsError('clear');
                          $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').css('border-color' : 'red');
+                        $('#endValue').css('border-color' , 'red');
                     }
                 }, 25);
             }
