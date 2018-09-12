@@ -13,7 +13,7 @@ public class ReflectSystemReferenceDateInfoWebService {
 	private ReflectSystemReferenceDateInfoFinder finder;
 
 	@POST
-	@Path("findReflectSystemReferenceDateInfo/{processingCategoryNo}")
+	@Path("findReflectSystemReferenceDateInfo/{processingCategoryNo}/{processDate}")
 	public ReflectSystemReferenceDateInfoDto findDisplayRegister(@PathParam("processingCategoryNo") int processCateNo,
 			@PathParam("processDate") int processDate) {
 		return finder.getReflectSystemReferenceDateInfoDto(processCateNo, processDate);

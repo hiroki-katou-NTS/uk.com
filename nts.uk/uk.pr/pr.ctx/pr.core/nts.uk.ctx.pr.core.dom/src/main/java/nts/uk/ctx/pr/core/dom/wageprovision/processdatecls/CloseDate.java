@@ -34,14 +34,27 @@ public class CloseDate extends DomainObject {
 	 */
 	private Optional<DateSelectClassification> closeDateRefeDate;
 
-	public CloseDate(int timeCloseDate, int closeDateBaseMonth, int closeDateBaseYear, int closeDateRefeDate) {
+	public CloseDate(int timeCloseDate, Integer closeDateBaseMonth, Integer closeDateBaseYear,
+			Integer closeDateRefeDate) {
 		this.timeCloseDate = timeCloseDate;
-		this.closeDateBaseMonth = Optional
-				.ofNullable(EnumAdaptor.valueOf(closeDateBaseMonth, SocialInsuColleMonth.class));
-		this.closeDateBaseYear = Optional
-				.ofNullable(EnumAdaptor.valueOf(closeDateBaseYear, YearSelectClassification.class));
-		this.closeDateRefeDate = Optional
-				.ofNullable(EnumAdaptor.valueOf(closeDateRefeDate, DateSelectClassification.class));
+
+
+		if (closeDateBaseMonth == null)
+			this.closeDateBaseMonth = Optional.empty();
+		else
+			this.closeDateBaseMonth = Optional.of(EnumAdaptor.valueOf(closeDateBaseMonth, SocialInsuColleMonth.class));
+
+		if (closeDateBaseYear == null)
+			this.closeDateBaseYear = Optional.empty();
+		else
+			this.closeDateBaseYear = Optional
+					.of(EnumAdaptor.valueOf(closeDateBaseYear, YearSelectClassification.class));
+
+		if (closeDateRefeDate == null)
+			this.closeDateRefeDate = Optional.empty();
+		else
+			this.closeDateRefeDate = Optional
+					.of(EnumAdaptor.valueOf(closeDateRefeDate, DateSelectClassification.class));
 	}
 
 }

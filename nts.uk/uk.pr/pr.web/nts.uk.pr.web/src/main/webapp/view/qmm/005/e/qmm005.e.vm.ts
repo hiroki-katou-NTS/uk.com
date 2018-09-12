@@ -109,19 +109,6 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             var dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
-            
-            self.startFindData();
-        }
-        
-        startFindData() {
-            let self = this;
-            service.findPerformSettingByInTime().done(result => {
-                if (result) {
-                    self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(result));
-                    return;
-                }
-                
-            });
         }
 
         reflect(){
@@ -129,7 +116,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         }
 
         cancel(){
-            close();
+
         }
     }
 

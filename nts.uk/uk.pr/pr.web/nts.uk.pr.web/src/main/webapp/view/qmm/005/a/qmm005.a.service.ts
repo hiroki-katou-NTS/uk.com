@@ -4,7 +4,6 @@ module nts.uk.pr.view.qmm005.a.service {
 
     let paths = {
         getProcessInfomations: "nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/findDisplayRegister/{0}",
-        getSetDaySupports: "xxx/getSetDaySupports",
         registerProcessing :"nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/registerProcessing"
     };
 
