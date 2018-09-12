@@ -648,7 +648,7 @@ module nts.uk.at.view.kwr006.a {
             fifthLevel: KnockoutObservable<boolean>;
             sixthLevel: KnockoutObservable<boolean>;
             seventhLevel: KnockoutObservable<boolean>;
-            eightLevel: KnockoutObservable<boolean>;
+            eighthLevel: KnockoutObservable<boolean>;
             ninthLevel: KnockoutObservable<boolean>;
             cumulativeWorkplace: KnockoutObservable<boolean>;
 
@@ -661,7 +661,7 @@ module nts.uk.at.view.kwr006.a {
                 self.fifthLevel = ko.observable(false);
                 self.sixthLevel = ko.observable(false);
                 self.seventhLevel = ko.observable(false);
-                self.eightLevel = ko.observable(false);
+                self.eighthLevel = ko.observable(false);
                 self.ninthLevel = ko.observable(false);
             }
 
@@ -674,7 +674,7 @@ module nts.uk.at.view.kwr006.a {
                 self.fifthLevel(data.fifthLevel);
                 self.sixthLevel(data.sixthLevel);
                 self.seventhLevel(data.seventhLevel);
-                self.eightLevel(data.eightLevel);
+                self.eighthLevel(data.eighthLevel);
                 self.ninthLevel(data.ninthLevel);
             }
 
@@ -688,7 +688,7 @@ module nts.uk.at.view.kwr006.a {
                 dto.fifthLevel = self.fifthLevel();
                 dto.sixthLevel = self.sixthLevel();
                 dto.seventhLevel = self.seventhLevel();
-                dto.eightLevel = self.eightLevel();
+                dto.eighthLevel = self.eighthLevel();
                 dto.ninthLevel = self.ninthLevel();
                 return dto;
             }
@@ -721,7 +721,7 @@ module nts.uk.at.view.kwr006.a {
                 if(self.seventhLevel()){
                     levelCount++;
                 }
-                if(self.eightLevel()){
+                if(self.eighthLevel()){
                     levelCount++;
                 }
                 if(self.ninthLevel()){
