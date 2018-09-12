@@ -290,7 +290,6 @@ module nts.uk.at.view.kwr001.c {
             openScreenD () {
                 var self = this;
                 let dataScrD: any;
-                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }

@@ -43,7 +43,7 @@ public class ActualValue {
 			return null;
 		}
 		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
-		if (valueType.isInteger()) {
+		if (valueType.isInteger() && valueType != ValueType.ATTR) {
 			return (T) new Integer(this.value);
 		}
 		if (valueType.isBoolean()) {
@@ -55,7 +55,7 @@ public class ActualValue {
 		if (valueType.isDouble()) {
 			return (T) new Double(this.value);
 		}
-		if (valueType.isString()) {
+		if (valueType.isString() || valueType == ValueType.ATTR) {
 			return (T) this.value;
 		}
 		throw new RuntimeException("invalid type: " + this.valueType);
