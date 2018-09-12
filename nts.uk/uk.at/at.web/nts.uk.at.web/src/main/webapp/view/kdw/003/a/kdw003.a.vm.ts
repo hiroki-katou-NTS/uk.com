@@ -1138,7 +1138,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.clickFromExtract = false;
                     self.showTextStyle = false;
                     dataChange = {};
-                    if (!_.isEmpty(data.resultError.flexShortage)) {
+                    if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                         if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                             $("#next-month").ntsError("clear");
                              _.each(data.resultError.flexShortage.messageError, value => {
@@ -1148,7 +1148,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             $("#next-month").ntsError("clear");
                         }
                     }
-                    if (_.isEmpty(data.resultError) || (data.resultError.errorMap[5] != undefined)) {
+                    if (data.resultError == null || (data.resultError.errorMap[5] != null)) {
                         self.lstDomainEdit = data.calculatedRows;
                         let lstValue = data.resultValues;
                         _.forEach(self.dpData, row => {
@@ -1169,7 +1169,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         self.flagCalculation = true;
                         nts.uk.ui.block.clear();
-                        if (data.resultError.errorMap[5] != undefined) {
+                        if (data.resultError != null && data.resultError.errorMap[5] != null) {
                             self.listErrorMonth = data.resultError.errorMap[5];
                         }
                     } else {
