@@ -197,7 +197,7 @@ module nts.uk.ui.koExtentions {
                      enable: allBindData.enable, 
                      disabled: allBindData.disabled,
                      option: { width: "70" },
-                     constraint: 'AttendanceClock' };    
+                     constraint: 'TimeClockWithSeconds' };    
         }
     }
 
