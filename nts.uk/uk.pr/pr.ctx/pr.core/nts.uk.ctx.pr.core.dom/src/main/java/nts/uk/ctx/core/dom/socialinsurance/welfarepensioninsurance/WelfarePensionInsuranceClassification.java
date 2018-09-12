@@ -1,14 +1,8 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
-import java.util.Optional;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * 厚生年金保険区分

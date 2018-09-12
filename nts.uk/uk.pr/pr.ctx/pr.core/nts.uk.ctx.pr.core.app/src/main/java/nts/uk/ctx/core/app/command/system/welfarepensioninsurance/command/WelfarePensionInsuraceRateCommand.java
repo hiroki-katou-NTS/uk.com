@@ -1,0 +1,12 @@
+package nts.uk.ctx.core.app.command.system.welfarepensioninsurance.command;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class WelfarePensionInsuraceRateCommand {
+	private BonusEmployeePensionInsuranceRateCommand bonusEmployeePensionInsuranceRate;
+	private EmployeesPensionMonthlyInsuranceFeeCommand employeesPensionMonthlyInsuranceFee;
+	private WelfarePensionInsuranceClassificationCommand welfarePensionInsuranceClassification;
+}
