@@ -245,6 +245,7 @@ project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ac') {
 	dependencies {
 		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 	}
 }
 
