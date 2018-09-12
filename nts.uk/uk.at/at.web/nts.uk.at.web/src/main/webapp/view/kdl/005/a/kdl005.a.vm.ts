@@ -140,7 +140,7 @@ module nts.uk.at.view.kdl005.a {
                                 let dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
                                 
                                 if(dayoffDateStr !== "") {
-                                    if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
+                                    if(item.breakHis.mngAtr == 2 || item.breakHis.mngAtr == 3) {
                                         leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr])]);
                                     } else {
                                         leaveDate = nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr]);
@@ -166,7 +166,7 @@ module nts.uk.at.view.kdl005.a {
                         }
                         
                         if(item.dayOffHis != null) {
-                            if(item.dayOffHis.createAtr == 0 || item.dayOffHis.createAtr == 4) {
+                            if(item.dayOffHis.createAtr == 2 || item.dayOffHis.createAtr == 3) {
                                 if(item.dayOffHis.dayOffDate.dayoffDate != null) {
                                     dayOffDateTop = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
                                 } else {
