@@ -64,7 +64,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         let categoryItems = _.map(currentOutputItem.categoryItems(), x => {
                             return new model.CategoryItem(x.categoryId(), x.categoryItemNo(), x.categoryItemName(), x.operationSymbol(), x.displayOrder);
                         });
-                        categoryItems = _.sortBy(categoryItems, ['displayOrder']);
+                        categoryItems = _.sortBy(categoryItems, function (item) { return parseInt(item.displayOrder); });
                         self.categoryItems(categoryItems);
                         self.selectedCategoryItems([]);
                         self.isNewMode(false);
@@ -272,7 +272,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             let categoryItems: Array<model.CategoryItem> = self.categoryItems();
             let maxDisplayOrder = _.maxBy(categoryItems, item => {
-                return item.displayOrder;
+                return parseInt(item.displayOrder) ;
             });
             let nextDisplayOrder = maxDisplayOrder ? parseInt(maxDisplayOrder.displayOrder) + 1 : 1;
             for (let i = 0; i < self.selectedExOutputCateItemDatas().length; i++) {
@@ -288,7 +288,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         exOutCateItemData.itemName(), null, nextDisplayOrder + i));
                 }
             }
-            categoryItems = _.sortBy(categoryItems, ['displayOrder']);
+            categoryItems = _.sortBy(categoryItems, function (item) { return parseInt(item.displayOrder); });
             self.categoryItems(categoryItems);
         }
 
@@ -300,7 +300,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     return item.displayOrder == key;
                 });
             });
-            categoryItems = _.sortBy(categoryItems, ['displayOrder']);
+            categoryItems = _.sortBy(categoryItems, function (item) { return parseInt(item.displayOrder); });
             if (categoryItems.length > 0) {
                 categoryItems[0].operationSymbol(null);
             }
