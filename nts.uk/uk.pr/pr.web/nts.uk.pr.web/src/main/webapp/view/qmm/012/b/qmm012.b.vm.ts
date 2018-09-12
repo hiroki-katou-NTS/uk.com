@@ -263,6 +263,15 @@ module nts.uk.pr.view.qmm012.b {
             // settingAtr radio button
             settingAtrList: KnockoutObservableArray<model.BoxModel>;
             
+            // breakdownItemUse switch button
+            breakdownItemUseList: KnockoutObservableArray<model.ItemModel>;
+            
+            // limitAmountClassification  switch button
+            limitAmountList: KnockoutObservableArray<model.ItemModel>;
+            
+            // taxableAmountClassification  switch button
+            taxableAmountList: KnockoutObservableArray<model.BoxModel>;
+            
             constructor(data: IPaymentItemSet) {
                 let self = this;
                 
@@ -284,6 +293,23 @@ module nts.uk.pr.view.qmm012.b {
                     new model.BoxModel(model.SettingClassification.DESIGNATE_FOR_EACH_SALARY_CONTRACT_TYPE, getText('QMM012_46'))
                 ]);
                 
+                self.breakdownItemUseList = ko.observableArray([
+                    new model.ItemModel(model.BreakdownItemUseAtr.USE.toString(), getText('QMM012_72')),
+                    new model.ItemModel(model.BreakdownItemUseAtr.NOT_USE.toString(), getText('QMM012_73'))
+                ]);
+                
+                self.limitAmountList = ko.observableArray([
+                    new model.ItemModel(model.LimitAmountClassification.FIXED_AMOUNT.toString(), getText('QMM012_77')),
+                    new model.ItemModel(model.LimitAmountClassification.TAX_EXEMPTION_LIMIT_MASTER.toString(), getText('QMM012_78')),
+                    new model.ItemModel(model.LimitAmountClassification.REFER_TO_PERSONAL_TRANSPORTATION_LIMIT.toString(), getText('QMM012_79')),
+                    new model.ItemModel(model.LimitAmountClassification.REFER_TO_PERSONAL_TRANSPORTATION_TOOL_LIMIT.toString(), getText('QMM012_80'))
+                ]);
+                
+                self.taxableAmountList = ko.observableArray([
+                    new model.BoxModel(model.TaxableAmountClassification.OVERDRAFT_TAXATION, getText('QMM012_83')),
+                    new model.BoxModel(model.TaxableAmountClassification.FULL_TAXATION, getText('QMM012_84'))
+                ]);
+                
                 if (data) {
                     self.breakdownItemUseAtr = ko.observable(data.breakdownItemUseAtr);
                     self.laborInsuranceCategory = ko.observable(data.laborInsuranceCategory);
@@ -302,7 +328,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxLimitAmountCode = ko.observable(data.taxLimitAmountCode);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.breakdownItemUseAtr = ko.observable(null);
+                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.laborInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_FOR_EACH_SALARY_CONTRACT_TYPE);
                     self.everyoneEqualSet = ko.observable(model.CoveredAtr.NOT_COVERED);
@@ -313,9 +339,9 @@ module nts.uk.pr.view.qmm012.b {
                     self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.socialInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.taxAtr = ko.observable(model.TaxAtr.TAXATION);
-                    self.taxableAmountAtr = ko.observable(null);
+                    self.taxableAmountAtr = ko.observable(model.TaxableAmountClassification.OVERDRAFT_TAXATION);
                     self.limitAmount = ko.observable(null);
-                    self.limitAmountAtr = ko.observable(null);
+                    self.limitAmountAtr = ko.observable(model.LimitAmountClassification.FIXED_AMOUNT);
                     self.taxLimitAmountCode = ko.observable(null);
                     self.note = ko.observable(null);
                 }
@@ -394,7 +420,7 @@ module nts.uk.pr.view.qmm012.b {
                 self.numberEditorOption = {
                     grouplength: 3,
                     decimallength: 3,
-                    width: "200px",
+                    width: "150px",
                     textalign: "right",
                     currencyformat: "JPY"
                 };

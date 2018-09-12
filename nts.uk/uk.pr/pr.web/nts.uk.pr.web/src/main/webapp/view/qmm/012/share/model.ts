@@ -48,6 +48,18 @@ module nts.uk.pr.view.qmm012.share.model {
         USE =1
     }
     
+    export enum LimitAmountClassification {
+        TAX_EXEMPTION_LIMIT_MASTER = 0,
+        FIXED_AMOUNT = 1,
+        REFER_TO_PERSONAL_TRANSPORTATION_TOOL_LIMIT = 2,
+        REFER_TO_PERSONAL_TRANSPORTATION_LIMIT = 3
+    }
+    
+    export enum TaxableAmountClassification {
+        OVERDRAFT_TAXATION = 0,
+        FULL_TAXATION = 1
+    }
+    
     export function getCategoryAtr(): Array<ItemModel> {
         return [
             new model.ItemModel(CategoryAtr.PAYMENT_ITEM.toString(), getText('PAYMENT_ITEM')),

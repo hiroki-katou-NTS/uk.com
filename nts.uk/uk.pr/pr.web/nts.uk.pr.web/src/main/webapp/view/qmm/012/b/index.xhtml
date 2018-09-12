@@ -12,6 +12,8 @@
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemName
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ShortName
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.MonetaryValue
+				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.LimitAmount
 			</com:ValidatorScript>
 			<com:stylefile path="qmm012.b.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -161,6 +163,69 @@
 																			{ prop: 'name', length: 16 }
 																		]}"></div>
 							</div>
+							<com:ko-if bind="((taxAtr() == '1') || (taxAtr() == '3'))">
+								<br />
+								<div class="valign-center control-group">
+									<!-- 限度金額指定 -->
+									<div id="C4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_76')}</div>
+									<!-- 社会保険区分 -->
+									<div id="C4_2" class="cf" data-bind="ntsSwitchButton: {
+																				options: limitAmountList,
+																				optionsValue: 'code',
+																				optionsText: 'name',
+																				value: limitAmountAtr,
+																				enable: true }"></div>
+								</div>
+								<com:ko-if bind="((limitAmountAtr() == '1') || (limitAmountAtr() == '0') || (limitAmountAtr() == '3'))">
+									<com:ko-if bind="(limitAmountAtr() == '1')">
+										<div class="valign-center control-group">
+											<!-- 限度金額 -->
+											<div id="C4_7" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM012_81')}</div>
+											<!-- 限度金額入力 -->
+											<input id="C4_8" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_81]',
+															value: limitAmount,
+															constraint: 'LimitAmount',
+															option: {
+											                    grouplength: 3,
+											                    decimallength: 3,
+											                    width: '150px',
+											                    textalign: 'right',
+											                    currencyformat: 'JPY'
+											                },
+															enable: true}" />
+										</div>
+									</com:ko-if>
+									<com:ko-if bind="(limitAmountAtr() == '0')">
+										<div class="valign-center control-group">
+											<!-- 限度金額 -->
+											<div id="C5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_81')}</div>
+											<!-- 限度額マスタ参照ボタン -->
+											<button id="C5_2" class="small" data-bind="enable: true">#{i18n.getText('QMM012_37')}</button>
+											<!-- 設定限度額マスタ -->
+											<label id="C5_3">?????????????????</label>
+										</div>
+									</com:ko-if>
+									<div class="valign-center control-group">
+										<!-- 課税金額区分 -->
+										<div id="C4_9" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_82')}</div>
+										<!-- 課税金額区分 -->
+										<div id="C4_10" data-bind="ntsRadioBoxGroup: {
+																			options: taxableAmountList,
+																			optionsValue: 'id',
+																			optionsText: 'name',
+																			value: taxableAmountAtr,
+																			enable: true}"></div>
+									</div>
+								</com:ko-if>
+							</com:ko-if>
+							<com:ko-if bind="(taxAtr() == '4')">
+								<div class="valign-center control-group">
+									<div class="space1"></div>
+									<!-- 定期利用説明 -->
+									<span id="C6_1">#{i18n.getText('#QMM012_85')}</span>
+								</div>
+							</com:ko-if>
 							<br />
 							<div class="valign-center control-group">
 								<!-- 社会保険区分 -->
@@ -355,7 +420,7 @@
 							<label id="C3_3">#{i18n.getText('#QMM012_6970')}</label>
 						</div>
 						<br />
-						<div class="valign-center control-group" data-bind="with: deductionItemSet">
+						<div class="valign-center control-group" data-bind="with: paymentItemSet">
 							<!-- 内訳-->
 							<div id="C3_4" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_71')}</div>
 							<!-- 内訳利用区分 -->
@@ -374,9 +439,18 @@
 							<label id="C3_9">#{i18n.getText('#QMM012_6970')}</label>
 						</div>
 						<br />
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" data-bind="with: paymentItemSet">
 							<!-- 備考 -->
-							<div id="C3_10" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM012_75')}</div>
+							<div id="C3_10" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_75')}</div>
+							<!-- 備考欄 -->
+							<textarea id="C3_11"
+									data-bind="ntsMultilineEditor :{
+										name: '#[QMM012_75]',
+										value: note,
+										constraint: 'Memo',
+										option: {width: '500px'},
+										enable: true,
+										readonly: false}" />
 						</div>
 					</div>
 				</div>
