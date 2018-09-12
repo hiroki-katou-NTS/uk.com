@@ -203,7 +203,7 @@ public class AttendanceItemsFinder {
 		List<DailyAttendanceAtr> attAtrList = new ArrayList<>();
 		attAtrList.add(EnumAdaptor.valueOf(dailyAttendanceAtr, DailyAttendanceAtr.class));
 		List<AttdItemDto> attendanceItemDtos = companyDailyItemService
-				.getDailyItems(companyId, Optional.empty(), null, attAtrList).stream().map(x -> {
+				.getDailyItems(companyId, Optional.empty(), Collections.emptyList(), attAtrList).stream().map(x -> {
 					AttdItemDto attdItemDto = new AttdItemDto();
 					attdItemDto.setAttendanceItemId(x.getAttendanceItemId());
 					attdItemDto.setAttendanceItemName(x.getAttendanceItemName());
@@ -239,7 +239,7 @@ public class AttendanceItemsFinder {
 		List<MonthlyAttendanceItemAtr> attAtrList = new ArrayList<>();
 		attAtrList.add(EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class));
 		List<AttdItemDto> attendanceItemDtos = companyMonthlyItemService
-				.getMonthlyItems(companyId, Optional.empty(), null, attAtrList).stream().map(x -> {
+				.getMonthlyItems(companyId, Optional.empty(), Collections.emptyList(), attAtrList).stream().map(x -> {
 					AttdItemDto attdItemDto = new AttdItemDto();
 					attdItemDto.setAttendanceItemId(x.getAttendanceItemId());
 					attdItemDto.setAttendanceItemName(x.getAttendanceItemName());
