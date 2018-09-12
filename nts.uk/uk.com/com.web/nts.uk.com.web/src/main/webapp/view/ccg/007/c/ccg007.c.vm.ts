@@ -70,6 +70,11 @@ module nts.uk.pr.view.ccg007.c {
                     dfd.resolve();
                     blockUI.clear();
                 });
+                
+                service.ver().done(data => {
+                    $("#ver").html(data.ver);
+                });
+                
                 return dfd.promise();
             }
 

@@ -139,7 +139,7 @@ module nts.uk.com.view.cmm001.f {
                                     //self.totalRecord(self.numberSuccess() + self.numberFail());                                                             
                                 });
 
-                                self.countData(self.numberFail() + self.numberSuccess());
+                                self.countData(self.numberSuccess());
                             }
 
                             self.executionTotal(nts.uk.resource.getText("CMM001_66", [self.countData(), self.numberOfData()]));

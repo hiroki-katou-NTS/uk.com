@@ -367,6 +367,10 @@ module kcp.share.list {
             const searchBox = $('#' + self.searchBoxId);
             if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
+                    // clear search box before update datasource
+                    searchBox.find('.clear-btn').click();
+
+                    // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
@@ -447,7 +451,11 @@ module kcp.share.list {
 
                 // setup event
                 self.initEvent();
-
+                
+                //re-set selectedCodes
+                const gridList = $('#' + self.componentGridId);
+                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                
                 // set focus if parent screen has no focus
                 if (document.activeElement.tagName == 'BODY') {
                     _.defer(() => $('#' + self.searchBoxId + ' .ntsSearchBox').focus());
