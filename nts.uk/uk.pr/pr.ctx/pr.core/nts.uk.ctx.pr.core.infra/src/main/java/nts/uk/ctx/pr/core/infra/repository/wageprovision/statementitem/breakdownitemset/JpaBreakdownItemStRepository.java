@@ -25,7 +25,7 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 	}
 
 	@Override
-	public Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, int breakdownItemCode) {
+	public Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, String breakdownItemCode) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtBreakdownItemSt.class)
 				.setParameter("salaryItemId", salaryItemId).setParameter("breakdownItemCode", breakdownItemCode)
 				.getSingle(c -> c.toDomain());
@@ -42,7 +42,7 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 	}
 
 	@Override
-	public void remove(String salaryItemId, int breakdownItemCode) {
+	public void remove(String salaryItemId, String breakdownItemCode) {
 		this.commandProxy().remove(QpbmtBreakdownItemSt.class,
 				new QpbmtBreakdownItemStPk(salaryItemId, breakdownItemCode));
 	}

@@ -14,14 +14,14 @@ public interface StatementItemRepository {
 	
 	List<StatementItem> getByCategory(String cid, int categoryAtr);
 	
-	List<StatementItem> getByItemNameCd(String cid, int categoryAtr, int itemNameCd);
+	List<StatementItem> getByItemNameCd(String cid, int categoryAtr, String itemNameCd);
 
-	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, int itemNameCd, String salaryItemId);
+	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
 
 	void add(StatementItem domain);
 
 	void update(StatementItem domain);
 
-	void remove(String cid, int categoryAtr, int itemNameCd, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
 
 }

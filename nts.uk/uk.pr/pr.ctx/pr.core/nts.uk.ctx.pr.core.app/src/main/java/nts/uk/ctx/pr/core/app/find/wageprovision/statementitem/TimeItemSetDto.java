@@ -34,6 +34,6 @@ public class TimeItemSetDto {
 	public static TimeItemSetDto fromDomain(TimeItemSet domain) {
 		return new TimeItemSetDto(domain.getAverageWageAtr().map(i -> i.value).orElse(null),
 				domain.getWorkingDaysPerYear().map(i -> i.value).orElse(null), domain.getTimeCountAtr().value,
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 }

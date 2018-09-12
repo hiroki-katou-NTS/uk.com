@@ -26,7 +26,7 @@ public class DeductionItemSetDto {
 
 	public static DeductionItemSetDto fromDomain(DeductionItemSet domain) {
 		return new DeductionItemSetDto(domain.getDeductionItemAtr().value, domain.getBreakdownItemUseAtr().value,
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 
 }

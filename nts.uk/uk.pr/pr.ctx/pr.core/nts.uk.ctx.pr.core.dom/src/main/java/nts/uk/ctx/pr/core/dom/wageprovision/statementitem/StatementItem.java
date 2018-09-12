@@ -26,7 +26,7 @@ public class StatementItem extends AggregateRoot {
 	/**
 	 * 項目名コード
 	 */
-	private ItemNameCd itemNameCd;
+	private ItemNameCode itemNameCd;
 
 	/**
 	 * 給与項目ID
@@ -56,21 +56,21 @@ public class StatementItem extends AggregateRoot {
 	/**
 	 * 統合コード
 	 */
-	private Optional<IntergrateCd> intergrateCd;
+	private Optional<IntegrationItemCod> intergrateCd;
 
-	public StatementItem(String cid, int categoryAtr, int itemNameCd, String salaryItemId, int defaultAtr, int valueAtr,
+	public StatementItem(String cid, int categoryAtr, String itemNameCd, String salaryItemId, int defaultAtr, int valueAtr,
 			int deprecatedAtr, int socialInsuaEditableAtr, int intergrateCd) {
 		super();
 		this.cid = cid;
 		this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
-		this.itemNameCd = new ItemNameCd(itemNameCd);
+		this.itemNameCd = new ItemNameCode(itemNameCd);
 		this.salaryItemId = salaryItemId;
 		this.defaultAtr = EnumAdaptor.valueOf(defaultAtr, DefaultAtr.class);
 		this.valueAtr = EnumAdaptor.valueOf(valueAtr, ValueAtr.class);
 		this.deprecatedAtr = EnumAdaptor.valueOf(deprecatedAtr, Abolition.class);
 		this.socialInsuaEditableAtr = Optional
 				.ofNullable(EnumAdaptor.valueOf(socialInsuaEditableAtr, SocialInsuaEditableAtr.class));
-		this.intergrateCd = Optional.ofNullable(new IntergrateCd(intergrateCd));
+		this.intergrateCd = Optional.ofNullable(new IntegrationItemCod(intergrateCd));
 	}
 
 }

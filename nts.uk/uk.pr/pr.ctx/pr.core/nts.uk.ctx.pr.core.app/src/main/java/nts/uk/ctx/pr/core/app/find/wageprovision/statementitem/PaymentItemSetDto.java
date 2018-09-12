@@ -69,7 +69,7 @@ public class PaymentItemSetDto {
 	/**
 	 * 限度金額
 	 */
-	private Integer limitAmount;
+	private Long limitAmount;
 
 	/**
 	 * 限度金額区分
@@ -100,6 +100,6 @@ public class PaymentItemSetDto {
 				domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null),
 				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
 				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
-				domain.getNote().orElse(null));
+				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 }

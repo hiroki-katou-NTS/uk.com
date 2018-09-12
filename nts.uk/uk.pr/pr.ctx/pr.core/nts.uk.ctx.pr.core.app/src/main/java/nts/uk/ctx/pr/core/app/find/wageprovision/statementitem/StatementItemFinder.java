@@ -35,7 +35,7 @@ public class StatementItemFinder {
 	 * @param 項目名コード
 	 * @return 
 	 */
-	public List<StatementItemDto> findByItemNameCd(int categoryAtr, int itemNameCd) {
+	public List<StatementItemDto> findByItemNameCd(int categoryAtr, String itemNameCd) {
 		String cid = AppContexts.user().companyId();
 		val listStatementItem = statementItemRepository.getByItemNameCd(cid, categoryAtr, itemNameCd);
 		return listStatementItem.stream().map(item -> {

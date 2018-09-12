@@ -9,7 +9,7 @@ public class BreakdownItemSetDto {
 	/**
 	 * 内訳項目コード
 	 */
-	private int breakdownItemCode;
+	private String breakdownItemCode;
 
 	/**
 	 * 内訳項目名称

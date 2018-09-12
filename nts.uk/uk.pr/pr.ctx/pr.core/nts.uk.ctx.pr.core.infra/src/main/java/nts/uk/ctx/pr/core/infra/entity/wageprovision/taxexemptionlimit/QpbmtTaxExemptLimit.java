@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptLimit;
+import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionLimit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,7 +42,7 @@ public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "TAX_EXEMPTION")
-    public int taxExemption;
+    public long taxExemption;
     
     @Override
     protected Object getKey()
@@ -50,10 +50,10 @@ public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable
         return taxExemptLimitPk;
     }
 
-    public TaxExemptLimit toDomain() {
-        return new TaxExemptLimit(this.taxExemptLimitPk.cid, this.taxExemptLimitPk.taxFreeamountCode, this.taxExemptionName, this.taxExemption);
+    public TaxExemptionLimit toDomain() {
+        return new TaxExemptionLimit(this.taxExemptLimitPk.cid, this.taxExemptLimitPk.taxFreeamountCode, this.taxExemptionName, this.taxExemption);
     }
-    public static QpbmtTaxExemptLimit toEntity(TaxExemptLimit domain) {
+    public static QpbmtTaxExemptLimit toEntity(TaxExemptionLimit domain) {
         return new QpbmtTaxExemptLimit(new QpbmtTaxExemptLimitPk(domain.getCid(), domain.getTaxFreeAmountCode().v()), 
         		domain.getTaxExemptionName().v(),
         		domain.getTaxExemption().v());

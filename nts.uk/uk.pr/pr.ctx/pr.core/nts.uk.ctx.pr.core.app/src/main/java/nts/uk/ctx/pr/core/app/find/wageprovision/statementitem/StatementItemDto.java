@@ -14,7 +14,7 @@ public class StatementItemDto {
 	/**
 	 * 項目名コード
 	 */
-	private int itemNameCd;
+	private String itemNameCd;
 
 	/**
 	 * 給与項目ID

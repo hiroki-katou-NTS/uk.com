@@ -39,7 +39,7 @@ public class QpbmtBillingItemPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "ITEM_NAME_CD")
-	public int itemNameCd;
+	public String itemNameCd;
 
 	/**
 	 * 給与項目ID

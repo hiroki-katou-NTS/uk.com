@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptLimit;
+import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionLimit;
 
 @Value
 public class TaxExemptionLimitDto {
@@ -19,10 +19,10 @@ public class TaxExemptionLimitDto {
 	/**
 	 * 非課税限度額
 	 */
-	private int taxExemption;
+	private long taxExemption;
 
-	public static TaxExemptionLimitDto fromDomain(TaxExemptLimit domain) {
-		return new TaxExemptionLimitDto(domain.getTaxExemptionName().v(), domain.getTaxExemptionName().v(),
+	public static TaxExemptionLimitDto fromDomain(TaxExemptionLimit domain) {
+		return new TaxExemptionLimitDto(domain.getTaxFreeAmountCode().v(), domain.getTaxExemptionName().v(),
 				domain.getTaxExemption().v());
 	}
 }
