@@ -104,15 +104,15 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_ANNLEA_REMAIN - エンティティ：年休月別残数データ */
 	/** 締め処理状態 */
-	@Column(name = "ANNLEA_CLOSURE_STATUS")
-	public int annleaClosureStatus;
+	@Column(name = "CLOSURE_STATUS")
+	public int closureStatus;
 
 	/** 開始年月日 */
-	@Column(name = "ANNLEA_START_DATE")
-	public GeneralDate annleaStartDate;
+	@Column(name = "START_DATE")
+	public GeneralDate startDate;
 	/** 終了年月日 */
-	@Column(name = "ANNLEA_END_DATE")
-	public GeneralDate annleaEndDate;
+	@Column(name = "END_DATE")
+	public GeneralDate endDate;
 
 	/** 年休使用日数 */
 	@Column(name = "ANNLEA_USED_DAYS")
@@ -341,17 +341,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_RSVLEA_REMAIN */
 
-	/** 締め処理状態 */
-	@Column(name = "RSVLEA_CLOSURE_STATUS")
-	public int closureStatus;
-
-	/** 開始年月日 */
-	@Column(name = "RSVLEA_START_DATE")
-	public GeneralDate rsvleaStartDate;
-	/** 終了年月日 */
-	@Column(name = "RSVLEA_END_DATE")
-	public GeneralDate rsvleaEndDate;
-
 	/** 使用日数 */
 	@Column(name = "RSVLEA_USED_DAYS")
 	public double rsvleaUsedDays;
@@ -413,2052 +402,1845 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	public Double rsvleaGrantDays;
 
 	/* KRCDT_MON_SP_REMAIN */
-
-	/** 締め処理状態 - CLOSURE_STATUS_1 */
-	@Column(name = "CLOSURE_STATUS_1")
-	public int closureStatus1;
-
-	@Column(name = "CLOSURE_STATUS_2")
-	public int closureStatus2;
-
-	@Column(name = "CLOSURE_STATUS_3")
-	public int closureStatus3;
-
-	@Column(name = "CLOSURE_STATUS_4")
-	public int closureStatus4;
-
-	@Column(name = "CLOSURE_STATUS_5")
-	public int closureStatus5;
-
-	@Column(name = "CLOSURE_STATUS_6")
-	public int closureStatus6;
-
-	@Column(name = "CLOSURE_STATUS_7")
-	public int closureStatus7;
-
-	@Column(name = "CLOSURE_STATUS_8")
-	public int closureStatus8;
-
-	@Column(name = "CLOSURE_STATUS_9")
-	public int closureStatus9;
-
-	@Column(name = "CLOSURE_STATUS_10")
-	public int closureStatus10;
-
-	@Column(name = "CLOSURE_STATUS_11")
-	public int closureStatus11;
-
-	@Column(name = "CLOSURE_STATUS_12")
-	public int closureStatus12;
-
-	@Column(name = "CLOSURE_STATUS_13")
-	public int closureStatus13;
-
-	@Column(name = "CLOSURE_STATUS_14")
-	public int closureStatus14;
-
-	@Column(name = "CLOSURE_STATUS_15")
-	public int closureStatus15;
-
-	@Column(name = "CLOSURE_STATUS_16")
-	public int closureStatus16;
-
-	@Column(name = "CLOSURE_STATUS_17")
-	public int closureStatus17;
-
-	@Column(name = "CLOSURE_STATUS_18")
-	public int closureStatus18;
-
-	@Column(name = "CLOSURE_STATUS_19")
-	public int closureStatus19;
-
-	@Column(name = "CLOSURE_STATUS_20")
-	public int closureStatus20;
-
-	/** 特別休暇月別残数データ．締め期間 開始年月日 */
-
-	@Column(name = "START_DATE_1")
-	public GeneralDate closureStartDate1;
-
-	@Column(name = "START_DATE_2")
-	public GeneralDate closureStartDate2;
-
-	@Column(name = "START_DATE_3")
-	public GeneralDate closureStartDate3;
-
-	@Column(name = "START_DATE_4")
-	public GeneralDate closureStartDate4;
-
-	@Column(name = "START_DATE_5")
-	public GeneralDate closureStartDate5;
-
-	@Column(name = "START_DATE_6")
-	public GeneralDate closureStartDate6;
-
-	@Column(name = "START_DATE_7")
-	public GeneralDate closureStartDate7;
-
-	@Column(name = "START_DATE_8")
-	public GeneralDate closureStartDate8;
-
-	@Column(name = "START_DATE_9")
-	public GeneralDate closureStartDate9;
-
-	@Column(name = "START_DATE_10")
-	public GeneralDate closureStartDate10;
-
-	@Column(name = "START_DATE_11")
-	public GeneralDate closureStartDate11;
-
-	@Column(name = "START_DATE_12")
-	public GeneralDate closureStartDate12;
-
-	@Column(name = "START_DATE_13")
-	public GeneralDate closureStartDate13;
-
-	@Column(name = "START_DATE_14")
-	public GeneralDate closureStartDate14;
-
-	@Column(name = "START_DATE_15")
-	public GeneralDate closureStartDate15;
-
-	@Column(name = "START_DATE_16")
-	public GeneralDate closureStartDate16;
-
-	@Column(name = "START_DATE_17")
-	public GeneralDate closureStartDate17;
-
-	@Column(name = "START_DATE_18")
-	public GeneralDate closureStartDate18;
-
-	@Column(name = "START_DATE_19")
-	public GeneralDate closureStartDate19;
-
-	@Column(name = "START_DATE_20")
-	public GeneralDate closureStartDate20;
-
-	/** 特別休暇月別残数データ．締め期間 ．終了年月日 */
-	@Column(name = "END_DATE_1")
-	public GeneralDate closureEndDate1;
-
-	@Column(name = "END_DATE_2")
-	public GeneralDate closureEndDate2;
-
-	@Column(name = "END_DATE_3")
-	public GeneralDate closureEndDate3;
-
-	@Column(name = "END_DATE_4")
-	public GeneralDate closureEndDate4;
-
-	@Column(name = "END_DATE_5")
-	public GeneralDate closureEndDate5;
-
-	@Column(name = "END_DATE_6")
-	public GeneralDate closureEndDate6;
-
-	@Column(name = "END_DATE_7")
-	public GeneralDate closureEndDate7;
-
-	@Column(name = "END_DATE_8")
-	public GeneralDate closureEndDate8;
-
-	@Column(name = "END_DATE_9")
-	public GeneralDate closureEndDate9;
-
-	@Column(name = "END_DATE_10")
-	public GeneralDate closureEndDate10;
-
-	@Column(name = "END_DATE_11")
-	public GeneralDate closureEndDate11;
-
-	@Column(name = "END_DATE_12")
-	public GeneralDate closureEndDate12;
-
-	@Column(name = "END_DATE_13")
-	public GeneralDate closureEndDate13;
-
-	@Column(name = "END_DATE_14")
-	public GeneralDate closureEndDate14;
-
-	@Column(name = "END_DATE_15")
-	public GeneralDate closureEndDate15;
-
-	@Column(name = "END_DATE_16")
-	public GeneralDate closureEndDate16;
-
-	@Column(name = "END_DATE_17")
-	public GeneralDate closureEndDate17;
-
-	@Column(name = "END_DATE_18")
-	public GeneralDate closureEndDate18;
-
-	@Column(name = "END_DATE_19")
-	public GeneralDate closureEndDate19;
-
-	@Column(name = "END_DATE_20")
-	public GeneralDate closureEndDate20;
-
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用日数 */
-	@Column(name = "USED_DAYS_1")
+	@Column(name = "SP_USED_DAYS_1")
 	public double useDays1;
 
-	@Column(name = "USED_DAYS_2")
+	@Column(name = "SP_USED_DAYS_2")
 	public double useDays2;
 
-	@Column(name = "USED_DAYS_3")
+	@Column(name = "SP_USED_DAYS_3")
 	public double useDays3;
 
-	@Column(name = "USED_DAYS_4")
+	@Column(name = "SP_USED_DAYS_4")
 	public double useDays4;
 
-	@Column(name = "USED_DAYS_5")
+	@Column(name = "SP_USED_DAYS_5")
 	public double useDays5;
 
-	@Column(name = "USED_DAYS_6")
+	@Column(name = "SP_USED_DAYS_6")
 	public double useDays6;
 
-	@Column(name = "USED_DAYS_7")
+	@Column(name = "SP_USED_DAYS_7")
 	public double useDays7;
 
-	@Column(name = "USED_DAYS_8")
+	@Column(name = "SP_USED_DAYS_8")
 	public double useDays8;
 
-	@Column(name = "USED_DAYS_9")
+	@Column(name = "SP_USED_DAYS_9")
 	public double useDays9;
 
-	@Column(name = "USED_DAYS_10")
+	@Column(name = "SP_USED_DAYS_10")
 	public double useDays10;
 
-	@Column(name = "USED_DAYS_11")
+	@Column(name = "SP_USED_DAYS_11")
 	public double useDays11;
 
-	@Column(name = "USED_DAYS_12")
+	@Column(name = "SP_USED_DAYS_12")
 	public double useDays12;
 
-	@Column(name = "USED_DAYS_13")
+	@Column(name = "SP_USED_DAYS_13")
 	public double useDays13;
 
-	@Column(name = "USED_DAYS_14")
+	@Column(name = "SP_USED_DAYS_14")
 	public double useDays14;
 
-	@Column(name = "USED_DAYS_15")
+	@Column(name = "SP_USED_DAYS_15")
 	public double useDays15;
 
-	@Column(name = "USED_DAYS_16")
+	@Column(name = "SP_USED_DAYS_16")
 	public double useDays16;
 
-	@Column(name = "USED_DAYS_17")
+	@Column(name = "SP_USED_DAYS_17")
 	public double useDays17;
 
-	@Column(name = "USED_DAYS_18")
+	@Column(name = "SP_USED_DAYS_18")
 	public double useDays18;
 
-	@Column(name = "USED_DAYS_19")
+	@Column(name = "SP_USED_DAYS_19")
 	public double useDays19;
 
-	@Column(name = "USED_DAYS_20")
+	@Column(name = "SP_USED_DAYS_20")
 	public double useDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用日数．特別休暇使用日数付与前 */
 
-	@Column(name = "USED_DAYS_BEFORE_1")
+	@Column(name = "SP_USED_DAYS_BEFORE_1")
 	public double beforeUseDays1;
 
-	@Column(name = "USED_DAYS_BEFORE_2")
+	@Column(name = "SP_SP_USED_DAYS_BEFORE_2")
 	public double beforeUseDays2;
 
-	@Column(name = "USED_DAYS_BEFORE_3")
+	@Column(name = "SP_USED_DAYS_BEFORE_3")
 	public double beforeUseDays3;
 
-	@Column(name = "USED_DAYS_BEFORE_4")
+	@Column(name = "SP_USED_DAYS_BEFORE_4")
 	public double beforeUseDays4;
 
-	@Column(name = "USED_DAYS_BEFORE_5")
+	@Column(name = "SP_USED_DAYS_BEFORE_5")
 	public double beforeUseDays5;
 
-	@Column(name = "USED_DAYS_BEFORE_6")
+	@Column(name = "SP_USED_DAYS_BEFORE_6")
 	public double beforeUseDays6;
 
-	@Column(name = "USED_DAYS_BEFORE_7")
+	@Column(name = "SP_USED_DAYS_BEFORE_7")
 	public double beforeUseDays7;
 
-	@Column(name = "USED_DAYS_BEFORE_8")
+	@Column(name = "SP_USED_DAYS_BEFORE_8")
 	public double beforeUseDays8;
 
-	@Column(name = "USED_DAYS_BEFORE_9")
+	@Column(name = "SP_USED_DAYS_BEFORE_9")
 	public double beforeUseDays9;
 
-	@Column(name = "USED_DAYS_BEFORE_10")
+	@Column(name = "SP_USED_DAYS_BEFORE_10")
 	public double beforeUseDays10;
 
-	@Column(name = "USED_DAYS_BEFORE_11")
+	@Column(name = "SP_USED_DAYS_BEFORE_11")
 	public double beforeUseDays11;
 
-	@Column(name = "USED_DAYS_BEFORE_12")
+	@Column(name = "SP_USED_DAYS_BEFORE_12")
 	public double beforeUseDays12;
 
-	@Column(name = "USED_DAYS_BEFORE_13")
+	@Column(name = "SP_USED_DAYS_BEFORE_13")
 	public double beforeUseDays13;
 
-	@Column(name = "USED_DAYS_BEFORE_14")
+	@Column(name = "SP_USED_DAYS_BEFORE_14")
 	public double beforeUseDays14;
 
-	@Column(name = "USED_DAYS_BEFORE_15")
+	@Column(name = "SP_USED_DAYS_BEFORE_15")
 	public double beforeUseDays15;
 
-	@Column(name = "USED_DAYS_BEFORE_16")
+	@Column(name = "SP_USED_DAYS_BEFORE_16")
 	public double beforeUseDays16;
 
-	@Column(name = "USED_DAYS_BEFORE_17")
+	@Column(name = "SP_USED_DAYS_BEFORE_17")
 	public double beforeUseDays17;
 
-	@Column(name = "USED_DAYS_BEFORE_18")
+	@Column(name = "SP_USED_DAYS_BEFORE_18")
 	public double beforeUseDays18;
 
-	@Column(name = "USED_DAYS_BEFORE_19")
+	@Column(name = "SP_USED_DAYS_BEFORE_19")
 	public double beforeUseDays19;
 
-	@Column(name = "USED_DAYS_BEFORE_20")
+	@Column(name = "SP_USED_DAYS_BEFORE_20")
 	public double beforeUseDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用日数． 特別休暇使用日数付与後 */
 
-	@Column(name = "USED_DAYS_AFTER_1")
+	@Column(name = "SP_USED_DAYS_AFTER_1")
 	public Double afterUseDays1;
 
-	@Column(name = "USED_DAYS_AFTER_2")
+	@Column(name = "SP_USED_DAYS_AFTER_2")
 	public Double afterUseDays2;
 
-	@Column(name = "USED_DAYS_AFTER_3")
+	@Column(name = "SP_USED_DAYS_AFTER_3")
 	public Double afterUseDays3;
 
-	@Column(name = "USED_DAYS_AFTER_4")
+	@Column(name = "SP_USED_DAYS_AFTER_4")
 	public Double afterUseDays4;
 
-	@Column(name = "USED_DAYS_AFTER_5")
+	@Column(name = "SP_USED_DAYS_AFTER_5")
 	public Double afterUseDays5;
 
-	@Column(name = "USED_DAYS_AFTER_6")
+	@Column(name = "SP_USED_DAYS_AFTER_6")
 	public Double afterUseDays6;
 
-	@Column(name = "USED_DAYS_AFTER_7")
+	@Column(name = "SP_USED_DAYS_AFTER_7")
 	public Double afterUseDays7;
 
-	@Column(name = "USED_DAYS_AFTER_8")
+	@Column(name = "SP_USED_DAYS_AFTER_8")
 	public Double afterUseDays8;
 
-	@Column(name = "USED_DAYS_AFTER_9")
+	@Column(name = "SP_SP_USED_DAYS_AFTER_9")
 	public Double afterUseDays9;
 
-	@Column(name = "USED_DAYS_AFTER_10")
+	@Column(name = "SP_USED_DAYS_AFTER_10")
 	public Double afterUseDays10;
 
-	@Column(name = "USED_DAYS_AFTER_11")
+	@Column(name = "SP_USED_DAYS_AFTER_11")
 	public Double afterUseDays11;
 
-	@Column(name = "USED_DAYS_AFTER_12")
+	@Column(name = "SP_USED_DAYS_AFTER_12")
 	public Double afterUseDays12;
 
-	@Column(name = "USED_DAYS_AFTER_13")
+	@Column(name = "SP_USED_DAYS_AFTER_13")
 	public Double afterUseDays13;
 
-	@Column(name = "USED_DAYS_AFTER_14")
+	@Column(name = "SP_USED_DAYS_AFTER_14")
 	public Double afterUseDays14;
 
-	@Column(name = "USED_DAYS_AFTER_15")
+	@Column(name = "SP_USED_DAYS_AFTER_15")
 	public Double afterUseDays15;
 
-	@Column(name = "USED_DAYS_AFTER_16")
+	@Column(name = "SP_USED_DAYS_AFTER_16")
 	public Double afterUseDays16;
 
-	@Column(name = "USED_DAYS_AFTER_17")
+	@Column(name = "SP_USED_DAYS_AFTER_17")
 	public Double afterUseDays17;
 
-	@Column(name = "USED_DAYS_AFTER_18")
+	@Column(name = "SP_USED_DAYS_AFTER_18")
 	public Double afterUseDays18;
 
-	@Column(name = "USED_DAYS_AFTER_19")
+	@Column(name = "SP_USED_DAYS_AFTER_19")
 	public Double afterUseDays19;
 
-	@Column(name = "USED_DAYS_AFTER_20")
+	@Column(name = "SP_USED_DAYS_AFTER_20")
 	public Double afterUseDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用時間．使用時間 */
 
-	@Column(name = "USED_MINUTES_1")
+	@Column(name = "SP_USED_MINUTES_1")
 	public Integer useMinutes1;
 
-	@Column(name = "USED_MINUTES_2")
+	@Column(name = "SP_USED_MINUTES_2")
 	public Integer useMinutes2;
 
-	@Column(name = "USED_MINUTES_3")
+	@Column(name = "SP_USED_MINUTES_3")
 	public Integer useMinutes3;
 
-	@Column(name = "USED_MINUTES_4")
+	@Column(name = "SP_USED_MINUTES_4")
 	public Integer useMinutes4;
 
-	@Column(name = "USED_MINUTES_5")
+	@Column(name = "SP_USED_MINUTES_5")
 	public Integer useMinutes5;
 
-	@Column(name = "USED_MINUTES_6")
+	@Column(name = "SP_USED_MINUTES_6")
 	public Integer useMinutes6;
 
-	@Column(name = "USED_MINUTES_7")
+	@Column(name = "SP_USED_MINUTES_7")
 	public Integer useMinutes7;
 
-	@Column(name = "USED_MINUTES_8")
+	@Column(name = "SP_USED_MINUTES_8")
 	public Integer useMinutes8;
 
-	@Column(name = "USED_MINUTES_9")
+	@Column(name = "SP_USED_MINUTES_9")
 	public Integer useMinutes9;
 
-	@Column(name = "USED_MINUTES_10")
+	@Column(name = "SP_USED_MINUTES_10")
 	public Integer useMinutes10;
 
-	@Column(name = "USED_MINUTES_11")
+	@Column(name = "SP_USED_MINUTES_11")
 	public Integer useMinutes11;
 
-	@Column(name = "USED_MINUTES_12")
+	@Column(name = "SP_USED_MINUTES_12")
 	public Integer useMinutes12;
 
-	@Column(name = "USED_MINUTES_13")
+	@Column(name = "SP_USED_MINUTES_13")
 	public Integer useMinutes13;
 
-	@Column(name = "USED_MINUTES_14")
+	@Column(name = "SP_USED_MINUTES_14")
 	public Integer useMinutes14;
 
-	@Column(name = "USED_MINUTES_15")
+	@Column(name = "SP_USED_MINUTES_15")
 	public Integer useMinutes15;
 
-	@Column(name = "USED_MINUTES_16")
+	@Column(name = "SP_USED_MINUTES_16")
 	public Integer useMinutes16;
 
-	@Column(name = "USED_MINUTES_17")
+	@Column(name = "SP_USED_MINUTES_17")
 	public Integer useMinutes17;
 
-	@Column(name = "USED_MINUTES_18")
+	@Column(name = "SP_USED_MINUTES_18")
 	public Integer useMinutes18;
 
-	@Column(name = "USED_MINUTES_19")
+	@Column(name = "SP_USED_MINUTES_19")
 	public Integer useMinutes19;
 
-	@Column(name = "USED_MINUTES_20")
+	@Column(name = "SP_USED_MINUTES_20")
 	public Integer useMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用時間． 使用時間付与前 */
-	@Column(name = "USED_MINUTES_BEFORE_1")
+	@Column(name = "SP_USED_MINUTES_BEFORE_1")
 	public Integer beforeUseMinutes1;
 
-	@Column(name = "USED_MINUTES_BEFORE_2")
+	@Column(name = "SP_USED_MINUTES_BEFORE_2")
 	public Integer beforeUseMinutes2;
 
-	@Column(name = "USED_MINUTES_BEFORE_3")
+	@Column(name = "SP_USED_MINUTES_BEFORE_3")
 	public Integer beforeUseMinutes3;
 
-	@Column(name = "USED_MINUTES_BEFORE_4")
+	@Column(name = "SP_USED_MINUTES_BEFORE_4")
 	public Integer beforeUseMinutes4;
 
-	@Column(name = "USED_MINUTES_BEFORE_5")
+	@Column(name = "SP_USED_MINUTES_BEFORE_5")
 	public Integer beforeUseMinutes5;
 
-	@Column(name = "USED_MINUTES_BEFORE_6")
+	@Column(name = "SP_USED_MINUTES_BEFORE_6")
 	public Integer beforeUseMinutes6;
 
-	@Column(name = "USED_MINUTES_BEFORE_7")
+	@Column(name = "SP_USED_MINUTES_BEFORE_7")
 	public Integer beforeUseMinutes7;
 
-	@Column(name = "USED_MINUTES_BEFORE_8")
+	@Column(name = "SP_USED_MINUTES_BEFORE_8")
 	public Integer beforeUseMinutes8;
 
-	@Column(name = "USED_MINUTES_BEFORE_9")
+	@Column(name = "SP_USED_MINUTES_BEFORE_9")
 	public Integer beforeUseMinutes9;
 
-	@Column(name = "USED_MINUTES_BEFORE_10")
+	@Column(name = "SP_USED_MINUTES_BEFORE_10")
 	public Integer beforeUseMinutes10;
 
-	@Column(name = "USED_MINUTES_BEFORE_11")
+	@Column(name = "SP_USED_MINUTES_BEFORE_11")
 	public Integer beforeUseMinutes11;
 
-	@Column(name = "USED_MINUTES_BEFORE_12")
+	@Column(name = "SP_USED_MINUTES_BEFORE_12")
 	public Integer beforeUseMinutes12;
 
-	@Column(name = "USED_MINUTES_BEFORE_13")
+	@Column(name = "SP_USED_MINUTES_BEFORE_13")
 	public Integer beforeUseMinutes13;
 
-	@Column(name = "USED_MINUTES_BEFORE_14")
+	@Column(name = "SP_USED_MINUTES_BEFORE_14")
 	public Integer beforeUseMinutes14;
 
-	@Column(name = "USED_MINUTES_BEFORE_15")
+	@Column(name = "SP_USED_MINUTES_BEFORE_15")
 	public Integer beforeUseMinutes15;
 
-	@Column(name = "USED_MINUTES_BEFORE_16")
+	@Column(name = "SP_USED_MINUTES_BEFORE_16")
 	public Integer beforeUseMinutes16;
 
-	@Column(name = "USED_MINUTES_BEFORE_17")
+	@Column(name = "SP_USED_MINUTES_BEFORE_17")
 	public Integer beforeUseMinutes17;
 
-	@Column(name = "USED_MINUTES_BEFORE_18")
+	@Column(name = "SP_USED_MINUTES_BEFORE_18")
 	public Integer beforeUseMinutes18;
 
-	@Column(name = "USED_MINUTES_BEFORE_19")
+	@Column(name = "SP_USED_MINUTES_BEFORE_19")
 	public Integer beforeUseMinutes19;
 
-	@Column(name = "USED_MINUTES_BEFORE_20")
+	@Column(name = "SP_USED_MINUTES_BEFORE_20")
 	public Integer beforeUseMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用時間 ．使用時間付与後 */
-
-	@Column(name = "USED_MINUTES_AFTER_1")
+	@Column(name = "SP_USED_MINUTES_AFTER_1")
 	public Integer afterUseMinutes1;
 
-	@Column(name = "USED_MINUTES_AFTER_2")
+	@Column(name = "SP_USED_MINUTES_AFTER_2")
 	public Integer afterUseMinutes2;
 
-	@Column(name = "USED_MINUTES_AFTER_3")
+	@Column(name = "SP_USED_MINUTES_AFTER_3")
 	public Integer afterUseMinutes3;
 
-	@Column(name = "USED_MINUTES_AFTER_4")
+	@Column(name = "SP_USED_MINUTES_AFTER_4")
 	public Integer afterUseMinutes4;
 
-	@Column(name = "USED_MINUTES_AFTER_5")
+	@Column(name = "SP_USED_MINUTES_AFTER_5")
 	public Integer afterUseMinutes5;
 
-	@Column(name = "USED_MINUTES_AFTER_6")
+	@Column(name = "SP_USED_MINUTES_AFTER_6")
 	public Integer afterUseMinutes6;
 
-	@Column(name = "USED_MINUTES_AFTER_7")
+	@Column(name = "SP_USED_MINUTES_AFTER_7")
 	public Integer afterUseMinutes7;
 
-	@Column(name = "USED_MINUTES_AFTER_8")
+	@Column(name = "SP_USED_MINUTES_AFTER_8")
 	public Integer afterUseMinutes8;
 
-	@Column(name = "USED_MINUTES_AFTER_9")
+	@Column(name = "SP_USED_MINUTES_AFTER_9")
 	public Integer afterUseMinutes9;
 
-	@Column(name = "USED_MINUTES_AFTER_10")
+	@Column(name = "SP_USED_MINUTES_AFTER_10")
 	public Integer afterUseMinutes10;
 
-	@Column(name = "USED_MINUTES_AFTER_11")
+	@Column(name = "SP_USED_MINUTES_AFTER_11")
 	public Integer afterUseMinutes11;
 
-	@Column(name = "USED_MINUTES_AFTER_12")
+	@Column(name = "SP_USED_MINUTES_AFTER_12")
 	public Integer afterUseMinutes12;
 
-	@Column(name = "USED_MINUTES_AFTER_13")
+	@Column(name = "SP_USED_MINUTES_AFTER_13")
 	public Integer afterUseMinutes13;
 
-	@Column(name = "USED_MINUTES_AFTER_14")
+	@Column(name = "SP_USED_MINUTES_AFTER_14")
 	public Integer afterUseMinutes14;
 
-	@Column(name = "USED_MINUTES_AFTER_15")
+	@Column(name = "SP_USED_MINUTES_AFTER_15")
 	public Integer afterUseMinutes15;
 
-	@Column(name = "USED_MINUTES_AFTER_16")
+	@Column(name = "SP_USED_MINUTES_AFTER_16")
 	public Integer afterUseMinutes16;
 
-	@Column(name = "USED_MINUTES_AFTER_17")
+	@Column(name = "SP_USED_MINUTES_AFTER_17")
 	public Integer afterUseMinutes17;
 
-	@Column(name = "USED_MINUTES_AFTER_18")
+	@Column(name = "SP_USED_MINUTES_AFTER_18")
 	public Integer afterUseMinutes18;
 
-	@Column(name = "USED_MINUTES_AFTER_19")
+	@Column(name = "SP_USED_MINUTES_AFTER_19")
 	public Integer afterUseMinutes19;
 
-	@Column(name = "USED_MINUTES_AFTER_20")
+	@Column(name = "SP_USED_MINUTES_AFTER_20")
 	public Integer afterUseMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．使用数．使用時間: 使用回数 */
-	@Column(name = "USED_TIMES_1")
+	@Column(name = "SP_USED_TIMES_1")
 	public Integer useTimes1;
 
-	@Column(name = "USED_TIMES_2")
+	@Column(name = "SP_USED_TIMES_2")
 	public Integer useTimes2;
 
-	@Column(name = "USED_TIMES_3")
+	@Column(name = "SP_USED_TIMES_3")
 	public Integer useTimes3;
 
-	@Column(name = "USED_TIMES_4")
+	@Column(name = "SP_USED_TIMES_4")
 	public Integer useTimes4;
 
-	@Column(name = "USED_TIMES_5")
+	@Column(name = "SP_USED_TIMES_5")
 	public Integer useTimes5;
 
-	@Column(name = "USED_TIMES_6")
+	@Column(name = "SP_USED_TIMES_6")
 	public Integer useTimes6;
 
-	@Column(name = "USED_TIMES_7")
+	@Column(name = "SP_USED_TIMES_7")
 	public Integer useTimes7;
 
-	@Column(name = "USED_TIMES_8")
+	@Column(name = "SP_USED_TIMES_8")
 	public Integer useTimes8;
 
-	@Column(name = "USED_TIMES_9")
+	@Column(name = "SP_USED_TIMES_9")
 	public Integer useTimes9;
 
-	@Column(name = "USED_TIMES_10")
+	@Column(name = "SP_USED_TIMES_10")
 	public Integer useTimes10;
 
-	@Column(name = "USED_TIMES_11")
+	@Column(name = "SP_USED_TIMES_11")
 	public Integer useTimes11;
 
-	@Column(name = "USED_TIMES_12")
+	@Column(name = "SP_USED_TIMES_12")
 	public Integer useTimes12;
 
-	@Column(name = "USED_TIMES_13")
+	@Column(name = "SP_USED_TIMES_13")
 	public Integer useTimes13;
 
-	@Column(name = "USED_TIMES_14")
+	@Column(name = "SP_USED_TIMES_14")
 	public Integer useTimes14;
 
-	@Column(name = "USED_TIMES_15")
+	@Column(name = "SP_USED_TIMES_15")
 	public Integer useTimes15;
 
-	@Column(name = "USED_TIMES_16")
+	@Column(name = "SP_USED_TIMES_16")
 	public Integer useTimes16;
 
-	@Column(name = "USED_TIMES_17")
+	@Column(name = "SP_USED_TIMES_17")
 	public Integer useTimes17;
 
-	@Column(name = "USED_TIMES_18")
+	@Column(name = "SP_USED_TIMES_18")
 	public Integer useTimes18;
 
-	@Column(name = "USED_TIMES_19")
+	@Column(name = "SP_USED_TIMES_19")
 	public Integer useTimes19;
 
-	@Column(name = "USED_TIMES_20")
+	@Column(name = "SP_USED_TIMES_20")
 	public Integer useTimes20;
-
+	
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数 .実特別休暇使用日数 */
-	@Column(name = "FACT_USED_DAYS_1")
+	@Column(name = "SP_FACT_USED_DAYS_1")
 	public double factUseDays1;
 
-	@Column(name = "FACT_USED_DAYS_2")
+	@Column(name = "SP_FACT_USED_DAYS_2")
 	public double factUseDays2;
 
-	@Column(name = "FACT_USED_DAYS_3")
+	@Column(name = "SP_FACT_USED_DAYS_3")
 	public double factUseDays3;
 
-	@Column(name = "FACT_USED_DAYS_4")
+	@Column(name = "SP_FACT_USED_DAYS_4")
 	public double factUseDays4;
 
-	@Column(name = "FACT_USED_DAYS_5")
+	@Column(name = "SP_FACT_USED_DAYS_5")
 	public double factUseDays5;
 
-	@Column(name = "FACT_USED_DAYS_6")
+	@Column(name = "SP_FACT_USED_DAYS_6")
 	public double factUseDays6;
 
-	@Column(name = "FACT_USED_DAYS_7")
+	@Column(name = "SP_FACT_USED_DAYS_7")
 	public double factUseDays7;
 
-	@Column(name = "FACT_USED_DAYS_8")
+	@Column(name = "SP_FACT_USED_DAYS_8")
 	public double factUseDays8;
 
-	@Column(name = "FACT_USED_DAYS_9")
+	@Column(name = "SP_FACT_USED_DAYS_9")
 	public double factUseDays9;
 
-	@Column(name = "FACT_USED_DAYS_10")
+	@Column(name = "SP_FACT_USED_DAYS_10")
 	public double factUseDays10;
 
-	@Column(name = "FACT_USED_DAYS_11")
+	@Column(name = "SP_FACT_USED_DAYS_11")
 	public double factUseDays11;
 
-	@Column(name = "FACT_USED_DAYS_12")
+	@Column(name = "SP_FACT_USED_DAYS_12")
 	public double factUseDays12;
 
-	@Column(name = "FACT_USED_DAYS_13")
+	@Column(name = "SP_FACT_USED_DAYS_13")
 	public double factUseDays13;
 
-	@Column(name = "FACT_USED_DAYS_14")
+	@Column(name = "SP_FACT_USED_DAYS_14")
 	public double factUseDays14;
 
-	@Column(name = "FACT_USED_DAYS_15")
+	@Column(name = "SP_FACT_USED_DAYS_15")
 	public double factUseDays15;
 
-	@Column(name = "FACT_USED_DAYS_16")
+	@Column(name = "SP_FACT_USED_DAYS_16")
 	public double factUseDays16;
 
-	@Column(name = "FACT_USED_DAYS_17")
+	@Column(name = "SP_FACT_USED_DAYS_17")
 	public double factUseDays17;
 
-	@Column(name = "FACT_USED_DAYS_18")
+	@Column(name = "SP_FACT_USED_DAYS_18")
 	public double factUseDays18;
 
-	@Column(name = "FACT_USED_DAYS_19")
+	@Column(name = "SP_FACT_USED_DAYS_19")
 	public double factUseDays19;
 
-	@Column(name = "FACT_USED_DAYS_20")
+	@Column(name = "SP_FACT_USED_DAYS_20")
 	public double factUseDays20;
 
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数. 使用日数付与前 */
-
-	@Column(name = "FACT_USED_DAYS_BEFORE_1")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_1")
 	public double beforeFactUseDays1;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_2")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_2")
 	public double beforeFactUseDays2;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_3")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_3")
 	public double beforeFactUseDays3;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_4")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_4")
 	public double beforeFactUseDays4;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_5")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_5")
 	public double beforeFactUseDays5;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_6")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_6")
 	public double beforeFactUseDays6;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_7")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_7")
 	public double beforeFactUseDays7;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_8")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_8")
 	public double beforeFactUseDays8;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_9")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_9")
 	public double beforeFactUseDays9;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_10")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_10")
 	public double beforeFactUseDays10;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_11")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_11")
 	public double beforeFactUseDays11;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_12")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_12")
 	public double beforeFactUseDays12;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_13")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_13")
 	public double beforeFactUseDays13;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_14")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_14")
 	public double beforeFactUseDays14;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_15")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_15")
 	public double beforeFactUseDays15;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_16")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_16")
 	public double beforeFactUseDays16;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_17")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_17")
 	public double beforeFactUseDays17;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_18")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_18")
 	public double beforeFactUseDays18;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_19")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_19")
 	public double beforeFactUseDays19;
 
-	@Column(name = "FACT_USED_DAYS_BEFORE_20")
+	@Column(name = "SP_FACT_USED_DAYS_BEFORE_20")
 	public double beforeFactUseDays20;
-
+	
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用日数.使用日数付与後 */
-
-	@Column(name = "FACT_USED_DAYS_AFTER_1")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_1")
 	public Double afterFactUseDays1;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_2")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_2")
 	public Double afterFactUseDays2;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_3")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_3")
 	public Double afterFactUseDays3;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_4")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_4")
 	public Double afterFactUseDays4;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_5")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_5")
 	public Double afterFactUseDays5;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_6")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_6")
 	public Double afterFactUseDays6;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_7")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_7")
 	public Double afterFactUseDays7;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_8")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_8")
 	public Double afterFactUseDays8;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_9")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_9")
 	public Double afterFactUseDays9;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_10")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_10")
 	public Double afterFactUseDays10;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_11")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_11")
 	public Double afterFactUseDays11;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_12")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_12")
 	public Double afterFactUseDays12;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_13")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_13")
 	public Double afterFactUseDays13;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_14")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_14")
 	public Double afterFactUseDays14;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_15")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_15")
 	public Double afterFactUseDays15;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_16")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_16")
 	public Double afterFactUseDays16;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_17")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_17")
 	public Double afterFactUseDays17;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_18")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_18")
 	public Double afterFactUseDays18;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_19")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_19")
 	public Double afterFactUseDays19;
 
-	@Column(name = "FACT_USED_DAYS_AFTER_20")
+	@Column(name = "SP_FACT_USED_DAYS_AFTER_20")
 	public Double afterFactUseDays20;
 
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間 */
-
-	@Column(name = "FACT_USED_MINUTES_1")
+	@Column(name = "SP_FACT_USED_MINUTES_1")
 	public Integer factUseMinutes1;
 
-	@Column(name = "FACT_USED_MINUTES_2")
+	@Column(name = "SP_FACT_USED_MINUTES_2")
 	public Integer factUseMinutes2;
 
-	@Column(name = "FACT_USED_MINUTES_3")
+	@Column(name = "SP_FACT_USED_MINUTES_3")
 	public Integer factUseMinutes3;
 
-	@Column(name = "FACT_USED_MINUTES_4")
+	@Column(name = "SP_FACT_USED_MINUTES_4")
 	public Integer factUseMinutes4;
 
-	@Column(name = "FACT_USED_MINUTES_5")
+	@Column(name = "SP_FACT_USED_MINUTES_5")
 	public Integer factUseMinutes5;
 
-	@Column(name = "FACT_USED_MINUTES_6")
+	@Column(name = "SP_FACT_USED_MINUTES_6")
 	public Integer factUseMinutes6;
 
-	@Column(name = "FACT_USED_MINUTES_7")
+	@Column(name = "SP_FACT_USED_MINUTES_7")
 	public Integer factUseMinutes7;
 
-	@Column(name = "FACT_USED_MINUTES_8")
+	@Column(name = "SP_FACT_USED_MINUTES_8")
 	public Integer factUseMinutes8;
 
-	@Column(name = "FACT_USED_MINUTES_9")
+	@Column(name = "SP_FACT_USED_MINUTES_9")
 	public Integer factUseMinutes9;
 
-	@Column(name = "FACT_USED_MINUTES_10")
+	@Column(name = "SP_FACT_USED_MINUTES_10")
 	public Integer factUseMinutes10;
 
-	@Column(name = "FACT_USED_MINUTES_11")
+	@Column(name = "SP_FACT_USED_MINUTES_11")
 	public Integer factUseMinutes11;
 
-	@Column(name = "FACT_USED_MINUTES_12")
+	@Column(name = "SP_FACT_USED_MINUTES_12")
 	public Integer factUseMinutes12;
 
-	@Column(name = "FACT_USED_MINUTES_13")
+	@Column(name = "SP_FACT_USED_MINUTES_13")
 	public Integer factUseMinutes13;
 
-	@Column(name = "FACT_USED_MINUTES_14")
+	@Column(name = "SP_FACT_USED_MINUTES_14")
 	public Integer factUseMinutes14;
 
-	@Column(name = "FACT_USED_MINUTES_15")
+	@Column(name = "SP_FACT_USED_MINUTES_15")
 	public Integer factUseMinutes15;
 
-	@Column(name = "FACT_USED_MINUTES_16")
+	@Column(name = "SP_FACT_USED_MINUTES_16")
 	public Integer factUseMinutes16;
 
-	@Column(name = "FACT_USED_MINUTES_17")
+	@Column(name = "SP_FACT_USED_MINUTES_17")
 	public Integer factUseMinutes17;
 
-	@Column(name = "FACT_USED_MINUTES_18")
+	@Column(name = "SP_FACT_USED_MINUTES_18")
 	public Integer factUseMinutes18;
 
-	@Column(name = "FACT_USED_MINUTES_19")
+	@Column(name = "SP_FACT_USED_MINUTES_19")
 	public Integer factUseMinutes19;
 
-	@Column(name = "FACT_USED_MINUTES_20")
+	@Column(name = "SP_FACT_USED_MINUTES_20")
 	public Integer factUseMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用時間付与前 */
-
-	@Column(name = "FACT_USED_MINUTES_BEFORE_1")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_1")
 	public Integer beforeFactUseMinutes1;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_2")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_2")
 	public Integer beforeFactUseMinutes2;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_3")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_3")
 	public Integer beforeFactUseMinutes3;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_4")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_4")
 	public Integer beforeFactUseMinutes4;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_5")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_5")
 	public Integer beforeFactUseMinutes5;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_6")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_6")
 	public Integer beforeFactUseMinutes6;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_7")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_7")
 	public Integer beforeFactUseMinutes7;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_8")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_8")
 	public Integer beforeFactUseMinutes8;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_9")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_9")
 	public Integer beforeFactUseMinutes9;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_10")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_10")
 	public Integer beforeFactUseMinutes10;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_11")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_11")
 	public Integer beforeFactUseMinutes11;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_12")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_12")
 	public Integer beforeFactUseMinutes12;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_13")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_13")
 	public Integer beforeFactUseMinutes13;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_14")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_14")
 	public Integer beforeFactUseMinutes14;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_15")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_15")
 	public Integer beforeFactUseMinutes15;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_16")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_16")
 	public Integer beforeFactUseMinutes16;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_17")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_17")
 	public Integer beforeFactUseMinutes17;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_18")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_18")
 	public Integer beforeFactUseMinutes18;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_19")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_19")
 	public Integer beforeFactUseMinutes19;
 
-	@Column(name = "FACT_USED_MINUTES_BEFORE_20")
+	@Column(name = "SP_FACT_USED_MINUTES_BEFORE_20")
 	public Integer beforeFactUseMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間. 使用時間付与後 */
-	@Column(name = "FACT_USED_MINUTES_AFTER_1")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_1")
 	public Integer afterFactUseMinutes1;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_2")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_2")
 	public Integer afterFactUseMinutes2;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_3")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_3")
 	public Integer afterFactUseMinutes3;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_4")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_4")
 	public Integer afterFactUseMinutes4;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_5")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_5")
 	public Integer afterFactUseMinutes5;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_6")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_6")
 	public Integer afterFactUseMinutes6;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_7")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_7")
 	public Integer afterFactUseMinutes7;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_8")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_8")
 	public Integer afterFactUseMinutes8;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_9")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_9")
 	public Integer afterFactUseMinutes9;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_10")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_10")
 	public Integer afterFactUseMinutes10;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_11")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_11")
 	public Integer afterFactUseMinutes11;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_12")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_12")
 	public Integer afterFactUseMinutes12;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_13")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_13")
 	public Integer afterFactUseMinutes13;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_14")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_14")
 	public Integer afterFactUseMinutes14;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_15")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_15")
 	public Integer afterFactUseMinutes15;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_16")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_16")
 	public Integer afterFactUseMinutes16;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_17")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_17")
 	public Integer afterFactUseMinutes17;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_18")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_18")
 	public Integer afterFactUseMinutes18;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_19")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_19")
 	public Integer afterFactUseMinutes19;
 
-	@Column(name = "FACT_USED_MINUTES_AFTER_20")
+	@Column(name = "SP_FACT_USED_MINUTES_AFTER_20")
 	public Integer afterFactUseMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．使用数．使用時間.使用回数 */
-
-	@Column(name = "FACT_USED_TIMES_1")
+	@Column(name = "SP_FACT_USED_TIMES_1")
 	public Integer factUseTimes1;
 
-	@Column(name = "FACT_USED_TIMES_2")
+	@Column(name = "SP_FACT_USED_TIMES_2")
 	public Integer factUseTimes2;
 
-	@Column(name = "FACT_USED_TIMES_3")
+	@Column(name = "SP_FACT_USED_TIMES_3")
 	public Integer factUseTimes3;
 
-	@Column(name = "FACT_USED_TIMES_4")
+	@Column(name = "SP_FACT_USED_TIMES_4")
 	public Integer factUseTimes4;
 
-	@Column(name = "FACT_USED_TIMES_5")
+	@Column(name = "SP_FACT_USED_TIMES_5")
 	public Integer factUseTimes5;
 
-	@Column(name = "FACT_USED_TIMES_6")
+	@Column(name = "SP_FACT_USED_TIMES_6")
 	public Integer factUseTimes6;
 
-	@Column(name = "FACT_USED_TIMES_7")
+	@Column(name = "SP_FACT_USED_TIMES_7")
 	public Integer factUseTimes7;
 
-	@Column(name = "FACT_USED_TIMES_8")
+	@Column(name = "SP_FACT_USED_TIMES_8")
 	public Integer factUseTimes8;
 
-	@Column(name = "FACT_USED_TIMES_9")
+	@Column(name = "SP_FACT_USED_TIMES_9")
 	public Integer factUseTimes9;
 
-	@Column(name = "FACT_USED_TIMES_10")
+	@Column(name = "SP_FACT_USED_TIMES_10")
 	public Integer factUseTimes10;
 
-	@Column(name = "FACT_USED_TIMES_11")
+	@Column(name = "SP_FACT_USED_TIMES_11")
 	public Integer factUseTimes11;
 
-	@Column(name = "FACT_USED_TIMES_12")
+	@Column(name = "SP_FACT_USED_TIMES_12")
 	public Integer factUseTimes12;
 
-	@Column(name = "FACT_USED_TIMES_13")
+	@Column(name = "SP_FACT_USED_TIMES_13")
 	public Integer factUseTimes13;
 
-	@Column(name = "FACT_USED_TIMES_14")
+	@Column(name = "SP_FACT_USED_TIMES_14")
 	public Integer factUseTimes14;
 
-	@Column(name = "FACT_USED_TIMES_15")
+	@Column(name = "SP_FACT_USED_TIMES_15")
 	public Integer factUseTimes15;
 
-	@Column(name = "FACT_USED_TIMES_16")
+	@Column(name = "SP_FACT_USED_TIMES_16")
 	public Integer factUseTimes16;
 
-	@Column(name = "FACT_USED_TIMES_17")
+	@Column(name = "SP_FACT_USED_TIMES_17")
 	public Integer factUseTimes17;
 
-	@Column(name = "FACT_USED_TIMES_18")
+	@Column(name = "SP_FACT_USED_TIMES_18")
 	public Integer factUseTimes18;
 
-	@Column(name = "FACT_USED_TIMES_19")
+	@Column(name = "SP_FACT_USED_TIMES_19")
 	public Integer factUseTimes19;
 
-	@Column(name = "FACT_USED_TIMES_20")
+	@Column(name = "SP_FACT_USED_TIMES_20")
 	public Integer factUseTimes20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数.日数 */
-	@Column(name = "REMAINING_DAYS_1")
+	@Column(name = "SP_REMAINING_DAYS_1")
 	public double remainDays1;
 
-	@Column(name = "REMAINING_DAYS_2")
+	@Column(name = "SP_REMAINING_DAYS_2")
 	public double remainDays2;
 
-	@Column(name = "REMAINING_DAYS_3")
+	@Column(name = "SP_REMAINING_DAYS_3")
 	public double remainDays3;
 
-	@Column(name = "REMAINING_DAYS_4")
+	@Column(name = "SP_REMAINING_DAYS_4")
 	public double remainDays4;
 
-	@Column(name = "REMAINING_DAYS_5")
+	@Column(name = "SP_REMAINING_DAYS_5")
 	public double remainDays5;
 
-	@Column(name = "REMAINING_DAYS_6")
+	@Column(name = "SP_REMAINING_DAYS_6")
 	public double remainDays6;
 
-	@Column(name = "REMAINING_DAYS_7")
+	@Column(name = "SP_REMAINING_DAYS_7")
 	public double remainDays7;
 
-	@Column(name = "REMAINING_DAYS_8")
+	@Column(name = "SP_REMAINING_DAYS_8")
 	public double remainDays8;
 
-	@Column(name = "REMAINING_DAYS_9")
+	@Column(name = "SP_REMAINING_DAYS_9")
 	public double remainDays9;
 
-	@Column(name = "REMAINING_DAYS_10")
+	@Column(name = "SP_REMAINING_DAYS_10")
 	public double remainDays10;
 
-	@Column(name = "REMAINING_DAYS_11")
+	@Column(name = "SP_REMAINING_DAYS_11")
 	public double remainDays11;
 
-	@Column(name = "REMAINING_DAYS_12")
+	@Column(name = "SP_REMAINING_DAYS_12")
 	public double remainDays12;
 
-	@Column(name = "REMAINING_DAYS_13")
+	@Column(name = "SP_REMAINING_DAYS_13")
 	public double remainDays13;
 
-	@Column(name = "REMAINING_DAYS_14")
+	@Column(name = "SP_REMAINING_DAYS_14")
 	public double remainDays14;
 
-	@Column(name = "REMAINING_DAYS_15")
+	@Column(name = "SP_REMAINING_DAYS_15")
 	public double remainDays15;
 
-	@Column(name = "REMAINING_DAYS_16")
+	@Column(name = "SP_REMAINING_DAYS_16")
 	public double remainDays16;
 
-	@Column(name = "REMAINING_DAYS_17")
+	@Column(name = "SP_REMAINING_DAYS_17")
 	public double remainDays17;
 
-	@Column(name = "REMAINING_DAYS_18")
+	@Column(name = "SP_REMAINING_DAYS_18")
 	public double remainDays18;
 
-	@Column(name = "REMAINING_DAYS_19")
+	@Column(name = "SP_REMAINING_DAYS_19")
 	public double remainDays19;
 
-	@Column(name = "REMAINING_DAYS_20")
+	@Column(name = "SP_REMAINING_DAYS_20")
 	public double remainDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数.時間 */
-	@Column(name = "REMAINING_MINUTES_1")
+	@Column(name = "SP_REMAINING_MINUTES_1")
 	public Integer remainMinutes1;
 
-	@Column(name = "REMAINING_MINUTES_2")
+	@Column(name = "SP_REMAINING_MINUTES_2")
 	public Integer remainMinutes2;
 
-	@Column(name = "REMAINING_MINUTES_3")
+	@Column(name = "SP_REMAINING_MINUTES_3")
 	public Integer remainMinutes3;
 
-	@Column(name = "REMAINING_MINUTES_4")
+	@Column(name = "SP_REMAINING_MINUTES_4")
 	public Integer remainMinutes4;
 
-	@Column(name = "REMAINING_MINUTES_5")
+	@Column(name = "SP_REMAINING_MINUTES_5")
 	public Integer remainMinutes5;
 
-	@Column(name = "REMAINING_MINUTES_6")
+	@Column(name = "SP_REMAINING_MINUTES_6")
 	public Integer remainMinutes6;
 
-	@Column(name = "REMAINING_MINUTES_7")
+	@Column(name = "SP_REMAINING_MINUTES_7")
 	public Integer remainMinutes7;
 
-	@Column(name = "REMAINING_MINUTES_8")
+	@Column(name = "SP_REMAINING_MINUTES_8")
 	public Integer remainMinutes8;
 
-	@Column(name = "REMAINING_MINUTES_9")
+	@Column(name = "SP_REMAINING_MINUTES_9")
 	public Integer remainMinutes9;
 
-	@Column(name = "REMAINING_MINUTES_10")
+	@Column(name = "SP_REMAINING_MINUTES_10")
 	public Integer remainMinutes10;
 
-	@Column(name = "REMAINING_MINUTES_11")
+	@Column(name = "SP_REMAINING_MINUTES_11")
 	public Integer remainMinutes11;
 
-	@Column(name = "REMAINING_MINUTES_12")
+	@Column(name = "SP_REMAINING_MINUTES_12")
 	public Integer remainMinutes12;
 
-	@Column(name = "REMAINING_MINUTES_13")
+	@Column(name = "SP_REMAINING_MINUTES_13")
 	public Integer remainMinutes13;
 
-	@Column(name = "REMAINING_MINUTES_14")
+	@Column(name = "SP_REMAINING_MINUTES_14")
 	public Integer remainMinutes14;
 
-	@Column(name = "REMAINING_MINUTES_15")
+	@Column(name = "SP_REMAINING_MINUTES_15")
 	public Integer remainMinutes15;
 
-	@Column(name = "REMAINING_MINUTES_16")
+	@Column(name = "SP_REMAINING_MINUTES_16")
 	public Integer remainMinutes16;
 
-	@Column(name = "REMAINING_MINUTES_17")
+	@Column(name = "SP_REMAINING_MINUTES_17")
 	public Integer remainMinutes17;
 
-	@Column(name = "REMAINING_MINUTES_18")
+	@Column(name = "SP_REMAINING_MINUTES_18")
 	public Integer remainMinutes18;
 
-	@Column(name = "REMAINING_MINUTES_19")
+	@Column(name = "SP_REMAINING_MINUTES_19")
 	public Integer remainMinutes19;
 
-	@Column(name = "REMAINING_MINUTES_20")
+	@Column(name = "SP_REMAINING_MINUTES_20")
 	public Integer remainMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数. 日数 */
-
-	@Column(name = "FACT_REMAINING_DAYS_1")
+	@Column(name = "SP_FACT_REMAINING_DAYS_1")
 	public double factRemainDays1;
 
-	@Column(name = "FACT_REMAINING_DAYS_2")
+	@Column(name = "SP_FACT_REMAINING_DAYS_2")
 	public double factRemainDays2;
 
-	@Column(name = "FACT_REMAINING_DAYS_3")
+	@Column(name = "SP_FACT_REMAINING_DAYS_3")
 	public double factRemainDays3;
 
-	@Column(name = "FACT_REMAINING_DAYS_4")
+	@Column(name = "SP_FACT_REMAINING_DAYS_4")
 	public double factRemainDays4;
 
-	@Column(name = "FACT_REMAINING_DAYS_5")
+	@Column(name = "SP_FACT_REMAINING_DAYS_5")
 	public double factRemainDays5;
 
-	@Column(name = "FACT_REMAINING_DAYS_6")
+	@Column(name = "SP_FACT_REMAINING_DAYS_6")
 	public double factRemainDays6;
 
-	@Column(name = "FACT_REMAINING_DAYS_7")
+	@Column(name = "SP_FACT_REMAINING_DAYS_7")
 	public double factRemainDays7;
 
-	@Column(name = "FACT_REMAINING_DAYS_8")
+	@Column(name = "SP_FACT_REMAINING_DAYS_8")
 	public double factRemainDays8;
 
-	@Column(name = "FACT_REMAINING_DAYS_9")
+	@Column(name = "SP_FACT_REMAINING_DAYS_9")
 	public double factRemainDays9;
 
-	@Column(name = "FACT_REMAINING_DAYS_10")
+	@Column(name = "SP_FACT_REMAINING_DAYS_10")
 	public double factRemainDays10;
 
-	@Column(name = "FACT_REMAINING_DAYS_11")
+	@Column(name = "SP_FACT_REMAINING_DAYS_11")
 	public double factRemainDays11;
 
-	@Column(name = "FACT_REMAINING_DAYS_12")
+	@Column(name = "SP_FACT_REMAINING_DAYS_12")
 	public double factRemainDays12;
 
-	@Column(name = "FACT_REMAINING_DAYS_13")
+	@Column(name = "SP_FACT_REMAINING_DAYS_13")
 	public double factRemainDays13;
 
-	@Column(name = "FACT_REMAINING_DAYS_14")
+	@Column(name = "SP_FACT_REMAINING_DAYS_14")
 	public double factRemainDays14;
 
-	@Column(name = "FACT_REMAINING_DAYS_15")
+	@Column(name = "SP_FACT_REMAINING_DAYS_15")
 	public double factRemainDays15;
 
-	@Column(name = "FACT_REMAINING_DAYS_16")
+	@Column(name = "SP_FACT_REMAINING_DAYS_16")
 	public double factRemainDays16;
 
-	@Column(name = "FACT_REMAINING_DAYS_17")
+	@Column(name = "SP_FACT_REMAINING_DAYS_17")
 	public double factRemainDays17;
 
-	@Column(name = "FACT_REMAINING_DAYS_18")
+	@Column(name = "SP_FACT_REMAINING_DAYS_18")
 	public double factRemainDays18;
 
-	@Column(name = "FACT_REMAINING_DAYS_19")
+	@Column(name = "SP_FACT_REMAINING_DAYS_19")
 	public double factRemainDays19;
 
-	@Column(name = "FACT_REMAINING_DAYS_20")
+	@Column(name = "SP_FACT_REMAINING_DAYS_20")
 	public double factRemainDays20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数.時間 */
-	@Column(name = "FACT_REMAINING_MINUTES_1")
+	
+	@Column(name = "SP_FACT_REMAINING_MINUTES_1")
 	public Integer factRemainMinutes1;
 
-	@Column(name = "FACT_REMAINING_MINUTES_2")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_2")
 	public Integer factRemainMinutes2;
 
-	@Column(name = "FACT_REMAINING_MINUTES_3")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_3")
 	public Integer factRemainMinutes3;
 
-	@Column(name = "FACT_REMAINING_MINUTES_4")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_4")
 	public Integer factRemainMinutes4;
 
-	@Column(name = "FACT_REMAINING_MINUTES_5")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_5")
 	public Integer factRemainMinutes5;
 
-	@Column(name = "FACT_REMAINING_MINUTES_6")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_6")
 	public Integer factRemainMinutes6;
 
-	@Column(name = "FACT_REMAINING_MINUTES_7")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_7")
 	public Integer factRemainMinutes7;
 
-	@Column(name = "FACT_REMAINING_MINUTES_8")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_8")
 	public Integer factRemainMinutes8;
 
-	@Column(name = "FACT_REMAINING_MINUTES_9")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_9")
 	public Integer factRemainMinutes9;
 
-	@Column(name = "FACT_REMAINING_MINUTES_10")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_10")
 	public Integer factRemainMinutes10;
 
-	@Column(name = "FACT_REMAINING_MINUTES_11")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_11")
 	public Integer factRemainMinutes11;
 
-	@Column(name = "FACT_REMAINING_MINUTES_12")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_12")
 	public Integer factRemainMinutes12;
 
-	@Column(name = "FACT_REMAINING_MINUTES_13")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_13")
 	public Integer factRemainMinutes13;
 
-	@Column(name = "FACT_REMAINING_MINUTES_14")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_14")
 	public Integer factRemainMinutes14;
 
-	@Column(name = "FACT_REMAINING_MINUTES_15")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_15")
 	public Integer factRemainMinutes15;
 
-	@Column(name = "FACT_REMAINING_MINUTES_16")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_16")
 	public Integer factRemainMinutes16;
 
-	@Column(name = "FACT_REMAINING_MINUTES_17")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_17")
 	public Integer factRemainMinutes17;
 
-	@Column(name = "FACT_REMAINING_MINUTES_18")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_18")
 	public Integer factRemainMinutes18;
 
-	@Column(name = "FACT_REMAINING_MINUTES_19")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_19")
 	public Integer factRemainMinutes19;
 
-	@Column(name = "FACT_REMAINING_MINUTES_20")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_20")
 	public Integer factRemainMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数付与前.日数 */
-	@Column(name = "REMAINING_DAYS_BEFORE_1")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_1")
 	public double beforeRemainDays1;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_2")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_2")
 	public double beforeRemainDays2;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_3")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_3")
 	public double beforeRemainDays3;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_4")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_4")
 	public double beforeRemainDays4;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_5")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_5")
 	public double beforeRemainDays5;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_6")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_6")
 	public double beforeRemainDays6;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_7")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_7")
 	public double beforeRemainDays7;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_8")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_8")
 	public double beforeRemainDays8;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_9")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_9")
 	public double beforeRemainDays9;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_10")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_10")
 	public double beforeRemainDays10;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_11")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_11")
 	public double beforeRemainDays11;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_12")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_12")
 	public double beforeRemainDays12;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_13")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_13")
 	public double beforeRemainDays13;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_14")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_14")
 	public double beforeRemainDays14;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_15")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_15")
 	public double beforeRemainDays15;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_16")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_16")
 	public double beforeRemainDays16;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_17")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_17")
 	public double beforeRemainDays17;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_18")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_18")
 	public double beforeRemainDays18;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_19")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_19")
 	public double beforeRemainDays19;
 
-	@Column(name = "REMAINING_DAYS_BEFORE_20")
+	@Column(name = "SP_REMAINING_DAYS_BEFORE_20")
 	public double beforeRemainDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数付与前.時間 */
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_1")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_1")
 	public Integer beforeRemainMinutes1;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_2")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_2")
 	public Integer beforeRemainMinutes2;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_3")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_3")
 	public Integer beforeRemainMinutes3;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_4")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_4")
 	public Integer beforeRemainMinutes4;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_5")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_5")
 	public Integer beforeRemainMinutes5;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_6")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_6")
 	public Integer beforeRemainMinutes6;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_7")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_7")
 	public Integer beforeRemainMinutes7;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_8")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_8")
 	public Integer beforeRemainMinutes8;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_9")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_9")
 	public Integer beforeRemainMinutes9;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_10")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_10")
 	public Integer beforeRemainMinutes10;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_11")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_11")
 	public Integer beforeRemainMinutes11;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_12")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_12")
 	public Integer beforeRemainMinutes12;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_13")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_13")
 	public Integer beforeRemainMinutes13;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_14")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_14")
 	public Integer beforeRemainMinutes14;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_15")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_15")
 	public Integer beforeRemainMinutes15;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_16")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_16")
 	public Integer beforeRemainMinutes16;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_17")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_17")
 	public Integer beforeRemainMinutes17;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_18")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_18")
 	public Integer beforeRemainMinutes18;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_19")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_19")
 	public Integer beforeRemainMinutes19;
 
-	@Column(name = "REMAINING_MINUTES_BEFORE_20")
+	@Column(name = "SP_REMAINING_MINUTES_BEFORE_20")
 	public Integer beforeRemainMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数付与前.日数 */
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_1")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_1")
 	public double beforeFactRemainDays1;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_2")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_2")
 	public double beforeFactRemainDays2;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_3")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_3")
 	public double beforeFactRemainDays3;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_4")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_4")
 	public double beforeFactRemainDays4;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_5")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_5")
 	public double beforeFactRemainDays5;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_6")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_6")
 	public double beforeFactRemainDays6;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_7")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_7")
 	public double beforeFactRemainDays7;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_8")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_8")
 	public double beforeFactRemainDays8;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_9")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_9")
 	public double beforeFactRemainDays9;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_10")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_10")
 	public double beforeFactRemainDays10;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_11")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_11")
 	public double beforeFactRemainDays11;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_12")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_12")
 	public double beforeFactRemainDays12;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_13")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_13")
 	public double beforeFactRemainDays13;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_14")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_14")
 	public double beforeFactRemainDays14;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_15")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_15")
 	public double beforeFactRemainDays15;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_16")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_16")
 	public double beforeFactRemainDays16;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_17")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_17")
 	public double beforeFactRemainDays17;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_18")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_18")
 	public double beforeFactRemainDays18;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_19")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_19")
 	public double beforeFactRemainDays19;
 
-	@Column(name = "FACT_REMAINING_DAYS_BEFORE_20")
+	@Column(name = "SP_FACT_REMAINING_DAYS_BEFORE_20")
 	public double beforeFactRemainDays20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数付与前.時間 */
-
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_1")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_1")
 	public Integer beforeFactRemainMinutes1;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_2")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_2")
 	public Integer beforeFactRemainMinutes2;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_3")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_3")
 	public Integer beforeFactRemainMinutes3;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_4")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_4")
 	public Integer beforeFactRemainMinutes4;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_5")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_5")
 	public Integer beforeFactRemainMinutes5;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_6")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_6")
 	public Integer beforeFactRemainMinutes6;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_7")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_7")
 	public Integer beforeFactRemainMinutes7;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_8")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_8")
 	public Integer beforeFactRemainMinutes8;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_9")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_9")
 	public Integer beforeFactRemainMinutes9;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_10")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_10")
 	public Integer beforeFactRemainMinutes10;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_11")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_11")
 	public Integer beforeFactRemainMinutes11;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_12")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_12")
 	public Integer beforeFactRemainMinutes12;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_13")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_13")
 	public Integer beforeFactRemainMinutes13;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_14")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_14")
 	public Integer beforeFactRemainMinutes14;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_15")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_15")
 	public Integer beforeFactRemainMinutes15;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_16")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_16")
 	public Integer beforeFactRemainMinutes16;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_17")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_17")
 	public Integer beforeFactRemainMinutes17;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_18")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_18")
 	public Integer beforeFactRemainMinutes18;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_19")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_19")
 	public Integer beforeFactRemainMinutes19;
 
-	@Column(name = "FACT_REMAINING_MINUTES_BEFORE_20")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_BEFORE_20")
 	public Integer beforeFactRemainMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数付与後.日数 */
-	@Column(name = "REMAINING_DAYS_AFTER_1")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_1")
 	public Double afterRemainDays1;
 
-	@Column(name = "REMAINING_DAYS_AFTER_2")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_2")
 	public Double afterRemainDays2;
 
-	@Column(name = "REMAINING_DAYS_AFTER_3")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_3")
 	public Double afterRemainDays3;
 
-	@Column(name = "REMAINING_DAYS_AFTER_4")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_4")
 	public Double afterRemainDays4;
 
-	@Column(name = "REMAINING_DAYS_AFTER_5")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_5")
 	public Double afterRemainDays5;
 
-	@Column(name = "REMAINING_DAYS_AFTER_6")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_6")
 	public Double afterRemainDays6;
 
-	@Column(name = "REMAINING_DAYS_AFTER_7")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_7")
 	public Double afterRemainDays7;
 
-	@Column(name = "REMAINING_DAYS_AFTER_8")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_8")
 	public Double afterRemainDays8;
 
-	@Column(name = "REMAINING_DAYS_AFTER_9")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_9")
 	public Double afterRemainDays9;
 
-	@Column(name = "REMAINING_DAYS_AFTER_10")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_10")
 	public Double afterRemainDays10;
 
-	@Column(name = "REMAINING_DAYS_AFTER_11")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_11")
 	public Double afterRemainDays11;
 
-	@Column(name = "REMAINING_DAYS_AFTER_12")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_12")
 	public Double afterRemainDays12;
 
-	@Column(name = "REMAINING_DAYS_AFTER_13")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_13")
 	public Double afterRemainDays13;
 
-	@Column(name = "REMAINING_DAYS_AFTER_14")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_14")
 	public Double afterRemainDays14;
 
-	@Column(name = "REMAINING_DAYS_AFTER_15")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_15")
 	public Double afterRemainDays15;
 
-	@Column(name = "REMAINING_DAYS_AFTER_16")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_16")
 	public Double afterRemainDays16;
 
-	@Column(name = "REMAINING_DAYS_AFTER_17")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_17")
 	public Double afterRemainDays17;
 
-	@Column(name = "REMAINING_DAYS_AFTER_18")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_18")
 	public Double afterRemainDays18;
 
-	@Column(name = "REMAINING_DAYS_AFTER_19")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_19")
 	public Double afterRemainDays19;
 
-	@Column(name = "REMAINING_DAYS_AFTER_20")
+	@Column(name = "SP_REMAINING_DAYS_AFTER_20")
 	public Double afterRemainDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数付与後.時間 */
 
-	@Column(name = "REMAINING_MINUTES_AFTER_1")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_1")
 	public Integer afterRemainMinutes1;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_2")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_2")
 	public Integer afterRemainMinutes2;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_3")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_3")
 	public Integer afterRemainMinutes3;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_4")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_4")
 	public Integer afterRemainMinutes4;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_5")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_5")
 	public Integer afterRemainMinutes5;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_6")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_6")
 	public Integer afterRemainMinutes6;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_7")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_7")
 	public Integer afterRemainMinutes7;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_8")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_8")
 	public Integer afterRemainMinutes8;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_9")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_9")
 	public Integer afterRemainMinutes9;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_10")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_10")
 	public Integer afterRemainMinutes10;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_11")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_11")
 	public Integer afterRemainMinutes11;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_12")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_12")
 	public Integer afterRemainMinutes12;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_13")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_13")
 	public Integer afterRemainMinutes13;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_14")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_14")
 	public Integer afterRemainMinutes14;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_15")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_15")
 	public Integer afterRemainMinutes15;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_16")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_16")
 	public Integer afterRemainMinutes16;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_17")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_17")
 	public Integer afterRemainMinutes17;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_18")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_18")
 	public Integer afterRemainMinutes18;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_19")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_19")
 	public Integer afterRemainMinutes19;
 
-	@Column(name = "REMAINING_MINUTES_AFTER_20")
+	@Column(name = "SP_REMAINING_MINUTES_AFTER_20")
 	public Integer afterRemainMinutes20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数付与後. 日数 */
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_1")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_1")
 	public Double afterFactRemainDays1;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_2")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_2")
 	public Double afterFactRemainDays2;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_3")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_3")
 	public Double afterFactRemainDays3;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_4")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_4")
 	public Double afterFactRemainDays4;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_5")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_5")
 	public Double afterFactRemainDays5;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_6")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_6")
 	public Double afterFactRemainDays6;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_7")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_7")
 	public Double afterFactRemainDays7;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_8")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_8")
 	public Double afterFactRemainDays8;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_9")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_9")
 	public Double afterFactRemainDays9;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_10")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_10")
 	public Double afterFactRemainDays10;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_11")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_11")
 	public Double afterFactRemainDays11;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_12")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_12")
 	public Double afterFactRemainDays12;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_13")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_13")
 	public Double afterFactRemainDays13;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_14")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_14")
 	public Double afterFactRemainDays14;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_15")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_15")
 	public Double afterFactRemainDays15;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_16")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_16")
 	public Double afterFactRemainDays16;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_17")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_17")
 	public Double afterFactRemainDays17;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_18")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_18")
 	public Double afterFactRemainDays18;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_19")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_19")
 	public Double afterFactRemainDays19;
 
-	@Column(name = "FACT_REMAINING_DAYS_AFTER_20")
+	@Column(name = "SP_FACT_REMAINING_DAYS_AFTER_20")
 	public Double afterFactRemainDays20;
 
 	/** 特別休暇月別残数データ．実特別休暇．残数付与後. 時間 */
-
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_1")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_1")
 	public Double afterFactRemainMinutes1;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_2")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_2")
 	public Double afterFactRemainMinutes2;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_3")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_3")
 	public Double afterFactRemainMinutes3;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_4")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_4")
 	public Double afterFactRemainMinutes4;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_5")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_5")
 	public Double afterFactRemainMinutes5;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_6")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_6")
 	public Double afterFactRemainMinutes6;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_7")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_7")
 	public Double afterFactRemainMinutes7;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_8")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_8")
 	public Double afterFactRemainMinutes8;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_9")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_9")
 	public Double afterFactRemainMinutes9;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_10")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_10")
 	public Double afterFactRemainMinutes10;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_11")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_11")
 	public Double afterFactRemainMinutes11;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_12")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_12")
 	public Integer afterFactRemainMinutes12;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_13")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_13")
 	public Double afterFactRemainMinutes13;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_14")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_14")
 	public Double afterFactRemainMinutes14;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_15")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_15")
 	public Double afterFactRemainMinutes15;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_16")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_16")
 	public Double afterFactRemainMinutes16;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_17")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_17")
 	public Double afterFactRemainMinutes17;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_18")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_18")
 	public Double afterFactRemainMinutes18;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_19")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_19")
 	public Double afterFactRemainMinutes19;
 
-	@Column(name = "FACT_REMAINING_MINUTES_AFTER_20")
+	@Column(name = "SP_FACT_REMAINING_MINUTES_AFTER_20")
 	public Double afterFactRemainMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．未消化数．未消化日数.未消化日数 */
-
-	@Column(name = "NOT_USED_DAYS_1")
+	@Column(name = "SP_NOT_USED_DAYS_1")
 	public double notUseDays1;
 
-	@Column(name = "NOT_USED_DAYS_2")
+	@Column(name = "SP_NOT_USED_DAYS_2")
 	public double notUseDays2;
 
-	@Column(name = "NOT_USED_DAYS_3")
+	@Column(name = "SP_NOT_USED_DAYS_3")
 	public double notUseDays3;
 
-	@Column(name = "NOT_USED_DAYS_4")
+	@Column(name = "SP_NOT_USED_DAYS_4")
 	public double notUseDays4;
 
-	@Column(name = "NOT_USED_DAYS_5")
+	@Column(name = "SP_NOT_USED_DAYS_5")
 	public double notUseDays5;
 
-	@Column(name = "NOT_USED_DAYS_6")
+	@Column(name = "SP_NOT_USED_DAYS_6")
 	public double notUseDays6;
 
-	@Column(name = "NOT_USED_DAYS_7")
+	@Column(name = "SP_NOT_USED_DAYS_7")
 	public double notUseDays7;
 
-	@Column(name = "NOT_USED_DAYS_8")
+	@Column(name = "SP_NOT_USED_DAYS_8")
 	public double notUseDays8;
 
-	@Column(name = "NOT_USED_DAYS_9")
+	@Column(name = "SP_NOT_USED_DAYS_9")
 	public double notUseDays9;
 
-	@Column(name = "NOT_USED_DAYS_10")
+	@Column(name = "SP_NOT_USED_DAYS_10")
 	public double notUseDays10;
 
-	@Column(name = "NOT_USED_DAYS_11")
+	@Column(name = "SP_NOT_USED_DAYS_11")
 	public double notUseDays11;
 
-	@Column(name = "NOT_USED_DAYS_12")
+	@Column(name = "SP_NOT_USED_DAYS_12")
 	public double notUseDays12;
 
-	@Column(name = "NOT_USED_DAYS_13")
+	@Column(name = "SP_NOT_USED_DAYS_13")
 	public double notUseDays13;
 
-	@Column(name = "NOT_USED_DAYS_14")
+	@Column(name = "SP_NOT_USED_DAYS_14")
 	public double notUseDays14;
 
-	@Column(name = "NOT_USED_DAYS_15")
+	@Column(name = "SP_NOT_USED_DAYS_15")
 	public double notUseDays15;
 
-	@Column(name = "NOT_USED_DAYS_16")
+	@Column(name = "SP_NOT_USED_DAYS_16")
 	public double notUseDays16;
 
-	@Column(name = "NOT_USED_DAYS_17")
+	@Column(name = "SP_NOT_USED_DAYS_17")
 	public double notUseDays17;
 
-	@Column(name = "NOT_USED_DAYS_18")
+	@Column(name = "SP_NOT_USED_DAYS_18")
 	public double notUseDays18;
 
-	@Column(name = "NOT_USED_DAYS_19")
+	@Column(name = "SP_NOT_USED_DAYS_19")
 	public double notUseDays19;
 
-	@Column(name = "NOT_USED_DAYS_20")
+	@Column(name = "SP_NOT_USED_DAYS_20")
 	public double notUseDays20;
 
 	/** 特別休暇月別残数データ．特別休暇．未消化数．未消化時間.未消化時間 */
-	@Column(name = "NOT_USED_MINUTES_1")
+	@Column(name = "SP_NOT_USED_MINUTES_1")
 	public Integer notUseMinutes1;
 
-	@Column(name = "NOT_USED_MINUTES_2")
+	@Column(name = "SP_NOT_USED_MINUTES_2")
 	public Integer notUseMinutes2;
 
-	@Column(name = "NOT_USED_MINUTES_3")
+	@Column(name = "SP_NOT_USED_MINUTES_3")
 	public Integer notUseMinutes3;
 
-	@Column(name = "NOT_USED_MINUTES_4")
+	@Column(name = "SP_NOT_USED_MINUTES_4")
 	public Integer notUseMinutes4;
 
-	@Column(name = "NOT_USED_MINUTES_5")
+	@Column(name = "SP_NOT_USED_MINUTES_5")
 	public Integer notUseMinutes5;
 
-	@Column(name = "NOT_USED_MINUTES_6")
+	@Column(name = "SP_NOT_USED_MINUTES_6")
 	public Integer notUseMinutes6;
 
-	@Column(name = "NOT_USED_MINUTES_7")
+	@Column(name = "SP_NOT_USED_MINUTES_7")
 	public Integer notUseMinutes7;
 
-	@Column(name = "NOT_USED_MINUTES_8")
+	@Column(name = "SP_NOT_USED_MINUTES_8")
 	public Integer notUseMinutes8;
 
-	@Column(name = "NOT_USED_MINUTES_9")
+	@Column(name = "SP_NOT_USED_MINUTES_9")
 	public Integer notUseMinutes9;
 
-	@Column(name = "NOT_USED_MINUTES_10")
+	@Column(name = "SP_NOT_USED_MINUTES_10")
 	public Integer notUseMinutes10;
 
-	@Column(name = "NOT_USED_MINUTES_11")
+	@Column(name = "SP_NOT_USED_MINUTES_11")
 	public Integer notUseMinutes11;
 
-	@Column(name = "NOT_USED_MINUTES_12")
+	@Column(name = "SP_NOT_USED_MINUTES_12")
 	public Integer notUseMinutes12;
 
-	@Column(name = "NOT_USED_MINUTES_13")
+	@Column(name = "SP_NOT_USED_MINUTES_13")
 	public Integer notUseMinutes13;
 
-	@Column(name = "NOT_USED_MINUTES_14")
+	@Column(name = "SP_NOT_USED_MINUTES_14")
 	public Integer notUseMinutes14;
 
-	@Column(name = "NOT_USED_MINUTES_15")
+	@Column(name = "SP_NOT_USED_MINUTES_15")
 	public Integer notUseMinutes15;
 
-	@Column(name = "NOT_USED_MINUTES_16")
+	@Column(name = "SP_NOT_USED_MINUTES_16")
 	public Integer notUseMinutes16;
 
-	@Column(name = "NOT_USED_MINUTES_17")
+	@Column(name = "SP_NOT_USED_MINUTES_17")
 	public Integer notUseMinutes17;
 
-	@Column(name = "NOT_USED_MINUTES_18")
+	@Column(name = "SP_NOT_USED_MINUTES_18")
 	public Integer notUseMinutes18;
 
-	@Column(name = "NOT_USED_MINUTES_19")
+	@Column(name = "SP_NOT_USED_MINUTES_19")
 	public Integer notUseMinutes19;
 
-	@Column(name = "NOT_USED_MINUTES_20")
+	@Column(name = "SP_NOT_USED_MINUTES_20")
 	public Integer notUseMinutes20;
 
 	/** 付与区分 */
-	@Column(name = "GRANT_ATR_1")
+	@Column(name = "SP_GRANT_ATR_1")
 	public int grantAtr1;
 
-	@Column(name = "GRANT_ATR_2")
+	@Column(name = "SP_GRANT_ATR_2")
 	public int grantAtr2;
 
-	@Column(name = "GRANT_ATR_3")
+	@Column(name = "SP_GRANT_ATR_3")
 	public int grantAtr3;
 
-	@Column(name = "GRANT_ATR_4")
+	@Column(name = "SP_GRANT_ATR_4")
 	public int grantAtr4;
 
-	@Column(name = "GRANT_ATR_5")
+	@Column(name = "SP_GRANT_ATR_5")
 	public int grantAtr5;
 
-	@Column(name = "GRANT_ATR_6")
+	@Column(name = "SP_GRANT_ATR_6")
 	public int grantAtr6;
 
-	@Column(name = "GRANT_ATR_7")
+	@Column(name = "SP_GRANT_ATR_7")
 	public int grantAtr7;
 
-	@Column(name = "GRANT_ATR_8")
+	@Column(name = "SP_GRANT_ATR_8")
 	public int grantAtr8;
 
-	@Column(name = "GRANT_ATR_9")
+	@Column(name = "SP_GRANT_ATR_9")
 	public int grantAtr9;
 
-	@Column(name = "GRANT_ATR_10")
+	@Column(name = "SP_GRANT_ATR_10")
 	public int grantAtr10;
 
-	@Column(name = "GRANT_ATR_11")
+	@Column(name = "SP_GRANT_ATR_11")
 	public int grantAtr11;
 
-	@Column(name = "GRANT_ATR_12")
+	@Column(name = "SP_GRANT_ATR_12")
 	public int grantAtr12;
 
-	@Column(name = "GRANT_ATR_13")
+	@Column(name = "SP_GRANT_ATR_13")
 	public int grantAtr13;
 
-	@Column(name = "GRANT_ATR_14")
+	@Column(name = "SP_GRANT_ATR_14")
 	public int grantAtr14;
 
-	@Column(name = "GRANT_ATR_15")
+	@Column(name = "SP_GRANT_ATR_15")
 	public int grantAtr15;
 
-	@Column(name = "GRANT_ATR_16")
+	@Column(name = "SP_GRANT_ATR_16")
 	public int grantAtr16;
 
-	@Column(name = "GRANT_ATR_17")
+	@Column(name = "SP_GRANT_ATR_17")
 	public int grantAtr17;
 
-	@Column(name = "GRANT_ATR_18")
+	@Column(name = "SP_GRANT_ATR_18")
 	public int grantAtr18;
 
-	@Column(name = "GRANT_ATR_19")
+	@Column(name = "SP_GRANT_ATR_19")
 	public int grantAtr19;
 
-	@Column(name = "GRANT_ATR_20")
+	@Column(name = "SP_GRANT_ATR_20")
 	public int grantAtr20;
 
 	/** 特別休暇月別残数データ．特別休暇付与情報.付与日数 */
-	@Column(name = "GRANT_DAYS_1")
+	@Column(name = "SP_GRANT_DAYS_1")
 	public Integer grantDays1;
 
-	@Column(name = "GRANT_DAYS_2")
+	@Column(name = "SP_GRANT_DAYS_2")
 	public Integer grantDays2;
 
-	@Column(name = "GRANT_DAYS_3")
+	@Column(name = "SP_GRANT_DAYS_3")
 	public Integer grantDays3;
 
-	@Column(name = "GRANT_DAYS_4")
+	@Column(name = "SP_GRANT_DAYS_4")
 	public Integer grantDays4;
 
-	@Column(name = "GRANT_DAYS_5")
+	@Column(name = "SP_GRANT_DAYS_5")
 	public Integer grantDays5;
 
-	@Column(name = "GRANT_DAYS_6")
+	@Column(name = "SP_GRANT_DAYS_6")
 	public Integer grantDays6;
 
-	@Column(name = "GRANT_DAYS_7")
+	@Column(name = "SP_GRANT_DAYS_7")
 	public Integer grantDays7;
 
-	@Column(name = "GRANT_DAYS_8")
+	@Column(name = "SP_GRANT_DAYS_8")
 	public Integer grantDays8;
 
-	@Column(name = "GRANT_DAYS_9")
+	@Column(name = "SP_GRANT_DAYS_9")
 	public Integer grantDays9;
 
-	@Column(name = "GRANT_DAYS_10")
+	@Column(name = "SP_GRANT_DAYS_10")
 	public Integer grantDays10;
 
-	@Column(name = "GRANT_DAYS_11")
+	@Column(name = "SP_GRANT_DAYS_11")
 	public Integer grantDays11;
 
-	@Column(name = "GRANT_DAYS_12")
+	@Column(name = "SP_GRANT_DAYS_12")
 	public Integer grantDays12;
 
-	@Column(name = "GRANT_DAYS_13")
+	@Column(name = "SP_GRANT_DAYS_13")
 	public Integer grantDays13;
 
-	@Column(name = "GRANT_DAYS_14")
+	@Column(name = "SP_GRANT_DAYS_14")
 	public Integer grantDays14;
 
-	@Column(name = "GRANT_DAYS_15")
+	@Column(name = "SP_GRANT_DAYS_15")
 	public Integer grantDays15;
 
-	@Column(name = "GRANT_DAYS_16")
+	@Column(name = "SP_GRANT_DAYS_16")
 	public Integer grantDays16;
 
-	@Column(name = "GRANT_DAYS_17")
+	@Column(name = "SP_GRANT_DAYS_17")
 	public Integer grantDays17;
 
-	@Column(name = "GRANT_DAYS_18")
+	@Column(name = "SP_GRANT_DAYS_18")
 	public Integer grantDays18;
 
-	@Column(name = "GRANT_DAYS_19")
+	@Column(name = "SP_GRANT_DAYS_19")
 	public Integer grantDays19;
 
-	@Column(name = "GRANT_DAYS_20")
+	@Column(name = "SP_GRANT_DAYS_20")
 	public Integer grantDays20;
 
 	/* KRCDT_MON_DAYOFF_REMAIN */
-
-	/** 締め処理状態 */
-	@Column(name = "DAYOFF_CLOSURE_STATUS")
-	public int dayOffClosureStatus;
-
-	/** 開始年月日 */
-	@Column(name = "DAYOFF_START_DATE")
-	public GeneralDate dayOffStartDate;
-
-	/** 終了年月日 */
-	@Column(name = "DAYOFF_END_DATE")
-	public GeneralDate dayOffEndDate;
-
 	/** 発生日数 */
 	@Column(name = "DAYOFF_OCCURRED_DAYS")
 	public double dayOffOccurredDays;
@@ -2500,16 +2282,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	public Integer dayOffUnUsedTimes;
 
 	/* KRCDT_MON_SUBOFHD_REMAIN */
-
-	/** 締め処理状態 */
-	@Column(name = "SUBOFHD_CLOSURE_STATUS")
-	public int subofHdClosureStatus;
-	/** 開始年月日 */
-	@Column(name = "SUBOFHD_START_DATE")
-	public GeneralDate subofHdStartDate;
-	/** 終了年月日 */
-	@Column(name = "SUBOFHD_END_DATE")
-	public GeneralDate subofHdEndDate;
 	/** 発生日数 */
 	@Column(name = "SUBOFHD_OCCURRED_DAYS")
 	public double subofHdOccurredDays;
@@ -2528,15 +2300,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_CHILD_HD_REMAIN */
 	//TODO - thiếu domain
-	@Column(name = "CHILD_CLOSURE_STATUS")
-	public double childClosureStatus;
-
-	@Column(name = "CHILD_START_DATE")
-	public GeneralDate childStartDate;
-
-	@Column(name = "CHILD_END_DATE")
-	public GeneralDate childEndDate;
-
 	@Column(name = "CHILD_USED_DAYS")
 	public double childUsedDays;
 
@@ -2558,15 +2321,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	
 	/* KRCDT_MON_CARE_HD_REMAIN */
 	// TODO thiếu domain
-	@Column(name = "CARE_CLOSURE_STATUS")
-	public double careClosureStatus;
-
-	@Column(name = "CARE_START_DATE")
-	public GeneralDate careStartDate;
-
-	@Column(name = "CARE_END_DATE")
-	public GeneralDate careEndDate;
-
 	@Column(name = "CARE_USED_DAYS")
 	public double careUsedDays;
 
@@ -2661,9 +2415,9 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val real = domain.getRealAnnualLeave();
 		val realUsed = real.getUsedNumber();
 
-		this.annleaClosureStatus = domain.getClosureStatus().value;
-		this.annleaStartDate = domain.getClosurePeriod().start();
-		this.annleaEndDate = domain.getClosurePeriod().end();
+		this.closureStatus = domain.getClosureStatus().value;
+		this.startDate = domain.getClosurePeriod().start();
+		this.endDate = domain.getClosurePeriod().end();
 
 		// 年休：使用数
 		this.annleaUsedDays = normalUsed.getUsedDays().getUsedDays().v();
@@ -2827,11 +2581,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val normalUsed = normal.getUsedNumber();
 		val real = domain.getRealReserveLeave();
 		val realUsed = real.getUsedNumber();
-
-		this.closureStatus = domain.getClosureStatus().value;
-		this.rsvleaStartDate = domain.getClosurePeriod().start();
-		this.rsvleaEndDate = domain.getClosurePeriod().end();
-
 		// 積立年休：使用数
 		this.rsvleaUsedDays = normalUsed.getUsedDays().v();
 		this.rsvleaUsedDaysBefore = normalUsed.getUsedDaysBeforeGrant().v();
@@ -2903,9 +2652,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	
 	/** KRCDT_MON_DAYOFF_REMAIN **/
 	public void toEntityDayOffRemainDayAndTimes(MonthlyDayoffRemainData domain) {
-		this.dayOffClosureStatus =  domain.getClosureStatus().value;
-		this.dayOffStartDate = domain.getStartDate();
-		this.dayOffEndDate = domain.getEndDate();
 		
 		this.dayOffOccurredTimes = null;
 		this.dayOffUsedMinutes = null;
@@ -2986,9 +2732,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 	
 	/**KRCDT_MON_SUBOFHD_REMAIN**/
 	public void toEntityAbsenceLeaveRemainData(AbsenceLeaveRemainData domain) {
-		this.subofHdClosureStatus = domain.getClosureStatus().value;
-		this.subofHdStartDate = domain.getStartDate();
-		this.subofHdEndDate = domain.getEndDate();
 		this.subofHdOccurredDays = domain.getOccurredDay().v();
 		this.subofHdUsedDays = domain.getUsedDays().v();
 		this.subofHdRemainingDays = domain.getRemainingDays().v();
@@ -3019,11 +2762,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus1 = domain.getClosureStatus().value;
-		this.closureStartDate1 = domain.getClosurePeriod().start();
-		this.closureEndDate1 = domain.getClosurePeriod().end();
-
 		this.afterUseDays1 = null;
 		this.useMinutes1 = null;
 		this.beforeUseMinutes1 = null;
@@ -3196,10 +2934,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
 
-		this.closureStatus2 = domain.getClosureStatus().value;
-		this.closureStartDate2 = domain.getClosurePeriod().start();
-		this.closureEndDate2 = domain.getClosurePeriod().end();
-
 		this.afterUseDays2 = null;
 		this.useMinutes2 = null;
 		this.beforeUseMinutes2 = null;
@@ -3371,11 +3105,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus3 = domain.getClosureStatus().value;
-		this.closureStartDate3 = domain.getClosurePeriod().start();
-		this.closureEndDate3 = domain.getClosurePeriod().end();
-
 		this.afterUseDays3 = null;
 		this.useMinutes3 = null;
 		this.beforeUseMinutes3 = null;
@@ -3547,11 +3276,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus4 = domain.getClosureStatus().value;
-		this.closureStartDate4 = domain.getClosurePeriod().start();
-		this.closureEndDate4 = domain.getClosurePeriod().end();
-
 		this.afterUseDays4 = null;
 		this.useMinutes4 = null;
 		this.beforeUseMinutes4 = null;
@@ -3723,11 +3447,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus5 = domain.getClosureStatus().value;
-		this.closureStartDate5 = domain.getClosurePeriod().start();
-		this.closureEndDate5 = domain.getClosurePeriod().end();
-
 		this.afterUseDays5 = null;
 		this.useMinutes5 = null;
 		this.beforeUseMinutes5 = null;
@@ -3900,10 +3619,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
 
-		this.closureStatus6 = domain.getClosureStatus().value;
-		this.closureStartDate6 = domain.getClosurePeriod().start();
-		this.closureEndDate6 = domain.getClosurePeriod().end();
-
 		this.afterUseDays6 = null;
 		this.useMinutes6 = null;
 		this.beforeUseMinutes6 = null;
@@ -4075,11 +3790,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus7 = domain.getClosureStatus().value;
-		this.closureStartDate7 = domain.getClosurePeriod().start();
-		this.closureEndDate7 = domain.getClosurePeriod().end();
-
 		this.afterUseDays7 = null;
 		this.useMinutes7 = null;
 		this.beforeUseMinutes7 = null;
@@ -4252,10 +3962,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
 
-		this.closureStatus8 = domain.getClosureStatus().value;
-		this.closureStartDate8 = domain.getClosurePeriod().start();
-		this.closureEndDate8 = domain.getClosurePeriod().end();
-
 		this.afterUseDays8 = null;
 		this.useMinutes8 = null;
 		this.beforeUseMinutes8 = null;
@@ -4427,11 +4133,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus9 = domain.getClosureStatus().value;
-		this.closureStartDate9 = domain.getClosurePeriod().start();
-		this.closureEndDate9 = domain.getClosurePeriod().end();
-
 		this.afterUseDays9 = null;
 		this.useMinutes9 = null;
 		this.beforeUseMinutes9 = null;
@@ -4603,10 +4304,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus10 = domain.getClosureStatus().value;
-		this.closureStartDate10 = domain.getClosurePeriod().start();
-		this.closureEndDate10 = domain.getClosurePeriod().end();
 
 		this.afterUseDays10 = null;
 		this.useMinutes10 = null;
@@ -4780,10 +4477,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
 
-		this.closureStatus11 = domain.getClosureStatus().value;
-		this.closureStartDate11 = domain.getClosurePeriod().start();
-		this.closureEndDate11 = domain.getClosurePeriod().end();
-
 		this.afterUseDays11 = null;
 		this.useMinutes11 = null;
 		this.beforeUseMinutes11 = null;
@@ -4955,11 +4648,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus12 = domain.getClosureStatus().value;
-		this.closureStartDate12 = domain.getClosurePeriod().start();
-		this.closureEndDate12 = domain.getClosurePeriod().end();
-
 		this.afterUseDays12 = null;
 		this.useMinutes12 = null;
 		this.beforeUseMinutes12 = null;
@@ -5133,11 +4821,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus13 = domain.getClosureStatus().value;
-		this.closureStartDate13 = domain.getClosurePeriod().start();
-		this.closureEndDate13 = domain.getClosurePeriod().end();
-
 		this.afterUseDays13 = null;
 		this.useMinutes13 = null;
 		this.beforeUseMinutes13 = null;
@@ -5309,11 +4992,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus14 = domain.getClosureStatus().value;
-		this.closureStartDate14 = domain.getClosurePeriod().start();
-		this.closureEndDate14 = domain.getClosurePeriod().end();
-
 		this.afterUseDays14 = null;
 		this.useMinutes14 = null;
 		this.beforeUseMinutes14 = null;
@@ -5485,11 +5163,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus15 = domain.getClosureStatus().value;
-		this.closureStartDate15 = domain.getClosurePeriod().start();
-		this.closureEndDate15 = domain.getClosurePeriod().end();
-
 		this.afterUseDays15 = null;
 		this.useMinutes15 = null;
 		this.beforeUseMinutes15 = null;
@@ -5662,10 +5335,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
 
-		this.closureStatus16 = domain.getClosureStatus().value;
-		this.closureStartDate16 = domain.getClosurePeriod().start();
-		this.closureEndDate16 = domain.getClosurePeriod().end();
-
 		this.afterUseDays16 = null;
 		this.useMinutes16 = null;
 		this.beforeUseMinutes16 = null;
@@ -5837,11 +5506,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus17 = domain.getClosureStatus().value;
-		this.closureStartDate17 = domain.getClosurePeriod().start();
-		this.closureEndDate17 = domain.getClosurePeriod().end();
-
 		this.afterUseDays17 = null;
 		this.useMinutes17 = null;
 		this.beforeUseMinutes17 = null;
@@ -6013,11 +5677,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus18 = domain.getClosureStatus().value;
-		this.closureStartDate18 = domain.getClosurePeriod().start();
-		this.closureEndDate18 = domain.getClosurePeriod().end();
-
 		this.afterUseDays18 = null;
 		this.useMinutes18 = null;
 		this.beforeUseMinutes18 = null;
@@ -6189,11 +5848,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus19 = domain.getClosureStatus().value;
-		this.closureStartDate19 = domain.getClosurePeriod().start();
-		this.closureEndDate19 = domain.getClosurePeriod().end();
-
 		this.afterUseDays19 = null;
 		this.useMinutes19 = null;
 		this.beforeUseMinutes19 = null;
@@ -6365,10 +6019,6 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		val actualSpecial = domain.getActualSpecial();
 		/** 特別休暇月別残数データ．特別休暇 **/
 		val specialLeave = domain.getSpecialLeave();
-
-		this.closureStatus20 = domain.getClosureStatus().value;
-		this.closureStartDate20 = domain.getClosurePeriod().start();
-		this.closureEndDate20 = domain.getClosurePeriod().end();
 
 		this.afterUseDays20 = null;
 		this.useMinutes20 = null;
@@ -6773,8 +6423,8 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0)),
-				new DatePeriod(this.annleaStartDate, this.annleaEndDate),
-				EnumAdaptor.valueOf(this.annleaClosureStatus, ClosureStatus.class),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				annualLeave,
 				realAnnualLeave,
 				Optional.ofNullable(halfDayAnnualLeave),
@@ -6871,7 +6521,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0)),
-				new DatePeriod(this.rsvleaStartDate, this.rsvleaEndDate),
+				new DatePeriod(this.startDate, this.endDate),
 				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				reserveLeave,
 				realReserveLeave,
@@ -6891,17 +6541,17 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		merge.setSpecialHolidayRemainData7	(this.toDomainSpecialHolidayRemainData7	());
 		merge.setSpecialHolidayRemainData8	(this.toDomainSpecialHolidayRemainData8	());
 		merge.setSpecialHolidayRemainData9	(this.toDomainSpecialHolidayRemainData9	());
-		merge.setSpecialHolidayRemainData10	(this.toDomainSpecialHolidayRemainData10	());
-		merge.setSpecialHolidayRemainData11	(this.toDomainSpecialHolidayRemainData11	());
-		merge.setSpecialHolidayRemainData12	(this.toDomainSpecialHolidayRemainData12	());
-		merge.setSpecialHolidayRemainData13	(this.toDomainSpecialHolidayRemainData13	());
-		merge.setSpecialHolidayRemainData14	(this.toDomainSpecialHolidayRemainData14	());
-		merge.setSpecialHolidayRemainData15	(this.toDomainSpecialHolidayRemainData15	());
-		merge.setSpecialHolidayRemainData16	(this.toDomainSpecialHolidayRemainData16	());
-		merge.setSpecialHolidayRemainData17	(this.toDomainSpecialHolidayRemainData17	());
-		merge.setSpecialHolidayRemainData18	(this.toDomainSpecialHolidayRemainData18	());
-		merge.setSpecialHolidayRemainData19	(this.toDomainSpecialHolidayRemainData19	());
-		merge.setSpecialHolidayRemainData20	(this.toDomainSpecialHolidayRemainData20	());
+		merge.setSpecialHolidayRemainData10	(this.toDomainSpecialHolidayRemainData10());
+		merge.setSpecialHolidayRemainData11	(this.toDomainSpecialHolidayRemainData11());
+		merge.setSpecialHolidayRemainData12	(this.toDomainSpecialHolidayRemainData12());
+		merge.setSpecialHolidayRemainData13	(this.toDomainSpecialHolidayRemainData13());
+		merge.setSpecialHolidayRemainData14	(this.toDomainSpecialHolidayRemainData14());
+		merge.setSpecialHolidayRemainData15	(this.toDomainSpecialHolidayRemainData15());
+		merge.setSpecialHolidayRemainData16	(this.toDomainSpecialHolidayRemainData16());
+		merge.setSpecialHolidayRemainData17	(this.toDomainSpecialHolidayRemainData17());
+		merge.setSpecialHolidayRemainData18	(this.toDomainSpecialHolidayRemainData18());
+		merge.setSpecialHolidayRemainData19	(this.toDomainSpecialHolidayRemainData19());
+		merge.setSpecialHolidayRemainData20	(this.toDomainSpecialHolidayRemainData20());
 
 		return merge;
 	}
@@ -6995,14 +6645,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate1, this.closureEndDate1),
-				EnumAdaptor.valueOf(this.closureStatus1, ClosureStatus.class),
 				1,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr1 !=  0));
+				(this.grantAtr1 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData2(){
@@ -7089,14 +6739,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate2, this.closureEndDate2),
-				EnumAdaptor.valueOf(this.closureStatus2, ClosureStatus.class),
 				2,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr2 !=  0));
+				(this.grantAtr2 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7184,14 +6834,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate3, this.closureEndDate3),
-				EnumAdaptor.valueOf(this.closureStatus3, ClosureStatus.class),
 				3,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr3 !=  0));
+				(this.grantAtr3 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData4(){
@@ -7278,14 +6928,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate4, this.closureEndDate4),
-				EnumAdaptor.valueOf(this.closureStatus4, ClosureStatus.class),
 				4,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr4 !=  0));
+				(this.grantAtr4 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7373,14 +7023,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate5, this.closureEndDate5),
-				EnumAdaptor.valueOf(this.closureStatus5, ClosureStatus.class),
 				5,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr5 !=  0));
+				(this.grantAtr5 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7469,14 +7119,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate6, this.closureEndDate6),
-				EnumAdaptor.valueOf(this.closureStatus6, ClosureStatus.class),
 				6,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr6 !=  0));
+				(this.grantAtr6 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7564,14 +7214,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate7, this.closureEndDate7),
-				EnumAdaptor.valueOf(this.closureStatus7, ClosureStatus.class),
 				7,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr7 !=  0));
+				(this.grantAtr7 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData8(){
@@ -7658,14 +7308,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate8, this.closureEndDate8),
-				EnumAdaptor.valueOf(this.closureStatus8, ClosureStatus.class),
 				8,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr8 !=  0));
+				(this.grantAtr8 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7753,14 +7403,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate9, this.closureEndDate9),
-				EnumAdaptor.valueOf(this.closureStatus9, ClosureStatus.class),
 				9,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr9 !=  0));
+				(this.grantAtr9 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7848,14 +7498,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate10, this.closureEndDate10),
-				EnumAdaptor.valueOf(this.closureStatus10, ClosureStatus.class),
 				10,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr10 !=  0));
+				(this.grantAtr10 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -7943,14 +7593,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate11, this.closureEndDate11),
-				EnumAdaptor.valueOf(this.closureStatus11, ClosureStatus.class),
 				11,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr11 !=  0));
+				(this.grantAtr11 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData12(){
@@ -8037,14 +7687,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate12, this.closureEndDate12),
-				EnumAdaptor.valueOf(this.closureStatus12, ClosureStatus.class),
 				12,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr12 !=  0));
+				(this.grantAtr12 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8132,14 +7782,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate13, this.closureEndDate13),
-				EnumAdaptor.valueOf(this.closureStatus13, ClosureStatus.class),
 				13,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr13 !=  0));
+				(this.grantAtr13 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8228,14 +7878,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate14, this.closureEndDate14),
-				EnumAdaptor.valueOf(this.closureStatus14, ClosureStatus.class),
 				14,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr14 !=  0));
+				(this.grantAtr14 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8323,14 +7973,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate15, this.closureEndDate15),
-				EnumAdaptor.valueOf(this.closureStatus15, ClosureStatus.class),
 				15,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr15 !=  0));
+				(this.grantAtr15 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData16(){
@@ -8417,14 +8067,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate16, this.closureEndDate16),
-				EnumAdaptor.valueOf(this.closureStatus16, ClosureStatus.class),
 				16,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr16 !=  0));
+				(this.grantAtr16 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8512,14 +8162,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate17, this.closureEndDate17),
-				EnumAdaptor.valueOf(this.closureStatus17, ClosureStatus.class),
 				17,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr17 !=  0));
+				(this.grantAtr17 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
@@ -8606,14 +8256,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate18, this.closureEndDate18),
-				EnumAdaptor.valueOf(this.closureStatus18, ClosureStatus.class),
 				18,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr18 !=  0));
+				(this.grantAtr18 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 		public SpecialHolidayRemainData toDomainSpecialHolidayRemainData19(){
@@ -8700,14 +8350,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate19, this.closureEndDate19),
-				EnumAdaptor.valueOf(this.closureStatus19, ClosureStatus.class),
 				19,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr19 !=  0));
+				(this.grantAtr19 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8795,14 +8445,14 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
 				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-				new DatePeriod(this.closureStartDate20, this.closureEndDate20),
-				EnumAdaptor.valueOf(this.closureStatus20, ClosureStatus.class),
 				20,
 				actualSpecial,
 				specialLeave,
-				Optional.ofNullable(grantDays),
-				(this.grantAtr20 !=  0));
+				(this.grantAtr20 !=  0),
+				Optional.ofNullable(grantDays));
 	}
 	
 	
@@ -8838,7 +8488,7 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		return new MonthlyDayoffRemainData(this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), this.krcdtMonRemainPk.getClosureId(),
 				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0),
-				this.dayOffStartDate, this.dayOffEndDate,
+				this.startDate, this.endDate,
 				occurrenceDayTimes,useDayTimes, remainingDayTimes, carryForWardDayTimes, unUsedDayTimes);
 	}
 	
@@ -8857,8 +8507,8 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		return new AbsenceLeaveRemainData(this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), this.krcdtMonRemainPk.getClosureId(),
 				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0),
-				EnumAdaptor.valueOf(this.subofHdClosureStatus, ClosureStatus.class),
-				this.subofHdStartDate, this.subofHdEndDate,
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
+				this.startDate, this.endDate,
 				occurredDay, usedDays, remainingDays, carryforwardDays, unUsedDays);
 	}
 	/**

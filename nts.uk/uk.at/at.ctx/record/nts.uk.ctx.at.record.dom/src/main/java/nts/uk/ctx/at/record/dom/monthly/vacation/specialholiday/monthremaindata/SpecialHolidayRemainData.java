@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -21,6 +22,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class SpecialHolidayRemainData extends AggregateRoot {
 	/**
