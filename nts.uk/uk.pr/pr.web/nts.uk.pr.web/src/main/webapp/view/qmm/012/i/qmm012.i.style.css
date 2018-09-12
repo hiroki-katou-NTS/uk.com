@@ -1,0 +1,7 @@
+button.nts-switch-button{
+    display: block;
+    width: 100px;
+}
+.ntsSearchBox nts-editor ntsSearchBox_Component{
+	width: 180px;
+}

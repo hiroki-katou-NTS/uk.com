@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface BreakdownItemSetRepository {
 
 	List<BreakdownItemSet> getAllBreakdownItemSt();
+	
+	List<BreakdownItemSet> getBreakdownItemStBySalaryId(String salaryItemId);
 
 	Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, int breakdownItemCode);
 

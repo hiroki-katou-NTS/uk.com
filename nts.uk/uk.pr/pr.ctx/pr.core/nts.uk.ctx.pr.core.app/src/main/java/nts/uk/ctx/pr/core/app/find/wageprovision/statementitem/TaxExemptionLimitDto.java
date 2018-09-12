@@ -26,7 +26,7 @@ public class TaxExemptionLimitDto {
 	private int taxExemption;
 
 	public static TaxExemptionLimitDto fromDomain(TaxExemptLimit domain) {
-		return new TaxExemptionLimitDto(domain.getCid(), domain.getTaxExemptionName().v(),
+		return new TaxExemptionLimitDto(domain.getCid(), domain.getTaxFreeAmountCode().v(),
 				domain.getTaxExemptionName().v(), domain.getTaxExemption().v());
 	}
 }
