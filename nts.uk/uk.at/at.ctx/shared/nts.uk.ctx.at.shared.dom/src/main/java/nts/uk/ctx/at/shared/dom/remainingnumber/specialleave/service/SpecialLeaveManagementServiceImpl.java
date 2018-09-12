@@ -318,27 +318,29 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			grantDetail.setDeadlineDate(x.getDeadlineDate());
 			grantDetail.setGrantDate(x.getGrantDate());
 			SpecialLeaveNumberInfoService inforSevice = new SpecialLeaveNumberInfoService();
-			
-			inforSevice.setRemainDays(x.getDetails().getRemainingNumber() != null && x.getDetails().getRemainingNumber().getDayNumberOfRemain() != null
-					? x.getDetails().getRemainingNumber().getDayNumberOfRemain().v() : 0);
-			inforSevice.setUseDays(x.getDetails().getUsedNumber() == null || x.getDetails().getUsedNumber().getDayNumberOfUse() == null
-					? 0 : x.getDetails().getUsedNumber().getDayNumberOfUse().v());
-			inforSevice.setGrantDays(x.getDetails().getGrantNumber().getDayNumberOfGrant().v());
-			inforSevice.setRemainTimes(x.getDetails().getRemainingNumber() != null && x.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
-					&& x.getDetails().getRemainingNumber().getTimeOfRemain().get() != null
-					? Optional.of( x.getDetails().getRemainingNumber().getTimeOfRemain().get().v()) : Optional.empty());
-			inforSevice.setUseTimes(x.getDetails().getUsedNumber() != null && x.getDetails().getUsedNumber().getTimeOfUse() != null
-					&& x.getDetails().getUsedNumber().getTimeOfUse().isPresent() && x.getDetails().getUsedNumber().getTimeOfUse() != null && x.getDetails().getUsedNumber().getTimeOfUse().get() != null
-					? Optional.of(x.getDetails().getUsedNumber().getTimeOfUse().get().v()) : Optional.empty());
+			SpecialLeaveGrantNumber grantNumberData = x.getDetails().getGrantNumber();
+			SpecialLeaveUsedNumber usedNumberData = x.getDetails().getUsedNumber();
+			SpecialLeaveRemainingNumber remainingNumberData = x.getDetails().getRemainingNumber();
+			inforSevice.setRemainDays(remainingNumberData != null && remainingNumberData.getDayNumberOfRemain() != null
+					? remainingNumberData.getDayNumberOfRemain().v() : 0);
+			inforSevice.setUseDays(usedNumberData != null && usedNumberData.getDayNumberOfUse() != null
+					? usedNumberData.getDayNumberOfUse().v() : 0);
+			inforSevice.setGrantDays(grantNumberData.getDayNumberOfGrant().v());
+			inforSevice.setRemainTimes(remainingNumberData != null && remainingNumberData.getTimeOfRemain().isPresent()
+					&& remainingNumberData.getTimeOfRemain().get() != null
+					? Optional.of( remainingNumberData.getTimeOfRemain().get().v()) : Optional.empty());
+			inforSevice.setUseTimes(usedNumberData != null && usedNumberData.getTimeOfUse() != null
+					&& usedNumberData.getTimeOfUse().isPresent() && usedNumberData.getTimeOfUse() != null && usedNumberData.getTimeOfUse().get() != null
+					? Optional.of(usedNumberData.getTimeOfUse().get().v()) : Optional.empty());
 			if(limitDays.containsKey(x.getGrantDate())) {
 				LimitTimeAndDays limitInfor = new LimitTimeAndDays(limitDays.get(x.getGrantDate()), Optional.empty());
 				inforSevice.setLimitDays(Optional.of(limitInfor));
 			} else {
 				inforSevice.setLimitDays(Optional.empty());	
 			}			
-			inforSevice.setGrantTimes(x.getDetails().getGrantNumber() != null && x.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
-					&& x.getDetails().getGrantNumber().getTimeOfGrant().get() != null
-					? Optional.of(x.getDetails().getGrantNumber().getTimeOfGrant().get().v()) : Optional.empty());
+			inforSevice.setGrantTimes(grantNumberData != null && grantNumberData.getTimeOfGrant().isPresent()
+					&& grantNumberData.getTimeOfGrant().get() != null
+					? Optional.of(grantNumberData.getTimeOfGrant().get().v()) : Optional.empty());
 			grantDetail.setDetails(inforSevice);
 			lstSpecialLeaveGrantDetails.add(grantDetail);
 		});
