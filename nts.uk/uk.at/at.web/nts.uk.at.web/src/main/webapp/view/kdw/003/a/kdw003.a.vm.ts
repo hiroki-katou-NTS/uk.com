@@ -2137,7 +2137,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
             let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
             let valueTemp = 0;
-            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
+            _.forEach($.parseJSON(jsonColumnWith)[1], (value, key) => {
                 if (key.indexOf('A') != -1) {
                     if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
                         command.lstHeader[key.substring(1, key.length)] = value;
@@ -2153,7 +2153,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             delete columnWidthMiGrid.monthYear;
             command.lstHeaderMiGrid = columnWidthMiGrid;
-            service.saveColumnWidth(command);
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            service.saveColumnWidth(command).done(() =>{
+                nts.uk.ui.block.clear(); 
+            }).fail(() => {
+                nts.uk.ui.block.clear(); 
+            });
         }
 
         deleteGridInLocalStorage(): void {
