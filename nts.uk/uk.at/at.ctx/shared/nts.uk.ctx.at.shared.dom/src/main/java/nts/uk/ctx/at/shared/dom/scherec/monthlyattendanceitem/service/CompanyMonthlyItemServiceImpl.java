@@ -10,10 +10,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
@@ -31,7 +31,7 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 
 	@Override
 	public List<DailyAttendanceItemNameAdapterDto> getMonthlyItems(String cid, Optional<String> authorityId,
-			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
+			List<Integer> attendanceItemIds, List<MonthlyAttendanceItemAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
 		List<Integer> monthlyAttendanceItemIds = new ArrayList<>();
