@@ -198,6 +198,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					if (asyncContext.hasBeenRequestedToCancel()) {
 //						asyncContext.finishedAsCancelled();
 						stateHolder.add(ProcessState.INTERRUPTION);
+						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 						return;
 						//return ProcessState.INTERRUPTION;
 					}
@@ -321,6 +322,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					}
 				}
 			} else {
+				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 				status = ProcessState.INTERRUPTION;
 			}
 		}
@@ -469,6 +471,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		if (cStatus == ProcessState.SUCCESS) {
 			dataSetter.updateData("dailyCreateCount", stateHolder.count() + 1);
 		} else {
+			dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 			return ProcessState.INTERRUPTION;
 		}
 		return cStatus;

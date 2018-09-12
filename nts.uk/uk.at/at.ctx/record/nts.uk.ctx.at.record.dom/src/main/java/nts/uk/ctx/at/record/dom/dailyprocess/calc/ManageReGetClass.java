@@ -196,6 +196,7 @@ public class ManageReGetClass {
 																																			  Collections.emptyList(), 
 																																			  Optional.empty(), 
 																																			  Optional.empty())), 
+																										Collections.emptyList(),
 																										Optional.empty())),
 																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
 																 null, 
@@ -251,6 +252,7 @@ public class ManageReGetClass {
 																																			  Collections.emptyList(), 
 																																			  Optional.empty(), 
 																																			  Optional.empty())), 
+																										Collections.emptyList(),
 																										Optional.empty())),
 																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
 																 null, 
@@ -333,7 +335,6 @@ public class ManageReGetClass {
 	 */
 	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany) {
 		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
-		this.dailyUnit = managePerCompany.dailyUnit;
 	}
 
 }

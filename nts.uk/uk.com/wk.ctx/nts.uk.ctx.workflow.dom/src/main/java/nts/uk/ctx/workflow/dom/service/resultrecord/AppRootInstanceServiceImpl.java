@@ -141,7 +141,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// ドメインモデル「就業実績確認状態」を取得する
 		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, employeeID, date, rootType);
 		if(!opAppRootConfirm.isPresent()){
-			throw new BusinessException("error on process: 対象日の就業実績確認状態を取得する");
+			return new AppRootConfirm("", companyID, employeeID, date, rootType, new ArrayList<>());
 		}
 		return opAppRootConfirm.get();
 	}
@@ -153,6 +153,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setRootType(EnumAdaptor.valueOf(appRootInstance.getRootType().value, RootType.class));
 		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
+		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
@@ -160,13 +161,18 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
 			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 			approvalPhaseState.setApprovalForm(ApprovalForm.EVERYONE_APPROVED);
+			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
 				ApprovalFrame approvalFrame = new ApprovalFrame();
 				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
 				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+				approvalFrame.setListApproverState(new ArrayList<>());
 				appFrameInstance.getListApprover().forEach(approver -> {
 					ApproverState approverState = new ApproverState();
+					approverState.setRootStateID("");
+					approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+					approverState.setFrameOrder(appFrameInstance.getFrameOrder());
 					approverState.setCompanyID(appRootInstance.getCompanyID());
 					approverState.setDate(appRootConfirm.getRecordDate());
 					approverState.setApproverID(approver);
@@ -489,7 +495,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<String> agentLst = approvalPersonInstance.getAgentRoute().stream().map(x -> x.getAgentID().orElse(null))
 				.filter(x -> Strings.isNotBlank(x)).collect(Collectors.toList());
 		// output「基準社員の承認対象者」を初期化する
-		ApprovalEmpStatus approvalEmpStatus = new ApprovalEmpStatus(employeeID, Collections.emptyList());
+		ApprovalEmpStatus approvalEmpStatus = new ApprovalEmpStatus(employeeID, new ArrayList<>());
 		// 取得した「承認者としての承認ルート」．承認ルートの詳細の件数をチェックする
 		List<RouteSituation> approverRouteLst = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
@@ -515,7 +521,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
 		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
-			DatePeriod loopPeriod = approvalRouteDetails.getAppRootInstance().getDatePeriod();
+			DatePeriod loopPeriod = period;
 			// INPUT．期間の開始日から終了日へループ
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
@@ -539,7 +545,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
 		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
-			DatePeriod loopPeriod = approvalRouteDetails.getAppRootInstance().getDatePeriod();
+			DatePeriod loopPeriod = period;
 			// INPUT．期間の開始日から終了日へループ
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する

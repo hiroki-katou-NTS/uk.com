@@ -327,3 +327,17 @@
 .mcell{
 	height: 35px !important;
 }
+.daily-confirm-color{
+	text-align: center;
+	font-size: 18px!important;
+}
+
+.color-cell-approved{
+	background-color: #BFEA60;
+	color: #000!important;
+}
+
+.color-cell-un-approved{
+	color: #ff0000 !important;
+}
+
