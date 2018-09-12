@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
+import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -100,7 +101,7 @@ public class DPHeaderDto {
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			DPHeaderDto dtoG = new DPHeaderDto("コード", "Code" + getCode(key), "String", String.valueOf(withChild) + "px",
 					"", false, "", "code_"+"Name"+ getCode(key), "search", false, false, inputProcess(Integer.parseInt(getCode(key))));
-			dtoG.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			dtoG.setConstraint(new Constraint("Primitive", isRequired(item), getPrimitiveAllName(item)));
 			groups.add(dtoG);
 			groups.add(new DPHeaderDto("名称", "Name" + getCode(key), "String", String.valueOf(withChild) + "px", "",
 					false, "Link2", false, false, "center-align", null));
@@ -237,5 +238,10 @@ public class DPHeaderDto {
 		//if (itemId == 28 || itemId == 29 || itemId == 31 || itemId == 34 || itemId == 41 || itemId == 44)
 		return "inputProcess";
 		//return null;
+	}
+	
+	private static boolean isRequired(DPAttendanceItem item){
+		if(DPText.ITEM_REQUIRED.contains(item.getId())) return true;
+		return false;
 	}
 }
