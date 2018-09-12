@@ -52,7 +52,7 @@ module nts.uk.com.view.cmm011.a {
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
                 self.isWkpConfigHistLatest = ko.observable(false);
-                //code anh Dan
+                //stop drag item
                 $(document).delegate("#single-tree-grid", "igtreedragstop", function(evt, ui) {
                     let newDataSource  = $("#single-tree-grid").igTree('option', 'dataSource')._rootds._data;
                     //set hierarchyCd for root
@@ -64,10 +64,6 @@ module nts.uk.com.view.cmm011.a {
                         self.listWorkplaceSave.push(newDataSource[i]);
                         self.setHierarchyCdChild(newDataSource[i]);
                     }
-                    console.log("after set cd");
-                    console.log(newDataSource);
-                    console.log("list save");
-                    console.log(self.listWorkplaceSave);
                     self.treeWorkplace().lstWorkplace(newDataSource);
                 });
                 self.isSelectedWpkId = ko.computed(() => {
@@ -206,7 +202,9 @@ module nts.uk.com.view.cmm011.a {
                     });
                 });
             }
-            //set hierarchyCd for treeWorkplace
+            /**
+            *set hierarchyCd for treeWorkplace
+            */
             public setHierarchyCdChild(parentWorkplace: TreeWorkplace): void {
                 var self = this;
                 var parentHierarchyCd: string = parentWorkplace.hierarchyCode;
