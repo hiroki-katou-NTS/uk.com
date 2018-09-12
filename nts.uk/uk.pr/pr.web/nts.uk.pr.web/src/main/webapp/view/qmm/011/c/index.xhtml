@@ -1,170 +1,139 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:ui="http://java.sun.com/jsf/facelets"
-	  xmlns:com="http://xmlns.jcp.org/jsf/component"
-	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 <ui:composition template="/master/base.xhtml">
-	<ui:define name="htmlHead">
-		<com:scriptfile set="IGNITE" />
-		<com:scriptfile path="../share/model.js" />
-		<com:scriptfile path="qmm011.c.start.js" />
-		<com:scriptfile path="qmm011.c.service.js" />
-		<com:scriptfile path="qmm011.c.vm.js" />
-		<com:stylefile path="qmm011.c.style.css" />
-	</ui:define>
-	<ui:define name="content">
-		<div
-				class="sidebar-content-header flex valign-center header-content">
-			<span class="title">#{i18n.getText('KDM001_149')}</span>
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm011.c.start.js" />
+        <com:scriptfile path="qmm011.c.service.js" />
+        <com:scriptfile path="qmm011.c.vm.js" />
+        <com:stylefile path="qmm011.c.style.css" />
+    </ui:define>
 
-			<div style="margin-left: 100px">
-				<div>
-					<!-- A1_1-->
-					<button class="proceed" id="A1_1" tabindex="1"
-							data-bind="">#{i18n.getText('qmm011_1')}</button>
-					<!-- A1_2 -->
-					<button id="A1_2" tabindex="2"
-							data-bind="">#{i18n.getText('qmm011_2')}</button>
-					<!-- A1_3-->
-					<button id="A1_3" tabindex="3"
-							data-bind="">#{i18n.getText('qmm011_3')}</button>
-				</div>
-			</div>
+    <ui:define name="content">
+        <div
+                class="sidebar-content-header flex valign-center header-content">
+            <span class="title">#{i18n.getText('KDM001_149')}</span>
 
-		</div>
-		<div class = "content">
-			<div class = "left">
-				<div id="B1_1"
-					 data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
-					<div id="functions-area">
-						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
-						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
-					</div>
-					<div>
-						<!--B1_4 雇用保険料率一覧 -->
-						<table id="B1_4"
-							   data-bind="ntsGridList: {
+            <div style="margin-left: 100px">
+                <div>
+                    <!-- A1_1-->
+                    <button class="proceed" id="A1_1" tabindex="1"
+                            data-bind="">#{i18n.getText('qmm011_1')}</button>
+                    <!-- A1_2 -->
+                    <button id="A1_2" tabindex="2"
+                            data-bind="">#{i18n.getText('qmm011_2')}</button>
+                    <!-- A1_3-->
+                    <button id="A1_3" tabindex="3"
+                            data-bind="">#{i18n.getText('qmm011_3')}</button>
+                </div>
+            </div>
+
+        </div>
+        <div class = "content">
+            <div class = "left">
+                <div id="C1_1"
+                     data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
+                    <div id="functions-area">
+                        <!-- C1_2 履歴追加 -->
+                        <button id ="C1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
+                        <!-- C1_3 履歴編集 -->
+                        <button id ="C1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
+                    </div>
+                    <div>
+                        <!--C1_4 労災保険料率一覧 -->
+                        <table id="C1_4"
+                               data-bind="ntsGridList: {
 												name: '#QMM011_8',
 												height: 760,
 												rows: 15,
-		                                        dataSource: listEmpInsHis,
+		                                        dataSource: listOccAccIsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
 		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
-																{headerText: '', key: 'startDate', width: 100, formatter: _.escape},
+																{headerText: '', key: 'startYearMonth', width: 100, formatter: _.escape},
 								                				{headerText: '', key: 'between', width: 50, formatter: _.escape},
-								                				{headerText: '', key: 'endDate', width: 100, formatter: _.escape}
-								                		],                                        
+								                				{headerText: '', key: 'endYearMonth', width: 100, formatter: _.escape}
+								                		],
 								                multiple: false,
 		                                        value: selectedEmpInsHisId
 		                        				}">
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class = "right">
-				<div id="B2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
-				<!--B2_2 開始年月 -->
-				<span class="label" data-bind="text: startDate"></span>
-				<!--B2_3 開始年月和暦 -->
-				<span class="label" data-bind="text: monthlyCalendar"></span>
-				<!--B2_4 ～  -->
-				<label id= "B2_4">#{i18n.getText('QMM011_9')}</label>
-				<!--B2_5 終了年月  -->
-				<span class="label" data-bind="text: endDate"></span>
-				<div id ="B2_6" class="set-row">
-					<hr />
-				</div>
-				<div class = "table">
-					<table id="3_1" >
-						<colgroup>
-							<col width="20px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-							<col width="150px" />
-						</colgroup>
-						<thead>
-						<tr>
-							<th class="bg-green" style="border: 1px solid #CCC"></th>
-							<th class="bg-green">#{i18n.getText('QMM011_11')}</th>
-							<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
-							<th class="bg-green">#{i18n.getText('QMM011_13')}</th>
-							<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
-						</tr>
-						</thead>
-						<tbody data-bind="foreach: listEmpInsurPreRate()">
-						<tr >
-							<td class="bg-green" style="border: 1px solid #CCC">
-								<com:ko-if bind="empPreRateId === 2">
-									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span>
-								</com:ko-if>
-								<com:ko-if bind="empPreRateId === 1">
-									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span>
-								</com:ko-if>
-								<com:ko-if bind="empPreRateId === 0">
-									<span class = "label" id= "B3_24">#{i18n.getText('QMM011_17')}</span>
-								</com:ko-if>
-							</td>
-							<td >
-								<input id = "B3_7"
-									   data-bind="ntsNumberEditor: {
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class = "right">
+                <div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
+                <!--C2_2 開始年月 -->
+                <span class="label" data-bind="text: startDate"></span>
+                <!--C2_3 開始年月和暦 -->
+                <span class="label" data-bind="text: monthlyCalendar"></span>
+                <!--C2_4 ～  -->
+                <label id= "C2_4">#{i18n.getText('QMM011_9')}</label>
+                <!--C2_5 終了年月  -->
+                <span class="label" data-bind="text: endDate"></span>
+                <div id ="C2_6" class="set-row">
+                    <hr />
+                </div>
+                <div class = "table">
+                    <table id="C3_1" >
+                        <colgroup>
+                            <col width="20px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="bg-green" style="border: 1px solid #CCC"></th>
+                            <th class="bg-green" style="border: 1px solid #CCC"></th>
+                            <th class="bg-green">#{i18n.getText('QMM011_13')}</th>
+                            <th class="bg-green">#{i18n.getText('QMM011_12')}</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: listOccAccInsurBus()">
+                        <tr >
+                            <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: occAccInsurBusNo">
+
+                            </td>
+                            <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
+
+                            <td>
+                                <input id = "C3_11"
+                                       data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
-																name: '#{i18n.getText('QMM011_11')}',
-																value: indBdRatio,
-																required: false
-																}"/>
-								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
-							</td>
-							<td>
-								<div class = "B3_9"
-									 data-bind="ntsComboBox: {
-																
-																name: '#{i18n.getText('QMM011_15')}',
-																value: perFracClass,
-																options: $parent.listPerFracClass,
-																optionsValue: 'code',
-																optionsText: 'name',
-																columns: [             
-																{ prop: 'name', length: 10 },]
-										
-																}"/>
-							</td>
-							<td>
-								<input id = "B3_11"
-									   data-bind="ntsNumberEditor: {
-																option : {width: '40px'},
-																value: empContrRatio, 
+																value: empContrRatio,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
-								<span class= "label" id= "B3_12">#{i18n.getText('QMM011_15')}</span>
-							</td>
-							<td>
-								<div id = "B3_13"
-									 data-bind="ntsComboBox: {
-																
-																value: busiOwFracClass, 
+                                <span class= "label" id= "C3_12">#{i18n.getText('QMM011_15')}</span>
+                            </td>
+                            <td>
+                                <div id = "C3_13"
+                                     data-bind="ntsComboBox: {
+
+																value: busiOwFracClass,
 																name:'#{i18n.getText('QMM011_12')}',
 																options: $parent.listPerFracClass,
 																optionsText: 'name',
 																optionsValue: 'code',
 																}">
-								</div>
+                                </div>
 
-							</td>
-						</tr>
+                            </td>
+                        </tr>
 
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</ui:define>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ui:define>
 </ui:composition>
 </body>
 </html>

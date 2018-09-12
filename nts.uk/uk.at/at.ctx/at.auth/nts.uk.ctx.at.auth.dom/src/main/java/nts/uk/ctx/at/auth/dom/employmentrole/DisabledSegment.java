@@ -8,7 +8,7 @@ public enum DisabledSegment {
 	/**
 	 * する(toUse)
 	 */
-	TO_USE(0,""),
+	USE_ATR(0,""),
 	/**
 	 * しない(notUse)
 	 */

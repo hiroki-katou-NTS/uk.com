@@ -32,14 +32,14 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
     * 年月期間
     */
     @Basic(optional = false)
-    @Column(name = "START_DATE")
+    @Column(name = "START_YEAR_MONTH")
     public int startDate;
     
     /**
     * 年月期間
     */
     @Basic(optional = false)
-    @Column(name = "END_DATE")
+    @Column(name = "END_YEAR_MONTH")
     public int endDate;
     
     @Override
