@@ -116,7 +116,7 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 		return new QpbmtSetDaySupport(new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo()),
 				domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(),
 				domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(),
-				domain.getSocialInsurdCollecMonth(), domain.getProcessDate(), domain.getIncomeTaxDate(),
+				domain.getSocialInsurdCollecMonth(), domain.getProcessDate().v(), domain.getIncomeTaxDate(),
 				domain.getNumberWorkDay());
 	}
 
