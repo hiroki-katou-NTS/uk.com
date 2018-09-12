@@ -298,11 +298,14 @@ public class DailyModifyResCommandFacade {
 					hasError = true;
 				}
 
-				this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(), resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
-				// insert sign
-				insertSign(dataParent.getDataCheckSign());
-				// insert approval
-				insertApproval(dataParent.getDataCheckApproval());
+				if (!hasError) {
+					this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
+							resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
+					// insert sign
+					insertSign(dataParent.getDataCheckSign());
+					// insert approval
+					insertApproval(dataParent.getDataCheckApproval());
+				}
 			}
 			// 暫定データを登録する - Register provisional data
 			List<DailyModifyResult> resultNews = dailyEdits.stream()

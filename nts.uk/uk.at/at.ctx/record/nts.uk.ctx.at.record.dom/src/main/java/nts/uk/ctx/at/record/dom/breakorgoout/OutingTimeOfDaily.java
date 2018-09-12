@@ -151,7 +151,7 @@ public class OutingTimeOfDaily {
 		
 		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list){
-			if(timeSheetOfDeductionItem.calcTotalTime().greaterThan(0)) {
+			if(timeSheetOfDeductionItem.calcTotalTime(DeductionAtr.Deduction).greaterThan(0)) {
 				result.add(timeSheetOfDeductionItem);
 			}
 		}

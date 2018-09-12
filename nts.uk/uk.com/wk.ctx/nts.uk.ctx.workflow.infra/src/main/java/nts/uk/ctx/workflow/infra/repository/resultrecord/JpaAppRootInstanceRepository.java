@@ -68,11 +68,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" order by appRoot.START_DATE desc";
 	
-	private final String SELECT_BY_APPROVER = BASIC_SELECT + 
+	private final String SELECT_START_HISTORY = "SELECT TOP 1 START_DATE FROM (" + BASIC_SELECT + 
 			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate'";
+			" AND appRoot.START_DATE <= 'startDate') result1 order by START_DATE desc";
 	
 	/*private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
 			BASIC_SELECT + " WHERE appRoot.ROOT_ID NOT IN (SELECT ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <" +
@@ -82,10 +82,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND result.APPROVER_CHILD_ID IN (employeeIDLst)"+
 			" AND result.CID = 'companyID'";*/
 	
-	private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
-			BASIC_SELECT + " WHERE appRoot.ROOT_ID NOT IN (SELECT ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <" +
-			" SELECT TOP 1 START_DATE FROM (" + SELECT_BY_APPROVER + ") resut1 )) result2 "+
-			" AND result2.START_DATE <= 'endDate'";
+	private final String FIND_BY_EMP_PERIOD = BASIC_SELECT + 
+			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.START_DATE >=(" + SELECT_START_HISTORY +
+			" ) AND appRoot.START_DATE <= 'endDate'";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -267,12 +269,17 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			String query = FIND_BY_EMP_PERIOD;
-			String employeeIDLstParam = "''";
-			for(int i = 0; i<employeeIDLst.size(); i++){
-				if(i<employeeIDLst.size()-1){
-					employeeIDLstParam+=",";	
+			
+			String employeeIDLstParam = "";
+			if(CollectionUtil.isEmpty(employeeIDLst)){
+				employeeIDLstParam = "''";
+			} else {
+				for(int i = 0; i<employeeIDLst.size(); i++){
+					if(i<employeeIDLst.size()-1){
+						employeeIDLstParam+=",";	
+					}
+					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 				}
-				employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 			}
 			query = query.replaceAll("companyID", companyID);
 			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
@@ -282,7 +289,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			PreparedStatement pstatement = con.prepareStatement(query);
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
-			if(CollectionUtil.isEmpty(listResult)){
+			if(!CollectionUtil.isEmpty(listResult)){
 				return listResult;
 			} else {
 				return Collections.emptyList();
