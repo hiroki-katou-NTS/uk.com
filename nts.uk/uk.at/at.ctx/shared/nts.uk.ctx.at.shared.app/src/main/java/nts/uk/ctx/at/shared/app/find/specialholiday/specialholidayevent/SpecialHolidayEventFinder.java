@@ -87,9 +87,9 @@ public class SpecialHolidayEventFinder {
 		List<SpecialHoliday> sHs = sHRepo.findByCompanyIdWithTargetItem(companyId);
 		sHs.forEach(x -> {
 			if (x.getTargetItem() != null) {
-				List<Integer> frameNos = x.getTargetItem().getAbsenceFrameNo();
-				if (!CollectionUtil.isEmpty(frameNos)) {
-					frameNos.forEach(no -> {
+				List<Integer> fNos = x.getTargetItem().getFrameNo();
+				if (!CollectionUtil.isEmpty(fNos)) {
+					fNos.forEach(no -> {
 						if (!hasSettingNos.contains(no)) {
 							hasSettingNos.add(no);
 						}

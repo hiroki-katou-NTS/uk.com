@@ -6,7 +6,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-
+    import errors = nts.uk.ui.errors;
     //C screen
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
@@ -1261,9 +1261,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 recordType: self.logTypeSelectedCode()
             }
             
-           
+            let dfd = $.Deferred<any>();
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
-                 let dfd = $.Deferred<any>();
+               
                  block.grayout();
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
                 let selectCancel = nts.uk.ui.windows.getShared("selectCancel");
@@ -1272,6 +1272,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 self.listLogBasicInforAllModel = [];
                 self.listLogSetItemDetailDto = ko.observableArray([]);
                 self.listHeaderSort = ko.observableArray([]);
+                if(selectCancel==false){
+                    
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
@@ -1350,16 +1352,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }).fail(function(error) {
                     alertError(error);
-                })
-
-            }).fail(function(error) {
-                alertError(error);
-                dfd.resolve();
-            }).always(() => {
-                block.clear();
-                errors.clearAll();
+                });
+                        return dfd.promise();
+        }
+              block.clear();
+             errors.clearAll();
+              dfd.resolve();
             });
-            return dfd.promise();;
+          //  return dfd.promise();
+            
         }
 
         setListColumnHeaderLogScreenI(recordType: number, listOutputItem: Array<any>) {

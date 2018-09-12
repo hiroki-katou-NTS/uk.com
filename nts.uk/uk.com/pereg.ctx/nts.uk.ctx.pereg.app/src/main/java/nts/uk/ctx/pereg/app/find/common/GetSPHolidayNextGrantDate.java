@@ -80,7 +80,7 @@ public class GetSPHolidayNextGrantDate {
 		}
 		
 		// Set 年休付与基準日
-		if (param.getYearRefDate() == null){
+		if (param.getYearRefDate() == null && param.getSid() != null){
 			// アルゴリズム「年休社員基本情報を取得する」を実行し、年休付与基準日を取得する
 			Optional<AnnualLeaveEmpBasicInfo> annualBasicInfo = annLeaEmpBasicInfoRepository.get(param.getSid());
 			
