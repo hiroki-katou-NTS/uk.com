@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
                         let currentPreventTime: number = new Date().getTime(),
                             time: number = currentPreventTime - lastPreventTime,
                             timeClick: number | undefined = ko.toJS(allBindingsAccessor().timeClick),
-                            _timeClick = timeClick && _.isNumber(Number(timeClick)) ? Number(timeClick) : 500;
+                            _timeClick = _.isNumber(timeClick) ? timeClick : 500;
 
                         if (time > _timeClick) {
                             //pass through the arguments
