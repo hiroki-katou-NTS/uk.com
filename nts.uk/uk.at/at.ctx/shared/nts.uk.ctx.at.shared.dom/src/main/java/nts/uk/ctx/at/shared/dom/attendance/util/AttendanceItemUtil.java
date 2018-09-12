@@ -556,7 +556,9 @@ public class AttendanceItemUtil implements ItemConst {
 				int index = x;
 
 				Optional<T> idxValue = returnList.stream().filter(c -> {
-
+					if(c == null){
+						return false;
+					}
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
 
 					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);
