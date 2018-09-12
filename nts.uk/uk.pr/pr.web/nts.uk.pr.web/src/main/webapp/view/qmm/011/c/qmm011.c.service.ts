@@ -7,6 +7,7 @@ module nts.uk.com.view.qmm011.c {
             getListOccAccIsHis: "exio/monsalabonus/laborinsur/getListOccAccIsHis",
             getOccAccInsurBus: "exio/monsalabonus/laborinsur/getOccAccInsurBus",
             getAccInsurPreRate: "exio/monsalabonus/laborinsur/getAccInsurPreRate/{0}",
+            register: "exio/monsalabonus/laborinsur/register",
             getOccAccIsPrRate: "exio/monsalabonus/laborinsur/getOccAccIsPrRate/{0}"
         };
 
@@ -24,6 +25,9 @@ module nts.uk.com.view.qmm011.c {
         export function getAccInsurPreRate(param :any): JQueryPromise<any> {
             let _path = nts.uk.text.format(path.getAccInsurPreRate, param);
             return nts.uk.request.ajax("pr", _path);
+        }
+        export function register(data :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.register, data);
         }
 
     }

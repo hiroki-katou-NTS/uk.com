@@ -124,10 +124,39 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         register(){
             let self = this;
             let data: any = {
-                listOccAccIsPrRate : self.listOccAccIsPrRate();
-        }
-            service.register(data).done(() =>{
+
+                listOccAccIsPrRate: self.listOccAccIsPrRate(),
+                isNewMode: self.isNewMode(),
+                startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
+                endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
+
+            }
+            service.register(data).done(() => {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.isNewMode(false);
+                    self.initScreen(null);
+                });
             });
+        }
+        convertToCommand(dto :Array<OccAccIsPrRate>){
+            let listOccAccIsPrRate :Array <OccAccIsPrRate> = [];
+            _.each(dto, function(item: OccAccIsPrRate) {
+                let temp = new OccAccIsPrRate();
+                temp.hisId = item.hisId;
+                temp = item.empPreRateId;
+                temp.indBdRatio = Number(item.indBdRatio());
+                temp.empContrRatio = Number(item.empContrRatio());
+                temp.perFracClass = item.perFracClass();
+                temp.busiOwFracClass = item.busiOwFracClass();
+                listOccAccIsPrRate.push(temp);
+            })
+            return listOccAccIsPrRate;
+        }
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return yearMonth;
         }
 
         setOccAccIsHis(emplInsurHis: IOccAccIsHis){

@@ -2,6 +2,10 @@ package nts.uk.ctx.pr.core.ws.laborinsurance;
 
 import nts.arc.layer.ws.WebService;
 
+import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.OccAccIsPrRateCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurBusBurRatioCommand;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
 
 
@@ -28,6 +32,9 @@ public class WorkersCompenInsurWebService extends WebService {
     @Inject
     private OccAccInsurBusFinder occAccInsurBusFinder;
 
+    @Inject
+    private AddOccAccIsPrRateCommandHandler addOccAccIsPrRateCommandHandler;
+
     @POST
     @Path("getListOccAccIsHis")
     public  List<OccAccIsHisDto> getListOccAccIsHis() {
@@ -51,7 +58,11 @@ public class WorkersCompenInsurWebService extends WebService {
     public  List<AccInsurPreRateDto> getAccInsurPreRate(@PathParam("hisId") String hisId) {
         return accInsurPreRateFinder.getAccInsurPreRate(hisId);
     }
-
+    @POST
+    @Path("register")
+    public void registerEmpInsurPreRate(AddOccAccIsPrRateCommand command){
+        addOccAccIsPrRateCommandHandler.handle(command);
+    }
 
 
 }

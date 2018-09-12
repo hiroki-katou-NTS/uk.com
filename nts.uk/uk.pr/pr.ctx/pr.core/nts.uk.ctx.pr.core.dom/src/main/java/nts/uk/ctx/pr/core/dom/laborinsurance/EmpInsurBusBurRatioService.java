@@ -25,19 +25,19 @@ public class EmpInsurBusBurRatioService {
     
     public void addEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio, YearMonth start, YearMonth end){
     	String cId = AppContexts.user().companyId();
-    	String newHistID = IdentifierUtil.randomUniqueId();
-    	YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-    	EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
-    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
-    	if (empInsurHis.isPresent()) {
-    		itemtoBeAdded = empInsurHis.get();
-    	}
-    	itemtoBeAdded.add(yearMonthItem);
-    	this.addEmpInsurHis(itemtoBeAdded);
-    	this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
-    	this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
-    	
-    }
+		String newHistID = IdentifierUtil.randomUniqueId();
+		YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+		EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
+		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+		if (empInsurHis.isPresent()) {
+			itemtoBeAdded = empInsurHis.get();
+		}
+		itemtoBeAdded.add(yearMonthItem);
+		this.addEmpInsurHis(itemtoBeAdded);
+		this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
+		this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
+
+	}
     
     public void updateEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio){
     	empInsurBusBurRatioRepository.update(listEmpInsurBusBurRatio);
