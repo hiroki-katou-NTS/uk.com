@@ -44,7 +44,7 @@ public class InitialDisplayRegisterProcessingFinder {
 				x.getSocialInsurdCollecMonth(), x.getProcessDate().v(), x.getIncomeTaxDate(), x.getNumberWorkDay()))
 				.orElse(null);
 		CurrProcessDateDto currProcessDateDto = optCurrProcessDate
-				.map(x -> new CurrProcessDateDto(x.getCid(), x.getProcessCateNo(), x.getGiveCurrTreatYear()))
+				.map(x -> new CurrProcessDateDto(x.getCid(), x.getProcessCateNo(), x.getGiveCurrTreatYear().v()))
 				.orElse(null);
 		EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear
 				.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(), x.getEmploymentCode().v()))

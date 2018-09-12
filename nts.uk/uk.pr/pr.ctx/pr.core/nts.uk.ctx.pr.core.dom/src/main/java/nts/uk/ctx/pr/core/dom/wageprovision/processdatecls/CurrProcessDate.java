@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 
 /**
  * 現在処理年月
@@ -24,13 +25,13 @@ public class CurrProcessDate extends AggregateRoot {
 	/**
 	 * 給与現在処理年月
 	 */
-	private int giveCurrTreatYear;
+	private YearMonth giveCurrTreatYear;
 
 	public CurrProcessDate(String cid, int processCateNo, int giveCurrTreatYear) {
 		super();
 		this.cid = cid;
 		this.processCateNo = processCateNo;
-		this.giveCurrTreatYear = giveCurrTreatYear;
+		this.giveCurrTreatYear =new YearMonth(giveCurrTreatYear);
 	}
 
 }

@@ -26,6 +26,6 @@ public class ProcessInformationCommand
     */
     private String processDivisionName;
     
-    private Long version;
+
 
 }

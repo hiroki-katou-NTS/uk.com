@@ -48,7 +48,7 @@ public class QpbmtCurrProcessDate extends UkJpaEntity implements Serializable {
 
 	public static QpbmtCurrProcessDate toEntity(CurrProcessDate domain) {
 		return new QpbmtCurrProcessDate(new QpbmtCurrProcessDatePk(domain.getCid(), domain.getProcessCateNo()),
-				domain.getGiveCurrTreatYear());
+				domain.getGiveCurrTreatYear().v());
 	}
 
 }
