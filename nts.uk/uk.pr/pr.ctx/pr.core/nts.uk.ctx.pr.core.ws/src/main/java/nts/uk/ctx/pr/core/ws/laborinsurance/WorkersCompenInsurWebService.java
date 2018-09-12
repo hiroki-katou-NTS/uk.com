@@ -22,6 +22,12 @@ public class WorkersCompenInsurWebService extends WebService {
     @Inject
     private OccAccIsPrRateFinder occAccIsPrRateFinder;
 
+    @Inject
+    private AccInsurPreRateFinder accInsurPreRateFinder;
+
+    @Inject
+    private OccAccInsurBusFinder occAccInsurBusFinder;
+
     @POST
     @Path("getListOccAccIsHis")
     public  List<OccAccIsHisDto> getListOccAccIsHis() {
@@ -31,15 +37,19 @@ public class WorkersCompenInsurWebService extends WebService {
     @POST
     @Path("getOccAccIsPrRate/{hisId}")
     public List<OccAccIsPrRateDto> getOccAccIsPrRate(@PathParam("hisId") String hisId) {
-        List<OccAccIsPrRateDto> a = occAccIsPrRateFinder.getAllOccAccIsPrRate(hisId);
-        System.out.println(a);
         return occAccIsPrRateFinder.getAllOccAccIsPrRate(hisId);
     }
 
     @POST
     @Path("getOccAccInsurBus")
     public  List<OccAccInsurBusDto> getOccAccInsurBus() {
-        return occAccIsHisFinder.getOccAccInsurBus();
+        return occAccInsurBusFinder.getOccAccInsurBus();
+    }
+
+    @POST
+    @Path("getAccInsurPreRate/{hisId}")
+    public  List<AccInsurPreRateDto> getAccInsurPreRate(@PathParam("hisId") String hisId) {
+        return accInsurPreRateFinder.getAccInsurPreRate(hisId);
     }
 
 

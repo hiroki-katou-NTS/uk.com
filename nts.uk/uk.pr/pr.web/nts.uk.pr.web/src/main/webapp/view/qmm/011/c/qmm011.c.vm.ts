@@ -1,7 +1,5 @@
 module nts.uk.com.view.qmm011.c.viewmodel {
-    import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
-    import dialog  = nts.uk.ui.dialog;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
@@ -14,6 +12,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         listOccAccIsHis:              KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
         listOccAccIsPrRate:        KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
         listOccAccInsurBus: KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
+        listAccInsurPreRate:KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([]);
         selectedEmpInsHis:          KnockoutObservable<IOccAccIsHis> = ko.observable();
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
@@ -34,8 +33,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 let self = this;
                 self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                 self.setOccAccIsHis(self.selectedEmpInsHis());
-                self.getOccAccIsPrRate();
-                self.getOccAccInsurBus();
+                self.getAccInsurPreRate();
             });
         }
 
@@ -73,6 +71,16 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             service.getOccAccInsurBus(self.selectedEmpInsHisId()).done((listOccAccInsurBus: Array<IOccAccInsurBus>) =>{
                 if(listOccAccInsurBus && listOccAccInsurBus.length > 0) {
                     self.listOccAccInsurBus(OccAccInsurBus.fromApp(listOccAccInsurBus));
+                    self.isNewMode(false);
+                }
+            });
+        }
+
+        getAccInsurPreRate() {
+            let self = this;
+            service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<AccInsurPreRate>) => {
+                if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
+                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
                     self.isNewMode(false);
                 }
             });
@@ -224,6 +232,33 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             })
             return listEmp;
         }
+
+    }
+
+    class AccInsurPreRate {
+
+        occAccInsurBusNo: number;
+        name: string;
+        fracClass: number;
+        empConRatio: string;
+        constructor() {
+
+        }
+
+        static fromApp(app) {
+            let listEmp = [];
+            _.each(app, (item) => {
+                let dto: AccInsurPreRate = new AccInsurPreRate();
+                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.name = item.name;
+                dto.fracClass = ko.observable(item.fracClass);
+                dto.empConRatio = item.empConRatio;
+
+                listEmp.push(dto);
+            })
+            return listEmp;
+        }
+
 
     }
 
