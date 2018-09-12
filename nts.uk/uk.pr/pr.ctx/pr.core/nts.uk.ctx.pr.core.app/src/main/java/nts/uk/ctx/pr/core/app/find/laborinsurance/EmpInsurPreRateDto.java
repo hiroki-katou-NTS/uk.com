@@ -8,8 +8,9 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Value
+		
 public class EmpInsurPreRateDto {
-	
+		private String hisId;
 	    private int empPreRateId;
 	    private BigDecimal indBdRatio;
 	    private BigDecimal empContrRatio;
@@ -18,6 +19,7 @@ public class EmpInsurPreRateDto {
 	    
 	    public static EmpInsurPreRateDto fromDomain(EmpInsurBusBurRatio domain) {
 			return new EmpInsurPreRateDto(
+					domain.getHisId(),
 					domain.getEmpPreRateId().value,
 					domain.getIndBdRatio().v(),
 					domain.getEmpContrRatio().v(),

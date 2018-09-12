@@ -4,16 +4,16 @@ module nts.uk.com.view.qmm011.f {
          * define path to service
          */
         var path: any = {
-            getEmpInsHis: "exio/monsalabonus/laborinsur/getEmpInsurHis",
-            getEmpInsurPreRate: "exio/monsalabonus/laborinsur/getEmpInsurPreRate"
+            updateEmpInsurHis: "core/monsalabonus/laborinsur/updateEmpInsurHis",
+            updateWorkersCompenInsur: "core/monsalabonus/laborinsur/updateWorkersCompenInsur"
         };
 
-        export function getEmpInsHis(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getEmpInsHis);
+        export function updateEmpInsurHis(data :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.updateEmpInsurHis, data);
         }
         
-        export function getEmpInsurPreRate(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getEmpInsurPreRate);
+        export function updateWorkersCompenInsur(data :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.updateWorkersCompenInsur, data);
         }
     }
 }

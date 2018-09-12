@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -60,4 +61,39 @@ public class EmpInsurBusBurRatioService {
 		}
 		empInsurHisRepository.update(itemToBeUpdated.get(), cId);
 	}
+    
+    public void historyDeletionProcessing(String hisId){
+    	String cId = AppContexts.user().companyId();
+    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+    	if (!empInsurHis.isPresent()) {
+    		throw new RuntimeException("invalid employmentHistory"); 
+    	}
+    	Optional<YearMonthHistoryItem> itemToBeDelete = empInsurHis.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId))
+                .findFirst();
+    	empInsurHis.get().remove(itemToBeDelete.get());
+    	empInsurBusBurRatioRepository.remove(hisId);
+    	empInsurHisRepository.remove(cId, hisId);
+    	
+    }
+    
+    public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){
+    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+    	if (!empInsurHis.isPresent()) {
+    		return;
+    	}
+    	Optional<YearMonthHistoryItem> itemToBeUpdate = empInsurHis.get().getHistory().stream()
+				.filter(h -> h.identifier().equals(hisId)).findFirst();
+    	if (!itemToBeUpdate.isPresent()) {
+    		return;
+    	}
+    	empInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+    	this.updateEmpInsurHis(empInsurHis.get());
+    	this.updateItemBefore(empInsurHis.get(), itemToBeUpdate.get(), cId);
+    	
+    }
+    
+    private void updateEmpInsurHis(EmpInsurHis itemToBeUpdated){
+    	empInsurHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size()), itemToBeUpdated.getCid());
+    }
 }

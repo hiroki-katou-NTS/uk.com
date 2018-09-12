@@ -5,17 +5,51 @@ module nts.uk.com.view.qmm011.f.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import modal = nts.uk.ui.windows.sub.modal;
+    import model = qmm011.share.model;
     export class ScreenModel {
-        startDate:              KnockoutObservable<string> = ko.observable('2010/1');
-        endDate:                KnockoutObservable<string> = ko.observable('2010/1');
-        
+        startYearMonth:         KnockoutObservable<number> = ko.observable();
+        endYearMonth:           KnockoutObservable<number> = ko.observable();
+        name:                   KnockoutObservable<string> = ko.observable('');
+        itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
+        selectedId:             KnockoutObservable<string> = ko.observable('');
+        methodEditing:          KnockoutObservable<number> = ko.observable();
+        insurrance:             KnockoutObservable<number> = ko.observable();
+        hisId:                   KnockoutObservable<string> = ko.observable('');
         constructor() {
-        
+            let self = this;
+            self.startYearMonth(201809);
+            let params = getShared('QMM011_F_PARAMS');
+            if (params) {
+                self.insurrance(params.insurrance);
+                self.startYearMonth(params.startYearMonth);
+                self.endYearMonth(params.endYearMonth);
+                if (params.hisId) {
+                    self.hisId(params.hisId);
+                }
+            }
+            
         }
         
-        register(){
-            
+        update() {
+            let self = this;
+            if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
+                block.invisible();
+                let param: any = {
+                    hisId: self.hisId(),
+                    methodEditing: self.methodEditing()
+                }
+                service.updateEmpInsurHis(param).done(() => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.isNewMode(false);
+                        close();
+                    }).fail(function(res: any) {
+                        if (res)
+                            dialog.alertError(res);
+                }).always(() => {
+                    block.clear();
+                });
+
+            }
         }
         
         cancel(){
@@ -25,22 +59,21 @@ module nts.uk.com.view.qmm011.f.viewmodel {
        // 「初期データ取得処理
     }
     
-    export function getListPerFracClass(): Array<ItemModel> {
+    export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [
-            new ItemModel(0, getText('CMF002_358')),
-            new ItemModel(1, getText('CMF002_359')),
-            new ItemModel(2, getText('CMF002_360')),
-            new ItemModel(3, getText('CMF002_361')),
-            new ItemModel(4, getText('CMF002_362'))
+            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_61')),
+            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_62'))
         ];
     }
-    export class ItemModel {
-        code: number;
-        name: string;
-
-        constructor(code: number, name: string) {
-            this.code = code;
-            this.name = name;
-        }
+    
+    export enum EDIT_METHOD {
+        DELETE = 1,
+        UPDATE = 0
     }
+    
+    export enum INSURRANCE {
+        EMPLOYMENT_INSURRANCE_RATE = 1,
+        ACCIDENT_INSURRANCE_RATE = 0
+    }
+    
 }

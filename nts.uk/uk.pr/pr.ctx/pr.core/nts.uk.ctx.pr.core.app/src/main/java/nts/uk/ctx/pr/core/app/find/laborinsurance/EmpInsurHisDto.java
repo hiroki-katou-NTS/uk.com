@@ -17,7 +17,7 @@ public class EmpInsurHisDto {
 	
     public static List<EmpInsurHisDto> fromDomain(EmpInsurHis domain) {
         List<EmpInsurHisDto> empInsurHisDto = domain.getHistory().stream().map(item -> {
-            return new EmpInsurHisDto(item.identifier(), Integer.parseInt(item.start().toString()), Integer.parseInt(item.end().toString()));
+            return new EmpInsurHisDto(item.identifier(), item.start().v(), item.end().v());
         }).collect(Collectors.toList());
         return empInsurHisDto;
     }

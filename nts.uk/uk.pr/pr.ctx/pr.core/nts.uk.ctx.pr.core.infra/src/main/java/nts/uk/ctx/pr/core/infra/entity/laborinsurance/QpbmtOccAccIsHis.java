@@ -49,7 +49,7 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
     }
     public static List<QpbmtOccAccIsHis> toEntity(OccAccIsHis domain) {
         List<QpbmtOccAccIsHis> qpbmtEmpInsurHisList = domain.getHistory().stream().map(item -> {
-            return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(domain.getCid(),item.identifier()),item.start().month(),item.end().month());
+            return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(domain.getCid(),item.identifier()),item.start().v(),item.end().v());
         }).collect(Collectors.toList());
 
         return qpbmtEmpInsurHisList;
