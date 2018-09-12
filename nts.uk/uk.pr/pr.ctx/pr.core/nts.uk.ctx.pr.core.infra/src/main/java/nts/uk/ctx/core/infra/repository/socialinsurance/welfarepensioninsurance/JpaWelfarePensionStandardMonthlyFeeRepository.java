@@ -1,7 +1,7 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.StandardGradePerMonth;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardGradePerMonth;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionStandardGradePerMonth;
@@ -24,7 +24,7 @@ public class JpaWelfarePensionStandardMonthlyFeeRepository extends JpaRepository
      * @return WelfarePensionStandardMonthlyFee
      */
     private WelfarePensionStandardMonthlyFee toDomain(QpbmtWelfarePensionStandardMonthlyFee entity, List<QpbmtWelfarePensionStandardGradePerMonth> standardGradePerMonthEntity) {
-        return new WelfarePensionStandardMonthlyFee(entity.welfareStdMonFeePk.targetStartYm, entity.welfareStdMonFeePk.targetEndYm, standardGradePerMonthEntity.stream().map(x -> new StandardGradePerMonth(x.penStdGraMonPk.welfarePensionGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
+        return new WelfarePensionStandardMonthlyFee(entity.welfareStdMonFeePk.targetStartYm, entity.welfareStdMonFeePk.targetEndYm, standardGradePerMonthEntity.stream().map(x -> new WelfarePensionStandardGradePerMonth(x.penStdGraMonPk.welfarePensionGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
     }
 
     /**

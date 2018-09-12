@@ -7,7 +7,7 @@ import nts.arc.layer.dom.DomainObject;
  * 等級毎報酬月額範囲
  */
 @Getter
-public class GradePerRewardMonthlyRange extends DomainObject {
+public class WelfarePensionGradePerRewardMonthlyRange extends DomainObject {
 
     /**
      * 厚生年金等級
@@ -24,7 +24,7 @@ public class GradePerRewardMonthlyRange extends DomainObject {
      */
     private long rewardMonthlyUpperLimit;
 
-    public GradePerRewardMonthlyRange(int welfarePensionGrade, long rewardMonthlyLowerLimit, long rewardMonthlyUpperLimit) {
+    public WelfarePensionGradePerRewardMonthlyRange(int welfarePensionGrade, long rewardMonthlyLowerLimit, long rewardMonthlyUpperLimit) {
         this.welfarePensionGrade = welfarePensionGrade;
         this.rewardMonthlyLowerLimit = rewardMonthlyLowerLimit;
         this.rewardMonthlyUpperLimit = rewardMonthlyUpperLimit;

@@ -21,17 +21,17 @@ public class MonthlyScopeOfWelfarePensionCompensation extends AggregateRoot {
     /**
      * 等級毎報酬月額範囲
      */
-    private List<GradePerRewardMonthlyRange> gradePerRewardMonthlyRange;
+    private List<WelfarePensionGradePerRewardMonthlyRange> welfarePensionGradePerRewardMonthlyRange;
 
     /**
      * 厚生年金報酬月額範囲
      *
      * @param targetStartYm              対象期間
      * @param targetEndYm                対象期間
-     * @param gradePerRewardMonthlyRange 等級毎報酬月額範囲
+     * @param welfarePensionGradePerRewardMonthlyRange 等級毎報酬月額範囲
      */
-    public MonthlyScopeOfWelfarePensionCompensation(int targetStartYm, int targetEndYm, List<GradePerRewardMonthlyRange> gradePerRewardMonthlyRange) {
+    public MonthlyScopeOfWelfarePensionCompensation(int targetStartYm, int targetEndYm, List<WelfarePensionGradePerRewardMonthlyRange> welfarePensionGradePerRewardMonthlyRange) {
         this.targetPeriod = new YearMonthPeriod(new YearMonth(targetStartYm), new YearMonth(targetEndYm));
-        this.gradePerRewardMonthlyRange = gradePerRewardMonthlyRange;
+        this.welfarePensionGradePerRewardMonthlyRange = welfarePensionGradePerRewardMonthlyRange;
     }
 }

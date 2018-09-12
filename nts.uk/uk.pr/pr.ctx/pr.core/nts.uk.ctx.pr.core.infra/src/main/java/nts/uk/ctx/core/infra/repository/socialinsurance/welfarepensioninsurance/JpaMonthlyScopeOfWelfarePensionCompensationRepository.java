@@ -1,7 +1,7 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.GradePerRewardMonthlyRange;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionGradePerRewardMonthlyRange;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensation;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensationRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtMonthlyScopeOfWelfarePensionCompensation;
@@ -22,7 +22,7 @@ public class JpaMonthlyScopeOfWelfarePensionCompensationRepository extends JpaRe
      * @return MonthlyScopeOfWelfarePensionCompensation
      */
     private MonthlyScopeOfWelfarePensionCompensation toDomain(QpbmtMonthlyScopeOfWelfarePensionCompensation entity, List<QpbmtWelfarePensionGradePerRewardMonthlyRange> gradePerRewardEntity) {
-        return new MonthlyScopeOfWelfarePensionCompensation(entity.monRangeWelPenPk.targetStartYm, entity.monRangeWelPenPk.targetEndYm, gradePerRewardEntity.stream().map(x -> new GradePerRewardMonthlyRange(x.penRewardRangePk.welfarePensionGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
+        return new MonthlyScopeOfWelfarePensionCompensation(entity.monRangeWelPenPk.targetStartYm, entity.monRangeWelPenPk.targetEndYm, gradePerRewardEntity.stream().map(x -> new WelfarePensionGradePerRewardMonthlyRange(x.penRewardRangePk.welfarePensionGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
     }
 
     /**
