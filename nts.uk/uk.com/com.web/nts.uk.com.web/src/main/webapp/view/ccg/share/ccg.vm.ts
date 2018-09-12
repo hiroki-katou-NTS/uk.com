@@ -42,6 +42,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
+            baseDateOfParentScreen: KnockoutObservable<string>;
             inputPeriod: KnockoutObservable<DateRangePickerModel>;
             baseDate: KnockoutComputed<moment.Moment>;
             periodStart: KnockoutComputed<moment.Moment>;
@@ -676,7 +677,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
-                self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                if (_.isFunction(options.baseDate)) {
+                    self.baseDateOfParentScreen = options.baseDate;
+                    self.inputBaseDate(options.baseDate());
+                } else {
+                    self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                }
+
                 const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
                 const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
                 self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
@@ -928,7 +935,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     }));
                 } else {
                     // toggle slide ccg001
-                    self.toggleSlide();
+                    self.toggleSlide().done(() => {
+                        // update baseDate
+                        if (self.baseDateOfParentScreen) {
+                            const isSameDate = moment.isMoment(self.baseDateOfParentScreen()) ?
+                                self.baseDateOfParentScreen().isSame(self.inputBaseDate()) : self.inputBaseDate() == self.baseDateOfParentScreen();
+                            if (!isSameDate) {
+                                self.inputBaseDate(self.baseDateOfParentScreen())
+                            }
+                        }
+                    });
                     dfd.resolve();
                 }
                 return dfd.promise();
