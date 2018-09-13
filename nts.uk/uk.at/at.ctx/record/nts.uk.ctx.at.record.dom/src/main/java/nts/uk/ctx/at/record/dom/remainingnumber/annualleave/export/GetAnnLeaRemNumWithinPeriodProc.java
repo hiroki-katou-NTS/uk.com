@@ -601,7 +601,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			
 			// 年休集計期間WORKを作成し、Listに追加
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd();
+			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
 					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
 					nowDividedDay.isNextDayAfterPeriodEnd(),
