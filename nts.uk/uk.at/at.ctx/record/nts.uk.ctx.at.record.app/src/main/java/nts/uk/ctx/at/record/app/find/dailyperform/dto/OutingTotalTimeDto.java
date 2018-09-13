@@ -34,6 +34,14 @@ public class OutingTotalTimeDto implements ItemConst {
 						CalcAttachTimeDto.toTimeWithCal(domain.getTotalTime()));
 	}
 	
+	@Override
+	public OutingTotalTimeDto clone() {
+		return new OutingTotalTimeDto(
+						excessOfStatutoryTotalTime == null ? null : excessOfStatutoryTotalTime.clone(),
+						withinStatutoryTotalTime == null ? null : withinStatutoryTotalTime.clone(),
+						totalTime == null ? null : totalTime.clone());
+	}
+	
 	public OutingTotalTime createDeductionTime() {
 		return OutingTotalTime.of(
 					totalTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : totalTime.createTimeWithCalc(),

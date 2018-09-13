@@ -41,6 +41,8 @@ public interface DailyAttendanceItemRepository {
 	 */
 	List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs);
 
+	void update(DailyAttendanceItem domain);
+
 	/**
 	 * add by Hoidd
 	 * @param companyId
@@ -50,4 +52,5 @@ public interface DailyAttendanceItemRepository {
 	 */
 	List<DailyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds,
 			List<Integer> dailyAttendanceAtr);
+
 }

@@ -42,6 +42,13 @@ public class HolidayMidnightWorkDto implements ItemConst {
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.PublicHolidayWork));
 	}
 	
+	@Override
+	public HolidayMidnightWorkDto clone() {
+		return new HolidayMidnightWorkDto(withinPrescribedHolidayWork == null ? null : withinPrescribedHolidayWork.clone(), 
+						excessOfStatutoryHolidayWork == null ? null : excessOfStatutoryHolidayWork.clone(),
+						publicHolidayWork == null ? null : publicHolidayWork.clone());
+	}
+	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
 		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> 
 														CalcAttachTimeDto.toTimeWithCal(c.getTime())).orElse(null);

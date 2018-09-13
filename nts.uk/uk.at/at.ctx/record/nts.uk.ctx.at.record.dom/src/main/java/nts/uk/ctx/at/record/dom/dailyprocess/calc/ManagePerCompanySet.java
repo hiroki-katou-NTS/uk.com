@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
@@ -66,6 +68,12 @@ public class ManagePerCompanySet {
 	
 	//0時跨ぎの設定
 	Optional<ZeroTime> zeroTime;
+	
+	@Setter
+	List<PersonnelCostSettingImport> personnelCostSettings;
+
+	@Setter
+	Optional<UpperLimitTotalWorkingHour> upperControl;
 	
 
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,

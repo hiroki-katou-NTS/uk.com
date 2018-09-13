@@ -21,4 +21,9 @@ public interface DailyAttdItemAuthRepository {
 			String roleId, int toUse);
 	
 	
+	/**
+	 * 権限別日次項目制御
+	 */
+	Optional<DailyAttendanceItemAuthority> getDailyAttdItemByAttItemId(String companyID, String authorityDailyId,
+			List<Integer> attendanceItemIds);
 }

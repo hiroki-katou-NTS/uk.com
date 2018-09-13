@@ -46,7 +46,7 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, boolean update){
 	
 		if (!update) {
-			this.krcdtEmployeeMonthlyPerErrorPK =  new KrcdtEmployeeMonthlyPerErrorPK(domain.getErrorType().value, domain.getYearMonth().v(),
+			this.krcdtEmployeeMonthlyPerErrorPK =  new KrcdtEmployeeMonthlyPerErrorPK(domain.getNo(), domain.getErrorType().value, domain.getYearMonth().v(),
 					domain.getEmployeeID(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
 					domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
 		}

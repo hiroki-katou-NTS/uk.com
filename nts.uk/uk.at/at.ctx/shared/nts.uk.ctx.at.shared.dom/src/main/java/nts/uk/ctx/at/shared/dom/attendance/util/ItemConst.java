@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
-public interface ItemConst {
+public interface ItemConst extends Cloneable {
+	
 	public final String DAILY = "日次";
 	public final String MONTHLY = "月次";
 	

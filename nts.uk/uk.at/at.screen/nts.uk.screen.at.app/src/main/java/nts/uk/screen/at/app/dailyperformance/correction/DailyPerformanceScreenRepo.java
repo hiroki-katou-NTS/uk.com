@@ -224,7 +224,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
 	
-	Integer getLimitFexMonth();
+	Integer getLimitFexMonth(String companyId);
 	
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
 	
@@ -232,6 +232,8 @@ public interface DailyPerformanceScreenRepo {
 
 	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
 	
+	void requestForFlush();
+
 	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
 	
 	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
