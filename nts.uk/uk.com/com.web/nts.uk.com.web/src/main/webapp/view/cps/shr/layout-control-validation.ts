@@ -1352,7 +1352,12 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
-
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1377,7 +1382,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
-
+                    
+                    // If input date out of range
+                   if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1403,7 +1414,13 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
-
+                    
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0 
+                            || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0){
+                        return;
+                    }
+                    
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1516,7 +1533,11 @@ module nts.layout {
                 CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
                 CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
                 CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283'),
-                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021');
+                CS00003_IS00020: IFindData = finder.find('CS00003', 'IS00020'),
+                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021'),
+                CS00020_IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00020_IS00120: IFindData = finder.find('CS00020', 'IS00120'),
+                CS00020_IS00253: IFindData = finder.find('CS00020', 'IS00253');
 
             if (CS00024_IS00279 &&
                 CS00024_IS00280 &&
@@ -1527,13 +1548,22 @@ module nts.layout {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value),
-                        hireDate: Date = null,
-                        retireDates: Date = null;
+                        hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
+                        retireDates: string = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : null,
+                        startWork: string = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : null,
+                        endWork: string = CS00020_IS00120 ? ko.toJS(CS00020_IS00120.data.value) : null,
+                        conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
+                        startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
+                        endWork = '9999/12/31';
+                        conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
-                    if (!x) {
+                    if (!x || !grantTable) {
+                        CS00024_IS00281.data.value('');
+                        CS00024_IS00282.data.value('');
+                        CS00024_IS00283.data.value('');
                         return;
                     }
 
@@ -1542,7 +1572,10 @@ module nts.layout {
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
                         grantTable: grantTable,
                         entryDate: moment.utc(hireDate).toDate(),
-                        retireDate: moment.utc(retireDates).toDate()
+                        retireDate: moment.utc(retireDates).toDate(),
+                        startWorkCond: moment.utc(startWork).toDate(),
+                        endWorkCond:  moment.utc(endWork).toDate(),
+                        contactTime: conTime
                     }).done(result => {
                         CS00024_IS00281.data.value(result.nextTimeGrantDate);
                         CS00024_IS00282.data.value(result.nextTimeGrantDays);
@@ -1552,6 +1585,18 @@ module nts.layout {
 
                 CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 CS00024_IS00280.data.value.valueHasMutated();
+                if (CS00003_IS00020){
+                    CS00003_IS00020.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00003_IS00021){
+                    CS00003_IS00021.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00119){
+                    CS00020_IS00119.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00253){
+                    CS00020_IS00253.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
             }
         }
 
@@ -1824,7 +1869,10 @@ module nts.layout {
                         grantDay: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpGrantDay),
                         manage: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.mana),
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
-                        result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result);
+                        result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result),
+                        CS00003_IS00020: IFindData = finder.find('CS00003','IS00020'),
+                        CS00003_IS00021: IFindData = finder.find('CS00003','IS00021'),
+                        CS00024_IS00279: IFindData = finder.find('CS00024','IS00279');
 
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
@@ -1835,11 +1883,19 @@ module nts.layout {
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
                                 grantTbls = grantTbl ? ko.toJS(grantTbl.data.value) : null,
-
-                                management = manage ? ko.toJS(manage.data.value) : null;
-
-                            if (!sid || !x || !management || management == '0') {
-                                result.data.value('');
+                                management = manage ? ko.toJS(manage.data.value) : null,
+                                hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
+                                retireDates: string = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : null,
+                                yearRefDates: String = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null;
+                            
+                            if (location.href.indexOf('/view/cps/002') > -1) {
+                                hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                                retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
+                            }
+                            if (!x || !appSet || !management || management == '0') {
+                                if (result) {
+                                    result.data.value('');
+                                }
                                 return;
                             }
 
@@ -1849,14 +1905,23 @@ module nts.layout {
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
-                                grantTable: grantTbls
+                                grantTable: grantTbls,
+                                entryDate: moment.utc(hireDate).toDate(),
+                                retireDate: moment.utc(retireDates).toDate(),
+                                yearRefDate: moment.utc(yearRefDates).toDate()
                             }).done(res => {
+                                if (!result) {
+                                    return;
+                                }
+
                                 if (res) {
                                     let x = moment.utc(ko.toJS(res));
                                     if (x._isValid)
                                         result.data.value(x.format('YYYY/MM/DD'));
                                     else
                                         result.data.value('');
+                                } else {
+                                    result.data.value('');
                                 }
                             });
                         });
@@ -1870,6 +1935,16 @@ module nts.layout {
                         }
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        if (CS00003_IS00020){
+                            CS00003_IS00020.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        if (CS00003_IS00021) {
+                            CS00003_IS00021.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        
+                        if (CS00024_IS00279) {
+                            CS00024_IS00279.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
 
                         inp.data.value.valueHasMutated();
@@ -2246,6 +2321,9 @@ module nts.layout {
         grantTable: string;
         entryDate: Date;
         retireDate: Date;
+        startWorkCond: Date;
+        endWorkCond: Date;
+        contactTime: number;
     }
 
     interface IGroupControl {
@@ -2297,7 +2375,7 @@ module nts.layout {
     interface ISpeacialLeaInfo {
         ctgCode: string;
         inpCode: string;
-        mana: number;
+        mana: string;
         comboboxCode: string;
         inpGrantDay: string;
         comboGrantTbl: string;
@@ -2317,6 +2395,9 @@ module nts.layout {
         appSet: number;
         grantDays?: number;
         grantTable?: string;
+        entryDate: Date;
+        retireDate: Date;
+        yearRefDate: Date;
     }
 
     interface StampCardEditing {

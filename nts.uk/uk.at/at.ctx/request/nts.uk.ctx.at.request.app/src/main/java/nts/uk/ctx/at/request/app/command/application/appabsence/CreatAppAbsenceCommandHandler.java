@@ -213,41 +213,40 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value){//選択する休暇種類が特別休暇の場合
 			//hoatt - 2018.08.08 - doi ung specHd
 			//INPUT．モードをチェックする-(Check INPUT.mode)
-			if(isInsert){//INPUT．モード=新規(INPUT.mode = New)
-				//指定する勤務種類が事象に応じた特別休暇かチェックする
-				CheckWkTypeSpecHdEventOutput checkSpecHd = specHdEventAlg.checkWkTypeSpecHdForEvent(companyID, command.getWorkTypeCode());
-				//取得した事象に応じた特休フラグをチェックする-(Check specialHolidayEventFlag đã lấy)
-				if(checkSpecHd.isSpecHdForEventFlag()){//取得した事象に応じた特休フラグがtrue(specialHolidayEventFlag = true)
-					SpecialHolidayEvent spHdEv = checkSpecHd.getSpecHdEvent().get();
-					//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
-					MaxDaySpecHdOutput maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), spHdEv,
-							specHd == null || specHd.getRelationCD() == null ? Optional.empty() :  Optional.of(specHd.getRelationCD()));
-					//申請する日数(ノート1)：
-					int appDay = 0;//申請する日数
-					if(spHdEv.getIncludeHolidays().equals(UseAtr.USE)){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
-						//申請する日数 = 申請する終了日 - 申請する開始日 + 1
-						appDay = startDate.daysTo(endDate) + 1;
-					}else{//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがfalse：
-						//19.指定する期間での休日日数を取得する-(Lấy số ngày nghỉ phép trong khoảng thời gian chỉ định)
-						int hdDaySys = getHdDayInPeriodSv.getHolidayDayInPeriod(command.getEmployeeID(), new DatePeriod(startDate, endDate));
-						//申請する日数 = 申請する終了日 - 申請する開始日 + 1 - 休日日数
-						appDay = startDate.daysTo(endDate) + 1 - hdDaySys;
-					}
-					//上限日数(ノート2)：
-					int maxDaySpec = 0;//上限日数
-					if(specHd == null || specHd.getRelationCD() == null){//TH fix
-						maxDaySpec = maxDay.getMaxDay();
-					}else{
-						//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
-						//上限日数=取得した上限日数 + 取得した喪主加算日数
-						//上限日数=取得した上限日数
-						maxDaySpec = specHd.getMournerCheck() ? maxDay.getMaxDay() + maxDay.getDayOfRela() : maxDay.getMaxDay();
-					}
-					//申請する日数(※ノート1を参照)は上限日数(※ノート2を参照)と比較する-(So sánh appDay(tham khảo note 1) với grantDay(Tham khảo note2))
-					if(appDay > maxDaySpec){//申請する日数 > 上限日数 がtrue(appDay > maxDaySpec)
-						//エラーメッセージ(Msg_632)(error message)
-						throw new BusinessException("Msg_632", Integer.toString(maxDaySpec));
-					}
+			//2018.09.12 muto #100577 EA修正履歴 No.2684 更新モード（B画面）もチェックする
+			//指定する勤務種類が事象に応じた特別休暇かチェックする
+			CheckWkTypeSpecHdEventOutput checkSpecHd = specHdEventAlg.checkWkTypeSpecHdForEvent(companyID, command.getWorkTypeCode());
+			//取得した事象に応じた特休フラグをチェックする-(Check specialHolidayEventFlag đã lấy)
+			if(checkSpecHd.isSpecHdForEventFlag()){//取得した事象に応じた特休フラグがtrue(specialHolidayEventFlag = true)
+				SpecialHolidayEvent spHdEv = checkSpecHd.getSpecHdEvent().get();
+				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
+				MaxDaySpecHdOutput maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), spHdEv,
+						specHd == null || specHd.getRelationCD() == null ? Optional.empty() :  Optional.of(specHd.getRelationCD()));
+				//申請する日数(ノート1)：
+				int appDay = 0;//申請する日数
+				if(spHdEv.getIncludeHolidays().equals(UseAtr.USE)){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
+					//申請する日数 = 申請する終了日 - 申請する開始日 + 1
+					appDay = startDate.daysTo(endDate) + 1;
+				}else{//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがfalse：
+					//19.指定する期間での休日日数を取得する-(Lấy số ngày nghỉ phép trong khoảng thời gian chỉ định)
+					int hdDaySys = getHdDayInPeriodSv.getHolidayDayInPeriod(command.getEmployeeID(), new DatePeriod(startDate, endDate));
+					//申請する日数 = 申請する終了日 - 申請する開始日 + 1 - 休日日数
+					appDay = startDate.daysTo(endDate) + 1 - hdDaySys;
+				}
+				//上限日数(ノート2)：
+				int maxDaySpec = 0;//上限日数
+				if(specHd == null || specHd.getRelationCD() == null){//TH fix
+					maxDaySpec = maxDay.getMaxDay();
+				}else{
+					//・画面上に喪主チェックボックスがあり 且つ 喪主チェックボックスにチェックあり：
+					//上限日数=取得した上限日数 + 取得した喪主加算日数
+					//上限日数=取得した上限日数
+					maxDaySpec = specHd.getMournerCheck() ? maxDay.getMaxDay() + maxDay.getDayOfRela() : maxDay.getMaxDay();
+				}
+				//申請する日数(※ノート1を参照)は上限日数(※ノート2を参照)と比較する-(So sánh appDay(tham khảo note 1) với grantDay(Tham khảo note2))
+				if(appDay > maxDaySpec){//申請する日数 > 上限日数 がtrue(appDay > maxDaySpec)
+					//エラーメッセージ(Msg_632)(error message)
+					throw new BusinessException("Msg_632", Integer.toString(maxDaySpec));
 				}
 			}
 		}
@@ -271,11 +270,12 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		boolean chkSuperBreak = true;
 		if(hdAppSet.isPresent()){
 			HdAppSet hdSet = hdAppSet.get();
-			chkSubHoliday = hdSet.getRegisShortLostHd().value == 0 ? true : false;//休暇申請設定．代休残数不足登録できる
-			chkPause = hdSet.getRegisInsuff().value == 0 ? true : false;//休暇申請設定．振休残数不足登録できる
-			chkAnnual = hdSet.getRegisNumYear().value == 0 ? true : false;//休暇申請設定．年休残数不足登録できる
-			chkFundingAnnual = hdSet.getRegisShortReser().value == 0 ? true : false;//休暇申請設定．積立年休残数不足登録できる
-			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 0 ? true : false;//休暇申請設定．公休残数不足登録できる
+			//Bug#100448
+			chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 ? true : false;//休暇申請設定．代休残数不足登録できる
+			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;//休暇申請設定．振休残数不足登録できる
+			chkAnnual = hdSet.getRegisNumYear().value == 1 ? true : false;//休暇申請設定．年休残数不足登録できる
+			chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;//休暇申請設定．積立年休残数不足登録できる
+			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;//休暇申請設定．公休残数不足登録できる
 		}
 		//登録時の残数チェック
 		/** ・登録対象一覧 :	申請(List) */

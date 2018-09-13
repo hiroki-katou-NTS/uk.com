@@ -553,8 +553,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.dpData = dpDataNew;
                 self.dailyPerfomanceData(dpDataNew);
                 let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
-                $("#dpGrid").mGrid("resetOrigDataSource", dataSourceNew);
-                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
                 dfd.resolve();
             });
             return dfd.promise();

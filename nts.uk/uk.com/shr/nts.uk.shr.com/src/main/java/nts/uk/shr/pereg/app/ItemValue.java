@@ -253,7 +253,7 @@ public class ItemValue {
 		if (viewContent == null || value == null) return null;
 		if (viewContent.equals("") && logType != ItemValueType.STRING.value) return null;
 		if (value.equals("") && logType != ItemValueType.STRING.value) return null;
-		
+		BigDecimal valueAfter  = null;
 		switch(itemValueType) {
 		case STRING:
 		case DATE:
@@ -267,9 +267,11 @@ public class ItemValue {
 		case RELATE_CATEGORY:
 			return viewContent;
 		case TIME:
-			return formatMinutesToTime(Integer.valueOf(value));
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: formatMinutesToTime(valueAfter.intValue());
 		case TIMEPOINT:
-			return new TimeWithDayAttr(Integer.valueOf(value)).getFullText();
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: new TimeWithDayAttr(valueAfter.intValue()).getFullText();
 		default:
 			throw new RuntimeException("invalid attribute: " + value);
 		}

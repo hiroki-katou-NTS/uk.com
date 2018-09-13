@@ -13,7 +13,7 @@ div.nts-fixed-body-container.ui-iggrid{padding-right: 0px !important;}
 div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90px;}
 #fixed-table tbody>tr:last-child {
 	position: absolute;
-	bottom: 0px;
+	bottom: 3px;
 	border-right: 1px solid #CCC;
 	border-top: double;
 }

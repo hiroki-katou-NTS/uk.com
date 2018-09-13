@@ -137,8 +137,8 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 				
 					//休憩時間
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
-						breakTime = new AttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily()
-											   .getBreakTimeSheet().stream().map(tc -> tc.getBreakTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+						breakTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily()
+											   .getToRecordTotalTime().getTotalTime().getTime();
 					}
 					//育児介護時間
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
