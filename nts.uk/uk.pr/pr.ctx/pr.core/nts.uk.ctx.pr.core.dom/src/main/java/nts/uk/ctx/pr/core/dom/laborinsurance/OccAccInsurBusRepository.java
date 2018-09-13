@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,6 +9,7 @@ import java.util.Optional;
 public interface OccAccInsurBusRepository
 {
     Optional<OccAccInsurBus> getOccAccInsurBus(String cId);
+    
     void remove(String cid, int occAccInsurBusNo);
-
+    
 }

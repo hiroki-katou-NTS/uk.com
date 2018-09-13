@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -62,8 +61,8 @@ public class EmpInsurBusBurRatioService {
 		empInsurHisRepository.update(itemToBeUpdated.get(), cId);
 	}
     
-    public void historyDeletionProcessing(String hisId){
-    	String cId = AppContexts.user().companyId();
+    public void historyDeletionProcessing(String hisId, String cId){
+    
     	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
     	if (!empInsurHis.isPresent()) {
     		throw new RuntimeException("invalid employmentHistory"); 
@@ -94,6 +93,6 @@ public class EmpInsurBusBurRatioService {
     }
     
     private void updateEmpInsurHis(EmpInsurHis itemToBeUpdated){
-    	empInsurHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size()), itemToBeUpdated.getCid());
+    	empInsurHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size() - 1), itemToBeUpdated.getCid());
     }
 }

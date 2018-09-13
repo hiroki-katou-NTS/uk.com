@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.EmpInsurHisCommand;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurBusBurRatioCommand;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurPreRateCommandHandler;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateEmpInsurHisCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.EmpInsurHisCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurBusBurRatioCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurPreRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.UpdateEmpInsurHisCommandHandler;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurHisDto;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurHisFinder;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurPreRateDto;
@@ -56,6 +56,12 @@ public class EmpInsurWebService extends WebService {
 	@POST
 	@Path("updateEmpInsurHis")
 	public void updateEmpInsurHis(EmpInsurHisCommand command){
+		updateEmpInsurHisCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateAccInsurHis")
+	public void updateWorkersCompenInsur(EmpInsurHisCommand command){
 		updateEmpInsurHisCommandHandler.handle(command);
 	}
 

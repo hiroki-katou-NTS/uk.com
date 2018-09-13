@@ -49,8 +49,7 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
         return occAccIsHisPk;
     }
     public static QpbmtOccAccIsHis toEntity(YearMonthHistoryItem domain, String cId) {
-        return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(cId, domain.identifier()),
-                Integer.parseInt(domain.start().toString()),Integer.parseInt(domain.end().toString()));
+        return new QpbmtOccAccIsHis(new QpbmtOccAccIsHisPk(cId,domain.identifier()),domain.start().v(),domain.end().v());
     }
 
 

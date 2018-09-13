@@ -37,7 +37,8 @@
 										checked: methodEditing, 
 										option: itemList()[0], 
 										optionValue: 'code', 
-										optionText: 'name'}">
+										optionText: 'name',
+										group: 'periodOption'}">
 						</div>
 						<br/>
 						<div id="F1_7"  class="cell"
@@ -45,7 +46,8 @@
 										checked: methodEditing, 
 										option: itemList()[1], 
 										optionValue: 'code', 
-										optionText: 'name'}">
+										optionText: 'name',
+										group: 'periodOption'}">
 						</div>
 						
 				</div>
@@ -53,7 +55,13 @@
 					<!-- F1_8 期間 -->
 					<div id = "F1_8" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_63')}</div>
 					<!-- F1_9 最新の履歴から引き継ぐ -->
-					<div id = "F1_9" data-bind="ntsDatePicker: { name: '#{i18n.getText('QMM011_64')}',value: startYearMonth, dateFormat: 'yearmonth'}"></div>
+					<div id = "F1_9" data-bind="ntsDatePicker: { 
+												name: '#{i18n.getText('QMM011_64')}',
+												value: startYearMonth,
+												required: hasRequired(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'}">
+					</div>
 					<!-- F1_10 初めから作成する。 -->
 					<span id="F1_10" class="label">#{i18n.getText('QMM011_65')}</span>
 				</div>

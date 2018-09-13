@@ -46,15 +46,14 @@
 						<table id="B1_4"
 								data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												height: 760,
+												height: 700,
 												rows: 15,
 		                                        dataSource: listEmpInsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
 		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
-																{headerText: '', key: 'startYearMonth', width: 100, formatter: _.escape},
-								                				{headerText: '', key: 'between', width: 50, formatter: _.escape},
-								                				{headerText: '', key: 'endYearMonth', width: 100, formatter: _.escape}
+																{headerText: '', key: 'display', width: 250, formatter: _.escape}
+								         
 								                		],                                        
 								                multiple: false,
 		                                        value: selectedEmpInsHisId
@@ -113,7 +112,7 @@
 																option : {width: '40px'},
 																name: '#{i18n.getText('QMM011_11')}',
 																value: indBdRatio,
-																required: false
+																required: true
 																}"/>
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
@@ -135,7 +134,8 @@
 									<input id = "B3_11"
 										data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
-																value: empContrRatio, 
+																value: empContrRatio,
+																required: true,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 

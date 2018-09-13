@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.laborinsurance;
+package nts.uk.ctx.pr.core.app.command.laborinsurance.employment;
 
 import java.util.List;
 

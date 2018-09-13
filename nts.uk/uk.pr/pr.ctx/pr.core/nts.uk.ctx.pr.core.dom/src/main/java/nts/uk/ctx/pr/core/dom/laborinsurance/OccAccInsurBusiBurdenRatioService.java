@@ -35,15 +35,18 @@ public class OccAccInsurBusiBurdenRatioService {
         this.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatioList,newHistID);
 
     }
+    
     public void updateOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatioList,String hisId){
         occAccIsPrRateRepository.update(occAccInsurBusiBurdenRatioList,hisId);
     }
+    
     private void addOccAccIsHis(OccAccIsHis itemtoBeAdded){
         if(itemtoBeAdded.getHistory().isEmpty()){
             return;
         }
         occAccIsHisRepository.add(itemtoBeAdded.getHistory().get(itemtoBeAdded.getHistory().size()), itemtoBeAdded.getCid());
     }
+    
     private void updateItemBefore(OccAccIsHis occAccIsHis, YearMonthHistoryItem item, String cId){
         Optional<YearMonthHistoryItem> itemToBeUpdated = occAccIsHis.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
@@ -51,6 +54,7 @@ public class OccAccInsurBusiBurdenRatioService {
         }
         occAccIsHisRepository.update(itemToBeUpdated.get(),cId);
     }
+    
     private void addOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> domain,String hisId){
         occAccIsPrRateRepository.add(domain,hisId);
     }

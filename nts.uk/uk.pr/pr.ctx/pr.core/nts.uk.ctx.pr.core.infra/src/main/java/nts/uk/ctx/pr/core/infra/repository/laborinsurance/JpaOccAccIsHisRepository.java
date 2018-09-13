@@ -57,8 +57,6 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
         return yearMonthHistoryItemList;
     }
 
-
-
     @Override
     public void remove(String cid, String hisId){
         this.commandProxy().remove(QpbmtOccAccIsHis.class, new QpbmtOccAccIsHisPk(cid, hisId));
