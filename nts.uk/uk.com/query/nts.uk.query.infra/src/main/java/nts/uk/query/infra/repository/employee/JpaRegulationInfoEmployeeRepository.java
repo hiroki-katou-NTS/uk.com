@@ -114,7 +114,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<String> jobTitleCodes = new ArrayList<>(paramQuery.getJobTitleCodes());
 		List<String> worktypeCodes = new ArrayList<>(paramQuery.getWorktypeCodes());
 		List<Integer> closureIds = new ArrayList<>(paramQuery.getClosureIds());
-
+		GeneralDateTime baseDate = paramQuery.getBaseDate();
+		
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
 
