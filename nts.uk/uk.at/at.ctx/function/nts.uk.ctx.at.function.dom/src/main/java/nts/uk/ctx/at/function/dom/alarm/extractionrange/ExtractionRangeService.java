@@ -5,6 +5,7 @@ import java.util.List;
 public interface ExtractionRangeService {
 	
 	/**
+	 * 期間を算出する
 	 * @param alarmCode
 	 * @param companyId
 	 * @param closureId
