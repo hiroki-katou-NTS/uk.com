@@ -10,14 +10,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
 @AttendanceItemRoot(rootName = ItemConst.DAILY_BUSINESS_TYPE_NAME)
@@ -38,6 +35,18 @@ public class BusinessTypeOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setBusinessTypeCode(domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v());
 			dto.setBaseDate(domain.getDate());
 			dto.setEmployeeId(domain.getEmployeeId());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	@Override
+	public BusinessTypeOfDailyPerforDto clone(){
+		BusinessTypeOfDailyPerforDto dto = new BusinessTypeOfDailyPerforDto();
+		dto.setBusinessTypeCode(businessTypeCode);
+		dto.setBaseDate(workingDate());
+		dto.setEmployeeId(employeeId());
+		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;

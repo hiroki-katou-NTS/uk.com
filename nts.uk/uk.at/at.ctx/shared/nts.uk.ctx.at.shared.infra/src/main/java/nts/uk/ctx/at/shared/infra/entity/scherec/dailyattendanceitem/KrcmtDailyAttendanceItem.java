@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -29,34 +30,50 @@ public class KrcmtDailyAttendanceItem extends UkJpaEntity implements Serializabl
 	public KrcmtDailyAttendanceItemPK krcmtDailyAttendanceItemPK;
 
 	/* 勤怠項目名称 */
+	@Basic(optional = false)
 	@Column(name = "ATTENDANCE_ITEM_NAME")
 	public String attendanceItemName;
 	
 	/* 表示番号 */
+	@Basic(optional = false)
 	@Column(name = "DISPLAY_NUMBER")
-	public BigDecimal displayNumber;
+	public int displayNumber;
 	
 	/* ユーザーが値を変更できる */
+	@Basic(optional = false)
 	@Column(name = "USER_CAN_SET")
-	public BigDecimal userCanSet;
+	public int userCanSet;
 	
 	/* 名称の改行位置 */
+	@Basic(optional = false)
 	@Column(name = "LINE_BREAK_POSITION")
-	public BigDecimal nameLineFeedPosition;
+	public int nameLineFeedPosition;
 	
 	/* 属性 */
+	@Basic(optional = false)
 	@Column(name = "DAILY_ATTENDANCE_ATR")
-	public BigDecimal dailyAttendanceAtr;
+	public int dailyAttendanceAtr;
 	
 	/* Group */
+	@Basic(optional = true)
 	@Column(name = "TYPE_OF_MASTER")
-	public BigDecimal typeOfMaster;
+	public Integer typeOfMaster;
 	
+	@Basic(optional = true)
 	@Column(name = "PRIMITIVE_VALUE")
-	public BigDecimal primitiveValue;
+	public Integer primitiveValue;
 
 	@Override
 	protected Object getKey() {
 		return this.krcmtDailyAttendanceItemPK;
+	}
+
+	public static KrcmtDailyAttendanceItem toEntity(DailyAttendanceItem domain) {
+		return new KrcmtDailyAttendanceItem(
+				new KrcmtDailyAttendanceItemPK(domain.getCompanyId(), domain.getAttendanceItemId()),
+				domain.getAttendanceName().v(), domain.getDisplayNumber(), domain.getUserCanUpdateAtr().value,
+				domain.getNameLineFeedPosition(), domain.getDailyAttendanceAtr().value,
+				domain.getMasterType().map(x -> x.value).orElse(null),
+				domain.getPrimitiveValue().map(x -> x.value).orElse(null));
 	}
 }

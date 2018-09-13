@@ -28,9 +28,7 @@ public class RemoveHistoryCommandHandler extends CommandHandler<RemoveHistoryCom
 		String selectionItemId = command.getSelectionItemId();
 		String historyId = command.getHistId();
 
-		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		String companyId = roleId != null ? AppContexts.user().zeroCompanyIdInContract()
-				: AppContexts.user().companyId();
+		String companyId = AppContexts.user().companyId();
 
 		selectionHistoryService.deleteSelectionHistory(selectionItemId, companyId, historyId);
 

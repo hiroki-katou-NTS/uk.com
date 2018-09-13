@@ -26,14 +26,19 @@ public class TimeDigestionVacationDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
 	
+	@Override
+	public TimeDigestionVacationDailyPerformDto clone() {
+		return new TimeDigestionVacationDailyPerformDto(shortageTime, useTime);
+	}
+	
 	public static TimeDigestionVacationDailyPerformDto from(TimeDigestOfDaily domain) {
 		return domain == null ? null: new TimeDigestionVacationDailyPerformDto(
-				domain.getLeakageTime() == null ? null : domain.getLeakageTime().valueAsMinutes(), 
-				domain.getUseTime() == null ? null : domain.getUseTime().valueAsMinutes());
+				domain.getLeakageTime() == null ? 0 : domain.getLeakageTime().valueAsMinutes(), 
+				domain.getUseTime() == null ? 0 : domain.getUseTime().valueAsMinutes());
 	}
 	
 	public TimeDigestOfDaily toDomain() {
-		return new TimeDigestOfDaily(useTime == null ? null : new AttendanceTime(useTime),
-									shortageTime == null ? null : new AttendanceTime(shortageTime));
+		return new TimeDigestOfDaily(useTime == null ? new AttendanceTime(0) : new AttendanceTime(useTime),
+									shortageTime == null ? new AttendanceTime(0) : new AttendanceTime(shortageTime));
 	}
 }

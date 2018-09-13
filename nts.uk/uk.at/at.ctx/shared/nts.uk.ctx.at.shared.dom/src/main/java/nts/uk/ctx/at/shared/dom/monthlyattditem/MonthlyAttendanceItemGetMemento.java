@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.monthlyattditem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 
 /**
  * The Interface MonthlyAttendanceItemGetMemento.
@@ -61,4 +64,10 @@ public interface MonthlyAttendanceItemGetMemento {
 	 */
 	int getNameLineFeedPosition();
 
+	/**
+	 * Gets the primitiveValue
+	 *
+	 * @return the the primitiveValue
+	 */
+	Optional<PrimitiveValueOfAttendanceItem> getPrimitiveValue();
 }

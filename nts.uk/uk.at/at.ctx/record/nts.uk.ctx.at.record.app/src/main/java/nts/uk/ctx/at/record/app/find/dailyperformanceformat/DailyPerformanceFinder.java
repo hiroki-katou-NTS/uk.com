@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,9 +16,9 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDt
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
-import nts.uk.ctx.at.record.app.find.monthlyattditem.MonthlyAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -32,8 +34,11 @@ public class DailyPerformanceFinder {
 	@Inject
 	private BusinessTypeFormatMonthlyRepository workTypeFormatMonthlyRepository;
 	
+	// @Inject
+	// private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
+	
 	@Inject
-	private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
+	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	public BusinessTypeDetailDto findAll(String businessTypeCode, BigDecimal sheetNo) {
 		LoginUserContext login = AppContexts.user();
@@ -41,8 +46,16 @@ public class DailyPerformanceFinder {
 
 		//find monthly item
 		
-		List<AttdItemDto> listMonthlyItem = monthlyAttendanceItemFinder.findAll();
-		
+		// List<AttdItemDto> listMonthlyItem = monthlyAttendanceItemFinder.findAll();
+		List<AttdItemDto> listMonthlyItem = companyMonthlyItemService
+				.getMonthlyItems(companyId, Optional.empty(), Collections.emptyList(), Collections.emptyList()).stream()
+				.map(x -> {
+					AttdItemDto dto = new AttdItemDto();
+					dto.setAttendanceItemId(x.getAttendanceItemId());
+					dto.setAttendanceItemName(x.getAttendanceItemName());
+					dto.setAttendanceItemDisplayNumber(x.getAttendanceItemDisplayNumber());
+					return dto;
+				}).collect(Collectors.toList());
 		
 		// 勤怠項目 - find attendance item
 		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();

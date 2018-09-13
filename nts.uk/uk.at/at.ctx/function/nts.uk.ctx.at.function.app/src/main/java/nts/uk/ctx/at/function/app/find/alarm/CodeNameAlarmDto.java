@@ -8,4 +8,5 @@ import lombok.Data;
 public class CodeNameAlarmDto {
 	private String alarmCode;
 	private String alarmName;
+	private String alarmNameCode;
 }

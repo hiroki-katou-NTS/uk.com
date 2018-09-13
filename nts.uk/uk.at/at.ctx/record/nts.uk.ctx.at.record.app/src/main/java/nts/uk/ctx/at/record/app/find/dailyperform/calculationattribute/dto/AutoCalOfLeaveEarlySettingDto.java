@@ -25,4 +25,10 @@ public class AutoCalOfLeaveEarlySettingDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int leaveLate;
+
+	@Override
+	protected AutoCalOfLeaveEarlySettingDto clone() {
+		return new AutoCalOfLeaveEarlySettingDto(leaveEarly, leaveLate);
+	}
+	
 }

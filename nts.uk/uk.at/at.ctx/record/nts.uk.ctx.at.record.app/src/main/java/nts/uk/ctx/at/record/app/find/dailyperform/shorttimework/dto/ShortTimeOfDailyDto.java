@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -57,6 +58,19 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
+	public ShortTimeOfDailyDto clone(){
+		ShortTimeOfDailyDto result = new ShortTimeOfDailyDto();
+		result.setEmployeeId(employeeId());
+		result.setYmd(workingDate());
+		result.setShortWorkingTimeSheets(shortWorkingTimeSheets == null ? null 
+				: shortWorkingTimeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
+			result.exsistData();
+		}
+		return result;
+	}
+
+	@Override
 	public String employeeId() {
 		return this.employeeId;
 	}
@@ -81,7 +95,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-									c.getAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getAttr(), ChildCareAttribute.class),
+									c.getAttr() == null || c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
+											? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 					date);

@@ -35,6 +35,13 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 				OverTimeWorkDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getOverTimeWork().orElse(null)), 
 				WorkHolidayTimeDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getWorkHolidayTime().orElse(null)));
 	}
+	
+	@Override
+	public ExcessOfStatutoryTimeDailyPerformDto clone() {
+		return new ExcessOfStatutoryTimeDailyPerformDto(excessOfStatutoryMidNightTime == null ? null : excessOfStatutoryMidNightTime.clone(),
+														overTimeWork == null ? null : overTimeWork.clone(),
+														workHolidayTime == null ? null : workHolidayTime.clone());
+	}
 
 	private static ExcessOfStatutoryMidNightTimeDto getExcessStatutory(ExcessOfStatutoryMidNightTime domain) {
 		return domain == null ? null : new ExcessOfStatutoryMidNightTimeDto(
@@ -56,10 +63,10 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

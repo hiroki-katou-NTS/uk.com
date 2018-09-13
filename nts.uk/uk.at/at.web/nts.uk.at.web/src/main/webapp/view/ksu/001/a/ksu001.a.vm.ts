@@ -382,7 +382,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 /** Common properties */
                 systemType: 2, // システム区分
                 showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: false, // クイック検索
+                showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
@@ -1484,7 +1484,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 for (let i = 0; i < arrCell.length; i += 1) {
                     let cell: any = arrCell[i], valueCell = cell.value;
-                    let workScheduleTimeZone: any =  self.selectedModeDisplay() != 1 ? [{
+                    let workScheduleTimeZone: any =  (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
                         scheduleCnt: 1,
                         scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
                             : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),

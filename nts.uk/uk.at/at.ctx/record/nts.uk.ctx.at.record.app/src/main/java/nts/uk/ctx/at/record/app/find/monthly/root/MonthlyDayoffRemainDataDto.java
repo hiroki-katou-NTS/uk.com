@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.DayAndTimeDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -78,7 +77,7 @@ public class MonthlyDayoffRemainDataDto extends MonthlyItemCommon {
 		return new MonthlyDayoffRemainData(employeeId, ym, closureID, 
 				closureDate == null ? 0 : closureDate.getClosureDay(), 
 				closureDate == null ? false : closureDate.getLastDayOfMonth(), 
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class),
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				datePeriod == null ? null : datePeriod.getStart(), 
 				datePeriod == null ? null : datePeriod.getEnd(), 
 				occurrenceDayTimes == null ? null : occurrenceDayTimes.toOff(), 

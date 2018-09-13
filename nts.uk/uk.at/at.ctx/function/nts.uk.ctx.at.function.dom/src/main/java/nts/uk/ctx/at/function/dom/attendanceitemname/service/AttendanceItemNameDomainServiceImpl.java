@@ -111,7 +111,6 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 			int typeOfAttendanceItem) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-
 		List<AttendanceItemName> attendanceItemNames = new ArrayList<>();
 
 		/**
@@ -163,67 +162,67 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 
 		// // get list frame No 0
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 0)
+				.filter(item -> item.getFrameCategory().value == 0 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// // get list frame No 1
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeTransferMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 1)
+				.filter(item -> item.getFrameCategory().value == 1 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 2
 		Map<Integer, AttendanceItemLinking> frameNoLeaveMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 2)
+				.filter(item -> item.getFrameCategory().value == 2 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 3
 		Map<Integer, AttendanceItemLinking> frameNoLeaveTransferMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 3)
+				.filter(item -> item.getFrameCategory().value == 3 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 4
 		Map<Integer, AttendanceItemLinking> frameNoPremiumMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 4)
+				.filter(item -> item.getFrameCategory().value == 4 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 5
 		Map<Integer, AttendanceItemLinking> frameNoBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 5)
+				.filter(item -> item.getFrameCategory().value == 5 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 6
 		Map<Integer, AttendanceItemLinking> frameNoSpecialBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 6)
+				.filter(item -> item.getFrameCategory().value == 6 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 8
 		Map<Integer, AttendanceItemLinking> frameNoOptionalItemMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 8)
+				.filter(item -> item.getFrameCategory().value == 8 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 7
 		Map<Integer, AttendanceItemLinking> frameNoDivergenceMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 7)
+				.filter(item -> item.getFrameCategory().value == 7 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 10
 		Map<Integer, AttendanceItemLinking> frameNoSpecificDateMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 10)
+				.filter(item -> item.getFrameCategory().value == 10 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		//get list frame No 11
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeSettingMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 11)
+				.filter(item -> item.getFrameCategory().value == 11 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 12
 		Map<Integer, AttendanceItemLinking> frameAbsence = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 12)
+				.filter(item -> item.getFrameCategory().value == 12 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 13
 		Map<Integer, AttendanceItemLinking> frameSpecialHoliday = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 13)
+				.filter(item -> item.getFrameCategory().value == 13 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 
 		//get list frame No 14
 		Map<Integer, AttendanceItemLinking> frameTotalTimes = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 14)
+				.filter(item -> item.getFrameCategory().value == 14 && item.getTypeOfAttendanceItem().value == 2)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 15
 				Map<Integer, AttendanceItemLinking> specialHoliday15 = attendanceItemAndFrameNos.stream()
-						.filter(item -> item.getFrameCategory().value == 15)
+						.filter(item -> item.getFrameCategory().value == 15 && item.getTypeOfAttendanceItem().value == 2)
 						.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));	
 		
 		
@@ -273,7 +272,7 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
 				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
+				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x,(x,y)->x));
 
 		// 任意項目 8
 		Map<Integer, OptionalItemImport> optionalItems = this.optionalItemAdapter.findOptionalItem(companyId, frameNos)

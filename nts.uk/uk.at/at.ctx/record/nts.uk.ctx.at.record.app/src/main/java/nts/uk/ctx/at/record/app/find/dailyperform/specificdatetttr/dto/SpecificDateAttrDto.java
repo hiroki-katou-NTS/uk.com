@@ -19,4 +19,9 @@ public class SpecificDateAttrDto implements ItemConst {
 	private int specificDate;
 
 	private Integer no;
+	
+	@Override
+	public SpecificDateAttrDto clone() {
+		return new SpecificDateAttrDto(specificDate, no);
+	}
 }

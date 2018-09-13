@@ -21,7 +21,7 @@ public class OptionalItemAcFinder implements OptionalItemAdapter{
 	public List<OptionalItemImport> findOptionalItem(String companyId, List<Integer> optionalItemNos) {
 		List<OptionalItemExport> optionalItemExports = this.optionalItemPub.getOptionalItems(companyId, optionalItemNos);
 		List<OptionalItemImport> optionalItemImports = optionalItemExports.stream().map(item -> {
-			return new OptionalItemImport(item.getOptionalItemNo(), item.getOptionalItemName());
+			return new OptionalItemImport(item.getOptionalItemNo(), item.getOptionalItemName(), item.getOptionalItemUnit());
 		}).collect(Collectors.toList());
 		return optionalItemImports;
 	}
