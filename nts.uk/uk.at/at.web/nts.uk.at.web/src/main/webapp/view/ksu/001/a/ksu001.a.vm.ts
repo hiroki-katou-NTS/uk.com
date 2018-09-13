@@ -382,7 +382,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 /** Common properties */
                 systemType: 2, // システム区分
                 showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: true, // クイック検索
+                showQuickSearchTab: false, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
