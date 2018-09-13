@@ -60,6 +60,18 @@ module nts.uk.pr.view.qmm012.share.model {
         FULL_TAXATION = 1
     }
     
+    export enum DeductionItemAtr {
+        OPTIONAL_DEDUCTION_ITEM = 0,
+        SOCIAL_INSURANCE_ITEM = 1,
+        INCOME_TAX_ITEM = 2,
+        INHABITANT_TAX_ITEM = 3
+    }
+    
+    export enum TimeCountAtr {
+        TIME = 0,
+        TIMES = 1
+    }
+    
     export function getCategoryAtr(): Array<ItemModel> {
         return [
             new model.ItemModel(CategoryAtr.PAYMENT_ITEM.toString(), getText('PAYMENT_ITEM')),
