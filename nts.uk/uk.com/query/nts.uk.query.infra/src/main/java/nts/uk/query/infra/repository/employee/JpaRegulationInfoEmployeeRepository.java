@@ -108,12 +108,12 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Constructing condition.
 		List<Predicate> conditions = new ArrayList<>();
-		List<String> employmentCodes = new ArrayList<>(paramQuery.getEmploymentCodes());
-		List<String> workplaceCodes = new ArrayList<>(paramQuery.getWorkplaceCodes());
-		List<String> classificationCodes = new ArrayList<>(paramQuery.getClassificationCodes());
-		List<String> jobTitleCodes = new ArrayList<>(paramQuery.getJobTitleCodes());
-		List<String> worktypeCodes = new ArrayList<>(paramQuery.getWorktypeCodes());
-		List<Integer> closureIds = new ArrayList<>(paramQuery.getClosureIds());
+		List<String> employmentCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getEmploymentCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> workplaceCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorkplaceCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> classificationCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getClassificationCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> jobTitleCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getJobTitleCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> worktypeCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorktypeCodes()).orElse(Collections.EMPTY_LIST));
+		List<Integer> closureIds = new ArrayList<>(Optional.ofNullable(paramQuery.getClosureIds()).orElse(Collections.EMPTY_LIST));
 		GeneralDateTime baseDate = paramQuery.getBaseDate();
 		
 		// Add company condition 
