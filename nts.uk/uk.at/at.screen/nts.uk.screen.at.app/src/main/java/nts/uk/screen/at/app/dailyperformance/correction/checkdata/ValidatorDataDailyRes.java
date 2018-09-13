@@ -230,6 +230,7 @@ public class ValidatorDataDailyRes {
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item28.get();
 				valueTemp.setLayoutCode(textResourceItem28Null);
+				valueTemp.setMessage("Msg_1329");
 				result.add(valueTemp);
 				return result;
 			}
@@ -252,6 +253,7 @@ public class ValidatorDataDailyRes {
 			if (item29.get().getValue() == null || item29.get().getValue().equals("")) {
 				valueTemp = item29.get();
 				valueTemp.setLayoutCode(textResource);
+				valueTemp.setMessage("Msg_1270");
 				result.add(valueTemp);
 				return result;
 			}
