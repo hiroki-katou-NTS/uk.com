@@ -144,11 +144,11 @@ public class DPMonthFlexProcessor {
 			}
 		}
 		// ドメインモデル「月の本人確認」を取得する
-		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
-				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
-				new Day(closingPeriod.get().getClosureDate().getClosureDay()), closingPeriod.get().getProcessingYm());
+//		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
+//				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+//				new Day(closingPeriod.get().getClosureDate().getClosureDay()), closingPeriod.get().getProcessingYm());
 		// TODO ドメインモデル「社員の月別実績エラー一覧」を取得する
-		Optional<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
+		List<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
 				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
 				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
 		//フレックス情報を表示する
