@@ -133,7 +133,7 @@ public class DailyModifyResCommandFacade {
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
 			o.getOptionalItem().ifPresent(optional -> {
-				optional.correctItems(optionalMaster);
+				optional.correctItemsWith(optionalMaster);
 			});
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)

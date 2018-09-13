@@ -87,14 +87,6 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 	@Override
 	public List<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, List<Integer> anyItemIds) {
-
-		return anyItemIds.stream().map(id -> find(employeeId, yearMonth, closureId,
-							closureDate, id).orElse(null)).filter(d -> d != null).collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
-			ClosureDate closureDate, List<Integer> anyItemIds) {
 		Optional<KrcdtMonAnyItemValueMerge> anyEntity = this.queryProxy()
 				.find(new KrcdtMonMergePk(employeeId, yearMonth.v(), closureId.value, closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)), KrcdtMonAnyItemValueMerge.class);
@@ -816,9 +808,9 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		if (entity == null) {
 			entity = new KrcdtMonAnyItemValueMerge();
 			entity.setKrcdtMonAnyItemValuePk(key);
-			entity.toEntityAnyItemOfMonthlyXXX(domain);
+			entity.toEntityAnyItemOfMonthly(domain);
 		} else {
-			entity.toEntityAnyItemOfMonthlyXXX(domain);
+			entity.toEntityAnyItemOfMonthly(domain);
 		}
 		this.getEntityManager().persist(entity);
 	}
@@ -840,15 +832,9 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			entity.setKrcdtMonAnyItemValuePk(key);
 		}
 		for (AnyItemOfMonthly d : domain) {
-			entity.toEntityAnyItemOfMonthlyXXX(d);
+			entity.toEntityAnyItemOfMonthly(d);
 		}
 		this.getEntityManager().persist(entity);
-	}
-	
-	/** 登録および更新 */
-	@Override
-	public void persistAndUpdate(List<AnyItemOfMonthly> domain) {
-		domain.stream().forEach(d -> persistAndUpdate(d));
 	}
 	
 	/** 削除 */

@@ -105,14 +105,14 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 				employeeId,
 				ym,
 				closureID, 
-				closureDate == null ? null : closureDate.toDomain(),
 				datePeriod == null ? null : datePeriod.toDomain(), 
 				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
-				closureDate == null ? null : closureDate.toDomain(), ym, no, 
+				closureDate == null ? null : closureDate.toDomain(),
+				no, 
 				actualSpecial == null ? null : actualSpecial.toActualDomain(), 
-				specialLeave == null ? null : specialLeave.toDomain(), 
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)),
-				grantAtr);
+				specialLeave == null ? null : specialLeave.toDomain(),
+				grantAtr,
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 	}
 	@Override
 	public YearMonth yearMonth() {

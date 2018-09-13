@@ -436,7 +436,6 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
-		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		

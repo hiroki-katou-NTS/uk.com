@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -362,7 +363,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
+		Connection con = this.connection();
 		String sqlQuery = "Delete From KRCDT_DAY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);

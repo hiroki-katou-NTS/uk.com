@@ -36,7 +36,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAt
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.CheckPairDeviationReason;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
-import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
@@ -408,7 +407,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		// update data
 		long time = System.currentTimeMillis();
 		registerNotCalcDomain(commandNew, isUpdate);
-		updateDomainAfterCalc(domainDailyNew);
+		updateDomainAfterCalc(domainDailyNew, null);
 		updateAllDomainMonthService.insertUpdateAll(lstMonthDomain);
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
@@ -441,7 +440,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 		registerNotCalcDomain(commandNew, isUpdate);
 
-		updateDomainAfterCalc(domainDailyNew);
+		updateDomainAfterCalc(domainDailyNew, null);
 
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
 				.collect(Collectors.toList()));
@@ -459,6 +458,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 									Collectors.collectingAndThen(Collectors.toList(),
 											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
 					List<DailyRecordDto> dtos = finder.find(mapSidDate);
+					List<DailyItemValue> dailyItemNews = AttendanceItemUtil.toItemValues(dtos).entrySet().stream().map(et -> {
+						return DailyItemValue.build().createItems(et.getValue())
+						.createEmpAndDate(et.getKey().getEmployeeId(), et.getKey().getDate());
+					}).collect(Collectors.toList());
+					
 					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
 				});
 		executorService.submit(task);

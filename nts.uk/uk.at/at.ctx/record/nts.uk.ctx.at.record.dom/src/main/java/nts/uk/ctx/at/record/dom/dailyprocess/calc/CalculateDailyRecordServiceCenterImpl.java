@@ -131,15 +131,22 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	@Override
-	//更新処理自動実行から呼び出す窓口
-	public List<IntegrationOfDaily> calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,List<ClosureStatusManagement> closureList){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,false,Optional.empty(),Optional.empty(),of(companySet),closureList);
-	}
-	
-	@Override
 	//就業計算と集計から呼び出す時の窓口
-	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext,Optional<Consumer<ProcessState>> counter,List<ClosureStatusManagement> closureList){
+	public CalcStatus calculateForManageState(
+			List<IntegrationOfDaily> integrationOfDaily,
+			Optional<AsyncCommandHandlerContext> asyncContext,
+			Optional<Consumer<ProcessState>> counter,
+			List<ClosureStatusManagement> closureList){
 		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
+	}
+
+
+	@Override
+	public CalcStatus calculateForclosure(
+			List<IntegrationOfDaily> integrationOfDaily,
+			ManagePerCompanySet companySet,
+			List<ClosureStatusManagement> closureList) {
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),closureList);
 	}
 	
 	/**
@@ -163,22 +170,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		MasterShareContainer shareContainer = MasterShareBus.open();
 		
 		ManagePerCompanySet companyCommonSetting = companySet.orElseGet(() -> {
-			List<ErrorAlarmWorkRecord> errorAlermWorkRecords;
-			if (calcOption.isSchedule()) {
-				errorAlermWorkRecords = Collections.emptyList();
-			} else {
-				errorAlermWorkRecords = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtrV2(comanyId, true);
-			}
-		
-			return new ManagePerCompanySet(
-					holidayAddtionRepository.findByCompanyId(comanyId),
-					holidayAddtionRepository.findByCId(comanyId),
-					specificWorkRuleRepository.findCalcMethodByCid(comanyId),
-					compensLeaveComSetRepository.find(comanyId),
-					divergenceTimeRepository.getAllDivTime(comanyId),
-					errorAlermWorkRecords,
-					bPUnitUseSettingRepository.getSetting(comanyId),
-					zeroTimeRepository.findByCId(comanyId));
+			return commonCompanySettingForCalc.getCompanySetting();
 		});
 		
 		companyCommonSetting.setShareContainer(shareContainer);
@@ -429,5 +421,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		}
 		return returnList;
 	}
+
 
 }

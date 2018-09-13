@@ -20,10 +20,18 @@ public interface CalculateDailyRecordService {
 	 * @return 日別実績(Work)
 	 */
 	default public IntegrationOfDaily calculate(
-			IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting
-			,Optional<WorkInfoOfDailyPerformance> yesterDayInfo
-			,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
-		return this.calculate(CalculateOption.asDefault(), integrationOfDaily, companyCommonSetting, yesterDayInfo, tomorrowDayInfo);
+			IntegrationOfDaily integrationOfDaily,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet managePerPersonDailySet,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
+			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+		return this.calculate(
+				CalculateOption.asDefault(),
+				integrationOfDaily,
+				companyCommonSetting,
+				managePerPersonDailySet,
+				yesterDayInfo,
+				tomorrowDayInfo);
 	}
 
 	/**
@@ -34,9 +42,12 @@ public interface CalculateDailyRecordService {
 	 * @param tomorrowDayInfo 翌日の勤務情報
 	 * @return 日別実績(Work)
 	 */
-	public IntegrationOfDaily calculate(CalculateOption option,
-			IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting
-			,ManagePerPersonDailySet managePerPersonDailySet, Optional<WorkInfoOfDailyPerformance> yesterDayInfo
+	public IntegrationOfDaily calculate(
+			CalculateOption option,
+			IntegrationOfDaily integrationOfDaily,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet managePerPersonDailySet,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo
 			,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo);
 
 }

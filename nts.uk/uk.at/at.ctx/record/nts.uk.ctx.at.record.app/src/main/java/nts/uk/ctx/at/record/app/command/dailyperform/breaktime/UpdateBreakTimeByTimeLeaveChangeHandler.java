@@ -10,13 +10,14 @@ import java.util.stream.Stream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
-import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter.EventHandleAction;
-import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter.EventHandleResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleAction;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -165,7 +166,8 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	}
 
 	private List<EditStateOfDailyPerformance> getEditStateByItems(UpdateBreakTimeByTimeLeaveChangeCommand command) {
-		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, getBreakTimeClockItems()))
+		val needCheckItems = getBreakTimeClockItems();
+		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, needCheckItems))
 											.stream().filter(e -> needCheckItems.contains(e.getAttendanceItemId()))
 											.collect(Collectors.toList());
 	}

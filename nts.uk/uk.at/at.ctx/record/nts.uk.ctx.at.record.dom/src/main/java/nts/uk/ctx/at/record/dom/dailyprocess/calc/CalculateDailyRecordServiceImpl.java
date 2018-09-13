@@ -249,12 +249,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			companyCommonSetting.setShareContainer(MasterShareBus.open());
 		}
 		// 実績データの計算
-		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, personCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
-		val afterOOtsukaModeCalc = replaceStampForOOtsuka(afterCalcResult, companyCommonSetting, personCommonSetting,tomorrowDayInfo, tomorrowDayInfo, converter); 
+		IntegrationOfDaily result = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, personCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
 		
 		if (!calculateOption.isSchedule()) {
 			//大塚モードの処理
-			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result, companyCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter); 
+			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result, companyCommonSetting, personCommonSetting,tomorrowDayInfo, tomorrowDayInfo, converter); 
 			
 			//任意項目の計算
 			result = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);

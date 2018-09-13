@@ -163,7 +163,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 				
 				// 中断時
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
-				break;
+				return;
 			}
 		});
 		

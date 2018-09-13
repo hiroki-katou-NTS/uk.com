@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
