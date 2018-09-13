@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -306,12 +307,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(lstSID.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
-				.setParameter("companyID", companyId)
-				.setParameter("lstSID", lstSID)
-				.setParameter("startDate", sDate)
-				.setParameter("endDate", eDate)
-				.getList(c -> c.toDomain());
+		List<KrqdtApplication_New> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSID, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
+					.setParameter("companyID", companyId)
+					.setParameter("lstSID", subList)
+					.setParameter("startDate", sDate)
+					.setParameter("endDate", eDate)
+					.getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 	/**
 	 * @author hoatt
@@ -329,12 +334,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(lstSID.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
-				.setParameter("companyID", companyId)
-				.setParameter("lstSID", lstSID)
-				.setParameter("startDate", sDate)
-				.setParameter("endDate", eDate)
-				.getList(c -> c.toDomain());
+		List<KrqdtApplication_New> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSID, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
+					.setParameter("companyID", companyId)
+					.setParameter("lstSID", subList)
+					.setParameter("startDate", sDate)
+					.setParameter("endDate", eDate)
+					.getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 	@Override
 	public List<Application_New> getListAppByType(String companyId, String employeeID, GeneralDate startDate, GeneralDate endDate, int prePostAtr,
