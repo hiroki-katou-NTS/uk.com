@@ -5,6 +5,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import model = qmm011.share.model;
+    import error = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
@@ -127,7 +128,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                         self.startYearMonth(params.startYearMonth);
                         self.isNewMode(true);
                         self.transferMethod(params.transferMethod);
-                        self.addEmplInsurHis(self.startYearMonth());
+                        self.listEmpInsHis(self.addEmplInsurHis(self.startYearMonth(), self.listEmpInsHis()));
                         self.selectedEmpInsHisId(self.index(0));
                        
                         
@@ -153,14 +154,23 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             });
         }
         
-        addEmplInsurHis(start: number){
+        addEmplInsurHis(start: number, list: Array<EmplInsurHis>){
+            let listEmpInsHis: Array<EmplInsurHis> = []; 
             let self = this;
             let emplInsurHis = new EmplInsurHis();
             emplInsurHis.hisId = '000';
             emplInsurHis.startYearMonth = start.toString();
-            emplInsurHis.endYearMonth = '9999/12';
+            emplInsurHis.endYearMonth = '999912';
             emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString(emplInsurHis.endYearMonth);
-            self.listEmpInsHis.push(emplInsurHis);
+            if (list && list.length > 0) {
+                list[0].endYearMonth = (start + 1).toString();
+            }
+            listEmpInsHis.push(emplInsurHis);
+            _.each(list, (item) => {
+                listEmpInsHis.push(item);
+            })
+            return listEmpInsHis;
+            
         }
         
         setEmplInsurHis(emplInsurHis: EmplInsurHis) {
@@ -169,7 +179,13 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
         }
-
+        
+        validate(){
+            $("#B3_7").trigger("validate");
+            $("#B3_11").trigger("validate");
+            return error.hasError();
+        }
+        
         openFscreen() {
             let self = this;
             let laststartYearMonth = self.listEmpInsHis().length > 1 ? self.listEmpInsHis()[self.index() + 1].startYearMonth : 0;

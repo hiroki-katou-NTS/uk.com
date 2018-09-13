@@ -65,8 +65,10 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             } else {
                 service.updateAccInsurHis(param).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        result: true,
-                        self.isNewMode(false)
+                        setShared('QMM011_F_PARAMS_OUTPUT', {
+                            result: true
+                        });
+                        close();
                     });
                 }).fail(function(res: any) {
                     if (res)
@@ -90,7 +92,7 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("#F1_9").trigger("validate");
-            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth() > Number(self.endYearMonth()) || Number(self.startLastYearMonth()) > Number(self.startYearMonth())){
+            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || Number(self.startLastYearMonth()) > Number(self.startYearMonth())){
                 $('#F1_9').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }

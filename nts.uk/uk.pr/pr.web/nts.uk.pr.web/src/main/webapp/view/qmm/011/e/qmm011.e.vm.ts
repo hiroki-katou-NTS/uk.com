@@ -7,7 +7,6 @@ module nts.uk.com.view.qmm011.e.viewmodel {
     import block = nts.uk.ui.block;
     import model = qmm011.share.model;
     import error = nts.uk.ui.errors;
-    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         startYearMonth:              KnockoutObservable<number> = ko.observable();
         takeOver:                    KnockoutObservable<number> = ko.observable(1);
