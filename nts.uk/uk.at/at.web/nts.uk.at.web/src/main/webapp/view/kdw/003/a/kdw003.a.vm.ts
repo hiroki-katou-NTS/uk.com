@@ -261,6 +261,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.displayNumberZero();
                 }
             });
+            
+            self.selectedDirection.subscribe((value) => {
+                if (!self.loadFirst) {
+                    if (value == 0) {
+                        $("#dpGrid").mGrid("directEnter", "below");
+                         self.characteristics.moveMouse = 0;
+                    } else {
+                        $("#dpGrid").mGrid("directEnter", "right");
+                         self.characteristics.moveMouse = 1;
+                    }
+                   character.save('characterKdw003a', self.characteristics);
+                }
+            });
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -427,6 +440,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.displayFormat(obj.formatExtract);
 
                     self.formatCodes(obj.authenSelectFormat);
+                    
+                    self.selectedDirection(obj.moveMouse)
                 }
 
                 var param = {
@@ -465,6 +480,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.characteristics.showNumberHeader = self.showHeaderNumber();
                     self.characteristics.formatExtract = param.displayFormat;
                     self.characteristics.authenSelectFormat = param.formatCodes;
+                    self.characteristics.moveMouse = self.selectedDirection();
                     character.save('characterKdw003a', self.characteristics);
                 });
                 nts.uk.ui.block.invisible();
@@ -4262,5 +4278,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         formatExtract: number;
 
         authenSelectFormat: any;
+        
+        moveMouse: number;
     }
 }
