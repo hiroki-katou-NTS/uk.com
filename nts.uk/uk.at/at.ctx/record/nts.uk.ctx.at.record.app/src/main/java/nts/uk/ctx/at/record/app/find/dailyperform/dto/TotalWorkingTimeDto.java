@@ -189,7 +189,8 @@ public class TotalWorkingTimeDto implements ItemConst {
 													new WorkTimes(shortWorkTime.getTimes()),
 													createDeductionTime(shortWorkTime.getTotalTime()),
 													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
-													ConvertHelper.getEnum(shortWorkTime.getAttr(), ChildCareAttribute.class)),
+													shortWorkTime.getAttr() == ChildCareAttribute.CARE.value 
+															? ChildCareAttribute.CARE : ChildCareAttribute.CHILD_CARE),
 				dailyOfHoliday == null ? null : dailyOfHoliday.toDomain());
 		
 		if(vacationAddTime != null) {

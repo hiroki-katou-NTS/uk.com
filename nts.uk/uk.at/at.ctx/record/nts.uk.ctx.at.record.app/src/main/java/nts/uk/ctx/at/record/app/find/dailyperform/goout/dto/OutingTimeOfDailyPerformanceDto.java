@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
@@ -94,9 +93,8 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		return new OutingTimeOfDailyPerformance(emp, date, 
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
-								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
-								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),
-								createTimeActual(c.getComeBack()))));
+													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
+													c.reason(), createTimeActual(c.getComeBack()))));
 	}
 
 	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {

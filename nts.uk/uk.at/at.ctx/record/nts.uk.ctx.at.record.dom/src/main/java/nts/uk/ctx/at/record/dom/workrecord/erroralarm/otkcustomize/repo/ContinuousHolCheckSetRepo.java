@@ -10,6 +10,8 @@ public interface ContinuousHolCheckSetRepo {
 	public List<ContinuousHolCheckSet> find(List<String> companyIds);
 
 	public Optional<ContinuousHolCheckSet> find(String companyId);
+	
+	public Optional<ContinuousHolCheckSet> findSpecial(String companyId);
 
 	public void insert(ContinuousHolCheckSet setting);
 

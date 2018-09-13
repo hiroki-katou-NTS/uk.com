@@ -1253,7 +1253,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			converter.withAnyItems(result); 
 			converter.merge(itemValueList);
 			//手修正された項目の値を計算前に戻す   
-			calcResultIntegrationOfDaily.setAnyItemValue(converter.toDomain().getAnyItemValue());
+			calcResultIntegrationOfDaily.setAnyItemValue(converter.anyItems());
 		  }
 		
 		return calcResultIntegrationOfDaily;
