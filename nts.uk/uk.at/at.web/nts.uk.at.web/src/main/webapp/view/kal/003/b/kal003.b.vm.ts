@@ -74,11 +74,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        setTimeout(function() { self.displayWorkTypeSelections_BA1_4(""); }, 200);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                             self.initialScreen().then(function() {
                                 self.settingEnableComparisonMaxValueField(false);
                                 if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
                                     setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                                    
                                 }
                             });
                         }
@@ -87,6 +89,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField(false);
                     });
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(0);
                     self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
                         self.required_BA1_4(newV > 0);

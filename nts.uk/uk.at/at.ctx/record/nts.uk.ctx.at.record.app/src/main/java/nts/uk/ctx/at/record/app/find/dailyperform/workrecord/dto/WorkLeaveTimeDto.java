@@ -20,4 +20,9 @@ public class WorkLeaveTimeDto implements ItemConst {
 	
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
 	private WithActualTimeStampDto leave;
+	
+	@Override
+	public WorkLeaveTimeDto clone() {
+		return new WorkLeaveTimeDto(no, working == null ? null : working.clone(), leave == null ? null : leave .clone());
+	}
 }

@@ -66,12 +66,27 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
 			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setBudgetTimeVariance(getAttendanceTime(domain.getBudgetTimeVariance()));
-			items.setDate(domain.getYmd());
-			items.setEmployeeID(domain.getEmployeeId());
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
 			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
 			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
 			items.setUnemployedTime(getAttendanceTime(domain.getUnEmployedTime()));
+			items.exsistData();
+		}
+		return items;
+	}
+
+	@Override
+	public AttendanceTimeDailyPerformDto clone() {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		items.setEmployeeID(employeeId());
+		items.setDate(workingDate());
+		items.setActualWorkTime(actualWorkTime == null ? null : actualWorkTime.clone());
+		items.setBudgetTimeVariance(budgetTimeVariance);
+		items.setMedicalTime(medicalTime == null ? null : medicalTime.clone());
+		items.setScheduleTime(scheduleTime == null ? null : scheduleTime.clone());
+		items.setStayingTime(stayingTime == null ? null : stayingTime.clone());
+		items.setUnemployedTime(unemployedTime);
+		if(isHaveData()){
 			items.exsistData();
 		}
 		return items;

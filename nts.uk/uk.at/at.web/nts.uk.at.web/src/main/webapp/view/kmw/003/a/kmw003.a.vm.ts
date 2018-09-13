@@ -847,7 +847,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.yearMonth(yearMonthNew);
                     if(yearMonthNew == yearMonthOld){
                         self.yearMonth.valueHasMutated();                        
-                    }
                 },
             }
         };

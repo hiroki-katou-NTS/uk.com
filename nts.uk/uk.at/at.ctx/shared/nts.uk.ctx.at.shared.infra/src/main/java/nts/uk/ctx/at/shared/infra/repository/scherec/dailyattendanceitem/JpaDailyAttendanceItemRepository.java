@@ -101,10 +101,12 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				krcmtDailyAttendanceItem.krcmtDailyAttendanceItemPK.companyId,
 				krcmtDailyAttendanceItem.krcmtDailyAttendanceItemPK.attendanceItemId,
 				krcmtDailyAttendanceItem.attendanceItemName,
-				krcmtDailyAttendanceItem.displayNumber.intValue(),
-				krcmtDailyAttendanceItem.userCanSet.intValue(),
-				krcmtDailyAttendanceItem.dailyAttendanceAtr.intValue(),
-				krcmtDailyAttendanceItem.nameLineFeedPosition.intValue());
+				krcmtDailyAttendanceItem.displayNumber,
+				krcmtDailyAttendanceItem.userCanSet,
+				krcmtDailyAttendanceItem.dailyAttendanceAtr,
+				krcmtDailyAttendanceItem.nameLineFeedPosition,
+				krcmtDailyAttendanceItem.typeOfMaster,
+				krcmtDailyAttendanceItem.primitiveValue);
 		return dailyAttendanceItem;
 	}
 
@@ -167,4 +169,10 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		}
 		return query.getList(f -> toDomain(f));
 	}
+
+	@Override
+	public void update(DailyAttendanceItem domain) {
+		this.commandProxy().update(KrcmtDailyAttendanceItem.toEntity(domain));
+	}
+
 }

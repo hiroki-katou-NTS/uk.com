@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -61,6 +62,19 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 														getTimeStamp(c.getStartTime()),
 														getTimeStamp(c.getEndTime()),
 														c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	@Override
+	public BreakTimeDailyDto clone() {
+		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setAttr(attr);
+		dto.setTimeZone(timeZone == null ? null : timeZone.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;

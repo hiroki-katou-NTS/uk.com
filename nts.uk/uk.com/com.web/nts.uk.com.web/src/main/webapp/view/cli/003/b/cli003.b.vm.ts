@@ -81,6 +81,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         listLogBasicInforModel: LogBasicInfoModel[];
         logBasicInforCsv: LogBasicInfoModel[];
         isDisplayText: KnockoutObservable<boolean> = ko.observable(false);
+        maxlength: KnockoutObservable<number> = ko.observable(1000);
 
         // I
         itemOutPutSelect: KnockoutObservable<string>;
@@ -544,27 +545,35 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                             if (data.length > 0) {
                                 // order by list
-                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
-
+                                if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                    data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
+                                }
+                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    data = _.orderBy(data, ['modifyDateTime', 'employeeCodeTaget'], ['desc', 'asc']);
+                                }
                                 // generate columns header parent
                                 self.setListColumnHeaderLog(recordType, dataOutputItems);
                                 let countLog = 1;
+                                if (data.length > self.maxlength()) {
+                                    self.isDisplayText(true);
+                                }
                                 // process sub header with record type = persion infro and data correct
                                 _.forEach(data, function(logBasicInfoModel) {
-                                    if (countLog == 1) {
-                                        self.isDisplayText(logBasicInfoModel.displayText);
-                                    }
-                                    let logtemp = "";
-                                    if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                        self.listLogBasicInforModel.push(logBasicInfoModel);
-                                    }
-                                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                        logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
-                                        self.listLogBasicInforModel.push(logtemp);
-                                    }
-                                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                        logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
-                                        self.listLogBasicInforModel.push(logBasicInfoModel);
+                                    if (countLog <= self.maxlength()) {
+                                        let logtemp = "";
+                                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                            self.listLogBasicInforModel.push(logBasicInfoModel);
+                                        }
+                                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                            logtemp = self.getSubHeaderPersionInfo(logBasicInfoModel);
+                                            self.listLogBasicInforModel.push(logtemp);
+                                        }
+                                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                            logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
+                                            self.listLogBasicInforModel.push(logBasicInfoModel);
+                                        }
+                                    } else {
+                                        return false;
                                     }
                                 });
                                 // Generate table
@@ -736,7 +745,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Sorting",
-                        inherit: true
+                        inherit :true
+                        
                     },
                     {
                         name: "Paging",
@@ -788,6 +798,35 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
                                 columnSettings: []
+                            },
+                            {
+                                name: "Sorting",
+                                columnSettings: [
+                                    {
+                                        columnIndex: 0,
+                                        allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 1,
+                                        allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 2,
+                                        allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 3,
+                                        allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 4,
+                                        allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 5,
+                                        allowSorting: false
+                                    }
+                                ]
                             },
                             {
                                 name: "Resizing",
@@ -899,10 +938,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
             $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
                 var headerSetting = $(ui.element).data("headersetting");
                 var header = ui.element.find("th[role='columnheader']");
+                let screenModel = new viewmodel.ScreenModel();
                 let helpButton = "<button id=\"F3_113\" data-bind=\"ntsHelpButton: {textId: \'CLI003_68\', textParams:[\'{#CLI003_68}\'], position: \'right center\' }\">？</button>";
+                ko.bindingHandlers["ntsHelpButton"].init($("#F3_113"), function() {
+                    return {textId: 'CLI003_68', textParams:['{#CLI003_68}'], position: 'right center' };
+                }, null, null, null);
+                let textHeaderCheck = getText('CLI003_61');
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
-                    if (currentSetting.headerText == "項目名") {
+                    
+                    if (currentSetting.headerText == textHeaderCheck) {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
                     } else {

@@ -115,7 +115,8 @@ public class CheckBeforeRegisterHolidayWork {
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, 
+							appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}
@@ -202,7 +203,8 @@ public class CheckBeforeRegisterHolidayWork {
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, 
+							holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}

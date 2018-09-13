@@ -44,4 +44,37 @@ public class MonthlyDayoffRemainData extends AggregateRoot{
 	/**	未消化日数, 未消化時間 */
 	private DayOffDayAndTimes unUsedDayTimes;
 
+	/**
+	 * for using table merge KrcdtMonRemainMerge
+	 * @param sId
+	 * @param ym
+	 * @param closureId
+	 * @param closureDay
+	 * @param lastDayis
+	 * @param startDate
+	 * @param endDate
+	 * @param occurrenceDayTimes
+	 * @param useDayTimes
+	 * @param remainingDayTimes
+	 * @param carryForWardDayTimes
+	 * @param unUsedDayTimes
+	 */
+	public MonthlyDayoffRemainData(String sId, YearMonth ym, int closureId, int closureDay, boolean lastDayis,
+			GeneralDate  startDate, GeneralDate endDate, DayOffDayAndTimes occurrenceDayTimes,
+			DayOffDayAndTimes useDayTimes, DayOffRemainDayAndTimes remainingDayTimes,
+			DayOffRemainDayAndTimes carryForWardDayTimes, DayOffDayAndTimes unUsedDayTimes) {
+		this.sId = sId;
+		this.closureId = closureId;
+		this.ym = ym;
+		this.closureDay = closureDay;
+		this.lastDayis = lastDayis;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.occurrenceDayTimes = occurrenceDayTimes;
+		this.useDayTimes = useDayTimes;
+		this.remainingDayTimes = remainingDayTimes;
+		this.carryForWardDayTimes = carryForWardDayTimes;
+		this.unUsedDayTimes = unUsedDayTimes;
+	}
+
 }

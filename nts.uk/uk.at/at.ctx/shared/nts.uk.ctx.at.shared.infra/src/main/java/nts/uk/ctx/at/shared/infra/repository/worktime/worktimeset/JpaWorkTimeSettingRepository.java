@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
@@ -235,9 +238,33 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * @param worktimeCode the worktime code
 	 * @return the optional
 	 */
+	@SneakyThrows
 	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
-		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(companyId, worktimeCode);
-		return this.queryProxy().find(pk, KshmtWorkTimeSet.class);
+		PreparedStatement statement = this.connection().prepareStatement(
+				"select * from KSHMT_WORK_TIME_SET"
+				+ " where CID = ? and WORKTIME_CD = ?");
+		statement.setString(1, companyId);
+		statement.setString(2, worktimeCode);
+		
+		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
+			pk.setCid(rec.getString("CID"));
+			pk.setWorktimeCd(rec.getString("WORKTIME_CD"));
+			
+			KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
+			entity.setKshmtWorkTimeSetPK(pk);
+			entity.setName(rec.getString("NAME"));
+			entity.setAbname(rec.getString("ABNAME"));
+			entity.setSymbol(rec.getString("SYMBOL"));
+			entity.setDailyWorkAtr(rec.getInt("DAILY_WORK_ATR"));
+			entity.setWorktimeSetMethod(rec.getInt("WORKTIME_SET_METHOD"));
+			entity.setAbolitionAtr(rec.getInt("ABOLITION_ATR"));
+			entity.setColor(rec.getString("COLOR"));
+			entity.setMemo(rec.getString("MEMO"));
+			entity.setNote(rec.getString("NOTE"));
+			
+			return entity;
+		});
 	}
 
 	/*

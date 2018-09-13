@@ -232,6 +232,8 @@ public interface DailyPerformanceScreenRepo {
 
 	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
 	
+	void requestForFlush();
+
 	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
 	
 	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);

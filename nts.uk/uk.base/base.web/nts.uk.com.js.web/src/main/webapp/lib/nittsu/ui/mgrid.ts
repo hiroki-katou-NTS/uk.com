@@ -373,7 +373,7 @@ module nts.uk.ui.mgrid {
             let sizeUi = { headerWrappers: headerWrappers, bodyWrappers: bodyWrappers,
                             sumWrappers: sumWrappers, headerColGroup: headerColGroup,
                             bodyColGroup: bodyColGroup, sumColGroup: sumColGroup };
-            let freeAdjuster = new kt.ColumnAdjuster([ _maxFixedWidth, freeWrapperWidth ], self.headerHeight, sizeUi, self.float);
+            let freeAdjuster = new kt.ColumnAdjuster([ _maxFixedWidth, freeWrapperWidth ], self.headerHeight, sizeUi);
             kt._adjuster = freeAdjuster;
             freeAdjuster.handle();
             su.binding(self.$container, self.autoFitWindow);
@@ -1802,7 +1802,6 @@ module nts.uk.ui.mgrid {
             sumColGroup: Array<HTMLElement> = [];
             widths: Array<string>;
             height: string;
-            unshiftRight: any;
             
             $fixedAgency: HTMLElement;
             $agency: HTMLElement;
@@ -1811,11 +1810,10 @@ module nts.uk.ui.mgrid {
             $ownerDoc: HTMLElement;
             actionDetails: any;
             
-            constructor(widths: Array<string>, height: any, sizeUi: any, unshift?: any) {
+            constructor(widths: Array<string>, height: any, sizeUi: any) {
                 this.headerWrappers = sizeUi.headerWrappers;
                 this.bodyWrappers = sizeUi.bodyWrappers;
                 this.sumWrappers = sizeUi.sumWrappers;
-                this.unshiftRight = unshift;
                 _.forEach(sizeUi.headerColGroup, g => {
                     if (g) {
                         let vCols = g.filter(c => c.style.display !== "none");
@@ -1928,7 +1926,7 @@ module nts.uk.ui.mgrid {
             cursorDown(event: any) {
                 let self = this;
                 if (self.actionDetails) {
-                    self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
+                    self.cursorUp(event);
                 }
                 let $targetGrip = event.target;
                 let gripIndex = $.data($targetGrip, RESIZE_NO);
@@ -1977,121 +1975,9 @@ module nts.uk.ui.mgrid {
                     }
                 };
                 
-                self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
-                self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
+                self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.cursorMove.bind(self));
+                self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.cursorUp.bind(self));
                 event.preventDefault();
-            }
-            
-            /**
-             * Cursor move shift.
-             */
-            cursorMoveShift(event: any) {
-                let self = this;
-                if (!self.actionDetails) return;
-                let distance = getCursorX(event) - self.actionDetails.xCoord;
-                if (distance === 0) return;
-                let leftWidth, leftAreaWidth, rightAreaWidth, leftAlign;
-                leftWidth = self.actionDetails.widths.left + distance;
-                
-                if (leftWidth <= 20) return;
-                if (self.actionDetails.breakArea || self.actionDetails.isFixed) {
-                    leftAreaWidth = self.actionDetails.widths.wrapperLeft + distance;
-                    _maxFixedWidth = leftAreaWidth;
-                    rightAreaWidth = self.actionDetails.widths.wrapperRight - distance;
-                    leftAlign = self.actionDetails.leftAlign + distance;
-                    let $header = _$grid[0].querySelector("." + FREE + "." + HEADER);
-                    let sWrap = _$grid[0].querySelector("." + gp.SHEET_CLS);
-                    let pWrap = _$grid[0].querySelector("." + gp.PAGING_CLS);
-                    let btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) 
-                        + _maxFixedWidth + ti.getScrollWidth()) + "px";
-                    if (sWrap) sWrap.style.width = btmw;
-                    if (pWrap) pWrap.style.width = btmw;
-                }
-                
-                self.actionDetails.changedWidths.left = leftWidth;
-                let bodyGroup, sumGroup;
-                if (self.actionDetails.isFixed) {
-                    bodyGroup = self.bodyColGroup[0];
-                    if (self.sumWrappers.length > 0) sumGroup = self.sumColGroup[0];
-                } else { 
-                    bodyGroup = self.bodyColGroup[1];
-                    if (self.sumWrappers.length > 0) sumGroup = self.sumColGroup[1];
-                }
-                
-                if (self.actionDetails.$leftCol) {
-                    self.setWidth(self.actionDetails.$leftCol, leftWidth);
-                    let $contentLeftCol = bodyGroup[self.actionDetails.gripIndex];
-                    self.setWidth($contentLeftCol, leftWidth);
-                    if (self.sumWrappers.length > 0) {
-                        let $sumLeftCol = sumGroup[self.actionDetails.gripIndex];
-                        self.setWidth($sumLeftCol, leftWidth);
-                    }
-                    
-                    if (leftAreaWidth) {
-                        self.setWidth(self.headerWrappers[0], leftAreaWidth);
-                        self.setWidth(self.bodyWrappers[0], leftAreaWidth);
-                        if (self.sumWrappers.length > 0) self.setWidth(self.sumWrappers[0], leftAreaWidth);
-                        _widths._fixed = leftAreaWidth;
-                    }
-                }
-                
-                if (rightAreaWidth) {
-                    self.setWidth(self.headerWrappers[1], rightAreaWidth);
-                    self.setWidth(self.bodyWrappers[1], rightAreaWidth + ti.getScrollWidth());
-                    self.headerWrappers[1].style.left = leftAlign + "px";
-                    self.bodyWrappers[1].style.left = leftAlign + "px";
-                    if (self.sumWrappers.length > 0) {
-                        self.setWidth(self.sumWrappers[1], rightAreaWidth);
-                        self.sumWrappers[1].style.left = leftAlign + "px";
-                    }
-                    _widths._unfixed = rightAreaWidth;
-                }
-            }
-            
-            /**
-             * Cursor up shift.
-             */
-            cursorUpShift(event: any) {
-                let self = this;
-                self.$ownerDoc.removeXEventListener(ssk.MOUSE_MOVE);
-                self.$ownerDoc.removeXEventListener(ssk.MOUSE_UP);
-                self.syncLines();
-                let leftCol, tidx = self.actionDetails.gripIndex;
-                if (!_vessel() || !_vessel().desc) {
-                    self.actionDetails = null;
-                    return;
-                }
-                 
-                if (self.actionDetails.isFixed) {
-                    _.forEach(_fixedHiddenColumns, c => {
-                        let idx = _vessel().desc.fixedColIdxes[c];
-                        if (parseFloat(idx) <= self.actionDetails.gripIndex) {
-                            tidx++;
-                        }
-                    });
-                    
-                    _.forEach(_.keys(_vessel().desc.fixedColIdxes), k => {
-                        let i = parseFloat(_vessel().desc.fixedColIdxes[k]);
-                        if (i === tidx) {
-                            leftCol = k;
-                            if (self.actionDetails.breakArea || leftCol) return false;
-                            return;
-                        }
-                    });
-                    
-                    replenLargeur(leftCol, self.actionDetails.changedWidths.left, "reparer");
-                } else {
-                    _.forEach(_.keys(_vessel().desc.colIdxes), k => {
-                        let i = parseFloat(_vessel().desc.colIdxes[k]);
-                        if (i === self.actionDetails.gripIndex) {
-                            leftCol = k;
-                            return false;
-                        }
-                    });
-                    
-                    replenLargeur(leftCol, self.actionDetails.changedWidths.left);
-                }
-                self.actionDetails = null;
             }
             
             /**
@@ -2245,12 +2131,12 @@ module nts.uk.ui.mgrid {
             syncLines() {
                 let self = this;
                 self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                let left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
-                _.forEach(group, function($td: HTMLElement, index: number) {
-                    if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
+                let left = 0;
+                _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function($td: HTMLElement, index: number) {
+                    if ($td.style.display === "none") return;
                     left += parseFloat($td.style.width);
                     if (index < self.actionDetails.gripIndex) return;
-                    if (self.unshiftRight && index > self.actionDetails.gripIndex) return false;
+                    if (index > self.actionDetails.gripIndex) return false;
                     let lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
                     let div = lineArr[index];
                     div.style.left = left + "px";
@@ -3238,9 +3124,9 @@ module nts.uk.ui.mgrid {
                 if ($bCell) {
                     let column = _columnsMap[editor.columnKey];
                     if (!column) return;
-                    let failed = khl.any({ element: $bCell }), formatted = failed ? inputVal : format(column[0], inputVal);
+                    let formatted = format(column[0], inputVal);
                     $bCell.textContent = formatted;
-                    let disFormat = inputVal === "" || failed ? inputVal : formatSave(column[0], inputVal);
+                    let disFormat = inputVal === "" ? "" : formatSave(column[0], inputVal);
                     wedgeCell($grid, editor, disFormat);
                     $.data($bCell, v.DATA, disFormat);
                     
@@ -3287,7 +3173,7 @@ module nts.uk.ui.mgrid {
                         }
                     } else if ((sCol = _specialLinkColumn[editor.columnKey]) && sCol.changed) {
                         let data = _mafollicle[_currentPage].origDs[editor.rowIdx];
-                        sCol.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(res => {
+                        sCol.changed(editor.columnKey, data[_pk], inputVal, data[editor.columnKey]).done(res => {
                             let $linkCell = lch.cellAt($grid, editor.rowIdx, sCol.column);
                             if ($linkCell) {
                                 $linkCell.querySelector("a").textContent = res;
@@ -3577,12 +3463,9 @@ module nts.uk.ui.mgrid {
         export function format(column: any, value: any) {
             if (util.isNullOrEmpty(_.trim(value))) return value;
             if (column.constraint) {
-                let contrainte, valueType, constraint = column.constraint;
-                if (constraint.primitiveValue) {
-                    contrainte = ui.validation.getConstraint(constraint.primitiveValue);
-                    valueType = contrainte.valueType;
-                } else valueType = constraint.cDisplayType;
-                
+                let constraint = column.constraint;
+                let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                            : constraint.cDisplayType;
                 if (!_.isNil(value) && value !== "") {
                     if (valueType === "TimeWithDay") {
                         let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -3615,9 +3498,9 @@ module nts.uk.ui.mgrid {
                         let numVal = Number(rawValue);
                         if (!isNaN(numVal)) value = formatter.format(numVal);
                         else value = rawValue;
-                    } else if (valueType === "String" && contrainte && contrainte.maxLength && contrainte.isZeroPadded) {
-                        value = uk.text.padLeft(value, '0', parseInt(contrainte.maxLength));
                     }
+                    // TODO: Format code
+                    // uk.text.padLeft();
                 }
             }
             
@@ -4598,10 +4481,8 @@ module nts.uk.ui.mgrid {
                     let sCol = _specialColumn[data.columnKey];
                     if (sCol) {
                         let $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
-                        if ($cCell) {
-                            let column = _columnsMap[sCol];
-                            let formatted = su.format(column[0], value); 
-                            $cCell.textContent = formatted;
+                        if ($cCell) { 
+                            $cCell.textContent = value;
                             su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol },  value);
                             $.data($cCell, v.DATA, value);
                         }
@@ -5157,18 +5038,9 @@ module nts.uk.ui.mgrid {
                         this.options.mode = "time";
                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                 .validate(value);
-                    case "StandardTimeWithDay":
-                        this.options.timeWithDay = true;
-                        let result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
-                                        .validate(value);
-                        if (result.isValid) {
-                            let formatter = new text.TimeWithDayFormatter(this.options);
-                            result.parsedValue = formatter.format(result.parsedValue);
-                        }
-                        return result;
                     case "TimeWithDay":
                         this.options.timeWithDay = true;
-                        let result = new nts.uk.ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                        let result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
                         if (result.isValid) {
                             let formatter = new text.TimeWithDayFormatter(this.options);
