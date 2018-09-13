@@ -139,7 +139,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                 self.contents = res.enumComboBox;
                 //self.executionContents(res.enumComboBox);
-                self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
+                self.startTime(moment(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
                 self.startAsyncTask(res.empCalAndSumExecLogID);
 
                 dfd.resolve();
