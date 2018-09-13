@@ -111,19 +111,19 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
         openEscreen(){
             let self = this;
-            setShared('QMM011_E_PARAMS', {
-                endYearMonth: self.endYearMonth()
+            setShared('QMM011_E_PARAMS_INPUT', {
+                startYearMonth: self.startYearMonth()
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
-                let params = getShared('QMM011_C_Param');
+                let params = getShared('QMM011_E_PARAMS_OUTPUT');
 
                     if (params != null) {
                         self.isNewMode(true);
                         let data: any = {
                             hisId : '',
                             methodEditing :0,
-                            startMonthYear :202308,
+                            startMonthYear :params.startYearMonth,
                             endMonthYear : 0
                         }
                         service.adđOccAccIsHis(data).done(data => {
@@ -138,7 +138,9 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         }
         openDscreen(){
             let self = this;
-            modal("/view/qmm/011/d/index.xhtml");
+            modal("/view/qmm/011/d/index.xhtml").onClosed(function() {
+                self.initScreen(null);
+            });
 
         }
 
@@ -192,7 +194,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         openFscreen(){
             let self = this;
             let laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0
-            setShared('QMM011_F_PARAMS', {
+            setShared('QMM011_F_PARAMS_INPUT', {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
                 insurrance: INSURRANCE.ACCIDENT_INSURRANCE_RATE,
@@ -200,7 +202,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 laststartYearMonth: laststartYearMonth
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
-                let params = getShared('QMM011_B_Param');
+                let params = getShared('QMM011_F_PARAMS_OUTPUT');
                 if (params && params.result == true) {
                     if (!params.isDelete) {
                         self.initScreen(self.hisId);

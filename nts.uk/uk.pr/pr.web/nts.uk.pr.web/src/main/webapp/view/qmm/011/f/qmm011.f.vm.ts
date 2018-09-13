@@ -20,7 +20,7 @@ module nts.uk.com.view.qmm011.f.viewmodel {
         canDelete:              KnockoutObservable<boolean> = ko.observable('');
         constructor() {
             let self = this;
-            self.startYearMonth(201809);
+            self.startYearMonth();
             let params = getShared('QMM011_F_PARAMS_INPUT');
             if (params) {
                 self.insurrance(params.insurrance);
@@ -65,8 +65,10 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             } else {
                 service.updateAccInsurHis(param).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        result: true,
-                        self.isNewMode(false)
+                        setShared('QMM011_F_PARAMS_OUTPUT', {
+                            result: true
+                        });
+                        close();
                     });
                 }).fail(function(res: any) {
                     if (res)
