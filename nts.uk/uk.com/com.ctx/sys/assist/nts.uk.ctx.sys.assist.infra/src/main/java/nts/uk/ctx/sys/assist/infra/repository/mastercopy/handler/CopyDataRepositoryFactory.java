@@ -14,7 +14,7 @@ public class CopyDataRepositoryFactory {
     static HashMap<String, DataCopyHandler> mapper = new HashMap<>();
 
     static {
-        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
+//        mapper.put("PPEMT_HISTORY_SELECTION", new PpemtHistorySelectionDataCopyHandler());
         mapper.put("CCGMT_MY_PAGE_SET", new CcgmtMyPageSetDataCopyHandler());
         mapper.put("CCGST_STANDARD_MENU", new CcgstStandardMenuDataCopyHandler());
         mapper.put("CCGMT_TOPPAGE_PART", new CcgmtTopPagePartDataCopyHandler());

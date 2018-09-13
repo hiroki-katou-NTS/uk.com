@@ -44,23 +44,27 @@ public class CopyDataRepoImp implements CopyDataRepository {
                     case "PPEMT_DATE_RANGE_ITEM":
                         break;
                     case "PPEMT_PER_INFO_ITEM_ORDER":
-                        personalInfoDataCopyAdapter.copyA(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.personalInfoDefEvent(companyId, copyMethod);
                         break;
+                    case "PPEMT_HISTORY_SELECTION":
                     case "PPEMT_SELECTION":
+                        break;
                     case "PPEMT_SEL_ITEM_ORDER":
+                        //do event Event：個人情報選択項目の初期値コピー
+                        personalInfoDataCopyAdapter.personalInfoSelectItemEvent(companyId, copyMethod);
                         break;
                     case "PPEMT_NEW_LAYOUT":
                     case "PPEMT_LAYOUT_ITEM_CLS_DF":
                         break;
                     case "PPEMT_LAYOUT_ITEM_CLS":
                         //Event：新規レイアウトの初期値コピー
-                        personalInfoDataCopyAdapter.copyB(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.newLayoutEvent(companyId, copyMethod);
                         break;
                     case "PPEMT_PINFO_ITEM_GROUP":
                         break;
                     case "PPEMT_PINFO_ITEM_DF_GROUP":
                         //Event：個人情報項目グループの初期値コピー
-                        personalInfoDataCopyAdapter.copyC(companyId, copyMethod);
+                        personalInfoDataCopyAdapter.personalInfoItemGroupEvent(companyId, copyMethod);
                         break;
                 }
         }

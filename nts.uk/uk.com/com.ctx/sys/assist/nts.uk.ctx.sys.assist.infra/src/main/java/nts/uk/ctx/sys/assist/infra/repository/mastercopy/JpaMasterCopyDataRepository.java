@@ -47,12 +47,22 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	@Override
 	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
 		//case 0,1
-		CopyDataRepositoryFactory repositoryFactory = new CopyDataRepositoryFactory();
-		DataCopyHandler copyHandler = repositoryFactory.getCopyHandler(tableName);
-		copyHandler.setCompanyId(companyId);
-		copyHandler.setCopyMethod(copyMethod);
-		copyHandler.setEntityManager(getEntityManager());
-		copyHandler.doCopy();
+//		CopyDataRepositoryFactory repositoryFactory = new CopyDataRepositoryFactory();
+//		DataCopyHandler copyHandler = repositoryFactory.getCopyHandler(tableName);
+//		copyHandler.setCompanyId(companyId);
+//		copyHandler.setCopyMethod(copyMethod);
+//		copyHandler.setEntityManager(getEntityManager());
+//		copyHandler.doCopy();
+
+        DataCopyHandler.DataCopyHandlerBuilder.aDataCopyHandler()
+                .withCompanyId(companyId)
+                .withCopyMethod(copyMethod)
+                .withEntityManager(getEntityManager())
+                .withKeys(null)
+                .withTableName(tableName)
+                .buildQuery()
+                .build()
+                .doCopy();
 	}
 
 	@Override
