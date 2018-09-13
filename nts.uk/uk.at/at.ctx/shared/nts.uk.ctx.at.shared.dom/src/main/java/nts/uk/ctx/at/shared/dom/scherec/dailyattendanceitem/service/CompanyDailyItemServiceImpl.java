@@ -11,8 +11,9 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -27,10 +28,10 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
 	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	private AtItemNameAdapter atItemNameAdapter;
 
 	@Override
-	public List<DailyAttendanceItemNameAdapterDto> getDailyItems(String cid, Optional<String> authorityId,
+	public List<AttItemNameImport> getDailyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
@@ -55,9 +56,9 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<DailyAttendanceItemNameAdapterDto> dailyAttItem = dailyAttendanceItemNameAdapter
-				.getDailyAttendanceItemName(
-						dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()));
+		List<AttItemNameImport> dailyAttItem = atItemNameAdapter
+				.getNameOfAttendanceItem(
+						dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),TypeOfItemImport.Daily);
 		return dailyAttItem;
 	}
 
