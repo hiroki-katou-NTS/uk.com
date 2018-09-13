@@ -196,11 +196,28 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.getList(c -> toDomain(c));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void deleteByListItemId(String employeeId, GeneralDate ymd, List<Integer> itemIdList) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_ITEM_ID).setParameter("employeeId", employeeId)
-		.setParameter("ymd", ymd).setParameter("itemIdList", itemIdList).executeUpdate();
-		this.getEntityManager().flush();
+//		this.getEntityManager().createQuery(DEL_BY_LIST_ITEM_ID).setParameter("employeeId", employeeId)
+//		.setParameter("ymd", ymd).setParameter("itemIdList", itemIdList).executeUpdate();
+//		this.getEntityManager().flush();
+		
+		String listItemIdString = "(";
+		for(int i = 0; i < itemIdList.size(); i++){
+			listItemIdString += "'"+ itemIdList.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
+				+ " and ATTENDANCE_ITEM_ID IN " + listItemIdString;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

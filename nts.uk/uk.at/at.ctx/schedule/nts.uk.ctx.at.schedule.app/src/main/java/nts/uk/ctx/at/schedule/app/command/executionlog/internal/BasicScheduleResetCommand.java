@@ -56,4 +56,7 @@ public class BasicScheduleResetCommand {
 	/** The working code. */
 	// 就業時間帯コード
 	private String workingCode;
+	
+	// 会社共通のマスタキャッシュ
+	private Object companySetting;
 }

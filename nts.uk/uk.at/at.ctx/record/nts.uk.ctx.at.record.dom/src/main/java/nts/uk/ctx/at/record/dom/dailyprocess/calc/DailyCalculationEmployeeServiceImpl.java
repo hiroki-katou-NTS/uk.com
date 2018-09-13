@@ -180,7 +180,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		//計算処理を呼ぶ
 		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList);
-		
 		//実績が無い社員の数を検知
 		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
 		//実績が無い社員を成功としてカウントアップ

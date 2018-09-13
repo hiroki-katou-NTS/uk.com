@@ -181,22 +181,21 @@ public class LogBasicInformationFinder {
 				// Get Map Order list
 				List<String> itemDefinitionIds = new ArrayList<>();
 				List<String> categoryIds = new ArrayList<>();
-				HashMap<String, List<ItemInfo>> mapCategoryValue = new HashMap<>();
+				
 				List<PersonInfoCorrectionLog> listDataPersionInforReturn = new ArrayList<>();
 				for (PersonInfoCorrectionLog personInfoCorrectionLog:listPersonInfoCorrectionLog) {
 					listDataPersionInforReturn.add(personInfoCorrectionLog);
 					List<CategoryCorrectionLog> lstCate = personInfoCorrectionLog.getCategoryCorrections();
 					if(!CollectionUtil.isEmpty(lstCate)){
-						categoryIds = lstCate.stream().map(x -> {
-							List<ItemInfo> itemInfros = x.getItemInfos();
+						for (CategoryCorrectionLog cate : lstCate) {
+							List<ItemInfo> itemInfros = cate.getItemInfos();
 							if (!CollectionUtil.isEmpty(itemInfros)) {
-								mapCategoryValue.put(x.getCategoryId(), itemInfros);
 								for (ItemInfo itemInfro : itemInfros) {
 									itemDefinitionIds.add(itemInfro.getItemId());
 								}
 							}
-							return x.getCategoryId();
-						}).collect(Collectors.toList());
+							categoryIds.add(cate.getCategoryId());
+						}
 					}
 				}
 				HashMap<Integer, HashMap<String, Integer>> mapCheckOrder = iPerInfoCtgOrderByComAdapter.getOrderList(categoryIds, itemDefinitionIds);

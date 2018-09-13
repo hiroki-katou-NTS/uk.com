@@ -19,4 +19,10 @@ public class ActualWorkTimeSheetDto {
 	/**　終了: 勤怠打刻(実打刻付き) */
 	@AttendanceItemLayout(layout="B", jpPropertyName="")
 	private WithActualTimeStampDto end;
+	
+	@Override
+	public ActualWorkTimeSheetDto clone(){
+		return new ActualWorkTimeSheetDto(start == null ? null : start.clone(), 
+											end == null ? null : end.clone());
+	}
 }
