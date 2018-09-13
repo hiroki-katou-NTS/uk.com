@@ -249,23 +249,10 @@ module nts.uk.at.view.ksc001.b {
 
                     /** Return data */
                     returnDataFromCcg001: function(data: any) {
-                        let employeeSearchs: UnitModel[] = [],
-                            listSelectedEmpCode: any = [];
-                        
-                        self.selectedEmployee(data.listEmployee);
-                        self.employeeList([]);
-                        self.selectedEmployeeCode([]);
-                        _.each(data.listEmployee, (employeeSearch) => {
-                            employeeSearchs.push({
-                                code: employeeSearch.employeeCode,
-                                name: employeeSearch.employeeName,
-                                workplaceName: employeeSearch.workplaceName
-                            });
-                            listSelectedEmpCode.push(employeeSearch.employeeCode);
-                        });
-                        // update employee list by ccg001 search 
-                        self.employeeList(employeeSearchs);
-                        self.selectedEmployeeCode(listSelectedEmpCode);
+                        const mappedEmployeeList = _.map(data.listEmployee, employeeSearch => {return {code: employeeSearch.employeeCode,
+                                                name: employeeSearch.employeeName,
+                                                workplaceName: employeeSearch.workplaceName}});
+                        self.employeeList(mappedEmployeeList);
                     }
                 }
             }
