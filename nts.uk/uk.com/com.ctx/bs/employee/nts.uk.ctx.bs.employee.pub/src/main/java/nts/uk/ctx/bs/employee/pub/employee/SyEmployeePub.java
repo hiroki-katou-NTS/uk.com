@@ -140,4 +140,13 @@ public interface SyEmployeePub {
 	// RequestList61
 	List<EmpInfoExport> getEmpInfo(List<String> lstSid);
 	
+	/**
+	 * Find by S id and company id.
+	 *
+	 * @param sId the s id
+	 * @param comanpyId the comanpy id
+	 * @return the employee basic info export
+	 */
+	EmployeeBasicInfoExport findBySIdAndCompanyId(String sId, String comanpyId);
+	
 }
