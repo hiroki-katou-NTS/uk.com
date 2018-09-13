@@ -63,7 +63,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 	
 	public HolidayWorkTimeOfDaily toDomain() {
@@ -83,7 +83,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	}
 
 	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.empty() : Finally.of(c.createTimeDivWithCalc());
+		return c == null ? Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))) : Finally.of(c.createTimeDivWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
@@ -91,6 +91,6 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 }
