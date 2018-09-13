@@ -110,7 +110,7 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	}
 
 	private TimeDivergenceWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : c.createTimeDivWithCalc();
+		return c == null ? TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)) : c.createTimeDivWithCalc();
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
