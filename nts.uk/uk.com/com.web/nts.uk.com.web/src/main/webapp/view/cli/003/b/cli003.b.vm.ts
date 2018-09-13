@@ -255,6 +255,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.selectedTitleAtr(1);
+                    //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
+                     // self.employeeList = ko.observableArray([]);
+                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                    self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
@@ -947,13 +951,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
                     
-                    if (currentSetting.headerText == textHeaderCheck) {
-                        header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
-                    } else {
+//                    if (currentSetting.headerText == textHeaderCheck) {
+//                        header.filter("th[aria-label='" + currentSetting.key + "']")
+//                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
+//                    } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
-                    }
+//                    }
                 }
             });
 
