@@ -165,21 +165,22 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
-		return this.rasingSalarySetting == null ? null : new AutoCalRaisingSalarySetting(
+		return this.rasingSalarySetting == null ? AutoCalRaisingSalarySetting.defaultValue() : new AutoCalRaisingSalarySetting(
 						this.rasingSalarySetting.getSpecificSalaryCalSetting() == 1 ? true: false,
 						this.rasingSalarySetting.getSalaryCalSetting() == 1 ? true : false);
 	}
 
 	private AutoCalRestTimeSetting createAutoCalcHolidaySetting() {
-		return this.holidayTimeSetting == null ? null : new AutoCalRestTimeSetting(
+		return this.holidayTimeSetting == null ? AutoCalRestTimeSetting.defaultValue() : new AutoCalRestTimeSetting(
 				newAutoCalcSetting(this.holidayTimeSetting.getHolidayWorkTime()),
 				newAutoCalcSetting(this.holidayTimeSetting.getLateNightTime()));
 	}
 
 	private AutoCalcOfLeaveEarlySetting createAutoCalcLeaveSetting() {
-		return this.leaveEarlySetting == null ? null : new AutoCalcOfLeaveEarlySetting(
-				this.leaveEarlySetting.getLeaveLate() == 1 ? true : false,
-				this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false);
+		return this.leaveEarlySetting == null ? AutoCalcOfLeaveEarlySetting.defaultValue() 
+												: new AutoCalcOfLeaveEarlySetting(
+															this.leaveEarlySetting.getLeaveLate() == 1 ? true : false,
+															this.leaveEarlySetting.getLeaveEarly() == 1 ? true : false);
 	}
 
 	private AutoCalOvertimeSetting createAutoOverTimeSetting() {
@@ -193,7 +194,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 	
 	private AutoCalSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
-		return dto == null ? null : new AutoCalSetting(convertToTimeLimitUpper(dto.getUpperLimitSetting()),
+		return dto == null ? AutoCalSetting.defaultValue() : 
+									new AutoCalSetting(convertToTimeLimitUpper(dto.getUpperLimitSetting()),
 														convertToCalcAtrOT(dto.getCalculationAttr()));
 	}
 	

@@ -45,14 +45,14 @@ public class WithinOutingTotalTimeDto implements ItemConst {
 	
 	public WithinOutingTotalTime toDomain() {
 		return WithinOutingTotalTime.of(
-					totalTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : totalTime.createTimeWithCalc(),
-					withinCoreTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : withinCoreTime.createTimeWithCalc(),
-					excessCoreTime == null ? TimeWithCalculation.sameTime(new AttendanceTime(0)) : excessCoreTime.createTimeWithCalc());
+					totalTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : totalTime.createTimeWithCalc(),
+					withinCoreTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : withinCoreTime.createTimeWithCalc(),
+					excessCoreTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : excessCoreTime.createTimeWithCalc());
 	}
 	
 	public static WithinOutingTotalTime createEmpty() {
-		return WithinOutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		return WithinOutingTotalTime.of(TimeWithCalculation.sameTime(AttendanceTime.ZERO),
+										TimeWithCalculation.sameTime(AttendanceTime.ZERO),
+										TimeWithCalculation.sameTime(AttendanceTime.ZERO));
 	}
 }
