@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.SociaInsuOfficeDto;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.SociaInsuPreInfoDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuOfficeDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuPreInfoDto;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureInformation;

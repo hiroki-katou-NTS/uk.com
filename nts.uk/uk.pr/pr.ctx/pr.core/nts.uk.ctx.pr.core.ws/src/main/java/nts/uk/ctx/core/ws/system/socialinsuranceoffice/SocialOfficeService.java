@@ -7,18 +7,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.CreateSocialOfficeCommand;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.CreateSocialOfficeCommandHandler;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.DeleteSocialOfficeCommandHandler;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.FindSocialOfficeCommand;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.FindSocialOfficeCommandHandler;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.UpdateSocialOfficeCommand;
-import nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.CreateSocialOfficeCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.CreateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.DeleteSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.DataResponseDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuOfficeDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuPreInfoDto;
 import nts.uk.ctx.core.app.find.system.socialinsuranceoffice.SocialSuranOfficeFinder;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.DataResponseDto;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.SociaInsuOfficeDto;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.SociaInsuPreInfoDto;
 
 @Path("basic/system/social")
 @Produces("application/json")

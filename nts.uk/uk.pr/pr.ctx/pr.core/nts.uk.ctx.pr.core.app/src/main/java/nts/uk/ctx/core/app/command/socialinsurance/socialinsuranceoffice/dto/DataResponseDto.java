@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.system.socialinsuranceoffice.dto;
+package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto;
+package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.core.app.system.socialinsuranceoffice.dto.SociaInsuOfficeDto;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuOfficeDto;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;

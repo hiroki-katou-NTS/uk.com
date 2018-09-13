@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.command.system.socialinsuranceoffice.dto;
+package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice;
 
 import lombok.Data;
 
