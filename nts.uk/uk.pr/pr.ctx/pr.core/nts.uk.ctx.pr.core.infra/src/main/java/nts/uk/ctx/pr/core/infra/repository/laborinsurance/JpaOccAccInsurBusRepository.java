@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.NameOfEachBusiness;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusRepository;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName;
+import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurHis;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBus;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBusPk;
 
@@ -30,6 +31,9 @@ public class JpaOccAccInsurBusRepository extends JpaRepository implements OccAcc
                 .getList();
          return Optional.ofNullable(new OccAccInsurBus(cId, toDomain(occAccInsurBus)));
     }
+
+
+
     private List<NameOfEachBusiness> toDomain(List<QpbmtOccAccInsurBus> entities) {
         if (entities == null || entities.isEmpty()) {
             return null;
@@ -42,7 +46,11 @@ public class JpaOccAccInsurBusRepository extends JpaRepository implements OccAcc
         });
         return nameOfEachBusinessList;
     }
-
+    @Override
+    public void update(OccAccInsurBus domain) {
+        this.commandProxy().updateAll(
+                QpbmtOccAccInsurBus.toEntity(domain));
+    }
     @Override
     public void remove(String cid, int occAccInsurBusNo){
         this.commandProxy().remove(QpbmtOccAccInsurBus.class, new QpbmtOccAccInsurBusPk(cid, occAccInsurBusNo));

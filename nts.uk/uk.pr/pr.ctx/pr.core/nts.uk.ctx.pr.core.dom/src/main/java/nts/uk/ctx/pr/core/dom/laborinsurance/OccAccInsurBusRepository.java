@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface OccAccInsurBusRepository
 {
     Optional<OccAccInsurBus> getOccAccInsurBus(String cId);
-    
+    void update(OccAccInsurBus domain);
     void remove(String cid, int occAccInsurBusNo);
     
 }
