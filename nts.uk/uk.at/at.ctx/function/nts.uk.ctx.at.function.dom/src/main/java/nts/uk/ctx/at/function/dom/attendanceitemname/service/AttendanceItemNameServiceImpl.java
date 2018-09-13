@@ -211,7 +211,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
 				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
+				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x, (x,y)-> x));
 
 		// 任意項目 8
 		Map<Integer, OptionalItemImport> optionalItems = this.optionalItemAdapter.findOptionalItem(companyId, frameNos)
