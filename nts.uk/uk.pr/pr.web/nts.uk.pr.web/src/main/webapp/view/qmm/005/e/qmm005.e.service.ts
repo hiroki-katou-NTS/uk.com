@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm005.e {
+module nts.uk.pr.view.qmm005.e.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     let paths = {
