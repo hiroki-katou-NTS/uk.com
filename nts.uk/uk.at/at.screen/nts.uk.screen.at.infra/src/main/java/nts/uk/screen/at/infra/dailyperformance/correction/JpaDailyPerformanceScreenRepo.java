@@ -854,8 +854,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.getList();
 		return entities.stream().map(i -> {
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
-							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
-							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue(),
+							i.displayNumber, i.userCanSet == 1 ? true : false,
+							i.nameLineFeedPosition, i.dailyAttendanceAtr,
 							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null, i.primitiveValue == null ? null : i.primitiveValue.intValue());
 				}).collect(Collectors.toList());
 	}
