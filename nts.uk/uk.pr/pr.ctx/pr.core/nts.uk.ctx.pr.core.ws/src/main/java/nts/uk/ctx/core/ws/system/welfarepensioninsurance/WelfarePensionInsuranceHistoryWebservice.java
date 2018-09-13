@@ -1,25 +1,24 @@
 package nts.uk.ctx.core.ws.system.welfarepensioninsurance;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceFinder;
-import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.WelfarePensionInsuranceRateHistoryDto;
+import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.WelfarePensionInsuraceRateDto;
 
 @Path("ctx/core/socialinsurance/welfarepensioninsurance")
 @Produces("application/json")
-public class SocialInsuranceOfficeWebservice {
+public class WelfarePensionInsuranceHistoryWebservice {
 	
 	@Inject
 	private WelfarePensionInsuranceFinder welfarePensionInsuranceFinder;
 	
 	@POST
-	@Path("/getByCompanyId")
-	public List<WelfarePensionInsuranceRateHistoryDto> getOfficeByCompanyId() {
-		return welfarePensionInsuranceFinder.findOfficeByCompanyId();
+	@Path("/getByHistoryId/{historyId}")
+	public WelfarePensionInsuraceRateDto getByHistoryId(@PathParam("historyId") String historyId) {
+		return welfarePensionInsuranceFinder.findWelfarePensionByHistoryID(historyId);
 	}
 }
