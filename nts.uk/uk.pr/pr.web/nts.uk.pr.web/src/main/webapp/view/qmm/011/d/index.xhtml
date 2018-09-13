@@ -7,7 +7,10 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 500 };</script>
+        <script>var dialogSize = { width: 500, height: 650 };</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm011.d.vm.js" />
@@ -25,7 +28,7 @@
                 <span id="D1_2" class="label">#{i18n.getText('QMM011_20')}</span>
             </div>
             <div>
-                <table id="table">
+                <table id="D2_1">
 
                         <tr class="bg-green">
                             <th>#{i18n.getText('QMM011_43')}</th>
@@ -38,16 +41,18 @@
                                 <td><span data-bind="text: index"></span></td>
 
                                     <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
-                                    <td ><input data-bind="ntsTextEditor: {value: name,enable:toUse}" /></td>
+                                    <td ><input data-bind="ntsTextEditor: {value: name,
+                                                          enable:toUse,option : {textalign: 'left'},
+                                                          constraint: 'OccAccInsurBusinessName',
+                                                          required: toUse,
+                                                          name:#{i18n.getText('$parent.listName()[index-1]')}
+                                                          }" /></td>
                            </tr>
                     </tbody>
                 </table>
             </div>
-            <div>
-                <hr />
-            </div>
             <div id="functions-area-bottom">
-                <button tabindex="" class="proceed large"
+                <button tabindex="" class="proceed"
                         data-bind="click: update">#{i18n.getText('QMM011_41')}</button>
                 <button  tabindex=""
                         data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
