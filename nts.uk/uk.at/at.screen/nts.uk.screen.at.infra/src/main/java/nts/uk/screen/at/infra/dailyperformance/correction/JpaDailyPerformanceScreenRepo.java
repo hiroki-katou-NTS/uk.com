@@ -267,6 +267,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String GET_EMP_ALL = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
 				+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
 	
+	private final static String GET_MONTH_ERROR;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -575,6 +577,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
 		builderString.append(" ORDER BY w.endD DESC");
 		FIND_WORK_CONDITION = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT m FROM KrcdtEmployeeMonthlyPerError m");
+		builderString.append(" WHERE m.krcdtEmployeeMonthlyPerErrorPK.employeeID = :employeeId");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.errorType = :errorType");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.yearMonth = :yearMonth");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.closureId = :closureId");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.closeDay = :closeDay");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.isLastDay = :isLastDay");
+		GET_MONTH_ERROR = builderString.toString();
 
 	}
 
@@ -1501,11 +1513,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
+	public List<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
 			Integer closureId, Integer closeDay, Integer isLastDay) {
-		 Optional<ErrorFlexMonthDto> errorFlex = this.queryProxy().find(
-				new KrcdtEmployeeMonthlyPerErrorPK(0, errorType, yearMonth, employeeId, closureId, closeDay, isLastDay),
-				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
+		List<ErrorFlexMonthDto> errorFlex = this.queryProxy().query(GET_MONTH_ERROR, KrcdtEmployeeMonthlyPerError.class)
+				                                             .setParameter("errorType", errorType)
+				                                             .setParameter("yearMonth", yearMonth)
+				                                             .setParameter("employeeId", employeeId)
+				                                             .setParameter("closureId", closureId)
+				                                             .setParameter("closeDay", closeDay)
+				                                             .setParameter("isLastDay", isLastDay)
+															 .getList(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
 		return errorFlex;
 	}
 
