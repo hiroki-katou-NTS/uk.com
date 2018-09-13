@@ -354,7 +354,6 @@ public class ValidatorDataDailyRes {
 				}
 			}
 		}
-		divergenceErrors = new ArrayList<>();
 		if (!divergenceErrors.isEmpty())
 			resultError.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
 		return resultError;
