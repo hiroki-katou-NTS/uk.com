@@ -17,7 +17,7 @@ public class AccInsurPreRateFinder {
     private OccAccInsurBusFinder occAccInsurBusFinder;
 
     @Inject
-    private WorkersComInsurService workersComInsurService;
+    private OccAccidentInsurService workersComInsurService;
 
 
     public List<AccInsurPreRateDto> getAccInsurPreRate(String hisId) {

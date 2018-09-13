@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
 
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
-import nts.uk.ctx.pr.core.dom.laborinsurance.WorkersComInsurService;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccidentInsurService;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Stateless
 public class OccAccInsurBusFinder {
     @Inject
-    private WorkersComInsurService workersComInsurService;
+    private OccAccidentInsurService workersComInsurService;
 
     public List<OccAccInsurBusDto> getOccAccInsurBus(){
         String companyId = AppContexts.user().companyId();

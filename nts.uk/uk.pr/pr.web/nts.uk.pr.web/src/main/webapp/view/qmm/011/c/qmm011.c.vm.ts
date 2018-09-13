@@ -46,7 +46,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             block.invisible();
             service.getListOccAccIsHis().done((listOccAccIsHis: Array<IOccAccIsHis>) =>{
                 if (listOccAccIsHis && listOccAccIsHis.length > 0) {
-                    self.listOccAccIsHis(listOccAccIsHis);
+                    self.listOccAccIsHis(OccAccIsHis.convertToDisplayHis(listOccAccIsHis));
                     self.index(self.getIndex(null));
                     if (hisId != null) {
                         self.index(self.getIndex(hisId));
@@ -222,13 +222,30 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         hisId: string
         startYearMonth: string;
         endYearMonth: string;
-        between: string;
-        constructor(param: IOccAccIsHis) {
-            this.hisId =param.hisId ;
-            this.startYearMonth =param.startYearMonth ;
-            this.endYearMonth =param.endYearMonth;
-            this.between ='~';
+        display: string;
+        constructor() {
 
+
+        }
+        static convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            return year + "/" + month;
+        }
+        static convertToDisplayHis(app) {
+            let listEmp = [];
+            _.each(app, (item) => {
+                let dto: OccAccIsHis = new OccAccIsHis();
+                dto.hisId = item.hisId;
+                dto.startYearMonth = item.startYearMonth;
+                dto.endYearMonth = item.endYearMonth;
+                dto.display = this.convertMonthYearToString(item.startYearMonth) + " ~ " + this.convertMonthYearToString(item.endYearMonth);
+                listEmp.push(dto);
+            })
+            return listEmp;
         }
 
     }

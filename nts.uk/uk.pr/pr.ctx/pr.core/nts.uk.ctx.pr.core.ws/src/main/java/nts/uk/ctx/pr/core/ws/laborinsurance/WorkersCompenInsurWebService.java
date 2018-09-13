@@ -4,8 +4,6 @@ import nts.arc.layer.ws.WebService;
 
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommandHandler;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.OccAccIsPrRateCommand;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurBusBurRatioCommand;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
 
 
