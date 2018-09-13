@@ -9,6 +9,9 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.Qpbm
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepository implements BonusEmployeePensionInsuranceRateRepository {
 
     @Override

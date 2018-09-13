@@ -21,7 +21,7 @@ public class QpbmtWelfarePensionInsuranceClassification extends UkJpaEntity impl
     /**
      * 履歴ID
      */
-    @Basic(optional = false)
+    @Id
     @Column(name = "HISTORY_ID")
     private String historyId;
 
