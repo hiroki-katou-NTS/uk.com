@@ -25,7 +25,7 @@ module nts.uk.com.view.qmm008.h.viewmodel {
                 let history = selectedOffice.welfareInsuranceRateHistory.history;
                 if (history.length > 0) {
                     history.forEach((historyItem, index) => {
-                        if (self.selectedHistory.historyID == historyItem.historyID) self.previousHistory = history[index - 1];
+                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index - 1];
                     });
                     self.isLastestHistory(params.selectedHistory.start == history[history.length - 1].start);
                 }

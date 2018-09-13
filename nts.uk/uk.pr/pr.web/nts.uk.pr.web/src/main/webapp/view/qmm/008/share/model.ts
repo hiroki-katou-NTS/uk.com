@@ -151,7 +151,7 @@ module nts.uk.com.view.qmm008.share.model {
     export interface IGenericHistoryYearMonthPeiod {
         start: string;
         end: string;
-        historyID: string;
+        historyId: string;
     }
 
     // 年月期間の汎用履歴項目
@@ -160,12 +160,12 @@ module nts.uk.com.view.qmm008.share.model {
         // Item
         start: KnockoutObservable<string> = ko.observable(null);
         end: KnockoutObservable<string> = ko.observable(null);
-        historyID: KnockoutObservable<string> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IGenericHistoryYearMonthPeiod) {
             this.start(params.start);
             this.end(params.end);
-            this.historyID(params.historyID);
+            this.historyId(params.historyId);
         }
     }
 
@@ -194,14 +194,14 @@ module nts.uk.com.view.qmm008.share.model {
     // 厚生年金保険区分
     export interface IWelfarePensionInsuranceClassification {
         fundClassification: number;
-        historyID: string;
+        historyId: string;
     }
 
     // 厚生年金保険区分
     export class WelfarePensionInsuranceClassification {
         // Fields
         fundClassification: KnockoutObservable<number> = ko.observable(0);
-        historyID: KnockoutObservable<string> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
 
         // Control Item
         fundClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
@@ -210,29 +210,29 @@ module nts.uk.com.view.qmm008.share.model {
         ]);
         constructor(params: IWelfarePensionInsuranceClassification) {
             this.fundClassification(params.fundClassification);
-            this.historyID(params.historyID);
+            this.historyId(params.historyId);
         }
     }
 
     // 各負担料
     export interface IContributionFee {
-        maleInsuPremium: number;
-        femaleInsuPremium: number;
-        maleExemptionInsu: number;
-        femaleExemptionInsu: number;
+        maleInsurancePremium: number;
+        femaleInsurancePremium: number;
+        maleExemptionInsurance: number;
+        femaleExemptionInsurance: number;
     }
 
     // 各負担料
     export class ContributionFee {
-        maleInsuPremium: KnockoutObservable<number> = ko.observable(null);
-        femaleInsuPremium: KnockoutObservable<number> = ko.observable(null);
-        maleExemptionInsu: KnockoutObservable<number> = ko.observable(null);
-        femaleExemptionInsu: KnockoutObservable<number> = ko.observable(null);
+        maleInsurancePremium: KnockoutObservable<number> = ko.observable(null);
+        femaleInsurancePremium: KnockoutObservable<number> = ko.observable(null);
+        maleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
+        femaleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
         constructor(params: IContributionFee) {
-            this.maleInsuPremium(params.maleInsuPremium);
-            this.femaleInsuPremium(params.femaleInsuPremium);
-            this.maleExemptionInsu(params.maleExemptionInsu);
-            this.femaleExemptionInsu(params.femaleExemptionInsu);
+            this.maleInsurancePremium(params.maleInsurancePremium);
+            this.femaleInsurancePremium(params.femaleInsurancePremium);
+            this.maleExemptionInsurance(params.maleExemptionInsurance);
+            this.femaleExemptionInsurance(params.femaleExemptionInsurance);
         }
     }
 
@@ -352,7 +352,7 @@ module nts.uk.com.view.qmm008.share.model {
     export interface IEmployeePensionMonthlyInsuFee {
         autoCalculation: number;
         pensionInsurancePremium: IGradeWelfarePensionInsurancePremium;
-        historyID: string;
+        historyId: string;
         salaryEmployeePensionInsuranceRate: ISalaryEmployeePensionInsuRate;
     }
 
@@ -361,7 +361,7 @@ module nts.uk.com.view.qmm008.share.model {
         // Fields
         autoCalculation: KnockoutObservable<number> = ko.observable(null);
         pensionInsurancePremium: KnockoutObservable<GradeWelfarePensionInsurancePremium> = ko.observable(null);
-        historyID: KnockoutObservable<string> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
         salaryEmployeePensionInsuranceRate: KnockoutObservable<SalaryEmployeePensionInsuRate> = ko.observable(null);
         
         // Control item
@@ -373,7 +373,7 @@ module nts.uk.com.view.qmm008.share.model {
         constructor(params: IEmployeePensionMonthlyInsuFee) {
             this.autoCalculation(params.autoCalculation);
             if (params.pensionInsurancePremium) this.pensionInsurancePremium(new GradeWelfarePensionInsurancePremium(params.pensionInsurancePremium));
-            this.historyID(params.historyID);
+            this.historyId(params.historyId);
             if (params.salaryEmployeePensionInsuranceRate) this.salaryEmployeePensionInsuranceRate(new SalaryEmployeePensionInsuRate(params.salaryEmployeePensionInsuranceRate));
         }
     }
@@ -384,7 +384,7 @@ module nts.uk.com.view.qmm008.share.model {
         fractionClassification: IEmployeePensionClassification;
         femaleContributionRate: IEmployeePensionContributionRate ;
         maleContributionRate:  IEmployeePensionContributionRate;
-        historyID: string;
+        historyId: string;
     }
     
     // 賞与厚生年金保険料率
@@ -395,7 +395,7 @@ module nts.uk.com.view.qmm008.share.model {
         fractionClassification: KnockoutObservable<EmployeePensionClassification> = ko.observable(null);
         femaleContributionRate: KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
         maleContributionRate:  KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
-        historyID: KnockoutObservable<string> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
         
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
@@ -407,7 +407,7 @@ module nts.uk.com.view.qmm008.share.model {
             this.fractionClassification(new EmployeePensionClassification(params.fractionClassification));
             this.femaleContributionRate(new EmployeePensionContributionRate(params.femaleContributionRate));
             this.maleContributionRate(new EmployeePensionContributionRate(params.maleContributionRate));
-            this.historyID(params.historyID);
+            this.historyId(params.historyId);
         }
     }
         
