@@ -161,7 +161,7 @@
 														<div id="targetCheckBoxes">
 														 	<div id="b212224">
 																<!-- B7_22 -->
-																<div tabindex="20" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; processExecType() == 0 }">#{i18n.getText('KBT002_33')}</div>
+																<div tabindex="20" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleClsNomarl() &amp;&amp; processExecType() == 0 }">#{i18n.getText('KBT002_33')}</div>
 															</div>
 														</div>
 			                         				</div>
@@ -201,11 +201,11 @@
 				                         				<!--B10_1 月別集計 -->
 				                         				<div tabindex="27" data-bind="ntsCheckBox: { checked: monthlyAggCls ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_39')}</div>
 			                         				</div>
-			                         				<div class="execSetting">
-				                         				<!-- B11_1 月別集計 -->
+			                         				<!-- <div class="execSetting">
+				                         				B11_1 月別集計
 				                         				<div tabindex="27" data-bind="ntsCheckBox: { checked: alarmAtr ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_40')}</div>
 				                         				<div class="execSetting">
-					                         				<!-- B11_2 月別集計 -->
+					                         				B11_2 月別集計
 					                         				<div id="b858988">
 						                         				<div tabindex="14" style="width: 253px" class="middle"
 										                                    data-bind="ntsComboBox: {
@@ -223,7 +223,7 @@
 					                         					</div>
 				                         					</div>
 			                         					</div>
-			                         				</div> 
+			                         				</div>  -->
 			                         				<div  class="execSetting" style="display:flex">
 					                         			<div style="width: 250px;margin-right: 80px;">
 					                         				<!-- B12-1 -->

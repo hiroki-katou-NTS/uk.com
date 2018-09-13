@@ -471,14 +471,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
-		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
-			// 各処理の終了状態　＝　[アラーム抽出、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
-			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			return true;
+//		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
+//			// 各処理の終了状態　＝　[アラーム抽出、未実施]
+//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
+//			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+//			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+//			return true;
 		}
 		
 		//承認ルート更新（日次）

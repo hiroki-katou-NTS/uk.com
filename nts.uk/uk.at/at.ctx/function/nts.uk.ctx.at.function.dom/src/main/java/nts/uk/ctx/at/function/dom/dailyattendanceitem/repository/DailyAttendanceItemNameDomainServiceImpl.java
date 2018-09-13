@@ -166,27 +166,27 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 		//get list frame No 11
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeSettingMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 11)
+				.filter(item -> item.getFrameCategory().value == 11 && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 12
 		Map<Integer, AttendanceItemLinking> frameAbsence = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 12)
+				.filter(item -> item.getFrameCategory().value == 12 && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 13
 		Map<Integer, AttendanceItemLinking> frameSpecialHoliday = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 13)
+				.filter(item -> item.getFrameCategory().value == 13 && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 
 		//get list frame No 14
 		Map<Integer, AttendanceItemLinking> frameTotalTimes = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 14)
+				.filter(item -> item.getFrameCategory().value == 14 && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 15
 				Map<Integer, AttendanceItemLinking> specialHoliday15 = attendanceItemAndFrameNos.stream()
-						.filter(item -> item.getFrameCategory().value == 15)
+						.filter(item -> item.getFrameCategory().value == 15 && item.getTypeOfAttendanceItem().value == 1)
 						.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));	
 				
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
@@ -235,7 +235,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
 				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
+				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x, (x,y)-> x));
 
 		// 任意項目 8
 		Map<Integer, OptionalItemImport> optionalItems = this.optionalItemAdapter.findOptionalItem(companyId, frameNos)
@@ -519,27 +519,27 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		
 		//get list frame No 11
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeSettingMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 11)
+				.filter(item -> item.getFrameCategory().value == 11  && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 12
 		Map<Integer, AttendanceItemLinking> frameAbsence = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 12)
+				.filter(item -> item.getFrameCategory().value == 12  && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 13
 		Map<Integer, AttendanceItemLinking> frameSpecialHoliday = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 13)
+				.filter(item -> item.getFrameCategory().value == 13  && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 
 		//get list frame No 14
 		Map<Integer, AttendanceItemLinking> frameTotalTimes = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 14)
+				.filter(item -> item.getFrameCategory().value == 14  && item.getTypeOfAttendanceItem().value == 1)
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		
 		//get list frame No 15
 				Map<Integer, AttendanceItemLinking> specialHoliday15 = attendanceItemAndFrameNos.stream()
-						.filter(item -> item.getFrameCategory().value == 15)
+						.filter(item -> item.getFrameCategory().value == 15 && item.getTypeOfAttendanceItem().value == 1)
 						.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));	
 		
 
@@ -589,7 +589,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
 				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
+				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x,(x,y)->x));
 
 		// 任意項目 8
 		Map<Integer, OptionalItemImport> optionalItems = this.optionalItemAdapter.findOptionalItem(companyId, frameNos)

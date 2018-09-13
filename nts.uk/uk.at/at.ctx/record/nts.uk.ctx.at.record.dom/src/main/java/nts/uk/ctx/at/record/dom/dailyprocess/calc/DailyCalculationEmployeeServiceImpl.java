@@ -157,6 +157,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private ClosureStatusManagementRepository closureStatusManagementRepository;
 	
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySettingForCalc;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -220,8 +222,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		//締め一覧取得
 		List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),datePeriod);
+		
+		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
 		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),counter,closureList);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList);
 		
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
