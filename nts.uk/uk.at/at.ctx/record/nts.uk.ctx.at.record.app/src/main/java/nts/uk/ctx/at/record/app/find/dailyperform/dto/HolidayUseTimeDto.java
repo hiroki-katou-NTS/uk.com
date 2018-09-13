@@ -75,14 +75,14 @@ public class HolidayUseTimeDto implements ItemConst {
 	}
 	
 	private static Integer fromTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 
 	private AttendanceTime toDigestionTIme() {
-		return timeDigestionVacationUseTime == null ? null : new AttendanceTime(timeDigestionVacationUseTime);
+		return timeDigestionVacationUseTime == null ? new AttendanceTime(0) : new AttendanceTime(timeDigestionVacationUseTime);
 	}
 
 	private AttendanceTime toUseAttendanceTime() {
-		return useTime == null ? null : new AttendanceTime(useTime);
+		return useTime == null ? new AttendanceTime(0) : new AttendanceTime(useTime);
 	}
 }

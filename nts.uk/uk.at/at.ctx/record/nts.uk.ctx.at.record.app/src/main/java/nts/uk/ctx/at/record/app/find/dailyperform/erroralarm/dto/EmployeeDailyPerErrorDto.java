@@ -3,10 +3,16 @@ package nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -27,6 +33,7 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 	private String employeeID;
 
 	/** 処理年月日: 年月日 */
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate date;
 
 	/** エラー: 勤務実績のエラーアラームコード */

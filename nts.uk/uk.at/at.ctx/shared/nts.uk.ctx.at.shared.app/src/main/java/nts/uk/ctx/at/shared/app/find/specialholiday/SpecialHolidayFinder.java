@@ -70,7 +70,7 @@ public class SpecialHolidayFinder {
 		return null;
 	}
 
-	public List<SpecialHolidayFrameDto> findForScreenJ(Integer selectedCode) {
+	public List<SpecialHolidayFrameDto> findForScreenJ(List<Integer> selectedNos) {
 		List<SpecialHolidayFrameDto> result = new ArrayList<SpecialHolidayFrameDto>();
 		// Group A
 		// ドメインモデル「特別休暇枠」を取得する
@@ -95,7 +95,7 @@ public class SpecialHolidayFinder {
 		// ドメインモデル「特別休暇．対象項目」をチェックする
 		List<NursingLeaveSettingDto> nursings = this.nursingFinder.findNursingLeaveByCompanyId();
 
-		result = removeAFromB(selectedCode, result, shEs, shs, nursings);
+		result = removeAFromB(selectedNos, result, shEs, shs, nursings);
 
 		if (CollectionUtil.isEmpty(result)) {
 			throw new BusinessException("Msg_1267");
@@ -103,11 +103,11 @@ public class SpecialHolidayFinder {
 		return result;
 	}
 
-	private List<SpecialHolidayFrameDto> removeAFromB(Integer selectedCode, List<SpecialHolidayFrameDto> result,
+	private List<SpecialHolidayFrameDto> removeAFromB(List<Integer> selectedNos, List<SpecialHolidayFrameDto> result,
 			List<SpecialHolidayEventDto> shEs, List<SpecialHolidayDto> shs, List<NursingLeaveSettingDto> nursings) {
 		List<Integer> settingCodes = new ArrayList<Integer>();
 		getDuplicateShEvent(settingCodes, shEs);
-		getDuplicateHEvent(selectedCode, settingCodes, shs);
+		getDuplicateHEvent(selectedNos, settingCodes, shs);
 		getDuplicateNursings(settingCodes, nursings);
 
 		return result.stream().filter(x -> !(settingCodes.contains(x.getSpecialHdFrameNo())))
@@ -124,15 +124,15 @@ public class SpecialHolidayFinder {
 		return settingCodes;
 	}
 
-	private List<Integer> getDuplicateHEvent(Integer selectedCode, List<Integer> settingCodes,
+	private List<Integer> getDuplicateHEvent(List<Integer> selectedNos, List<Integer> settingCodes,
 			List<SpecialHolidayDto> shs) {
-		if (selectedCode != null) {
+		if (selectedNos != null) {
 			shs.forEach(x -> {
-				if (x.getTargetItemDto() != null && x.getSpecialHolidayCode() != selectedCode) {
+				if (x.getTargetItemDto() != null) {
 					List<Integer> absFrames = x.getTargetItemDto().getAbsenceFrameNo();
 					if (!CollectionUtil.isEmpty(absFrames)) {
 						absFrames.forEach(code -> {
-							if (!settingCodes.contains(code)) {
+							if (!settingCodes.contains(code) && !selectedNos.contains(code)) {
 								settingCodes.add(code);
 							}
 						});
@@ -140,7 +140,7 @@ public class SpecialHolidayFinder {
 					List<Integer> frames = x.getTargetItemDto().getFrameNo();
 					if (!CollectionUtil.isEmpty(frames)) {
 						frames.forEach(code -> {
-							if (!settingCodes.contains(code)) {
+							if (!settingCodes.contains(code) && !selectedNos.contains(code)) {
 								settingCodes.add(code);
 							}
 						});
@@ -163,6 +163,14 @@ public class SpecialHolidayFinder {
 	}
 
 	public List<SpecialHolidayFrameDto> findAllItemFrame() {
-		return findForScreenJ(null);
+		List<SpecialHolidayFrameDto> result = new ArrayList<SpecialHolidayFrameDto>();
+		List<SpecialHolidayFrameDto> shFrames = this.shFrameFinder.findAll();
+		List<SpecialHolidayFrameDto> absenceFrames = this.absenceFrameFinder.findAll().stream()
+				.map(x -> SpecialHolidayFrameDto.fromAbsenDto(x)).collect(Collectors.toList());
+
+		result.addAll(shFrames);
+		result.addAll(absenceFrames);
+		
+		return result;
 	}
 }

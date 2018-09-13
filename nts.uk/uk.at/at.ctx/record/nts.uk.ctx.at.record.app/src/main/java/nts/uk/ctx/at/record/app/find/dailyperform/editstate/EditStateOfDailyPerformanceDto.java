@@ -1,9 +1,15 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.editstate;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -24,6 +30,7 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 	private int attendanceItemId;
 
 	/** 処理年月日: 年月日 */
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	/** 編集状態: 日別実績の編集状態 */
@@ -37,6 +44,12 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
 				c.getEditStateSetting() == null ? 0 : c.getEditStateSetting().value);
+		dto.exsistData();
+		return dto;
+	}
+	
+	public static EditStateOfDailyPerformanceDto createWith(String employeeId, int itemId, GeneralDate ymd, int state) {
+		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(employeeId, itemId, ymd, state);
 		dto.exsistData();
 		return dto;
 	}

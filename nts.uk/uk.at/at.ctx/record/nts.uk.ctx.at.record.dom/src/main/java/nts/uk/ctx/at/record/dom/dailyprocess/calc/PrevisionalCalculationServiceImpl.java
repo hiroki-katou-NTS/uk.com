@@ -191,7 +191,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
 				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
 				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), Optional.empty()));
+				Collections.emptyList(), Optional.empty(), new ArrayList<>()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,
@@ -202,7 +202,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				.setOutingTime(Optional.of(new OutingTimeOfDailyPerformance(employeeId, ymd, outingTimeSheets)));
 		List<BreakTimeOfDailyPerformance> addElement = new ArrayList<>();
 		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
-		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
+		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_SCHEDULE, breakTimeSheets, ymd));
 		provisionalRecord.setBreakTime(addElement);
 		provisionalRecord
 				.setShortTime(Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortWorkingTimeSheets, ymd)));

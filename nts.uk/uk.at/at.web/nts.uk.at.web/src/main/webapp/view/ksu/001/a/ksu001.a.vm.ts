@@ -828,11 +828,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let updateLeftHorzSumContent = {
                     dataSource: newLeftHorzContentDs
                 };
-                // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
-                $("#extable").find(".ex-body-detail").data("x-det", null);
-                $("#extable").find(".ex-body-detail").data("copy-history", null);
-                $("#extable").find(".ex-body-detail").data("edit-history", null);
-                $("#extable").find(".ex-body-detail").data("stick-history", null);
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
                 //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
@@ -1481,9 +1476,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                     //distinct arrCell
-                    arrCell = _.uniqBy(arrCell, (x) => {
-                        return x.rowIndex && x.columnKey;
-                    });    
+                    arrCell = _.uniqWith(arrCell, _.isEqual);    
                 }
                 arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
                 arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
@@ -1491,7 +1484,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 for (let i = 0; i < arrCell.length; i += 1) {
                     let cell: any = arrCell[i], valueCell = cell.value;
-                    let workScheduleTimeZone: any =  self.selectedModeDisplay() != 1 ? [{
+                    let workScheduleTimeZone: any =  (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
                         scheduleCnt: 1,
                         scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
                             : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
@@ -1849,7 +1842,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * copy data on cell
          */
         copyData(): void {
-            let self = this;
             $("#extable").exTable("updateMode", "copyPaste");
         }
 

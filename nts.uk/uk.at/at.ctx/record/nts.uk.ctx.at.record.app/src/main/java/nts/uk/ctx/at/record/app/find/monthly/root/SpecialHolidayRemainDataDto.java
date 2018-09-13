@@ -54,7 +54,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	/** 特別休暇コード */
 	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY + CODE, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.CODE)
-	private int specialHolidayCd;
+	private int no;
 	
 	/** 実特別休暇 */
 	@AttendanceItemLayout(jpPropertyName = REAL + SPECIAL_HOLIDAY, layout = LAYOUT_D)
@@ -88,7 +88,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 			dto.setClosureDate(domain.getClosureDate() == null ? null : ClosureDateDto.from(domain.getClosureDate()));
 			dto.setDatePeriod(DatePeriodDto.from(domain.getClosurePeriod()));
 			dto.setClosureStatus(domain.getClosureStatus().value);
-			dto.setSpecialHolidayCd(domain.getSpecialHolidayCd());
+			dto.setNo(domain.getSpecialHolidayCd());
 			dto.setActualSpecial(SpecialLeaveDto.from(domain.getActualSpecial()));
 			dto.setSpecialLeave(SpecialLeaveDto.from(domain.getSpecialLeave()));
 			dto.setGrantAtr(domain.isGrantAtr());
@@ -104,14 +104,13 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 				employeeId,
 				ym,
 				closureID, 
-				closureDate == null ? null : closureDate.toDomain(),
 				datePeriod == null ? null : datePeriod.toDomain(), 
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				specialHolidayCd,
-				actualSpecial == null ? null : actualSpecial.toActualDomain(), 
-				specialLeave == null ? null : specialLeave.toDomain(), 
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)),
-				grantAtr);
+				closureDate == null ? null : closureDate.toDomain(),
+				no, actualSpecial == null ? null : actualSpecial.toActualDomain(), 
+				specialLeave == null ? null : specialLeave.toDomain(),
+				grantAtr,
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 	}
 	@Override
 	public YearMonth yearMonth() {

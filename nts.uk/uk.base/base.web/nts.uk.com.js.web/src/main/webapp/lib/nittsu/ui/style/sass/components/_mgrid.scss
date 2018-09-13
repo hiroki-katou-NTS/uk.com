@@ -46,6 +46,10 @@
 	-webkit-user-select: none;
 }
 
+.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
+	background: #fff;
+}
+
 .mgrid .mgrid-fixed-line, .mgrid .mgrid-line {
 	position: absolute;
 	cursor: ew-resize;
@@ -337,12 +341,17 @@
 	float: left;
 	position: relative;
 	padding-right: 5px;
+	overflow: hidden;
+	height: 30px;
+	width: 95%;
+	top: -30px;
+	left: 20px;
 }
 
 .mgrid-sheet-buttonlist {
 	text-decoration: none;
 	line-height: 1.8em;
-	display: inline-block;
+	display: inline;
 }
 
 .mgrid-sheet-button {
@@ -360,4 +369,28 @@
 .mgrid-sheet-button:not(.ui-state-active):hover {
 	border-color: #ccc;
 	background-color: #ededed;
+}
+
+.mgrid-sheet-scrollbar {
+	width: 20px;
+	height: 30px;
+}
+
+.mgrid-sheet-scrollbar li {
+	line-height: 15px;
+	font-size: 0.5rem;
+	text-align: center;
+	cursor: default;
+	user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+}
+
+.mgrid-sheet-scrollbar li:hover {
+	background-color: #ccc;
+}
+
+.mgrid-sheet-scrollbar li:active {
+	color: white;
+	background-color: gray;
 }

@@ -6,7 +6,7 @@ module nts.uk.ui.gridlist {
             
             items = (function () {
                 var list = [];
-                for (var i = 0; i < 400; i++) {
+                for (var i = 0; i < 320; i++) {
                     list.push(new GridItem(i));
                 }
                 return list;
@@ -34,7 +34,7 @@ module nts.uk.ui.gridlist {
             header4: string;
             header5: string;
             header6: string;
-            alert: string; 
+            alert: string;
             constructor(index: number) {
                 this.id = index;
                 this.flexImage = index % 3 == 0 ? "1" : null;
@@ -45,10 +45,10 @@ module nts.uk.ui.gridlist {
                 this.addressCode2 = "002";
                 this.address1 = "HN";
                 this.address2 = "愛知県日本";
-                this.comboCode1 = index % 3 + 1;
+                this.comboCode1 = String(index % 3 + 1);
                 this.combo = String(index % 3 + 1);
                 this.header0 = "Out";
-                this.comboCode2 = index % 3 + 4;
+                this.comboCode2 = String(index % 3 + 4);
                 this.header01 = String(index % 3 + 4);
                 this.header02 = String(index % 3 + 1);
                 this.header1 = "001";
@@ -96,16 +96,20 @@ module nts.uk.ui.gridlist {
             }
         }
         var statesTable = [];
-        statesTable.push(new CellState("0", "address1", [nts.uk.ui.mgrid.color.Error, nts.uk.ui.mgrid.color.Alarm]));
-        statesTable.push(new CellState("0", "time", [nts.uk.ui.mgrid.color.ManualEditTarget, nts.uk.ui.mgrid.color.ManualEditOther]));
-        statesTable.push(new CellState("1", "time", [nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Calculation]));
-        statesTable.push(new CellState("5", "time", [nts.uk.ui.mgrid.color.Disable]));
-        statesTable.push(new CellState("6", "header0", [nts.uk.ui.mgrid.color.Disable]));
+        statesTable.push(new CellState(0, "address1", [nts.uk.ui.mgrid.color.Error, nts.uk.ui.mgrid.color.Alarm]));
+        statesTable.push(new CellState(0, "time", [nts.uk.ui.mgrid.color.ManualEditTarget, nts.uk.ui.mgrid.color.ManualEditOther]));
+        statesTable.push(new CellState(1, "time", [nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Calculation]));
+        statesTable.push(new CellState(5, "time", [nts.uk.ui.mgrid.color.Disable]));
+        statesTable.push(new CellState(6, "header0", [nts.uk.ui.mgrid.color.Disable]));
         for (let i = 1; i < 200; i++) {
             if (i % 2 === 0) {
                 statesTable.push(new CellState(i, "address1", [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect]));
                 statesTable.push(new CellState(i, "comboCode1", [nts.uk.ui.mgrid.color.Disable]));
                 statesTable.push(new CellState(i, "combo", [nts.uk.ui.mgrid.color.Disable]));
+            }
+            if (i === 3) {
+                statesTable.push(new CellState(i, "alert", [nts.uk.ui.mgrid.color.Disable]));
+                statesTable.push(new CellState(i, "flag", [nts.uk.ui.mgrid.color.Disable]));
             }
             statesTable.push(new CellState(i, "addressCode1", [nts.uk.ui.mgrid.color.Disable]));
             statesTable.push(new CellState(i, "time", [nts.uk.ui.mgrid.color.Disable]));
@@ -170,7 +174,7 @@ module nts.uk.ui.gridlist {
         for (let i = 0; i < 300; i++) {
             keys.push(i);
         }
-//        $("#grid2").ntsGrid({ 
+//        $("#grid").mGrid({ 
         new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                             width: '1500px',
                             height: '800px',
@@ -180,6 +184,7 @@ module nts.uk.ui.gridlist {
                                 return ds;
                             },
                             primaryKey: 'id',
+                            primaryKeyDataType: 'number',
                             rowVirtualization: true,
                             virtualization: true,
                             virtualizationMode: 'continuous',
@@ -189,6 +194,7 @@ module nts.uk.ui.gridlist {
                             userId: "4",
                             getUserId: function(k) { return String(k); },
                             errorColumns: [ "ruleCode" ],
+                            errorsOnPage: true,
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -211,7 +217,7 @@ module nts.uk.ui.gridlist {
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "TimeWithDay",
-                                                                min: "10:00", max: "30:00",
+                                                                min: "-48:00", max: "30:00",
                                                                 required: true
                                                             }
                                 },
@@ -228,7 +234,7 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo1',
                                     group: [
-                                            { headerText: 'ComboCode1', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode',
+                                            { headerText: 'ComboCode1', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode_combo',
                                                 constraint: {
                                                     cDisplayType: "Integer",
                                                     min: 1, max: 3,
@@ -244,7 +250,7 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo2',
                                     group: [
-                                            { headerText: 'ComboCode2', key: 'comboCode2', dataType: 'number', width: '60px', ntsType: 'comboCode' },
+                                            { headerText: 'ComboCode2', key: 'comboCode2', dataType: 'number', width: '60px', ntsType: 'comboCode_header01' },
                                             { headerText: 'Header01', key: 'header01', dataType: 'string', width: '500px', ntsControl: 'Combobox2' }
                                         ]
                                 },
@@ -256,14 +262,14 @@ module nts.uk.ui.gridlist {
                                            ]},
                                 { headerText: 'Header12',
                                     group: [
-                                            { headerText: 'Header<br/>1', key: 'header1', dataType: 'string', width: '150px', ntsType: 'code', onChange: search },
+                                            { headerText: 'Header<br/>1', key: 'header1', dataType: 'string', width: '150px', ntsType: 'code_header2', onChange: search },
                                             { headerText: 'Header2', key: 'header2', dataType: 'string', width: '150px', ntsControl: 'Link1' }
                                            ]},
                                 { headerText: 'Header3', key: 'header3', dataType: 'number', width: '150px'/*, ntsControl: 'TextEditor'*/ },
                                 { headerText: 'Header4', key: 'header4', dataType: 'string', width: '150px'},
                                 { headerText: 'Header56',
                                     group: [
-                                            { headerText: 'Header<br/>5', key: 'header5', dataType: 'string', width: '150px', ntsType: 'code', onChange: search },
+                                            { headerText: 'Header<br/>5', key: 'header5', dataType: 'string', width: '150px', ntsType: 'code_header6', onChange: search },
                                             { headerText: 'Header6', key: 'header6', dataType: 'string', width: '150px', ntsControl: 'Link2' }
                                            ]},
 //                                { headerText: 'Delete', key: 'delete', dataType: 'string', width: '90px', unbound: true, ntsControl: 'DeleteButton' }
@@ -314,54 +320,13 @@ module nts.uk.ui.gridlist {
                                                             { columnKey: 'picture', isFixed: true },
                                                              { columnKey: 'flag', isFixed: true },
                                                              { columnKey: 'ruleCode', isFixed: true } ]},
-                                        { name: 'Summaries', 
-                                          showSummariesButton: false,
-                                          showDropDownButton: false,
+                                        { name: 'Summaries',
                                           columnSettings: [
-                                            { columnKey: 'id', allowSummaries: false, 
-                                                summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }] },
-                                            { columnKey: 'picture', allowSummaries: true,
-                                                summaryOperands: [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }] },
-                                            { columnKey: 'flag', allowSummaries: false },
-                                            { columnKey: 'addressCode1', allowSummaries: false },
-                                            { columnKey: 'addressCode2', allowSummaries: false },
-                                            { columnKey: 'address1', allowSummaries: false },
-                                            { columnKey: 'address2', allowSummaries: false },
-                                            { columnKey: 'time', allowSummaries: true, 
-                                                summaryOperands: [{ 
-                                                    rowDisplayLabel: "",
-                                                    type: 'custom',
-                                                    summaryCalculator: $.proxy(totalTime, this),
-                                                    order: 0 
-                                                }]},
-                                            { columnKey: 'ruleCode', allowSummaries: true,
-                                                summaryOperands: [{
-                                                    rowDisplayLabel: "合計",
-                                                    type: "custom",
-                                                    summaryCalculator: $.proxy(totalNumber, this),
-                                                    order: 0  
-                                                }]},
-                                            { columnKey: 'comboCode1', allowSummaries: false },
-                                            { columnKey: 'combo', allowSummaries: false },
-                                            { columnKey: 'header0', allowSummaries: false },
-                                            { columnKey: 'comboCode2', allowSummaries: false },
-                                            { columnKey: 'header01', allowSummaries: false },
-                                            { columnKey: 'header02', allowSummaries: false },
-                                            { columnKey: 'header1', allowSummaries: false },
-                                            { columnKey: 'header2', allowSummaries: false },
-                                            { columnKey: 'header3', allowSummaries: true,
-                                                summaryOperands: [{
-                                                    rowDisplayLabel: '合計',
-                                                    type: "custom",
-                                                    summaryCalculator: $.proxy(totalNumber, this),
-                                                    order: 0  
-                                                }]},
-                                            { columnKey: 'header4', allowSummaries: false },
-                                            { columnKey: 'header5', allowSummaries: false },
-                                            { columnKey: 'header6', allowSummaries: false },
-                                            { columnKey: 'alert', allowSummaries: false }
-                                          ], 
-                                          resultTemplate: '{1}'
+                                            { columnKey: 'flexImage', summaryCalculator: "合計" },
+                                            { columnKey: 'time', summaryCalculator: "Time" },
+                                            { columnKey: 'ruleCode', summaryCalculator: "Number" },
+                                            { columnKey: 'header3', summaryCalculator: "Number" },
+                                          ]
                                         }
                                       ],
                             ntsFeatures: [{ name: 'CopyPaste' },
@@ -407,7 +372,8 @@ module nts.uk.ui.gridlist {
                                             { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
                                             { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }]
 //                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } }]
-                            }).create();
+                            })
+                            .create();
         $("#run").on("click", function() {
             var source = $("#grid2").igGrid("option", "dataSource");
             alert(source[1].flag);
@@ -463,7 +429,7 @@ module nts.uk.ui.gridlist {
             let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
             return hour + ":" + minuteStr;
         }
-        function search(val) {
+        function search(a, b, val) {
             let dfd = $.Deferred();
             let i = 0;
             let result = "Not found";
@@ -480,16 +446,16 @@ module nts.uk.ui.gridlist {
         }
         
         // Grid cell errors
-//        let dialogOptions: any = {
-//            forGrid: true,
-//            headers: [
-//                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
-//                ]
-//        };
-//        this.bind(model, dialogOptions);
-        this.bind(model);
+        let dialogOptions: any = {
+            forGrid: true,
+            headers: [
+                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+                ]
+        };
+        this.bind(model, dialogOptions);
+//        this.bind(model);
     });
 }

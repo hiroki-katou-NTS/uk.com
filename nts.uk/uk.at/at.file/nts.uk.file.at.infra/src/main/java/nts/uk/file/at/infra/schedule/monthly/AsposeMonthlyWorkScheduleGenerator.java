@@ -338,12 +338,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
 			
+			// Create print area
+			createPrintArea(currentRow, sheet);
+			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
 			else {
-				// Create print area
-				createPrintArea(currentRow, sheet);
 				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
 			}
 
@@ -366,7 +367,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			headerData.companyName = optCompany.get().getCompanyName().v();
 		else
 			headerData.companyName = "";
-		if (condition.getOutputType() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
+		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.YEARMONTH);
 		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);

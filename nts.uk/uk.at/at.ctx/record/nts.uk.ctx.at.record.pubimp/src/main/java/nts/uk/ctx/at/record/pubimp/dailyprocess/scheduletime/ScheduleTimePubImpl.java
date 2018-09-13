@@ -147,8 +147,8 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 				
 					//休憩時間
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
-						breakTime = new AttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily()
-											   .getBreakTimeSheet().stream().map(tc -> tc.getBreakTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+						breakTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily()
+											   .getToRecordTotalTime().getTotalTime().getTime();
 					}
 					//育児介護時間
 					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
@@ -226,10 +226,11 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 	private Map<Integer, TimeZone> getTimeZone(List<Integer> startClock, List<Integer> endClock) {
 		Map<Integer, TimeZone> timeList = new HashMap<>();
 		
-		for(int workNo = 1 ; workNo < startClock.size() ; workNo++) {
+		for(int workNo = 1 ; workNo <= startClock.size() ; workNo++) {
 			if(startClock.size() >= workNo
 			&& endClock.size() >= workNo) {
-				timeList.put(1,new TimeZone(new TimeWithDayAttr(startClock.get(workNo).intValue()),new TimeWithDayAttr(endClock.get(workNo).intValue())));
+				timeList.put(workNo,new TimeZone(new TimeWithDayAttr(startClock.get(workNo - 1).intValue()),
+							   		new TimeWithDayAttr(endClock.get(workNo - 1).intValue())));
 			}
 		}
 		return timeList;

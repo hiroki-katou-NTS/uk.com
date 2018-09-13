@@ -17,7 +17,7 @@ public enum EmployeeExecutionStatus {
 	/**
 	 * 1 : 未完了
 	 */
-	INCOMPLETE(1,"完了");
+	INCOMPLETE(1,"未完了");
 
 	public final int value;
 	public String nameId; 

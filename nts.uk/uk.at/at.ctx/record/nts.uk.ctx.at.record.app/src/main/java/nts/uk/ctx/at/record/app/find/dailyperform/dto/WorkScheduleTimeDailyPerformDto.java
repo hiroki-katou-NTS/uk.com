@@ -67,6 +67,6 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 	}
 
 	private AttendanceTime newAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 }

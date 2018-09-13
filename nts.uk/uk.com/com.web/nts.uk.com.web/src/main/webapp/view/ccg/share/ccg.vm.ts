@@ -555,10 +555,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             ko.applyBindings(self, $input[0]);
                             // Set tabindex
                             self.initNextTabFeature();
-                            let tabindex = $input.attr('tabindex');
-                            $input.attr('tabindex', -1);
-                            $input.find('.btn_showhide').attr('tabindex', tabindex);
-    
+                            $('#ccg001-btn-search-drawer').attr('tabindex', self.ccg001Tabindex);
                             // init ccg show/hide event
                             self.initCcgEvent();
                             // set component height

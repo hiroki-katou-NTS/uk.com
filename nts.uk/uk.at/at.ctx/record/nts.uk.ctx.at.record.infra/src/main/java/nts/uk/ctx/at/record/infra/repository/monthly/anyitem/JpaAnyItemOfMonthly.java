@@ -808,9 +808,9 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		if (entity == null) {
 			entity = new KrcdtMonAnyItemValueMerge();
 			entity.setKrcdtMonAnyItemValuePk(key);
-			entity.toEntityAnyItemOfMonthlyXXX(domain);
+			entity.toEntityAnyItemOfMonthly(domain);
 		} else {
-			entity.toEntityAnyItemOfMonthlyXXX(domain);
+			entity.toEntityAnyItemOfMonthly(domain);
 		}
 		this.getEntityManager().persist(entity);
 	}
@@ -832,11 +832,11 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			entity.setKrcdtMonAnyItemValuePk(key);
 		}
 		for (AnyItemOfMonthly d : domain) {
-			entity.toEntityAnyItemOfMonthlyXXX(d);
+			entity.toEntityAnyItemOfMonthly(d);
 		}
 		this.getEntityManager().persist(entity);
 	}
-
+	
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,

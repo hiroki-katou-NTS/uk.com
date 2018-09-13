@@ -40,8 +40,7 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
 
-		String companyId = isGroupManager() ? AppContexts.user().zeroCompanyIdInContract()
-				: AppContexts.user().companyId();
+		String companyId =  AppContexts.user().companyId();
 
 		Optional<SelectionHistory> domainHistOpt = this.selectionHistoryRepo.get(selectItemID, companyId);
 		

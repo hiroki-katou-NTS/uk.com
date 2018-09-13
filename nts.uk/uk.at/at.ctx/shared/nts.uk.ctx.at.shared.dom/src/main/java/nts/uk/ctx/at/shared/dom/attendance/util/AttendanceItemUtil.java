@@ -359,9 +359,9 @@ public class AttendanceItemUtil implements ItemConst {
 						setValueEnumField(layout, className, eVal, subList);
 					}
 				});
-				
-				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
-				
+
+				correctList(idxField, itemsForIdx, originalIdx,  list);
+
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 
 				return;
@@ -438,7 +438,7 @@ public class AttendanceItemUtil implements ItemConst {
 		return originalL == null ? new ArrayList<>() : originalL;
 	}
 
-	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
+	private static <T> void correctList(Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
 											List<Integer> originalIdx, List<T> list) {
 		if (idxField == null) {
 			return;
@@ -451,9 +451,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return false;
 			}
 
-			int idx = (int) value;
-
-			return !(originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx));
+			return !(originalIdx.contains((int) value) || itemsForIdx.containsKey((int) value));
 		});
 
 	}
@@ -716,7 +714,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		Field idxField = getField(idxFieldName, targetClass);
 
-		List<T> returnList = new ArrayList<>(list);
+		List<T> returnList = new ArrayList<>(list.stream().filter(c -> c != null).collect(Collectors.toList()));
 
 		if (returnList.size() < max) {
 
@@ -725,7 +723,9 @@ public class AttendanceItemUtil implements ItemConst {
 				int index = x;
 
 				Optional<T> idxValue = returnList.stream().filter(c -> {
-
+					if(c == null){
+						return false;
+					}
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
 
 					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);

@@ -1860,7 +1860,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	}
 	
 	
-	public void toEntityAnyItemOfMonthlyXXX(AnyItemOfMonthly domain) {
+	public void toEntityAnyItemOfMonthly(AnyItemOfMonthly domain) {
 		switch(domain.getAnyItemId()) {
 		case 1:
 			this.timeValue1 = (domain.getTime().isPresent() ? domain.getTime().get().v() : null);
@@ -2862,17 +2862,8 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 			this.countValue200 = (domain.getTimes().isPresent() ? domain.getTimes().get().v().doubleValue() : null);
 			this.moneyValue200 = (domain.getAmount().isPresent() ? domain.getAmount().get().v() : null);
 			break;
-
 		}
-
 	}
-	
-	
-	public void toEntityAnyItemOfMonthly(AnyItemOfMonthly domain) {
-		
-
-	}
-	
 	
 	/**
 	 * ドメインに変換
