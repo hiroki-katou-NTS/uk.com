@@ -781,7 +781,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         morningAtr5: [0], 
                         afternoon5: 7,
                     }
-                    self.findAbsenceKaf022(hdShip).done(() => {
+                    self.findHdShipKaf022(hdShip).done(() => {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
@@ -799,7 +799,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         morningAtr5: [1, 2, 3, 4, 5, 6, 8, 9], 
                         afternoon5: 8,
                     }
-                    self.findAbsenceKaf022(hdShip).done(() => {
+                    self.findHdShipKaf022(hdShip).done(() => {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
