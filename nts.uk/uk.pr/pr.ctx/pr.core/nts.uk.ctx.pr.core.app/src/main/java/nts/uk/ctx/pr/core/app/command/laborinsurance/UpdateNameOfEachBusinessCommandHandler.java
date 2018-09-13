@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UpdateNameOfEachBusinessCommandHandler extends CommandHandler<UpdateNameOfEachBusinessCommand> {
 
     @Inject
-    WorkersComInsurService workersComInsurService;
+    OccAccidentInsurService workersComInsurService;
 
     @Inject
     OccAccInsurBusRepository occAccInsurBusRepository;

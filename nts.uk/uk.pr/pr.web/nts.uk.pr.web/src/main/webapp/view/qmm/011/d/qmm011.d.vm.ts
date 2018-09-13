@@ -92,7 +92,7 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 let dto  = new NameOfEachBusiness();
                 dto.occAccInsurBusNo = item.occAccInsurBusNo;
                 dto.toUse = item.toUse > 0 ? ko.observable(true) : ko.observable(false);
-                dto.name = item.toUse > 0 ? ko.observable(item.name) : ko.observable('');
+                dto.name = ko.observable(item.name);
                 dto.index = i;
                 i++;
                 listBus.push(dto);

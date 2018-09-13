@@ -4,6 +4,8 @@ import nts.arc.layer.ws.WebService;
 
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCommandHandler;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
 
 
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Path("exio/monsalabonus/laborinsur")
 @Produces("application/json")
-public class WorkersCompenInsurWebService extends WebService {
+public class OccAccidentInsurWebService extends WebService {
 
     @Inject
     private OccAccIsHisFinder occAccIsHisFinder ;
@@ -32,6 +34,9 @@ public class WorkersCompenInsurWebService extends WebService {
 
     @Inject
     private AddOccAccIsPrRateCommandHandler addOccAccIsPrRateCommandHandler;
+
+    @Inject
+    private UpdateNameOfEachBusinessCommandHandler updateNameOfEachBusinessCommandHandler;
 
     @POST
     @Path("getListOccAccIsHis")
@@ -49,6 +54,12 @@ public class WorkersCompenInsurWebService extends WebService {
     @Path("getOccAccInsurBus")
     public  List<OccAccInsurBusDto> getOccAccInsurBus() {
         return occAccInsurBusFinder.getOccAccInsurBus();
+    }
+
+    @POST
+    @Path("updateOccAccInsurBus")
+    public void updateOccAccInsurBus(UpdateNameOfEachBusinessCommand command){
+        updateNameOfEachBusinessCommandHandler.handle(command);
     }
 
     @POST
