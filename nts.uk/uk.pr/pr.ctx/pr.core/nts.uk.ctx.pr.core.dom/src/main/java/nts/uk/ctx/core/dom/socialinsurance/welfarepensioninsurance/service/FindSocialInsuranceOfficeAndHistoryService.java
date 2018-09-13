@@ -23,7 +23,7 @@ public class FindSocialInsuranceOfficeAndHistoryService {
 	
 	public void addNewHistory (String officeCode, YearMonthHistoryItem yearMonthItem) {
 		WelfarePensionInsuranceRateHistory welfarePensionHistory = null;
-		Optional<SocialInsuranceOffice> socialOffice = socialInsuranceOfficeRepository.findById(AppContexts.user().companyId(), officeCode);
+		Optional<SocialInsuranceOffice> socialOffice = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), officeCode);
 		if (!socialOffice.isPresent()){
 			throw new BusinessException("This office has been deleded");
 		}
