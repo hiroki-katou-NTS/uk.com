@@ -7,13 +7,18 @@ module nts.uk.com.view.qmm011.e.viewmodel {
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        startDate:              KnockoutObservable<string> = ko.observable('2010/1');
-        endDate:                KnockoutObservable<string> = ko.observable('2010/1');
-        
+        startYearMonth:              KnockoutObservable<string> = ko.observable('2010/1');
+        endYearMonth:                KnockoutObservable<string> = ko.observable('2010/1');
+        itemList:  KnockoutObservableArray<any> = ko.observableArray([{ id: 0, name:getText('QMM011_53')},
+            {id: 1, name:getText('QMM011_54')}]);
+        selectedIds: KnockoutObservable<any> = ko.observable(0);
+        tempStartYearMonth : KnockoutObservable<string> = ko.observable('2010/1');
         constructor() {
-        
+            let params = getShared('QMM011_E_PARAMS');
+            this.tempStartYearMonth = params.startYearMonth;
+            this.startYearMonth(params.startYearMonth);
         }
-        
+
         register(){
             
         }

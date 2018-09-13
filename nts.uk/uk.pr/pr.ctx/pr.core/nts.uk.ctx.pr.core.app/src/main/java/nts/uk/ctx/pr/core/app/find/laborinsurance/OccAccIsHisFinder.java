@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
-        import nts.uk.ctx.pr.core.dom.laborinsurance.*;
+import nts.uk.ctx.pr.core.dom.laborinsurance.*;
         import nts.uk.shr.com.context.AppContexts;
 
         import javax.ejb.Stateless;
@@ -12,7 +12,7 @@ package nts.uk.ctx.pr.core.app.find.laborinsurance;
 @Stateless
 public class OccAccIsHisFinder {
     @Inject
-    private WorkersComInsurService workersComInsurService;
+    private OccAccidentInsurService workersComInsurService;
 
 
     public List<OccAccIsHisDto> getListEmplInsurHis(){
@@ -22,13 +22,8 @@ public class OccAccIsHisFinder {
         occAccIsHisDtoList = occAccIsHis.isPresent() ?  OccAccIsHisDto.fromDomain(occAccIsHis.get()) :  occAccIsHisDtoList;
         return occAccIsHisDtoList;
     }
-    public List<OccAccInsurBusDto> getOccAccInsurBus(){
-        String companyId = AppContexts.user().companyId();
-        Optional<OccAccInsurBus> occAccInsurBus =  workersComInsurService.getOccAccInsurBus(companyId);
-        List<OccAccInsurBusDto> occAccIsHisDtoList = new ArrayList<OccAccInsurBusDto>();
-        occAccIsHisDtoList = occAccInsurBus.isPresent() ?  OccAccInsurBusDto.fromDomain(occAccInsurBus.get()) :  occAccIsHisDtoList;
-        return occAccIsHisDtoList;
-    }
+
+
 
 
 }

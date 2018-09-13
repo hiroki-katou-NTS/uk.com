@@ -2,35 +2,33 @@
 	padding: 10px 0 0 10px;
 }
 
-.content {
-	margin: 20px 0 20px 0;
+#title{
+	
+	 margin: 15px 15px 15px 15px;
 }
-.right{
-	float: left;
-	width: 900px;
+
+#center{
+
+	 margin: 15px 15px 5px 15px; 
 }
-.left{
-	float: left;
-	width: 350px;
+#F1_3{
+	 margin: 15px 15px 5px 75px;
 }
-.table{
-	margin: 20px 20px 0 0;
-	width: 800px;
+
+#F1_4 {
+	margin: 15px 15px 5px 15px;
 }
-.table th{
-    border: 1px solid #CCC;
-    height: 40px;
-    text-align: center;
-    width: 10%;
+#functions-area-bottom {
+	width: 95% !important;
+	height: 50px;
 }
-.table td {
-	text-align: center;
-	height: 60px;
+
+#F1_8 {
+	margin-left: 110px;
 }
-.table table {
-  table-layout: fixed;
+.F1_8{
+	margin: 15px 15px 5px 15px;
+	height: 20px;
 }
-#B3_9 {
-	width: 150px;
-}
+
 

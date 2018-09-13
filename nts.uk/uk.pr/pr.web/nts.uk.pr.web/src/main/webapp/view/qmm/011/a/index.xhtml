@@ -1,49 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">>
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+<ui:composition template="../../../../master/sidebar.xhtml">
+	<ui:define name="sidebar-head">
 
-			<com:scriptfile path="qmm011.a.service.js" />
-			<com:scriptfile path="qmm011.a.vm.js" />
-			<com:scriptfile path="qmm011.a.start.js" />
-			<com:stylefile path="qmm011.a.style.css" />
-		</ui:define>
-		<ui:define name="sidebar">
-			<ul class="navigator">
-				<!-- A2_2 -->
-				<li><a tabindex="-1" href="#tabpanel-1" class="tab-a"
-					role="tab-navigator">#{i18n.getText('QMM011_4')}</a></li>
-				<!-- A2_3 -->
-				<li><a tabindex="-1" href="#tabpanel-2" class="tab-b"
-					role="tab-navigator">#{i18n.getText('QMM011_5')}</a></li>
+		<com:scriptfile path="qmm011.a.service.js" />
+		<com:scriptfile path="qmm011.a.vm.js" />
+		<com:scriptfile path="qmm011.a.start.js" />
+		<com:stylefile path="qmm011.a.style.css" />
 
-			</ul>
-		</ui:define>
-		<ui:define name="sidebar-content">
-			<!-- A2_1 -->
-			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelA">
-				<!-- A1 -->
 
-				<ui:include src="../b/index.xhtml" />
-			</div>
+
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="../b/qmm011.b.start.js" />
+        <com:scriptfile path="../b/qmm011.b.service.js" />
+        <com:scriptfile path="../b/qmm011.b.vm.js" />
+        <com:stylefile path="../b/qmm011.b.style.css" />
+
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="../c/qmm011.c.start.js" />
+        <com:scriptfile path="../c/qmm011.c.service.js" />
+        <com:scriptfile path="../c/qmm011.c.vm.js" />
+        <com:stylefile path="../c/qmm011.c.style.css" />
+
+
+	</ui:define>
+
+
+	<ui:define name="sidebar">
+		<ul class="navigator">
+			<!-- 残数管理データ登録_振休管理 -->
+			<li><a tabindex="-1" href="#tabpanel-1" class="tab-a" role="tab-navigator">#{i18n.getText('qmm011_149')}</a></li>
 			<!-- 残数管理データ登録_代休管理 -->
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+			<li><a tabindex="-1" href="#tabpanel-2" class="tab-b" role="tab-navigator">#{i18n.getText('qmm011_150')}</a></li>
 
-				<ui:include src="../c/index.xhtml" />
-			</div>
-		</ui:define>
-	</ui:composition>
+		</ul>
+	</ui:define>
+	<ui:define name="sidebar-content">
+
+		<!-- 残数管理データ登録_振休管理 -->
+		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelA">
+			<ui:include src="../b/index.xhtml" />
+		</div>
+		<!-- 残数管理データ登録_代休管理 -->
+		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+			<ui:include src="../c/index.xhtml" />
+		</div>
+	</ui:define>
+</ui:composition>
 </body>
 </html>

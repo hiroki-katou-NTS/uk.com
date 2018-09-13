@@ -53,7 +53,7 @@ public class QpbmtEmpInsurHis extends UkJpaEntity implements Serializable
 
     public static QpbmtEmpInsurHis toEntity(YearMonthHistoryItem domain, String cId) {
         return new QpbmtEmpInsurHis(new QpbmtEmpInsurHisPk(cId, domain.identifier()),
-        		Integer.parseInt(domain.start().toString()),Integer.parseInt(domain.end().toString()));
+        		domain.start().v(),domain.end().v());
     }
 
 }

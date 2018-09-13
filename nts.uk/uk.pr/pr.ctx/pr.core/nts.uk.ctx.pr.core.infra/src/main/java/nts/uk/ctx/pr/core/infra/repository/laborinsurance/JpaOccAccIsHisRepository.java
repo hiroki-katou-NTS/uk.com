@@ -22,7 +22,7 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid AND  f.occAccIsHisPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid ORDER BY f.startYearMonth DESC";
 
 
 
@@ -33,6 +33,16 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
         return Optional.ofNullable(new OccAccIsHis(cid,toDomain(qpbmtOccAccIsHisList)));
     }
 
+    @Override
+    public void add(YearMonthHistoryItem domain, String cId) {
+        this.commandProxy().insert(QpbmtOccAccIsHis.toEntity(domain,cId));
+    }
+
+    @Override
+    public void update(YearMonthHistoryItem domain, String cId) {
+        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain,cId));
+    }
+
 
     private List<YearMonthHistoryItem> toDomain(List<QpbmtOccAccIsHis> entities) {
         if (entities == null || entities.isEmpty()) {
@@ -41,21 +51,10 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
         List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<YearMonthHistoryItem>();
         entities.forEach(entity -> {
             yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.occAccIsHisPk.hisId,
-                    new YearMonthPeriod(new YearMonth(entity.startDate),
-                            new YearMonth(entity.endDate))));
+                    new YearMonthPeriod(new YearMonth(entity.startYearMonth),
+                            new YearMonth(entity.endYearMonth))));
         });
         return yearMonthHistoryItemList;
-    }
-
-
-    @Override
-    public void add(OccAccIsHis domain){
-        this.commandProxy().insert(QpbmtOccAccIsHis.toEntity(domain));
-    }
-
-    @Override
-    public void update(OccAccIsHis domain){
-        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain));
     }
 
     @Override

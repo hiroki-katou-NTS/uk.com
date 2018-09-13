@@ -9,15 +9,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurBusBurRatioCommand;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.RegisterEmpInsurPreRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.EmpInsurHisCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurBusBurRatioCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurPreRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.UpdateEmpInsurHisCommandHandler;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurHisDto;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurHisFinder;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurPreRateDto;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurPreRateFinder;
 
 
-@Path("exio/monsalabonus/laborinsur")
+@Path("core/monsalabonus/laborinsur")
 @Produces("application/json")
 public class EmpInsurWebService extends WebService {
 
@@ -29,6 +31,9 @@ public class EmpInsurWebService extends WebService {
 	
 	@Inject
 	private RegisterEmpInsurPreRateCommandHandler registerEmpInsurPreRateCommandHandler;
+	
+	@Inject
+	private UpdateEmpInsurHisCommandHandler updateEmpInsurHisCommandHandler;
 	
 	@POST
 	@Path("getEmpInsurPreRate/{hisId}")
@@ -46,6 +51,18 @@ public class EmpInsurWebService extends WebService {
 	@Path("register")
 	public void registerEmpInsurPreRate(RegisterEmpInsurBusBurRatioCommand command){
 		registerEmpInsurPreRateCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateEmpInsurHis")
+	public void updateEmpInsurHis(EmpInsurHisCommand command){
+		updateEmpInsurHisCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateAccInsurHis")
+	public void updateWorkersCompenInsur(EmpInsurHisCommand command){
+		updateEmpInsurHisCommandHandler.handle(command);
 	}
 
 }

@@ -24,6 +24,6 @@ public class OccAccInsurBusiBurdenRatio {
     /**
      * 事業主負担率
      */
-    private String empConRatio;
+    private InsuranceRate empConRatio;
 
 }

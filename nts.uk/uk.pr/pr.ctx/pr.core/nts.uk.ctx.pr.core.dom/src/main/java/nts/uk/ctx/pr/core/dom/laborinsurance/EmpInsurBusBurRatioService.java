@@ -24,19 +24,19 @@ public class EmpInsurBusBurRatioService {
     
     public void addEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio, YearMonth start, YearMonth end){
     	String cId = AppContexts.user().companyId();
-    	String newHistID = IdentifierUtil.randomUniqueId();
-    	YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-    	EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
-    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
-    	if (empInsurHis.isPresent()) {
-    		itemtoBeAdded = empInsurHis.get();
-    	}
-    	itemtoBeAdded.add(yearMonthItem);
-    	this.addEmpInsurHis(itemtoBeAdded);
-    	this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
-    	this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
-    	
-    }
+		String newHistID = IdentifierUtil.randomUniqueId();
+		YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+		EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
+		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+		if (empInsurHis.isPresent()) {
+			itemtoBeAdded = empInsurHis.get();
+		}
+		itemtoBeAdded.add(yearMonthItem);
+		this.addEmpInsurHis(itemtoBeAdded);
+		this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
+		this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
+
+	}
     
     public void updateEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio){
     	empInsurBusBurRatioRepository.update(listEmpInsurBusBurRatio);
@@ -60,4 +60,39 @@ public class EmpInsurBusBurRatioService {
 		}
 		empInsurHisRepository.update(itemToBeUpdated.get(), cId);
 	}
+    
+    public void historyDeletionProcessing(String hisId, String cId){
+    
+    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+    	if (!empInsurHis.isPresent()) {
+    		throw new RuntimeException("invalid employmentHistory"); 
+    	}
+    	Optional<YearMonthHistoryItem> itemToBeDelete = empInsurHis.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId))
+                .findFirst();
+    	empInsurHis.get().remove(itemToBeDelete.get());
+    	empInsurBusBurRatioRepository.remove(hisId);
+    	empInsurHisRepository.remove(cId, hisId);
+    	
+    }
+    
+    public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){
+    	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
+    	if (!empInsurHis.isPresent()) {
+    		return;
+    	}
+    	Optional<YearMonthHistoryItem> itemToBeUpdate = empInsurHis.get().getHistory().stream()
+				.filter(h -> h.identifier().equals(hisId)).findFirst();
+    	if (!itemToBeUpdate.isPresent()) {
+    		return;
+    	}
+    	empInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+    	this.updateEmpInsurHis(empInsurHis.get());
+    	this.updateItemBefore(empInsurHis.get(), itemToBeUpdate.get(), cId);
+    	
+    }
+    
+    private void updateEmpInsurHis(EmpInsurHis itemToBeUpdated){
+    	empInsurHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size() - 1), itemToBeUpdated.getCid());
+    }
 }

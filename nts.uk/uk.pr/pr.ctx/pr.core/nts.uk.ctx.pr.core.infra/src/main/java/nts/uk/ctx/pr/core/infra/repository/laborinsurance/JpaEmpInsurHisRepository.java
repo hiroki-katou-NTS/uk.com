@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 
@@ -23,7 +22,7 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid AND  f.empInsurHisPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid ORDER BY f.startYearMonth DESC ";
     
 
 
