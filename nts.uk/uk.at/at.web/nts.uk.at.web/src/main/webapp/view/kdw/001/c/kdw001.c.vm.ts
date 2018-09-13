@@ -347,8 +347,13 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
-
+                $('#ccgcomponent').attr('tabindex',1);
+                $("#com-kcp-searchbox *").attr('tabindex', -1);
+                $("table").attr('tabindex', 4);
+                $('#ccg001-btn-search-drawer').focus();
             }
 
         }
@@ -411,7 +416,7 @@ module nts.uk.at.view.kdw001.c {
 
             // 詳細検索タブ
             isAdvancedSearchTab: boolean;
-            //複数選択 
+            //複数選択
             isMutipleCheck: boolean;
 
             //社員指定タイプ or 全社員タイプ

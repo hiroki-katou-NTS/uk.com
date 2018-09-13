@@ -8,7 +8,8 @@ module nts.uk.pr.view.ccg007.c {
             submitLogin: "ctx/sys/gateway/login/submit/form2",
             getEmployeeLoginSetting: "ctx/sys/gateway/login/emlogsettingform2",
             getCompanyInfo: "ctx/sys/gateway/login/getcompanybycode",
-            account: "ctx/sys/gateway/login/account"
+            account: "ctx/sys/gateway/login/account",
+            ver: "ctx/sys/gateway/login/build_info_time"
         }
 
         /**
@@ -38,6 +39,10 @@ module nts.uk.pr.view.ccg007.c {
           */
         export function submitLogin(data: any): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin+location.search, data);
+        }
+        
+        export function ver(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.ver);
         }
 
         export interface SystemConfigDto {

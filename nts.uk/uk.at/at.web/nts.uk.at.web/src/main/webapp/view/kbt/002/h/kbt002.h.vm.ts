@@ -75,7 +75,7 @@ module nts.uk.at.view.kbt002.h {
                 // var execItemCdHeader = '<button tabindex="5" class="setting small" style="margin: 0px !important;" data-bind="click: function(data, event) { openDialogG(data, event)}" data-code="${execItemCd}" >' + getText("KBT002_159") + '</button>';
                 $("#grid").igGrid({
                     primaryKey: "execId",
-                    height: 520,
+                    height: 395,
                     dataSource: self.execLogList(),
                     autoGenerateColumns: false,
                     alternateRowStyles: false,
@@ -116,7 +116,7 @@ module nts.uk.at.view.kbt002.h {
                             multipleCellSelectOnClick: false
                         }, {
                             name: 'Paging',
-                            pageSize: 20,
+                            pageSize: 10,
                             currentPageIndex: 0
                         },{
                            

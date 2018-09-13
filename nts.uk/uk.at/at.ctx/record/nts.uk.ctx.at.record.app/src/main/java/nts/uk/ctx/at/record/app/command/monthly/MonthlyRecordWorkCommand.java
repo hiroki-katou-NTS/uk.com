@@ -54,6 +54,10 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	@Getter
 	private final AbsenceLeaveRemainMonthlyCommand absence = new AbsenceLeaveRemainMonthlyCommand();
 
+	/** 月別実績の備考 */
+	@Getter
+	private final MonthlyRecordWorkCommand remarks = new MonthlyRecordWorkCommand();
+
 	public MonthlyWorkCommonCommand getCommand(String group){
 		MonthlyWorkCommonCommand command = null;
 		switch (group) {
@@ -81,6 +85,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		case MONTHLY_OFF_REMAIN_CODE:
 			command = this.dayOff;
 			break;
+		case MONTHLY_REMARKS_CODE:
+			command = this.remarks;
+			break;
 		default:
 			break;
 		}
@@ -95,9 +102,10 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.setRecords(fullDto.getAnyItem());
 		this.annualLeave.setRecords(fullDto.getAnnLeave());
 		this.reserveLeave.setRecords(fullDto.getRsvLeave());
-		this.specialHoliday.setRecords(fullDto.getSpecialHoliday());
+		fullDto.getSpecialHoliday().stream().forEach(d -> this.specialHoliday.setRecords(d));
 		this.dayOff.setRecords(fullDto.getDayOff());
 		this.absence.setRecords(fullDto.getAbsenceLeave());
+		fullDto.getRemarks().stream().forEach(d -> this.remarks.setRecords(d));
 	}
 
 	@Override
@@ -111,6 +119,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.forEmployee(employeId);
 		this.dayOff.forEmployee(employeId);
 		this.absence.forEmployee(employeId);
+		this.remarks.forEmployee(employeId);
 	}
 	
 	public MonthlyRecordWorkCommand fromItems(List<ItemValue> itemValues){
@@ -142,6 +151,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.yearMonth(yearMonth);
 		this.dayOff.yearMonth(yearMonth);
 		this.absence.yearMonth(yearMonth);
+		this.remarks.yearMonth(yearMonth);
 	}
 
 	@Override
@@ -155,6 +165,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.closureId(closureId);
 		this.dayOff.closureId(closureId);
 		this.absence.closureId(closureId);
+		this.remarks.closureId(closureId);
 	}
 
 	@Override
@@ -168,5 +179,6 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.closureDate(closureDate);
 		this.dayOff.closureDate(closureDate);
 		this.absence.closureDate(closureDate);
+		this.remarks.closureDate(closureDate);
 	}
 }

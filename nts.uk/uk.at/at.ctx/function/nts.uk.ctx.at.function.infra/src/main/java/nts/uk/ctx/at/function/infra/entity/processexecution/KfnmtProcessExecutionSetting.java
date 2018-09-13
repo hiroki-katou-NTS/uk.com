@@ -79,26 +79,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "MONTHLY_AGG_CLS")
 	public int monthlyAggCls;
 	
-	/* アラーム抽出（個人別） */
-	@Column(name = "INDV_ALARM_CLS")
-	public int indvAlarmCls;
-	
-	/* 本人にメール送信する */
-	@Column(name = "INDV_MAIL_PRIN")
-	public int indvMailPrin;
-	
-	/* 管理者にメール送信する */
-	@Column(name = "INDV_MAIL_MNG")
-	public int indvMailMng;
-	
-	/* アラーム抽出（職場別） */
-	@Column(name = "WKP_ALARM_CLS")
-	public int wkpAlarmCls;
-	
-	/* 管理者にメール送信する */
-	@Column(name = "WKP_MAIL_MNG")
-	public int wkpMailMng;
-	
 	/* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
 	@Column(name = "RE_TYPE_CHANGE_PER")
 	public int recreateTypeChangePerson;
@@ -119,6 +99,14 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "APP_ROUTE_UPDATE_ATR_MON")
 	public int appRouteUpdateAtrMon;
 	
+	/* 承認ルート更新（月次） */
+	@Column(name = "ALARM_ATR")
+	public int alarmAtr;
+	
+	/* 承認ルート更新（月次） */
+	@Column(name = "ALARM_CODE")
+	public String alarmCode;
+	
 	
 	
 	@OneToOne
@@ -136,9 +124,9 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, int perScheduleCls,
 			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
-			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int indvAlarmCls, int indvMailPrin,
-			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int recreateTypeChangePerson, int recreateTransfers,
-			int appRouteUpdateAtr,Integer createNewEmp,int appRouteUpdateAtrMon) {
+			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int recreateTypeChangePerson,
+			int recreateTransfers, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
+			String alarmCode) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -155,15 +143,14 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.midJoinEmployee = midJoinEmployee;
 		this.reflectResultCls = reflectResultCls;
 		this.monthlyAggCls = monthlyAggCls;
-		this.indvAlarmCls = indvAlarmCls;
-		this.indvMailPrin = indvMailPrin;
-		this.indvMailMng = indvMailMng;
-		this.wkpAlarmCls = wkpAlarmCls;
-		this.wkpMailMng = wkpMailMng;
-		this.recreateTypeChangePerson =recreateTypeChangePerson;
+		this.recreateTypeChangePerson = recreateTypeChangePerson;
 		this.recreateTransfers = recreateTransfers;
 		this.appRouteUpdateAtr = appRouteUpdateAtr;
 		this.createNewEmp = createNewEmp;
 		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
+		this.alarmAtr = alarmAtr;
+		this.alarmCode = alarmCode;
 	}
+
+	
 }

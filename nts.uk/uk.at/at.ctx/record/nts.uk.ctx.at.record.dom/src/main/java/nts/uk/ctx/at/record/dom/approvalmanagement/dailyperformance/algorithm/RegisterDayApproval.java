@@ -101,19 +101,17 @@ public class RegisterDayApproval {
 		// release status == false
 		if (!employeeIdRealse.isEmpty())
 			approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
-					employeeIdRealse.values().stream().collect(Collectors.toList()),
-					employeeIdRealse.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
+					employeeIdRealse.keySet().stream().collect(Collectors.toList()), 1, companyId);
 		// register status == true
 		if (!employeeIdInsert.isEmpty())
 			approvalStatusAdapter.registerApproval(param.getEmployeeId(),
-					employeeIdInsert.values().stream().collect(Collectors.toList()),
-					employeeIdInsert.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
+					employeeIdInsert.keySet().stream().collect(Collectors.toList()), 1, companyId);
 		
 		if(!employeeIdRealseAll.isEmpty()){
 			employeeIdRealseAll.entrySet().forEach(x ->{
 				Optional<ApprovalStatusOfDailyPerfor> dailyPerforOpt= approvalStatusOfDailyPerforRepository.find(x.getKey().getLeft(), x.getKey().getRight());
 				if(dailyPerforOpt.isPresent()){
-					approvalStatusAdapter.cleanApprovalRootState(dailyPerforOpt.get().getRootInstanceID(), 1);
+					approvalStatusAdapter.cleanApprovalRootState(dailyPerforOpt.get().getEmployeeId(), x.getValue(), 1);
 				}
 			});
 		}

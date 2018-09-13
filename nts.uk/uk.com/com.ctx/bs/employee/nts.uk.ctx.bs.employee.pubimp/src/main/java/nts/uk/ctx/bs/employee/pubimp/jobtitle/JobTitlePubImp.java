@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
@@ -234,25 +235,15 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate) {
 
-		// Query
-		Optional<AffJobTitleHistoryItem> optAffJobTitleHistoryItem = affJobTitleHisItemRepo
-				.getByEmpIdAndReferDate(employeeId, baseDate);
-
-		// Check exist
-		if (!optAffJobTitleHistoryItem.isPresent()) {
+		val affJobHistoryOpt = this.affJobTitleHisRepo.getSingleHistoryItem(employeeId, baseDate);
+		if (!affJobHistoryOpt.isPresent()) {
 			return Optional.empty();
 		}
-
-		AffJobTitleHistoryItem affJobTitleHist = optAffJobTitleHistoryItem.get();
-
-		// Query
-		Optional<AffJobTitleHistory> optAffJobTitleHistory = affJobTitleHisRepo
-				.getListByHidSid(affJobTitleHist.getHistoryId(), employeeId);
-
-		AffJobTitleHistory affJobTitleHistory = optAffJobTitleHistory.get();
+		
+		val affJobHistory = affJobHistoryOpt.get();
 
 		// Query
-		Optional<JobTitleInfo> optJobTitleInfo = this.jobTitleInfoRepository.find(affJobTitleHist.getJobTitleId(),
+		Optional<JobTitleInfo> optJobTitleInfo = this.jobTitleInfoRepository.find(affJobHistory.getJobTitleId(),
 				baseDate);
 
 		// Check exist
@@ -263,9 +254,12 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		JobTitleInfo jobTitleInfo = optJobTitleInfo.get();
 
 		// Return
-		return Optional.of(EmployeeJobHistExport.builder().employeeId(affJobTitleHist.getEmployeeId())
-				.jobTitleID(jobTitleInfo.getJobTitleId()).jobTitleName(jobTitleInfo.getJobTitleName().v())
-				.startDate(affJobTitleHistory.items().get(0).start()).endDate(affJobTitleHistory.items().get(0).end())
+		return Optional.of(EmployeeJobHistExport.builder()
+				.employeeId(employeeId)
+				.jobTitleID(jobTitleInfo.getJobTitleId())
+				.jobTitleName(jobTitleInfo.getJobTitleName().v())
+				.startDate(affJobHistory.getPeriod().start())
+				.endDate(affJobHistory.getPeriod().end())
 				.build());
 	}
 

@@ -1581,19 +1581,19 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             switch (self.compareOperator()) {
                 case 0:
-                    self.displayLeftOperator("＝");
-                    self.displayRightOperator("");
-                    break;
-                case 1:
                     self.displayLeftOperator("≠");
                     self.displayRightOperator("");
                     break;
+                case 1:
+                    self.displayLeftOperator("＝");
+                    self.displayRightOperator("");
+                    break;
                 case 2:
-                    self.displayLeftOperator("＞");
+                    self.displayLeftOperator("≧");
                     self.displayRightOperator("");
                     break;
                 case 3:
-                    self.displayLeftOperator("≧");
+                    self.displayLeftOperator("≦");
                     self.displayRightOperator("");
                     break;
                 case 4:
@@ -1601,7 +1601,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("");
                     break;
                 case 5:
-                    self.displayLeftOperator("≦");
+                    self.displayLeftOperator("＞");
                     self.displayRightOperator("");
                     break;
                 case 6:
@@ -1816,9 +1816,9 @@ module nts.uk.at.view.kal003.share.model {
                     self.setTextDisplay(modeX);
                 });
             }else{
-                nts.uk.ui.windows.setShared("KAL003CParams", {mode: modeX, data: param}, true);
-                nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml").onClosed(() => {
-                    let output = getShared("KAL003CResult");
+                nts.uk.ui.windows.setShared("KAL003C1Params", {mode: modeX, data: param}, true);
+                nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c1/index.xhtml").onClosed(() => {
+                    let output = getShared("KAL003C1Result");
                     if (output) {
                         self.targetNO(output.targetNO);
                         self.conditionAtr(output.conditionAtr);

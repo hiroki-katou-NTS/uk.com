@@ -60,8 +60,13 @@ public class ProcessExecution extends AggregateRoot {
 				throw new BusinessException("Msg_1230");
 			}
 		}else {//B16_3がTRUEの場合
-			//実行設定(B14_2,B14_3)のチェックボックスのうち1つ以上TUREになっていなければならない。
-			//TODO : B14_2,B14_3 chua lam
+			//実行設定(B14_2,B14_3,B14_4)のチェックボックスのうち1つ以上TUREになっていなければならない。
+			if(!execSetting.getDailyPerf().isDailyPerfCls() &&//B14_3
+			   !execSetting.getPerSchedule().isPerSchedule() &&//B14_2
+			   execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE) {//B14_4
+				throw new BusinessException("Msg_1230");
+			}
+			
 
 			//実行設定(B15_2,B15_3)のチェックボックスのうち1つ以上TUREになっていなければならない。
 			if(!execSetting.getDailyPerf().getTargetGroupClassification().isRecreateTransfer()&&//B15_2

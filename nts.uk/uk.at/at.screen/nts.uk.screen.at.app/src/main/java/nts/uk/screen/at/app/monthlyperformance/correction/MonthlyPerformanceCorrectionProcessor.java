@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
@@ -210,7 +211,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
-			closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			if(param.getClosureId() == null){
+				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			} else {
+				closureId = param.getClosureId();
+			}
 			screenDto.setClosureId(closureId);
 			
 			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
@@ -291,7 +296,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
-			 closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			if(param.getClosureId() == null){
+				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			} else {
+				closureId = param.getClosureId();
+			}
 			screenDto.setClosureId(closureId);
 			
 			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
@@ -595,6 +604,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		/**
 		 * Create Grid Sheet DTO
 		 */
+
 		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
 		MonthlyPerformanceParam param = screenDto.getParam();
 		List<ConfirmationMonth> listConfirmationMonth = new ArrayList<>();
@@ -741,6 +751,27 @@ public class MonthlyPerformanceCorrectionProcessor {
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 			
+			// set dailyConfirm
+			MonthlyPerformaceLockStatus monthlyPerformaceLockStatus = lockStatusMap.get(employeeId);
+			String dailyConfirm = null;
+			List<String> listCss = new ArrayList<>();
+			listCss.add("daily-confirm-color");
+			if (monthlyPerformaceLockStatus != null) {
+				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK) {
+					dailyConfirm = "！";
+					// mau cua kiban chua dap ung duoc nen dang tu set mau
+					// set color for cell dailyConfirm
+					listCss.add("color-cell-un-approved");
+					screenDto.setListStateCell("dailyconfirm", employeeId, listCss);
+				} else {
+					dailyConfirm = "〇";
+					// mau cua kiban chua dap ung duoc nen dang tu set mau
+					// set color for cell dailyConfirm
+					listCss.add("color-cell-approved");
+					screenDto.setListStateCell("dailyconfirm", employeeId, listCss);
+				}
+			}
+			
 			// check true false identify
 			boolean identify = listConfirmationMonth.stream().filter(x->x.getEmployeeId().equals(employeeId)).findFirst().isPresent() ;
 
@@ -774,7 +805,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			}
 			
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
-					employeeId, "", identify, approve, false, "");
+					employeeId, "", identify, approve, dailyConfirm, "");
 			
 			
 			// Setting data for dynamic column
@@ -921,12 +952,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 			for (int j = 0; j < listEmployee.size(); j++) {
 				MonthlyPerformanceEmployeeDto employee = listEmployee.get(j);
 				boolean stateLock = false;
+				// set tam dailyConfirm  = "〇"
+				String dailyConfirm = "〇";
 				for (int i = 0; i < lstDate.size(); i++) {
 					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
 							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
 							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
 					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(),
-							employee.getId(), "", stateLock, stateLock, stateLock, ""));
+							employee.getId(), "", stateLock, stateLock, dailyConfirm, ""));
 					dataId++;
 				}
 			}

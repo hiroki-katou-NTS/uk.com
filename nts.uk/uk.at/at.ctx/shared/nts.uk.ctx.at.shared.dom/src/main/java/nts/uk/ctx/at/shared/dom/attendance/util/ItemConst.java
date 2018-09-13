@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
-public interface ItemConst {
+public interface ItemConst extends Cloneable {
+	
 	public final String DAILY = "日次";
 	public final String MONTHLY = "月次";
 	
@@ -148,6 +149,9 @@ public interface ItemConst {
 
 	public final String MONTHLY_ABSENCE_LEAVE_REMAIN_CODE = LAYOUT_H;
 	public final String MONTHLY_ABSENCE_LEAVE_REMAIN_NAME = "振休月別残数データ";
+
+	public final String MONTHLY_REMARKS_CODE = LAYOUT_I;
+	public final String MONTHLY_REMARKS_NAME = "月別実績の備考";
 
 	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
 	

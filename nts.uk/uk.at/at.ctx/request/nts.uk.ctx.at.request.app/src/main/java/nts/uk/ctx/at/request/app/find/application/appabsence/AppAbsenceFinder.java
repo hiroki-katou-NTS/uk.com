@@ -276,6 +276,7 @@ public class AppAbsenceFinder {
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
 		result = AppAbsenceDto.fromDomain(appAbsence);
+		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
 		//アルゴリズム「詳細画面起動前モードの判断」を実行する-「Kiểm tra mode trước khi khởi động màn hình detail」
 		//アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
 		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID,
@@ -408,7 +409,6 @@ public class AppAbsenceFinder {
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
 				appAbsence.getApplication().getAppDate(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
-		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
 		return result;
 	}
 

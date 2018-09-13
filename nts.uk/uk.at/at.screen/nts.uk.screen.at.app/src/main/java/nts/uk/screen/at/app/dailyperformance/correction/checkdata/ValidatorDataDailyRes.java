@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
@@ -30,6 +29,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
@@ -50,6 +51,9 @@ public class ValidatorDataDailyRes {
 
 	@Inject
 	private InsufficientFlexHolidayMntRepository flexHolidayMntRepository;
+	
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -215,8 +219,6 @@ public class ValidatorDataDailyRes {
 
 	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
-		String textResource = TextResource.localize("Msg_1270");
-		String textResourceItem28Null = TextResource.localize("Msg_1329");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
 		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
@@ -229,7 +231,8 @@ public class ValidatorDataDailyRes {
 			workTypeCode = item28.get().getValue();
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item28.get();
-				valueTemp.setLayoutCode(textResourceItem28Null);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1329"));
+				valueTemp.setMessage("Msg_1329");
 				result.add(valueTemp);
 				return result;
 			}
@@ -251,7 +254,8 @@ public class ValidatorDataDailyRes {
 		if (item29.isPresent()) {
 			if (item29.get().getValue() == null || item29.get().getValue().equals("")) {
 				valueTemp = item29.get();
-				valueTemp.setLayoutCode(textResource);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
+				valueTemp.setMessage("Msg_1270");
 				result.add(valueTemp);
 				return result;
 			}
@@ -266,7 +270,7 @@ public class ValidatorDataDailyRes {
 		ItemValue value = itemValues.get(0);
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item28.get();
-			valueTemp.setLayoutCode(textResource);
+			valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
 			result.add(valueTemp);
 			return result;
 		}
@@ -275,8 +279,6 @@ public class ValidatorDataDailyRes {
 
 	public List<DPItemValue> checkInputItem1(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
-		String textResourceItem1Null = TextResource.localize("Msg_1328");
-		String textResource = TextResource.localize("Msg_1308");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item1 = items.stream().filter(x -> x.getItemId() == 1).findFirst();
 		Optional<DPItemValue> item2 = items.stream().filter(x -> x.getItemId() == 2).findFirst();
@@ -289,7 +291,7 @@ public class ValidatorDataDailyRes {
 			workTypeCode = item1.get().getValue();
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item1.get();
-				valueTemp.setLayoutCode(textResourceItem1Null);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1328"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -311,7 +313,7 @@ public class ValidatorDataDailyRes {
 		if (item2.isPresent()) {
 			if (item2.get().getValue() == null || item2.get().getValue().equals("")) {
 				valueTemp = item2.get();
-				valueTemp.setLayoutCode(textResource);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -326,7 +328,7 @@ public class ValidatorDataDailyRes {
 		ItemValue value = itemValues.get(0);
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item1.get();
-			valueTemp.setLayoutCode(textResource);
+			valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
 			result.add(valueTemp);
 			return result;
 		}
@@ -395,13 +397,26 @@ public class ValidatorDataDailyRes {
 	public Map<Integer, List<DPItemValue>> errorMonth(List<IntegrationOfMonthly> lstMonthDomain,
 			UpdateMonthDailyParam monthParam) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
 		List<DPItemValue> items = new ArrayList<>();
 		for (IntegrationOfMonthly month : lstMonthDomain) {
 			val lstEmpError = month.getEmployeeMonthlyPerErrorList().stream()
 					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+			val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
+			
+			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByListCode(companyId, listNo)
+					.stream().filter(x -> x.getSpecialHolidayCode() != null)
+					.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
+			
 			lstEmpError.stream().forEach(error -> {
 				createMessageError(error).stream().forEach(message -> {
-					items.add(new DPItemValue(error.getEmployeeID(), TextResource.localize(message)));
+					if(message.equals("Msg_1414")){
+						val sh = sHolidayMap.get(error.getNo());
+						message =  TextResource.localize(message, sh == null ? "" : sh.getSpecialHolidayName().v());
+					}else{
+						message = TextResource.localize(message);
+					}
+					items.add(new DPItemValue(error.getEmployeeID(), message));
 				});
 			});
 
@@ -429,10 +444,14 @@ public class ValidatorDataDailyRes {
 			messageIds.add("Msg_1387");
 		} else if (errroType.value == ErrorType.REMAIN_LEFT.value) {
 			messageIds.add("Msg_1388");
-		} else if (errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value) {
+		} else if (errroType.value == ErrorType.PUBLIC_HOLIDAY.value) {
 			messageIds.add("Msg_1389");
 		} else if (errroType.value == ErrorType.H60_SUPER_HOLIDAY.value) {
 			messageIds.add("Msg_1390");
+		} else if(errroType.value == ErrorType.FLEX_SUPP.value){
+			messageIds.add("Msg_1415");
+		} else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
+			messageIds.add("Msg_1414");
 		}
 
 		return messageIds;

@@ -16,4 +16,9 @@ public class NextTimeEventParam {
 	
 	private GeneralDate retireDate;
 	
+	private GeneralDate startWorkCond;
+	
+	private GeneralDate endWorkCond;
+	
+	private Integer contactTime;
 }

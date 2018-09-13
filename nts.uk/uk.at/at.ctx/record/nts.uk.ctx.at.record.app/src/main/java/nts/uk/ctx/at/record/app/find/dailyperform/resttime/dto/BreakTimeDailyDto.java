@@ -3,12 +3,8 @@ package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
@@ -34,7 +30,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD, 
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
 			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> timeZone;
 
@@ -69,8 +65,21 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		return dto;
 	}
 	
+	@Override
+	public BreakTimeDailyDto clone() {
+		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setAttr(attr);
+		dto.setTimeZone(ConvertHelper.mapTo(timeZone, t -> t.clone()));
+		if(isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
 	private static TimeStampDto getTimeStamp(TimeWithDayAttr c) {
-		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, null);
+		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, 0);
 	}
 
 	@Override
@@ -95,7 +104,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new BreakTimeOfDailyPerformance(emp,
-					EnumAdaptor.valueOf(attr, BreakType.class),
+					attr == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
 					ConvertHelper.mapTo(timeZone,
 							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getNo()),
 									createWorkStamp(d.getStart()),
@@ -106,6 +115,6 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	}
 
 	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
-		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
+		return new TimeWithDayAttr(d == null || d.getTimesOfDay() == null ? 0 : d.getTimesOfDay());
 	}
 }

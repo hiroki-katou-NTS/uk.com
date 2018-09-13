@@ -30,6 +30,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppApproveInstance;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameInstance;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseInstance;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootInstance;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
@@ -67,11 +68,19 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" order by appRoot.START_DATE desc";
 	
-	private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
-			BASIC_SELECT + " WHERE appRoot.ROOT_ID NOT IN (SELECT ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <" +
-			" (SELECT TOP 1 START_DATE FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <= 'startDate'" +
-			" AND ROOT_TYPE = rootType AND EMPLOYEE_ID IN (employeeIDLst) order by START_DATE DESC))) result"+
-			" WHERE result.START_DATE <= 'endDate'";
+	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
+			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.START_DATE > 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'"+
+			" UNION"+
+			" SELECT TOP 1 * FROM ("+
+			BASIC_SELECT + 
+			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -249,9 +258,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	public List<AppRootInstance> findByEmpLstPeriod(List<String> employeeIDLst, DatePeriod period,
 			RecordRootType rootType) {
+		String companyID =  AppContexts.user().companyId();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
-			String query = FIND_BY_EMP_PERIOD;
+			String query = FIND_BY_APPROVER_PERIOD;
 			
 			String employeeIDLstParam = "";
 			if(CollectionUtil.isEmpty(employeeIDLst)){
@@ -264,6 +274,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 				}
 			}
+			query = query.replaceAll("companyID", companyID);
 			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
 			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));

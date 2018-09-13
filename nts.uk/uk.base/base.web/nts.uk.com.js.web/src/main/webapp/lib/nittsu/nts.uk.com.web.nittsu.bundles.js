@@ -973,7 +973,8 @@ var nts;
                 allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
                 allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
                 allHiragana: /^[ぁ-ん　ー ]*$/,
-                workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/
+                workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/,
+                employeeCode: /^[a-zA-Z0-9 ]*$/
             };
             /**
              * 文字列の半角文字数を数える（Unicode用）
@@ -1216,6 +1217,13 @@ var nts;
                 };
             }
             text_3.workplaceCode = workplaceCode;
+            function employeeCode(text) {
+                return {
+                    probe: regexp.employeeCode.test(text),
+                    messageId: 'FND_E_ALPHANUMERIC'
+                };
+            }
+            text_3.employeeCode = employeeCode;
             /**
              * 文字列中のHTML記号をサニタイズする
              * @param text 変換対象の文字列
@@ -1405,7 +1413,8 @@ var nts;
                 Any: new CharType('全角', 1, nts.uk.text.anyChar),
                 Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
                 HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt),
-                WorkplaceCode: new CharType('半角英数字', 0.5, nts.uk.text.workplaceCode)
+                WorkplaceCode: new CharType('半角英数字', 0.5, nts.uk.text.workplaceCode),
+                EmployeeCode: new CharType('半角英数字', 0.5, nts.uk.text.employeeCode)
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -4717,7 +4726,7 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
+                                    result.fail(nts.uk.resource.getMessage('Msg_1424', [this.name]), 'Msg_1424');
                                     return result;
                                 }
                             }
@@ -4776,7 +4785,7 @@ var nts;
                         var self = this;
                         this.name = name;
                         this.constraint = getConstraint("EmployeeCode");
-                        this.charType = uk.text.getCharTypeByType("AlphaNumeric");
+                        this.charType = uk.text.getCharTypeByType("EmployeeCode");
                         this.options = options;
                     }
                     EmployeeCodeValidator.prototype.validate = function (inputText) {
@@ -4790,7 +4799,7 @@ var nts;
                             result.success(inputText);
                             return result;
                         }
-                        result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
+                        result = checkCharType.call(self, inputText, self.charType);
                         if (!result.isValid)
                             return result;
                         if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
@@ -16537,6 +16546,8 @@ var nts;
                         this.$input.on(this.EVENT_SHOW, function (evt) {
                             var _self = self;
                             setTimeout(function () {
+                                if (!_self.validDate())
+                                    return;
                                 _self._beforeShow.call(_self);
                                 _self.onClick.call(_self);
                             }, 0);
@@ -16546,7 +16557,48 @@ var nts;
                     DatePickerNormalizer.prototype.onKeyup = function () {
                         //            this.$input.off(this.EVENT_KEYUP, this._beforeShow);
                         //            this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
+                        var self = this;
+                        this.$input.on(this.EVENT_KEYUP, function () {
+                            self.validDate();
+                        });
                         return this;
+                    };
+                    DatePickerNormalizer.prototype.validDate = function () {
+                        var self = this;
+                        var current, prev, next, b, ns = self.$input.data(self.NAMESPACE);
+                        if (!isNaN(ns.date))
+                            return true;
+                        if (!self.colorLevel)
+                            self.setColorLevel();
+                        if (self.colorLevel === self.YEARS) {
+                            current = ns.$yearsCurrent;
+                            prev = ns.$yearsPrev;
+                            next = ns.$yearsNext;
+                            b = ns.$years;
+                        }
+                        else if (self.colorLevel === self.MONTHS) {
+                            current = ns.$yearCurrent;
+                            prev = ns.$yearPrev;
+                            next = ns.$yearNext;
+                            b = ns.$months;
+                        }
+                        else if (self.colorLevel === self.DAYS) {
+                            current = ns.$monthCurrent;
+                            prev = ns.$monthPrev;
+                            next = ns.$monthNext;
+                            b = ns.$days;
+                        }
+                        current.html("");
+                        current.addClass(ns.options.disabledClass);
+                        prev.addClass(ns.options.disabledClass);
+                        next.addClass(ns.options.disabledClass);
+                        b.find("li").each(function () {
+                            var e = $(this);
+                            e.addClass(ns.options.disabledClass);
+                            if (self.colorLevel === self.YEARS) {
+                                e.html("");
+                            }
+                        });
                     };
                     DatePickerNormalizer.prototype.onPick = function () {
                         var self = this;
@@ -19293,9 +19345,9 @@ var nts;
                                     selectedItems = component_1.ntsTreeDrag("getSelected");
                                     isMulti = component_1.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_1 = srh_1.search(searchKey, selectedItems);
-                                if (_.isEmpty(result_1.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (_.isEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -19309,23 +19361,24 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_1.selectItems, primaryKey);
-                                component_1.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result_1.options });
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
+                                component_1.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result.options });
                                 if (targetMode === 'igGrid') {
                                     component_1.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_1.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_1.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(data.items(), function (item) {
-                                            return _.find(result_1.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_1.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(data.items(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+                                        component_1.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_1.igGrid("dataBind");
                                         //                            if(_.isEmpty(selectedProperties)){
                                         component_1.trigger("selectionchanged");
@@ -19364,9 +19417,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_2 = nextSearch();
+                                var result_1 = nextSearch();
                                 _.defer(function () {
-                                    if (result_2) {
+                                    if (result_1) {
                                         $input.focus();
                                     }
                                 });
@@ -21035,18 +21088,18 @@ var nts;
                             };
                         }
                         else {
-                            var result_3 = {
+                            var result_2 = {
                                 inThis: false,
                                 ids: []
                             };
                             _.forEach(source[childKey], function (node) {
-                                result_3 = checkIfInBranch(node, id, nodeKey, childKey);
-                                if (result_3.inThis) {
-                                    result_3.ids = [node[nodeKey]].concat(result_3.ids);
+                                result_2 = checkIfInBranch(node, id, nodeKey, childKey);
+                                if (result_2.inThis) {
+                                    result_2.ids = [node[nodeKey]].concat(result_2.ids);
                                     return false;
                                 }
                             });
-                            return result_3;
+                            return result_2;
                         }
                     }
                 })(Helper || (Helper = {}));
@@ -35459,9 +35512,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_2 = $container.data("searchObject");
-                                var result_4 = srh_2.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_4.options)) {
+                                var srh_1 = $container.data("searchObject");
+                                var result_3 = srh_1.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -35475,18 +35528,18 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_4.selectItems, primaryKey);
+                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_4.options);
+                                        $container.data("filteredSrouce", result_3.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_2.getDataSource(), function (item) {
-                                            return _.find(result_4.options, function (itemFilterd) {
+                                        var source = _.filter(srh_1.getDataSource(), function (item) {
+                                            return _.find(result_3.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_2.getDataSource(), function (oldItem) {
+                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
                                                 return oldItem[primaryKey] === item[primaryKey];
                                             }) === undefined;
                                         });
@@ -35529,9 +35582,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_5 = nextSearch();
+                                var result_4 = nextSearch();
                                 _.defer(function () {
-                                    if (result_5) {
+                                    if (result_4) {
                                         $input.focus();
                                     }
                                 });
@@ -36519,7 +36572,7 @@ var nts;
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = timeClick && _.isNumber(Number(timeClick)) ? Number(timeClick) : 500;
+                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
                                     if (time > _timeClick) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);
@@ -37231,19 +37284,12 @@ var nts;
                         self.$root.find(".control-container").ntsError('clearKibanError');
                         var mStart = moment(start, self.format);
                         var mEnd = moment(end, self.format);
-                        if (!mEnd.isValid()) {
-                            self.$end.find(".datetimepair-container")
-                                .ntsError('set', "end date is not valid", 'Not defined code', false);
-                            return false;
-                        }
-                        if (!mStart.isValid()) {
-                            self.$start.find(".datetimepair-container")
-                                .ntsError('set', "start date is not valid", 'Not defined code', false);
+                        if (!mEnd.isValid() || !mStart.isValid()) {
                             return false;
                         }
                         if (mEnd.isBefore(mStart)) {
                             self.$root.find(".datetimepairrange-container")
-                                .ntsError('set', "end is smaller than start value", 'Not defined code', false);
+                                .ntsError('set', nts.uk.resource.getMessage('FND_E_SPAN_REVERSED', [self.name]), 'FND_E_SPAN_REVERSED', false);
                             return false;
                         }
                         if (self.maxRange > 0) {
@@ -37260,6 +37306,9 @@ var nts;
                         var self = this;
                         self.rangeUnit = _.isNil(allBindData.rangeUnit) ? "years" : ko.unwrap(allBindData.rangeUnit);
                         self.maxRange = _.isNil(allBindData.maxRange) ? 0 : ko.unwrap(allBindData.maxRange);
+                        self.name = _.isNil(allBindData.name) ? "Input" : ko.unwrap(allBindData.name);
+                        self.startName = _.isNil(allBindData.startName) ? "Start Date" : ko.unwrap(allBindData.startName);
+                        self.endName = _.isNil(allBindData.endName) ? "End Date" : ko.unwrap(allBindData.endName);
                         self.startValueBind = ko.observable();
                         self.endValueBind = ko.observable();
                         self.startValue = ko.computed({
