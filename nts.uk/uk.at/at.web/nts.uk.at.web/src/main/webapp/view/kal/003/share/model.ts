@@ -1581,19 +1581,19 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             switch (self.compareOperator()) {
                 case 0:
-                    self.displayLeftOperator("＝");
-                    self.displayRightOperator("");
-                    break;
-                case 1:
                     self.displayLeftOperator("≠");
                     self.displayRightOperator("");
                     break;
+                case 1:
+                    self.displayLeftOperator("＝");
+                    self.displayRightOperator("");
+                    break;
                 case 2:
-                    self.displayLeftOperator("＞");
+                    self.displayLeftOperator("≧");
                     self.displayRightOperator("");
                     break;
                 case 3:
-                    self.displayLeftOperator("≧");
+                    self.displayLeftOperator("≦");
                     self.displayRightOperator("");
                     break;
                 case 4:
@@ -1601,7 +1601,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("");
                     break;
                 case 5:
-                    self.displayLeftOperator("≦");
+                    self.displayLeftOperator("＞");
                     self.displayRightOperator("");
                     break;
                 case 6:

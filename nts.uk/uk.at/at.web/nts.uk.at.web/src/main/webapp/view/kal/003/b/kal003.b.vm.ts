@@ -74,6 +74,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        setTimeout(function() { self.displayWorkTypeSelections_BA1_4(""); }, 200);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                             self.initialScreen().then(function() {
                                 self.settingEnableComparisonMaxValueField(false);
