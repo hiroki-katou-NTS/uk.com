@@ -3,12 +3,9 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 /** 勤怠打刻(実打刻付き) */
@@ -42,15 +39,7 @@ public class WithActualTimeStampDto implements ItemConst {
 	}
 	
 	public TimeActualStamp toDomain(){
-		return new TimeActualStamp(toWorkStamp(actualTime), toWorkStamp(time), numberOfReflectionStamp);
+		return new TimeActualStamp(TimeStampDto.toDomain(actualTime), TimeStampDto.toDomain(time), numberOfReflectionStamp);
 	}
-
-	private WorkStamp toWorkStamp(TimeStampDto c) {
-		return c == null ? null : new WorkStamp(
-						c.getAfterRoundingTimesOfDay() == null ? null
-								: new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-						c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
-						c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-						c.stampInfo());
-	}
+	
 }

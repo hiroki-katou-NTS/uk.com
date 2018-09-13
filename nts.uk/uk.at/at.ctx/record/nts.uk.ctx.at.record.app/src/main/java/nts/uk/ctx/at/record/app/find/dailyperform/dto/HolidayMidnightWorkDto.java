@@ -55,7 +55,7 @@ public class HolidayMidnightWorkDto implements ItemConst {
 	}
 	
 	public HolidayMidnightWork toDomain() {
-		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(
+		return withinPrescribedHolidayWork == null ? createDefaul() : new HolidayMidnightWork(Arrays.asList(
 				newMidNightTime(withinPrescribedHolidayWork, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
 				newMidNightTime(excessOfStatutoryHolidayWork, StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
 				newMidNightTime(publicHolidayWork, StaturoryAtrOfHolidayWork.PublicHolidayWork)));
@@ -64,5 +64,16 @@ public class HolidayMidnightWorkDto implements ItemConst {
 	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
 		return new HolidayWorkMidNightTime(time == null ? TimeDivergenceWithCalculation.emptyTime() 
 																: time.createTimeDivWithCalc(), attr);
+	}
+	
+	public static HolidayMidnightWork createDefaul(){
+		return new HolidayMidnightWork(Arrays.asList(
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.PublicHolidayWork)));
+	}
+
+	private static HolidayWorkMidNightTime createHolidateMidTime(StaturoryAtrOfHolidayWork statutoryAtr) {
+		return new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue(), statutoryAtr);
 	}
 }
