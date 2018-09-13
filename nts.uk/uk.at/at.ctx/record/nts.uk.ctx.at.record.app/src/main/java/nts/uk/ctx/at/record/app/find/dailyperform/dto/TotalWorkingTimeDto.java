@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +10,13 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryFrameTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -99,6 +99,23 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
 	
+	@Override
+	public TotalWorkingTimeDto clone() {
+		return new TotalWorkingTimeDto(totalWorkingTime, totalCalcTime, actualTime,
+										withinStatutoryTime == null ? null : withinStatutoryTime.clone(),
+										excessOfStatutoryTime == null ? null : excessOfStatutoryTime.clone(),
+										temporaryTime == null ? null : temporaryTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										lateTime == null ? null : lateTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										leaveEarlyTime == null ? null : leaveEarlyTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										breakTimeSheet == null ? null : breakTimeSheet.clone(),
+										goOutTimeSheet == null ? null : goOutTimeSheet.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										shortWorkTime == null ? null : shortWorkTime.clone(), 
+										raisingSalaryTime == null ? null : raisingSalaryTime.clone(), 
+										dailyOfHoliday == null ? null : dailyOfHoliday.clone(), 
+										workTimes,
+										vacationAddTime);
+	}
+	
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {
 		return domain == null ? null
 				: new TotalWorkingTimeDto(getAttendanceTime(domain.getTotalTime()),
@@ -146,33 +163,30 @@ public class TotalWorkingTimeDto implements ItemConst {
 
 	public TotalWorkingTime toDomain() {
 		TotalWorkingTime total = new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
-				toAttendanceTime(actualTime), withinStatutoryTime == null ? null : withinStatutoryTime.toDomain(),
+				toAttendanceTime(actualTime), withinStatutoryTime == null ? WithinStatutoryTimeOfDaily.defaultValue() : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
 				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
 											createTimeWithCalc(c.getLateTime()),
 											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getBreakUse()),
-											new IntervalExemptionTime(null, null,
+											new IntervalExemptionTime(new AttendanceTime(0), null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
 				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
-											createTimeWithCalc(c.getLeaveEarlyTime()),
-											createTimeWithCalc(c.getLeaveEarlyDeductionTime()), new WorkNo(c.getNo()),
+											createTimeWithCalc(c.getTime()),
+											createTimeWithCalc(c.getDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getValicationUseTime()),
-											new IntervalExemptionTime(null, null,
+											new IntervalExemptionTime(AttendanceTime.ZERO, AttendanceTime.ZERO,
 													toAttendanceTime(c.getIntervalExemptionTime())))),
-				breakTimeSheet == null ? null : breakTimeSheet.toDmain(), 
+				breakTimeSheet == null ? BreakTimeSheetDailyPerformDto.defaultValue() : breakTimeSheet.toDmain(), 
 				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
-				raisingSalaryTime == null ? null : raisingSalaryTime.toDomain(),
+				raisingSalaryTime == null ? new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(), new ArrayList<>()) 
+						: raisingSalaryTime.toDomain(),
 				workTimes == null ? null : new WorkTimes(workTimes),
 				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
-				shortWorkTime == null ? null : new ShortWorkTimeOfDaily(
-													new WorkTimes(shortWorkTime.getTimes()),
-													createDeductionTime(shortWorkTime.getTotalTime()),
-													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
-													ConvertHelper.getEnum(shortWorkTime.getAttr(), ChildCareAttribute.class)),
-				dailyOfHoliday == null ? null : dailyOfHoliday.toDomain());
+				shortWorkTime == null ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.toDomain(),
+				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain());
 		
 		if(vacationAddTime != null) {
 			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
@@ -180,23 +194,18 @@ public class TotalWorkingTimeDto implements ItemConst {
 		return total;
 	}
 
-	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
-		return dto == null ? null : dto.createDeductionTime();
-	}
-
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? AttendanceTime.ZERO : new AttendanceTime(time);
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-		return c == null ? null
-				: new TimevacationUseTimeOfDaily(toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
-						toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
-						toAttendanceTime(c.getExcessHolidayUseTime()),
-						toAttendanceTime(c.getTimeSpecialHolidayUseTime()));
+		return new TimevacationUseTimeOfDaily(toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
+						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
+						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
+						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()));
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : c.createTimeWithCalc();
+		return c == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : c.createTimeWithCalc();
 	}
 }

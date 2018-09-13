@@ -845,9 +845,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     let yearMonthNew: any = +moment.utc(dataList.periodEnd, 'YYYYMMDD').format('YYYYMM'),
                         yearMonthOld = self.yearMonth();
                     self.yearMonth(yearMonthNew);
-                    if(yearMonthNew == yearMonthOld){
-                        self.yearMonth.valueHasMutated();                        
-                    }
+                    if (yearMonthNew == yearMonthOld) {
+                        self.yearMonth.valueHasMutated();
+                    }                        
                 },
             }
         };

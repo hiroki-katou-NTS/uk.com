@@ -212,8 +212,11 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
+                    self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
+                    self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
+                    dfd.resolve();
                     
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    /*let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     new service.Service().getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
                             for(let j = 0;j<=dataNew.length; j++){
@@ -226,7 +229,7 @@ module nts.uk.at.view.kdw008.b {
                         self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
                         self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
                         dfd.resolve();
-                    });
+                    });*/
                 });
                 return dfd.promise();
             }

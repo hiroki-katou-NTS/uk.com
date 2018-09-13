@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -49,6 +47,18 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 	}
 
 	@Override
+	public SpecificDateAttrOfDailyPerforDto clone() {
+		SpecificDateAttrOfDailyPerforDto dto = new SpecificDateAttrOfDailyPerforDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setSepecificDateAttrs(sepecificDateAttrs == null ? null : sepecificDateAttrs.stream().map(c -> c.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
 	public String employeeId() {
 		return this.employeeId;
 	}
@@ -72,7 +82,8 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getNo()),
-								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
+								c.getSpecificDate() == SpecificDateAttr.NOT_USE.value 
+										? SpecificDateAttr.NOT_USE : SpecificDateAttr.USE)),
 						date);
 	}
 }

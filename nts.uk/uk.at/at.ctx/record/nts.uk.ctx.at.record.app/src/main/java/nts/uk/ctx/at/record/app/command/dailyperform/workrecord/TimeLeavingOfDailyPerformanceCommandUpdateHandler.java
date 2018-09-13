@@ -17,6 +17,11 @@ public class TimeLeavingOfDailyPerformanceCommandUpdateHandler extends CommandFa
 	@Override
 	protected void handle(CommandHandlerContext<TimeLeavingOfDailyPerformanceCommand> context) {
 		TimeLeavingOfDailyPerformanceCommand command = context.getCommand();
+		if(command.shouldDelete()){
+			repo.delete(command.getEmployeeId(), command.getWorkDate());
+			return;
+		}
+		
 		if(command.getData().isPresent()){
 			TimeLeavingOfDailyPerformance domain = command.toDomain().get();
 			repo.update(domain);
@@ -24,10 +29,6 @@ public class TimeLeavingOfDailyPerformanceCommandUpdateHandler extends CommandFa
 			if(command.isTriggerEvent()){
 				domain.timeLeavesChanged();
 			}
-			return;
-		}
-		if(command.shouldDelete()){
-			repo.delete(command.getEmployeeId(), command.getWorkDate());
 		}
 		
 	}

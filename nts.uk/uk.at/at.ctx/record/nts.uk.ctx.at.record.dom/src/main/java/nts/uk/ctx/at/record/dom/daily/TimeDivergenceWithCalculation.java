@@ -43,6 +43,11 @@ public class TimeDivergenceWithCalculation {
 		
 	}
 	
+	public static TimeDivergenceWithCalculation defaultValue() {
+		return new TimeDivergenceWithCalculation(AttendanceTime.ZERO, AttendanceTime.ZERO);
+		
+	}
+	
 	/**
 	 * 時間のみを入れ替える(乖離計算無し)
 	 * @param time
@@ -72,7 +77,7 @@ public class TimeDivergenceWithCalculation {
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {
-		return TimeDivergenceWithCalculation.sameTime(null);
+		return TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		
 	}
 	

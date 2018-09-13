@@ -35,10 +35,10 @@
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<note style="width:500px;">
+						<b>Update 2018/09/12</b> <br />
+						- Update baseDate type<br /><br />
 						<b>Update 2018/08/07</b> <br />
 						- Add tabindex property<br /><br />
-						<b>Update 2018/07/23</b> <br />
-						- Add lazyload for tab 2 <br /><br />
 						<b>Important note: </b> <br />
 						- $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel). <br />
 						- The component container must be placed right after content-area div and must not have custom style.
@@ -365,7 +365,9 @@ export interface Ccg001ReturnedData {
 										</tr>
 										<tr>
 											<td>baseDate<br/><i>(required if showBaseDate = true)</i></td>
-											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; or string(ISO 8601 Formats)<br />
+											<b>Note:</b> Use KnockoutObservable for synchronized baseDate <br />
+											Search reference date</td>
 										</tr>
 										<tr>
 											<td>periodStartDate<br/><i>(required if showPeriod = true)</i></td>

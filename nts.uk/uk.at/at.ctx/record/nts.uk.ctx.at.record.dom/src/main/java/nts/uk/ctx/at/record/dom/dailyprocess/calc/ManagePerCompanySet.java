@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
@@ -67,6 +70,12 @@ public class ManagePerCompanySet {
 	//0時跨ぎの設定
 	Optional<ZeroTime> zeroTime;
 	
+	@Setter
+	List<PersonnelCostSettingImport> personnelCostSettings;
+
+	@Setter
+	Optional<UpperLimitTotalWorkingHour> upperControl;
+	
 
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
@@ -78,7 +87,8 @@ public class ManagePerCompanySet {
 			List<OptionalItem> optionalItems,
 			List<Formula> formulaList,
 			List<EmpCondition> empCondition,
-			Optional<ZeroTime> zeroTime) {
+			Optional<ZeroTime> zeroTime,
+			Optional<UpperLimitTotalWorkingHour> upperControl) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -91,5 +101,7 @@ public class ManagePerCompanySet {
 		this.formulaList = formulaList;
 		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
+		this.personnelCostSettings = Collections.emptyList();
+		this.upperControl = upperControl;
 	}
 }

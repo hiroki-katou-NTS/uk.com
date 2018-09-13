@@ -18,14 +18,12 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.KTGRsvLeaveInfoImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.LateOrLeaveEarlyImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.GetNumberOfRemainingHolidaysRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -223,6 +221,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
 					//sử lý 08
+					//request list 192
 					dto.setPresenceDailyPer(checksDailyPerformanceErrorRepo.checked(employeeId, startDate, endDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REFER_WORK_RECORD.value) {
 					//sử lý 09
@@ -351,7 +350,7 @@ public class OptionalWidgetKtgFinder {
 					KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, systemDate);
 					boolean showAfter = false;
 					if(KTGRsvLeaveInfoImport.getGrantDay() != null) {
-						showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && KTGRsvLeaveInfoImport.getAftRemainDay() > 0.0 ;
+						showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay());
 					}
 					dto.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getBefRemainDay(), KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {

@@ -237,4 +237,92 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	public DailyRecordToAttendanceItemConverter completed(){
 		return this;
 	}
+
+	@Override
+	public WorkInfoOfDailyPerformance workInfo() {
+		return this.dailyRecord.getWorkInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public CalAttrOfDailyPerformance calcAttr() {
+		return this.dailyRecord.getCalcAttr().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public Optional<WorkTypeOfDailyPerformance> businessType() {
+		return this.dailyRecord.getBusinessType().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public AffiliationInforOfDailyPerfor affiliationInfo() {
+		return this.dailyRecord.getAffiliationInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public Optional<OutingTimeOfDailyPerformance> outingTime() {
+		return this.dailyRecord.getOutingTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<BreakTimeOfDailyPerformance> breakTime() {
+		return this.dailyRecord.getBreakTime().stream().map(d ->
+				d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<AttendanceTimeOfDailyPerformance> attendanceTime() {
+		return this.dailyRecord.getAttendanceTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork() {
+		return this.dailyRecord.getAttendanceTimeByWork().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<TimeLeavingOfDailyPerformance> timeLeaving() {
+		return this.dailyRecord.getTimeLeaving().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<ShortTimeOfDailyPerformance> shortTime() {
+		return this.dailyRecord.getShortWorkTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr() {
+		return this.dailyRecord.getSpecificDateAttr().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate() {
+		return this.dailyRecord.getAttendanceLeavingGate().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AnyItemValueOfDaily> anyItems() {
+		return this.dailyRecord.getOptionalItem().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<EditStateOfDailyPerformance> editStates() {
+		return this.dailyRecord.getEditStates().stream().map(d ->
+						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<TemporaryTimeOfDailyPerformance> temporaryTime() {
+		return this.dailyRecord.getTemporaryTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<PCLogOnInfoOfDaily> pcLogInfo() {
+		return this.dailyRecord.getPcLogInfo().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<RemarksOfDailyPerform> remarks() {
+		return this.dailyRecord.getRemarks().stream().map(d ->
+						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
+	}
 }
