@@ -128,7 +128,12 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		});
 		return targets;
 	}
-
+	
+	/**
+	 * Convert type ValueType from to DataValueAttribute
+	 * @param valueType
+	 * @return
+	 */
 	private Integer convertType(ValueType valueType) {
 		switch (valueType.value) {
 
@@ -138,6 +143,9 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 
 		case 13:
 			return DataValueAttribute.MONEY.value;
+			
+		case 15:
+			return DataValueAttribute.CLOCK.value;
 
 		default:
 			return DataValueAttribute.STRING.value;

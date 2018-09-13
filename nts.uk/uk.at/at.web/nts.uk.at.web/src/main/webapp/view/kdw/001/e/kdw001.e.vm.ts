@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable("");
         endTime: KnockoutObservable<string> = ko.observable("");
-        elapseTime: kibanTimer = new kibanTimer('elapseTime');
+        elapseTime: kibanTimer = new kibanTimer('elapseTime', 100);
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
 
         // dailyCreate data
@@ -210,7 +210,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                             // daily calculation
                             if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString === "処理中") {
-                                self.dailyCreateStatus("実行中止");
+                                self.dailyCalculateStatus("実行中止");
                             } else {
                                 self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
                             }
@@ -218,7 +218,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                             // monthly aggregation
                             if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString === "処理中") {
-                                self.dailyCreateStatus("実行中止");
+                                self.monthlyAggregateStatus("実行中止");
                             } else {
                                 self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
                             }
@@ -226,7 +226,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                             //承認反映
                             if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString === "処理中") {
-                                self.dailyCreateStatus("実行中止");
+                                self.reflectApprovalStatus("実行中止");
                             } else {
                                 self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
                             }

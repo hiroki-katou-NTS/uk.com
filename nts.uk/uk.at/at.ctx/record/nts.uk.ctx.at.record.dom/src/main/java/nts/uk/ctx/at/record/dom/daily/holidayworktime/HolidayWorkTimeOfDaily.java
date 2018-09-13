@@ -139,7 +139,7 @@ public class HolidayWorkTimeOfDaily {
 				int dedTime = frameTime.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK).stream()
 																							.map(tc -> tc.getCalcrange().lengthAsMinutes())
 																							.collect(Collectors.summingInt(tc -> tc));
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), frameTime.getMidNightTimeSheet().get().calcTotalTime().minusMinutes(dedTime));
+				eachTime.addTime(frameTime.getStatutoryAtr().get(), frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate).minusMinutes(dedTime));
 			}
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();

@@ -448,6 +448,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                         dfd.reject();
                     });
+                } else if (error.errors.length > 0) {
+                    nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
@@ -553,8 +557,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.dpData = dpDataNew;
                 self.dailyPerfomanceData(dpDataNew);
                 let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
-                $("#dpGrid").mGrid("resetOrigDataSource", dataSourceNew);
-                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
                 dfd.resolve();
             });
             return dfd.promise();

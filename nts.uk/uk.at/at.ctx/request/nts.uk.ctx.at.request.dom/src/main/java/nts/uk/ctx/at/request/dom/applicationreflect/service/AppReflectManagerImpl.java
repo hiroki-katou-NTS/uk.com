@@ -177,8 +177,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
-		outData.setScheResult(scheReflect.workscheReflect(reflectScheParam));
-		if(outData.isScheResult()) {
+		ReflectInformationResult scheResult = scheReflect.workscheReflect(reflectScheParam);
+		if(scheResult == ReflectInformationResult.DONE) {
 			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));
 		}
@@ -191,11 +191,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				absenceData,
 				absenceLeaveAppInfor,
 				recruitmentInfor);
-		outData.setRecordResult(workRecordReflect.workRecordreflect(appPara));
-		if(outData.isRecordResult()) {
+		ReflectInformationResult recordResult = workRecordReflect.workRecordreflect(appPara);
+		if(recordResult == ReflectInformationResult.DONE) {
 			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
 		}
+		outData.setRecordResult(recordResult == ReflectInformationResult.DONE  || recordResult == ReflectInformationResult.CHECKFALSE ? true : false);
+		outData.setScheResult(scheResult == ReflectInformationResult.DONE || scheResult == ReflectInformationResult.CHECKFALSE ? true
+				: false);
 		if(outData.isRecordResult() || outData.isScheResult()) {
 			//暫定データの登録
 			List<GeneralDate> lstDate = new ArrayList<>();
