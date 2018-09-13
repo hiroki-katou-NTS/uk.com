@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthDom;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
@@ -70,8 +70,8 @@ public class KrcdtWekAggrSpecDays extends UkJpaEntity implements Serializable {
 		
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(this.PK.specificDayItemNo),
-				new AttendanceDaysMonthDom(this.specificDays),
-				new AttendanceDaysMonthDom(this.holidayWorkSpecificDays));
+				new AttendanceDaysMonth(this.specificDays),
+				new AttendanceDaysMonth(this.holidayWorkSpecificDays));
 	}
 	
 	/**

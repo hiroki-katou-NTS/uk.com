@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
@@ -338,5 +337,18 @@ public class ClosureWs {
 	@Path("getclosuresbybasedate/{basedate}")
 	public List<ClosureIdNameDto> getClosuresByBaseDate(@PathParam("basedate") String basedate) {
 		return this.finder.getClosuresByBaseDate(GeneralDate.fromString(basedate, "yyyy-MM-dd"));
+	}
+
+	/**
+	 * Gets the closure by current employee.
+	 *
+	 * @param basedate the basedate
+	 * @return the closure by current employee
+	 */
+	@POST
+	@Path("getclosurebycurrentemployee/{basedate}")
+	public int getClosureByCurrentEmployee(@PathParam("basedate") String basedate) {
+		return this.closureService.getClosureDataByEmployee(AppContexts.user().employeeId(),
+				GeneralDate.fromString(basedate, "yyyy-MM-dd")).getClosureId().value;
 	}
 }

@@ -106,9 +106,9 @@ module nts.uk.at.view.kdw001.c {
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
                     self.dateValue.valueHasMutated();
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -122,9 +122,9 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue().endDate = value;
                         self.dateValue.valueHasMutated();
                     });
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 });
 
                 self.closureId.subscribe(function(value) {
@@ -179,7 +179,7 @@ module nts.uk.at.view.kdw001.c {
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
 
-
+                self.reloadCcg001();
 
             }
 
@@ -206,8 +206,6 @@ module nts.uk.at.view.kdw001.c {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    periodStartDate: self.dateValue().startDate,
-                    periodEndDate: self.dateValue().endDate,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -347,8 +345,13 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
-
+                $('#ccgcomponent').attr('tabindex',1);
+                $("#com-kcp-searchbox *").attr('tabindex', -1);
+                $("table").attr('tabindex', 4);
+                $('#ccg001-btn-search-drawer').focus();
             }
 
         }
@@ -411,7 +414,7 @@ module nts.uk.at.view.kdw001.c {
 
             // 詳細検索タブ
             isAdvancedSearchTab: boolean;
-            //複数選択 
+            //複数選択
             isMutipleCheck: boolean;
 
             //社員指定タイプ or 全社員タイプ

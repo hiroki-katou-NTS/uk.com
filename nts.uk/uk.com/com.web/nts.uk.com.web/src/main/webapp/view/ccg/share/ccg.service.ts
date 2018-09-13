@@ -11,6 +11,7 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
+            getClosureByCurrentEmployee: "ctx/at/shared/workrule/closure/getclosurebycurrentemployee",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
             getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment",
             getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem",
@@ -78,6 +79,13 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
             return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
+        }
+
+        /**
+         * Get closure id by current login employee
+         */
+        export function getClosureByCurrentEmployee(baseDate: string): JQueryPromise<number> {
+            return nts.uk.request.ajax('at', servicePath.getClosureByCurrentEmployee + '/' + baseDate);
         }
         
         /**

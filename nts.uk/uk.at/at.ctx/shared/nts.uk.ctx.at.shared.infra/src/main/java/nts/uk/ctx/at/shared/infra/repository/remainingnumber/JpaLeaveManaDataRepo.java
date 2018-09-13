@@ -50,13 +50,17 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	private String QUERY_BY_SID_DATE = QUERY_BYSID + " AND l.dayOff < :dayOff";
 
 //	private String QUERY_DEADLINE_COMPENSATORY_NORMAL = "SELECT COUNT(*) FROM KrcmtLeaveManaData m WHERE m.sID = :sID AND m.dayOff<= :dayOff AND m.subHDAtr = :subHDAtr";
-	private String QUERY_DEADLINE_COMPENSATORY = "SELECT COUNT(m.SID) FROM KRCMT_LEAVE_MANA_DATA m WHERE m.SID = ?sID AND (MONTH(m.DAYOFF_DATE) + ?deadlMonth) >= ?currentDay AND m.SUB_HD_ATR = ?subHDAtr";
+	private String QUERY_DEADLINE_COMPENSATORY = "SELECT COUNT(m.SID) FROM KRCMT_LEAVE_MANA_DATA m WHERE m.SID = ?sID "
+			+ "AND m.SUB_HD_ATR = ?subHDAtr"
+			+ " AND (((MONTH(m.DAYOFF_DATE) + ?deadlMonth) >= ?currentMonth AND  MONTH(m.DAYOFF_DATE) <= ?currentMonth AND YEAR(m.DAYOFF_DATE) = ?currentYear)"
+						+ " OR (12 - (MONTH(m.DAYOFF_DATE)) + ?currentMonth <= ?deadlMonth AND YEAR(m.DAYOFF_DATE) = (?currentYear - 1))) ";
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
 				.createNativeQuery(QUERY_DEADLINE_COMPENSATORY)
 				.setParameter("sID", sID)
-				.setParameter("currentDay", currentDay.month())
+				.setParameter("currentMonth", currentDay.month())
+				.setParameter("currentYear", currentDay.year())
 				.setParameter("deadlMonth", deadlMonth)
 				.setParameter("subHDAtr", 0)
 				.getSingleResult();

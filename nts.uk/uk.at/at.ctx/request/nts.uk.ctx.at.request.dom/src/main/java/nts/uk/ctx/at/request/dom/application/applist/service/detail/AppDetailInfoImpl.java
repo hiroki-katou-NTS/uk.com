@@ -330,9 +330,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
 		String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = relaCode.equals("") ? "" : repoRelationship.findByCode(companyId, relaCode).get().getRelationshipName().v();
+		//ver39
+		String workTypeName = "マスタ未登録";
+		if(appAbsence.getWorkTypeCode() != null && !Strings.isBlank(appAbsence.getWorkTypeCode().v())){
+			Optional<WorkType> wt = repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v());
+			workTypeName = wt.isPresent() ? wt.get().getName().v() : "マスタ未登録";
+		}
 		return new AppAbsenceFull(appId, appAbsence.getHolidayAppType() == null ? null : appAbsence.getHolidayAppType().value, day,
 				workTimeName, appAbsence.getAllDayHalfDayLeaveAtr().value, startTime1, endTime1,startTime2, endTime2,
-				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
+				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag(), workTypeName);
 	}
 	/**
 	 * 振休振出申請

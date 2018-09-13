@@ -8,9 +8,13 @@
 }
 
 #screen-e #left-panel {
-	margin-top : 30px;
+	margin-top : -48px;
 }
 
 #screen-e .ntsCheckBox{
 	margin-left: 20px;
+}
+#left-panel{
+	width: 310px !important;
+	height: 400px !important;
 }

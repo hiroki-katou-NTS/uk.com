@@ -91,11 +91,11 @@ module cps001.a.vm {
         titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
         layout: Layout = new Layout();
-        
+
         // check quyen có thể delete employee ở đăng ký thông tin cá nhân 
         enaBtnManagerEmp: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDelEmp: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         licenseCheck: KnockoutObservable<string> = ko.observable("");
         licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
         classWarning: KnockoutObservable<string> = ko.observable("");
@@ -129,7 +129,7 @@ module cps001.a.vm {
 
                 self.saveAble(!!aut.length && !hasError());
             }, 0);
-            
+
             // check quyen có thể delete employee ở đăng ký thông tin cá nhân
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
@@ -212,8 +212,12 @@ module cps001.a.vm {
         saveData() {
             let self = this,
                 emp = self.employee,
-                controls = self.layout.listItemCls(),
-                inputs = self.layout.outData(),
+                controls = self.layout.listItemCls();
+
+            // refresh data from layout
+            self.layout.outData.refresh();
+            
+            let inputs = self.layout.outData(),
                 command: IPeregCommand = {
                     personId: emp.personId(),
                     employeeId: emp.employeeId(),
@@ -235,7 +239,7 @@ module cps001.a.vm {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
                     });
-                }).fail((mes : any) => {
+                }).fail((mes: any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
                         let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
@@ -344,31 +348,31 @@ module cps001.a.vm {
                 });
             }
         }
-        
-        checkLicenseStart(): void{
+
+        checkLicenseStart(): void {
             var self = this;
             service.licenseCheckStart().done((data: ILicensenCheck) => {
                 self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 self.licenseCheckDipslay(data.display);
-                if(data.message != ''){
+                if (data.message != '') {
                     self.classWarning('color-schedule-error');
-                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered]});
-                }else{
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] });
+                } else {
                     self.classWarning('');
-                }  
+                }
             });
-        } 
-        
-        checkLicense(){
+        }
+
+        checkLicense() {
             var self = this;
-            if(self.licenseCheckDipslay()){
+            if (self.licenseCheckDipslay()) {
                 service.licenseCheck().done((data: ILicensenCheck) => {
                     self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
-                    if(data.status === 'NORMAL'){
+                    if (data.status === 'NORMAL') {
                         self.classWarning('');
-                    }else{
+                    } else {
                         self.classWarning('color-schedule-error');
-                    } 
+                    }
                 });
             }
         }
@@ -527,7 +531,7 @@ module cps001.a.vm {
         TIMEPOINT = 5,
         SELECTION = 6
     }
-    
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
@@ -535,7 +539,7 @@ module cps001.a.vm {
         description: string;
         orderNumber: number;
     }
-    
+
     enum FunctionNo {
         No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
         No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
@@ -549,7 +553,7 @@ module cps001.a.vm {
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
-    
+
     interface ILicensenCheck {
         display: boolean;
         registered: number;

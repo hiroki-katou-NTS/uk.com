@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
@@ -24,6 +28,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	private String employeeId;
 
 	/** 年月日: 年月日 */
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	/** 時間帯: 短時間勤務時間帯 */
@@ -44,6 +49,19 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
 														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
 														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+			result.exsistData();
+		}
+		return result;
+	}
+
+	@Override
+	public ShortTimeOfDailyDto clone(){
+		ShortTimeOfDailyDto result = new ShortTimeOfDailyDto();
+		result.setEmployeeId(employeeId());
+		result.setYmd(workingDate());
+		result.setShortWorkingTimeSheets(shortWorkingTimeSheets == null ? null 
+				: shortWorkingTimeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			result.exsistData();
 		}
 		return result;
@@ -74,17 +92,18 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-									c.getAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getAttr(), ChildCareAttribute.class),
+									c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
+											? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 					date);
 	}
 
 	private TimeWithDayAttr createTimeWithDayAttr(Integer c) {
-		return c == null ? null : new TimeWithDayAttr(c);
+		return c == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c);
 	}
 	
 	private AttendanceTime createAttendanceTime(Integer c) {
-		return c == null ? null : new AttendanceTime(c);
+		return c == null ? AttendanceTime.ZERO : new AttendanceTime(c);
 	}
 }

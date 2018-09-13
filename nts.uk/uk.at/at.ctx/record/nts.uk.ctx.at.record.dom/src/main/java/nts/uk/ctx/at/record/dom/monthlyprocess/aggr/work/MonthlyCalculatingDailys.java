@@ -184,6 +184,10 @@ public class MonthlyCalculatingDailys {
 				val itrPerError = result.employeeDailyPerErrorList.listIterator();
 				while (itrPerError.hasNext()){
 					val perError = itrPerError.next();
+					if (perError == null){
+						itrPerError.remove();
+						continue;
+					}
 					if (perError.getDate() == null) continue;
 					if (perError.getDate().compareTo(ymd) != 0) continue;
 					itrPerError.remove();
@@ -260,6 +264,11 @@ public class MonthlyCalculatingDailys {
 		// 社員の日別実績エラー一覧
 		this.employeeDailyPerErrorList =
 				repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, period);
+		val itrPerError = this.employeeDailyPerErrorList.listIterator();
+		while (itrPerError.hasNext()){
+			val perError = itrPerError.next();
+			if (perError == null) itrPerError.remove();
+		}
 		
 		// 日別実績の任意項目
 		this.anyItemValueOfDailyList = repositories.getAnyItemValueOfDaily().finds(employeeIds, period);

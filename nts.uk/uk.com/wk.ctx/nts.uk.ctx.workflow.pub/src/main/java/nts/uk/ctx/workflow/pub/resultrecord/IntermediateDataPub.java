@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.pub.resultrecord;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -106,5 +107,24 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 133
+	 * [No.133](中間データ版)承認状況を取得する
+	 * @param employeeID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public AppEmpStatusExport getApprovalEmpStatus(String employeeID, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 403
+	 * [No.403](中間データ版)承認状態をクリアする
+	 * @param employeeID
+	 * @param date
+	 * @param rootType
+	 */
+	public void cleanApprovalRootState(String employeeID, GeneralDate date, Integer rootType);
 	
 }

@@ -25,5 +25,5 @@ public interface CheckTransmission {
 	 * @return sendMailResult
 	 */
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, 
-			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID);
+			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID, boolean sendMailApplicaint);
 }

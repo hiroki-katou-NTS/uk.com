@@ -168,6 +168,7 @@ module cmm045.a.viewmodel {
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
+                    self.lstSidFilter(obj.listEmployeeId);
                 }
                 if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
@@ -178,7 +179,7 @@ module cmm045.a.viewmodel {
 
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
                 let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
@@ -271,7 +272,7 @@ module cmm045.a.viewmodel {
                         _.each(data.lstAppAbsence, function(absence) {
                             self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
                                 absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
-                                absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                                absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag, absence.workTypeName));
                         });
                         if(data.hdAppSet != null){
                             self.hdAppSet(new vmbase.HdAppSet(data.hdAppSet.obstacleName, data.hdAppSet.hdName, data.hdAppSet.yearHdName, data.hdAppSet.furikyuName,
@@ -961,10 +962,10 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 0 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+            if(absence.allDayHalfDayLeaveAtr == 0 && absence.holidayAppType != 3){//休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
                 appContent006 = self.convertAbsenceAllDay(absence);
             }
-            if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
+            if(absence.holidayAppType == 3){//休暇申請.休暇種類　＝ 特別休暇 ver39
                 appContent006 = self.convertAbsenceSpecial(absence);
             }
             if(absence.allDayHalfDayLeaveAtr == 1){//休暇申請.終日半日休暇区分　＝　半日休暇
@@ -979,17 +980,16 @@ module cmm045.a.viewmodel {
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
         }
-        //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+        //※休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
         convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
             return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)]);
         }
-        //※特別休暇申請.続柄コード　＝　入力ありの場合
+        //※休暇申請.休暇種類　＝ 特別休暇 ver39
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : absence.day + getText('CMM045_278');
-            //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
+            let result = getText('CMM045_279') + absence.workTypeName + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
@@ -1520,7 +1520,7 @@ module cmm045.a.viewmodel {
                 _.each(data.lstAppAbsence, function(absence) {
                     self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
                         absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
-                        absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                        absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag, absence.workTypeName));
                 });
                 _.each(data.lstAppCompltLeaveSync, function(complt){
                     let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeName, complt.appMain.startTime, complt.appMain.endTime);

@@ -506,12 +506,7 @@ public class DivTimeSysFixedCheckService {
 			return divTimeErAlMs;
 		}
 		return shareContainer.getShared(join(DIVERGENCE_TIME_KEY, SEPERATOR, comId), 
-				() -> {
-					return diverTimeRepo.getDivTimeListByNo(comId, divCheckNos).stream()
-								.filter(div -> div.isDivergenceTimeUse())
-								.sorted((c1, c2) -> Integer.compare(c1.getDivergenceTimeNo(), c2.getDivergenceTimeNo()))
-								.collect(Collectors.toList());
-				});
+				() -> diverTimeRepo.getUsedDivTimeListByNoV2(comId, divCheckNos));
 	}
 
 	/** ドメインモデル「乖離基準時間利用単位」を取得する */
