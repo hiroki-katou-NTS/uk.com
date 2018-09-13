@@ -24,7 +24,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -195,6 +197,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private DisplayRemainingHolidayNumber remainHolidayService;
+	
+	@Resource
+	private ManagedExecutorService executorService;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -392,32 +397,33 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		val start = System.currentTimeMillis();
 		val emp = listEmployeeId;
 		val dateRangeTemp = dateRange;
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
-					// No 19, 20 show/hide button
-					if (displayFormat == 0) {
-						// フレックス情報を表示する
-						if (!emp.isEmpty())
-							screenDto.setMonthResult(monthFlexProcessor
-									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
-											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
-						if (emp.get(0).equals(sId)) {
-							//社員に対応する締め期間を取得する
-							DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
-							//対象日の本人確認が済んでいるかチェックする
-							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+					try {
+						// No 19, 20 show/hide button
+						if (displayFormat == 0) {
+							// フレックス情報を表示する
+							if (!emp.isEmpty())
+								screenDto.setMonthResult(monthFlexProcessor
+										.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
+												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+							if (emp.get(0).equals(sId)) {
+								//社員に対応する締め期間を取得する
+								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								//対象日の本人確認が済んでいるかチェックする
+								screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+							}
+							// screenDto.setFlexShortage(null);
 						}
-						// screenDto.setFlexShortage(null);
+						System.out.println("time flex : " + (System.currentTimeMillis() - start));
+					} finally {
+						// Count down latch.
+						countDownLatch.countDown();
 					}
-					System.out.println("time flex : " + (System.currentTimeMillis() - start));
-					
-					// Count down latch.
-					countDownLatch.countDown();
 				});
 		executorService.submit(task);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
@@ -481,13 +487,7 @@ public class DailyPerformanceCorrectionProcessor {
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
-			countDownLatch.countDown();
-			executorService.shutdown();
 			throw new RuntimeException(ie);
-		} finally {
-			countDownLatch.countDown();
-			// Force shut down executor services.
-			executorService.shutdown();
 		}
 		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
 		screenDto.setDateRange(datePeriodResult);
