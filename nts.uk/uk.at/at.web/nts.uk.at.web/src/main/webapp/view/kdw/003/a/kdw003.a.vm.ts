@@ -2148,7 +2148,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
-            let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
+            
             let valueTemp = 0;
             _.forEach($.parseJSON(jsonColumnWith)[1], (value, key) => {
                 if (key.indexOf('A') != -1) {
@@ -2163,9 +2163,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     valueTemp = 0;
                 }
             });
-
-            delete columnWidthMiGrid.monthYear;
-            command.lstHeaderMiGrid = columnWidthMiGrid;
+            if(self.isVisibleMIGrid()){
+                let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
+                delete columnWidthMiGrid.monthYear;
+                command.lstHeaderMiGrid = columnWidthMiGrid;
+            }
+            
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             service.saveColumnWidth(command).done(() =>{
