@@ -403,7 +403,7 @@ module kcp.share.list {
                 
                 let options;
                 // fix bug constructor of value of knockoutObservableArray != Array.
-                const selectedCodes = [].slice.call(self.selectedCodes());
+                const selectedCodes = self.isMultipleSelect ? [].slice.call(self.selectedCodes()) : self.selectedCodes();
                 
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
