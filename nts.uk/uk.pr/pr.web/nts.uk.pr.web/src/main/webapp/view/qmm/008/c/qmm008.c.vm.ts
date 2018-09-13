@@ -166,16 +166,11 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                 selectedHistoryPeriod = null,
                 listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
             self.selectedhistoryId = selectedhistoryId;
-            listInsuranceOffice.forEach((office, index) => {
-
-            });
-            self.selectedOffice = listInsuranceOffice.find(insuranceOffice => insuranceOffice.code == selectedInsurenceCode);
+            self.selectedOffice = _.find(listInsuranceOffice, {code:selectedInsurenceCode});
             if (selectedhistoryId) {
                 let selectedHistoryPeriod;
                 if (self.selectedOffice) {
-                    selectedHistoryPeriod = self.selectedOffice.welfareInsuranceRateHistory.history.find(historyItem =>
-                    { return historyItem.historyId === selectedhistoryId; }
-                    );
+                    selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, {historyId:selectedhistoryId});
                 }
                 if (selectedHistoryPeriod) {
                     selectedHistoryPeriod.displayStart = selectedHistoryPeriod.start.substring(0, 4) + "/" + selectedHistoryPeriod.start.substring(4, 6);
@@ -327,7 +322,6 @@ module nts.uk.com.view.qmm008.c.viewmodel {
             let selectedOffice = self.selectedOffice;
             setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice });
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
-                $("#C2_7").focus();
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
@@ -354,6 +348,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                     }
                     self.isUpdateMode(false);
                 }
+                $("#C2_7").focus();
             });
         }
 
