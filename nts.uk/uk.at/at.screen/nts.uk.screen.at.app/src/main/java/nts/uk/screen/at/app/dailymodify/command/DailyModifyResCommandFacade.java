@@ -280,30 +280,39 @@ public class DailyModifyResCommandFacade {
 				// true) {
 				resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam,
 						dataParent.getMode(), dataParent.isFlagCalculation());
-				val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
-						resultIU.getLstMonthDomain());
-				if (!errorDivergence.isEmpty()) {
-					resultError.putAll(errorDivergence);
-					hasError = true;
-				}
-				if (dataParent.getMode() == 0) {
-					val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(), monthParam);
-					dataResultAfterIU.setFlexShortage(flexShortageRCDto);
-					if(flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) hasError = true;
-				}
-				val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
-				if (!errorMonth.isEmpty()) {
-					resultError.putAll(errorMonth);
-					hasError = true;
-				}
+				if (resultIU != null) {
+					val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
+							resultIU.getLstMonthDomain());
+					if (!errorDivergence.isEmpty()) {
+						resultError.putAll(errorDivergence);
+						hasError = true;
+					}
+					if (dataParent.getMode() == 0) {
+						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
+								monthParam);
+						dataResultAfterIU.setFlexShortage(flexShortageRCDto);
+						if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty())
+							hasError = true;
+					}
+					val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
+					if (!errorMonth.isEmpty()) {
+						resultError.putAll(errorMonth);
+						hasError = true;
+					}
 
-				if (!hasError) {
-					this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
-							resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate());
-					// insert sign
-					insertSign(dataParent.getDataCheckSign());
+					if (!hasError) {
+						this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
+								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(),
+								resultIU.isUpdate());
+						// insert sign
+						insertSign(dataParent.getDataCheckSign());
+						// insert approval
+						insertApproval(dataParent.getDataCheckApproval());
+					}
+				}else{
+					if(dataParent.getDataCheckSign() != null && !dataParent.getDataCheckSign().isEmpty()) insertSign(dataParent.getDataCheckSign());
 					// insert approval
-					insertApproval(dataParent.getDataCheckApproval());
+					if(dataParent.getDataCheckApproval() != null && !dataParent.getDataCheckApproval().isEmpty()) insertApproval(dataParent.getDataCheckApproval());
 				}
 			}
 			// 暫定データを登録する - Register provisional data

@@ -79,6 +79,21 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 	}
 
 	@Override
+	public Optional<MonthlyDayoffRemainData> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		return this.queryProxy()
+				.find(new KrcdtMonDayoffRemainPK(
+						employeeId,
+						yearMonth.v(),
+						closureId.value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0)),
+						KrcdtMonDayoffRemain.class)
+				.map(c -> toDomain(c));
+	}
+	
+	@Override
 	public List<MonthlyDayoffRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 
 		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonDayoffRemain.class)

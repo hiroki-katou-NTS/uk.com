@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.DisplayTimeItemDto;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
+import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
@@ -126,7 +128,7 @@ public class MonthlyPerformanceDisplay {
 		// 勤務種別の場合
 		else {
 			// 社員の勤務種別に対応する表示項目を取得する
-			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param);
+			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param, screenDto);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
 		if (param.getSheets() == null || param.getSheets().isEmpty()) {
@@ -301,7 +303,7 @@ public class MonthlyPerformanceDisplay {
 	 * @return
 	 */
 	private void getDisplayItemBussiness(String cId, List<String> lstEmployeeId, DateRange dateRange,
-			MonthlyPerformanceParam param) {
+			MonthlyPerformanceParam param, MonthlyPerformanceCorrectionDto screenDto) {
 		// 表示する項目一覧
 		List<PSheet> resultSheets = new ArrayList<>();
 		if (CollectionUtil.isEmpty(lstEmployeeId)) {
@@ -314,9 +316,12 @@ public class MonthlyPerformanceDisplay {
 		// Create header & sheet
 		// 取得したImported「（就業機能）勤務種別」の件数をチェックする
 		if (lstBusinessTypeCode.size() == 0) {
-			// エラーメッセージ（#）を表示する
-			// TODO missing message ID
-			throw new BusinessException("エラーメッセージ（#）を表示する");
+			// エラーメッセージ（#Msg_1403）を表示する(hiển thị error message （#Msg_1403）)
+			BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+			screenDto.getLstEmployee().stream().forEach(x ->{
+				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
+			});
+			throw bundleExeption;
 		}
 		param.setFormatCodes(lstBusinessTypeCode);
 		// 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する

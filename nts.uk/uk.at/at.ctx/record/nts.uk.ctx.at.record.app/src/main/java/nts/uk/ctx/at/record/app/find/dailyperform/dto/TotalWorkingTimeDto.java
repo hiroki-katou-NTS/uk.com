@@ -170,13 +170,13 @@ public class TotalWorkingTimeDto implements ItemConst {
 											createTimeWithCalc(c.getLateTime()),
 											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getBreakUse()),
-											new IntervalExemptionTime(null, null,
+											new IntervalExemptionTime(new AttendanceTime(0), null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
 				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
 											createTimeWithCalc(c.getTime()),
 											createTimeWithCalc(c.getDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getValicationUseTime()),
-											new IntervalExemptionTime(null, null,
+											new IntervalExemptionTime(new AttendanceTime(0), null,
 													toAttendanceTime(c.getIntervalExemptionTime())))),
 				breakTimeSheet == null ? null : breakTimeSheet.toDmain(), 
 				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
@@ -203,7 +203,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {

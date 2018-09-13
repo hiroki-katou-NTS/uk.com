@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,8 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -19,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の休出時間 */
@@ -73,7 +77,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 	
 	public HolidayWorkTimeOfDaily toDomain() {
@@ -88,12 +92,17 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 								createTimeWithCalc(c.getTransferTime()),
 								c.getBeforeApplicationTime() == null ? Finally.empty() 
 										: Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				holidayMidnightWork == null ? Finally.empty() : holidayMidnightWork.toDomain() == null ? Finally.empty():Finally.of(holidayMidnightWork.toDomain()),
+				holidayMidnightWork == null ? Finally.of(new HolidayMidnightWork(Arrays.asList(
+						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
+						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
+						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.PublicHolidayWork))))
+											: holidayMidnightWork.toDomain() == null ? Finally.empty()
+											 :Finally.of(holidayMidnightWork.toDomain()),
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
 	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.empty() : Finally.of(c.createTimeDivWithCalc());
+		return c == null ? Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))) : Finally.of(c.createTimeDivWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
@@ -101,6 +110,6 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 }

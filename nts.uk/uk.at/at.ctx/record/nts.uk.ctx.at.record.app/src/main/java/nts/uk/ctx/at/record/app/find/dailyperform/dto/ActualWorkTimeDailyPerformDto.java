@@ -82,21 +82,21 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 
 	private static ConstraintTimeDto getConstraintTime(ConstraintTime domain) {
 		return domain == null ? null : new ConstraintTimeDto(
-						domain.getTotalConstraintTime() == null ? null
+						domain.getTotalConstraintTime() == null ? 0
 								: domain.getTotalConstraintTime().valueAsMinutes(),
-						domain.getLateNightConstraintTime() == null ? null
+						domain.getLateNightConstraintTime() == null ? 0
 								: domain.getLateNightConstraintTime().valueAsMinutes());
 	}
 
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
 		return domain == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
-								c.getPremitumTime() == null ? null : c.getPremitumTime().valueAsMinutes(),
+								c.getPremitumTime() == null ? 0 : c.getPremitumTime().valueAsMinutes(),
 								c.getPremiumTimeNo()));
 	}
 
@@ -118,6 +118,6 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {
-		return value == null ? null : new AttendanceTime(value);
+		return value == null ? new AttendanceTime(0) : new AttendanceTime(value);
 	}
 }

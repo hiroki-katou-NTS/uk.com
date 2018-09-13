@@ -1484,7 +1484,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 for (let i = 0; i < arrCell.length; i += 1) {
                     let cell: any = arrCell[i], valueCell = cell.value;
-                    let workScheduleTimeZone: any =  self.selectedModeDisplay() != 1 ? [{
+                    let workScheduleTimeZone: any =  (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
                         scheduleCnt: 1,
                         scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
                             : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),

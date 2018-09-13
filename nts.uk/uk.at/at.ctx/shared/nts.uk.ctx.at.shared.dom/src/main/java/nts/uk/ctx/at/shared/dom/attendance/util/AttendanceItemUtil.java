@@ -714,7 +714,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		Field idxField = getField(idxFieldName, targetClass);
 
-		List<T> returnList = new ArrayList<>(list);
+		List<T> returnList = new ArrayList<>(list.stream().filter(c -> c != null).collect(Collectors.toList()));
 
 		if (returnList.size() < max) {
 
@@ -723,7 +723,9 @@ public class AttendanceItemUtil implements ItemConst {
 				int index = x;
 
 				Optional<T> idxValue = returnList.stream().filter(c -> {
-
+					if(c == null){
+						return false;
+					}
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
 
 					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);

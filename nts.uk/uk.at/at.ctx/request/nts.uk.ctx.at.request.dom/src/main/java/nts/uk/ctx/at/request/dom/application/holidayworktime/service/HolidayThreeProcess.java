@@ -36,14 +36,15 @@ public interface HolidayThreeProcess {
 	 * @param siftCD
 	 * @return
 	 */
-	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, String siftCD,Integer calTime);
+	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, 
+			String siftCD,Integer calTime, boolean isCalculator);
 	/**
 	 * 03-02-1_チェック条件
 	 * @param prePostAtr
 	 * @param companyID
 	 * @return
 	 */
-	public boolean checkCodition(int prePostAtr,String companyID);
+	public boolean checkCodition(int prePostAtr,String companyID, boolean isCalculator);
 	/**
 	 * 03-02-2_当日以外の場合
 	 * @param companyID
@@ -127,5 +128,6 @@ public interface HolidayThreeProcess {
 	 * @param calTime
 	 * @return
 	 */
-	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, String siftCD,Integer calTime);
+	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,
+			CaculationTime breakTimeInput, String siftCD,Integer calTime, boolean isCalculator);
 }
