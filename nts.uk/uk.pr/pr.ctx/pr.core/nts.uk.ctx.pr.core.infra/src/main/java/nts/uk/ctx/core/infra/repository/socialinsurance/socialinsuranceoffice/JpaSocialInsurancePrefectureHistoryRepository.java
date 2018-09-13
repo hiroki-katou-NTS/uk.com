@@ -1,5 +1,10 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.socialinsuranceoffice;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsurancePrefectureHistory;
@@ -8,15 +13,7 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.socialinsuranceoffice.QpbmtS
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.stream.Collectors;
 
-<<<<<<< HEAD
-import javax.ejb.Stateless;
-
-=======
->>>>>>> d68710f4dfb09f47f45fc50bfa98733219413d35
 @Stateless
 public class JpaSocialInsurancePrefectureHistoryRepository extends JpaRepository implements SocialInsurancePrefectureHistoryRepository {
     
