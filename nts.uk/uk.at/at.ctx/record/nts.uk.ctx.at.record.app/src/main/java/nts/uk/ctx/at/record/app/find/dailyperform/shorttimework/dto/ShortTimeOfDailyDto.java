@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -51,6 +52,19 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
 														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
 														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+			result.exsistData();
+		}
+		return result;
+	}
+
+	@Override
+	public ShortTimeOfDailyDto clone(){
+		ShortTimeOfDailyDto result = new ShortTimeOfDailyDto();
+		result.setEmployeeId(employeeId());
+		result.setYmd(workingDate());
+		result.setShortWorkingTimeSheets(shortWorkingTimeSheets == null ? null 
+				: shortWorkingTimeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			result.exsistData();
 		}
 		return result;

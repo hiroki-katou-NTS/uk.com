@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.excessoutside;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichu_ishida
  */
 @Getter
+@NoArgsConstructor
 public class ExcessOutsideWork {
 
 	/** 内訳NO */
@@ -27,6 +29,21 @@ public class ExcessOutsideWork {
 		this.breakdownNo = breakdownNo;
 		this.excessNo = excessNo;
 		this.excessTime = new AttendanceTimeMonth(0);
+	}
+	
+	/**
+	 * for using table KRCDT_MON_MERGE
+	 * ファクトリー
+	 * @param breakdownNo 内訳NO
+	 * @param excessNo 超過NO
+	 * @param excessTime 超過時間
+	 * @return 時間外超過
+	 */
+	public static ExcessOutsideWork of( AttendanceTimeMonth excessTime){
+		
+		ExcessOutsideWork domain = new ExcessOutsideWork();
+		domain.excessTime = excessTime;
+		return domain;
 	}
 	
 	/**

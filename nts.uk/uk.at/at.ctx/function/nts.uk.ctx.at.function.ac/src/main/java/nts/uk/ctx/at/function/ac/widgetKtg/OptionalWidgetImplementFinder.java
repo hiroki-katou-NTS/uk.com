@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +188,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}
 		
 		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
-																		c.getGrantDays().v(), 
+																		c.getGrantDays().v(),
 																		c.getTimes().v(), 
 																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
 																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 

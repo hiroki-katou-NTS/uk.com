@@ -25,6 +25,11 @@ public class ExcessOverTimeWorkMidNightTimeDto implements ItemConst {
 		return domain == null || domain.getTime() == null ? null : 
 				new ExcessOverTimeWorkMidNightTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getTime()));
 	}
+	
+	@Override
+	public ExcessOverTimeWorkMidNightTimeDto clone() {
+		return new ExcessOverTimeWorkMidNightTimeDto(time == null ? null : time.clone());
+	}
 
 	public ExcessOverTimeWorkMidNightTime toDomain() {
 		return time == null 

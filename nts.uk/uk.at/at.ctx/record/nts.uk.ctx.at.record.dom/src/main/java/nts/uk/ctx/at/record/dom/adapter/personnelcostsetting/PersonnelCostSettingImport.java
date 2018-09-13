@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttenda
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @Builder
@@ -23,6 +24,8 @@ public class PersonnelCostSettingImport {
 	
 	//勤怠項目ID
 	private List<Integer> attendanceItemId;
+	
+	private DatePeriod period;
 	
 	
 	/**

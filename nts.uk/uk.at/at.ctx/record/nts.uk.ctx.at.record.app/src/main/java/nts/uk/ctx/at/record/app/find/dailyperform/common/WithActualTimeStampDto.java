@@ -36,6 +36,13 @@ public class WithActualTimeStampDto implements ItemConst {
 											stamp.getNumberOfReflectionStamp());
 	}
 	
+	@Override
+	public WithActualTimeStampDto clone(){
+		return new WithActualTimeStampDto(time == null ? null : time.clone(), 
+											actualTime == null ? null : actualTime.clone(), 
+											numberOfReflectionStamp);
+	}
+	
 	public TimeActualStamp toDomain(){
 		return new TimeActualStamp(toWorkStamp(actualTime), toWorkStamp(time), numberOfReflectionStamp);
 	}

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -99,6 +100,23 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
 	
+	@Override
+	public TotalWorkingTimeDto clone() {
+		return new TotalWorkingTimeDto(totalWorkingTime, totalCalcTime, actualTime,
+										withinStatutoryTime == null ? null : withinStatutoryTime.clone(),
+										excessOfStatutoryTime == null ? null : excessOfStatutoryTime.clone(),
+										temporaryTime == null ? null : temporaryTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										lateTime == null ? null : lateTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										leaveEarlyTime == null ? null : leaveEarlyTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										breakTimeSheet == null ? null : breakTimeSheet.clone(),
+										goOutTimeSheet == null ? null : goOutTimeSheet.stream().map(t -> t.clone()).collect(Collectors.toList()),
+										shortWorkTime == null ? null : shortWorkTime.clone(), 
+										raisingSalaryTime == null ? null : raisingSalaryTime.clone(), 
+										dailyOfHoliday == null ? null : dailyOfHoliday.clone(), 
+										workTimes,
+										vacationAddTime);
+	}
+	
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {
 		return domain == null ? null
 				: new TotalWorkingTimeDto(getAttendanceTime(domain.getTotalTime()),
@@ -155,8 +173,8 @@ public class TotalWorkingTimeDto implements ItemConst {
 											new IntervalExemptionTime(new AttendanceTime(0), null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
 				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
-											createTimeWithCalc(c.getLeaveEarlyTime()),
-											createTimeWithCalc(c.getLeaveEarlyDeductionTime()), new WorkNo(c.getNo()),
+											createTimeWithCalc(c.getTime()),
+											createTimeWithCalc(c.getDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getValicationUseTime()),
 											new IntervalExemptionTime(new AttendanceTime(0), null,
 													toAttendanceTime(c.getIntervalExemptionTime())))),

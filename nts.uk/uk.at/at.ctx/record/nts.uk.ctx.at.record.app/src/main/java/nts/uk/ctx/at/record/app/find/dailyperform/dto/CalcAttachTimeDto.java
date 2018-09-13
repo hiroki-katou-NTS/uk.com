@@ -41,6 +41,11 @@ public class CalcAttachTimeDto implements ItemConst {
 		this.time = time;
 	}
 	
+	@Override
+	public CalcAttachTimeDto clone() {
+		return new CalcAttachTimeDto(calcTime, time, divergenceTime);
+	}
+	
 	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculationMinusExist time){
 		return time == null ? null : new CalcAttachTimeDto(
 											time.getCalcTime() == null ? 0 : time.getCalcTime().valueAsMinutes(), 
