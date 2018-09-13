@@ -20,7 +20,7 @@ public class UpdateEmpTiedProYearCommandHandler extends CommandHandler<EmpTiedPr
     @Override
     protected void handle(CommandHandlerContext<EmpTiedProYearCommand> context) {
         EmpTiedProYearCommand updateCommand = context.getCommand();
-        repository.update(new EmpTiedProYear(updateCommand.getCid(), updateCommand.getProcessCateNo(), updateCommand.getEmploymentCode()));
+        //repository.update(new EmpTiedProYear(updateCommand.getCid(), updateCommand.getProcessCateNo(), updateCommand.getEmploymentCode()));
     
     }
 }

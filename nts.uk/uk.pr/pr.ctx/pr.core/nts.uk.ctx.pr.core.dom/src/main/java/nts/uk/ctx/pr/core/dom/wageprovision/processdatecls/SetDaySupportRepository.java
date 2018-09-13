@@ -17,6 +17,6 @@ public interface SetDaySupportRepository
 
     void update(SetDaySupport domain);
 
-    void remove(String cid, int processCateNo);
+
 
 }

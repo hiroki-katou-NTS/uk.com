@@ -34,4 +34,11 @@ public class QpbmtSpecPrintYmSetPk implements Serializable {
 	@Column(name = "PROCESS_CATE_NO")
 	public int processCateNo;
 
+	/**
+	 * 処理年月
+	 */
+	@Basic(optional = false)
+	@Column(name = "PROCESS_DATE")
+	public int processDate;
+
 }

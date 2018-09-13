@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.processdatecls;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.*;
 
 import javax.inject.Inject;
@@ -27,22 +28,15 @@ public class RegisterProcessingSegment extends WebService {
     private AddCurrProcessDateCommandHandler addCurrProcessDateCommandHandler;
 
 
-
-
     @POST
     public void registerProcessingSegment(
             ValPayDateSetCommand valPayDateSetCommand,
-            ProcessInformationCommand processInformationCommand,
-            SpecPrintYmSetCommand specPrintYmSetCommand,
-            SetDaySupportCommand setDaySupportCommand,
-            CurrProcessDateCommand currProcessDateCommand
-    ) {
+            ProcessInformationCommand processInformationCommand) {
         this.addValPayDateSetCommandHandler.handle(valPayDateSetCommand);
         this.addProcessInformationCommandHandler.handle(processInformationCommand);
-        this.addSpecPrintYmSetCommandHandler.handle(specPrintYmSetCommand);
-        this.addSetDaySupportCommandHandler.handle(setDaySupportCommand);
-        this.addCurrProcessDateCommandHandler.handle(currProcessDateCommand);
 
+        GeneralDate a = GeneralDate.today();
+        a.dayOfWeek();
     }
 
 }

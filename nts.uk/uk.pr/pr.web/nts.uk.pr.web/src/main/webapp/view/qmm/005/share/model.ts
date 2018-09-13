@@ -116,7 +116,7 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface ISetDaySupport{
         cid:string,
-        processCategoryNO:string,
+        processCategoryNO:number,
         socialInsurCollecMonth:number,
         processDate:number,
         incomeTaxDate:string,
@@ -133,17 +133,17 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export class SetDaySupport{
         cid:string;
-        processCategoryNO:string;
-        socialInsurCollecMonth:KnockoutObservable<number>;
-        processDate:KnockoutObservable<number>;
-        incomeTaxDate:KnockoutObservable<string>;
-        closeDateTime:KnockoutObservable<string>;
-        empExtraRefeDate:KnockoutObservable<string>;
-        closureAccountingDate:KnockoutObservable<string>;
-        socialInsurStanDate:KnockoutObservable<string>;
-        empInsurdStanDate:KnockoutObservable<string>;
-        payMentDate:KnockoutObservable<string>;
-        numberWorkDay:KnockoutObservable<number>;
+        processCategoryNO:number;
+        socialInsurCollecMonth:number;
+        processDate:number;
+        incomeTaxDate:string;
+        closeDateTime:string;
+        empExtraRefeDate:string;
+        closureAccountingDate:string;
+        socialInsurStanDate:string;
+        empInsurdStanDate:string;
+        payMentDate:string;
+        numberWorkDay:number;
         constructor(params:ISetDaySupport){
             this.cid=params.cid;
             this.processCategoryNO=params.processCategoryNO;
@@ -169,7 +169,7 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface IProcessInfomation {
         cid: string,
-        processCategoryNO: string,
+        processCategoryNO: number,
         processingName: string,
         deprecatCategory: Abolition
     }
@@ -177,15 +177,15 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export class ProcessInfomation{
         cid:string;
-        processCategoryNO:string;
-        processName:KnockoutObservable<string>;
-        deprecatCategory:KnockoutObservable<Abolition>;
+        processCategoryNO:number;
+        processName:string;
+        deprecatCategory:Abolition;
 
         constructor(params:IProcessInfomation){
             this.cid=params.cid;
             this.processCategoryNO=params.processCategoryNO;
-            this.processName=ko.observable(params.processingName);
-            this.deprecatCategory=ko.observable(params.deprecatCategory);
+            this.processName=params.processingName;
+            this.deprecatCategory=params.deprecatCategory;
         }
     }
 
@@ -409,7 +409,7 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface IValPayDateSet{
         cid: string,
-        processCategoryNo: string,
+        processCategoryNo: number,
         basicSetting: BasicSetting,
         advancedSetting: AdvancedSetting
     }
@@ -417,7 +417,7 @@ module nts.uk.pr.view.qmm005.share.model {
     //支払日の設定の規定値
     export class ValPayDateSet {
         cid: string;
-        processCategoryNo: string;
+        processCategoryNo: number;
         basicSetting: BasicSetting;
         advancedSetting: AdvancedSetting;
 

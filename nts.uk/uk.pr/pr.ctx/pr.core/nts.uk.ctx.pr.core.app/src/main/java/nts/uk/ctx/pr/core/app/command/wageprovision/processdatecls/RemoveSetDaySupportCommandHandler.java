@@ -20,6 +20,6 @@ public class RemoveSetDaySupportCommandHandler extends CommandHandler<SetDaySupp
     protected void handle(CommandHandlerContext<SetDaySupportCommand> context) {
         String cid = context.getCommand().getCid();
         int processCateNo = context.getCommand().getProcessCateNo();
-        repository.remove(cid, processCateNo);
+       // repository.remove(cid, processCateNo);
     }
 }

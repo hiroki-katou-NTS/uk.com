@@ -18,20 +18,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class QpbmtEmpTiedProYearPk implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * 会社ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
 
-	/**
-	 * 処理区分NO
-	 */
-	@Basic(optional = false)
-	@Column(name = "PROCESS_CATE_NO")
-	public int processCateNo;
+    /**
+     * 処理区分NO
+     */
+    @Basic(optional = false)
+    @Column(name = "PROCESS_CATE_NO")
+    public int processCateNo;
 
+
+    /**
+     * 雇用コード
+     */
+    @Basic(optional = false)
+    @Column(name = "EMPLOYMENT_CODE")
+    public String employmentCode;
 }

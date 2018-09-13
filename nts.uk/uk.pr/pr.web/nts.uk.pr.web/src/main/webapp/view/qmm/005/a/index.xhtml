@@ -59,17 +59,17 @@
                         <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-bind="foreach:itemTable" >
                     <tr>
                         <!--content-->
                         <td>
                             <!--A2_7 処理区分NO-->
-                            <div class="label"></div>
+                            <div class="label" data-bind="$index"></div>
                         </td>
 
                         <td>
                             <!--A2_8 処理区分名称-->
-                            <div class="label"></div>
+                            <!--<div class="label" data-bind="text: $root.processInfomations.processCategoryNO"></div>-->
                             <!--A2_9 編集-->
                             <button class="">#{i18n.getText('QMM005_11')}</button>
                         </td>
@@ -83,14 +83,14 @@
                             <!--A2_11 処理年一覧-->
                             <div id="combo-box" data-bind="ntsComboBox: {
                             name: 'Sample List', width:80,
-                            options: itemListCbb1,
-                            optionsValue: 'code',
+                            options: $root.setDaySupports,
+                            optionsValue: 'processCategoryNO',
                             visibleItemsCount: 5,
-                            value: itemListCbb1SelectedCode,
-                            optionsText: 'name',
+                            value: $root.code,
+                            optionsText: 'empExtraRefeDate',
                             columns: [
 
-                                { prop: 'name', length: 10 },
+                                { prop: 'empExtraRefeDate', length: 10 },
                             ]}"></div>
                             <!--A2_13 キャレット-->
                             <span class="caret-right caret-inline"></span>
@@ -98,21 +98,19 @@
                             <!--A2_14 次回給与支払日-->
                             <div data-bind="ntsComboBox: {
                             name: 'Sample List', width:200,
-                            options: itemListCbb1,
-                            optionsValue: 'code',
+                            options:  $root.setDaySupports,
+                            optionsValue: 'processCategoryNO',
                             visibleItemsCount: 5,
-                            value: itemListCbb1SelectedCode,
-                            optionsText: 'name',
+                            value: $root.code,
+                            optionsText: 'payMentDate',
                             columns: [
 
-                                { prop: 'name', length: 10 },
+                                { prop: 'payMentDate', length: 10 },
                             ]}"></div>
 
 
                         </td>
-                        <td>
 
-                        </td>
 
 
                     </tr>

@@ -73,9 +73,18 @@ public class SetDaySupport extends AggregateRoot {
 	 */
 	private String numberWorkDay;
 
-	public SetDaySupport(String cid, int processCateNo, GeneralDate closeDateTime, GeneralDate empInsurdStanDate,
-			GeneralDate closureDateAccounting, GeneralDate paymentDate, GeneralDate empExtraRefeDate,
-			GeneralDate socialInsurdStanDate, int socialInsurdCollecMonth, int processDate, GeneralDate incomeTaxDate,
+	public SetDaySupport(
+			String cid,
+			int processCateNo,
+			int processDate,
+			GeneralDate closeDateTime,
+			GeneralDate empInsurdStanDate,
+			GeneralDate closureDateAccounting,
+			GeneralDate paymentDate,
+			GeneralDate empExtraRefeDate,
+			GeneralDate socialInsurdStanDate,
+			int socialInsurdCollecMonth,
+			GeneralDate incomeTaxDate,
 			String numberWorkDay) {
 		super();
 		this.cid = cid;

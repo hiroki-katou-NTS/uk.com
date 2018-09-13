@@ -1,15 +1,13 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.processdatecls;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SpecPrintYmSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SpecPrintYmSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSpecPrintYmSet;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSpecPrintYmSetPk;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPrintYmSetRepository
@@ -21,7 +19,7 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
     @Override
     public List<SpecPrintYmSet> getAllSpecPrintYmSet(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSpecPrintYmSet.class)
-                .getList(item -> item.toDomain());
+                .getList(QpbmtSpecPrintYmSet::toDomain);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSpecPrintYmSet.class)
         .setParameter("cid", cid)
         .setParameter("processCateNo", processCateNo)
-        .getSingle(c->c.toDomain());
+        .getSingle(QpbmtSpecPrintYmSet::toDomain);
     }
 
     @Override
@@ -40,10 +38,5 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
     @Override
     public void update(SpecPrintYmSet domain){
         this.commandProxy().update(QpbmtSpecPrintYmSet.toEntity(domain));
-    }
-
-    @Override
-    public void remove(String cid, int processCateNo){
-        this.commandProxy().remove(QpbmtSpecPrintYmSet.class, new QpbmtSpecPrintYmSetPk(cid, processCateNo)); 
     }
 }

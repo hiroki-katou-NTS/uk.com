@@ -16,7 +16,4 @@ public interface SpecPrintYmSetRepository
     void add(SpecPrintYmSet domain);
 
     void update(SpecPrintYmSet domain);
-
-    void remove(String cid, int processCateNo);
-
 }

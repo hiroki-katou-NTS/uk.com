@@ -42,8 +42,5 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
         this.commandProxy().update(QpbmtSetDaySupport.toEntity(domain));
     }
 
-    @Override
-    public void remove(String cid, int processCateNo){
-        this.commandProxy().remove(QpbmtSetDaySupport.class, new QpbmtSetDaySupportPk(cid, processCateNo)); 
-    }
+
 }

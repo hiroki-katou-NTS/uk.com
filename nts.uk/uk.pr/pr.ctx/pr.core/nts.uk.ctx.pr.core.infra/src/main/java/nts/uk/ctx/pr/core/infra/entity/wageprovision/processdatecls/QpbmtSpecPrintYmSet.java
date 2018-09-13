@@ -21,41 +21,35 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "QPBMT_SPEC_PRINT_YM_SET")
 public class QpbmtSpecPrintYmSet extends UkJpaEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * ID
-	 */
-	@EmbeddedId
-	public QpbmtSpecPrintYmSetPk specPrintYmSetPk;
+    /**
+     * ID
+     */
+    @EmbeddedId
+    public QpbmtSpecPrintYmSetPk specPrintYmSetPk;
 
-	/**
-	 * 処理年月
-	 */
-	@Basic(optional = false)
-	@Column(name = "PROCESS_DATE")
-	public int processDate;
 
-	/**
-	 * 印字年月
-	 */
-	@Basic(optional = false)
-	@Column(name = "PRINT_DATE")
-	public int printDate;
+    /**
+     * 印字年月
+     */
+    @Basic(optional = false)
+    @Column(name = "PRINT_DATE")
+    public int printDate;
 
-	@Override
-	protected Object getKey() {
-		return specPrintYmSetPk;
-	}
+    @Override
+    protected Object getKey() {
+        return specPrintYmSetPk;
+    }
 
-	public SpecPrintYmSet toDomain() {
-		return new SpecPrintYmSet(this.specPrintYmSetPk.cid, this.specPrintYmSetPk.processCateNo, this.processDate,
-				this.printDate);
-	}
+    public SpecPrintYmSet toDomain() {
+        return new SpecPrintYmSet(this.specPrintYmSetPk.cid, this.specPrintYmSetPk.processCateNo, this.specPrintYmSetPk.processDate,
+                this.printDate);
+    }
 
-	public static QpbmtSpecPrintYmSet toEntity(SpecPrintYmSet domain) {
-		return new QpbmtSpecPrintYmSet(new QpbmtSpecPrintYmSetPk(domain.getCid(), domain.getProcessCateNo()),
-				domain.getProcessDate(), domain.getPrintDate());
-	}
+    public static QpbmtSpecPrintYmSet toEntity(SpecPrintYmSet domain) {
+        return new QpbmtSpecPrintYmSet(new QpbmtSpecPrintYmSetPk(domain.getCid(), domain.getProcessCateNo(), domain.getProcessDate()),
+                domain.getPrintDate());
+    }
 
 }

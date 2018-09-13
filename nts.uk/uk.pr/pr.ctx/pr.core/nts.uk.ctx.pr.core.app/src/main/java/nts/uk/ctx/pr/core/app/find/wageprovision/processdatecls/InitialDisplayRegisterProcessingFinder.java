@@ -57,7 +57,7 @@ public class InitialDisplayRegisterProcessingFinder {
 						x -> new CurrProcessDateDto(x.getCid(), x.getProcessCateNo(), x.getGiveCurrTreatYear().v()))
 						.orElse(null);
 				EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear
-						.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(), x.getEmploymentCode().v()))
+						.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(), x.getEmploymentCodes().stream().map(item->item.v()).collect(Collectors.toList())))
 						.orElse(null);
 
 				InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,

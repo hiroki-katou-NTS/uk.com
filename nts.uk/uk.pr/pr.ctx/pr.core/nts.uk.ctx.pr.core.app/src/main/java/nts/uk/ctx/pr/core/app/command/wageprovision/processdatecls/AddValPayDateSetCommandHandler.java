@@ -16,9 +16,11 @@ public class AddValPayDateSetCommandHandler extends CommandHandler<ValPayDateSet
 	@Inject
 	private ValPayDateSetRepository repository;
 
+
 	@Override
 	protected void handle(CommandHandlerContext<ValPayDateSetCommand> context) {
 		ValPayDateSetCommand addCommand = context.getCommand();
+
 		repository.add(new ValPayDateSet(
 				addCommand.getCid(),
 				addCommand.getProcessCateNo(),

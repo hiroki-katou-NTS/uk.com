@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 public class EmpTiedProYearCommand
 {
@@ -19,8 +21,8 @@ public class EmpTiedProYearCommand
     /**
     * EMPLOYMENT_CODE
     */
-    private String employmentCode;
+    private List<String> employmentCodes;
     
-    private Long version;
+
 
 }

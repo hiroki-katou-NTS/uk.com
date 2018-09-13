@@ -24,12 +24,12 @@ public class ValPayDateSetDto {
 	/**
 	 * 基本的な設定
 	 */
-	private BasicSettingDto basicSettingDto;
+	private BasicSettingDto basicSetting;
 
 	/**
 	 * 高度な設定
 	 */
-	private AdvancedSettingDto advancedSettingDto;
+	private AdvancedSettingDto advancedSetting;
 
 
 	public static ValPayDateSetDto fromDomain(ValPayDateSet domain) {
