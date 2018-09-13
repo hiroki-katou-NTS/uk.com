@@ -23,12 +23,15 @@ public class KrcstFlexShortageLimit extends UkJpaEntity implements Serializable 
 
 	/** 繰越上限時間 */
 	@Id
+	@Column(name = "CID")
+	public String companyId;
+	
 	@Column(name = "UPPER_LIMIT_TIME")
 	public int upperLimitTime;
 	
 	@Override
 	protected Object getKey() {
-		return upperLimitTime;
+		return companyId;
 	}
 
 }
