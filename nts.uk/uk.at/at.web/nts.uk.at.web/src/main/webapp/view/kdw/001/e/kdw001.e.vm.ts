@@ -139,7 +139,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                 self.contents = res.enumComboBox;
                 //self.executionContents(res.enumComboBox);
-                self.startTime(moment(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
+                self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
                 self.startAsyncTask(res.empCalAndSumExecLogID);
 
                 dfd.resolve();
@@ -269,7 +269,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             
                             let stopped = 0;
                                 if(info.status === "CANCELLED"){
-                                    self.endTime(moment().format("YYYY/MM/DD HH:mm:ss"));
+                                    self.endTime(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
                                     stopped = 1;
                                 }
                             // End count time
