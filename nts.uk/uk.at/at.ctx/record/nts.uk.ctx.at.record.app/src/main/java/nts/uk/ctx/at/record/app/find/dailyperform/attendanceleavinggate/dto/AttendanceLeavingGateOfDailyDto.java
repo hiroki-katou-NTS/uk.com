@@ -99,6 +99,6 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 				c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-				c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
+				c.stampInfo());
 	}
 }
