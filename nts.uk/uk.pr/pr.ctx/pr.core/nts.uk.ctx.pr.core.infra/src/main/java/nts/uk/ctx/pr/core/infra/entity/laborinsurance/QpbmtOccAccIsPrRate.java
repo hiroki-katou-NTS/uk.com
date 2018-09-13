@@ -2,10 +2,15 @@ package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * 労災保険料率
@@ -38,12 +43,21 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "EMP_CON_RATIO")
-    public String empConRatio;
+    public BigDecimal empConRatio;
     
     @Override
     protected Object getKey()
     {
         return occAccIsPrRatePk;
+    }
+
+
+    public static List<QpbmtOccAccIsPrRate> toEntity(List<OccAccInsurBusiBurdenRatio> domain,String hisId){
+        List<QpbmtOccAccIsPrRate> listEmpInsurBusBurRatio = domain.stream().map(item -> {return new QpbmtOccAccIsPrRate(
+                new QpbmtOccAccIsPrRatePk(item.getOccAccInsurBusNo(),hisId),
+                item.getFracClass().value,
+                item.getEmpConRatio().v());}).collect(Collectors.toList());
+        return listEmpInsurBusBurRatio;
     }
 
 

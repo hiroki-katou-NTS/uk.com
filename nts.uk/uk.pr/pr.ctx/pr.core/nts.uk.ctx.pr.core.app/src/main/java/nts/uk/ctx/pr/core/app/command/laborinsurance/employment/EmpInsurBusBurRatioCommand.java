@@ -11,5 +11,6 @@ public class EmpInsurBusBurRatioCommand {
     private Long empContrRatio;
     private int perFracClass;
     private int busiOwFracClass;
+;
 
 }

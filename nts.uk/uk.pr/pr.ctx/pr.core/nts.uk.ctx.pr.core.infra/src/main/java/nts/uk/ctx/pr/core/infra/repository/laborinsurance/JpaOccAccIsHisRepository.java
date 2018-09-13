@@ -33,6 +33,16 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
         return Optional.ofNullable(new OccAccIsHis(cid,toDomain(qpbmtOccAccIsHisList)));
     }
 
+    @Override
+    public void add(YearMonthHistoryItem domain, String cId) {
+        this.commandProxy().insert(QpbmtOccAccIsHis.toEntity(domain,cId));
+    }
+
+    @Override
+    public void update(YearMonthHistoryItem domain, String cId) {
+        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain,cId));
+    }
+
 
     private List<YearMonthHistoryItem> toDomain(List<QpbmtOccAccIsHis> entities) {
         if (entities == null || entities.isEmpty()) {
@@ -45,13 +55,6 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
                             new YearMonth(entity.endDate))));
         });
         return yearMonthHistoryItemList;
-    }
-
-
-
-    @Override
-    public void update(YearMonthHistoryItem domain, String cId){
-        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain, cId));
     }
 
     @Override

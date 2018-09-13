@@ -20,11 +20,11 @@ public class OccAccIsPrRateDto
     private String hisId;
     private int occAccInsurBusNo;
     private int fracClass;
-    private String empConRatio;
+    private BigDecimal empConRatio;
 
     public static List<OccAccIsPrRateDto> fromDomain(OccAccIsPrRate domain) {
         List<OccAccIsPrRateDto> occAccIsHisDtoList = domain.getEachBusBurdenRatio().stream().map(item -> {
-            return new OccAccIsPrRateDto(domain.getHisId(),item.getOccAccInsurBusNo(),item.getFracClass().value,item.getEmpConRatio());
+            return new OccAccIsPrRateDto(domain.getHisId(),item.getOccAccInsurBusNo(),item.getFracClass().value,item.getEmpConRatio().v());
         }).collect(Collectors.toList());
         return occAccIsHisDtoList;
     }

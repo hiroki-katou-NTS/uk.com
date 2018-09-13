@@ -13,19 +13,18 @@
 	float: left;
 	width: 350px;
 }
-#C3_2{
-	margin: 20px 20px 0 0;
-	width: 600px;
-	border: 1px solid #CCC;
-}
-#C3_2 th{
+
+table th{
     border: 1px solid #CCC;
     height: 30px;
     text-align: center;
 
 }
+table td:nth-child(3) {
+    text-align: left;
+}
 
-#C3_2 td {
+table td {
 	text-align: center;
 	height: 30px;
 	border: 1px solid #CCC;
