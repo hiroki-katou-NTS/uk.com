@@ -14,7 +14,7 @@ public interface StatementItemRepository {
 	
 	List<StatementItem> getByCategory(String cid, int categoryAtr);
 	
-	List<StatementItem> getByItemNameCd(String cid, int categoryAtr, String itemNameCd);
+	List<StatementItem> getByCategoryAndCode(String cid, int categoryAtr, String itemNameCd);
 
 	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
 
