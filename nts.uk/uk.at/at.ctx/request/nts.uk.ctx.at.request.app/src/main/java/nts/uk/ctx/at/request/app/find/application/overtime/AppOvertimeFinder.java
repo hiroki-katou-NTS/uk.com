@@ -765,7 +765,8 @@ public class AppOvertimeFinder {
 				result.setSiftTypes(siftCodes);
 				
 				// 09_勤務種類就業時間帯の初期選択をセットする
-				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, baseDate, workTypeOvertimes, siftTypes);
+				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
+						Strings.isBlank(appDate) ? baseDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do

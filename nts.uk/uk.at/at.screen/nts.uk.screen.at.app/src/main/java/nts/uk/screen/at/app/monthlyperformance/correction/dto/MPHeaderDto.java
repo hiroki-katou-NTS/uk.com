@@ -85,7 +85,7 @@ public class MPHeaderDto {
 		//G_7 
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_26"), "approval", "boolean", "35px", "", false, "Checkbox", true, true));
 		//G_8 日別確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", "", false, "Checkbox", true, true));
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "64px", "", false, "Label", true, true));
 		//G_9 日別実績の修正
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "85px", "", false, "Button", true, true));
 		return lstHeader;

@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
@@ -60,6 +61,9 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private CreateDailyApprover createDailyApprover;
+	
+	@Inject
+	private AppRootConfirmRepository appRootConfirmRepository;
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
@@ -254,6 +258,12 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 						x.getApproverEmpState().value, 
 						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public void cleanApprovalRootState(String employeeID, GeneralDate date, Integer rootType) {
+		String companyID = AppContexts.user().companyId();
+		appRootConfirmRepository.clearStatus(companyID, employeeID, date, EnumAdaptor.valueOf(rootType, RecordRootType.class));
 	}
 	
 }

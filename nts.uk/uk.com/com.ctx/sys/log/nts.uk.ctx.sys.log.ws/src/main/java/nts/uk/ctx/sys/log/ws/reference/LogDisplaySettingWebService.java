@@ -16,6 +16,8 @@ import nts.uk.ctx.sys.log.app.command.reference.RemoveLogDisplaySetComdHandler;
 import nts.uk.ctx.sys.log.app.command.reference.UpdateLogDisplaySetComdHandler;
 import nts.uk.ctx.sys.log.app.find.reference.LogDisplaySettingDto;
 import nts.uk.ctx.sys.log.app.find.reference.LogDisplaySettingFinder;
+import nts.uk.ctx.sys.log.app.find.reference.record.ParamInputLog;
+import nts.uk.ctx.sys.log.app.find.reference.record.ParamOutputItem;
 
 /*
  * author: thuong.tv
@@ -58,8 +60,9 @@ public class LogDisplaySettingWebService extends WebService {
 	
 	@POST
 	@Path("get-log-display-setting-by-record-type")
-	public List<LogDisplaySettingDto> getLogDisplaySettingByRecordType(String logSetRecordType){
-		List<LogDisplaySettingDto> logDisplaySetDtos = this.logDisplaySettingFinder.getLogDisplaySettingByRecordType(logSetRecordType);
+	public List<LogDisplaySettingDto> getLogDisplaySettingByRecordType(ParamInputLog paramInputLog){
+		List<LogDisplaySettingDto> logDisplaySetDtos = this.logDisplaySettingFinder.getLogDisplaySettingByRecordType(paramInputLog.getRecordType(),
+				paramInputLog.getTargetDataType());
 		return logDisplaySetDtos;
 	}
 	

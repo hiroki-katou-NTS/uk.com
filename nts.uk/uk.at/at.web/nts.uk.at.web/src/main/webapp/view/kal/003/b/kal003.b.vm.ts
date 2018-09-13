@@ -74,18 +74,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        setTimeout(function() { self.displayWorkTypeSelections_BA1_4(""); }, 200);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                             self.initialScreen().then(function() {
+                                self.settingEnableComparisonMaxValueField(false);
                                 if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
                                     setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                                    
                                 }
                             });
                         }
                         $(".nts-input").ntsError("clear");
                     });
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
-                        self.settingEnableComparisonMaxValueField();
+                        self.settingEnableComparisonMaxValueField(false);
                     });
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(0);
                     self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
                         self.required_BA1_4(newV > 0);
@@ -181,10 +185,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
         /**
          * setting Enable/Disable Comparison of Max Value Field
          */
-        private settingEnableComparisonMaxValueField() {
+        private settingEnableComparisonMaxValueField(isStart: boolean) {
             let self = this;
-            self.enableComparisonMaxValue(
-                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
+            if (isStart) {
+                self.enableComparisonMaxValue(
+                    self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
+            } else {
+                self.enableComparisonMaxValue(
+                    self.comparisonRange().comparisonOperator() > 5);
+            }
         }
 
         private settingEnableComparisonMaxValueFieldExtra() {
@@ -253,7 +262,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             self.initialDaily().done(() => {
-                self.settingEnableComparisonMaxValueField();
+                self.settingEnableComparisonMaxValueField(true);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -1635,11 +1644,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.minTimesValue(minVal);
                 self.maxTimesValue(maxVal);
                 //金額 - 2: check amount of money
-                self.minAmountOfMoneyValue(minVal || 0);
-                self.maxAmountOfMoneyValue(maxVal || 0);
+                self.minAmountOfMoneyValue(minVal);
+                self.maxAmountOfMoneyValue(maxVal);
                 //時刻の場合 - 3: time within day
-                self.minTimeWithinDayValue(minVal || 0);
-                self.maxTimeWithinDayValue(maxVal || 0);
+                self.minTimeWithinDayValue(minVal);
+                self.maxTimeWithinDayValue(maxVal);
 
                 //時間 - 0: check time
                 //連続時間 - 4:  check time
