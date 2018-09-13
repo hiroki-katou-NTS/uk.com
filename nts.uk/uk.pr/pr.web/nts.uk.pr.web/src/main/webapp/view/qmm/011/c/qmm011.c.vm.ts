@@ -139,7 +139,10 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         openDscreen(){
             let self = this;
             modal("/view/qmm/011/d/index.xhtml").onClosed(function() {
-                self.initScreen(null);
+                self.selectedEmpInsHis(self.listOccAccIsHis()[0]);
+                self.setOccAccIsHis(self.selectedEmpInsHis());
+                self.getAccInsurPreRate();
+                self.getOccAccIsPrRate();
             });
 
         }
