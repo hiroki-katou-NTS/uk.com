@@ -4,13 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
@@ -42,30 +45,50 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	
 	@Override
 	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
-		try {
-			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
-			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
-			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
-			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
-			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
-			queryString.append(" FROM KRCCT_OTK_VACATION_CK a WHERE a.CID = ? AND a.USE_ATR = ?");
+		try {/** TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
+//			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
+//			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
+//			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
+//			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
+//			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
+			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
+			queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
+			queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
+			queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
+			queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
+			queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
 			PreparedStatement statement = this.connection().prepareStatement(queryString.toString());
 
 			statement.setString(1, companyId);
 			statement.setInt(2, 1);
-			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				return new ContinuousHolCheckSet(companyId, 
-						Stream.of(rec.getString("TARGET").split(";")).map(c -> new WorkTypeCode(c.trim())).collect(Collectors.toList()), 
-						Stream.of(rec.getString("NONTARGET").split(";")).map(c -> new WorkTypeCode(c.trim())).collect(Collectors.toList()), 
-						true, 
-						new DisplayMessage(rec.getString("MESSAGE_DISPLAY")), 
-						new ContinuousVacationDays(rec.getInt("CONTINUOUS_DAYS")));
+			val result = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				Map<String, Object> val = new HashMap<>();
+				val.put("NONTARGET", rec.getString("NONTARGET"));
+				val.put("TARGET", rec.getInt("TARGET"));
+				val.put("MESSAGE_DISPLAY", rec.getInt("MESSAGE_DISPLAY"));
+				val.put("CONTINUOUS_DAYS", rec.getInt("CONTINUOUS_DAYS"));
+				val.put("CID", rec.getGeneralDate("CID"));
+				return val;
 			});
+			
+			if(result.isEmpty()){
+				return Optional.empty();
+			}
+			 return Optional.of(new ContinuousHolCheckSet(companyId, 
+					 getType(result, "TARGET"), 
+					 getType(result, "NONTARGET"), 
+					 true, new DisplayMessage(result.get(0).get("MESSAGE_DISPLAY").toString()), 
+					 new ContinuousVacationDays(Integer.parseInt(result.get(0).get("CONTINUOUS_DAYS").toString())))); 
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();
 		}
+	}
+
+	private List<WorkTypeCode> getType(final List<Map<String, Object>> result, String column) {
+		return result.stream().filter(c -> c.get(column) != null).map(c -> c.get(column).toString().trim())
+				.distinct().map(c -> new WorkTypeCode(c)).collect(Collectors.toList());
 	}
 
 	@Override
