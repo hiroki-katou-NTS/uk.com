@@ -21,9 +21,9 @@
 					<div style="width: 150px; display: inline-block;"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_114')}</div>
 					<div style="width: 150px; display: inline-block;"
-						data-bind="text: code"></div>
+						data-bind="text: socialInsuranceCode"></div>
 					<div style="width: 100px; display: inline-block;"
-						data-bind="text: name"></div>
+						data-bind="text: socialInsuranceName"></div>
 				</div>
 				<div style="margin-top: 20px;">
 					<div style="width: 150px;"
@@ -31,7 +31,7 @@
 					<div id ="G1_6"
 						data-bind="ntsDatePicker: {
 							name: '#[QMM008_197]', 
-							value: startDate, 
+							value: startMonth, 
 							dateFormat: 'yearmonth', 
 							valueFormat: 'YYYYMM', 
 							required: true, 

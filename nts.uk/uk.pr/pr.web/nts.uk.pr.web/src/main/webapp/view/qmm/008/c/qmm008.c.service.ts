@@ -8,7 +8,6 @@ module nts.uk.pr.view.qmm008.c.service {
      * get all
     */
     export function findAllOffice(): JQueryPromise<any> {
-        let _path = format(paths.findAllOffice);
-        return ajax('pr', _path);
+        return ajax(paths.findAllOffice);
     }
 }

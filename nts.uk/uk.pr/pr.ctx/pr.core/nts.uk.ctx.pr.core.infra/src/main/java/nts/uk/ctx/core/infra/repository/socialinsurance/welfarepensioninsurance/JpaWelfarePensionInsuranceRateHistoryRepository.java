@@ -22,8 +22,8 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaRepository implements WelfarePensionInsuranceRateHistoryRepository {
 	private static final String FIND_ALL = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
 	private static final String DELETE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode";
-	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
-	private static final String DELETE_BY_OFFICE_CODE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
+	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
+	private static final String DELETE_BY_OFFICE_CODE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
 	
     /**
      * Entity to domain
@@ -63,7 +63,7 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
 
 	@Override
 	public Optional<WelfarePensionInsuranceRateHistory> getWelfarePensionInsuranceRateHistoryByOfficeCode(String officeCode) {
-		return this.toDomain(this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtWelfarePensionInsuranceRateHistory.class).setParameter("cid", AppContexts.user().companyId()).setParameter("officeCode", officeCode).setParameter("cid", AppContexts.user().companyId()).getList());
+		return this.toDomain(this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtWelfarePensionInsuranceRateHistory.class).setParameter("cid", AppContexts.user().companyId()).setParameter("officeCode", officeCode).getList());
 	}
 
 

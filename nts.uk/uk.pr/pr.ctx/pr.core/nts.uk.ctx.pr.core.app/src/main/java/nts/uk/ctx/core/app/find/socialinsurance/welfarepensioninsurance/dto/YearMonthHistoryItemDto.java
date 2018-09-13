@@ -7,7 +7,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 @Data
 @AllArgsConstructor
 public class YearMonthHistoryItemDto {
-	public String historyID;
+	public String historyId;
 	public Integer startMonth;
 	public Integer endMonth;
 	public static YearMonthHistoryItemDto fromDomainToDto (YearMonthHistoryItem domain){

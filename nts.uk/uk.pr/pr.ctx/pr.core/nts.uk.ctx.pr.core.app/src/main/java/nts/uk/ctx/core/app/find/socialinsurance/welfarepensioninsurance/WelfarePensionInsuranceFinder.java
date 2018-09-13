@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.WelfarePensionInsuraceRateDto;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.WelfarePensionInsuranceRateHistoryDto;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
@@ -45,12 +46,12 @@ public class WelfarePensionInsuranceFinder {
 		return new WelfarePensionInsuraceRateDto(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 	}
 	
-	public List<WelfarePensionInsuranceRateHistoryDto> findOfficeByCompanyId () {
-		List<WelfarePensionInsuranceRateHistoryDto> socialInsuranceDtoList = new ArrayList<>();
+	public List<SocialInsuranceOfficeDto> findOfficeByCompanyId () {
+		List<SocialInsuranceOfficeDto> socialInsuranceDtoList = new ArrayList<>();
 		List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(AppContexts.user().companyId());
 		socialInsuranceOfficeList.forEach(office -> {
 			Optional<WelfarePensionInsuranceRateHistory> welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository.getWelfarePensionInsuranceRateHistoryByOfficeCode(office.getCode().v());
-			socialInsuranceDtoList.add(WelfarePensionInsuranceRateHistoryDto.fromDomainToDto(welfarePensionHistory, office.getName().v()));
+			socialInsuranceDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), WelfarePensionInsuranceRateHistoryDto.fromDomainToDto(welfarePensionHistory, office.getCode().v())));
 		});
 		return socialInsuranceDtoList;
 	}
