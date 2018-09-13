@@ -36,6 +36,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 self.setOccAccIsHis(self.selectedEmpInsHis());
                 self.getAccInsurPreRate();
                 self.getOccAccIsPrRate();
+
             });
         }
 
@@ -86,6 +87,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
                     self.isNewMode(false);
                 }
+
             });
         }
 
@@ -110,27 +112,32 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         openEscreen(){
             let self = this;
             setShared('QMM011_E_PARAMS', {
-                startYearMonth:  self.startYearMonth()
+                endYearMonth: self.endYearMonth()
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_C_Param');
-                if (params && params.result == true) {
-                    self.isNewMode(true);
-                    if(params.transferHistory) {
-                        self.initScreen(null);
+
+                    if (params != null) {
+                        self.isNewMode(true);
+                        let data: any = {
+                            hisId : '',
+                            methodEditing :0,
+                            startMonthYear :202308,
+                            endMonthYear : 0
+                        }
+                        service.adđOccAccIsHis(data).done(data => {
+                            self.initScreen(null);
+                        });
+                    } else {
+                        self.initScreen(self.selectedEmpInsHisId());
                     }
-                }
+
+
             });
         }
         openDscreen(){
             let self = this;
-            // setShared('CMF002_D_PARAMS', {
-            //     categoryName: self.categoryName(),
-            //     categoryId: self.conditionSetData().categoryId(),
-            //     cndSetCd: self.conditionSetData().conditionSetCode(),
-            //     cndSetName: self.conditionSetData().conditionSetName()
-            // });
             modal("/view/qmm/011/d/index.xhtml");
 
         }
@@ -147,7 +154,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 isNewMode: self.isNewMode(),
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth:  self.convertStringToYearMonth(self.endYearMonth()),
-                hisId: self.hisId()
+                hisId: self.listAccInsurPreRate()[0].hisId
 
             }
             service.register(data).done(() => {
@@ -163,7 +170,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 let temp = new AccInsurPreRate();
                 temp.occAccIsBusNo = item.occAccIsBusNo;
                 temp.empConRatio = Number(item.empConRatio());
-                temp.fracClass = item.fracClass;
+                temp.fracClass = Number(item.fracClass());
                 listOccAccIsPrRate.push(temp);
             })
             return listOccAccIsPrRate;
@@ -176,7 +183,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         }
 
         setOccAccIsHis(emplInsurHis: IOccAccIsHis){
-            let self = this
+            let self = this;
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
@@ -184,10 +191,13 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
         openFscreen(){
             let self = this;
+            let laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0
             setShared('QMM011_F_PARAMS', {
-                startYearMonth:  self.listOccAccIsHis(),
-                endYearMonth: self.startYearMonth(),
-                laststartYearMonth: self.laststartYearMonth()
+                startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
+                endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
+                insurrance: INSURRANCE.ACCIDENT_INSURRANCE_RATE,
+                hisId: self.hisId(),
+                laststartYearMonth: laststartYearMonth
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_B_Param');
@@ -249,6 +259,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         }
 
     }
+
     /*労災保険事業*/
     class IOccAccInsurBus{
         /**
@@ -297,18 +308,20 @@ module nts.uk.com.view.qmm011.c.viewmodel {
 
     }
     class IAccInsurPreRate {
-
+        hisId: string;
         occAccIsBusNo: number;
         name: string;
         fracClass: number;
         empConRatio: number;
+        useArt:number;
     }
     class AccInsurPreRate {
-
+        hisId: string;
         occAccIsBusNo: number;
         name: string;
         fracClass: number;
         empConRatio: number;
+        useArt:number;
         constructor() {
 
         }
@@ -317,10 +330,12 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             let listEmp = [];
             _.each(app, (item) => {
                 let dto: AccInsurPreRate = new AccInsurPreRate();
+                dto.hisId = item.hisId;
                 dto.occAccIsBusNo = item.occAccInsurBusNo;
                 dto.name = item.name;
                 dto.fracClass = ko.observable(item.fracClass);
                 dto.empConRatio = ko.observable(item.empConRatio);
+                dto.useArt = item.useArt;
 
                 listEmp.push(dto);
             })
@@ -373,5 +388,9 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             new model.ItemModel('3', getText('CMF002_361')),
             new model.ItemModel('4', getText('CMF002_362'))
         ];
+    }
+    export enum INSURRANCE {
+        EMPLOYMENT_INSURRANCE_RATE = 1,
+        ACCIDENT_INSURRANCE_RATE = 0
     }
 }

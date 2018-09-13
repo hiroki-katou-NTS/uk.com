@@ -5,47 +5,74 @@ module nts.uk.com.view.qmm011.e.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
+    import model = qmm011.share.model;
+    import error = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        startYearMonth:              KnockoutObservable<string> = ko.observable('2010/1');
-        endYearMonth:                KnockoutObservable<string> = ko.observable('2010/1');
-        itemList:  KnockoutObservableArray<any> = ko.observableArray([{ id: 0, name:getText('QMM011_53')},
-            {id: 1, name:getText('QMM011_54')}]);
-        selectedIds: KnockoutObservable<any> = ko.observable(0);
-        tempStartYearMonth : KnockoutObservable<string> = ko.observable('2010/1');
+        startYearMonth:              KnockoutObservable<number> = ko.observable();
+        takeOver:                    KnockoutObservable<number> = ko.observable(1);
+        startLastYearMonth:          KnockoutObservable<number> = ko.observable();
+        listTakeOver:                KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
+        
         constructor() {
-            let params = getShared('QMM011_E_PARAMS');
-            this.tempStartYearMonth = params.startYearMonth;
-            this.startYearMonth(params.startYearMonth);
+            let params = getShared('QMM011_E_PARAMS_INPUT');
+            this.startLastYearMonth(this.convertStringToYearMonth(params.startYearMonth));
+            this.startYearMonth(Number(this.startLastYearMonth()) + 1);
         }
 
         register(){
-            
+            let self = this;
+            if (self.validate()) {
+                return;
+            }
+            setShared('QMM011_E_PARAMS_OUTPUT', {
+                startYearMonth: self.startYearMonth(),
+                transferMethod: self.takeOver()
+            });
+            close();
+        }
+        
+        validate (){
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("#E1_5").trigger("validate");
+            if (self.startYearMonth() < self.startLastYearMonth()){
+                dialog.alertError({ messageId: "Msg_79" });
+                return true;
+            }
+            return error.hasError(); 
         }
         
         cancel(){
             close();
         }
         
-       // 「初期データ取得処理
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            return year + "/" + month;
+        }
+        
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return Number(yearMonth);
+        }
+        
+     
     }
     
-    export function getListPerFracClass(): Array<ItemModel> {
+
+    
+    export function getListtakeOver(): Array<model.ItemModel> {
         return [
-            new ItemModel(0, getText('CMF002_358')),
-            new ItemModel(1, getText('CMF002_359')),
-            new ItemModel(2, getText('CMF002_360')),
-            new ItemModel(3, getText('CMF002_361')),
-            new ItemModel(4, getText('CMF002_362'))
+            new model.ItemModel(0, getText('QMM011_53')),
+            new model.ItemModel(1, getText('QMM011_54'))
         ];
     }
-    export class ItemModel {
-        code: number;
-        name: string;
-
-        constructor(code: number, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
+    
 }

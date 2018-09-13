@@ -14,18 +14,20 @@ module nts.uk.com.view.qmm011.f.viewmodel {
         name:                   KnockoutObservable<string> = ko.observable('');
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         selectedId:             KnockoutObservable<string> = ko.observable('');
-        methodEditing:          KnockoutObservable<number> = ko.observable();
+        methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
-        hisId:                   KnockoutObservable<string> = ko.observable('');
+        hisId:                  KnockoutObservable<string> = ko.observable('');
+        canDelete:              KnockoutObservable<boolean> = ko.observable('');
         constructor() {
             let self = this;
             self.startYearMonth(201809);
-            let params = getShared('QMM011_F_PARAMS');
+            let params = getShared('QMM011_F_PARAMS_INPUT');
             if (params) {
                 self.insurrance(params.insurrance);
                 self.startYearMonth(params.startYearMonth);
                 self.endYearMonth(params.endYearMonth);
                 self.startLastYearMonth(params.startLastYearMonth);
+                self.canDelete(params.canDelete)
                 if (params.hisId) {
                     self.hisId(params.hisId);
                 }
@@ -49,9 +51,8 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
                 service.updateEmpInsurHis(param).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('QMM011_B_PARAMS', {
-                            result: true,
-                            methodEditing: self.methodEditing()
+                        setShared('QMM011_F_PARAMS_OUTPUT', {
+                            result: true
                         });
                         close();
                     });
@@ -62,9 +63,10 @@ module nts.uk.com.view.qmm011.f.viewmodel {
                     block.clear();
                 });
             } else {
-                service.updateWorkersCompenInsur(param).done(() => {
+                service.updateAccInsurHis(param).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
-                        self.isNewMode(false);
+                        result: true,
+                        self.isNewMode(false)
                     });
                 }).fail(function(res: any) {
                     if (res)

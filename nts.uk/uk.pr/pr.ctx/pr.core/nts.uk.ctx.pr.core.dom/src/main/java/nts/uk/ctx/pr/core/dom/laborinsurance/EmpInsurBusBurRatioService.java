@@ -46,7 +46,7 @@ public class EmpInsurBusBurRatioService {
     	if(itemtoBeAdded.getHistory().isEmpty()){
     		return;
     	}
-    	empInsurHisRepository.add(itemtoBeAdded.getHistory().get(itemtoBeAdded.getHistory().size()), itemtoBeAdded.getCid());
+    	empInsurHisRepository.add(itemtoBeAdded.getHistory().get(itemtoBeAdded.getHistory().size() - 1), itemtoBeAdded.getCid());
     }
     
     private void addEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> domain){
@@ -87,12 +87,12 @@ public class EmpInsurBusBurRatioService {
     		return;
     	}
     	empInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
-    	this.updateEmpInsurHis(empInsurHis.get());
+    	this.updateEmpInsurHis(itemToBeUpdate.get(), cId);
     	this.updateItemBefore(empInsurHis.get(), itemToBeUpdate.get(), cId);
     	
     }
     
-    private void updateEmpInsurHis(EmpInsurHis itemToBeUpdated){
-    	empInsurHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size() - 1), itemToBeUpdated.getCid());
+    private void updateEmpInsurHis(YearMonthHistoryItem itemToBeUpdated, String cId){
+    	empInsurHisRepository.update(itemToBeUpdated, cId);
     }
 }

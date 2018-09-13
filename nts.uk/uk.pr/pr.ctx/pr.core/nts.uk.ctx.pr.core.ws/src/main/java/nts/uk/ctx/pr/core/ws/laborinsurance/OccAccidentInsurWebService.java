@@ -4,6 +4,8 @@ import nts.arc.layer.ws.WebService;
 
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.AddOccAccIsPrRateCommandHandler;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.accident.AccInsurHisCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.accident.AddOccAccIsHisCommandHandler;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCommandHandler;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
@@ -35,6 +37,8 @@ public class OccAccidentInsurWebService extends WebService {
     @Inject
     private AddOccAccIsPrRateCommandHandler addOccAccIsPrRateCommandHandler;
 
+    @Inject
+    private AddOccAccIsHisCommandHandler addOccAccIsHisCommandHandler;
     @Inject
     private UpdateNameOfEachBusinessCommandHandler updateNameOfEachBusinessCommandHandler;
 
@@ -71,6 +75,12 @@ public class OccAccidentInsurWebService extends WebService {
     @Path("register")
     public void registerEmpInsurPreRate(AddOccAccIsPrRateCommand command){
         addOccAccIsPrRateCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("adđOccAccIsHis")
+    public void adđOccAccIsHis(AccInsurHisCommand accInsurHisCommand){
+        addOccAccIsHisCommandHandler.handle(accInsurHisCommand);
     }
 
 
