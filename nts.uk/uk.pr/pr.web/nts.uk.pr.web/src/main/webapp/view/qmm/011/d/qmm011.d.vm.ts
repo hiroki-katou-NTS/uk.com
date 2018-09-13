@@ -29,6 +29,11 @@ module nts.uk.com.view.qmm011.d.viewmodel {
         }
         update(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             let data: any = {
                 listEachBusiness: self.convertToCommand(self.listNameOfEachBusiness()),
             }
