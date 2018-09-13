@@ -104,9 +104,9 @@ public interface BasicScheduleRepository {
 	 * @param baseDate
 	 *            the base date
 	 */
-	void delete(String employeeId, GeneralDate baseDate);
+	void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
 	
-	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate);
+	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
 
 	/**
 	 * Find child care by id.
