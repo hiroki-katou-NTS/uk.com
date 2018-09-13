@@ -20,7 +20,7 @@ module nts.uk.com.view.qmm011.f.viewmodel {
         canDelete:              KnockoutObservable<boolean> = ko.observable('');
         constructor() {
             let self = this;
-            self.startYearMonth(201809);
+            self.startYearMonth();
             let params = getShared('QMM011_F_PARAMS_INPUT');
             if (params) {
                 self.insurrance(params.insurrance);

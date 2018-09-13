@@ -1,27 +1,18 @@
 module nts.uk.com.view.qmm011.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import block = nts.uk.ui.block;
+    import model = qmm011.share.model;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
 
         checked: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-
-        texteditor: any;
-
+        listName: KnockoutObservableArray<string> = ko.observableArray(getListName());
         listNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
         listEachBusiness : KnockoutObservableArray<EachBusiness> = ko.observableArray([]);
         data: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
-
-            self.checked = ko.observable(true);
-            self.enable = ko.observable(true);
-
-            self.texteditor = {
-                //value: ko.observable('123'),
-                //enable: ko.observable(true),
-            };
-
             self.init();
         }
         init(){
@@ -38,10 +29,15 @@ module nts.uk.com.view.qmm011.d.viewmodel {
         }
         update(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             let data: any = {
                 listEachBusiness: self.convertToCommand(self.listNameOfEachBusiness()),
             }
-            service.removeOccAccInsurBus(data).done(()=>{
+            service.updateOccAccInsurBus(data).done(()=>{
                 close();
             });
         }
@@ -82,6 +78,7 @@ module nts.uk.com.view.qmm011.d.viewmodel {
         toUse: KnockoutObservable<boolean>;
         name: KnockoutObservable<string>;
         index: number;
+
         constructor() {
         }
 
@@ -100,6 +97,20 @@ module nts.uk.com.view.qmm011.d.viewmodel {
 
             return listBus;
         }
+    }
+    export function getListName(): Array<string> {
+        return [
+            new String(getText('QMM011_22')),
+            new String(getText('QMM011_24')),
+            new String(getText('QMM011_26')),
+            new String(getText('QMM011_28')),
+            new String(getText('QMM011_30'));
+            new String(getText('QMM011_32'));
+            new String(getText('QMM011_34'));
+            new String(getText('QMM011_36'));
+            new String(getText('QMM011_38'));
+            new String(getText('QMM011_40'));
+        ];
     }
 
 }

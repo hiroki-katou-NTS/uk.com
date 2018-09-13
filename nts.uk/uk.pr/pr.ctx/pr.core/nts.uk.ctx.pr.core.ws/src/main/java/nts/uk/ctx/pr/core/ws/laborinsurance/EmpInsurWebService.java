@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.accident.AccInsurHisCommand;
+import nts.uk.ctx.pr.core.app.command.laborinsurance.accident.UpdateAccInsurHisCommandHandler;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.EmpInsurHisCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurBusBurRatioCommand;
 import nts.uk.ctx.pr.core.app.command.laborinsurance.employment.RegisterEmpInsurPreRateCommandHandler;
@@ -34,6 +36,9 @@ public class EmpInsurWebService extends WebService {
 	
 	@Inject
 	private UpdateEmpInsurHisCommandHandler updateEmpInsurHisCommandHandler;
+
+	@Inject
+	private UpdateAccInsurHisCommandHandler updateAccInsurHisCommandHandler;
 	
 	@POST
 	@Path("getEmpInsurPreRate/{hisId}")
@@ -61,8 +66,8 @@ public class EmpInsurWebService extends WebService {
 	
 	@POST
 	@Path("updateAccInsurHis")
-	public void updateWorkersCompenInsur(EmpInsurHisCommand command){
-		updateEmpInsurHisCommandHandler.handle(command);
+	public void updateWorkersCompenInsur(AccInsurHisCommand command){
+		updateAccInsurHisCommandHandler.handle(command);
 	}
 
 }
