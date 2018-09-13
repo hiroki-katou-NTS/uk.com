@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
@@ -65,6 +66,7 @@ public class AttendanceIdItemFinder {
 		String companyId = AppContexts.user().companyId();
 
 		List<AttendanceIdItemDto> attendanceItemList = new ArrayList<AttendanceIdItemDto>();
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// Get RoleID
 		String roleId = AppContexts.user().roles().forAttendance();
@@ -99,6 +101,9 @@ public class AttendanceIdItemFinder {
 				atItemList = dailyAtRepo.getList(companyId);
 			} else {
 				atItemList = dailyAtRepo.getListById(companyId, attendanceIDs);
+			}
+			if (atItemList.isEmpty()) {
+				exceptions.throwExceptions();
 			}
 			// get attendanceName
 			List<AttendanceItemName> dailyAtNameList = atName.getNameOfAttendanceItem(
@@ -137,6 +142,9 @@ public class AttendanceIdItemFinder {
 				atItemList = monthlyAtRepo.findByAttendanceItemId(companyId, itemList);
 			}
 
+			if (atItemList.isEmpty()) {
+				exceptions.throwExceptions();
+			}
 			// get attendanceName
 			List<AttendanceItemName> monthlyAtNameList = atName.getNameOfAttendanceItem(
 					atItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()), attendanceType);
