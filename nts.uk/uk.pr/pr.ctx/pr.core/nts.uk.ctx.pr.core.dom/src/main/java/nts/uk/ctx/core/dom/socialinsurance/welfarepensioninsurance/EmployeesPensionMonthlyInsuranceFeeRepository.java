@@ -7,4 +7,5 @@ import java.util.Optional;
  */
 public interface EmployeesPensionMonthlyInsuranceFeeRepository {
     Optional<EmployeesPensionMonthlyInsuranceFee> getEmployeesPensionMonthlyInsuranceFeeByHistoryId(String historyId);
+    void add (EmployeesPensionMonthlyInsuranceFee domain);
 }

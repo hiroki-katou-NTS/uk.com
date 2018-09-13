@@ -36,4 +36,9 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
                 femaleContributionRate,
                 fractionClassification);
     }
+
+	@Override
+	public void add(BonusEmployeePensionInsuranceRate domain) {
+		this.commandProxy().insert(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	}
 }

@@ -50,4 +50,9 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
                 salaryEmployeesPensionInsuranceRate
         );
     }
+
+	@Override
+	public void add(EmployeesPensionMonthlyInsuranceFee domain) {
+		this.commandProxy().insert(QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain));		
+	}
 }

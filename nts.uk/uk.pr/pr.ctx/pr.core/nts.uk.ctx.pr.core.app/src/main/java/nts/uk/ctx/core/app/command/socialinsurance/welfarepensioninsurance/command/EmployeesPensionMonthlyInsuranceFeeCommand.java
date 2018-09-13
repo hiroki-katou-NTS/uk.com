@@ -31,7 +31,7 @@ public class EmployeesPensionMonthlyInsuranceFeeCommand {
      */
     private SalaryEmployeesPensionInsuranceRateCommand salaryEmployeesPensionInsuranceRate;
     
-	public EmployeesPensionMonthlyInsuranceFee fromDomainToDto(){
+	public EmployeesPensionMonthlyInsuranceFee fromCommandToDomain(){
 		List<GradeWelfarePensionInsurancePremium> pensionInsurancePremium = this.pensionInsurancePremium.stream().map(pensionItem ->{
 			return pensionItem.fromDomainToDto();
 		}).collect(Collectors.toList());

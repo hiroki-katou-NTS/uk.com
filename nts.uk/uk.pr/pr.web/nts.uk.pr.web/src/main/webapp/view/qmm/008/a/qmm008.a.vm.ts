@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm008.a.viewmodel {
+module nts.uk.pr.view.qmm008.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;

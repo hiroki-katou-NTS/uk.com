@@ -18,4 +18,10 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 		return this.queryProxy().find(historyId, QpbmtWelfarePensionInsuranceClassification.class).map(QpbmtWelfarePensionInsuranceClassification::toDomain);
 	}
 
+	@Override
+	public void add(WelfarePensionInsuranceClassification domain) {
+		this.commandProxy().insert(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
+		
+	}
+
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.ws.system.welfarepensioninsurance;
+package nts.uk.ctx.core.ws.socialinsurance.welfarepensioninsurance;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class SocialInsuranceOfficeWebservice {
 	private WelfarePensionInsuranceFinder welfarePensionInsuranceFinder;
 	
 	@POST
-	@Path("/getByCompanyId")
-	public List<WelfarePensionInsuranceRateHistoryDto> getOfficeByCompanyId() {
+	@Path("/getAll")
+	public List<WelfarePensionInsuranceRateHistoryDto> getAll() {
 		return welfarePensionInsuranceFinder.findOfficeByCompanyId();
 	}
 }

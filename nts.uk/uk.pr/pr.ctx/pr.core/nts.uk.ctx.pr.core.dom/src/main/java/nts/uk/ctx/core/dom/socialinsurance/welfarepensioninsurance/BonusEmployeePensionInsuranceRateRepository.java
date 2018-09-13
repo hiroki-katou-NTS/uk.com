@@ -8,4 +8,5 @@ import java.util.List;
  */
 public interface BonusEmployeePensionInsuranceRateRepository {
     Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId);
+    void add (BonusEmployeePensionInsuranceRate domain);
 }

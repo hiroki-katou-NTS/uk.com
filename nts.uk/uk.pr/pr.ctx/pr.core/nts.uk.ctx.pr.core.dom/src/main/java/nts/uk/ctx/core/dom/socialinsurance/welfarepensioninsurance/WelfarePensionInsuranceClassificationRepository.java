@@ -7,4 +7,5 @@ import java.util.Optional;
  */
 public interface WelfarePensionInsuranceClassificationRepository {
 	Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById(String historyId);
+	void add (WelfarePensionInsuranceClassification domain);
 }

@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm008.share.model {
+module nts.uk.pr.view.qmm008.share.model {
     import getText = nts.uk.resource.getText;
 
     export enum SCREEN_MODE {
