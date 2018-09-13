@@ -947,13 +947,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
                     
-                    if (currentSetting.headerText == textHeaderCheck) {
-                        header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
-                    } else {
+//                    if (currentSetting.headerText == textHeaderCheck) {
+//                        header.filter("th[aria-label='" + currentSetting.key + "']")
+//                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
+//                    } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
-                    }
+//                    }
                 }
             });
 
