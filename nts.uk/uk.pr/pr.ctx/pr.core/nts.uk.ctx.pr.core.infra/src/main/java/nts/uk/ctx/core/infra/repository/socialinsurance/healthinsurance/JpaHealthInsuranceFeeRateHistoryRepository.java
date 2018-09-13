@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,12 +28,12 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
     private static final String STRING_EMPTY = "";
 
     @Override
-    public HealthInsuranceFeeRateHistory getHealthInsuranceFeeRateHistoryByCid(String companyId, String officeCode) {
-        List<QpbmtHealthInsuranceFeeRateHistory> entity = this.queryProxy()
+    public Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceFeeRateHistoryByCid(String companyId, String officeCode) {
+        val entity = this.queryProxy()
                 .query(GET_HEALTH_INSURANCE_FEE_RATE_HISTORY_BY_CID + (!Objects.isNull(officeCode) ? WHERE_OFFICE_CODE : STRING_EMPTY), QpbmtHealthInsuranceFeeRateHistory.class)
                 .setParameter("companyId", companyId)
                 .setParameter("officeCode", officeCode).getList();
-        return toDomain(entity);
+        return Optional.ofNullable(toDomain(entity));
     }
 
     /**
@@ -41,6 +43,7 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
      * @return HealthInsuranceFeeRateHistory
      */
     private HealthInsuranceFeeRateHistory toDomain(List<QpbmtHealthInsuranceFeeRateHistory> entity) {
+        if (entity.isEmpty()) return null;
         String companyId = entity.get(0).healthInsFeeHistPk.cid;
         String socialInsuranceCode = entity.get(0).healthInsFeeHistPk.socialInsuranceOfficeCd;
         List<YearMonthHistoryItem> history = entity.stream().map(item -> new YearMonthHistoryItem(
