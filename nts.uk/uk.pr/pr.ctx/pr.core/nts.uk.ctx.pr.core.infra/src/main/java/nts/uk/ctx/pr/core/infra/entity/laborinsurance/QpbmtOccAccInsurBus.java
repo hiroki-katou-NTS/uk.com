@@ -2,10 +2,13 @@ package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * 労災保険事業
@@ -44,5 +47,12 @@ public class QpbmtOccAccInsurBus extends UkJpaEntity implements Serializable
         return occAccInsurBusPk;
     }
 
+    public static List<QpbmtOccAccInsurBus> toEntity(OccAccInsurBus domain){
+        List<QpbmtOccAccInsurBus> qpbmtOccAccInsurBus = domain.getEachBusiness().stream().map(item ->{
+            return new QpbmtOccAccInsurBus( new QpbmtOccAccInsurBusPk(domain.getCid(),item.getOccAccInsurBusNo()),item.getToUse(),item.getName().get().v());
+        }).collect(Collectors.toList());
+
+        return qpbmtOccAccInsurBus;
+    }
 
 }
