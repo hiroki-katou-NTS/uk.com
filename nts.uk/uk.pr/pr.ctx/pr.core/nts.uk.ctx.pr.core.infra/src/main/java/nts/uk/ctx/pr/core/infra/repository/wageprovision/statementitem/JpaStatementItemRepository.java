@@ -44,7 +44,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	}
 
 	@Override
-	public List<StatementItem> getByItemNameCd(String cid, int categoryAtr, String itemNameCd) {
+	public List<StatementItem> getByCategoryAndCode(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_ITEM_NAME_CD, QpbmtBillingItem.class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
 				.getList(item -> item.toDomain());

@@ -18,7 +18,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRange
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetPeriodCycleRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionLimitRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
