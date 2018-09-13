@@ -267,14 +267,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                                 self.workTypecodes([]);
                                 self.selectedTypeOfDuty(null);
                             } else {
-                                self.typeOfDutys.removeAll();
+                                let a = [];
                                 self.workTypecodes.removeAll();
                                 for (let i = 0; i < data.workTypes.length; i++) {
-                                    self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
+                                    a.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                                 }
-                                if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)){
-                                    self.selectedTypeOfDuty(data.workTypeCode);
+                                self.typeOfDutys(a);
+                                let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                                if (nts.uk.util.isNullOrUndefined(contain)){
+                                    self.selectedTypeOfDuty('');
                                 }
                                 
                             }
@@ -304,10 +306,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.findChangeDisplayHalfDay(value);
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
-                    if(nts.uk.util.isNullOrUndefined(value)){
-                        return;    
+                    if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
+                        self.changeWorkHourValueFlg(false);    
+                    } else {
+                        self.findChangeWorkType(value);     
                     }
-                    self.findChangeWorkType(value);
                 });
                 self.displayWorkTimeName.subscribe((value) => {
                     self.changeDisplayWorkime();
@@ -431,14 +434,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 alldayHalfDay: self.selectedAllDayHalfDayValue()
             }).done((result) => {
                 if (!nts.uk.util.isNullOrEmpty(result.workTypes)) {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(data.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 self.prePostSelected(result.application.prePostAtr);
@@ -481,14 +486,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.isCheck(false);
                     self.relaReason('');
                 } else {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(result.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 if (!nts.uk.util.isNullOrEmpty(result.workTimeCodes)) {
@@ -529,14 +536,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.isCheck(false);
                     self.relaReason('');
                 } else {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(result.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 if (!nts.uk.util.isNullOrEmpty(result.workTimeCodes)) {
