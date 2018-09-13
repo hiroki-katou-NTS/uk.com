@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface BonusEmployeePensionInsuranceRateRepository {
     Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId);
     void deleteByHistoryIds(List<String> historyIds);
+    void add (BonusEmployeePensionInsuranceRate domain);
 }

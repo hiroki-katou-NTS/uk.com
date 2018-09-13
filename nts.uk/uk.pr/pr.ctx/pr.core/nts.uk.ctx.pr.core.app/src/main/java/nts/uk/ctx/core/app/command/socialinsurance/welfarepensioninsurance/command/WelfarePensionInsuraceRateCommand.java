@@ -6,7 +6,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class WelfarePensionInsuraceRateCommand {
+	private String officeCode;
 	private BonusEmployeePensionInsuranceRateCommand bonusEmployeePensionInsuranceRate;
 	private EmployeesPensionMonthlyInsuranceFeeCommand employeesPensionMonthlyInsuranceFee;
 	private WelfarePensionInsuranceClassificationCommand welfarePensionInsuranceClassification;
+	private YearMonthHistoryItemCommand yearMonthHistoryItem;
 }

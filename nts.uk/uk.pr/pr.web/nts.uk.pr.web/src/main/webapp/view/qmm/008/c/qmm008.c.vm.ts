@@ -1,11 +1,12 @@
-module nts.uk.com.view.qmm008.c.viewmodel {
+module nts.uk.pr.view.qmm008.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
-    import model = nts.uk.com.view.qmm008.share.model;
+    import model = nts.uk.pr.view.qmm008.share.model;
+    import service = nts.uk.pr.view.qmm008.c.service;
     export class ScreenModel {
 
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -51,6 +52,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
             self.convertToTreeGridList();
             self.watchDataChanged();
             self.initExistedData();
+            service.findAllOffice();
         }
         initExistedData() {
             let self = this;

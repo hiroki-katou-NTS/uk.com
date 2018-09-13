@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface WelfarePensionInsuranceClassificationRepository {
 	Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById(String historyId);
 	void deleteByHistoryIds (List<String> historyIds);
+	void add (WelfarePensionInsuranceClassification domain);
 }

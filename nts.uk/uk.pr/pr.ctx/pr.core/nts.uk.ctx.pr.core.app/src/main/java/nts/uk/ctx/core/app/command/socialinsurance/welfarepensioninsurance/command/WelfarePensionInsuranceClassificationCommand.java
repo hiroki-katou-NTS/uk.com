@@ -20,7 +20,7 @@ public class WelfarePensionInsuranceClassificationCommand {
      */
     private int fundClassification;
 
-    public WelfarePensionInsuranceClassification fromDomainToDto() {
+    public WelfarePensionInsuranceClassification fromCommandToDomain() {
         return new WelfarePensionInsuranceClassification(this.historyId, this.fundClassification);
     }
 }

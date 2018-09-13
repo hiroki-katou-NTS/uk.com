@@ -56,4 +56,9 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	public void deleteByHistoryIds(List<String> historyIds) {
 		this.commandProxy().removeAll(QpbmtEmployeesPensionMonthlyInsuranceFee.class, historyIds);
 	}
+	
+	@Override
+	public void add(EmployeesPensionMonthlyInsuranceFee domain) {
+		this.commandProxy().insert(QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain));		
+	}
 }

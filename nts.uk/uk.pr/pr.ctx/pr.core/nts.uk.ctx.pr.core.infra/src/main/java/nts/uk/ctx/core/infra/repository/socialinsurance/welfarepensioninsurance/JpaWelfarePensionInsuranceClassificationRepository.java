@@ -23,5 +23,10 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 	public void deleteByHistoryIds(List<String> historyIds) {
 		this.commandProxy().removeAll(QpbmtWelfarePensionInsuranceClassification.class, historyIds);
 	}
+	
+	@Override
+	public void add(WelfarePensionInsuranceClassification domain) {
+		this.commandProxy().insert(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
+	}
 
 }

@@ -1,9 +1,10 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -20,8 +21,9 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaRepository implements WelfarePensionInsuranceRateHistoryRepository {
 	private static final String FIND_ALL = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
-	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode";
 	private static final String DELETE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode";
+	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
+	private static final String DELETE_BY_OFFICE_CODE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
 	
     /**
      * Entity to domain
@@ -33,11 +35,13 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
         if (entity.isEmpty()) return Optional.empty();
     	String companyId = entity.get(0).welfarePenHistPk.cid;
         String socialInsuranceCode = entity.get(0).welfarePenHistPk.socialInsuranceOfficeCd;
-        List<YearMonthHistoryItem> history = entity.stream().map(item -> new YearMonthHistoryItem(
-                item.welfarePenHistPk.historyId,
-                new YearMonthPeriod(
-                        new YearMonth(item.startYearMonth),
-                        new YearMonth(item.endYearMonth)))).collect(Collectors.toList());
+        List<YearMonthHistoryItem> history = new ArrayList<>();
+        entity.forEach(item -> {
+        	history.add(new YearMonthHistoryItem(item.welfarePenHistPk.historyId,
+                    new YearMonthPeriod(
+                            new YearMonth(item.startYearMonth),
+                            new YearMonth(item.endYearMonth))));
+        });
         return Optional.of(new WelfarePensionInsuranceRateHistory(companyId, socialInsuranceCode, history));
     }
 
@@ -59,7 +63,7 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
 
 	@Override
 	public Optional<WelfarePensionInsuranceRateHistory> getWelfarePensionInsuranceRateHistoryByOfficeCode(String officeCode) {
-		return this.toDomain(this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtWelfarePensionInsuranceRateHistory.class).setParameter("cid", AppContexts.user().companyId()).setParameter("officeCode", officeCode).getList());
+		return this.toDomain(this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtWelfarePensionInsuranceRateHistory.class).setParameter("cid", AppContexts.user().companyId()).setParameter("officeCode", officeCode).setParameter("cid", AppContexts.user().companyId()).getList());
 	}
 
 
@@ -78,4 +82,19 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
 		.executeUpdate();
 	}
 
+	
+	@Override
+	public void remove(WelfarePensionInsuranceRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().remove(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+	}
+
+
+	@Override
+	public void add(WelfarePensionInsuranceRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+	}
 }
