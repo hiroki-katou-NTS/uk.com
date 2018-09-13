@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 400, height: 500 };</script>
+			<script>var dialogSize = { width: 400, height: 300 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.e.vm.js" />
@@ -19,51 +19,47 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- E1 新たに作成する履歴 -->
-				<div id="title">
-					<span id="E1_1" class="label">#{i18n.getText('#QMM011_')}</span>
+				<div id="title" style="margin-bottom: 10px">
+					<span id="E1_1" class="label">#{i18n.getText('QMM011_46')}</span>
 				</div>
 				<!-- E1_2 名称 -->
-				<div id="E1_2" data-bind="ntsFormLabel: {}">
-					<span class="label" data-bind="text: workCode"></span>
+				<div id="E1_2" data-bind="ntsFormLabel: {}" style="margin-bottom: 10px">
+					<span class="label">#{i18n.getText('QMM011_47')}</span>
 					<!-- E2_3 保険名称 -->
-					<span id="E1_3" class="label">項目移送</span>
+					<span id="E1_3" class="label">保険名称</span>
 				</div>
 				<!-- E1_4 期間 -->
-				<div id="E1_4" data-bind="ntsFormLabel: { required: true}">
-					<span class="label">#{i18n.getText('#QMM011_')}</span>
+				<div id="E1_4" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
+					<span class="label">#{i18n.getText('QMM011_48')}</span>
 					<!-- E1_5 開始年月 -->
-					<div id = "E1_5" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'yearmonth'}"></div>
+					<div id = "E1_5" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yearmonth'}"></div>
 					<!-- E1_6 ～ 9999/12 -->
-					<span id="E1_6" class="label">#{i18n.getText('#QMM011_')}</span>
+					<span id="E1_6" class="label">#{i18n.getText('QMM011_50')}</span>
 				</div>
 				<!-- E1_7 履歴の引継ぎ -->
-				<div id="E1_7" data-bind="ntsFormLabel: { required: true}">
-					<span class="label">#{i18n.getText('#QMM011_')}</span>
+				<div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
+					<span class="label">#{i18n.getText('QMM011_51')}</span>
 					<!-- E1_8 履歴の引継ぎ -->
 					<div data-bind="ntsRadioBoxGroup: {
 											options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
-											value: selectedId,
+											value: selectedIds,
 											enable: true}
 											">
 					</div>
 					<!-- E1_9 最新の履歴から引き継ぐ -->
-					<span id="E1_9" class="label">#{i18n.getText('#QMM011_')}</span>
-					<!-- E1_10 初めから作成する。 -->
-					<span id="E1_10" class="label">#{i18n.getText('#QMM011_')}</span>
+
 				</div>
-				
-					<div>
-						<hr />
-					</div>
+
+			</div>
 			<div id="functions-area-bottom">
 				<!-- E2_1 登録 -->
 				<button id="E2_1" tabindex="7" class="proceed large"
-					data-bind="click: register">#{i18n.getText('qmm011_')}</button>
+					data-bind="click: register">#{i18n.getText('QMM011_55')}</button>
 				<!-- E2_2 削除 -->
 				<button id="E2_2" tabindex="8"
-					data-bind="click: cancel">#{i18n.getText('qmm011_')}</button>
+					data-bind="click: cancel">#{i18n.getText('QMM011_56')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

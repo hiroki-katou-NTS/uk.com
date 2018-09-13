@@ -66,7 +66,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                     self.listOccAccIsPrRate(OccAccIsPrRate.fromApp(listOccAccIsPrRate));
                     self.isNewMode(false);
                 }
-                
+
             });
         }
         getOccAccInsurBus(){
@@ -114,7 +114,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
-                let params = getShared('QMM011_B_Param');
+                let params = getShared('QMM011_C_Param');
                 if (params && params.result == true) {
                     self.isNewMode(true);
                     if(params.transferHistory) {

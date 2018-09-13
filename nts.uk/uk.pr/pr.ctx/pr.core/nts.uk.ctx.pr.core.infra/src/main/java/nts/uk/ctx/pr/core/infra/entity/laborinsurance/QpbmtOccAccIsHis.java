@@ -34,14 +34,14 @@ public class QpbmtOccAccIsHis extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "START_YEAR_MONTH")
-    public int startDate;
+    public int startYearMonth;
     
     /**
     * 年月期間
     */
     @Basic(optional = false)
     @Column(name = "END_YEAR_MONTH")
-    public int endDate;
+    public int endYearMonth;
     
     @Override
     protected Object getKey()

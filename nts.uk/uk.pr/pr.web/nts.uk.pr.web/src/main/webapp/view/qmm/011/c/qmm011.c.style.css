@@ -12,6 +12,7 @@
 .left{
 	float: left;
 	width: 350px;
+	margin-left: 20px;
 }
 
 table th{
