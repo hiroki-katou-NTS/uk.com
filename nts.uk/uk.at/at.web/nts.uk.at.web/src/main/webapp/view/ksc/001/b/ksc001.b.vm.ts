@@ -310,7 +310,7 @@ module nts.uk.at.view.ksc001.b {
 
                 // update employee list by ccg001 search 
                 self.employeeList(employeeSearchs);
-                self.selectedEmployeeCode.push(listSelectedEmpCode);
+                self.selectedEmployeeCode(listSelectedEmpCode);
 
                 // update kc005
                 self.lstPersonComponentOption = {
