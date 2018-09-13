@@ -201,7 +201,8 @@ public class CheckBeforeCalcFlexChange {
 		}
 
 		// ドメインモデル「フレックス不足の繰越上限管理」を取得する
-		int valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth();
+		Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+		if(valueLimit == null) valueLimit = 0;
 		if (valueLimit >= timeSum) {
 			return converMinutesToHours((int)timeSum);
 		} else {

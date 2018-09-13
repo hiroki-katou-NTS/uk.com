@@ -377,7 +377,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          *Check validate client
          */
-        private validateForm() {
+        private validateForm() : boolean {
             $(".validate_form").trigger("validate");
             $(".validate_form .ntsDatepicker").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {

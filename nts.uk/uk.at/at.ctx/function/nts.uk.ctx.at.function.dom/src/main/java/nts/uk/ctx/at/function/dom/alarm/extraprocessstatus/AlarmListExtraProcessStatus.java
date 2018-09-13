@@ -27,6 +27,8 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 	private Optional<GeneralDate> endDate;
 	/**終了時刻*/
 	private Optional<Integer> endTime;
+	/**状態*/
+	private ExtractionState status;
 
 
 	
@@ -38,7 +40,8 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 
 
 	public AlarmListExtraProcessStatus(String extraProcessStatusID, String companyID, GeneralDate startDate,
-			int startTime, String employeeID, GeneralDate endDate, Integer endTime) {
+			int startTime, String employeeID, GeneralDate endDate, Integer endTime,
+			ExtractionState status) {
 		super();
 		this.extraProcessStatusID = extraProcessStatusID;
 		this.companyID = companyID;
@@ -47,6 +50,13 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 		this.employeeID = Optional.ofNullable(employeeID);
 		this.endDate = Optional.ofNullable(endDate);
 		this.endTime = Optional.ofNullable(endTime);
+		this.status = status;
 	}
 
+
+
+	public void setStatus(ExtractionState status) {
+		this.status = status;
+	}
+	
 }

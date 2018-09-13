@@ -57,7 +57,7 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 										getTime(c.getEndTime()), 
 										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
-						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
+						domain.getGooutTimes() == null ? 0 : domain.getGooutTimes().v());
 	}
 	
 	private static Integer getTime(TimeWithDayAttr domain) {
@@ -70,12 +70,12 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 	
 	public BreakTimeOfDaily toDmain(){
 		return new BreakTimeOfDaily(createDeductionTime(toRecordTotalTime), createDeductionTime(deductionTotalTime), 
-				breakTimes == null ? null : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? null : new AttendanceTime(duringWork), 
+				breakTimes == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? new AttendanceTime(0) : new AttendanceTime(duringWork), 
 						ConvertHelper.mapTo(correctedTimeSheet, c -> new BreakTimeSheet(
 												new BreakFrameNo(c.getNo()), 
 												c.getStart() == null ? null : new TimeWithDayAttr(c.getStart()),
 												c.getEnd() == null ? null : new TimeWithDayAttr(c.getEnd()), 
-												c.getBreakTime() == null ? null : new AttendanceTime(c.getBreakTime()))));
+												c.getBreakTime() == null ? new AttendanceTime(0) : new AttendanceTime(c.getBreakTime()))));
 	}
 	
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
