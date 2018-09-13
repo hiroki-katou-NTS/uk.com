@@ -6,6 +6,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -197,7 +198,8 @@ public class DailyPerformanceCorrectionProcessor {
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
-	
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DPText.DATE_FORMAT);
+
 	/**
 	 * Get List Data include:<br/>
 	 * Employee and Date
@@ -227,8 +229,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return data.replace("-", "_");
 	}
 	public String converDateToString(GeneralDate genDate) {
-		Format formatter = new SimpleDateFormat(DPText.DATE_FORMAT);
-		return formatter.format(genDate.date());
+		return DATE_FORMATTER.format(genDate.toLocalDate());
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
@@ -419,8 +420,6 @@ public class DailyPerformanceCorrectionProcessor {
 					countDownLatch.countDown();
 				});
 		executorService.submit(task);
-		System.out.println("time flex : " + (System.currentTimeMillis() - start));
-		
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getMapDPAttendance();
 						
@@ -431,14 +430,12 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		
 		// get data from DB
-		long start2 = System.currentTimeMillis();
 		List<DailyModifyResult> results = new ArrayList<>();
 		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
-		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -1700,6 +1697,10 @@ public class DailyPerformanceCorrectionProcessor {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}
+	}
+	
+	public void requestForFlush(){
+		this.repo.requestForFlush();
 	}
 }
  

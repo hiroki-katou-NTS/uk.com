@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -77,6 +78,17 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 						domain.getFlexTime() == null ? null
 								: new FlexTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getFlexTime().getFlexTime()),
 										getAttendanceTime(domain.getFlexTime().getBeforeApplicationTime())));
+	}
+	
+	@Override
+	public OverTimeWorkDailyPerformDto clone() {
+		return new OverTimeWorkDailyPerformDto(
+				overTimeFrameTime == null ? null : overTimeFrameTime.stream().map(o -> o.clone()).collect(Collectors.toList()),
+				overTimeFrameTimeSheet == null ? null : overTimeFrameTimeSheet.stream().map(o -> o.clone()).collect(Collectors.toList()),
+				excessOfStatutoryMidNightTime == null ? null : excessOfStatutoryMidNightTime.clone(),
+				overTimeSpentAtWork,
+				irregularWithinPrescribedOverTimeWork,
+				flexTime == null ? null : flexTime.clone());
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime time) {

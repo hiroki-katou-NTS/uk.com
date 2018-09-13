@@ -33,4 +33,9 @@ public class BreakTimeSheetDto implements ItemConst {
 //	@AttendanceItemLayout(layout = "D")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer no;
+	
+	@Override
+	public BreakTimeSheetDto clone() {
+		return new BreakTimeSheetDto(start, end, breakTime, no);
+	}
 }

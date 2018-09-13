@@ -48,6 +48,17 @@ public class HolidayDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer absence;
 	
+	@Override
+	public HolidayDailyPerformDto clone() {
+		return new HolidayDailyPerformDto(annualLeave == null ? null : annualLeave.clone(), 
+											specialHoliday == null ? null : specialHoliday.clone(), 
+											excessSalaries == null ? null : excessSalaries.clone(), 
+											compensatoryLeave == null ? null : compensatoryLeave.clone(), 
+											retentionYearly, 
+											timeDigestionVacation == null ? null : timeDigestionVacation.clone(), 
+											absence);
+	}
+	
 	public static HolidayDailyPerformDto from(HolidayOfDaily domain) {
 		return domain == null ? null : 
 			new HolidayDailyPerformDto(HolidayUseTimeDto.from(domain.getAnnual()), 

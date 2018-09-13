@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -51,6 +52,19 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getStart()), 
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getEnd())), 
 								c.getWorkTime() == null ? null : c.getWorkTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		
+		return dto;
+	}
+	
+	@Override
+	public AttendanceTimeByWorkOfDailyDto clone() {
+		AttendanceTimeByWorkOfDailyDto dto = new AttendanceTimeByWorkOfDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setWorkTimes(workTimes == null ? null : workTimes.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if(isHaveData()){
 			dto.exsistData();
 		}
 		

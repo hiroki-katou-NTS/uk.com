@@ -23,4 +23,9 @@ public class LogonInfoDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LOGOFF)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer logOff;
+	
+	@Override
+	public LogonInfoDto clone() {
+		return new LogonInfoDto(no, logOn, logOff);
+	}
 }

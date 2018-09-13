@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,6 +59,16 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
 						domain.getGooutTimes() == null ? 0 : domain.getGooutTimes().v());
+	}
+
+	@Override
+	public BreakTimeSheetDailyPerformDto clone() {
+		return new BreakTimeSheetDailyPerformDto(
+						toRecordTotalTime == null ? null : toRecordTotalTime.clone(),
+						toRecordTotalTime == null ? null : toRecordTotalTime.clone(),
+						duringWork,
+						correctedTimeSheet == null ? null : correctedTimeSheet.stream().map(t -> t.clone()).collect(Collectors.toList()),
+						breakTimes);
 	}
 	
 	private static Integer getTime(TimeWithDayAttr domain) {

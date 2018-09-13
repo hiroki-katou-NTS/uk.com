@@ -54,6 +54,15 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 						getWithStatutory(domain.getWithinStatutoryMidNightTime()),
 						getAttendanceTime(domain.getVacationAddTime()));
 	}
+	
+	@Override
+	public WithinStatutoryTimeDailyPerformDto clone() {
+		return new WithinStatutoryTimeDailyPerformDto(workTime,
+									workTimeIncludeVacationTime,
+									withinPrescribedPremiumTime,
+									withinStatutoryMidNightTime == null ? null : withinStatutoryMidNightTime.clone(),
+									vacationAddTime);
+	}
 
 	private static CalcAttachTimeDto getWithStatutory(WithinStatutoryMidNightTime domain) {
 		return domain == null || domain.getTime() == null ? null : CalcAttachTimeDto.toTimeWithCal(domain.getTime());

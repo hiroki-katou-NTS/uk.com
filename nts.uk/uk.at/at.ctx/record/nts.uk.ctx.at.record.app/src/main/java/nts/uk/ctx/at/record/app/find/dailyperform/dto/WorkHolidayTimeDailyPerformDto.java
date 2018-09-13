@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,6 +61,15 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().isPresent() ? c.getTransferTime().get() : null), 
 						getAttendanceTime(c.getBeforeApplicationTime().isPresent() ? c.getBeforeApplicationTime().get() : null),
 						c.getHolidayFrameNo().v())));
+	}
+	
+	@Override
+	public WorkHolidayTimeDailyPerformDto clone(){
+		return new WorkHolidayTimeDailyPerformDto(
+				holidyWorkFrameTimeSheet == null ? null : holidyWorkFrameTimeSheet.stream().map(c -> c.clone()).collect(Collectors.toList()), 
+				holidayMidnightWork == null ? null : holidayMidnightWork.clone(), 
+				holidayTimeSpentAtWork, 
+				holidayWorkFrameTime == null ? null : holidayWorkFrameTime.stream().map(c -> c.clone()).collect(Collectors.toList()));
 	}
 
 	private static TimeSpanForCalcDto getTimeSpan(TimeSpanForCalc c) {

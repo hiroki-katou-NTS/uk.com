@@ -8,7 +8,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -71,7 +70,23 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getLeaveEarlySetting()));
 			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
 			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain.getRasingSalarySetting()));
-			result.setYmd(domain.getYmd());
+			result.exsistData();
+		}
+		return result;
+	}
+	
+	@Override
+	public CalcAttrOfDailyPerformanceDto clone() {
+		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
+		result.setEmployeeId(employeeId());
+		result.setYmd(workingDate());
+		result.setDivergenceTime(divergenceTime);
+		result.setFlexExcessTime(flexExcessTime == null ? null : flexExcessTime.clone());
+		result.setHolidayTimeSetting(holidayTimeSetting == null ? null : holidayTimeSetting.clone());
+		result.setLeaveEarlySetting(leaveEarlySetting == null ? null : leaveEarlySetting.clone());
+		result.setOvertimeSetting(overtimeSetting == null ? null : overtimeSetting.clone());
+		result.setRasingSalarySetting(rasingSalarySetting == null ? null : rasingSalarySetting.clone());
+		if (this.isHaveData()) {
 			result.exsistData();
 		}
 		return result;
@@ -145,7 +160,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				createAutoCalcHolidaySetting(),
 				createAutoOverTimeSetting(),
 				createAutoCalcLeaveSetting(),
-				new AutoCalcSetOfDivergenceTime(getEnum(this.divergenceTime, DivergenceTimeAttr.class)));
+				new AutoCalcSetOfDivergenceTime(this.divergenceTime == DivergenceTimeAttr.USE.value 
+					? DivergenceTimeAttr.USE : DivergenceTimeAttr.NOT_USE));
 	}
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
@@ -177,12 +193,31 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 	
 	private AutoCalSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
-		return dto == null ? null : new AutoCalSetting(
-												getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class),
-												getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class));
+		return dto == null ? null : new AutoCalSetting(convertToTimeLimitUpper(dto.getUpperLimitSetting()),
+														convertToCalcAtrOT(dto.getCalculationAttr()));
 	}
-
-	private <T> T getEnum(int value, Class<T> enumType) {
-		return ConvertHelper.getEnum(value, enumType);
+	
+	private TimeLimitUpperLimitSetting convertToTimeLimitUpper(int value){
+		switch (value) {
+			case 2:
+				return TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT;
+			case 1:
+				return TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION;
+			case 0:
+				return TimeLimitUpperLimitSetting.NOUPPERLIMIT;
+		}
+		return null;
+	}
+	
+	private AutoCalAtrOvertime convertToCalcAtrOT(int value){
+		switch (value) {
+			case 2:
+				return AutoCalAtrOvertime.CALCULATEMBOSS;
+			case 1:
+				return AutoCalAtrOvertime.TIMERECORDER;
+			case 0:
+				return AutoCalAtrOvertime.APPLYMANUALLYENTER;
+		}
+		return null;
 	}
 }

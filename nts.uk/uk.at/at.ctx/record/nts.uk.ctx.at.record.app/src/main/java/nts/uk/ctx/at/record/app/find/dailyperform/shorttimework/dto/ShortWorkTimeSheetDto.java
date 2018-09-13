@@ -45,6 +45,11 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	// @AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortTime;
 
+	@Override
+	public ShortWorkTimeSheetDto clone(){
+		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime, deductionTime, shortTime);
+	}
+	
 	public String enumText() {
 		if (attr == null) {
 			return EMPTY_STRING;

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,6 +54,17 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	/** 乖離時間: 日別実績の乖離時間 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = DIVERGENCE, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<DivergenceTimeDto> divergenceTime;
+
+	@Override
+	public ActualWorkTimeDailyPerformDto clone() {
+		return new ActualWorkTimeDailyPerformDto(
+						premiumTimes == null ? null : premiumTimes.stream().map(t -> t.clone()).collect(Collectors.toList()),
+						constraintDifferenceTime,
+						constraintTime == null ? null : constraintTime.clone(),
+						timeDifferenceWorkingHours,
+						totalWorkingTime == null ? null : totalWorkingTime.clone(),
+						divergenceTime == null ? null : divergenceTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+	}
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {
 		return domain == null ? null : new ActualWorkTimeDailyPerformDto(
