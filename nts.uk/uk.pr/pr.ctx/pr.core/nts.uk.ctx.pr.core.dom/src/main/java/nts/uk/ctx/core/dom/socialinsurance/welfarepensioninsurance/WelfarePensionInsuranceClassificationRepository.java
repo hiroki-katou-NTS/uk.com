@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -7,4 +8,5 @@ import java.util.Optional;
  */
 public interface WelfarePensionInsuranceClassificationRepository {
 	Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById(String historyId);
+	void deleteByHistoryIds (List<String> historyIds);
 }

@@ -1,15 +1,16 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implements HealthInsuranceMonthlyFeeRepository {
@@ -38,4 +39,9 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
                 )).collect(Collectors.toList())
         );
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+	}
 }

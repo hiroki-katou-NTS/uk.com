@@ -6,29 +6,31 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocialOfficeCommand> {
+public class UpdateSocialOfficeCommandHandler extends CommandHandlerWithResult<UpdateSocialOfficeCommand, String> {
 	
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	
 	@Override
-	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
+	protected String handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
+		String msg = null ;
 		UpdateSocialOfficeCommand command = context.getCommand();
-		
-		Optional<SocialInsuranceOffice> socialInsu = socialInsuranceOfficeRepository.findById(AppContexts.user().companyId(), command.getCode());
+		Optional<SocialInsuranceOffice> socialInsu = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
 		if(socialInsu.isPresent()) {
 			SocialInsuranceOffice socialInuran = mappingEntity(command);
 			socialInsuranceOfficeRepository.update(socialInuran);
+			msg = "Msg_15";
 		}
+		return msg;
 	}
 	
 	private SocialInsuranceOffice mappingEntity(UpdateSocialOfficeCommand command) {

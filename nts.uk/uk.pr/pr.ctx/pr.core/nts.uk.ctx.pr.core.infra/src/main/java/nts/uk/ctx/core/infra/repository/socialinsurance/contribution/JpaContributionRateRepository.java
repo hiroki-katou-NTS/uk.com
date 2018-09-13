@@ -1,17 +1,17 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.contribution;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGrade;
-import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGradePk;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRate;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
@@ -34,4 +34,9 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
                 .getList();
         return contributionRate.map(item -> toDomain(item, qpbmtContributionByGrade));
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtContributionRate.class, historyIds);
+	}
 }

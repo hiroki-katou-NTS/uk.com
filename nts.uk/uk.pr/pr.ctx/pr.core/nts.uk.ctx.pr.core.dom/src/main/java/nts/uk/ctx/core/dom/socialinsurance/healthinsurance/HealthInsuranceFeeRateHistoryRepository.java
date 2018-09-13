@@ -1,7 +1,5 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
-import java.util.List;
-
 /**
  * 健康保険料率履歴
  */
@@ -15,4 +13,6 @@ public interface HealthInsuranceFeeRateHistoryRepository {
      * @return HealthInsuranceFeeRateHistory
      */
     HealthInsuranceFeeRateHistory getHealthInsuranceFeeRateHistoryByCid(String companyId, String officeCode);
+    
+    void deleteByCidAndCode(String companyId, String officeCode);
 }

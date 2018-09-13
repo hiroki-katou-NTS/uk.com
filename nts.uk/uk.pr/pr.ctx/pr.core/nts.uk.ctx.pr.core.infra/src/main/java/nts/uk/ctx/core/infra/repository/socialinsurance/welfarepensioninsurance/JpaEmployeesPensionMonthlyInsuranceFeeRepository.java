@@ -2,6 +2,7 @@ package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.*;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtEmployeesPensionMonthlyInsuranceFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
 
@@ -50,4 +51,9 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
                 salaryEmployeesPensionInsuranceRate
         );
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtEmployeesPensionMonthlyInsuranceFee.class, historyIds);
+	}
 }

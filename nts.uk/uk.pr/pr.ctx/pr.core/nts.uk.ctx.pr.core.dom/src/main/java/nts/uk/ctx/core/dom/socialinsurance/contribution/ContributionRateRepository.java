@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.contribution;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ContributionRateRepository {
@@ -10,4 +11,5 @@ public interface ContributionRateRepository {
      * @return 拠出金率
      */
     Optional<ContributionRate> getContributionRateByHistoryId(String historyId);
+    void deleteByHistoryIds(List<String> historyIds);
 }

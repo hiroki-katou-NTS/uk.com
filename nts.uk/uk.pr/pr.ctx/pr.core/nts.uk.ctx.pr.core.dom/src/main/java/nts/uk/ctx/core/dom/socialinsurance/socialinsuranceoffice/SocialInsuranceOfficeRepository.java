@@ -7,7 +7,7 @@ public interface SocialInsuranceOfficeRepository {
 	
 	List<SocialInsuranceOffice> findByCid(String cid);
 	
-	Optional<SocialInsuranceOffice> findById(String cid, String code);
+	Optional<SocialInsuranceOffice> findByCodeAndCid(String cid, String code);
 	
 	public void add(SocialInsuranceOffice domain);
 	

@@ -45,7 +45,7 @@ public class SocialSuranOfficeFinder {
 	}
 	
 	public SociaInsuOfficeDto findByKey(String code) {
-		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findById(AppContexts.user().companyId(), code);
+		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), code);
 		SociaInsuOfficeDto sociaInsuOfficeDto  = new SociaInsuOfficeDto();
 		if(data.isPresent()) {
 			sociaInsuOfficeDto.setCompanyID(data.get().getCompanyID());

@@ -1,11 +1,12 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 賞与厚生年金保険料率
  */
 public interface BonusEmployeePensionInsuranceRateRepository {
     Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId);
+    void deleteByHistoryIds(List<String> historyIds);
 }

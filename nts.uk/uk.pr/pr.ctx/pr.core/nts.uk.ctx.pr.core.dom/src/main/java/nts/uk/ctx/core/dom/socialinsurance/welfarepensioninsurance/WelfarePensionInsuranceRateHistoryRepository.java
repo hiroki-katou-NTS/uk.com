@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface WelfarePensionInsuranceRateHistoryRepository {
 	Optional<WelfarePensionInsuranceRateHistory> getWelfarePensionInsuranceRateHistoryByOfficeCode(String officeCode);
 	List<WelfarePensionInsuranceRateHistory> findAll();
+	void deleteByCidAndCode(String cid, String officeCode);
 }

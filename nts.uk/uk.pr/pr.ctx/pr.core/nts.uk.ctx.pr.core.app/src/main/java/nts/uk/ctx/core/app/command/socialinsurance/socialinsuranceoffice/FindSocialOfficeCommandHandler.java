@@ -23,7 +23,7 @@ public class FindSocialOfficeCommandHandler extends CommandHandlerWithResult<Fin
 	@Override
 	protected SociaInsuOfficeDto handle(CommandHandlerContext<FindSocialOfficeCommand> context) {
 		FindSocialOfficeCommand command = context.getCommand();
-		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findById(AppContexts.user().companyId(), command.getCode());
+		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
 		return mappingDto(data);
 	}
 

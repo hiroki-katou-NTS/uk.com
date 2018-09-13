@@ -14,8 +14,8 @@ import javax.ejb.Stateless;
 @Stateless
 public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements SocialInsuranceOfficeRepository {
 	
-	public static final String QUERY = "select * from QpbmtSocialInsuranceOffice where socialInsuranceOfficePk.cid = :cid";
-	public static final String QUERYCODE = "select * from QpbmtSocialInsuranceOffice where socialInsuranceOfficePk.cid = :cid and socialInsuranceOfficePk.code = :code ";
+	public static final String QUERY = "select a from QpbmtSocialInsuranceOffice a where socialInsuranceOfficePk.cid = :cid";
+	public static final String QUERYCODE = "select a from QpbmtSocialInsuranceOffice a where socialInsuranceOfficePk.cid = :cid and socialInsuranceOfficePk.code = :code ";
 	
 	@Override
 	public List<SocialInsuranceOffice> findByCid(String cid) {
@@ -25,7 +25,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	}
 
 	@Override
-	public Optional<SocialInsuranceOffice> findById(String cid, String code) {
+	public Optional<SocialInsuranceOffice> findByCodeAndCid(String cid, String code) {
 		return this.queryProxy().query(QUERYCODE, QpbmtSocialInsuranceOffice.class)
 				.setParameter(cid, cid)
 				.setParameter(code, code)
