@@ -27,5 +27,9 @@ public class WorkScheduleTime {
 		this.excessOfStatutoryTime = excessOfStatutoryTime;
 		this.withinStatutoryTime = withinStatutoryTime;
 	}
+	
+	public static WorkScheduleTime defaultValue(){
+		return new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+	}
 
 }

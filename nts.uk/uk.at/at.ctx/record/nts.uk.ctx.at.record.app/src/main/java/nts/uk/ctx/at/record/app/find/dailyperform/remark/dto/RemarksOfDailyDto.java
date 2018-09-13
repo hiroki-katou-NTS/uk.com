@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.remark.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
@@ -54,6 +51,19 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 			dto.setYmd(x.getYmd());
 			dto.setRemark(x.getRemarks().v());
 			dto.setNo(x.getRemarkNo());
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public RemarksOfDailyDto clone() {
+		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setRemark(remark);
+		dto.setNo(no);
+		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;

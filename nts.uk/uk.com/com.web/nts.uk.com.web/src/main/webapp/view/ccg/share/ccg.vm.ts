@@ -42,6 +42,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
+            baseDateOfParentScreen: KnockoutObservable<string>;
             inputPeriod: KnockoutObservable<DateRangePickerModel>;
             baseDate: KnockoutComputed<moment.Moment>;
             periodStart: KnockoutComputed<moment.Moment>;
@@ -673,7 +674,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
-                self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                if (_.isFunction(options.baseDate)) {
+                    self.baseDateOfParentScreen = options.baseDate;
+                    self.inputBaseDate(options.baseDate());
+                } else {
+                    self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                }
+
                 const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
                 const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
                 self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
@@ -925,7 +932,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     }));
                 } else {
                     // toggle slide ccg001
-                    self.toggleSlide();
+                    self.toggleSlide().done(() => {
+                        // update baseDate
+                        if (self.baseDateOfParentScreen) {
+                            const isSameDate = moment.isMoment(self.baseDateOfParentScreen()) ?
+                                self.baseDateOfParentScreen().isSame(self.inputBaseDate()) : self.inputBaseDate() == self.baseDateOfParentScreen();
+                            if (!isSameDate) {
+                                self.inputBaseDate(self.baseDateOfParentScreen())
+                            }
+                        }
+                    });
                     dfd.resolve();
                 }
                 return dfd.promise();
@@ -1402,11 +1418,8 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             getEmployeeLogin(): void {
                 let self = this;
-                if (!self.isValidInput() || self.isInvalidBaseDate()) {
-                    return;
-                }
                 nts.uk.ui.block.grayout(); // block ui
-                service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                service.searchEmployeeByLogin(moment.utc().toDate())
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
@@ -1676,6 +1689,28 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 self.queryParam.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
+            }
+
+            /**
+             * Search current login employee
+             */
+            public searchCurrentLoginEmployee(): void {
+                let self = this;
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
+                    return;
+                }
+
+                // A：締め状態更新
+                if (self.systemType == ConfigEnumSystemType.EMPLOYMENT && self.showClosure) {
+                    service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
+                        if (self.selectedClosure() != id) {
+                            self.selectedClosure(id);
+                        }
+                        self.getEmployeeLogin();
+                    });
+                } else {
+                    self.getEmployeeLogin();
+                }
             }
             
             /**
@@ -2098,7 +2133,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showOnlyMe -->
                         <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: getEmployeeLogin">
+                                data-bind="click: searchCurrentLoginEmployee">
                                 <i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
                                 <label class="labelBigButton">`+CCG001TextResource.CCG001_35+`</label> 
                             </div>

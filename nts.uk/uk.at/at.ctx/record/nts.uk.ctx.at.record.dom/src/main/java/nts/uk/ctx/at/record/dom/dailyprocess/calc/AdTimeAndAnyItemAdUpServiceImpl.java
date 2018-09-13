@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AdTimeAnyItemStoredForDailyCalc;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
@@ -22,6 +22,8 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 日別実績の勤怠時間と任意項目を同時更新し、ストアドを実行するためのサービス
@@ -37,8 +39,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 	
-	@Inject
-	private AdTimeAnyItemStoredForDailyCalc adTimeAnyItemStoredForDailyCalc;
+//	@Inject
+//	private AdTimeAnyItemStoredForDailyCalc adTimeAnyItemStoredForDailyCalc;
 	
 	@Inject
 	private StoredProcdureProcess storedProcedureProcess;
@@ -95,7 +97,12 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	
 	@Override
 	public void addAndUpdate(List<IntegrationOfDaily> daily) {
-		storedProcedureProcess.dailyProcessing(daily).stream().forEach(d -> {
+		addAndUpdate(daily, null);
+	}
+	
+	@Override
+	public void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
+		storedProcedureProcess.dailyProcessing(daily, workTypes).stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);

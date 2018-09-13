@@ -246,19 +246,19 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			valGrantDays = new SpecialLeaveGrantUseDay(entity.grantDays);
 		}
 		
-		// 特別休暇月別残数データ
+		// 特別休暇月別残数データ//
 		return new SpecialHolidayRemainData(
 				entity.pk.sid,
+				new YearMonth(entity.pk.ym),
 				entity.pk.closureId,
+				new ClosureDate(entity.pk.closureDay, (entity.pk.chkLastDay == 1)),
 				new DatePeriod(entity.getClosureStartDate(), entity.getClosureEndDate()),
 				EnumAdaptor.valueOf(entity.getClosureStatus(), ClosureStatus.class),
-				new ClosureDate(entity.pk.closureDay, (entity.pk.chkLastDay == 1)),
-				new YearMonth(entity.pk.ym),
 				entity.pk.specialHolidayCd,
 				actualSpecial,
 				specialLeave,
-				(entity.grantAtr == 1),
-				Optional.ofNullable(valGrantDays));
+				Optional.ofNullable(valGrantDays),
+				(entity.grantAtr == 1));
 	}
 
 	/** 登録および更新 */

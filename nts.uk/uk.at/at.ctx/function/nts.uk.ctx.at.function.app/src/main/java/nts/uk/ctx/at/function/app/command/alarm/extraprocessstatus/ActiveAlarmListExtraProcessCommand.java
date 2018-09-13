@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ActiveAlarmListExtraProcessCommand {
 
 	private String processStatusId;
+	private int status;
 }

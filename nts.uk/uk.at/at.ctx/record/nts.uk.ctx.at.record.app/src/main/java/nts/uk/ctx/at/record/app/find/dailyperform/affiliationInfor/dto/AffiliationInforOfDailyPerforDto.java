@@ -62,6 +62,22 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	@Override
+	public AffiliationInforOfDailyPerforDto clone(){
+		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
+		dto.setClassificationCode(classificationCode);
+		dto.setEmploymentCode(employmentCode);
+		dto.setJobId(jobId);
+		dto.setSubscriptionCode(subscriptionCode);
+		dto.setWorkplaceID(workplaceID);
+		dto.setBaseDate(workingDate());
+		dto.setEmployeeId(employeeId());
+		if(this.isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
+	}
 
 	@Override
 	public String employeeId() {
@@ -84,10 +100,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AffiliationInforOfDailyPerfor(
-					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
-					employeeId, this.jobId, this.workplaceID, date,
-					this.classificationCode == null ? null : new ClassificationCode(this.classificationCode),
-					this.subscriptionCode == null ? null : new BonusPaySettingCode(this.subscriptionCode));
+		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
+												employeeId, this.jobId, this.workplaceID, date,
+												new ClassificationCode(this.classificationCode),
+												new BonusPaySettingCode(this.subscriptionCode));
 	}
 }

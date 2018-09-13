@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -57,6 +58,18 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	@Override
+	public PCLogOnInforOfDailyPerformDto clone(){
+		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
+		dto.setLogonTime(logonTime == null ? null : logonTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		if (isHaveData()) {
+			dto.exsistData();
+		}
+		return dto;
+	}
 
 	@Override
 	public PCLogOnInfoOfDaily toDomain(String employeeId, GeneralDate date) {
@@ -75,6 +88,6 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	private TimeWithDayAttr toWorkStamp(Integer time){
-		return time == null ? null : new TimeWithDayAttr(time);
+		return time == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(time);
 	}
 }

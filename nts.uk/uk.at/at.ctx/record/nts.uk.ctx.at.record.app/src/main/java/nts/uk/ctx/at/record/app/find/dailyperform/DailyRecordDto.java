@@ -413,10 +413,39 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				);
 	}
 
+//	@Override
+//	public DailyRecordDto clone(){
+//		IntegrationOfDaily integrationOfDaily = this.toDomain(employeeId, date);
+//		return DailyRecordDto.from(integrationOfDaily).employeeId(employeeId).workingDate(date);
+//	}
+	
 	@Override
 	public DailyRecordDto clone(){
-		IntegrationOfDaily integrationOfDaily = this.toDomain(employeeId, date);
-		return DailyRecordDto.from(integrationOfDaily).employeeId(employeeId).workingDate(date);
+		DailyRecordDto dto = new DailyRecordDto();
+		dto.setEmployeeId(employeeId);
+		dto.setDate(date);
+		dto.setWorkInfo(workInfo == null ? null : workInfo.clone());
+		dto.setCalcAttr(calcAttr == null ? null : calcAttr.clone());
+		dto.setAffiliationInfo(affiliationInfo == null ? null : affiliationInfo.clone());
+		dto.setBusinessType(businessType.map(b -> b.clone()));
+		dto.setErrors(errors == null ? null : errors.clone());
+		dto.setOutingTime(outingTime.map(o -> o.clone()));
+		dto.setBreakTime(breakTime.stream().map(b -> b.clone()).collect(Collectors.toList()));
+		dto.setAttendanceTime(attendanceTime.map(a -> a.clone()));
+		dto.setAttendanceTimeByWork(attendanceTimeByWork.map(a -> a.clone()));
+		dto.setTimeLeaving(timeLeaving.map(a -> a.clone()));
+		dto.setShortWorkTime(shortWorkTime.map(s -> s.clone()));
+		dto.setSpecificDateAttr(specificDateAttr.map(s -> s.clone()));
+		dto.setAttendanceLeavingGate(attendanceLeavingGate.map(a -> a.clone()));
+		dto.setOptionalItem(optionalItem.map(a -> a.clone()));
+		dto.setEditStates(editStates.stream().map(c -> c.clone()).collect(Collectors.toList()));
+		dto.setTemporaryTime(temporaryTime.map(t -> t.clone()));
+		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
+		dto.setRemarks(remarks.stream().map(r -> r.clone()).collect(Collectors.toList()));
+		if(isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
 	}
 }
 
