@@ -81,7 +81,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	}
 	
 	private static TimeStampDto getTimeStamp(TimeWithDayAttr c) {
-		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, null);
+		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, 0);
 	}
 
 	@Override
