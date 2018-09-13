@@ -724,8 +724,18 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	private int calcWithinTime() {
-		return this.withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
-				+ this.withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes();
+		if(this.getWithinStatutoryTimeOfDaily() != null) {
+			int workTime = this.getWithinStatutoryTimeOfDaily().getWorkTime() != null
+							?this.getWithinStatutoryTimeOfDaily().getWorkTime().valueAsMinutes()
+							:0;
+			int premiumTime = this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime() != null
+							? this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime().valueAsMinutes()
+							:0;
+			return workTime + premiumTime;
+		}
+		else {
+			return 0;
+		}
 	}
 	
 	/**

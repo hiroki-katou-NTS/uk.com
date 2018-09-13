@@ -70,10 +70,10 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 }

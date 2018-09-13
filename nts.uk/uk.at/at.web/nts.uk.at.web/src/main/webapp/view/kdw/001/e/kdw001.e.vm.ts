@@ -46,7 +46,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         contents: any;
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<any> = ko.observableArray([]);
+        dataExport: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]); 
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
@@ -60,6 +61,23 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         visibleMonthly: KnockoutObservable<boolean> = ko.observable(false);
 
         closureId: KnockoutObservable<number> = ko.observable(1);
+        
+        // endTime
+        // dailyCreate
+        dailyCreateStartTime : KnockoutObservable<string> = ko.observable("");
+        dailyCreateEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // dailyCalculate
+        dailyCalculateStartTime : KnockoutObservable<string> = ko.observable("");
+        dailyCalculateEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // approval
+        reflectApprovalStartTime : KnockoutObservable<string> = ko.observable("");
+        reflectApprovalEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // monthly
+        monthlyAggregateStartTime : KnockoutObservable<string> = ko.observable("");
+        monthlyAggregateEndTime : KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             var self = this;
@@ -73,8 +91,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
                 { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
-                { headerText: getText('KDW001_37'), key: 'messageError', width: 290 },
-                { headerText: '', key: 'GUID', width: 1, hirren: true },
+                { headerText: getText('KDW001_37'), key: 'messageError', class: "limited-label", width: 290 },
+                { headerText: '', key: 'id', width: 1, hidden: true },
             ]);
 
             self.selectedExeContent.subscribe((value) => {
@@ -132,15 +150,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         exportLog(): void {
             var self = this;
-            if (self.errorMessageInfo().length > 0)
-                service.saveAsCsv(self.errorMessageInfo());
+            if (self.dataExport().length > 0)
+                service.saveAsCsv(self.dataExport());
         }
 
         cancelTask(): void {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
             self.enableCancelTask(false);
-            self.elapseTime.end();
+//            self.elapseTime.end();
         }
 
         closeDialog(): void {
@@ -191,9 +209,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.executionContents(self.contents);
                             self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
 
-                            // End count time
-                            self.elapseTime.end();
-
                             // Get EndTime from server, fallback to client
                             self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
                             //                            if (nts.uk.text.isNullOrEmpty(endTime))
@@ -230,17 +245,51 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             } else {
                                 self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
                             }
-                            self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString)
+                            self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString);
 
+                            //daily create
+                            self.dailyCreateStartTime(self.getAsyncData(info.taskDatas, "dailyCreateStartTime").valueAsString);                            
+                            self.dailyCreateEndTime(self.getAsyncData(info.taskDatas, "dailyCreateEndTime").valueAsString);
+                            
+                            // daily calculate
+                            self.dailyCalculateStartTime(self.getAsyncData(info.taskDatas, "dailyCalculateStartTime").valueAsString);
+                            self.dailyCalculateEndTime(self.getAsyncData(info.taskDatas, "dailyCalculateEndTime").valueAsString);
+                            
+                            // approval
+                            self.reflectApprovalStartTime(self.getAsyncData(info.taskDatas, "reflectApprovalStartTime").valueAsString);
+                            self.reflectApprovalEndTime(self.getAsyncData(info.taskDatas, "reflectApprovalEndTime").valueAsString);
+                            
+                            // monthly
+                            self.monthlyAggregateStartTime(self.getAsyncData(info.taskDatas, "monthlyAggregateStartTime").valueAsString);
+                            self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
+                            
                             // Get Log data
                             self.getLogData();
                             self.enableCancelTask(false);
+                            
+                            let stopped = 0;
+                                if(info.status === "CANCELLED"){
+                                    self.endTime(moment().format("YYYY/MM/DD HH:mm:ss"));
+                                    stopped = 1;
+                                }
+                            // End count time
+                            self.elapseTime.end();
+                            
                             if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
-
+                                
                                 var paramsUpdate = {
                                     empCalAndSumExecLogID: empCalAndSumExecLogID,
                                     executionStartDate: self.startTime(),
-                                    executionEndDate: self.endTime()
+                                    executionEndDate: self.endTime(),
+                                    dailyCreateStartTime : self.dailyCreateStartTime(),
+                                    dailyCreateEndTime : self.dailyCreateEndTime(),
+                                    dailyCalculateStartTime : self.dailyCalculateStartTime(),
+                                    dailyCalculateEndTime : self.dailyCalculateEndTime(),
+                                    reflectApprovalStartTime : self.reflectApprovalStartTime(),
+                                    reflectApprovalEndTime : self.reflectApprovalEndTime(),
+                                    monthlyAggregateStartTime : self.monthlyAggregateStartTime(),
+                                    monthlyAggregateEndTime : self.monthlyAggregateEndTime(),
+                                    stopped : stopped
                                 };
                                 service.updateExcutionTime(paramsUpdate);
                             }
@@ -273,7 +322,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 executionContent: self.selectedExeContent()
             };
             service.getErrorMessageInfo(params).done((res) => {
-                self.errorMessageInfo(res);
+                let i = 0;
+                let data = _.map(res,function(item:any){
+                   return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
+                });
+                self.errorMessageInfo(data);
+                self.dataExport(res);
             });
         }
 

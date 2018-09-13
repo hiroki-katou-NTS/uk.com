@@ -72,7 +72,7 @@ public class TimeDivergenceWithCalculation {
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {
-		return TimeDivergenceWithCalculation.sameTime(null);
+		return TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		
 	}
 	

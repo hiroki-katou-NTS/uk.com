@@ -6,6 +6,7 @@ module nts.uk.at.view.kbt002.b {
             getProcExecList: 'at/function/processexec/getProcExecList',
             saveProcExec: 'at/function/processexec/saveProcExec',
             deleteProcExec: 'at/function/processexec/removeProcExec',
+            getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting'
         }
     
         export function findWorkplaceTree(baseDate: Date, systemType : number): JQueryPromise<any> {
@@ -26,6 +27,9 @@ module nts.uk.at.view.kbt002.b {
     
         export function deleteProcExec(command: any) {
             return nts.uk.request.ajax("at", paths.deleteProcExec, command);
+        }
+        export function getAlarmByUser() {
+            return nts.uk.request.ajax("at", paths.getAlarmByUser);
         }
 //        
 //        export function getEmployeeInfo(empId: string): JQueryPromise<any> {

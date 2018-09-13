@@ -1622,7 +1622,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				return false;
 		if(premiumAtr.isRegularWork()) {			
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
-				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+				if(advancedSet.isPresent() &&
+					advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
 					if(advancedSet.isPresent()&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 						decisionGetChild = true;
 					}

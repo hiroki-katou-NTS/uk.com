@@ -60,10 +60,10 @@ public class StayingTimeDto implements ItemConst {
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 }
