@@ -255,6 +255,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.selectedTitleAtr(1);
+                    //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
+                     // self.employeeList = ko.observableArray([]);
+                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                    self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);

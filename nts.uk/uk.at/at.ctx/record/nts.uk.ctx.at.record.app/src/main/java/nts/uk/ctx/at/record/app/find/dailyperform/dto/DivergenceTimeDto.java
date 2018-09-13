@@ -55,6 +55,6 @@ public class DivergenceTimeDto implements ItemConst {
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

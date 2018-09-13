@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus.KfnmtAlarmListExtraProcessStatus;
-
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements AlarmListExtraProcessStatusRepository {
 
@@ -24,6 +26,10 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	private static final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
 			+ " AND c.startDate = :startDate"
 			+ " AND c.startTime = :startTime";
+	private static final String SELECT_ALEX_PROCESS_BY_STATUS = SELECT_ALL_ALEX_PROCESS_BY_CID 
+			+ " AND c.startDate = :startDate"
+			+ " AND c.startTime = :startTime"
+			+ " AND c.status = :status ";
 	private static final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
 			+ "WHERE c.companyID = :companyID"
 			+ " AND c.employeeID = :employeeID"
@@ -48,6 +54,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 				.getSingle(c -> c.toDomain());
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public String addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));
@@ -62,6 +69,8 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 		updateEntity.employeeID = newEntity.employeeID;
 		updateEntity.endDate = newEntity.endDate;
 		updateEntity.endTime = newEntity.endTime;
+		updateEntity.status = newEntity.status;
+		
 		this.commandProxy().update(updateEntity);
 		
 	}
@@ -100,6 +109,17 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 		Long count = queryProxy().query(countProcessSql, Long.class)
 						.setParameter("companyID", companyId).setParameter("employeeID", employeeId).getSingleOrNull();
 		return count != null && count > 0;
+	}
+
+	@Override
+	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByStatus(String companyID, GeneralDate startDate,
+			int startTime, int status) {
+		return this.queryProxy().query(SELECT_ALEX_PROCESS_BY_STATUS,KfnmtAlarmListExtraProcessStatus.class)
+				.setParameter("companyID", companyID)
+				.setParameter("startDate", startDate)
+				.setParameter("startTime", startTime)
+				.setParameter("status", status)
+				.getSingle(c -> c.toDomain());
 	}
 
 

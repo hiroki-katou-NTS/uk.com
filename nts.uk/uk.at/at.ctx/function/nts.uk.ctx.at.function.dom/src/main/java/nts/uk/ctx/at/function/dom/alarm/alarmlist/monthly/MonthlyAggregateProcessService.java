@@ -119,27 +119,6 @@ public class MonthlyAggregateProcessService {
 		
 		for(EmployeeSearchDto employee : employees) {
 			Closure closure = null;
-			//Tightening ID: optional 
-			if (listFixed.get(5).isUseAtr()) {
-				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-				closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-			}
-			
-			//MinhVV
-			CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
-
-			if (listFixed.get(5).isUseAtr()) {
-				Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
-						.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
-				if (checkDeadline.isPresent()) {
-					checkDeadline.get().setAlarmValueMessage(listFixed.get(5).getMessage());
-					checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-					String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
-					checkDeadline.get().setAlarmValueDate(dateString);
-					listValueExtractAlarm.add(checkDeadline.get());
-				}
-			}
-			
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -154,12 +133,28 @@ public class MonthlyAggregateProcessService {
 									unconfirmed.get().setAlarmValueDate(dateString);
 									listValueExtractAlarm.add(unconfirmed.get());
 								}
-								
 							break;
-							case 1 :break;//chua co
-							case 2 :break;//chua co
-							case 3 :break;//chua co
-							case 4 :
+							case 1 :// tuong ung vs 6
+								//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+								closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+								//MinhVV
+								CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+
+								if (listFixed.get(1).isUseAtr()) {
+									Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
+											.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
+									if (checkDeadline.isPresent()) {
+										checkDeadline.get().setAlarmValueMessage(listFixed.get(1).getMessage());
+										checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+										String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
+										checkDeadline.get().setAlarmValueDate(dateString);
+										listValueExtractAlarm.add(checkDeadline.get());
+									}
+								}
+								break;
+							//case 2 :break;//chua co
+							//case 3 :break;//chua co
+							//case 4 :
 								//ticket #100053
 //								Optional<ValueExtractAlarm> agreement = sysFixedCheckConMonAdapter.checkAgreement(employee.getId(), yearMonth.v().intValue(),closureID.get(),closureDate.get());
 //								if(agreement.isPresent()) {
@@ -169,7 +164,7 @@ public class MonthlyAggregateProcessService {
 //									agreement.get().setAlarmValueDate(dateAgreement);
 //									listValueExtractAlarm.add(agreement.get());
 //								}
-							break;
+							//break;
 							default : break; // so 6 : chua co
 						}//end switch
 						
