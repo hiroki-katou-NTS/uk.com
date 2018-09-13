@@ -3,12 +3,12 @@ module nts.uk.pr.view.qmm005.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getProcessInfomations: "nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/findDisplayRegister/{0}",
+        getProcessInfomations: "nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/findDisplayRegister",
         registerProcessing :"nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/registerProcessing"
     };
 
     export function findDisplayRegister(processingCategoryNo: number): JQueryPromise<any> {
-        let _path = format(paths.findDisplayRegister, processingCategoryNo);
+        let _path = format(paths.findDisplayRegister);
         return ajax('com', _path);
     }
     

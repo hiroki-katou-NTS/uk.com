@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.ws.wageprovision.processdatecls;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.InitialDisplayRegisterProcessingDto;
@@ -16,9 +15,8 @@ public class DisplayRegisterProcessScreenWebService {
 	private InitialDisplayRegisterProcessingFinder finder;
 
 	@POST
-	@Path("findDisplayRegister/{processingCategoryNo}")
-	public InitialDisplayRegisterProcessingDto findDisplayRegister(
-			@PathParam("processingCategoryNo") int processCateNo) {
-		return finder.getInitialDisplayRegisterProcessing(processCateNo);
+	@Path("findDisplayRegister")
+	public InitialDisplayRegisterProcessingDto findDisplayRegister() {
+		return finder.getInitialDisplayRegisterProcessing();
 	}
 }

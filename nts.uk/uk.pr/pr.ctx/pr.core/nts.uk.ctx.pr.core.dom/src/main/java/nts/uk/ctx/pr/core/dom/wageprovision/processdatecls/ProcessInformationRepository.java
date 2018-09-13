@@ -4,21 +4,22 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 処理区分基本情報
-*/
-public interface ProcessInformationRepository
-{
+ * 処理区分基本情報
+ */
+public interface ProcessInformationRepository {
 
-    List<ProcessInformation> getAllProcessInformation();
+	List<ProcessInformation> getAllProcessInformation();
 
-    Optional<ProcessInformation> getProcessInformationById(String cid, int processCateNo);
-    
-    List<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory);
+	List<ProcessInformation> getProcessInformationByCid(String cid);
 
-    void add(ProcessInformation domain);
+	Optional<ProcessInformation> getProcessInformationById(String cid, int processCateNo);
 
-    void update(ProcessInformation domain);
+	List<ProcessInformation> getProcessInformationByDeprecatedCategory(String cid, int deprecatedCategory);
 
-    void remove(String cid, int processCateNo);
+	void add(ProcessInformation domain);
+
+	void update(ProcessInformation domain);
+
+	void remove(String cid, int processCateNo);
 
 }

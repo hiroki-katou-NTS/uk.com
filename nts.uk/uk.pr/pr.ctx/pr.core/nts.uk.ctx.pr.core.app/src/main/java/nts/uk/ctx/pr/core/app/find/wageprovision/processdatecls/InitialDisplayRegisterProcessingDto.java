@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
@@ -7,7 +9,7 @@ import lombok.Value;
 @Value
 public class InitialDisplayRegisterProcessingDto {
 
-	private ProcessInformationDto informationDto;
+	private List<ProcessInformationDto> informationDto;
 
 	private SetDaySupportDto setDaySupportDto;
 

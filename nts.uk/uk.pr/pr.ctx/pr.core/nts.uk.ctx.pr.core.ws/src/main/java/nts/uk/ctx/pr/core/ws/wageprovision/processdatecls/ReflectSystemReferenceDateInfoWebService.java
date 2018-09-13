@@ -14,7 +14,7 @@ public class ReflectSystemReferenceDateInfoWebService {
 
 	@POST
 	@Path("findReflectSystemReferenceDateInfo/{processingCategoryNo}/{processDate}")
-	public ReflectSystemReferenceDateInfoDto findDisplayRegister(@PathParam("processingCategoryNo") int processCateNo,
+	public ReflectSystemReferenceDateInfoDto findReflectSystemReferenceDateInfo(@PathParam("processingCategoryNo") int processCateNo,
 			@PathParam("processDate") int processDate) {
 		return finder.getReflectSystemReferenceDateInfoDto(processCateNo, processDate);
 	}
