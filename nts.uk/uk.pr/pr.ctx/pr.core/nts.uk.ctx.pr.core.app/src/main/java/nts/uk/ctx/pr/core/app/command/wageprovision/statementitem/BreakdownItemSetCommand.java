@@ -4,11 +4,16 @@ import lombok.Value;
 
 @Value
 public class BreakdownItemSetCommand {
+	
+	/**
+	 * 給与項目ID
+	 */
+	private String salaryItemId;
 
 	/**
 	 * 内訳項目コード
 	 */
-	private int breakdownItemCode;
+	private String breakdownItemCode;
 
 	/**
 	 * 内訳項目名称
