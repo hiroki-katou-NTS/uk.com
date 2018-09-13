@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.function.dom.attendanceitemname;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttendanceItemName {
 
 	private int attendanceItemId;
@@ -14,8 +18,5 @@ public class AttendanceItemName {
 	private int typeOfAttendanceItem;
 	
 	private int frameCategory;
-
-	public AttendanceItemName() {
-		super();
-	}	
+	
 }
