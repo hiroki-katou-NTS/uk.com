@@ -14,4 +14,13 @@ public interface CheckDailyPerformanceErrorPub {
 	 * @return
 	 */
 	List<DailyPerformanceErrorExport> check(String employeeID, GeneralDate strDate, GeneralDate endDate);
+	
+	/**
+	 * Add by ThanhPV
+	 * @param employeeID
+	 * @param strDate
+	 * @param endDate
+	 * @return
+	 */
+	boolean checksDailyPerformanceError(String employeeID, GeneralDate strDate, GeneralDate endDate);
 }
