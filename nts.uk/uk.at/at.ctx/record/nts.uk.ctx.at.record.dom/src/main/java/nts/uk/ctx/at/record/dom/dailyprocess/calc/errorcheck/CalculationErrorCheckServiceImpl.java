@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -74,7 +75,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		
 		//乖離系のエラーはここでまとめてチェック(レスポンス対応のため)
 		addItemList.addAll(divergenceErrorCheck(integrationOfDaily, master, divergenceError));
-		
+		addItemList = addItemList.stream().filter(tc -> tc != null).collect(Collectors.toList());
 		integrationOfDaily.setEmployeeError(addItemList);
 		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
