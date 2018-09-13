@@ -45,6 +45,12 @@ public class ShortWorkTimeDto implements ItemConst {
 		}
 	}
 	
+	@Override
+	public ShortWorkTimeDto clone(){
+		return new ShortWorkTimeDto(totalDeductionTime == null ? null : totalDeductionTime.clone(), 
+				totalTime == null ? null : totalTime.clone(), times,  attr);
+	}
+	
 	public static ShortWorkTimeDto toDto(ShortWorkTimeOfDaily domain){
 		return domain == null ? null : new ShortWorkTimeDto(
 											TotalDeductionTimeDto.getDeductionTime(domain.getTotalDeductionTime()), 

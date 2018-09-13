@@ -69,6 +69,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	/* スケジュールID */
 	private String scheduleId;
 	
+	/* 終了処理スケジュールID*/
 	private Optional<String> endScheduleId;
 	
 

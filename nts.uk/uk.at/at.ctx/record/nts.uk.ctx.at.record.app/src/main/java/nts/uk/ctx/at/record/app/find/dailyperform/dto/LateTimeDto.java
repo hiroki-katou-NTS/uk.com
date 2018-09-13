@@ -33,4 +33,10 @@ public class LateTimeDto implements ItemConst {
 	// @AttendanceItemLayout(layout = "E")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer no;
+	
+	@Override
+	public LateTimeDto clone() {
+		return new LateTimeDto(lateTime == null ? null : lateTime.clone(), lateDeductionTime == null ? null : lateDeductionTime.clone(),
+				breakUse == null ? null : breakUse.clone(), intervalExemptionTime, no);
+	}
 }

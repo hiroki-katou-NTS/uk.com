@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author phongtq
- *
+ *月別実績の備考
  */
 @Getter
 @AllArgsConstructor

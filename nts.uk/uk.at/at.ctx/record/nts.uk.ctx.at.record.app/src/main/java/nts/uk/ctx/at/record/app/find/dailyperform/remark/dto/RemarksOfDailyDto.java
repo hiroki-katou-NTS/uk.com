@@ -58,4 +58,17 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+
+	@Override
+	public RemarksOfDailyDto clone() {
+		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setRemark(remark);
+		dto.setNo(no);
+		if(isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
+	}
 }

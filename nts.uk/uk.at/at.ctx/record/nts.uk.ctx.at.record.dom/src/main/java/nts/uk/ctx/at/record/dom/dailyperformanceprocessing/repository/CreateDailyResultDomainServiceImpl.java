@@ -498,7 +498,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		SUCCESS(1);
 
 		public final int value;
-
 	}
 
 	class StateHolder {
