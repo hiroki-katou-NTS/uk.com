@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlspPremiumSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstPremiumSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.primitive.Memo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -317,13 +319,14 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	@Override
 	public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date, List<Integer> itemNos) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, c.ATTENDANCE_ID FROM KMLMT_COST_CALC_SET a ");
-		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ");
-		query.append(" ON a.CID = b.CID AND a.HIS_ID = b.HIS_ID");
-		query.append(" LEFT JOIN KMLDT_PREMIUM_ATTENDANCE c ");
-		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
-		query.append(" WHERE a.CID = ?");
-		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
+		query.append("SELECT a.HIS_ID, a.START_DATE, a.END_DATE, b.PREMIUM_RATE, b.PREMIUM_NO, ");
+		query.append(" STUFF((SELECT '; ' + c.ATTENDANCE_ID FROM KMLDT_PREMIUM_ATTENDANCE c ");
+		query.append(" WHERE c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO FOR XML PATH('')), 1, 1, '') [ATTENDANCE_ID]");
+		query.append(" FROM KMLMT_COST_CALC_SET a ");
+		query.append(" LEFT JOIN KMLST_PREMIUM_SET b ON a.CID = b.CID AND a.HIS_ID = b.HIS_ID");
+//		query.append(" LEFT JOIN KMLDT_PREMIUM_ATTENDANCE c ");
+//		query.append(" ON c.CID = b.CID AND c.HIS_ID = b.HIS_ID AND c.PREMIUM_NO = b.PREMIUM_NO");
+		query.append(" WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ?");
 		query.append(" and b.PREMIUM_NO in (" + itemNos.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		try {
 			PreparedStatement statement = this.connection().prepareStatement(query.toString());
@@ -340,21 +343,24 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				val.put("HIS_ID", rec.getString("HIS_ID"));
 				val.put("PREMIUM_NO", rec.getInt("PREMIUM_NO"));
 				val.put("PREMIUM_RATE", rec.getInt("PREMIUM_RATE"));
-				val.put("ATTENDANCE_ID", rec.getInt("ATTENDANCE_ID"));
+				val.put("ATTENDANCE_ID", rec.getString("ATTENDANCE_ID"));
 				val.put("END_DATE", rec.getGeneralDate("END_DATE"));
 				val.put("START_DATE", rec.getGeneralDate("START_DATE"));
 				return val;
 			}).stream().collect(Collectors.groupingBy(c -> (String) c.get("HIS_ID"), Collectors.toList())).entrySet()
 			.stream().map(et -> {
-				List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> (Integer) r.get("PREMIUM_NO"), 
-																		Collectors.toList())).entrySet().stream().map(ps -> {
-							return new PremiumSetting(companyID, et.getKey(), ps.getKey(), 
-									new PremiumRate((Integer) ps.getValue().get(0).get("PREMIUM_RATE")), null, null, 
-									 ps.getValue().stream().map(at -> (Integer) at.get("ATTENDANCE_ID")).filter(at -> at != null)
-									 	.collect(Collectors.toList()));
-						}).collect(Collectors.toList());
-				return new PersonCostCalculation(companyID, et.getKey(), (GeneralDate) et.getValue().get(0).get("START_DATE"), 
-						(GeneralDate) et.getValue().get(0).get("END_DATE"), null, null, premiumSettings);
+				List<PremiumSetting> premiumSettings = et.getValue().stream().map(ps -> {
+					return new PremiumSetting(companyID, et.getKey(), (Integer) ps.get("PREMIUM_NO"), 
+							new PremiumRate((Integer) ps.get("PREMIUM_RATE")), null, null, 
+							Stream.of(ps.get("ATTENDANCE_ID").toString().split(";")).filter(at -> at != null)
+								.map(c -> Integer.parseInt(c.trim()))
+							 	.collect(Collectors.toList()));
+				}).collect(Collectors.toList());
+
+				return new PersonCostCalculation(companyID, et.getKey(), 
+												(GeneralDate) et.getValue().get(0).get("START_DATE"), 
+												(GeneralDate) et.getValue().get(0).get("END_DATE"),
+												null, null, premiumSettings);
 			}).collect(Collectors.toList());
 			
 		} catch (SQLException e) {
