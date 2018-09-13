@@ -4,6 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringMaxLength(4)
 /**
  * 
@@ -11,6 +12,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
+@ZeroPaddedCode
 public class WorkLocationCD extends StringPrimitiveValue<WorkLocationCD>{
 
 	public WorkLocationCD(String rawValue) {

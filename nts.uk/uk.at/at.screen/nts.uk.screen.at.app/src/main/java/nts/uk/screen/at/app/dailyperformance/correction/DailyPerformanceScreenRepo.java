@@ -224,7 +224,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
 	
-	Integer getLimitFexMonth();
+	Integer getLimitFexMonth(String companyId);
 	
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
 	
