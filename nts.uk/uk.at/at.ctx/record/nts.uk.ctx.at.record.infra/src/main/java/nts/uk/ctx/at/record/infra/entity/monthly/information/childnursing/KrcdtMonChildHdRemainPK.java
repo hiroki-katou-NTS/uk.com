@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.remarks;
+package nts.uk.ctx.at.record.infra.entity.monthly.information.childnursing;
 
 import java.io.Serializable;
 
@@ -17,28 +17,30 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtRemarksMonthlyRecordPK implements Serializable{
+public class KrcdtMonChildHdRemainPK implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	private String sid;
+	
+	/** 年月 */
+	@Column(name = "YM")
+	private int ym;
 	
 	/** 締めID */
 	@Column(name = "CLOSURE_ID")
-	public int closureID;
-	
-	/** 備考欄NO */
-	@Column(name = "REMARKS_NO")
-	public int remarksNo;
-	
-	/** 年月 */
-	@Column(name = "REMARKS_YM")
-	public int remarksYM;
+	private int closureId;
 	
 	/** 締め日 */
 	@Column(name = "CLOSURE_DAY")
-	public Integer closeDay;
+	private int closureDay;
 	
+	/** 末日とする */
+	@Column(name = "IS_LAST_DAY")
+	private int isLastDay;
+
 	
+
 }

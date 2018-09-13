@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -95,7 +96,8 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null ? Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))) 
+													  : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
 				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));

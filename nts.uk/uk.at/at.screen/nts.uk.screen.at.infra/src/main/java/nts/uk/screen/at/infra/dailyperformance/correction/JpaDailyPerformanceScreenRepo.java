@@ -258,7 +258,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			+ "AND wi.strD <= :endDate " + "AND wi.endD >= :startDate "
 			+ "AND wi.kshmtWorkingCondItem.laborSys = " +WorkingSystem.FLEX_TIME_WORK.value;
 	
-	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f";
+	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f WHERE f.companyId = :companyId";
 	
 	private final static String GET_EMP_ALL = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
 				+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
@@ -1446,8 +1446,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Integer getLimitFexMonth() {
-		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).getSingle();
+	public Integer getLimitFexMonth(String companyId) {
+		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).setParameter("companyId", companyId).getSingle();
 		return ent.isPresent() ? ent.get().upperLimitTime : 0;
 	}
 

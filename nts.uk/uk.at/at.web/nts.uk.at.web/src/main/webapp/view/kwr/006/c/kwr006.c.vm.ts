@@ -264,6 +264,8 @@ module nts.uk.at.view.kwr006.c {
                 Close C screen
             */
             public closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('selectedCodeScreenC',self.selectedCodeC2_3(),true)
                 nts.uk.ui.windows.close();
             }
 
