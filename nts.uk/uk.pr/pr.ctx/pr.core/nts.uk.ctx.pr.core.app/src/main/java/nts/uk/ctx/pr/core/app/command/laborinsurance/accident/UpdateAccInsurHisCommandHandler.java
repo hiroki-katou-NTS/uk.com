@@ -20,16 +20,7 @@ public class UpdateAccInsurHisCommandHandler extends CommandHandler<AccInsurHisC
 	
 	@Override
 	protected void handle(CommandHandlerContext<AccInsurHisCommand> context) {
-		String cid = AppContexts.user().companyId();
-		String hisId = context.getCommand().getHisId();
-		YearMonth start = new YearMonth(context.getCommand().getStartMonthYear());
-		YearMonth end = new YearMonth(context.getCommand().getEndMonthYear());
-		if(EditMethod.DELETE.value == context.getCommand().getMethodEditing()) {
-			accidentInsurService.historyDeletionProcessing(hisId, cid);
-		} else {
-			accidentInsurService.historyCorrectionProcecessing(cid, hisId, start, end);
-		}
-		
+
 	}
 
 }

@@ -8,6 +8,7 @@ module nts.uk.com.view.qmm011.c {
             getOccAccInsurBus: "exio/monsalabonus/laborinsur/getOccAccInsurBus",
             getAccInsurPreRate: "exio/monsalabonus/laborinsur/getAccInsurPreRate/{0}",
             register: "exio/monsalabonus/laborinsur/register",
+            adđOccAccIsHis: "exio/monsalabonus/laborinsur/adđOccAccIsHis",
             getOccAccIsPrRate: "exio/monsalabonus/laborinsur/getOccAccIsPrRate/{0}"
         };
 
@@ -28,6 +29,10 @@ module nts.uk.com.view.qmm011.c {
         }
         export function register(data :any): JQueryPromise<any> {
             return nts.uk.request.ajax(path.register, data);
+        }
+
+        export function adđOccAccIsHis(data :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.adđOccAccIsHis, data);
         }
 
     }

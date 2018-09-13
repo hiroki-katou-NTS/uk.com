@@ -26,6 +26,7 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
         List<QpbmtOccAccIsPrRate> occAccIsPrRateList = this.queryProxy().query(SELECT_BY_HIS_ID, QpbmtOccAccIsPrRate.class)
                 .setParameter("hisId", hisId)
                 .getList();
+
         return new OccAccIsPrRate(hisId,toDomain(occAccIsPrRateList));
     }
     private List<OccAccInsurBusiBurdenRatio> toDomain(List<QpbmtOccAccIsPrRate> entities) {
