@@ -23,6 +23,7 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 	
 		// キー
 		val key = new KrcdtEmployeeMonthlyPerErrorPK(
+				domain.getNo(),
 				domain.getErrorType().value,
 				domain.getYearMonth().v(),
 				domain.getEmployeeID(),
