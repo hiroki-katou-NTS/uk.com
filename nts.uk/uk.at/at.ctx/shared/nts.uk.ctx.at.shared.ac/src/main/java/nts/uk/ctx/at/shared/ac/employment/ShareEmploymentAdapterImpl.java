@@ -50,13 +50,10 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	 */
 	@Override
 	public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate) {
-		Optional<SEmpHistExport> empHistOpt = employment.findSEmpHistBySid(companyId, employeeId, baseDate);
-		if (empHistOpt.isPresent()) {
-			SEmpHistExport empHist = empHistOpt.get();
-			return Optional.of(new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
-					empHist.getEmploymentName(), empHist.getPeriod()));
-		}
-		return Optional.empty();
+		return employment.findSEmpHistBySid(companyId, employeeId, baseDate).map(empHist -> 
+												new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
+													empHist.getEmploymentName(), empHist.getPeriod()));
+		
 	}
 
 	@Override

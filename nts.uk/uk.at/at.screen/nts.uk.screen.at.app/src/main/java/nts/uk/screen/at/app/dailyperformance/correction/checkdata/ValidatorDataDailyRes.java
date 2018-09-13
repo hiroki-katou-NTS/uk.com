@@ -11,10 +11,7 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -180,8 +177,6 @@ public class ValidatorDataDailyRes {
 	}
 	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
-		String textResource = TextResource.localize("Msg_1270");
-		String textResourceItem28Null = TextResource.localize("Msg_1329");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
 		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
@@ -194,7 +189,7 @@ public class ValidatorDataDailyRes {
 			workTypeCode = item28.get().getValue();
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item28.get();
-				valueTemp.setLayoutCode(textResourceItem28Null);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1329"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -210,11 +205,11 @@ public class ValidatorDataDailyRes {
 		if(setupType.value == SetupType.NOT_REQUIRED.value || setupType.value == SetupType.OPTIONAL.value){
 			return result;
 		}
-		
+
 		if (item29.isPresent()) {
 			if (item29.get().getValue() == null || item29.get().getValue().equals("")) {
 				valueTemp = item29.get();
-				valueTemp.setLayoutCode(textResource);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -227,7 +222,7 @@ public class ValidatorDataDailyRes {
 		ItemValue value = itemValues.get(0);
 		if(value.getValue() == null || value.getValue().equals("")){
 			valueTemp = item28.get();
-			valueTemp.setLayoutCode(textResource);
+			valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
 			result.add(valueTemp);
 			return result;
 		}
@@ -236,8 +231,6 @@ public class ValidatorDataDailyRes {
 	
 	public List<DPItemValue> checkInputItem1(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
-		String textResourceItem1Null = TextResource.localize("Msg_1328");
-		String textResource = TextResource.localize("Msg_1308");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item1 = items.stream().filter(x -> x.getItemId() == 1).findFirst();
 		Optional<DPItemValue> item2 = items.stream().filter(x -> x.getItemId() == 2).findFirst();
@@ -250,7 +243,7 @@ public class ValidatorDataDailyRes {
 			workTypeCode = item1.get().getValue();
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item1.get();
-				valueTemp.setLayoutCode(textResourceItem1Null);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1328"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -270,7 +263,7 @@ public class ValidatorDataDailyRes {
 		if (item2.isPresent()) {
 			if (item2.get().getValue() == null || item2.get().getValue().equals("")) {
 				valueTemp = item2.get();
-				valueTemp.setLayoutCode(textResource);
+				valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
 				result.add(valueTemp);
 				return result;
 			}
@@ -283,7 +276,7 @@ public class ValidatorDataDailyRes {
 		ItemValue value =itemValues.get(0);
 		if(value.getValue() == null || value.getValue().equals("")){
 			valueTemp = item1.get();
-			valueTemp.setLayoutCode(textResource);
+			valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
 			result.add(valueTemp);
 			return result;
 		}

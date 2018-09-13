@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialLeaveDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -107,7 +106,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 				closureID, 
 				closureDate == null ? null : closureDate.toDomain(),
 				datePeriod == null ? null : datePeriod.toDomain(), 
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class),
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				specialHolidayCd,
 				actualSpecial == null ? null : actualSpecial.toActualDomain(), 
 				specialLeave == null ? null : specialLeave.toDomain(), 

@@ -34,17 +34,17 @@ public class PersonnelCostSettingImport {
 	 */
 	public PremiumTime calcPremiumTime(Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
 		
-		Integer result = 0;
-		
-		for(Integer id : this.attendanceItemId) {	
-			//該当する勤怠項目を取得
-			Optional<ItemValue> itemValue = dailyRecordDto.get().convert(id);
-			if(itemValue.isPresent()) {
-				if(itemValue.get().getValue()!=null) {
-					result =  result + (Integer) itemValue.get().value();
-				}
-			}
-		}
+		Integer result = dailyRecordDto.get().convert(this.attendanceItemId).stream()
+											.filter(c -> c.value() != null).mapToInt(r -> (int) r.value()).sum();
+//		for(Integer id : this.attendanceItemId) {	
+//			//該当する勤怠項目を取得
+//			Optional<ItemValue> itemValue = dailyRecordDto.get().convert(id);
+//			if(itemValue.isPresent()) {
+//				if(itemValue.get().getValue()!=null) {
+//					result =  result + (Integer) itemValue.get().value();
+//				}
+//			}
+//		}
 		
 		return new PremiumTime(this.NO,new AttendanceTime(result));
 	}

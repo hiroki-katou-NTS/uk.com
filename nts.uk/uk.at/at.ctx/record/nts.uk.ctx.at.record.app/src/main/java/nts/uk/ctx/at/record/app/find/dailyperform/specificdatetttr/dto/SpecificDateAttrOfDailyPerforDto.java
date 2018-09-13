@@ -78,7 +78,8 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getNo()),
-								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
+								c.getSpecificDate() == SpecificDateAttr.NOT_USE.value 
+										? SpecificDateAttr.NOT_USE : SpecificDateAttr.USE)),
 						date);
 	}
 }

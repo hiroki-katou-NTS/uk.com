@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -72,7 +71,17 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date,
-				ConvertHelper.getEnum(editStateSetting, EditStateSetting.class));
+		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date, state());
+	}
+	
+	public EditStateSetting state(){
+		switch (editStateSetting) {
+			case 0:
+				return EditStateSetting.HAND_CORRECTION_MYSELF;
+			case 1:
+				return EditStateSetting.HAND_CORRECTION_OTHER;
+			default:
+				return EditStateSetting.REFLECT_APPLICATION;
+		}
 	}
 }

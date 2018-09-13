@@ -5,7 +5,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -157,7 +156,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				createAutoCalcHolidaySetting(),
 				createAutoOverTimeSetting(),
 				createAutoCalcLeaveSetting(),
-				new AutoCalcSetOfDivergenceTime(getEnum(this.divergenceTime, DivergenceTimeAttr.class)));
+				new AutoCalcSetOfDivergenceTime(this.divergenceTime == DivergenceTimeAttr.USE.value 
+					? DivergenceTimeAttr.USE : DivergenceTimeAttr.NOT_USE));
 	}
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
@@ -189,12 +189,31 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 	
 	private AutoCalSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
-		return dto == null ? null : new AutoCalSetting(
-												getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class),
-												getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class));
+		return dto == null ? null : new AutoCalSetting(convertToTimeLimitUpper(dto.getUpperLimitSetting()),
+														convertToCalcAtrOT(dto.getCalculationAttr()));
 	}
-
-	private <T> T getEnum(int value, Class<T> enumType) {
-		return ConvertHelper.getEnum(value, enumType);
+	
+	private TimeLimitUpperLimitSetting convertToTimeLimitUpper(int value){
+		switch (value) {
+			case 2:
+				return TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT;
+			case 1:
+				return TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION;
+			case 0:
+				return TimeLimitUpperLimitSetting.NOUPPERLIMIT;
+		}
+		return null;
+	}
+	
+	private AutoCalAtrOvertime convertToCalcAtrOT(int value){
+		switch (value) {
+			case 2:
+				return AutoCalAtrOvertime.CALCULATEMBOSS;
+			case 1:
+				return AutoCalAtrOvertime.TIMERECORDER;
+			case 0:
+				return AutoCalAtrOvertime.APPLYMANUALLYENTER;
+		}
+		return null;
 	}
 }

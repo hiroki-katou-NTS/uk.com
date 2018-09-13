@@ -66,7 +66,7 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 						coreTotalTimeForCalc == null ? null : coreTotalTimeForCalc.clone(), 
 						times, 
 						attr, 
-						goOutTime == null ? null : goOutTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+						ConvertHelper.mapTo(goOutTime, c -> c.clone()));
 	}
 
 	public String enumText() {
@@ -105,10 +105,24 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	
 	public OutingTimeOfDaily toDomain(){
 		return new OutingTimeOfDaily(times == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(times), 
-								ConvertHelper.getEnum(attr, GoOutReason.class), 
+								reason(), 
 								valicationUseTime == null ? ValicationUseDto.createEmpty() : valicationUseTime.toDomain(), 
 								totalTimeForCalc == null ? OutingTotalTimeDto.createEmpty() : totalTimeForCalc.createDeductionTime(),
 								totalTimeForDeduction == null ? OutingTotalTimeDto.createEmpty() : totalTimeForDeduction.createDeductionTime(), 
 								ConvertHelper.mapTo(goOutTime, c -> c.toDomain()));
+	}
+	
+	public GoOutReason reason() {
+		switch (attr) {
+		case 0:
+			return GoOutReason.SUPPORT;
+		case 1:
+			return GoOutReason.UNION;
+		case 2:
+			return GoOutReason.CHARGE;
+		case 3:
+		default:
+			return GoOutReason.OFFICAL;
+		}
 	}
 }

@@ -88,7 +88,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-									c.getAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getAttr(), ChildCareAttribute.class),
+									c.getAttr() == null || c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
+											? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 					date);
