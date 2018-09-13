@@ -943,9 +943,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 ko.bindingHandlers["ntsHelpButton"].init($("#F3_113"), function() {
                     return {textId: 'CLI003_68', textParams:['{#CLI003_68}'], position: 'right center' };
                 }, null, null, null);
+                let textHeaderCheck = getText('CLI003_61');
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
-                    if (currentSetting.headerText == "項目名") {
+                    
+                    if (currentSetting.headerText == textHeaderCheck) {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
                     } else {
