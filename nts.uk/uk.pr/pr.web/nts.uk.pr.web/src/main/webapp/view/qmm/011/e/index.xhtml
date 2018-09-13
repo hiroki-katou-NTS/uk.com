@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 400, height: 300 };</script>
+			<script>var dialogSize = { width: 400, height: 430 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.e.vm.js" />
@@ -32,7 +32,11 @@
 				<div id="E1_4" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
 					<span class="label">#{i18n.getText('QMM011_48')}</span>
 					<!-- E1_5 開始年月 -->
-					<div id = "E1_5" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yearmonth'}"></div>
+					<div id = "E1_5" data-bind="ntsDatePicker: {value: startYearMonth, 
+																dateFormat: 'yearmonth',
+																valueFormat: 'YYYYMM',
+																required: true
+																}"></div>
 					<!-- E1_6 ～ 9999/12 -->
 					<span id="E1_6" class="label">#{i18n.getText('QMM011_50')}</span>
 				</div>
@@ -40,14 +44,23 @@
 				<div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
 					<span class="label">#{i18n.getText('QMM011_51')}</span>
 					<!-- E1_8 履歴の引継ぎ -->
-					<div data-bind="ntsRadioBoxGroup: {
-											options: itemList,
-											optionsValue: 'id',
-											optionsText: 'name',
-											value: selectedIds,
-											enable: true}
-											">
-					</div>
+					<div id="E1_9" class="cell"
+										data-bind="ntsRadioButton: {
+										checked: takeOver, 
+										option: listTakeOver()[0], 
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}">
+						</div>
+						<br/>
+						<div id="E1_10"  class="cell"
+							data-bind="ntsRadioButton: {
+										checked: takeOver, 
+										option: listTakeOver()[1], 
+										optionValue: 'code', 
+										optionText: 'name',
+										group: 'periodOption'}">
+						</div>
 					<!-- E1_9 最新の履歴から引き継ぐ -->
 
 				</div>

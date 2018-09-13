@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 470 };</script>
+			<script>var dialogSize = { width: 430, height: 470 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm011.f.vm.js" />
@@ -18,25 +18,26 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="title">
+				<div id="title" style="margin-bottom: 10px">
 					<!-- F1_1 履歴編集 -->
 					<span id="F1_1" class="label">#{i18n.getText('QMM011_57')}</span>
 				</div>
 				<!-- F1_2 名称 -->
-				<div id ="center">
-					<div id="F1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM011_58')}</div>
+				<div id="F1_2" data-bind="ntsFormLabel: {}" style="margin-bottom: 10px; width: 100%">
+					<span class="label">#{i18n.getText('QMM011_58')}</span>
 					<!-- F1_3 保険名称 -->
 					<span id="F1_3" class="label" data-bind="text: name"></span>
 				</div>
 				<!-- F1_4 編集方法の選択 -->
-				<div id="F1_4" data-bind="ntsFormLabel: { required: true}">
+				<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
 					<span class="label">#{i18n.getText('QMM011_59')}</span>
 					<!-- F1_5 履歴編集方法 -->
 						<div id="F1_6" class="cell"
 										data-bind="ntsRadioButton: {
 										checked: methodEditing, 
 										option: itemList()[0], 
-										optionValue: 'code', 
+										optionValue: 'code',
+										enable: canDelete, 
 										optionText: 'name',
 										group: 'periodOption'}">
 						</div>
@@ -59,6 +60,7 @@
 												name: '#{i18n.getText('QMM011_64')}',
 												value: startYearMonth,
 												required: hasRequired(),
+												enable: hasRequired(),
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
 					</div>
