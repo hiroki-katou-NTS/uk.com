@@ -48,14 +48,10 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
     }
 
 
-    @Override
-    public void add(OccAccIsHis domain){
-        this.commandProxy().insert(QpbmtOccAccIsHis.toEntity(domain));
-    }
 
     @Override
-    public void update(OccAccIsHis domain){
-        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain));
+    public void update(YearMonthHistoryItem domain, String cId){
+        this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain, cId));
     }
 
     @Override

@@ -19,8 +19,9 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsPrRate f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.ocAcIsPrRtId =:ocAcIsPrRtId AND  f.occAccIsPrRatePk.hisId =:hisId ";
     private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.hisId =:hisId";
+    private static final String DELETE_BY_HIS_ID = "DELETE FROM QpbmtOccAccIsPrRate f "
+            + "WHERE f.occAccIsPrRatePk.hisId =:hisId";
 
 
     @Override
@@ -46,4 +47,8 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
     public void remove(int occAccInsurBusNo, String hisId){
         this.commandProxy().remove(QpbmtOccAccIsPrRate.class, new QpbmtOccAccIsPrRatePk(occAccInsurBusNo, hisId));
     }
+	@Override
+	public void remove(String hisId) {
+		this.getEntityManager().createQuery(DELETE_BY_HIS_ID, QpbmtOccAccIsPrRate.class).setParameter("hisId", hisId).executeUpdate();	
+	}
 }

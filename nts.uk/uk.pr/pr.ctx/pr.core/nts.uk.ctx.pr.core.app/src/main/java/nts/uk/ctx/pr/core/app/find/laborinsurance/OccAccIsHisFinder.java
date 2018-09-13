@@ -12,7 +12,7 @@ package nts.uk.ctx.pr.core.app.find.laborinsurance;
 @Stateless
 public class OccAccIsHisFinder {
     @Inject
-    private WorkersComInsurService workersComInsurService;
+    private OccAccidentInsurService workersComInsurService;
 
 
     public List<OccAccIsHisDto> getListEmplInsurHis(){
