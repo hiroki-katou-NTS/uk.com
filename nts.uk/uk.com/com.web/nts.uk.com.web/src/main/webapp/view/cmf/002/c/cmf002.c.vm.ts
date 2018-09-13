@@ -181,7 +181,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             if (self.isNewMode()) {
                 $('#C4_1').focus();
             } else {
-                $('#C7_2').focus();
+                $('#C7_2_container').focus();
             }
         }
 
