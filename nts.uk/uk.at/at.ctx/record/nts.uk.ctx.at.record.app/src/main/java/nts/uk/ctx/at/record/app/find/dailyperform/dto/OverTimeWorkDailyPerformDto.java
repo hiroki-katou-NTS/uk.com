@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -79,11 +80,11 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 
 	private static Integer getAttendanceTime(TimeWithDayAttr time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 
 	public OverTimeOfDaily toDomain() {
@@ -95,7 +96,8 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null ? Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))) 
+													  : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
 				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
@@ -110,11 +112,11 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	}
 
 	private TimeDivergenceWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : c.createTimeDivWithCalc();
+		return c == null ? TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)) : c.createTimeDivWithCalc();
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
 	}
 
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

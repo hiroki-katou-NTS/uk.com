@@ -25,6 +25,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionType 実行種別　（通常、再実行）
 	 * @param companyCommonSetting 
+	 * @return 
 	 */
 	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter);
 	

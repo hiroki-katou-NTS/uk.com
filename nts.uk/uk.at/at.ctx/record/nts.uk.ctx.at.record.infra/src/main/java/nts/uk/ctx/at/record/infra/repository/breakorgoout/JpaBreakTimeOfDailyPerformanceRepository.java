@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -28,6 +31,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
@@ -83,9 +87,18 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_BREAK_TIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -283,6 +296,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return Optional.ofNullable(group(krcdtDaiBreakTimes).get(0));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType) {
 		this.getEntityManager().createQuery(REMOVE_BY_BREAKTYPE).setParameter("employeeId", employeeId)

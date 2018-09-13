@@ -485,7 +485,7 @@ module nts.uk.at.view.kaf005.share {
                     let limitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.limitErrorTime;
                     overtimeWork2.limitTime(Process.convertTime(limitErrorTime2));        
                 }
-                let agreementTime2 = overtimeAgreement.detailCurrentMonth.confirmed.agreementTime;
+                let agreementTime2 = overtimeAgreement.detailNextMonth.confirmed.agreementTime;
                 overtimeWork2.actualTime(Process.convertTime(agreementTime2));
                 let appTime2 = 0;
                 overtimeWork2.appTime(Process.convertTime(appTime2));

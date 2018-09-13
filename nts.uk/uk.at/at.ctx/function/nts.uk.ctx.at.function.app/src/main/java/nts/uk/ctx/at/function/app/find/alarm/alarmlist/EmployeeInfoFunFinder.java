@@ -45,9 +45,9 @@ public class EmployeeInfoFunFinder {
 
 		return listEmployeeInput.stream()
 				.map(e -> new EmployeeSendEmail(e.getWorkplaceID(),
-						mapWorkplaceInfo.get(e.getWorkplaceID()).getWorkplaceName(), e.getEmployeeID(),
-						mapEmployeeInfo.get(e.getEmployeeID()).getEmployeeCode(),
-						mapEmployeeInfo.get(e.getEmployeeID()).getBusinessName()))
+						mapWorkplaceInfo.get(e.getWorkplaceID()) != null ? mapWorkplaceInfo.get(e.getWorkplaceID()).getWorkplaceName() : "", e.getEmployeeID(),
+						mapEmployeeInfo.get(e.getEmployeeID()) != null ? mapEmployeeInfo.get(e.getEmployeeID()).getEmployeeCode() : "",
+						mapEmployeeInfo.get(e.getEmployeeID()) !=null ? mapEmployeeInfo.get(e.getEmployeeID()).getBusinessName() : ""))
 				.collect(Collectors.toList());
 	}
 }

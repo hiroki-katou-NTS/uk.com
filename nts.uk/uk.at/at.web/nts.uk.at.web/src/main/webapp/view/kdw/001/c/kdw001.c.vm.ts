@@ -30,7 +30,7 @@ module nts.uk.at.view.kdw001.c {
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             // startDate for validate
-            startDateValidate : KnockoutObservable<string>;
+            startDateValidate: KnockoutObservable<string>;
 
             //Declare employee filter component
             ccg001ComponentOption: any;
@@ -42,7 +42,7 @@ module nts.uk.at.view.kdw001.c {
             //close period
             periodStartDate: any;
 
-            closureId : KnockoutObservable<any> = ko.observable(1);
+            closureId: KnockoutObservable<any> = ko.observable(1);
 
             constructor() {
 
@@ -81,7 +81,7 @@ module nts.uk.at.view.kdw001.c {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton()
+                    isShowSelectAllButton: false
                 };
 
 
@@ -106,6 +106,9 @@ module nts.uk.at.view.kdw001.c {
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
                     self.dateValue.valueHasMutated();
+                    self.reloadCcg001();
+                    $('#ccgcomponent').focus();
+                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -119,145 +122,64 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue().endDate = value;
                         self.dateValue.valueHasMutated();
                     });
-
+                    self.reloadCcg001();
+                    $('#ccgcomponent').focus();
+                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 });
-                
-                self.closureId.subscribe(function(value){
-                       service.findPeriodById(Number(value)).done((data) => {
+
+                self.closureId.subscribe(function(value) {
+                    service.findPeriodById(Number(value)).done((data) => {
                         self.startDateValidate = data.startDate;
                         self.periodStartDate = data.startDate.toString();
                         self.dateValue().startDate = data.startDate.toString();
                         self.dateValue().endDate = data.endDate.toString();
                         self.dateValue.valueHasMutated();
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                     }).always(() => {
                         self.startDateString = ko.observable("");
                         self.endDateString = ko.observable("");
-    
+
                         self.startDateString.subscribe(function(value) {
                             self.dateValue().startDate = value;
                             self.dateValue.valueHasMutated();
                         });
-    
+
                         self.endDateString.subscribe(function(value) {
                             self.dateValue().endDate = value;
                             self.dateValue.valueHasMutated();
                         });
-    
-                    }); 
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+                    });
                 });
                 
-//                self.dateValue.subscribe(function(value){
-//                    if(self.startDateValidate() != "" && (value.startDate < self.startDateValidate())) {
-//                        $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
-//                    } else {
-//                        $('#daterangepicker').ntsError('clear');   
-//                    }
-//                });
+//                if(self.dateValue().startDate != "2017/11/08" && self.dateValue().endDate != today){
+//                    
+//                    self.dateValue.subscribe(function(value){
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    });
+//                }
+
+                //                self.dateValue.subscribe(function(value){
+                //                    if(self.startDateValidate() != "" && (value.startDate < self.startDateValidate())) {
+                //                        $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
+                //                    } else {
+                //                        $('#daterangepicker').ntsError('clear');   
+                //                    }
+                //                });
 
 
                 //Init employee filter component
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-//                self.ccgcomponent = {
-//                    baseDate: self.baseDate,
-//                    //Show/hide options
-//                    isQuickSearchTab: true,
-//                    isAdvancedSearchTab: true,
-//                    isAllReferableEmployee: true,
-//                    isOnlyMe: true,
-//                    isEmployeeOfWorkplace: true,
-//                    isEmployeeWorkplaceFollow: true,
-//                    isMutipleCheck: true,
-//                    isSelectAllEmployee: true,
-//                    /**
-//                    * @param dataList: list employee returned from component.
-//                    * Define how to use this list employee by yourself in the function's body.
-//                    */
-//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-//                        self.showinfoSelectedEmployee(true);
-//                        var dataEmployee: EmployeeSearchDto[] = [];
-//                        dataEmployee.push(data);
-//                        self.selectedEmployee(dataEmployee);
-//
-//                        //Bug self fix
-//                        let unitModel = new UnitModel(data);
-//                        let listUnitModel: UnitModel[] = [];
-//                        listUnitModel.push(unitModel);
-//                        self.employeeList(listUnitModel);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList: any = [];
-//                        selectList.push(data.employeeCode);
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataEmployee);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataEmployee, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataEmployee, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    }
-//
-//                }
-              self.reloadCcg001();      
+
+
 
             }
 
@@ -272,43 +194,45 @@ module nts.uk.at.view.kdw001.c {
                 //                }
                 self.ccg001ComponentOption = {
                     /** Common properties */
-                    systemType: 2, // システム区分
-                    showEmployeeSelection: false, // 検索タイプ
-                    showQuickSearchTab: true, // クイック検索
+                    systemType: 2, // シスッ�区�
+                    showEmployeeSelection: false, // 検索タイ�
+                    showQuickSearchTab: true, // クイヂ�検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
-                    showClosure: true, // 就業締め日利用
-                    showAllClosure: false, // 全締め表示
+                    showClosure: true, // 就業�め日利用
+                    showAllClosure: false, // 全�め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    inService: true, // 在職区分
-                    leaveOfAbsence: true, // 休職区分
-                    closed: true, // 休業区分
-                    retirement: false, // 退職区分
+                    periodStartDate: self.dateValue().startDate,
+                    periodEndDate: self.dateValue().endDate,
+                    inService: true, // 在職区�
+                    leaveOfAbsence: true, // 休�区�
+                    closed: true, // 休業区�
+                    retirement: false, // 退職区�
 
                     /** Quick search tab options */
-                    showAllReferableEmployee: true, // 参照可能な社員すべて
-                    showOnlyMe: true, // 自分だけ
+                    showAllReferableEmployee: true, // 参�可能な社員すべて
+                    showOnlyMe: true, // 自刁��
                     showSameWorkplace: true, // 同じ職場の社員
-                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
 
                     /** Advanced search properties */
-                    showEmployment: false, // 雇用条件
+                    showEmployment: false, // 雔�条件
                     showWorkplace: true, // 職場条件
-                    showClassification: true, // 分類条件
+                    showClassification: true, // 刡�条件
                     showJobTitle: true, // 職位条件
                     showWorktype: true, // 勤種条件
-                    isMutipleCheck: true, // 選択モード
+                    isMutipleCheck: true, // 選択モー�
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(data.listEmployee);
                         self.closureId(data.closureId);
-                        
+
                         //Convert list Object from server to view model list
                         let items = _.map(data.listEmployee, item => {
                             return new UnitModel(item);
@@ -324,17 +248,17 @@ module nts.uk.at.view.kdw001.c {
                 }
 
                 // Start component
-//                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+                //                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             opendScreenBorJ() {
                 let self = this;
                 var closureID = '1';
-                if(self.dateValue().startDate < self.startDateValidate) {
-//                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
+                if (self.dateValue().startDate < self.startDateValidate) {
+                    //                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1349" });
                     return;
-                } 
+                }
                 if (!nts.uk.ui.errors.hasError()) {
                     service.findPeriodById(Number(self.closureId())).done((data) => {
                         if (data) {
@@ -354,7 +278,7 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
 
                             if (timeDifferenceInDays > 31) {
-                                nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                                nts.uk.ui.dialog.confirm('対象期間�か月を趁�てぁ�すがよろしいですか).ifYes(() => {
                                     let yearPeriodStartDate = self.periodStartDate.split("/")[0];
                                     let monthPeriodStartDate = self.periodStartDate.split("/")[1];
                                     let dayPeriodStartDate = self.periodStartDate.split("/")[2];
@@ -362,7 +286,7 @@ module nts.uk.at.view.kdw001.c {
                                     let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
                                     let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
                                     if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
-                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                        nts.uk.ui.dialog.alertError('�め�琜�間より過去の日付�挮�できません');
                                         return;
                                     }
 
@@ -378,7 +302,7 @@ module nts.uk.at.view.kdw001.c {
 
 
                                     __viewContext["viewmodel"].params.setParamsScreenC({
-                                        closureID : self.closureId(),
+                                        closureID: self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
                                         periodStartDate: self.dateValue().startDate,
                                         periodEndDate: self.dateValue().endDate
@@ -390,10 +314,10 @@ module nts.uk.at.view.kdw001.c {
                                 })
 
                             } else {
-                                let monthNow = data.month; // thieu thang hien tai cua  domain 締め
+                                let monthNow = data.month; // thieu thang hien tai cua  domain ��
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
                                 if (monthStartDate < monthNow) {
-                                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                    nts.uk.ui.dialog.alertError('�め�琜�間より過去の日付�挮�できません');
                                     return;
                                 }
 
@@ -405,7 +329,7 @@ module nts.uk.at.view.kdw001.c {
                                 });
 
                                 __viewContext["viewmodel"].params.setParamsScreenC({
-                                    closureID : self.closureId(),
+                                    closureID: self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
                                     periodEndDate: self.dateValue().endDate
@@ -478,24 +402,24 @@ module nts.uk.at.view.kdw001.c {
         //Object for filter component        
         export interface GroupOption {
             baseDate?: KnockoutObservable<Date>;
-            // クイック検索タブ
+            // クイヂ�検索タ�
             isQuickSearchTab: boolean;
-            // 参照可能な社員すべて
+            // 参�可能な社員すべて
             isAllReferableEmployee: boolean;
-            //自分だけ
+            //自刁��
             isOnlyMe: boolean;
             //おなじ部門の社員
             isEmployeeOfWorkplace: boolean;
-            //おなじ＋配下部門の社員
+            //おなじ＋�下部門の社員
             isEmployeeWorkplaceFollow: boolean;
 
 
-            // 詳細検索タブ
+            // 詳細検索タ�
             isAdvancedSearchTab: boolean;
-            //複数選択 
+            //褕�選�
             isMutipleCheck: boolean;
 
-            //社員指定タイプ or 全社員タイプ
+            //社員挮�タイ�or 全社員タイ�
             isSelectAllEmployee: boolean;
 
             onSearchAllClicked: (data: EmployeeSearchDto[]) => void;

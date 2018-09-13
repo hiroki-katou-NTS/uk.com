@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -27,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
@@ -72,13 +76,30 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		String daiLeavingWorkQuery = "Delete From KRCDT_DAI_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(daiLeavingWorkQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

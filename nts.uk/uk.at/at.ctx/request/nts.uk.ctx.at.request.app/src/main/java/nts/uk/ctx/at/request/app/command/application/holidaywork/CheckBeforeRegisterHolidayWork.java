@@ -94,7 +94,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
 			res = holidayThreeProcess.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
-					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs);
+					app.getInputDate(), app.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, app.getEmployeeID());
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
@@ -115,7 +115,8 @@ public class CheckBeforeRegisterHolidayWork {
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, 
+							appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}
@@ -177,7 +178,7 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
 			res = holidayThreeProcess.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs);
+					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
@@ -202,7 +203,8 @@ public class CheckBeforeRegisterHolidayWork {
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
-					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, 
+							holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}

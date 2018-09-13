@@ -434,10 +434,10 @@ module nts.uk.at.view.kbt002.c {
                     self.repeatMonthDateList([]);
                 }
             //fixed release 14/6
-            self.endTimeCls(0);
-            self.endDateCls(0);
-            self.oneDayRepInterval(0);
-            self.oneDayRepCls(0);
+//            self.endTimeCls(0);
+//            self.endDateCls(0);
+//            self.oneDayRepInterval(0);
+//            self.oneDayRepCls(0);
             }
         }
         export class ItemModel {

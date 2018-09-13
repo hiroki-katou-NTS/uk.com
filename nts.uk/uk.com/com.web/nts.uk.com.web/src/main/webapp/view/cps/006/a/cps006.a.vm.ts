@@ -11,7 +11,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         id: KnockoutObservable<string> = ko.observable('');
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
+            { headerText: text('CPS006_6'), key: 'categoryName', width: 230, formatter: _.escape },
             {
                 headerText: text('CPS006_7'), key: 'isAbolition', width: 50,
                 template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'

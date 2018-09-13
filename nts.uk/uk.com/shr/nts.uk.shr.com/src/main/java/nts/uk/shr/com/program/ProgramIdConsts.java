@@ -120,7 +120,7 @@ public class ProgramIdConsts {
 	public static final String KBT002F = "KBT002F";
 	public static final String KBT002G = "KBT002G";
 	public static final String KBT002H = "KBT002H";
-
+	public static final String KBT002I = "KBT002I";
 
 	public static final String KDW001A = "KDW001A";
 	public static final String KDW001B = "KDW001B";
@@ -524,6 +524,8 @@ public class ProgramIdConsts {
 	public static final String KMK010C = "KMK010C";
 
 	public static final String KDL006 = "KDL006";
+	
+	public static final String KMW003A = "KMW003A";
 
 	public static final String KMW005A = "KMW005A";
 
@@ -946,5 +948,7 @@ public class ProgramIdConsts {
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";
 	public static final String CAS004B = "CAS004B";
+
+	public static final String KDL020A = "KDL020A";
 
 }

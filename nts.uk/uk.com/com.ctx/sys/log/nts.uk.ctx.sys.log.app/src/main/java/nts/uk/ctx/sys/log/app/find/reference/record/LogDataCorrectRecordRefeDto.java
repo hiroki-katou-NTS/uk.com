@@ -34,6 +34,7 @@ public class LogDataCorrectRecordRefeDto {
 	private String correctionAttr;
 	private String userNameTaget;
 	private String employeeIdtaget;
+	private int showOrder;
 
 	public static LogDataCorrectRecordRefeDto fromDomain(DataCorrectionLog domain) {
 		String childrentKey = IdentifierUtil.randomUniqueId();
@@ -70,7 +71,7 @@ public class LogDataCorrectRecordRefeDto {
 				domain.getCorrectedItem().getValueBefore().getViewValue(),
 				domain.getCorrectedItem().getValueAfter().getViewValue(),
 				domain.getRemark(),getCorrectionAttr(domain.getCorrectionAttr().value),
-				domain.getTargetUser().getUserName(),domain.getTargetUser().getEmployeeId()
+				domain.getTargetUser().getUserName(),domain.getTargetUser().getEmployeeId(),domain.getShowOrder()
 				);
 		
 	}
