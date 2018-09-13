@@ -426,6 +426,10 @@ module nts.uk.at.view.kdw001.c {
                 $('#ccgcomponent').focus();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
+                $('#ccgcomponent').attr('tabindex',1);
+                $("#com-kcp-searchbox *").attr('tabindex', -1);
+                $("table").attr('tabindex', 4);
+                $('#ccg001-btn-search-drawer').focus();
             }
 
         }
