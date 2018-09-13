@@ -6,7 +6,8 @@ module nts.uk.pr.view.ccg007.b {
         var servicePath = {
             getContractAuth: "ctx/sys/gateway/login/checkcontract",
             submitLogin: "ctx/sys/gateway/login/submit/form1",
-            account: "ctx/sys/gateway/login/account"
+            account: "ctx/sys/gateway/login/account",
+            ver: "ctx/sys/gateway/login/build_info_time"
         }
 
         /**
@@ -25,6 +26,10 @@ module nts.uk.pr.view.ccg007.b {
           */
         export function submitLogin(data: SubmitData): JQueryPromise<CheckChangePassDto> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
+        }
+        
+        export function ver(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.ver);
         }
 
         export interface SystemConfigDto {

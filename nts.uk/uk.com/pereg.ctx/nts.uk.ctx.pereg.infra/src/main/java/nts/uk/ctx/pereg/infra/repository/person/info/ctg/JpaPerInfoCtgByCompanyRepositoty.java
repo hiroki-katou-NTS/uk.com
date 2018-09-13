@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
@@ -183,6 +185,14 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		HashMap<String, Integer> ctgs = new HashMap<>();
 		HashMap<String, Integer> items = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
+		
+		if (categoryIds == null || categoryIds.isEmpty()) {
+			categoryIds = Arrays.asList(IdentifierUtil.randomUniqueId());
+		}
+
+		if (itemDefinitionIds == null || itemDefinitionIds.isEmpty()) {
+			itemDefinitionIds = Arrays.asList(IdentifierUtil.randomUniqueId());
+		}
 
 		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
 				.setParameter("ctgIds", categoryIds).getList().stream().forEach(ctg -> {

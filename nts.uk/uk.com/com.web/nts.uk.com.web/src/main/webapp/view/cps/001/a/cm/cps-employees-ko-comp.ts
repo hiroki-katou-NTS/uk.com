@@ -252,7 +252,7 @@ module nts.custom.component {
                                             style: { 
                                                 visibility: auth.allowMapBrowse() ? 'visible' : 'hidden' 
                                             }" 
-                                        tabindex="16"></button>
+                                        tabindex="14"></button>
                                 <button class="btn btn-details" type="button" 
                                         data-bind="
                                             click: action.ebook,
@@ -263,7 +263,7 @@ module nts.custom.component {
                                         tabindex="15"></button>
                             </div>
                             <div class="column">
-                                <button class="btn btn-print" type="button" tabindex="14" 
+                                <button class="btn btn-print" type="button" tabindex="16" 
                                         data-bind="
                                             text: text('CPS001_17'),
                                             style: { 

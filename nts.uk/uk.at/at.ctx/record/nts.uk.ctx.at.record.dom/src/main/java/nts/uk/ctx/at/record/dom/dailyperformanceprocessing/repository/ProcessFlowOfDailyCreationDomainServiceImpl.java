@@ -77,6 +77,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("reflectApprovalStatus", ExecutionStatus.INCOMPLETE.nameId);
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -133,6 +134,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 				this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			} else {
 				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+				asyncContext.finishedAsCancelled();
 			}
 		}
 		
@@ -147,6 +149,16 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			finalStatus = this.dailyCalculationService.manager(asyncContext, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, dailyCalculationLog);
 		}
+
+		//承認反映
+		if(finalStatus == ProcessState.SUCCESS
+				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
+			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
+		}
 		
 		// 月別実績の集計　実行
 		if (logsMap.containsKey(ExecutionContent.MONTHLY_AGGREGATION)
@@ -158,15 +170,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 					Optional.of(logsMap.get(ExecutionContent.MONTHLY_AGGREGATION));
 			finalStatus = this.monthlyAggregationService.manager(asyncContext, companyId, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, monthlyAggregationLog);
-		}
-		//承認反映
-		if(finalStatus == ProcessState.SUCCESS
-				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
-			
-			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
-			if(finalStatus == ProcessState.SUCCESS) {
-				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
-			}
 		}
 		
 		//***** ↑

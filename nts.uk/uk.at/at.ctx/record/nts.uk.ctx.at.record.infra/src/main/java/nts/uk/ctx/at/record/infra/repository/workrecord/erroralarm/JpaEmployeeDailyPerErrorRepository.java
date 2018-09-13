@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,10 +207,19 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void removeParam(String sid, GeneralDate date) {
-		List<KrcdtSyainDpErList> result = findEntities(sid, date);
-		if (!result.isEmpty()) {
-			commandProxy().removeAll(result);
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_SYAIN_DP_ER_LIST Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		
+//		List<KrcdtSyainDpErList> result = findEntities(sid, date);
+//		if (!result.isEmpty()) {
+//			commandProxy().removeAll(result);
+//		}
 	}
 
 	@Override

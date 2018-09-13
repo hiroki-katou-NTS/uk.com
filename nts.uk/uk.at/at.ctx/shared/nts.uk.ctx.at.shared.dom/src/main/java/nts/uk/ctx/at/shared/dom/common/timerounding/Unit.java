@@ -91,6 +91,7 @@ public enum Unit {
 	case ROUNDING_TIME_6MIN: return 6;
 	case ROUNDING_TIME_10MIN: return 10;
 	case ROUNDING_TIME_15MIN: return 15;
+	case ROUNDING_TIME_20MIN: return 20;
 	case ROUNDING_TIME_30MIN: return 30;
 	case ROUNDING_TIME_60MIN: return 60;
 	default: throw new RuntimeException("invalid value: " + this);

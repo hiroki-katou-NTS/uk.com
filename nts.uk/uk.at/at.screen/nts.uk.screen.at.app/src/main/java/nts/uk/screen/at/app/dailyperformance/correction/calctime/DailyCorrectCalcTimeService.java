@@ -1,22 +1,31 @@
 package nts.uk.screen.at.app.dailyperformance.correction.calctime;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.ErrorMessage;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
@@ -38,42 +47,65 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	@Inject
+	private ValidatorDataDailyRes validatorDataDaily;
 
-	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, DPItemValue itemEdit) {
+	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits) {
 
-		DCCalcTime calcTime = new DCCalcTime();
-
-		getWplPosId(itemEdit);
+	DCCalcTime calcTime = new DCCalcTime();
+        
+		DPItemValue itemEditCalc = itemEdits.stream().filter(x -> !x.getColumnKey().equals("USE")).findFirst().get();
+		getWplPosId(itemEdits);
 		
 		DailyRecordDto dtoEdit = dailyEdits.stream()
-				.filter(x -> equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEdit)).findFirst().orElse(null);
+				.filter(x -> equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)).findFirst().orElse(null);
 
-		val itemValue = new ItemValue(itemEdit.getValue(), ValueType.valueOf(itemEdit.getValueType()),
-				itemEdit.getLayoutCode(), itemEdit.getItemId());
-		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEdit.getEmployeeId())
-				.workingDate(itemEdit.getDate()).items(Arrays.asList(itemValue)).completed();
+		val itemValues = itemEdits.stream().map(x -> new ItemValue(x.getValue(), x.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(x.getValueType()),
+				x.getLayoutCode(), x.getItemId())).collect(Collectors.toList());
+		val itemBase =  new ItemValue(itemEditCalc.getValue(), ValueType.valueOf(itemEditCalc.getValueType()),
+				itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
+		
+		addEditState(dtoEdit, itemEdits);
+		
+		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
+				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
 
+		checkInput28And1(dtoEdit, itemEditCalc);
+		
 		String companyId = AppContexts.user().companyId();
 		
-		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemValue));
+		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();
 
-		DailyRecordDto resultBaseDto = result.getCorrected().workingDate(itemEdit.getDate()).employeeId(itemEdit.getEmployeeId());
+		DailyRecordDto resultBaseDto = result.getCorrected().workingDate(itemEditCalc.getDate()).employeeId(itemEditCalc.getEmployeeId());
 
 		val dailyEditsResult = dailyEdits.stream().map(x -> {
-			if (equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEdit)) {
+			if (equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)) {
 				return resultBaseDto;
 			} else {
 				return x;
 			}
 		}).collect(Collectors.toList());
-		calcTime.setCellEdits(items.stream().map(x -> new DCCellEdit(itemEdit.getRowId(), "A" + x.getItemId(),
+		calcTime.setCellEdits(items.stream().map(x -> new DCCellEdit(itemEditCalc.getRowId(), "A" + x.getItemId(),
 				convertData(x.getValueType().value, x.getValue()))).collect(Collectors.toList()));
 		calcTime.setDailyEdits(dailyEditsResult);
 
 		return calcTime;
+	}
+	
+	private DailyRecordDto addEditState(DailyRecordDto dtoEdit, List<DPItemValue> itemEdits){
+		val sidLogin = AppContexts.user().employeeId();
+		val dtoEditState = itemEdits.stream().map(x -> EditStateOfDailyPerformanceDto.createWith(x.getEmployeeId(),
+				x.getItemId(), x.getDate(),
+				x.getEmployeeId().equals(sidLogin)
+						? EditStateSetting.HAND_CORRECTION_MYSELF.value : EditStateSetting.HAND_CORRECTION_OTHER.value))
+				.collect(Collectors.toList());
+
+		dtoEdit.getEditStates().addAll(dtoEditState);
+		return dtoEdit;
 	}
 
 	private Object convertData(int valueType, String value) {
@@ -110,17 +142,31 @@ public class DailyCorrectCalcTimeService {
 		return employee.equals(itemEdit.getEmployeeId()) && date.equals(itemEdit.getDate());
 	}
 	
-	private void getWplPosId(DPItemValue itemEdit) {
+	private void getWplPosId(List<DPItemValue> itemEdits) {
 		// map id -> code possition and workplace
-		if(itemEdit.getTypeGroup() == null) return;
-		if (itemEdit.getTypeGroup() == TypeLink.POSSITION.value) {
-			CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(itemEdit.getTypeGroup(),
-					new ParamDialog(itemEdit.getDate(), itemEdit.getValue()));
-			itemEdit.setValue(codeName == null ? null : codeName.getId());
-		} else if (itemEdit.getTypeGroup() == TypeLink.WORKPLACE.value) {
-			CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(itemEdit.getTypeGroup(),
-					new ParamDialog(itemEdit.getDate(), itemEdit.getValue()));
-			itemEdit.setValue(codeName == null ? null : codeName.getId());
-		}
+		itemEdits.stream().map(itemEdit -> {
+			if(itemEdit.getTypeGroup() == null) return itemEdit;
+			if (itemEdit.getTypeGroup() == TypeLink.POSSITION.value) {
+				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(itemEdit.getTypeGroup(),
+						new ParamDialog(itemEdit.getDate(), itemEdit.getValue()));
+				itemEdit.setValue(codeName == null ? null : codeName.getId());
+				return itemEdit;
+			} else if (itemEdit.getTypeGroup() == TypeLink.WORKPLACE.value) {
+				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(itemEdit.getTypeGroup(),
+						new ParamDialog(itemEdit.getDate(), itemEdit.getValue()));
+				itemEdit.setValue(codeName == null ? null : codeName.getId());
+				return itemEdit;
+			}
+			return itemEdit;
+		}).collect(Collectors.toList());
+	}
+	
+	private void checkInput28And1(DailyRecordDto dailyEdit, DPItemValue itemEditCalc) {
+		DailyModifyResult updated = DailyModifyResult.builder().employeeId(dailyEdit.getEmployeeId())
+				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtil.toItemValues(dailyEdit)).completed();
+		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(Arrays.asList(itemEditCalc),
+				Arrays.asList(updated));
+		if (!resultError.isEmpty())
+			throw new BusinessException(resultError.get(0).getMessage());
 	}
 }

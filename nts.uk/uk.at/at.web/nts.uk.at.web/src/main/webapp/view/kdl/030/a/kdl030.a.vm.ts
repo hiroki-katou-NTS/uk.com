@@ -111,7 +111,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 'mailContent': ko.toJS(self.mailContent),
                 'application': ko.toJS(self.application),
                 'sendMailOption': listSendMail,
-                'applicantID' : applicantID
+                'applicantID' : applicantID,
+                'sendMailApplicaint': self.isSendToApplicant()
             };
             nts.uk.ui.block.invisible();
             service.sendMail(command).done(function(result) {

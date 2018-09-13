@@ -2294,20 +2294,24 @@ button.nts-switch-button[disabled] {
 }
 /* line 46, ../sass/components/_switchbutton.scss */
 button.nts-switch-button[disabled]:hover {
+  background-color: #d9d9d9;
+}
+/* line 49, ../sass/components/_switchbutton.scss */
+button.nts-switch-button[disabled].selected {
   background-color: #7b8;
 }
 
-/* line 52, ../sass/components/_switchbutton.scss */
+/* line 55, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper {
   display: inline-block;
   padding: 0;
 }
-/* line 56, ../sass/components/_switchbutton.scss */
+/* line 59, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper:focus {
   box-shadow: 0 0 1px 1px #0096f2;
   border-radius: 2px;
 }
-/* line 62, ../sass/components/_switchbutton.scss */
+/* line 65, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper.error button {
   border-color: #ff6666;
 }
@@ -2783,7 +2787,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 22, ../sass/components/_gridlist.scss */
 .ui-iggrid .nts-gridlist tbody td {
-   white-space: pre; 
+  white-space: pre;
 }
 
 /* line 1, ../sass/components/_tabpanel.scss */
@@ -3045,7 +3049,7 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
   margin-right: 5px;
   margin: .1em 0;
-  /* 繧｢繧､繧ｳ繝ｳ縺梧ｱｺ縺ｾ繧九∪縺ｧ髱櫁｡ｨ遉ｺ縺ｫ縺励※縺翫￥ */
+  /* アイコンが決まるまで非表示にしておく */
   display: none;
 }
 /* line 36, ../sass/components/_dialog.scss */

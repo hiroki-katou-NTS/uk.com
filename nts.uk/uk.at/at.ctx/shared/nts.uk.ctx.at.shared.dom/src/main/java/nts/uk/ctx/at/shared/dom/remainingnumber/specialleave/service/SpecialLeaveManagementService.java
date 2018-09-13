@@ -35,7 +35,8 @@ public interface SpecialLeaveManagementService {
 	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
 	 * @return
 	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
+	InPeriodOfSpecialLeave subtractUseDaysFromMngData(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
+			List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
 			List<InterimRemain> lstInterimMng, OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
 
 	

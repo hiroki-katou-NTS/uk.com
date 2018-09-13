@@ -94,6 +94,9 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	@Override
 	public List<StartPageLog> findBy(String companyId, List<String> listEmployeeId,
 			GeneralDateTime start, GeneralDateTime end) {
+		if(CollectionUtil.isEmpty(listEmployeeId)){
+			return findBy(companyId, start, end);
+		}
 		List<StartPageLog> res = new ArrayList<>();
 		
 		StringBuilder qb = new StringBuilder("SELECT l FROM SrcdtStartPageLogInfo l WHERE ");
@@ -112,6 +115,22 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		});
 		
 		return res;
+	}
+
+	@Override
+	public List<StartPageLog> findBy(String companyId, GeneralDateTime start, GeneralDateTime end) {
+		
+		StringBuilder qb = new StringBuilder("SELECT l FROM SrcdtStartPageLogInfo l WHERE ");
+		qb.append(" l.companyId = :cid");
+		qb.append(" AND l.startDateTime >= :start");
+		qb.append(" AND l.startDateTime <= :end");
+		
+		
+		return this.queryProxy().query(qb.toString(), SrcdtStartPageLogInfo.class)
+				.setParameter("cid", companyId)
+				.setParameter("start", start)
+				.setParameter("end", end)
+				.getList(r -> r.toDomain());
 	}
 
 	@Override
