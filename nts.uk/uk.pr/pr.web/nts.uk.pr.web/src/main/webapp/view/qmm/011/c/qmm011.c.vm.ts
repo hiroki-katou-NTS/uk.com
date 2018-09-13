@@ -170,7 +170,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 let temp = new AccInsurPreRate();
                 temp.occAccIsBusNo = item.occAccIsBusNo;
                 temp.empConRatio = Number(item.empConRatio());
-                temp.fracClass = item.fracClass;
+                temp.fracClass = Number(item.fracClass());
                 listOccAccIsPrRate.push(temp);
             })
             return listOccAccIsPrRate;
@@ -313,6 +313,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         name: string;
         fracClass: number;
         empConRatio: number;
+        useArt:number;
     }
     class AccInsurPreRate {
         hisId: string;
@@ -320,6 +321,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
         name: string;
         fracClass: number;
         empConRatio: number;
+        useArt:number;
         constructor() {
 
         }
@@ -333,6 +335,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                 dto.name = item.name;
                 dto.fracClass = ko.observable(item.fracClass);
                 dto.empConRatio = ko.observable(item.empConRatio);
+                dto.useArt = item.useArt;
 
                 listEmp.push(dto);
             })

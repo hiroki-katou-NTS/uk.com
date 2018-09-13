@@ -106,11 +106,14 @@
                             <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
 
                             <td>
+
                                 <div style="float: left"> <input id = "C3_11"
                                              data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																constraint: 'InsuranceRate',
 																value: empConRatio,
+																enable: useArt == 1,
+																required: true,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
@@ -126,6 +129,7 @@
 																options: $parent.listPerFracClass,
 																optionsText: 'name',
 																optionsValue: 'code',
+																enable : useArt == 1
 																}">
                                 </div>
 
