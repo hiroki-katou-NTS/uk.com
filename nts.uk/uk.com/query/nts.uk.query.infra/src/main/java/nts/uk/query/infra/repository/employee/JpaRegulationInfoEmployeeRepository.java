@@ -107,14 +107,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
 
 		// Constructing condition.
-		List<Predicate> conditions = new ArrayList<Predicate>();
-		List<String> employmentCodes = paramQuery.getEmploymentCodes();
-		List<String> workplaceCodes = paramQuery.getWorkplaceCodes();
-		List<String> classificationCodes = paramQuery.getClassificationCodes();
-		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
-		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
-		List<Integer> closureIds = paramQuery.getClosureIds();
-		GeneralDateTime baseDate = paramQuery.getBaseDate();
+		List<Predicate> conditions = new ArrayList<>();
+		List<String> employmentCodes = new ArrayList<>(paramQuery.getEmploymentCodes());
+		List<String> workplaceCodes = new ArrayList<>(paramQuery.getWorkplaceCodes());
+		List<String> classificationCodes = new ArrayList<>(paramQuery.getClassificationCodes());
+		List<String> jobTitleCodes = new ArrayList<>(paramQuery.getJobTitleCodes());
+		List<String> worktypeCodes = new ArrayList<>(paramQuery.getWorktypeCodes());
+		List<Integer> closureIds = new ArrayList<>(paramQuery.getClosureIds());
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
