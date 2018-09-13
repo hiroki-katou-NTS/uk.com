@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,7 +87,8 @@ public class ManagePerCompanySet {
 			List<OptionalItem> optionalItems,
 			List<Formula> formulaList,
 			List<EmpCondition> empCondition,
-			Optional<ZeroTime> zeroTime) {
+			Optional<ZeroTime> zeroTime,
+			Optional<UpperLimitTotalWorkingHour> upperControl) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -99,5 +101,7 @@ public class ManagePerCompanySet {
 		this.formulaList = formulaList;
 		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
+		this.personnelCostSettings = Collections.emptyList();
+		this.upperControl = upperControl;
 	}
 }
