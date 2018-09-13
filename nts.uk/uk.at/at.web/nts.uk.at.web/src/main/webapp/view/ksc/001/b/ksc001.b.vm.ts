@@ -151,8 +151,8 @@ module nts.uk.at.view.ksc001.b {
              * save to client service PersonalSchedule
             */
             private savePersonalSchedule(data: PersonalSchedule): void {
-                var self = this;
-                var user: any = __viewContext.user;
+                let self = this,
+                    user: any = __viewContext.user;
                 self.savePersonalScheduleByEmployeeId(user.employeeId, data);
             }
 
@@ -167,8 +167,8 @@ module nts.uk.at.view.ksc001.b {
              * find by client service PersonalSchedule
             */
             private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
-                var self = this;
-                var user: any = __viewContext.user;
+                let self = this,
+                    user: any = __viewContext.user;
                 return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**
@@ -187,7 +187,7 @@ module nts.uk.at.view.ksc001.b {
              * function next two page wizard by on click button 
              */
             private nextTwo(): JQueryPromise<void> {
-                var index = $('#wizard').ntsWizard("getCurrentStep");
+                let index = $('#wizard').ntsWizard("getCurrentStep");
                 index = index + 2;
                 return $('#wizard').ntsWizard("goto", index);
             }
@@ -195,7 +195,7 @@ module nts.uk.at.view.ksc001.b {
             * function previous wizard by on click button 
             */
             private previousTwo(): JQueryPromise<void> {
-                var index = $('#wizard').ntsWizard("getCurrentStep");
+                let index = $('#wizard').ntsWizard("getCurrentStep");
                 index = index - 2;
                 return $('#wizard').ntsWizard("goto", index);
             }
@@ -249,9 +249,23 @@ module nts.uk.at.view.ksc001.b {
 
                     /** Return data */
                     returnDataFromCcg001: function(data: any) {
+                        let employeeSearchs: UnitModel[] = [],
+                            listSelectedEmpCode: any = [];
+                        
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
-
+                        self.employeeList([]);
+                        self.selectedEmployeeCode([]);
+                        _.each(data.listEmployee, (employeeSearch) => {
+                            employeeSearchs.push({
+                                code: employeeSearch.employeeCode,
+                                name: employeeSearch.employeeName,
+                                workplaceName: employeeSearch.workplaceName
+                            });
+                            listSelectedEmpCode.push(employeeSearch.employeeCode);
+                        });
+                        // update employee list by ccg001 search 
+                        self.employeeList(employeeSearchs);
+                        self.selectedEmployeeCode(listSelectedEmpCode);
                     }
                 }
             }
@@ -259,8 +273,8 @@ module nts.uk.at.view.ksc001.b {
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
+                let self = this,
+                    dfd = $.Deferred();
                 // block ui
                 nts.uk.ui.block.invisible();
 
@@ -280,22 +294,23 @@ module nts.uk.at.view.ksc001.b {
             * apply ccg001 search data to kcp005
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-                var self = this;
+                let self = this,
+                    employeeSearchs: UnitModel[] = [],
+                    listSelectedEmpCode: any = [];
                 self.employeeList([]);
-                var employeeSearchs: UnitModel[] = [];
                 self.selectedEmployeeCode([]);
-                for (var employeeSearch of dataList) {
-                    var employee: UnitModel = {
+                _.each(dataList, (employeeSearch) =>{
+                    employeeSearchs.push({
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
-                    };
-                    employeeSearchs.push(employee);
-                    self.selectedEmployeeCode.push(employee.code);
-                }
+                    });
+                    listSelectedEmpCode.push(employeeSearch.employeeCode);
+                });
 
                 // update employee list by ccg001 search 
                 self.employeeList(employeeSearchs);
+                self.selectedEmployeeCode.push(listSelectedEmpCode);
 
                 // update kc005
                 self.lstPersonComponentOption = {

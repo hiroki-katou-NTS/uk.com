@@ -29,6 +29,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
@@ -49,6 +51,9 @@ public class ValidatorDataDailyRes {
 
 	@Inject
 	private InsufficientFlexHolidayMntRepository flexHolidayMntRepository;
+	
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -392,13 +397,26 @@ public class ValidatorDataDailyRes {
 	public Map<Integer, List<DPItemValue>> errorMonth(List<IntegrationOfMonthly> lstMonthDomain,
 			UpdateMonthDailyParam monthParam) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
 		List<DPItemValue> items = new ArrayList<>();
 		for (IntegrationOfMonthly month : lstMonthDomain) {
 			val lstEmpError = month.getEmployeeMonthlyPerErrorList().stream()
 					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+			val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
+			
+			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByListCode(companyId, listNo)
+					.stream().filter(x -> x.getSpecialHolidayCode() != null)
+					.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
+			
 			lstEmpError.stream().forEach(error -> {
 				createMessageError(error).stream().forEach(message -> {
-					items.add(new DPItemValue(error.getEmployeeID(), TextResource.localize(message)));
+					if(message.equals("Msg_1414")){
+						val sh = sHolidayMap.get(error.getNo());
+						message =  TextResource.localize(message, sh == null ? "" : sh.getSpecialHolidayName().v());
+					}else{
+						message = TextResource.localize(message);
+					}
+					items.add(new DPItemValue(error.getEmployeeID(), message));
 				});
 			});
 
@@ -426,10 +444,14 @@ public class ValidatorDataDailyRes {
 			messageIds.add("Msg_1387");
 		} else if (errroType.value == ErrorType.REMAIN_LEFT.value) {
 			messageIds.add("Msg_1388");
-		} else if (errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value) {
+		} else if (errroType.value == ErrorType.PUBLIC_HOLIDAY.value) {
 			messageIds.add("Msg_1389");
 		} else if (errroType.value == ErrorType.H60_SUPER_HOLIDAY.value) {
 			messageIds.add("Msg_1390");
+		} else if(errroType.value == ErrorType.FLEX_SUPP.value){
+			messageIds.add("Msg_1415");
+		} else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
+			messageIds.add("Msg_1414");
 		}
 
 		return messageIds;
