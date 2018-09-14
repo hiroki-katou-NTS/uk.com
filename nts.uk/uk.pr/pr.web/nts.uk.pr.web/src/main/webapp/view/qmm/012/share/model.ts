@@ -77,12 +77,12 @@ module nts.uk.pr.view.qmm012.share.model {
         INCOME_TAX_ITEM = 2,
         INHABITANT_TAX_ITEM = 3
     }
-    
+
     export enum TimeCountAtr {
         TIME = 0,
         TIMES = 1
     }
-    
+
     export function getCategoryAtr(): Array<ItemModel> {
         return [
             new model.ItemModel(CategoryAtr.PAYMENT_ITEM, getText('QMM012_5')),
@@ -128,9 +128,9 @@ module nts.uk.pr.view.qmm012.share.model {
         }
     }
 
-        /**
-     * 内訳項目設定
-     */
+    /**
+ * 内訳項目設定
+ */
     export interface IBreakdownItemSet {
         salaryItemId: string;
         breakdownItemCode: string;
@@ -147,7 +147,7 @@ module nts.uk.pr.view.qmm012.share.model {
             self.breakdownItemName(param ? param.breakdownItemName : '');
         }
     }
-    
+
     export class BoxModel {
         id: number;
         name: string;
@@ -214,7 +214,7 @@ module nts.uk.pr.view.qmm012.share.model {
                     this.endYearJpn("");
                 }
             });
-            
+
             this.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : null);
             this.january(data ? data.january : false);
             this.february(data ? data.february : false);
