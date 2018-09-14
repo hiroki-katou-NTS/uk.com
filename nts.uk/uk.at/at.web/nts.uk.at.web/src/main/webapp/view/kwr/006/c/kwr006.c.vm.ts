@@ -90,12 +90,12 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
 
-                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => parseInt(i.code));
+                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                    }).sort((a, b) => parseInt(a.code) - parseInt(b.code));
+                        return { code: item.attendanceDisplay, name: item.attendanceName };
+                    }).sort((a, b) =>a.code - b.code);
                 }
 
                 // refresh data for C7_8
@@ -106,12 +106,12 @@ module nts.uk.at.view.kwr006.c {
 
             public sortItems(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
+                self.items(_.sortBy(self.items(), item => item.code));
             }
 
             public sortCurrentCodeListSwap(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
+                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => item.code));
             }
 
             /*
@@ -187,7 +187,8 @@ module nts.uk.at.view.kwr006.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
-                _.forEach(self.currentCodeListSwap(), function(value, index) {
+                
+                _.map(self.currentCodeListSwap(), function(value, index) {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
                 });
 
@@ -299,7 +300,7 @@ module nts.uk.at.view.kwr006.c {
 
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
+                        arrCodeName.push({ code: value.itemCode, name: value.itemName });
                     });
                     self.outputItemList(arrCodeName);
                     self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
