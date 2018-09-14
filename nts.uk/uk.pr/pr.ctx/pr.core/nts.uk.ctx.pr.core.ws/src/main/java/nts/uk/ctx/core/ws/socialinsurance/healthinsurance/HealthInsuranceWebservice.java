@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.ws.socialinsurance.healthinsurance;
 
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.AddHealthInsuranceCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.AddHealthInsuranceCommandHandler;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceDto;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateFinder;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
@@ -18,6 +20,9 @@ public class HealthInsuranceWebservice {
     @Inject
     private HealthInsuranceFeeRateFinder healthInsuranceFeeRateFinder;
 
+    @Inject
+    private AddHealthInsuranceCommandHandler addHealthInsuranceCommandHandler;
+
     @POST
     @Path("getByCompanyId")
     public List<SocialInsuranceOfficeDto> getHealthInsuranceFeeRateByCompanyId() {
@@ -32,7 +37,8 @@ public class HealthInsuranceWebservice {
 
     @POST
     @Path("add")
-    public void addHealthInsuranceFeeRateByCompanyId() {
+    public void addHealthInsuranceFeeRateByCompanyId(AddHealthInsuranceCommand addHealthInsuranceCommand) {
+        this.addHealthInsuranceCommandHandler.handle(addHealthInsuranceCommand);
     }
 
     @POST

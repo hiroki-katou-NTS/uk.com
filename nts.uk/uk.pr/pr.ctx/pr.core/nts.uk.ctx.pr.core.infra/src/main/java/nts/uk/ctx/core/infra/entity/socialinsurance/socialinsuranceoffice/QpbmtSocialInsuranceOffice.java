@@ -232,36 +232,32 @@ public class QpbmtSocialInsuranceOffice extends UkJpaEntity implements Serializa
      * @return QpbmtSocialInsuranceOffice
      */
     public static QpbmtSocialInsuranceOffice toEntity(SocialInsuranceOffice domain) {
-        return new QpbmtSocialInsuranceOffice(domain);
-    }
-
-    private QpbmtSocialInsuranceOffice(SocialInsuranceOffice domain) {
-        this.socialInsuranceOfficePk.cid      = domain.getCompanyID();
-        this.socialInsuranceOfficePk.code     = domain.getCode().v();
-        this.name                             = domain.getName().v();
-        this.representativePosition           = domain.getBasicInformation().getRepresentativePosition().v();
-        this.memo                             = domain.getBasicInformation().getMemo().map(PrimitiveValueBase::v).orElse(null);
-        this.representativeName               = domain.getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(null);
-        this.shortName                        = domain.getBasicInformation().getShortName().map(PrimitiveValueBase::v).orElse(null);
-        this.postalCode                       = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getPostalCode).map(postalCode -> postalCode.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.address1                         = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddress1).map(address1 -> address1.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.address2                         = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddress2).map(address2 -> address2.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.addressKana1                     = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddressKana1).map(addressKana1 -> addressKana1.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.addressKana2                     = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddressKana2).map(addressKana2 -> addressKana2.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.phoneNumber                      = domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getPhoneNumber).map(phoneNumber -> phoneNumber.orElse(null)).map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionFundNumber         = domain.getInsuranceMasterInformation().getWelfarePensionFundNumber().map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionOfficeNumber       = domain.getInsuranceMasterInformation().getWelfarePensionOfficeNumber().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceOfficeNumber      = domain.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceUnionOfficeNumber = domain.getInsuranceMasterInformation().getHealthInsuranceUnionOfficeNumber().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceOfficeNumber1     = domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceOfficeNumber2     = domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionOfficeNumber1      = domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionOfficeNumber2      = domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceCityCode          = domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceCityCode().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsuranceOfficeCode        = domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceCityCode().map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionCityCode           = domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionCityCode().map(PrimitiveValueBase::v).orElse(null);
-        this.welfarePensionOfficeCode         = domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionOfficeCode().map(PrimitiveValueBase::v).orElse(null);
-        this.healthInsurancePrefectureNo      = domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsurancePrefectureNo().orElse(null);
-        this.welfarePensionPrefectureNo       = domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionPrefectureNo().orElse(null);
+        return new QpbmtSocialInsuranceOffice(new QpbmtSocialInsuranceOfficePk(domain.getCompanyID(), domain.getCode().v()),
+                domain.getName().v(),
+                domain.getBasicInformation().getRepresentativePosition().v(),
+                domain.getBasicInformation().getMemo().map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getShortName().map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddress1).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddress2).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddressKana1).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getAddressKana2).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getPhoneNumber).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getBasicInformation().getAddress().map(SocialInsuranceBusinessAddress::getPostalCode).map(x -> x.orElse(null)).map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceCityCode().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceCityCode().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getHealthInsurancePrefectureNo().orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionOfficeCode().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionCityCode().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionPrefectureNo().orElse(null),
+                domain.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getHealthInsuranceUnionOfficeNumber().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getWelfarePensionFundNumber().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getWelfarePensionOfficeNumber().map(PrimitiveValueBase::v).orElse(null)
+        );
     }
 }
