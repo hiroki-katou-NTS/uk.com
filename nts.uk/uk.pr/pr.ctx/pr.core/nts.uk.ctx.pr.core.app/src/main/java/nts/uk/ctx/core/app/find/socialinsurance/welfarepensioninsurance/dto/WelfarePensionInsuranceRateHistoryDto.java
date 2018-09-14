@@ -1,15 +1,18 @@
 package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistory;
 /**
  * 厚生年金保険料率履歴
  */
 @AllArgsConstructor
+@Data
 public class WelfarePensionInsuranceRateHistoryDto {
 
     /**
@@ -21,8 +24,6 @@ public class WelfarePensionInsuranceRateHistoryDto {
      * 履歴
      */
     private List<YearMonthHistoryItemDto> history;
-    
-    private String socialInsuranceOfficeName;
 
     /**
      * 厚生年金保険料率履歴
@@ -31,11 +32,13 @@ public class WelfarePensionInsuranceRateHistoryDto {
      * @param socialInsuranceOfficeCd 社会保険事業所コード
      * @param history                 履歴
      */
-    public static WelfarePensionInsuranceRateHistoryDto fromDomainToDto(Optional<WelfarePensionInsuranceRateHistory> optDomain, String socialInsuranceOfficeName) {
-    	if (!optDomain.isPresent()) return null;
+    public static WelfarePensionInsuranceRateHistoryDto fromDomainToDto(Optional<WelfarePensionInsuranceRateHistory> optDomain, String socialInsuranceOfficeCode) {
+    	if (!optDomain.isPresent()){
+    		return new WelfarePensionInsuranceRateHistoryDto(socialInsuranceOfficeCode, Collections.EMPTY_LIST);
+    	}
     	WelfarePensionInsuranceRateHistory domain = optDomain.get();
-        return new WelfarePensionInsuranceRateHistoryDto(domain.getSocialInsuranceOfficeCode().v(), domain.getHistory().stream().map(historyItem -> {
+        return new WelfarePensionInsuranceRateHistoryDto(socialInsuranceOfficeCode, domain.getHistory().stream().map(historyItem -> {
         	return YearMonthHistoryItemDto.fromDomainToDto(historyItem);
-        }).collect(Collectors.toList()), socialInsuranceOfficeName);
+        }).collect(Collectors.toList()));
     }
 }

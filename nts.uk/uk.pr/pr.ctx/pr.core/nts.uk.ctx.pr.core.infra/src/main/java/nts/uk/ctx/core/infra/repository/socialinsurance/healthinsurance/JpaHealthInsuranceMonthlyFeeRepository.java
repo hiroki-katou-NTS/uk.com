@@ -1,10 +1,6 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
@@ -12,8 +8,27 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGra
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Stateless
 public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implements HealthInsuranceMonthlyFeeRepository {
+
+    private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
+
+    @Override
+    public Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId) {
+        val entity = this.queryProxy().find(historyId, QpbmtHealthInsuranceMonthlyFee.class);
+
+        if (!entity.isPresent())
+            return Optional.empty();
+
+        val details = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).getList();
+
+        return Optional.of(toDomain(entity.get(), details));
+    }
 
     /**
      * Convert entity to domain
@@ -40,8 +55,8 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         );
     }
 
-	@Override
-	public void deleteByHistoryIds(List<String> historyIds) {
-		this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
-	}
+    @Override
+    public void deleteByHistoryIds(List<String> historyIds) {
+        this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+    }
 }

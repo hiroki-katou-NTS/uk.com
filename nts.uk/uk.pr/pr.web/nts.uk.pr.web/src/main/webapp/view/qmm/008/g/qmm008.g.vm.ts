@@ -6,9 +6,9 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
     import model = nts.uk.pr.view.qmm008.share.model;
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable('');
+        socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
+        socialInsuranceName: KnockoutObservable<string> = ko.observable('');
+        startMonth: KnockoutObservable<string> = ko.observable('');
         takeoverMethod: KnockoutObservable<number> = ko.observable(0);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
         lastestHistory: number = 190001;
@@ -19,23 +19,23 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
                 let history = selectedOffice.welfareInsuranceRateHistory.history;
                 if (history.length > 0){
-                    let lastestHistory = history[history.length-1].start;
+                    let lastestHistory = history[history.length-1].startMonth + "";
                     displayLastestHistory = lastestHistory.substring(0, 4) + "/" + lastestHistory.substring(4, 6)
-                    self.lastestHistory = history[history.length-1].start;
+                    self.lastestHistory = history[history.length-1].startMonth;
                 }
-                self.code(selectedOffice.code);
-                self.name(selectedOffice.name);
+                self.socialInsuranceCode(selectedOffice.socialInsuranceOfficeCode);
+                self.socialInsuranceName(selectedOffice.socialInsuranceOfficeName);
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY, getText('QMM008_200') + displayLastestHistory));
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
         }
         addNewHistory (){ 
             let self = this;
-            if (self.startDate() <= self.lastestHistory.toString()){
+            if (self.startMonth() <= self.lastestHistory.toString()){
                 dialog.alertError({ messageId: "Msg_79" });
                 return;
             }
-            setShared('QMM008_G_RES_PARAMS', {startDate: self.startDate(), takeoverMethod: self.takeoverMethod()});
+            setShared('QMM008_G_RES_PARAMS', {startMonth: self.startMonth(), takeoverMethod: self.takeoverMethod()});
             nts.uk.ui.windows.close();
         }
         cancel (){

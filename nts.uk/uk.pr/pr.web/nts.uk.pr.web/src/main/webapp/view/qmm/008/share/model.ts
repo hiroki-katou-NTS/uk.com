@@ -63,8 +63,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 社会保険事業所
     export interface ISocialInsuranceOffice {
-        code: string;
-        name: string;
+        socialInsuranceCode: string;
+        socialInsuranceName: string;
         companyID: string
         basicInfomation: IBasicInfomation;
         insuranceMasterInfomation: string;
@@ -73,15 +73,15 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 社会保険事業所
     export class SocialInsuranceOffice {
-        code: KnockoutObservable<string> = ko.observable(null);
-        name: KnockoutObservable<string> = ko.observable(null);
+        socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
+        socialInsuranceName: KnockoutObservable<string> = ko.observable(null);
         basicInfomation: KnockoutObservable<BasicInfomation> = ko.observable(null);
         insuranceMasterInfomation: KnockoutObservable<string> = ko.observable(null);
         companyID: KnockoutObservable<string> = ko.observable(null);
         welfareInsuranceRateHistory: KnockoutObservable<WelfarePensionInsuranceRateHistory> = ko.observable(null);
         constructor(params: ISocialInsuranceOffice) {
-            this.code(params.code);
-            this.name(params.name);
+            this.socialInsuranceCode(params.socialInsuranceCode);
+            this.socialInsuranceName(params.socialInsuranceName);
             this.companyID(params.companyID);
             if (params.basicInfomation) {
                 this.basicInfomation(new BasicInfomation(params.basicInfomation));
@@ -149,8 +149,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeiod {
-        start: string;
-        end: string;
+        startMonth: string;
+        endMonth: string;
         historyId: string;
     }
 
@@ -158,13 +158,13 @@ module nts.uk.pr.view.qmm008.share.model {
     export class GenericHistoryYearMonthPeiod {
 
         // Item
-        start: KnockoutObservable<string> = ko.observable(null);
-        end: KnockoutObservable<string> = ko.observable(null);
+        startMonth: KnockoutObservable<string> = ko.observable(null);
+        endMonth: KnockoutObservable<string> = ko.observable(null);
         historyId: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IGenericHistoryYearMonthPeiod) {
-            this.start(params.start);
-            this.end(params.end);
+            this.startMonth(params.startMonth);
+            this.endMonth(params.endMonth);
             this.historyId(params.historyId);
         }
     }
@@ -172,19 +172,16 @@ module nts.uk.pr.view.qmm008.share.model {
     // 厚生年金保険料率履歴
     export interface IWelfarePensionInsuranceRateHistory {
         socialInsuranceCode: string;
-        companyID: string;
         history: IGenericHistoryYearMonthPeiod [];
     }
 
     // 厚生年金保険料率履歴
     export class WelfarePensionInsuranceRateHistory {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
-        companyID: KnockoutObservable<string> = ko.observable(null);
         history: KnockoutObservableArray<GenericHistoryYearMonthPeiod> = ko.observableArray([]);
 
         constructor(params: IWelfarePensionInsuranceRateHistory) {
             this.socialInsuranceCode(params.socialInsuranceCode);
-            this.companyID(params.companyID);
             this.history(params.history.map(function (item) {
                 return new GenericHistoryYearMonthPeiod(item)
             }));
