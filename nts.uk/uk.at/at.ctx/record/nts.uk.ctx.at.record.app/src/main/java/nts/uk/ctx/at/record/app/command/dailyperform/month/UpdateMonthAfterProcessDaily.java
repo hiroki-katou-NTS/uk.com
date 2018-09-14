@@ -55,8 +55,8 @@ public class UpdateMonthAfterProcessDaily {
 			//月次集計を実施する必要があるかチェックする
 			val needCalc = checkCalcMonthService.isNeedCalcMonth(companyId, key, value);
 			if (needCalc.getLeft()) {
-				List<IntegrationOfDaily> domainDailyGroupEmp = commandNew.stream()
-						.filter(x -> x.getEmployeeId().equals(key)).map(x -> x.toDomain()).collect(Collectors.toList());
+				List<IntegrationOfDaily> domainDailyGroupEmp = domainDailyNew.stream()
+						.filter(x -> x.getWorkInformation().getEmployeeId().equals(key)).collect(Collectors.toList());
 				needCalc.getRight().forEach(data -> {
 					//月の実績を集計する
 					Optional<IntegrationOfMonthly> monthDomainOpt = aggregateSpecifiedDailys.algorithm(companyId, key,
