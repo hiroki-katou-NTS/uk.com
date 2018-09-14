@@ -60,7 +60,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduleti
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfoPK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
@@ -759,7 +758,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private void removeScheduleBasic(String employeeId, GeneralDate baseDate){
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KSCDT_SCHE_BASIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd");
+		String sqlQuery = "Delete From KSCDT_SCHE_BASIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -934,9 +933,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 */
 	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
-		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(employeeId, baseDate);
-		if (this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).isPresent()) {
-			this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		sqlQuery = "Delete From KSCDT_SCHE_MASTER Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
