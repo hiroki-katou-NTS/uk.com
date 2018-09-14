@@ -20,6 +20,6 @@ public class RemoveEmpTiedProYearCommandHandler extends CommandHandler<EmpTiedPr
     protected void handle(CommandHandlerContext<EmpTiedProYearCommand> context) {
         String cid = context.getCommand().getCid();
         int processCateNo = context.getCommand().getProcessCateNo();
-        repository.remove(cid, processCateNo);
+//        repository.remove(cid, processCateNo);
     }
 }

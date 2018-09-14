@@ -47,7 +47,7 @@
 						<!--B3_1	処理区分-->
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
 						<!--B3_2	処理区分名称-->
-						<span><label>#{i18n.getText('QMM005_97')}</label></span>
+						<span class="label" data-bind="text: processingDivisionName"></span>
 					</div>
 					<div class="margin-top-12">
 						<!--B3_3	処理年-->
@@ -103,7 +103,7 @@
 							<tr>
 								<td>
                                     <!--B4_8	対象月-->
-                                    <div class="label" data-bind="text: $index"></div>
+                                    <div class="label" data-bind="text: targetMonth"></div>
                                 </td>
 								<td>
                                     <!--B4_10	支払年月日-->

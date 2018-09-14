@@ -20,7 +20,7 @@ public class UpdateSetDaySupportCommandHandler extends CommandHandler<SetDaySupp
     @Override
     protected void handle(CommandHandlerContext<SetDaySupportCommand> context) {
         SetDaySupportCommand updateCommand = context.getCommand();
-        repository.update(new SetDaySupport(updateCommand.getCid(), updateCommand.getProcessCateNo(), updateCommand.getCloseDateTime(), updateCommand.getEmpInsurdStanDate(), updateCommand.getClosureDateAccounting(), updateCommand.getPaymentDate(), updateCommand.getEmpExtraRefeDate(), updateCommand.getSocialInsurdStanDate(), updateCommand.getSocialInsurdCollecMonth(), updateCommand.getProcessDate(), updateCommand.getIncomeTaxDate(), updateCommand.getNumberWorkDay()));
+        repository.update(new SetDaySupport(updateCommand.getCid(), updateCommand.getProcessCateNo(),updateCommand.getProcessDate(), updateCommand.getCloseDateTime(), updateCommand.getEmpInsurdStanDate(), updateCommand.getClosureDateAccounting(), updateCommand.getPaymentDate(), updateCommand.getEmpExtraRefeDate(), updateCommand.getSocialInsurdStanDate(), updateCommand.getSocialInsurdCollecMonth(),  updateCommand.getIncomeTaxDate(), updateCommand.getNumberWorkDay()));
     
     }
 }

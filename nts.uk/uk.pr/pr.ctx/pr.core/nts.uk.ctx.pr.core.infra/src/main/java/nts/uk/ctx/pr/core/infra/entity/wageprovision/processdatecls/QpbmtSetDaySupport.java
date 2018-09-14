@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -82,9 +83,7 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	/**
 	 * 処理年月
 	 */
-	@Basic(optional = false)
-	@Column(name = "PROCESS_DATE")
-	public int processDate;
+
 
 	/**
 	 * 所得税基準日
@@ -106,17 +105,18 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	}
 
 	public SetDaySupport toDomain() {
-		return new SetDaySupport(this.setDaySupportPk.cid, this.setDaySupportPk.processCateNo, this.closeDateTime,
+		return new SetDaySupport(this.setDaySupportPk.cid, this.setDaySupportPk.processCateNo,this.setDaySupportPk.processDate, this.closeDateTime,
 				this.empInsurdStanDate, this.closureDateAccounting, this.paymentDate, this.empExtraRefeDate,
-				this.socialInsurdStanDate, this.socialInsurdCollecMonth, this.processDate, this.incomeTaxDate,
+				this.socialInsurdStanDate, this.socialInsurdCollecMonth,  this.incomeTaxDate,
 				this.numberWorkDay);
 	}
 
 	public static QpbmtSetDaySupport toEntity(SetDaySupport domain) {
-		return new QpbmtSetDaySupport(new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo()),
+		return new QpbmtSetDaySupport(
+				new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo(),domain.getProcessDate().v().intValue()),
 				domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(),
 				domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(),
-				domain.getSocialInsurdCollecMonth(), domain.getProcessDate().v(), domain.getIncomeTaxDate(),
+				domain.getSocialInsurdCollecMonth(), domain.getIncomeTaxDate(),
 				domain.getNumberWorkDay());
 	}
 

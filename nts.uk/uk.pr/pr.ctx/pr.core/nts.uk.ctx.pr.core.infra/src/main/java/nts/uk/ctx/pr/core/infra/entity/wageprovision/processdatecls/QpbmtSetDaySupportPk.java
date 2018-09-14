@@ -34,5 +34,9 @@ public class QpbmtSetDaySupportPk implements Serializable
     @Basic(optional = false)
     @Column(name = "PROCESS_CATE_NO")
     public int processCateNo;
+
+    @Basic(optional = false)
+    @Column(name = "PROCESS_DATE")
+    public int processDate;
     
 }

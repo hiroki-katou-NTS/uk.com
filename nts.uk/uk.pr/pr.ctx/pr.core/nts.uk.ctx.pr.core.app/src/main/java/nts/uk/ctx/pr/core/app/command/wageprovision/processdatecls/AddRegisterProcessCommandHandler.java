@@ -8,13 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.AbolitionAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYearRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,9 +41,8 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 						processCateNo);
 				if (dataEmpTiedProYear.isPresent()) {
 					// ドメインモデル「処理年月に紐づく雇用」を更新する
-					String employmentCode = dataEmpTiedProYear.get().getEmploymentCode().v();
-					EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCode);
-					repoEmpTiedProYear.update(empTiedProYear);
+					List<EmploymentCode> employmentCodes = dataEmpTiedProYear.get().getEmploymentCodes();
+					EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCodes);
 				} else {
 					// ドメインモデル「処理年月に紐づく雇用」を新規追加する
 					// TODO : https://insight.3si.vn/redmine/issues/123107

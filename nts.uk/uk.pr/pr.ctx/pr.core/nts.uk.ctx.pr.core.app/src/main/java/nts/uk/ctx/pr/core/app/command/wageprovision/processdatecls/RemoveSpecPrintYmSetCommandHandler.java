@@ -15,11 +15,11 @@ public class RemoveSpecPrintYmSetCommandHandler extends CommandHandler<SpecPrint
     
     @Inject
     private SpecPrintYmSetRepository repository;
-    
+
     @Override
     protected void handle(CommandHandlerContext<SpecPrintYmSetCommand> context) {
         String cid = context.getCommand().getCid();
         int processCateNo = context.getCommand().getProcessCateNo();
-        repository.remove(cid, processCateNo);
+//        repository.remove(cid, processCateNo);
     }
 }
