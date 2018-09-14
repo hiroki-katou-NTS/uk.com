@@ -363,9 +363,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 dfd.resolve();
             }).fail(function(error) {
 //                nts.uk.ui.dialog.alert(error.message);
-                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                    nts.uk.request.jumpToTopPage();
-                });
+//                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+//                    nts.uk.request.jumpToTopPage();
+//                });
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
@@ -448,10 +448,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                         dfd.reject();
                     });
-                } else if (error.errors.length > 0) {
+                } else if (!_.isNil(error.errors) && error.errors.length > 0) {
                     nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
                         nts.uk.request.jumpToTopPage();
                     });
+                    dfd.reject();
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
