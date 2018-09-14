@@ -17,9 +17,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsPrRateCommand>
 {
-    
-    @Inject
-    private OccAccIsPrRateRepository repository;
 
     @Inject
     private OccAccInsurBusiBurdenRatioService occAccInsurBusiBurdenRatioService;
