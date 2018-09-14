@@ -25,6 +25,11 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
 
+
+
+
+
+
         processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
         currentProcessDates:Array<model.CurrentProcessDate>;
         setDaySupports:Array<model.SetDaySupport>;
@@ -170,24 +175,32 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             return dfd.promise();
         }
 
+
+
+        loadStartPage(){
+
+        }
+
     }
 
     export class ItemTable{
-        code:KnockoutObservable<number>;
-        processInfomations:model.ProcessInfomation;
-        currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>;
+        processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
+
         setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
+        currentProcessDates:model.CurrentProcessDate;
+        empTiedProYear:model.EmpTiedProYear;
 
         constructor(
             processInfomations:model.ProcessInfomation,
-            currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>,
             setDaySupports:KnockoutObservableArray<model.SetDaySupport>,
+            currentProcessDates:model.CurrentProcessDate,
+            empTiedProYear:model.EmpTiedProYear
 
         ){
-            this.processInfomations=processInfomations;
+            this.processInfomations=ko.observable(processInfomations);
             this.currentProcessDates=currentProcessDates;
             this.setDaySupports=setDaySupports;
-
+            this.empTiedProYear=empTiedProYear;
         }
 
 
