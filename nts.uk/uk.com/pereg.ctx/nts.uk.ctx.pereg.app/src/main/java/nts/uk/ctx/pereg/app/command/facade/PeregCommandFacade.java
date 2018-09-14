@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +106,6 @@ public class PeregCommandFacade {
 	@Inject
 	private FacadeUtils facadeUtils;
 	
-	private final static String nameStartDate = "開始日";
-	
 	private final static String nameEndate = "終了日";
 	
 	private final static String valueEndate = "9999/12/31";
@@ -190,6 +187,7 @@ public class PeregCommandFacade {
 		PersonCorrectionLogParameter target  = null;
 		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
 		String employeeId = inputContainer.getEmployeeId();
+		// get user info
 		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
 		
@@ -478,8 +476,8 @@ public class PeregCommandFacade {
 											info = InfoOperateAttr.ADD_HISTORY;
 											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-												item.setContentAfter(isContinuousHistory? valueEndate: item.contentAfter());
+												item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
+												item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.contentAfter());
 											}else {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {

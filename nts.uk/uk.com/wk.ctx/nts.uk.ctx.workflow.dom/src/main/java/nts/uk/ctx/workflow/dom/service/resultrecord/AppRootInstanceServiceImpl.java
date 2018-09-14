@@ -278,7 +278,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		String companyID = AppContexts.user().companyId();
 		ApprovalPersonInstance approvalPersonInstance = new ApprovalPersonInstance(new ArrayList<>(), new ArrayList<>());
 		// 承認者と期間から承認ルート中間データを取得する
-		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByEmpLstPeriod(Arrays.asList(approverID), period, rootType);
+		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByApproverPeriod(approverID, period, rootType);
 		// 取得した「承認ルート中間データ」をOUTPUTに追加する
 		appRootInstanceLst.forEach(appRootInstance -> {
 			ApprovalRouteDetails approvalRouteDetails = new ApprovalRouteDetails(appRootInstance, approverID, Optional.empty(), Optional.empty(), Optional.empty());
@@ -289,8 +289,8 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// 取得した「代行承認」先頭から最後へループ
 		agentInfoOutputLst.forEach(agentInfor -> {
 			// 承認者と期間から承認ルート中間データを取得する
-			List<AppRootInstance> appRootInstanceAgentLst = appRootInstanceRepository.findByEmpLstPeriod(
-					Arrays.asList(agentInfor.getAgentID()), 
+			List<AppRootInstance> appRootInstanceAgentLst = appRootInstanceRepository.findByApproverPeriod(
+					agentInfor.getAgentID(), 
 					new DatePeriod(agentInfor.getStartDate(), agentInfor.getEndDate()), 
 					rootType);
 			// 取得した「承認ルート中間データ」をOUTPUTに追加する
@@ -335,7 +335,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
-			DatePeriod loopPeriod = approvalRouteDetails.getAppRootInstance().getDatePeriod();
+			DatePeriod loopPeriod = period;
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
@@ -364,7 +364,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
-			DatePeriod loopPeriod = approvalRouteDetails.getAppRootInstance().getDatePeriod();
+			DatePeriod loopPeriod = period;
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));

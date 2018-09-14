@@ -276,17 +276,17 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
 
                             if (timeDifferenceInDays > 31) {
-                                nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
-                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
-                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
-                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
-                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
-                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
-                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                                        return;
-                                    }
+                                nts.uk.ui.dialog.confirm({ messageId: "Msg_1170" }).ifYes(() => {
+//                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+//                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+//                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+//                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+//                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+//                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+//                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+//                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+//                                        return;
+//                                    }
 
 
                                     let listEmpSelectedId = [];
