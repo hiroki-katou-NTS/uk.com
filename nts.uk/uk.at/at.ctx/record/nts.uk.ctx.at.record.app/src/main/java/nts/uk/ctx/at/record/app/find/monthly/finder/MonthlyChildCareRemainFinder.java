@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyChildCareHdRemainDto;
+import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemainRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -20,26 +20,27 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class MonthlyRemarksFinder extends MonthlyFinderFacade {
+public class MonthlyChildCareRemainFinder extends MonthlyFinderFacade {
 	
 	@Inject
-	private RemarksMonthlyRecordRepository repo;
+	private MonChildHdRemainRepository repo;
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public MonthlyRemarksDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public MonthlyChildCareHdRemainDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return MonthlyRemarksDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
+		return MonthlyChildCareHdRemainDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<MonthlyRemarksDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<MonthlyChildCareHdRemainDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
+		int lastDay = closureDate.getLastDayOfMonth() ? 1 : 0;
 		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
-				.filter(c -> c.getClosuteId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
-							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
-				.map(c -> MonthlyRemarksDto.from(c)).collect(Collectors.toList());
+				.filter(c -> c.getClosureId() == closureId && c.getIsLastDay() == lastDay
+							&& c.getClosureDay().v() == closureDate.getClosureDay().v())
+				.map(c -> MonthlyChildCareHdRemainDto.from(c)).collect(Collectors.toList());
 	}
 	
 	@Override
@@ -56,6 +57,6 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth) {
 		return (List<T>) repo.findBySidsAndYearMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
-				.stream().map(d -> MonthlyRemarksDto.from(d)).collect(Collectors.toList());
+				.stream().map(d -> MonthlyChildCareHdRemainDto.from(d)).collect(Collectors.toList());
 	}
 }
