@@ -195,6 +195,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
+	
+	private static final int CHUNK_SIZE_ERROR = 5;
 
 	/*
 	 * (non-Javadoc)
@@ -611,12 +613,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		if (!lstEmployeeNoWorkplace.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE_ERROR);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * CHUNK_SIZE_ERROR;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE_ERROR);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
@@ -687,12 +689,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
 		if (!lstEmployeeIdNoData.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE_ERROR);
 			int start, length;
 			List<EmployeeDto> lstSplitEmployeeDto;
 			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+				start = i * CHUNK_SIZE_ERROR;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE_ERROR);
 
 	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
 	            
