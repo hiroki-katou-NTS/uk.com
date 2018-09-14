@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
-import java.util.Optional;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ public interface CurrProcessDateRepository
 
     List<CurrProcessDate> getAllCurrProcessDate();
 
-    Optional<CurrProcessDate> getCurrProcessDateById(String cid, int processCateNo);
+    List<CurrProcessDate> getCurrProcessDateById(String cid, int processCateNo);
 
     void add(CurrProcessDate domain);
 

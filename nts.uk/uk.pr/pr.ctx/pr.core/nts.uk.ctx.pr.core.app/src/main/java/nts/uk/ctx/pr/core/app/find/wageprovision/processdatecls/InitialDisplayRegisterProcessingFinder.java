@@ -38,27 +38,21 @@ public class InitialDisplayRegisterProcessingFinder {
 		if (!optProcessInformation.isEmpty()) {
 			for (int i = 0; i < optProcessInformation.size(); i++) {
 				int processCateNo = optProcessInformation.get(i).getProcessCateNo();
-				Optional<SetDaySupport> optSetDaySupport = finderSetDaySupport.getSetDaySupportById(cid, processCateNo);
-				Optional<CurrProcessDate> optCurrProcessDate = finderCurrProcessDate.getCurrProcessDateById(cid,
+				List<SetDaySupport> optSetDaySupport = finderSetDaySupport.getSetDaySupportById(cid, processCateNo);
+				List<CurrProcessDate> optCurrProcessDate = finderCurrProcessDate.getCurrProcessDateById(cid,
 						processCateNo);
-				Optional<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid,
-						processCateNo);
+				List<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid, processCateNo);
 				// TODO //ドメインモデル「雇用」を取得する
 
 				List<ProcessInformationDto> informationDto = optProcessInformation.stream()
 						.map(item -> ProcessInformationDto.fromDomain(item)).collect(Collectors.toList());
-				SetDaySupportDto setDaySupportDto = optSetDaySupport
-						.map(x -> new SetDaySupportDto(x.getCid(), x.getProcessCateNo(), x.getCloseDateTime(),
-								x.getEmpInsurdStanDate(), x.getClosureDateAccounting(), x.getPaymentDate(),
-								x.getEmpExtraRefeDate(), x.getSocialInsurdStanDate(), x.getSocialInsurdCollecMonth(),
-								x.getProcessDate().v(), x.getIncomeTaxDate(), x.getNumberWorkDay()))
-						.orElse(null);
-				CurrProcessDateDto currProcessDateDto = optCurrProcessDate.map(
-						x -> new CurrProcessDateDto(x.getCid(), x.getProcessCateNo(), x.getGiveCurrTreatYear().v()))
-						.orElse(null);
-				EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear
-						.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(), x.getEmploymentCodes().stream().map(item->item.v()).collect(Collectors.toList())))
-						.orElse(null);
+				List<SetDaySupportDto> setDaySupportDto = optSetDaySupport.stream()
+						.map(item -> SetDaySupportDto.fromDomain(item)).collect(Collectors.toList());
+
+				List<CurrProcessDateDto> currProcessDateDto = optCurrProcessDate.stream()
+						.map(item -> CurrProcessDateDto.fromDomain(item)).collect(Collectors.toList());
+				List<EmpTiedProYearDto> empTiedProYearDto = optEmpTiedProYear.stream()
+						.map(item -> EmpTiedProYearDto.fromDomain(item)).collect(Collectors.toList());
 
 				InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,
 						setDaySupportDto, currProcessDateDto, empTiedProYearDto);

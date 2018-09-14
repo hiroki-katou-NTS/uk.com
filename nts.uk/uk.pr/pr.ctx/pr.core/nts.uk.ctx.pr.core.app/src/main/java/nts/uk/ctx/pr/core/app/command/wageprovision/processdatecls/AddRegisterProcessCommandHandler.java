@@ -37,11 +37,10 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 				CurrProcessDate currProcessDate = new CurrProcessDate(cid, processCateNo, giveCurrTreatYear);
 				repoCurrProcessDate.update(currProcessDate);
 				// ドメインモデル「処理年月に紐づく雇用」を取得する
-				Optional<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid,
-						processCateNo);
-				if (dataEmpTiedProYear.isPresent()) {
+				List<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid, processCateNo);
+				if (dataEmpTiedProYear.isEmpty()) {
 					// ドメインモデル「処理年月に紐づく雇用」を更新する
-					List<EmploymentCode> employmentCodes = dataEmpTiedProYear.get().getEmploymentCodes();
+					List<EmploymentCode> employmentCodes = dataEmpTiedProYear.get(giveCurrTreatYear).getEmploymentCodes();
 					EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCodes);
 				} else {
 					// ドメインモデル「処理年月に紐づく雇用」を新規追加する

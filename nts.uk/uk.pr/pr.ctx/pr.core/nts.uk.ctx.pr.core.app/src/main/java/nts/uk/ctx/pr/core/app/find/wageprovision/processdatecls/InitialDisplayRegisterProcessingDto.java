@@ -11,9 +11,9 @@ public class InitialDisplayRegisterProcessingDto {
 
 	private List<ProcessInformationDto> informationDto;
 
-	private SetDaySupportDto setDaySupportDto;
+	private List<SetDaySupportDto> setDaySupportDto;
 
-	private CurrProcessDateDto currProcessDateDto;
+	private List<CurrProcessDateDto> currProcessDateDto;
 
-	private EmpTiedProYearDto empTiedProYearDto;
+	private List<EmpTiedProYearDto> empTiedProYearDto;
 }
