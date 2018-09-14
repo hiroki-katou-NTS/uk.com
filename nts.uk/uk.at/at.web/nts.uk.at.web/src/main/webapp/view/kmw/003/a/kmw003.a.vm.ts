@@ -596,7 +596,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         //self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
                         //                           self.updateDate(self.yearMonth());  
                     }
-                });
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
+                });;
             }
         }
 
