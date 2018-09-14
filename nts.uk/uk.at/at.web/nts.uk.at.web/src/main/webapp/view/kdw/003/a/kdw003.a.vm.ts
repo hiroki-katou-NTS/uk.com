@@ -2471,8 +2471,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                 /** Required parameter */
                 //baseDate: self.baseDate().toISOString(), // 基準日
-                periodStartDate: self.dateRanger() == null ? new Date().toISOString() : new Date(self.dateRanger().startDate).toISOString(), // 対象期間開始日
-                periodEndDate: self.dateRanger() == null ? new Date().toISOString() : new Date(self.dateRanger().endDate).toISOString(), // 対象期間終了日
+                periodStartDate: self.dateRanger() == null ? new Date().toISOString() :  self.dateRanger().startDate, // 対象期間開始日
+                periodEndDate: self.dateRanger() == null ? new Date().toISOString() : self.dateRanger().endDate, // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分

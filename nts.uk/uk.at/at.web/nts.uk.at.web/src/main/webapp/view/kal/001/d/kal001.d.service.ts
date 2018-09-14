@@ -63,9 +63,9 @@ module nts.uk.at.view.kal001.d.service {
             return nts.uk.request.ajax("at", paths.extractStarting);
         }
         
-        export function extractFinished(statusId): JQueryPromise<void>{
+        export function extractFinished(extraParam): JQueryPromise<void>{
             
-            return nts.uk.request.ajax("at", paths.extractFinished, { processStatusId: statusId });
+            return nts.uk.request.ajax("at", paths.extractFinished, extraParam);
         }
     
      export interface CheckConditionTimeDto{

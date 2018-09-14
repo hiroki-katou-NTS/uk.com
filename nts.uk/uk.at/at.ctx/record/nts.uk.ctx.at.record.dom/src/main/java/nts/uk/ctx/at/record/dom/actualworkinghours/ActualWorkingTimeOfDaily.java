@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -141,7 +142,6 @@ public class ActualWorkingTimeOfDaily {
     public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
     	return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
     }
-    
     
 	/**
 	 * 日別実績の実働時間の計算
@@ -512,5 +512,10 @@ public class ActualWorkingTimeOfDaily {
 	}
 	
 	/////****************************************************:大塚専用:********************************************************/////
-
+	public static ActualWorkingTimeOfDaily defaultValue(){
+		return new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(), AttendanceTime.ZERO, 
+											TotalWorkingTime.createAllZEROInstance(), 
+											new DivergenceTimeOfDaily(new ArrayList<>()), 
+											new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+	}
 }

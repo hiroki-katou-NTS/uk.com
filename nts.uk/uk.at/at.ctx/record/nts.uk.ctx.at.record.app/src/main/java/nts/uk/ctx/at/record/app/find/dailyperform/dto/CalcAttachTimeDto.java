@@ -74,19 +74,19 @@ public class CalcAttachTimeDto implements ItemConst {
 	
 	public TimeWithCalculation createTimeWithCalc() {
 		return TimeWithCalculation.createTimeWithCalculation(
-										time == 0 ? new AttendanceTime(0) : new AttendanceTime(time), 
-										calcTime == 0 ? new AttendanceTime(0) : new AttendanceTime(calcTime));
+										time == null ? AttendanceTime.ZERO : new AttendanceTime(time), 
+										calcTime == null ? AttendanceTime.ZERO : new AttendanceTime(calcTime));
 	}
 	
 	public TimeDivergenceWithCalculation createTimeDivWithCalc() {
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(
-										time == null ? new AttendanceTime(0) : new AttendanceTime(time), 
-										calcTime == null ? new AttendanceTime(0) : new AttendanceTime(calcTime));
+										time == null ? AttendanceTime.ZERO : new AttendanceTime(time), 
+										calcTime == null ? AttendanceTime.ZERO : new AttendanceTime(calcTime));
 	}
 	
 	public TimeDivergenceWithCalculationMinusExist createTimeDivWithMinus(){
 		return TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
-				time == null ? new AttendanceTimeOfExistMinus(0) : new AttendanceTimeOfExistMinus(time), 
-				calcTime == null ? new AttendanceTimeOfExistMinus(0) : new AttendanceTimeOfExistMinus(calcTime));
+				time == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(time), 
+				calcTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(calcTime));
 	}
 }

@@ -576,6 +576,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
                                             self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
+                                        countLog++;
                                     } else {
                                         return false;
                                     }

@@ -1457,7 +1457,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set period
                 if (self.showPeriod) {
                     self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                    self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                    self.queryParam.periodEnd = self.periodEnd().endOf("month").format(CcgDateFormat.DEFAULT_FORMAT);
                     if (!self.showBaseDate) {
                         self.acquiredBaseDate(self.queryParam.periodEnd);
                     }

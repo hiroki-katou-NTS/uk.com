@@ -23,7 +23,7 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	/** @see nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute */
 	// @AttendanceItemLayout(layout = "B", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer attr;
+	private int attr;
 
 	/** 開始: 時刻(日区分付き) */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = START, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
@@ -51,10 +51,6 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	}
 	
 	public String enumText() {
-		if (attr == null) {
-			return EMPTY_STRING;
-		}
-
 		switch (attr) {
 		case 0:
 			return E_CHILD_CARE;

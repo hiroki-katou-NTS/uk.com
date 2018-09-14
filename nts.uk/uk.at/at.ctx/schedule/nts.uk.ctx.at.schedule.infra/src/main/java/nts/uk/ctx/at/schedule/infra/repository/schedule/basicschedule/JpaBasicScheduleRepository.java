@@ -20,7 +20,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -61,7 +60,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduleti
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfoPK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
@@ -112,7 +110,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		
-		this.removeAllChildCare(employeeId, date);
+		this.removeAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 	}
 
@@ -165,13 +163,13 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		GeneralDate date = bSchedule.getDate();
 		this.updateScheBasic(bSchedule);
 		
-		this.removeAllChildCare(employeeId, date);
+		this.removeAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 		
-		this.removeAllTimeZone(employeeId, date);
+		this.removeAllTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
 		
-		this.removeAllScheduleBreakTime(employeeId, date);
+		this.removeAllScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheBreak(bSchedule);
 		
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
@@ -241,20 +239,20 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * #delete(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void delete(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
-		this.removeAllChildCare(employeeId, baseDate);
-		this.removeAllTimeZone(employeeId, baseDate);
-		this.removeAllScheduleBreakTime(employeeId, baseDate);
+	public void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule) {
+		this.removeScheduleBasic(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate, basicSchedule.getChildCareSchedules());
+		this.removeAllTimeZone(employeeId, baseDate, basicSchedule.getWorkScheduleTimeZones());
+		this.removeAllScheduleBreakTime(employeeId, baseDate, basicSchedule.getWorkScheduleBreaks());
 		this.removeScheduleTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
 	}
 
 	@Override
-	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate) {
-		this.removeAllTimeZone(employeeId, baseDate);
-		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		this.removeAllChildCare(employeeId, baseDate);
+	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule) {
+		this.removeAllTimeZone(employeeId, baseDate, basicSchedule.getWorkScheduleTimeZones());
+		this.removeAllScheduleBreakTime(employeeId, baseDate, basicSchedule.getWorkScheduleBreaks());
+		this.removeAllChildCare(employeeId, baseDate, basicSchedule.getChildCareSchedules());
 		this.removeScheduleTime(employeeId, baseDate);
 	}
 
@@ -752,6 +750,21 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		
 	}
+	
+	/**
+	 * Removes schedule basic.
+	 * @param employeeId
+	 * @param baseDate
+	 */
+	private void removeScheduleBasic(String employeeId, GeneralDate baseDate){
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BASIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Removes the all child care.
@@ -761,34 +774,27 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 *            the base date
 	 */
-	private void removeAllChildCare(String employeeId, GeneralDate baseDate) {
+	private void removeAllChildCare(String employeeId, GeneralDate baseDate, List<ChildCareSchedule> childCareSchedules) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCMT_CHILD_CARE_SCH (KscdtScheChildCare SQL)
-		CriteriaDelete<KscdtScheChildCare> cq = criteriaBuilder.createCriteriaDelete(KscdtScheChildCare.class);
-
-		// root data
-		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		if(CollectionUtil.isEmpty(childCareSchedules)){
+			return;
+		}
+		
+		List<Integer> listChildCareSchedules = childCareSchedules.stream().map(x -> x.getChildCareNumber().value).collect(Collectors.toList());
+		String listChildCareSchedulesString = "(";
+		for(int i = 0; i < listChildCareSchedules.size(); i++){
+			listChildCareSchedulesString += "'"+ listChildCareSchedules.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listChildCareSchedulesString = listChildCareSchedulesString.substring(0, listChildCareSchedulesString.length() - 1) + ")";
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_CHILD_CARE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'"+ " and CHILD_CARE_NUMBER IN " + listChildCareSchedulesString ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -800,37 +806,27 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 *            the base date
 	 */
-	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
+	private void removeAllTimeZone(String employeeId, GeneralDate baseDate, List<WorkScheduleTimeZone> workScheduleTimeZones) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleTimeZone SQL)
-		CriteriaDelete<KscdtWorkScheduleTimeZone> cq = criteriaBuilder
-				.createCriteriaDelete(KscdtWorkScheduleTimeZone.class);
-
-		// root data
-		Root<KscdtWorkScheduleTimeZone> root = cq.from(KscdtWorkScheduleTimeZone.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		if(CollectionUtil.isEmpty(workScheduleTimeZones)){
+			return;
+		}
+		
+		List<Integer> listCnt = workScheduleTimeZones.stream().map(x -> x.getScheduleCnt()).collect(Collectors.toList());
+		String listCntString = "(";
+		for(int i = 0; i < workScheduleTimeZones.size(); i++){
+			listCntString += "'"+ listCnt.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listCntString = listCntString.substring(0, listCntString.length() - 1) + ")";
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_TIMEZONE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'"+ " and CNT IN " + listCntString ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -937,9 +933,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 */
 	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
-		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(employeeId, baseDate);
-		if (this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).isPresent()) {
-			this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		sqlQuery = "Delete From KSCDT_SCHE_MASTER Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1077,37 +1078,26 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 *            the base date
 	 */
-	private void removeAllScheduleBreakTime(String employeeId, GeneralDate baseDate) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleBreak SQL)
-		CriteriaDelete<KscdtWorkScheduleBreak> cq = criteriaBuilder.createCriteriaDelete(KscdtWorkScheduleBreak.class);
-
-		// root data
-		Root<KscdtWorkScheduleBreak> root = cq.from(KscdtWorkScheduleBreak.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
-
+	private void removeAllScheduleBreakTime(String employeeId, GeneralDate baseDate, List<WorkScheduleBreak> workScheduleBreaks) {
+		if(CollectionUtil.isEmpty(workScheduleBreaks)){
+			return;
+		}
+		
+		List<Integer> listBreakCnt = workScheduleBreaks.stream().map(x -> x.getScheduleBreakCnt().v()).collect(Collectors.toList());
+		String listBreakCntString = "(";
+		for(int i = 0; i < listBreakCnt.size(); i++){
+			listBreakCntString += "'"+ listBreakCnt.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listBreakCntString = listBreakCntString.substring(0, listBreakCntString.length() - 1) + ")";
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BREAK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'"+ " and BREAK_CNT IN " + listBreakCntString ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

@@ -13,12 +13,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
@@ -30,6 +33,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author sonnh1
@@ -53,6 +57,9 @@ public class MonModifyCommandFacade {
 	@Inject
 	private MonthlyRecordWorkFinder finder;
 
+	@Inject
+	private RegisterDayApproval registerDayApproval;
+	
 	public Map<Integer, List<MPItemParent>> insertItemDomain(MPItemParent dataParent) {
 		Map<String, List<MPItemDetail>> mapItemDetail = dataParent.getMPItemDetails().stream()
 				.collect(Collectors.groupingBy(x -> x.getEmployeeId()));
@@ -85,10 +92,23 @@ public class MonModifyCommandFacade {
 		
 		// insert sign
 		this.insertSign(dataParent);
-
+		
+		List<MPItemCheckBox> listRegister = new ArrayList<>();
+		List<MPItemCheckBox> listRemove = new ArrayList<>();
+		for(MPItemCheckBox mpi :dataParent.getDataCheckApproval()) {
+			if(mpi.isValue()) {
+				listRegister.add(mpi);
+			}else {
+				listRemove.add(mpi);
+			}
+		}
+		
 		// insert approval
-//		this.insertApproval(dataParent.getDataCheckApproval());
+		this.insertApproval(listRegister,dataParent.getEndDate());
+		// remove approval		
+		this.removeMonApproval(listRemove,dataParent.getEndDate());
 
+		// add correction log
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
@@ -143,4 +163,25 @@ public class MonModifyCommandFacade {
 		});
 		return listDtos;
 	}
+	
+	private void insertApproval(List<MPItemCheckBox> dataCheckApprovals,GeneralDate endDate) {
+		if(dataCheckApprovals.isEmpty()) return;
+		Set<Pair<String, GeneralDate>> empAndDates = new HashSet<>();
+		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
+			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
+		}
+		registerDayApproval.registerMonApproval(AppContexts.user().userId(), 
+				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
+	}
+
+	public void removeMonApproval(List<MPItemCheckBox> dataCheckApprovals,GeneralDate endDate) {
+		if(dataCheckApprovals.isEmpty()) return;
+		Set<Pair<String, GeneralDate>> empAndDates = new HashSet<>();
+		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
+			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
+		}
+		registerDayApproval.removeMonApproval(AppContexts.user().userId(), 
+				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
+	}
+	
 }

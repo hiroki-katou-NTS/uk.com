@@ -2197,26 +2197,23 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1272, join(MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, REMAIN));
 		temp.put(1273, join(MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, CARRY_FORWARD));
 		temp.put(1274, join(MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, NOT_DIGESTION));
+		
+		temp.put(1275, join(MONTHLY_CHILD_CARE_HD_REMAIN_NAME, USAGE + DAYS));
+		temp.put(1276, join(MONTHLY_CHILD_CARE_HD_REMAIN_NAME, USAGE + DAYS + AFTER));
+		temp.put(1277, join(MONTHLY_CHILD_CARE_HD_REMAIN_NAME, USAGE + TIME));
+		temp.put(1278, join(MONTHLY_CHILD_CARE_HD_REMAIN_NAME, USAGE + TIME + AFTER));
+		
+		temp.put(1279, join(MONTHLY_CARE_HD_REMAIN_NAME, USAGE + DAYS));
+		temp.put(1280, join(MONTHLY_CARE_HD_REMAIN_NAME, USAGE + DAYS + AFTER));
+		temp.put(1281, join(MONTHLY_CARE_HD_REMAIN_NAME, USAGE + TIME));
+		temp.put(1282, join(MONTHLY_CARE_HD_REMAIN_NAME, USAGE + TIME + AFTER));
+		
+		temp.put(1283, join(MONTHLY_REMARKS_NAME, REMARK + NUMBER_1));
+		temp.put(1284, join(MONTHLY_REMARKS_NAME, REMARK + NUMBER_2));
+		temp.put(1285, join(MONTHLY_REMARKS_NAME, REMARK + NUMBER_3));
+		temp.put(1286, join(MONTHLY_REMARKS_NAME, REMARK + NUMBER_4));
+		temp.put(1287, join(MONTHLY_REMARKS_NAME, REMARK + NUMBER_5));
 
-		/**　TODO: chua map 👇👇👇👇👇👇👇👇👇　*/
-		
-		temp.put(1275, "子の看護休暇月別残数データ.使用数	子の看護使用日数");
-		temp.put(1276, "子の看護休暇月別残数データ.使用数付与後	子の看護使用日数付与後");
-		temp.put(1277, "子の看護休暇月別残数データ.使用数	子の看護使用時間");
-		temp.put(1278, "子の看護休暇月別残数データ.使用数付与後	子の看護使用時間付与後");
-		
-		temp.put(1279, "介護休暇情報月別残数データ.使用数	介護使用日数");
-		temp.put(1280, "介護休暇情報月別残数データ.使用数付与後	介護使用日数付与後");
-		temp.put(1281, "介護休暇情報月別残数データ.使用数	介護使用時間");
-		temp.put(1282, "介護休暇情報月別残数データ.使用数付与後	介護使用時間付与後");
-		
-		temp.put(1283, "月別実績の備考．備考	備考	備考欄NO＝1");
-		temp.put(1284, "月別実績の備考．備考	備考	備考欄NO＝2");
-		temp.put(1285, "月別実績の備考．備考	備考	備考欄NO＝3");
-		temp.put(1286, "月別実績の備考．備考	備考	備考欄NO＝4");
-		temp.put(1287, "月別実績の備考．備考	備考	備考欄NO＝5");
-
-		/**　TODO: chua map 👆👆👆👆👆👆👆👆👆👆　*/
 	}
 
 	public static List<Integer> getItemIdByDailyDomains(DailyDomainGroup... domains){

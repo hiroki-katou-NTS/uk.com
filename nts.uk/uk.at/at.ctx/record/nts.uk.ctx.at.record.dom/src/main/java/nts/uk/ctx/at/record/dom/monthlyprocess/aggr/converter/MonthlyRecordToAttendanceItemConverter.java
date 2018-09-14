@@ -8,6 +8,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
@@ -55,6 +56,8 @@ public interface MonthlyRecordToAttendanceItemConverter {
 
 	MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain);
 
+	MonthlyRecordToAttendanceItemConverter withRemarks(List<RemarksMonthlyRecord> domain);
+
 	MonthlyRecordToAttendanceItemConverter completed();
 	
 	Optional<AffiliationInfoOfMonthly> toAffiliation();
@@ -72,4 +75,6 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	List<SpecialHolidayRemainData> toSpecialHoliday();
 	
 	Optional<AbsenceLeaveRemainData> toAbsenceLeave();
+	
+	List<RemarksMonthlyRecord> toRemarks();
 }

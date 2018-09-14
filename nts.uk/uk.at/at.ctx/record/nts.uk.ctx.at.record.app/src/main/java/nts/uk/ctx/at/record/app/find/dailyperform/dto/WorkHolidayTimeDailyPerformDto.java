@@ -84,32 +84,31 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 		return new HolidayWorkTimeOfDaily(
 				ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
 						(c) -> new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(c.getHolidayWorkFrameNo()),
-								c.getTimeSheet() == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getTimeSheet().getStart()),
-										toTimeWithDayAttr(c.getTimeSheet().getEnd())))),
+								createTimeSheet(c.getTimeSheet()))),
 				ConvertHelper.mapTo(holidayWorkFrameTime,
 						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getNo()),
 								createTimeWithCalc(c.getHolidayWorkTime()),
 								createTimeWithCalc(c.getTransferTime()),
 								c.getBeforeApplicationTime() == null ? Finally.empty() 
 										: Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				holidayMidnightWork == null ? Finally.of(new HolidayMidnightWork(Arrays.asList(
-						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
-						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
-						 new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.PublicHolidayWork))))
-											: holidayMidnightWork.toDomain() == null ? Finally.empty()
-											 :Finally.of(holidayMidnightWork.toDomain()),
+				holidayMidnightWork == null ? Finally.of(HolidayMidnightWorkDto.createDefaul())
+											: Finally.of(holidayMidnightWork.toDomain()),
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
-
+	
+	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {
+		return c == null ? new TimeSpanForCalc(TimeWithDayAttr.THE_PRESENT_DAY_0000, TimeWithDayAttr.THE_PRESENT_DAY_0000) 
+				: new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
+	}
 	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))) : Finally.of(c.createTimeDivWithCalc());
+		return c == null ? Finally.of(TimeDivergenceWithCalculation.defaultValue()) : Finally.of(c.createTimeDivWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
-		return time == null ? null : new TimeWithDayAttr(time);
+		return time == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(time);
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
+		return time == null ? AttendanceTime.ZERO : new AttendanceTime(time);
 	}
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.information.care;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,49 +27,49 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 	public Optional<MonCareHdRemain> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findByDate(String employeeId, GeneralDate criteriaDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<MonCareHdRemain> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
-	public void persistAndUpdate(RemarksMonthlyRecord remarksMonthlyRecord) {
+	public void persistAndUpdate(MonCareHdRemain monCare) {
 		// TODO Auto-generated method stub
 		
 	}

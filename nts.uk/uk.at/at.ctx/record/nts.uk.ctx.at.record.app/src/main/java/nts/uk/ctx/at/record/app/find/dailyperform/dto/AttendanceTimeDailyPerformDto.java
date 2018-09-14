@@ -1,22 +1,20 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
+import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /** 日別実績の勤怠時間 */
@@ -117,10 +115,10 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new AttendanceTimeOfDailyPerformance(emp, date,
-				scheduleTime == null ? null : scheduleTime.toDomain(), 
-				actualWorkTime == null ? null : actualWorkTime.toDomain(),
-				stayingTime == null ? null : stayingTime.toDomain(), 
-				budgetTimeVariance == null ? null : new AttendanceTimeOfExistMinus(budgetTimeVariance),
-				unemployedTime == null ? null : new AttendanceTimeOfExistMinus(unemployedTime));
+				scheduleTime == null ? WorkScheduleTimeOfDaily.defaultValue() : scheduleTime.toDomain(), 
+				actualWorkTime == null ? ActualWorkingTimeOfDaily.defaultValue() : actualWorkTime.toDomain(),
+				stayingTime == null ? StayingTimeDto.defaultDomain() : stayingTime.toDomain(), 
+				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
+				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime));
 	}
 }
