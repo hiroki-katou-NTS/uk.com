@@ -123,6 +123,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         stockDis: KnockoutObservable<boolean> = ko.observable(false);
         //ver20
         disAll: KnockoutObservable<boolean> = ko.observable(false);
+        //ver21
+        relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
 
             let self = this;
@@ -169,6 +171,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //ver21
+                    let relaS = self.findRelaSelected(codeChange);
+                    self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
             });
             self.isCheck.subscribe(function(checkChange){
@@ -188,7 +193,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
             });
         }
-        
+        findRelaSelected(relaCD: string): any{
+            let self = this;
+            return _.find(self.relationCombo(), function(rela){
+                return rela.relationCd == relaCD;
+            });
+        }
         /**
          * 
          */
@@ -374,7 +384,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.relationCombo([]);
             let lstRela = [];
             _.each(data.lstRela, function(rela){
-                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
+                        maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;

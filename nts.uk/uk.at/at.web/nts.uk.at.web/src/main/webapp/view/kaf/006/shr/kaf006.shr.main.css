@@ -173,3 +173,7 @@ div.form-label.broken {
 .display1{
 	display: none;
 }
+.limit-fix{
+	margin-top: 1px;
+	margin-left: 150px;
+}
