@@ -83,7 +83,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					|| !startDateshime.beforeOrEquals(workDate.end())) {
 				continue;
 			}
-			count += 1;
 			//社員の申請を反映 (Phản ánh nhân viên)
 			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, 
 					optRequesSetting.get(), aprResult, dataSetter)) {
