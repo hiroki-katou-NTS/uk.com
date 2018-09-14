@@ -215,11 +215,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-//		List<KrcdtSyainDpErList> result = findEntities(sid, date);
-//		if (!result.isEmpty()) {
-//			commandProxy().removeAll(result);
-//		}
+//   	List<KrcdtSyainDpErList> result = findEntities(sid, date);
+// 		if (!result.isEmpty()) {
+// 		commandProxy().removeAll(result);
+// 		}
 	}
 
 	@Override
@@ -267,24 +266,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public boolean checkExistErrorByDate(String companyId, String employeeId, GeneralDate date) {
-		/*
-		 * StringBuilder builderString = new StringBuilder();
-		 * builderString.append("SELECT a ");
-		 * builderString.append("FROM KrcdtSyainDpErList a "); builderString.
-		 * append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		 * builderString.
-		 * append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
-		 * builderString.
-		 * append("AND a.krcdtSyainDpErListPK.processingDate = :date ");
-		 * Optional<KrcdtSyainDpErList> entyti =
-		 * this.queryProxy().query(builderString.toString(),
-		 * KrcdtSyainDpErList.class) .setParameter("companyId", companyId)
-		 * .setParameter("employeeId", employeeId) .setParameter("date",
-		 * date).getSingle();
-		 * 
-		 * return entyti.isPresent()?true:false;
-		 */
-		return false;
+
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.companyID = :companyId ");
+		builderString.append("AND a.processingDate = :date ");
+		Optional<KrcdtSyainDpErList> entyti = this.queryProxy()
+				.query(builderString.toString(), KrcdtSyainDpErList.class).setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId).setParameter("date", date).getSingle();
+
+		return entyti.isPresent() ? true : false;
 	}
 
 	@Override
@@ -293,6 +286,22 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.setParameter("employeeId", employeeID).setParameter("processingDate", date)
 				.setParameter("errorCode", errorCode).executeUpdate();
 		this.getEntityManager().flush();
+	}
+
+	private static final String CHECK_ERROR_BY_DATE = "SELECT a FROM KrcdtSyainDpErList a "
+			+ "WHERE a.employeeId = :employeeId "
+			+ "AND a.companyID = :companyId "
+			+ "AND a.processingDate >= :strDate "
+			+ "AND a.processingDate <= :endDate ";
+	
+	@Override
+	public boolean checkErrorByPeriodDate(String companyId, String employeeId, GeneralDate strDate, GeneralDate endDate) {
+		return this.queryProxy().query(CHECK_ERROR_BY_DATE, KrcdtSyainDpErList.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("strDate", strDate)
+				.setParameter("endDate", endDate)
+				.getList().size() > 0;
 	}
 
 }

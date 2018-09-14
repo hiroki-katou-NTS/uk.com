@@ -32,7 +32,7 @@ public class TimeZoneRounding extends TimeZone {
 	public TimeZoneRounding(TimeWithDayAttr start, TimeWithDayAttr end,
 			TimeRoundingSetting rounding) {
 		super(start, end);
-		this.rounding = rounding;
+		this.rounding = rounding != null ? rounding : new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
 	}
 
 	/**

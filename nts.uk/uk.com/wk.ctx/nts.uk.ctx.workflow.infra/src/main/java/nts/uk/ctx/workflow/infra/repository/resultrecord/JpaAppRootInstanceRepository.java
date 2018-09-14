@@ -68,26 +68,33 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" order by appRoot.START_DATE desc";
 	
-	private final String SELECT_START_HISTORY = "SELECT TOP 1 START_DATE FROM (" + BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + 
+			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result1 order by START_DATE desc";
-	
-	/*private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
-			BASIC_SELECT + " WHERE appRoot.ROOT_ID NOT IN (SELECT ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <" +
-			" (SELECT TOP 1 START_DATE FROM WWFDT_APP_ROOT_INSTANCE WHERE START_DATE <= 'startDate'" +
-			" AND ROOT_TYPE = rootType order by START_DATE DESC))) result"+
-			" WHERE result.START_DATE <= 'endDate'"+
-			" AND result.APPROVER_CHILD_ID IN (employeeIDLst)"+
-			" AND result.CID = 'companyID'";*/
-	
-	private final String FIND_BY_EMP_PERIOD = BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+			" AND appRoot.START_DATE > 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'"+
+			" UNION"+
+			" SELECT TOP 1 * FROM ("+
+			BASIC_SELECT + 
+			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE >=(" + SELECT_START_HISTORY +
-			" ) AND appRoot.START_DATE <= 'endDate'";
+			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+	
+	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
+			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.START_DATE > 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'"+
+			" UNION"+
+			" SELECT TOP 1 * FROM ("+
+			BASIC_SELECT + 
+			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -268,7 +275,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		String companyID =  AppContexts.user().companyId();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
-			String query = FIND_BY_EMP_PERIOD;
+			String query = FIND_BY_EMPS_PERIOD;
 			
 			String employeeIDLstParam = "";
 			if(CollectionUtil.isEmpty(employeeIDLst)){
@@ -283,6 +290,32 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			}
 			query = query.replaceAll("companyID", companyID);
 			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
+			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(!CollectionUtil.isEmpty(listResult)){
+				return listResult;
+			} else {
+				return Collections.emptyList();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period,
+			RecordRootType rootType) {
+		String companyID =  AppContexts.user().companyId();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_APPROVER_PERIOD;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("approverID", approverID);
 			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 			query = query.replaceAll("rootType", String.valueOf(rootType.value));

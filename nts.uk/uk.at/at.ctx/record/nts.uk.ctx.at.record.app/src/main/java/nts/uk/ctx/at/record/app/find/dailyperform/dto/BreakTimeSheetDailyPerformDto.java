@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,7 +59,17 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 										getTime(c.getEndTime()), 
 										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
-						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
+						domain.getGooutTimes() == null ? 0 : domain.getGooutTimes().v());
+	}
+
+	@Override
+	public BreakTimeSheetDailyPerformDto clone() {
+		return new BreakTimeSheetDailyPerformDto(
+						toRecordTotalTime == null ? null : toRecordTotalTime.clone(),
+						toRecordTotalTime == null ? null : toRecordTotalTime.clone(),
+						duringWork,
+						correctedTimeSheet == null ? null : correctedTimeSheet.stream().map(t -> t.clone()).collect(Collectors.toList()),
+						breakTimes);
 	}
 	
 	private static Integer getTime(TimeWithDayAttr domain) {
@@ -70,15 +82,21 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 	
 	public BreakTimeOfDaily toDmain(){
 		return new BreakTimeOfDaily(createDeductionTime(toRecordTotalTime), createDeductionTime(deductionTotalTime), 
-				breakTimes == null ? null : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? null : new AttendanceTime(duringWork), 
+						breakTimes == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(breakTimes), 
+						duringWork == null ? AttendanceTime.ZERO : new AttendanceTime(duringWork), 
 						ConvertHelper.mapTo(correctedTimeSheet, c -> new BreakTimeSheet(
 												new BreakFrameNo(c.getNo()), 
-												c.getStart() == null ? null : new TimeWithDayAttr(c.getStart()),
-												c.getEnd() == null ? null : new TimeWithDayAttr(c.getEnd()), 
-												c.getBreakTime() == null ? null : new AttendanceTime(c.getBreakTime()))));
+												c.getStart() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getStart()),
+												c.getEnd() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getEnd()), 
+												c.getBreakTime() == null ? AttendanceTime.ZERO : new AttendanceTime(c.getBreakTime()))));
+	}
+	
+	public static BreakTimeOfDaily defaultValue(){
+		return new BreakTimeOfDaily(DeductionTotalTime.defaultValue(), DeductionTotalTime.defaultValue(), 
+						new BreakTimeGoOutTimes(0), AttendanceTime.ZERO, new ArrayList<>());
 	}
 	
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
-		return dto == null ? null : dto.createDeductionTime();
+		return dto == null ? DeductionTotalTime.defaultValue() : dto.createDeductionTime();
 	}
 }

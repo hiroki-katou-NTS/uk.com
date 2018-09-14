@@ -1706,152 +1706,154 @@ module nts.custombinding {
                             x.endDate = ko.observable();
                         });
 
-                    // validate date, time, timepoint range
-                    _(controls)
-                        .filter((x: any) => x.type == ITEM_TYPE.SET)
-                        .each((x: any) => {
-                            let childs: Array<any> = _(controls)
-                                .filter((c: any) => c.itemParentCode == x.itemCode)
-                                //.orderBy(c => c)
-                                .value(),
-                                is_range = _.filter(childs, (c: any) => c.item && range.indexOf(c.item.dataTypeValue) > -1);
+                    if ($editable === 2) {
+                        // validate date, time, timepoint range
+                        _(controls)
+                            .filter((x: any) => x.type == ITEM_TYPE.SET)
+                            .each((x: any) => {
+                                let childs: Array<any> = _(controls)
+                                    .filter((c: any) => c.itemParentCode == x.itemCode)
+                                    //.orderBy(c => c)
+                                    .value(),
+                                    is_range = _.filter(childs, (c: any) => c.item && range.indexOf(c.item.dataTypeValue) > -1);
 
-                            if (childs.length == 2 && childs.length == is_range.length) {
-                                let first: any = childs[0],
-                                    second: any = childs[1],
-                                    validate = (prev: any, next: any) => {
-                                        let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
-                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
+                                if (childs.length == 2 && childs.length == is_range.length) {
+                                    let first: any = childs[0],
+                                        second: any = childs[1],
+                                        validate = (prev: any, next: any) => {
+                                            let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
+                                                id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        let _bind = $(document).data('_nts_bind') || {};
+                                            let _bind = $(document).data('_nts_bind') || {};
 
-                                        if (!_bind[`BLUR_${id1}_${id2}`]) {
-                                            _bind[`BLUR_${id1}_${id2}`] = true;
-                                            $(document).data('_nts_bind', _bind);
+                                            if (!_bind[`BLUR_${id1}_${id2}`]) {
+                                                _bind[`BLUR_${id1}_${id2}`] = true;
+                                                $(document).data('_nts_bind', _bind);
 
-                                            $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                                let tout = setTimeout(() => {
-                                                    let dom1 = $(id1),
-                                                        dom2 = $(id2),
-                                                        pv = ko.toJS(prev.value),
-                                                        nv = ko.toJS(next.value),
-                                                        tpt = _.isNumber(pv),
-                                                        tnt = _.isNumber(nv);
+                                                $(document).on('blur', `${id1}, ${id2}`, (evt) => {
+                                                    let tout = setTimeout(() => {
+                                                        let dom1 = $(id1),
+                                                            dom2 = $(id2),
+                                                            pv = ko.toJS(prev.value),
+                                                            nv = ko.toJS(next.value),
+                                                            tpt = _.isNumber(pv),
+                                                            tnt = _.isNumber(nv);
 
-                                                    if (!tpt && tnt) {
-                                                        if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
-                                                            dom1.ntsError('set', { messageId: "Msg_858" });
+                                                        if (!tpt && tnt) {
+                                                            if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                                dom1.ntsError('set', { messageId: "Msg_858" });
+                                                            }
+                                                        } else {
+                                                            rmError(dom1, "Msg_858");
                                                         }
-                                                    } else {
-                                                        rmError(dom1, "Msg_858");
-                                                    }
 
-                                                    if (tpt && !tnt) {
-                                                        if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
-                                                            dom2.ntsError('set', { messageId: "Msg_858" });
+                                                        if (tpt && !tnt) {
+                                                            if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                                dom2.ntsError('set', { messageId: "Msg_858" });
+                                                            }
+                                                        } else {
+                                                            rmError(dom2, "Msg_858");
                                                         }
-                                                    } else {
-                                                        rmError(dom2, "Msg_858");
-                                                    }
-                                                    clearTimeout(tout);
-                                                }, 5);
-                                            });
+                                                        clearTimeout(tout);
+                                                    }, 5);
+                                                });
+                                            }
+                                        };
+
+                                    if (first.item.dataTypeValue == second.item.dataTypeValue) {
+                                        switch (first.item.dataTypeValue) {
+                                            case ITEM_SINGLE_TYPE.DATE:
+                                                first.startDate = ko.observable();
+                                                first.endDate = ko.computed({
+                                                    read: () => {
+                                                        return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
+                                                            .toDate();
+                                                    },
+                                                    disposeWhen: () => !second.value
+                                                });
+
+                                                second.startDate = ko.computed({
+                                                    read: () => {
+                                                        return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
+                                                            .toDate();
+                                                    },
+                                                    disposeWhen: () => !first.value
+                                                });
+                                                second.endDate = ko.observable();
+                                                break;
+                                            case ITEM_SINGLE_TYPE.TIME:
+                                                validate(first, second);
+                                                ko.computed({
+                                                    read: () => {
+                                                        let v = ko.toJS(first.value),
+                                                            t = typeof v == 'number',
+                                                            clone = _.cloneDeep(second);
+
+                                                        clone.item.min = first.value() + 1;
+
+                                                        let primi = primitiveConst(t ? clone : second);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    },
+                                                    disposeWhen: () => !first.value
+                                                });
+
+                                                ko.computed({
+                                                    read: () => {
+                                                        let v = ko.toJS(second.value),
+                                                            t = typeof v == 'number',
+                                                            clone = _.cloneDeep(first);
+
+                                                        clone.item.max = second.value() - 1;
+
+                                                        let primi = primitiveConst(t ? clone : first);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    },
+                                                    disposeWhen: () => !second.value
+                                                });
+                                                break;
+                                            case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                                validate(first, second);
+                                                ko.computed({
+                                                    read: () => {
+                                                        let v = ko.toJS(first.value),
+                                                            t = typeof v == 'number',
+                                                            clone = _.cloneDeep(second);
+
+                                                        clone.item.timePointItemMin = first.value() + 1;
+
+                                                        let primi = primitiveConst(t ? clone : second);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    },
+                                                    disposeWhen: () => !first.value
+                                                });
+
+                                                ko.computed({
+                                                    read: () => {
+                                                        let v = ko.toJS(second.value),
+                                                            t = typeof v == 'number',
+                                                            clone = _.cloneDeep(first);
+
+                                                        clone.item.timePointItemMax = second.value() - 1;
+
+                                                        let primi = primitiveConst(t ? clone : first);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    },
+                                                    disposeWhen: () => !second.value
+                                                });
+                                                break;
                                         }
-                                    };
-
-                                if (first.item.dataTypeValue == second.item.dataTypeValue) {
-                                    switch (first.item.dataTypeValue) {
-                                        case ITEM_SINGLE_TYPE.DATE:
-                                            first.startDate = ko.observable();
-                                            first.endDate = ko.computed({
-                                                read: () => {
-                                                    return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
-                                                        .toDate();
-                                                },
-                                                disposeWhen: () => !second.value
-                                            });
-
-                                            second.startDate = ko.computed({
-                                                read: () => {
-                                                    return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
-                                                        .toDate();
-                                                },
-                                                disposeWhen: () => !first.value
-                                            });
-                                            second.endDate = ko.observable();
-                                            break;
-                                        case ITEM_SINGLE_TYPE.TIME:
-                                            validate(first, second);
-                                            ko.computed({
-                                                read: () => {
-                                                    let v = ko.toJS(first.value),
-                                                        t = typeof v == 'number',
-                                                        clone = _.cloneDeep(second);
-
-                                                    clone.item.min = first.value() + 1;
-
-                                                    let primi = primitiveConst(t ? clone : second);
-
-                                                    exceptConsts.push(primi.itemCode);
-                                                    writeConstraint(primi.itemCode, primi);
-                                                },
-                                                disposeWhen: () => !first.value
-                                            });
-
-                                            ko.computed({
-                                                read: () => {
-                                                    let v = ko.toJS(second.value),
-                                                        t = typeof v == 'number',
-                                                        clone = _.cloneDeep(first);
-
-                                                    clone.item.max = second.value() - 1;
-
-                                                    let primi = primitiveConst(t ? clone : first);
-
-                                                    exceptConsts.push(primi.itemCode);
-                                                    writeConstraint(primi.itemCode, primi);
-                                                },
-                                                disposeWhen: () => !second.value
-                                            });
-                                            break;
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            validate(first, second);
-                                            ko.computed({
-                                                read: () => {
-                                                    let v = ko.toJS(first.value),
-                                                        t = typeof v == 'number',
-                                                        clone = _.cloneDeep(second);
-
-                                                    clone.item.timePointItemMin = first.value() + 1;
-
-                                                    let primi = primitiveConst(t ? clone : second);
-
-                                                    exceptConsts.push(primi.itemCode);
-                                                    writeConstraint(primi.itemCode, primi);
-                                                },
-                                                disposeWhen: () => !first.value
-                                            });
-
-                                            ko.computed({
-                                                read: () => {
-                                                    let v = ko.toJS(second.value),
-                                                        t = typeof v == 'number',
-                                                        clone = _.cloneDeep(first);
-
-                                                    clone.item.timePointItemMax = second.value() - 1;
-
-                                                    let primi = primitiveConst(t ? clone : first);
-
-                                                    exceptConsts.push(primi.itemCode);
-                                                    writeConstraint(primi.itemCode, primi);
-                                                },
-                                                disposeWhen: () => !second.value
-                                            });
-                                            break;
                                     }
                                 }
-                            }
-                        });
+                            });
+                    }
                 },
                 // define common function for init new item value
                 isStr = (item: any) => {
@@ -2585,14 +2587,12 @@ module nts.custombinding {
                     hierarchies(x);
                 });
 
-                if ($editable === 2) {
-                    // clear all error on switch new layout
-                    clearError();
+                // clear all error on switch new layout
+                clearError();
 
-                    // write date/time/timepoint 
-                    // primitive constraint to viewContext
-                    dateTimeConsts();
-                }
+                // write date/time/timepoint 
+                // primitive constraint to viewContext
+                dateTimeConsts();
 
                 // write primitive constraints to viewContext
                 primitiveConsts();

@@ -23,7 +23,7 @@ public class WorkTimeValidationSevice {
 	 */
 	public static void validate(WorkTimeDomainObject obj) {
 		// Create new Bundled business exception.
-		BundledBusinessException bundledBusinessException = obj.getBundledBusinessExceptions();
+		WorkTimeDomainObject.BundledBusinessExceptionBuffer bundledBusinessException = obj.getBundledBusinessExceptions();
 		
 		for (Field field : obj.getClass().getDeclaredFields()) {
 			Object fieldValue = ReflectionUtil.getFieldValue(field, obj);
@@ -33,10 +33,10 @@ public class WorkTimeValidationSevice {
 				try {
 					((Validatable) fieldValue).validate();
 				} catch (BusinessException e) {
-					bundledBusinessException.addMessage(e);
+					bundledBusinessException.add(e);
 					continue;
 				} catch (BundledBusinessException e) {
-					bundledBusinessException.addMessage(e.cloneExceptions());
+					bundledBusinessException.addAll(e.cloneExceptions());
 					continue;
 				}
 			} else {
@@ -45,18 +45,18 @@ public class WorkTimeValidationSevice {
 				try {
 					validateCollectionIfItIsCollection(fieldValue);
 				} catch (BundledBusinessException e) {
-					bundledBusinessException.addMessage(e.cloneExceptions());
+					bundledBusinessException.addAll(e.cloneExceptions());
 					continue;
 				} catch (BusinessException e) {
-					bundledBusinessException.addMessage(e);
+					bundledBusinessException.add(e);
 					continue;
 				}
 			}
 		}
 		
 		// Throw BundledBusinessException.
-		if (!bundledBusinessException.cloneExceptions().isEmpty()) {
-			throw bundledBusinessException;
+		if (!bundledBusinessException.isEmpty()) {
+			throw bundledBusinessException.bundle();
 		}
 	}
 

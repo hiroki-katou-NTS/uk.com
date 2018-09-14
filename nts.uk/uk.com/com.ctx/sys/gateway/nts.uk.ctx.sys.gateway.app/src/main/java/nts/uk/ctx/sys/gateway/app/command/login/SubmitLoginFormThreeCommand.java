@@ -63,7 +63,7 @@ public class SubmitLoginFormThreeCommand {
 	 * @return the employee code
 	 */
 	public String getEmployeeCode() {
-		return employeeCode.trim();
+		return employeeCode;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class SubmitLoginFormThreeCommand {
 	 *            the new employee code
 	 */
 	public void setEmployeeCode(String employeeCode) {
-		this.employeeCode = employeeCode.trim();
+		this.employeeCode = employeeCode;
 	}
 
 	/**

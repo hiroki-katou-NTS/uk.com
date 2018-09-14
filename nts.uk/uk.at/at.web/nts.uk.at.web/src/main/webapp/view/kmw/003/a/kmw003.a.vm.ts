@@ -448,6 +448,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                         dfd.reject();
                     });
+                } else if (error.errors.length > 0) {
+                    nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
                         nts.uk.request.jumpToTopPage();
@@ -841,9 +845,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     let yearMonthNew: any = +moment.utc(dataList.periodEnd, 'YYYYMMDD').format('YYYYMM'),
                         yearMonthOld = self.yearMonth();
                     self.yearMonth(yearMonthNew);
-                    if(yearMonthNew == yearMonthOld){
-                        self.yearMonth.valueHasMutated();                        
-                    }
+                    if (yearMonthNew == yearMonthOld) {
+                        self.yearMonth.valueHasMutated();
+                    }                        
                 },
             }
         };
