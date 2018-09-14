@@ -1,15 +1,16 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionContributionRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
-
-import java.util.Optional;
-
-import javax.ejb.Stateless;
 
 @Stateless
 public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepository implements BonusEmployeePensionInsuranceRateRepository {
@@ -36,4 +37,14 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
                 femaleContributionRate,
                 fractionClassification);
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtBonusEmployeePensionInsuranceRate.class, historyIds);
+	}
+	
+	@Override
+	public void add(BonusEmployeePensionInsuranceRate domain) {
+		this.commandProxy().insert(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	}
 }

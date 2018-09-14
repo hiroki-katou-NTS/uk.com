@@ -20,7 +20,7 @@ import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.Soc
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuPreInfoDto;
 import nts.uk.ctx.core.app.find.system.socialinsuranceoffice.SocialSuranOfficeFinder;
 
-@Path("basic/system/social")
+@Path("ctx/pr/core/socialinsurance/socialinsuranceoffice")
 @Produces("application/json")
 public class SocialOfficeService {
 	
@@ -43,7 +43,10 @@ public class SocialOfficeService {
 	@Path("/start")
 	public DataResponseDto startScreen() {
 		SociaInsuOfficeDto sociaInsuOfficeDetail = new SociaInsuOfficeDto();
+		
+		// ドメインモデル「社会保険用都道府県履歴」を取得する
 		List<SociaInsuPreInfoDto> data = socialSuranOfficeFinder.findAll();
+		
 		List<CusSociaInsuOfficeDto> dataCodeName = socialSuranOfficeFinder.findByCid();
 		if(dataCodeName.isEmpty()) {
 			sociaInsuOfficeDetail = socialSuranOfficeFinder.findByKey(dataCodeName.get(0).getCode());
@@ -64,18 +67,20 @@ public class SocialOfficeService {
 	
 	@POST
 	@Path("/create")
-	public void createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
-		this.createSocialOfficeCommandHandler.handle(createSocialOfficeCommand);
+	public String createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
+		return this.createSocialOfficeCommandHandler.handle(createSocialOfficeCommand);
 	}
 	
 	@POST
 	@Path("/update")
-	public void updateSociaInsuOffice(UpdateSocialOfficeCommand updateSocialOfficeCommand) {
-		this.updateSocialOfficeCommandHandler.handle(updateSocialOfficeCommand);
+	public String updateSociaInsuOffice(UpdateSocialOfficeCommand updateSocialOfficeCommand) {
+		return this.updateSocialOfficeCommandHandler.handle(updateSocialOfficeCommand);
 	}
 	
-	public void deleteSociaInsuOffice(FindSocialOfficeCommand findSocialOfficeCommand) {
-		this.deleteSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
+	@POST
+	@Path("/remove")
+	public String deleteSociaInsuOffice(FindSocialOfficeCommand findSocialOfficeCommand) {
+		return this.deleteSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
 	}
 	
 }

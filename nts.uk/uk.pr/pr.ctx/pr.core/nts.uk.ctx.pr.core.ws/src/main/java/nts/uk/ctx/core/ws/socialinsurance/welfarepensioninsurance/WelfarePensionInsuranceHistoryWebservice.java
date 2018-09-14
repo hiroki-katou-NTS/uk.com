@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.ws.system.welfarepensioninsurance;
+package nts.uk.ctx.core.ws.socialinsurance.welfarepensioninsurance;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

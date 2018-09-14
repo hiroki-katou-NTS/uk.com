@@ -6,6 +6,8 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceR
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtBonusHealthInsuranceRate;
 
 import javax.ejb.Stateless;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,4 +36,9 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
                 domain.getIndividualBurdenRatio().getLongCareInsuranceRate().v(), domain.getIndividualBurdenRatio().getBasicInsuranceRate().v(), domain.getIndividualBurdenRatio().getHealthInsuranceRate().v(), domain.getIndividualBurdenRatio().getFractionCls().value, domain.getIndividualBurdenRatio().getSpecialInsuranceRate().v(),
                 domain.getEmployeeBurdenRatio().getLongCareInsuranceRate().v(), domain.getEmployeeBurdenRatio().getBasicInsuranceRate().v(), domain.getEmployeeBurdenRatio().getHealthInsuranceRate().v(), domain.getEmployeeBurdenRatio().getFractionCls().value, domain.getEmployeeBurdenRatio().getSpecialInsuranceRate().v());
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtBonusHealthInsuranceRate.class, historyIds);
+	}
 }

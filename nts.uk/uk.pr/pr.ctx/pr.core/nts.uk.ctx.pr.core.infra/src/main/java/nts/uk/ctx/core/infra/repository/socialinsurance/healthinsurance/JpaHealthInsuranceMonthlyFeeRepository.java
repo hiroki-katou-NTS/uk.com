@@ -54,4 +54,9 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
                 )).collect(Collectors.toList())
         );
     }
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+	}
 }

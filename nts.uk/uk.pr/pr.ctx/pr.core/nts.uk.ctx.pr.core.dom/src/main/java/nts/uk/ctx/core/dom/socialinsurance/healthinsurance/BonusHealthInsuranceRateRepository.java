@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,4 +14,6 @@ public interface BonusHealthInsuranceRateRepository {
      * @return Optional<BonusHealthInsuranceRate>
      */
     Optional<BonusHealthInsuranceRate> getBonusHealthInsuranceRateById(String historyId);
+    
+    void deleteByHistoryIds(List<String> historyIds);
 }

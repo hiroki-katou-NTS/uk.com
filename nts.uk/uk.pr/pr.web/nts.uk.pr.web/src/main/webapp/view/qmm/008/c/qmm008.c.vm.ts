@@ -1,11 +1,12 @@
-module nts.uk.com.view.qmm008.c.viewmodel {
+module nts.uk.pr.view.qmm008.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
-    import model = nts.uk.com.view.qmm008.share.model;
+    import model = nts.uk.pr.view.qmm008.share.model;
+    import service = nts.uk.pr.view.qmm008.c.service;
     export class ScreenModel {
 
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -20,7 +21,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
 
         // Welfare Item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '' });
-        welfareInsuranceRateHistory: KnockoutObservable<model.WelfarePensionInsuranceRateHistory> = ko.observable({});
+        welfareInsuranceRateHistory: KnockoutObservable<model.WelfarePensionInsuranceRateHistory> = ko.observable(null);
         employeeMonthlyInsuFee: KnockoutObservable<model.EmployeePensionMonthlyInsuFee> = ko.observable(null);
         welfareInsuranceClassification: KnockoutObservable<model.WelfarePensionInsuranceClassification> = ko.observable(null);
         bonusEmployeePensionInsuranceRate: KnockoutObservable<model.BonusEmployeePensionInsuranceRate> = ko.observable(null);
@@ -31,117 +32,36 @@ module nts.uk.com.view.qmm008.c.viewmodel {
             $("#C3").ntsFixedTable({});
             $("#C4").ntsFixedTable({});
             $("#C5").ntsFixedTable({});
-            let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
-            for (let i = 0; i < 5; i++) {
-                let pensionItem: model.IWelfarePensionInsuranceRateHistory = { socialInsuranceCode: "0001" + i, companyID: 'Name' + i, history: [] };
-                for (let j = 0; j < i; j++) {
-                    pensionItem.history.push({ historyId: nts.uk.util.randomId(), start: '20180' + (j + 5), end: '20180' + (j + 6) });
-                }
-                let officeItem: model.ISocialInsuranceOffice = {
-                    code: '000' + i,
-                    name: 'Workplace' + i,
-                    basicInfomation: null,
-                    insuranceMasterInfomation: null,
-                    companyID: '000000000000-0001',
-                    welfareInsuranceRateHistory: pensionItem
-                }
-                socailInsuranceOfficeList.push(new model.SocialInsuranceOffice(officeItem));
-            }
-            self.socialInsuranceOfficeList(socailInsuranceOfficeList);
-            self.convertToTreeGridList();
+            self.initBlankData();
             self.watchDataChanged();
-            self.initExistedData();
-        }
-        initExistedData() {
-            let self = this;
-            self.initWelfareInsuranceCls();
-            self.initEmployeeMonthlyInsuFee();
-            self.initBonusPensionInsuranceRate();
-        }
-        initEmployeeMonthlyInsuFee() {
-            let self = this;
-            let empContributionFee: model.IContributionFee = {
-                maleInsurancePremium: 33.33,
-                femaleInsurancePremium: 44.44,
-                maleExemptionInsurance: 55.55,
-                femaleExemptionInsurance: 66.66
-            }
-            let insuContributionFee: model.IContributionFee = {
-                maleInsurancePremium: 33.33,
-                femaleInsurancePremium: 44.44,
-                maleExemptionInsurance: 55.55,
-                femaleExemptionInsurance: 66.66
-            }
-            let gradeWelfareInsuPremium: model.IGradeWelfarePensionInsurancePremium = {
-                welfarePensionGrade: 1,
-                employeeBurden: empContributionFee,
-                insuredBurden: insuContributionFee
-
-            }
-            let employeePensionClassification: model.IEmployeePensionClassification = {
-                personalFraction: 0,
-                businessOwnerFraction: 1
-            };
-            let maleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: 40,
-                employeeContributionRatio: 50,
-                individualExcemtionRate: 60,
-                employeeExcemtionRate: 70
-            }
-            let femaleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: 45,
-                employeeContributionRatio: 55,
-                individualExcemtionRate: 65,
-                employeeExcemtionRate: 76
-            }
-            let salaryEmployeePensionInsurate: model.ISalaryEmployeePensionInsuRate = {
-                employeeShareAmountMethod: 0,
-                femaleContributionRate: femaleContributionRate,
-                maleContributionRate: maleContributionRate,
-                fractionClassification: employeePensionClassification
-            }
-
-            self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee({
-                autoCalculation: 0,
-                pensionInsurancePremium: gradeWelfareInsuPremium,
-                historyId: nts.uk.util.randomId(),
-                salaryEmployeePensionInsuranceRate: salaryEmployeePensionInsurate
-            }));
         }
 
-        initBonusPensionInsuranceRate() {
-            let self = this;
-            let maleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: 400,
-                employeeContributionRatio: 500,
-                individualExcemtionRate: 600,
-                employeeExcemtionRate: 700
-            }
-            let femaleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: 450,
-                employeeContributionRatio: 550,
-                individualExcemtionRate: 650,
-                employeeExcemtionRate: 760
-            }
-            let employeePensionClassification: model.IEmployeePensionClassification = {
-                personalFraction: 2,
-                businessOwnerFraction: 3
-            };
-            let bonusEmployeePensionInsuranceRate: model.IBonusEmployeePensionInsuranceRate = {
-                employeeShareAmountMethod: 0,
-                fractionClassification: employeePensionClassification,
-                femaleContributionRate: femaleContributionRate,
-                maleContributionRate: maleContributionRate,
-                historyId: nts.uk.util.randomId()
-            }
-            this.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(bonusEmployeePensionInsuranceRate));
-        }
 
-        initWelfareInsuranceCls() {
-            let self = this;
-            self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification({ fundClassification: 0, historyId: '0005' }));
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.findAllOffice().done(function(data) {
+                if (data) {
+                    if (data.length == 0) {
+                        self.registerBusinessEstablishment();
+                        return;
+                    }
+                    let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
+                    data.forEach(office => {
+                        socailInsuranceOfficeList.push(new model.SocialInsuranceOffice(office));
+                    });
+                    self.socialInsuranceOfficeList(socailInsuranceOfficeList);
+                    self.convertToTreeGridList();
+                }
+                block.clear();
+                dfd.resolve();
+            }).fail(function(err) {
+                dfd.reject();
+                block.clear();
+                dialog.alertError(err.message);
+            });
+            return dfd.promise();
         }
-
 
         watchDataChanged() {
             let self = this;
@@ -152,7 +72,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                         self.isSelectedHistory(true);
                     } else {
                         self.isSelectedHistory(false);
-                        self.welfareInsuranceRateHistory(null);
+                        self.initBlankData();
                     }
                 }
             });
@@ -161,27 +81,22 @@ module nts.uk.com.view.qmm008.c.viewmodel {
         showByHistory() {
 
             let self = this,
-                selectedInsurenceCode = self.selectedWelfareInsurance().split('___')[0],
+                selectedInsuranceCode = self.selectedWelfareInsurance().split('___')[0],
                 selectedhistoryId = self.selectedWelfareInsurance().split('___')[1],
                 selectedHistoryPeriod = null,
                 listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
             self.selectedhistoryId = selectedhistoryId;
-            listInsuranceOffice.forEach((office, index) => {
-
-            });
-            self.selectedOffice = listInsuranceOffice.find(insuranceOffice => insuranceOffice.code == selectedInsurenceCode);
+            self.selectedOffice = _.find(listInsuranceOffice, { socialInsuranceCode: selectedInsuranceCode });
             if (selectedhistoryId) {
                 let selectedHistoryPeriod;
                 if (self.selectedOffice) {
-                    selectedHistoryPeriod = self.selectedOffice.welfareInsuranceRateHistory.history.find(historyItem =>
-                    { return historyItem.historyId === selectedhistoryId; }
-                    );
+                    selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedhistoryId });
                 }
                 if (selectedHistoryPeriod) {
-                    selectedHistoryPeriod.displayStart = selectedHistoryPeriod.start.substring(0, 4) + "/" + selectedHistoryPeriod.start.substring(4, 6);
-                    selectedHistoryPeriod.displayEnd = selectedHistoryPeriod.end.substring(0, 4) + "/" + selectedHistoryPeriod.end.substring(4, 6);
+                    selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
+                    selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
+                    self.selectedHistoryPeriod(selectedHistoryPeriod);
                 }
-                self.selectedHistoryPeriod(selectedHistoryPeriod);
             }
         }
         initDataByLastestHistory() {
@@ -201,6 +116,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                 maleExemptionInsurance: null,
                 femaleExemptionInsurance: null
             }
+
             let insuContributionFee: model.IContributionFee = {
                 maleInsurancePremium: null,
                 femaleInsurancePremium: null,
@@ -252,6 +168,7 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                 individualExcemtionRate: null,
                 employeeExcemtionRate: null
             }
+
             let femaleContributionRate: model.IEmployeePensionContributionRate = {
                 individualBurdenRatio: null,
                 employeeContributionRatio: null,
@@ -278,24 +195,28 @@ module nts.uk.com.view.qmm008.c.viewmodel {
         }
         convertToTreeGridList() {
             let self = this,
-                pensionList = ko.toJS(this.socialInsuranceOfficeList),
+                pensionList = ko.toJS(self.socialInsuranceOfficeList),
                 displayPensionList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
             pensionList.forEach(function(office) {
-                let pensionItem = new model.TreeGridNode(office.code, office.code + ' ' + office.name, []);
+                let pensionItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
                 if (office.welfareInsuranceRateHistory) {
                     let displayStart, displayEnd = "";
                     office.welfareInsuranceRateHistory.history.forEach(function(history) {
-                        displayStart = history.start.substring(0, 4) + "/" + history.start.substring(4, 6);
-                        displayEnd = history.end.substring(0, 4) + "/" + history.end.substring(4, 6);
+                        displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
+                        displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
                         // ___ is for child contain office code and history id
-                        pensionItem.child.push(new model.TreeGridNode(office.code + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, []));
+                        pensionItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, []));
                     });
                     displayPensionList.push(pensionItem);
                 }
 
             });
             self.welfareInsuranceRateTreeList(displayPensionList);
+        }
+        
+        convertYearMonthToDisplayYearMonth (yearMonth) {
+            return String(yearMonth).substring(0, 4) + "/" + String(yearMonth).substring(4, 6);
         }
 
         convertYMPeriodToDisplayYMPeriod() {
@@ -327,33 +248,33 @@ module nts.uk.com.view.qmm008.c.viewmodel {
             let selectedOffice = self.selectedOffice;
             setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice });
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
-                $("#C2_7").focus();
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     let historyId = nts.uk.util.randomId();
                     socialInsuranceOfficeList.forEach(office => {
-                        if (office.code == selectedOffice.code) {
+                        if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
                             let history = office.welfareInsuranceRateHistory.history;
                             if (history.length > 0) {
-                                let beforeLastestDate = moment(params.startDate, 'YYYYMM').subtract(1, 'month');
-                                history[history.length - 1].end = beforeLastestDate.format('YYYYMM');
+                                let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                                history[history.length - 1].endMonth = beforeLastestMonth.format('YYYYMM');
                             }
-                            history.push({ historyId: historyId, start: params.startDate, end: '999912' });
+                            history.push({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
                             office.welfareInsuranceRateHistory.history = history;
                             office = new model.SocialInsuranceOffice(office);
                         }
                     });
                     self.socialInsuranceOfficeList(socialInsuranceOfficeList);
                     self.convertToTreeGridList();
-                    self.selectedWelfareInsurance(selectedOffice.code + "___" + historyId);
+                    self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + historyId);
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_BEGINNING) {
                         self.initBlankData();
                     } else {
-                        self.initExistedData();
+                        
                     }
                     self.isUpdateMode(false);
                 }
+                $("#C2_7").focus();
             });
         }
 
@@ -370,24 +291,24 @@ module nts.uk.com.view.qmm008.c.viewmodel {
                     self.selectedWelfareInsurance(null);
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     socialInsuranceOfficeList.forEach(office => {
-                        if (office.code == selectedOffice.code) {
+                        if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
                             let history = office.welfareInsuranceRateHistory.history;
                             if (history.length > 0) {
                                 if (params.modifyMethod == model.MOFIDY_METHOD.UPDATE) {
                                     history.forEach((historyItem, index) => {
                                         if (selectedHistory.historyId == historyItem.historyId) {
-                                            let currentPreviousDate = moment(params.startDate, 'YYYYMM').subtract(1, 'month');
-                                            historyItem.start = params.startDate;
-                                            if (index > 0) history[index - 1].end = currentPreviousDate.format('YYYYMM');
+                                            let currentPreviousMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                                            historyItem.startMonth = params.startMonth;
+                                            if (index > 0) history[index - 1].endMonth = currentPreviousMonth.format('YYYYMM');
                                         }
                                     });
                                 } else {
                                     history.pop();
                                     if (history.length > 0) {
-                                        history[history.length - 1].end = '999912';
-                                        selectedCode = office.code + "___" + history[history.length - 1].historyId;
+                                        history[history.length - 1].endMonth = '999912';
+                                        selectedCode = office.socialInsuranceCode + "___" + history[history.length - 1].historyId;
                                     } else {
-                                        selectedCode = office.code;
+                                        selectedCode = office.socialInsuranceCode;
                                     }
                                 }
 

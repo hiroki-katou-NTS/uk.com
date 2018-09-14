@@ -15,4 +15,6 @@ public interface HealthInsuranceFeeRateHistoryRepository {
      * @return HealthInsuranceFeeRateHistory
      */
     Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceFeeRateHistoryByCid(String companyId, String officeCode);
+
+    void deleteByCidAndCode(String companyId, String officeCode);
 }

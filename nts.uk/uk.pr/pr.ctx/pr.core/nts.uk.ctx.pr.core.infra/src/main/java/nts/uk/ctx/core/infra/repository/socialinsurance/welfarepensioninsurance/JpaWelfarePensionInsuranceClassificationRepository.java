@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,16 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 	@Override
 	public Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById( String historyId) {
 		return this.queryProxy().find(historyId, QpbmtWelfarePensionInsuranceClassification.class).map(QpbmtWelfarePensionInsuranceClassification::toDomain);
+	}
+
+	@Override
+	public void deleteByHistoryIds(List<String> historyIds) {
+		this.commandProxy().removeAll(QpbmtWelfarePensionInsuranceClassification.class, historyIds);
+	}
+	
+	@Override
+	public void add(WelfarePensionInsuranceClassification domain) {
+		this.commandProxy().insert(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
 	}
 
 }

@@ -6,31 +6,34 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class CreateSocialOfficeCommandHandler extends CommandHandler<CreateSocialOfficeCommand> {
+public class CreateSocialOfficeCommandHandler extends CommandHandlerWithResult<CreateSocialOfficeCommand,String> {
 	
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	
 	@Override
-	protected void handle(CommandHandlerContext<CreateSocialOfficeCommand> context) {
+	protected String handle(CommandHandlerContext<CreateSocialOfficeCommand> context) {
+		String msg ;
 		CreateSocialOfficeCommand command = context.getCommand();
 		
-		Optional<SocialInsuranceOffice> socialInsu = socialInsuranceOfficeRepository.findById(AppContexts.user().companyId(), command.getCode());
+		Optional<SocialInsuranceOffice> socialInsu = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
 		if(!socialInsu.isPresent()) {
 			SocialInsuranceOffice socialInuran = mappingEntity(command);
 			socialInsuranceOfficeRepository.add(socialInuran);
+			msg = "Msg_15";
 		} else {
-			// msg_3
+			msg = "Msg_3";
 		}
+		return msg;
 	}
 	
 	private SocialInsuranceOffice mappingEntity(CreateSocialOfficeCommand command) {
