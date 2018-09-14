@@ -68,9 +68,8 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
             self.appType = ko.observable('');
             self.appTypeDto.subscribe((value) => {
-                let result = "";
-                let listAppType = __viewContext.enums.ApplicationType;
-                _.forEach(value.appTypes(), function(item) {
+                let result = "",valueSort = _.sortBy(value.appTypes()),listAppType = __viewContext.enums.ApplicationType;
+                _.forEach(valueSort, function(item) {
                     let itemModel = _.find(listAppType, function(obj) {
                         return obj.value == item;
                     });
