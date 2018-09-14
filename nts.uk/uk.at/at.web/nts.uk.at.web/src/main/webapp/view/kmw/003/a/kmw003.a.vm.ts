@@ -1607,7 +1607,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.enable_A1_2(actualTimeState == 1 || actualTimeState == 2);
                     self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
                     self.enable_A1_5(false);
-                } else if
+                }
                 self.available_A1_8(self.checkAvailable(data, 12));
                 //A2_1
                 $('#ccg001').show();
