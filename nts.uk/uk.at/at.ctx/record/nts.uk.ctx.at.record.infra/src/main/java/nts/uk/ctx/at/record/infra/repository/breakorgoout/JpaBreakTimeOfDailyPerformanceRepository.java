@@ -103,15 +103,15 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 //		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 //				.setParameter("ymd", ymd).executeUpdate();
 //		this.getEntityManager().flush();
-		try {
-			val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
-			statement.setString(1, employeeId);
-			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
-			statement.execute();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			val statement = this.connection().prepareStatement(
+//					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+//			statement.setString(1, employeeId);
+//			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
+//			statement.execute();
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 
 	@Override
