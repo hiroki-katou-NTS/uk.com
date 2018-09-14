@@ -23,7 +23,7 @@ public class SingleDaySchedule extends DomainObject {
 
 	/** The work type code. */
 	// 勤務種類コード
-	private WorkTypeCode workTypeCode;
+	private Optional<WorkTypeCode> workTypeCode;
 
 	/** The working hours. */
 	// 勤務時間帯
@@ -61,7 +61,8 @@ public class SingleDaySchedule extends DomainObject {
 			Optional<String> workTimeCode) {
 		super();
 		if (StringUtils.isNotEmpty(workTypeCode)){
-			this.workTypeCode = new WorkTypeCode(workTypeCode);
+			this.workTypeCode = Optional
+					.ofNullable(workTypeCode == null ? null : new WorkTypeCode(workTypeCode));
 		}
 		this.workingHours = workingHours;
 		this.workTimeCode = Optional.empty();
