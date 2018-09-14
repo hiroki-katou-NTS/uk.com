@@ -50,6 +50,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -236,7 +237,7 @@ public class DailyCalculationCommandFacade {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
 				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") 
-						&& err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().contains("Msg_1298")) {
+						&& err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().contains(TextResource.localize("Msg_1298"))) {
 					divergenceErrors.addAll(err.getAttendanceItemList().stream()
 							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
 							.collect(Collectors.toList()));
