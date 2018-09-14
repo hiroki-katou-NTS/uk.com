@@ -406,25 +406,25 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 				attendanceDto.setTypeOfAttendanceItem(
 						frameSpecialHoliday.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			//14
-			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && totalTimes
-					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
-				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						totalTimes.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getTotalTimesName().v()));
-				attendanceDto.setFrameCategory(
-						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
-				attendanceDto.setTypeOfAttendanceItem(
-						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			//15
-			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && specialHoliday
+			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && totalTimes
 					.containsKey(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						specialHoliday.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getSpecialHolidayName().v()));
+						totalTimes.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getTotalTimesName().v()));
 				attendanceDto.setFrameCategory(
 						frameTotalTimes.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameTotalTimes.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//15
+			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && specialHoliday
+					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						specialHoliday.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getSpecialHolidayName().v()));
+				attendanceDto.setFrameCategory(
+						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			} else {
 				attendanceDto.setFrameCategory(0);
 				attendanceDto.setTypeOfAttendanceItem(0);
