@@ -80,10 +80,9 @@ module nts.uk.com.view.kal001.d.viewmodel {
                 service.extractStarting().done((statusId: string) => {
                     console.log("time service 2  : "+(performance.now() -start).toString());
                     self.processExtraId(statusId);
-                    service.extractAlarm(self.taskId,self.numberEmpSuccess, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                    service.extractAlarm(self.taskId, self.numberEmpSuccess, statusId, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                         console.log("time service 3  : "+(performance.now() -start).toString());
-                        let status = dataExtractAlarm.extracting == true ? AlarmExtraStatus.END_ABNORMAL : AlarmExtraStatus.END_NORMAL;
-                        
+                        let status =  dataExtractAlarm.extracting == true ? AlarmExtraStatus.END_ABNORMAL : AlarmExtraStatus.END_NORMAL;
                         // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
                         let extraParams = {
                             processStatusId: statusId,
@@ -143,13 +142,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
                     nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                    // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
-                    let extraParams = {
-                        processStatusId: self.processExtraId(),
-                        status: AlarmExtraStatus.INTERRUPT
-                    };
                     self.dialogMode(AlarmExtraStatus.INTERRUPT);
-                    service.extractFinished(extraParams);
                     self.setFinished();
                 })
                 .ifNo(() => {
@@ -327,9 +320,9 @@ module nts.uk.com.view.kal001.d.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
     export enum AlarmExtraStatus {
-        END_NORMAL = 0,    /**正常終了*/
-        END_ABNORMAL = 1,    /**異常終了*/
-        PROCESSING = 2,    /**処理中*/
+        END_NORMAL = 0,   /**正常終了*/
+        END_ABNORMAL = 1, /**異常終了*/
+        PROCESSING = 2,   /**処理中*/
         INTERRUPT = 3,    /**中断*/
     }
 }
