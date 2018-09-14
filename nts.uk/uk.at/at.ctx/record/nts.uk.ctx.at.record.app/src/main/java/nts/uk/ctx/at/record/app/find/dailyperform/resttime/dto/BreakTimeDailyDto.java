@@ -31,7 +31,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	private GeneralDate ymd;
 	
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
-			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
+			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private List<TimeSheetDto> timeZone;
 
 	/** 休憩種類 */
