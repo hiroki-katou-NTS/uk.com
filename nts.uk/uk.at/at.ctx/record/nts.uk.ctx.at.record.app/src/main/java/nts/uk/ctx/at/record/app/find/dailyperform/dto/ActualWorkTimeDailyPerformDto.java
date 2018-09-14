@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ConstraintTime;
+import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
@@ -102,7 +103,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	public ActualWorkingTimeOfDaily toDomain() {
 		return ActualWorkingTimeOfDaily.of(
-					totalWorkingTime == null ? null : totalWorkingTime.toDomain(), 
+					totalWorkingTime == null ? TotalWorkingTime.createAllZEROInstance() : totalWorkingTime.toDomain(), 
 					constraintTime == null || constraintTime.getLateNightConstraintTime() == null ? 0 : constraintTime.getLateNightConstraintTime(),
 					constraintTime == null || constraintTime.getTotalConstraintTime() == null ? 0 : constraintTime.getTotalConstraintTime(),
 					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, 
@@ -111,13 +112,13 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 								c -> new DivergenceTime(toAttendanceTime(c.getDivergenceTimeAfterDeduction()),
 										toAttendanceTime(c.getDeductionTime()), toAttendanceTime(c.getDivergenceTime()),
 										c.getNo(),
-										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
-										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
-				new PremiumTimeOfDailyPerformance(premiumTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(premiumTimes,
-						c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
+										new DivergenceReasonContent(c.getDivergenceReason()),
+										new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
+				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
+										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {
-		return value == null ? new AttendanceTime(0) : new AttendanceTime(value);
+		return value == null ? AttendanceTime.ZERO : new AttendanceTime(value);
 	}
 }

@@ -97,10 +97,10 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),
-										new ActualWorkTime(c.getWorkTime()))));
+										new ActualWorkTime(c.getWorkTime() == null ? 0 : c.getWorkTime()))));
 	}
 	
 	private TimeActualStamp getStamp(WithActualTimeStampDto stamp) {
-		return stamp == null ? null : stamp.toDomain();
+		return stamp == null ? new TimeActualStamp() : stamp.toDomain();
 	}
 }

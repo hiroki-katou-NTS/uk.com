@@ -45,4 +45,8 @@ public class AutoCalRestTimeSetting extends DomainObject {
 		memento.setLateNightTime(this.lateNightTime);
 		memento.setRestTime(this.restTime);
 	}
+	
+	public static AutoCalRestTimeSetting defaultValue(){
+		return new AutoCalRestTimeSetting(AutoCalSetting.defaultValue(), AutoCalSetting.defaultValue());
+	}
 }

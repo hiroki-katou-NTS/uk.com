@@ -64,8 +64,8 @@ public class GoOutTimeDto implements ItemConst {
 	
 	public OutingTimeSheet toDomain(){
 		return new OutingTimeSheet(new OutingFrameNo(no), createTimeActual(outing), 
-				outingTimeCalc == null ? new AttendanceTime(0) : new AttendanceTime(outingTimeCalc),
-				outingTime == null ? new AttendanceTime(0) : new AttendanceTime(outingTime), 
+				outingTimeCalc == null ? AttendanceTime.ZERO : new AttendanceTime(outingTimeCalc),
+				outingTime == null ? AttendanceTime.ZERO : new AttendanceTime(outingTime), 
 				reason(), createTimeActual(comeBack));
 	}
 	

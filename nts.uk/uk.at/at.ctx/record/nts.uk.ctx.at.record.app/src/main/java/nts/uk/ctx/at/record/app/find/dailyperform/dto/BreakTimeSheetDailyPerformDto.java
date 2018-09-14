@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,15 +82,21 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 	
 	public BreakTimeOfDaily toDmain(){
 		return new BreakTimeOfDaily(createDeductionTime(toRecordTotalTime), createDeductionTime(deductionTotalTime), 
-				breakTimes == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? new AttendanceTime(0) : new AttendanceTime(duringWork), 
+						breakTimes == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(breakTimes), 
+						duringWork == null ? AttendanceTime.ZERO : new AttendanceTime(duringWork), 
 						ConvertHelper.mapTo(correctedTimeSheet, c -> new BreakTimeSheet(
 												new BreakFrameNo(c.getNo()), 
-												c.getStart() == null ? null : new TimeWithDayAttr(c.getStart()),
-												c.getEnd() == null ? null : new TimeWithDayAttr(c.getEnd()), 
-												c.getBreakTime() == null ? new AttendanceTime(0) : new AttendanceTime(c.getBreakTime()))));
+												c.getStart() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getStart()),
+												c.getEnd() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getEnd()), 
+												c.getBreakTime() == null ? AttendanceTime.ZERO : new AttendanceTime(c.getBreakTime()))));
+	}
+	
+	public static BreakTimeOfDaily defaultValue(){
+		return new BreakTimeOfDaily(DeductionTotalTime.defaultValue(), DeductionTotalTime.defaultValue(), 
+						new BreakTimeGoOutTimes(0), AttendanceTime.ZERO, new ArrayList<>());
 	}
 	
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
-		return dto == null ? null : dto.createDeductionTime();
+		return dto == null ? DeductionTotalTime.defaultValue() : dto.createDeductionTime();
 	}
 }

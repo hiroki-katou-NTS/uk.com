@@ -1561,6 +1561,22 @@ module nts.layout {
                         startWork: string = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : null,
                         endWork: string = CS00020_IS00120 ? ko.toJS(CS00020_IS00120.data.value) : null,
                         conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
+                   
+                    
+                    
+                    if (!x || !grantTable) {
+                        CS00024_IS00281.data.value('');
+                        CS00024_IS00282.data.value('');
+                        CS00024_IS00283.data.value('');
+                        return;
+                    }
+                    
+                     // If input date out of range
+                    if (!moment.utc(x)._isValid || moment.utc(x).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
+
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
@@ -1575,13 +1591,6 @@ module nts.layout {
                         if (retireTemp) {
                             retireDates = retireTemp;
                         }
-                    }
-
-                    if (!x || !grantTable) {
-                        CS00024_IS00281.data.value('');
-                        CS00024_IS00282.data.value('');
-                        CS00024_IS00283.data.value('');
-                        return;
                     }
 
                     fetch.get_ro_data({
@@ -1904,7 +1913,21 @@ module nts.layout {
                                 hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
                                 retireDates: string = null,
                                 yearRefDates: String = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null;
-
+                             
+                            if (!x || !appSet || !management || management == '0') {
+                                if (result) {
+                                    result.data.value('');
+                                }
+                                return;
+                            }
+                            let consGrantDays = grantDay? __viewContext.primitiveValueConstraints[grantDay.data.constraint]: null;
+                            // If input date out of range
+                            if (!moment.utc(x)._isValid || moment.utc(x).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0
+                                || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
+                                return;
+                            }
+                            
                             if (location.href.indexOf('/view/cps/002') > -1) {
                                 hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                                 retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
@@ -1918,13 +1941,7 @@ module nts.layout {
                                 }
                             }
 
-                            if (!x || !appSet || !management || management == '0') {
-                                if (result) {
-                                    result.data.value('');
-                                }
-                                return;
-                            }
-
+                           
                             fetch.get_sphd_nextGrantDate({
                                 sid: sid,
                                 grantDate: moment.utc(grantDate).toDate(),

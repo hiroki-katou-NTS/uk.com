@@ -88,6 +88,6 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	private TimeWithDayAttr toWorkStamp(Integer time){
-		return time == null ? null : new TimeWithDayAttr(time);
+		return time == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(time);
 	}
 }
