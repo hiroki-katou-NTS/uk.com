@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.AddBreakdownItemSetCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.BreakdownItemSetCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.RemoveBreakdownItemSetCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateBreakdownItemSetCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemSetDto;
@@ -22,7 +23,7 @@ import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemSetD
  */
 @Path("ctx/pr/core/breakdownItem")
 @Produces("application/json")
-public class BreakdownItem extends WebService {
+public class BreakdownItemWebService extends WebService {
 
 	@Inject
 	private BreakdownItemFinder breakdownItemFinder;
@@ -32,6 +33,9 @@ public class BreakdownItem extends WebService {
 
 	@Inject
 	private UpdateBreakdownItemSetCommandHandler updateBreakdownItemSetCommandHandler;
+
+	@Inject
+	private RemoveBreakdownItemSetCommandHandler removeBreakdownItemSetCommandHandler;
 
 	@POST
 	@Path("getAllBreakdownItemSetById/{salaryItemId}")
@@ -49,6 +53,12 @@ public class BreakdownItem extends WebService {
 	@Path("updateBreakdownItemSet")
 	public void updateBreakdownItemSet(BreakdownItemSetCommand command) {
 		this.updateBreakdownItemSetCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("removeBreakdownItemSet")
+	public void removeBreakdownItemSet(BreakdownItemSetCommand command) {
+		this.removeBreakdownItemSetCommandHandler.handle(command);
 	}
 
 }

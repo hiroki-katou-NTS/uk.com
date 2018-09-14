@@ -77,6 +77,25 @@ module nts.uk.pr.view.qmm012.share.model {
             this.name = name;
         }
     }
+        /**
+     * 内訳項目設定
+     */
+    export interface IBreakdownItemSet {
+        salaryItemId: string;
+        breakdownItemCode: string;
+        breakdownItemName: string;
+    }
+    export class BreakdownItemSet {
+        salaryItemId: KnockoutObservable<string> = ko.observable('');
+        breakdownItemCode: KnockoutObservable<string> = ko.observable('');
+        breakdownItemName: KnockoutObservable<string> = ko.observable('');
+        constructor(param: IBreakdownItemSet) {
+            let self = this;
+            self.salaryItemId(param ? param.salaryItemId : '');
+            self.breakdownItemCode(param ? param.breakdownItemCode : '');
+            self.breakdownItemName(param ? param.breakdownItemName : '');
+        }
+    }
     
     export class BoxModel {
         id: number;

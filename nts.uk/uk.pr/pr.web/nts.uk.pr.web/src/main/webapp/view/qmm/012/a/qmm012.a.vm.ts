@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm012.a.viewmodel {
             self.selectedCategoryAtr(0);
         }
         saveData() {
-            let params = setShared('QMM012_A_Params', self.selectedCategoryAtr(); 
+            let params = setShared('QMM012_A_Params', self.selectedCategoryAtr()); 
             nts.uk.ui.windows.close();
         }
         cancelSetting() {

@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.TaxExemptionLimit
  */
 @Path("ctx/pr/core/taxamount")
 @Produces("application/json")
-public class TaxAmount extends WebService {
+public class TaxAmountWebService extends WebService {
 
 	@Inject
 	private TaxExemptLimitFinder taxExemptLimitFinder;
