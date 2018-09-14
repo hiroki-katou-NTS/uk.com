@@ -95,7 +95,6 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new EmployeeDailyPerError(companyID, employeeId, date,
-				errorCode == null ? null : new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
+		return new EmployeeDailyPerError(companyID, employeeId, date, new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
 	}
 }

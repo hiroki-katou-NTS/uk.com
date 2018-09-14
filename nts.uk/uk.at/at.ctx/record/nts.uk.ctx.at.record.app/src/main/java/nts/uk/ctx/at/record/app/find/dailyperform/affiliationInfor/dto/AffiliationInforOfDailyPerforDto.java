@@ -100,10 +100,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AffiliationInforOfDailyPerfor(
-					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
-					employeeId, this.jobId, this.workplaceID, date,
-					this.classificationCode == null ? null : new ClassificationCode(this.classificationCode),
-					this.subscriptionCode == null ? null : new BonusPaySettingCode(this.subscriptionCode));
+		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
+												employeeId, this.jobId, this.workplaceID, date,
+												new ClassificationCode(this.classificationCode),
+												new BonusPaySettingCode(this.subscriptionCode));
 	}
 }

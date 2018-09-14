@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.pubimp.resultrecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
@@ -264,6 +266,19 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	public void cleanApprovalRootState(String employeeID, GeneralDate date, Integer rootType) {
 		String companyID = AppContexts.user().companyId();
 		appRootConfirmRepository.clearStatus(companyID, employeeID, date, EnumAdaptor.valueOf(rootType, RecordRootType.class));
+	}
+
+	@Override
+	public void createApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
+		
+		String companyID = AppContexts.user().companyId();
+		
+		String rootID = IdentifierUtil.randomUniqueId();
+		
+		AppRootConfirm newDomain = new AppRootConfirm(rootID, companyID, employeeID, date,
+				EnumAdaptor.valueOf(rootType, RecordRootType.class), Collections.emptyList());
+		
+		this.appRootConfirmRepository.insert(newDomain);
 	}
 	
 }

@@ -3,12 +3,14 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 /** 勤怠打刻 */
@@ -44,6 +46,14 @@ public class TimeStampDto implements ItemConst {
 	@Override
 	public TimeStampDto clone() {
 		return new TimeStampDto(timesOfDay, afterRoundingTimesOfDay, placeCode, stampSourceInfo);
+	}
+	
+	public static WorkStamp toDomain(TimeStampDto c) {
+		return c == null ? null : new WorkStamp(
+				c.getAfterRoundingTimesOfDay() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+				c.getTimesOfDay() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getTimesOfDay()),
+				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
+				c.stampInfo());
 	}
 	
 	public StampSourceInfo stampInfo(){

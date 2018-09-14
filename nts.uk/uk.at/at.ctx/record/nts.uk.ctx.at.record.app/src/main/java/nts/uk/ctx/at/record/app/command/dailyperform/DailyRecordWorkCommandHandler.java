@@ -392,7 +392,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		}
 		if (mode == 0) {
 			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
-					month == null ? domainDailyNew : Collections.emptyList(),
+					(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
 					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(),
 					month);
 		}

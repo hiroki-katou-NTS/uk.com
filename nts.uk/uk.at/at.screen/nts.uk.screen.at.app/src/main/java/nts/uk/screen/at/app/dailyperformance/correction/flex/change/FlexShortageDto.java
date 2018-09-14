@@ -56,20 +56,22 @@ public class FlexShortageDto {
 		return this;
 	}
 
-	public FlexShortageDto createError(Optional<ErrorFlexMonthDto> errorFlex) {
+	public FlexShortageDto createError(List<ErrorFlexMonthDto> errorFlexs) {
 		redConditionMessage = redConditionMessage == null ? "" : redConditionMessage;
-		if (!errorFlex.isPresent()) {
+		if (!errorFlexs.isEmpty()) {
 			this.error = false;
 			return this;
 		} else {
 			this.error = true;
-			if (errorFlex.get().flex != null) {
-				this.messageError.add(messageErrorId(errorFlex.get().flex.intValue()));
-			}
+			errorFlexs.stream().forEach(errorFlex -> {
+				if (errorFlex.flex != null) {
+					this.messageError.add(messageErrorId(errorFlex.flex.intValue()));
+				}
 
-			if (errorFlex.get().annualHoliday != null) {
-				this.messageError.add(new MessageError(TextResource.localize("Msg_1292", redConditionMessage),"Msg_1292"));
-			}
+				if (errorFlex.annualHoliday != null) {
+					this.messageError.add(new MessageError(TextResource.localize("Msg_1292", redConditionMessage),"Msg_1292"));
+				}
+			});
 			return this;
 		}
 	}

@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.goout.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
@@ -59,9 +54,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	@Override
 	public OutingTimeOfDailyPerformanceDto clone() {
 		OutingTimeOfDailyPerformanceDto dto = new OutingTimeOfDailyPerformanceDto();
-			dto.setEmployeeId(employeeId());
-			dto.setYmd(workingDate());
-			dto.setTimeZone(timeZone == null ? null : timeZone.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setTimeZone(ConvertHelper.mapTo(timeZone,t -> t.clone()));
 		if (isHaveData()) {
 			dto.exsistData();
 		}
@@ -90,9 +85,8 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new OutingTimeOfDailyPerformance(emp, date, 
-					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
-						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
+		return new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
+											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
 													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
 	}

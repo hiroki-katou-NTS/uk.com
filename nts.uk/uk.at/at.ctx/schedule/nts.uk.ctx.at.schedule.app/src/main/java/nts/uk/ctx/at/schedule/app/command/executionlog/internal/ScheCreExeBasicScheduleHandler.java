@@ -274,7 +274,7 @@ public class ScheCreExeBasicScheduleHandler {
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
+			this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
 		}
 		
 		// save command
