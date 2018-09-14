@@ -44,6 +44,4 @@ public interface MonthlyAttendanceItemRepository {
 	 * @return the list
 	 */
 	List<MonthlyAttendanceItem> findByAtrPrimitiveValue(String companyId, MonthlyAttendanceItemAtr itemAtr);
-	
-	List<MonthlyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs, List<Integer> attendanceItemIds);
 }

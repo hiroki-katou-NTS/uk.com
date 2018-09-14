@@ -101,8 +101,8 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
-	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
-		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
+	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy){
+		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
 	}
 	
 	/**

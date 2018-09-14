@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.DivergenceTimeAdapter;
@@ -30,6 +29,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.OvertimeDto;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -356,14 +356,9 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 						frameNoSpecialBonusPayMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			} else if (frameNoOptionalItemMap.containsKey(item.getAttendanceItemId()) && optionalItems
 					.containsKey(frameNoOptionalItemMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
-				// get value
-				OptionalItemImport optItem = optionalItems
-						.get(frameNoOptionalItemMap.get(item.getAttendanceItemId()).getFrameNo().v());
-				String unit = StringUtil.isNullOrEmpty(optItem.getOptionalItemUnit(), true) ? ""
-						: "（" + optItem.getOptionalItemUnit() + "）";
-				// set value
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						optItem.getOptionalItemName() + unit));
+						optionalItems.get(frameNoOptionalItemMap.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getOptionalItemName()));
 				attendanceDto.setFrameCategory(
 						frameNoOptionalItemMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(

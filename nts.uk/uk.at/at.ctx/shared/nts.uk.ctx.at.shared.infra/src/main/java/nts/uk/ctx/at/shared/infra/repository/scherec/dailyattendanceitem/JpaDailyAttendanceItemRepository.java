@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -135,33 +134,5 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	public List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs) {
 		return this.queryProxy().query(FIND_BY_ATRS, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
 				.setParameter("dailyAttendanceAtrs", dailyAttendanceAtrs).getList(f -> toDomain(f));
-	}
-
-	@Override
-	public List<DailyAttendanceItem> findByAtrsAndAttItemIds(String companyId, List<Integer> itemAtrs,
-			List<Integer> attendanceItemIds) {
-		boolean hasItemAtrs = itemAtrs != null && !itemAtrs.isEmpty();
-		boolean hasAttendanceAtrs = attendanceItemIds != null && !attendanceItemIds.isEmpty();
-
-		StringBuilder builderString = new StringBuilder();
-		builderString.append(FIND_ALL);
-		if (hasItemAtrs) {
-			builderString.append(" AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs");
-		}
-		if (hasAttendanceAtrs) {
-			builderString.append(" AND a.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds");
-		}
-
-		TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy()
-				.query(builderString.toString(), KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId);
-
-		if (hasItemAtrs) {
-			query.setParameter("dailyAttendanceAtrs", itemAtrs);
-		}
-		if (hasAttendanceAtrs) {
-			query.setParameter("attendanceItemIds", attendanceItemIds);
-		}
-
-		return query.getList(f -> toDomain(f));
 	}
 }

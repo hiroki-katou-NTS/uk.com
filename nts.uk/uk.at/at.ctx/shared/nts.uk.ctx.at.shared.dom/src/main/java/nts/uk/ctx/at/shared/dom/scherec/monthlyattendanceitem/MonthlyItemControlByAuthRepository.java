@@ -14,10 +14,4 @@ public interface MonthlyItemControlByAuthRepository {
 	void addMonthlyAttdItemAuth(MonthlyItemControlByAuthority monthlyItemControlByAuthority);
 	
 	Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByUse(String companyID,String authorityMonthlyId,List<Integer> itemMonthlyID,int toUse);
-	
-	/**
-	 * 権限別月次項目制御
-	 */
-	Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByAttItemId(String companyID, String authorityMonthlyId,
-			List<Integer> attendanceItemIds);
 }
