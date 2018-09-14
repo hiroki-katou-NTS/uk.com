@@ -106,6 +106,8 @@ public interface CompanyRepository {
 	
 	List<Company> getAllCompanyByContractCdandAboAtr(String contractCd, int isAbolition);
 	
+	List<String> getAllCompanyByContractCdAndAboAtr(String contractCd, int isAbolition);
+	
 	
 	Optional<Company> getCompany(String cid);
 }
