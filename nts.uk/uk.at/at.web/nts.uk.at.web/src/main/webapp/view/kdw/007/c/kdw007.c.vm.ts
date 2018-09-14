@@ -85,7 +85,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this,
             listItems = [];
             _.forEach(lstItems, (item) => {
-                listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
+                listItems.push({ code: item.attendanceItemDisplayNumber, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
             });
             if (listType == 0) { // list All items
                 self.lstAllItems(listItems);
