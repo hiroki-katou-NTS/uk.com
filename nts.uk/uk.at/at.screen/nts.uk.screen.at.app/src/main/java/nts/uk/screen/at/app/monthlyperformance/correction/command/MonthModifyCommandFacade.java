@@ -1,9 +1,7 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.command;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,8 +37,8 @@ public class MonthModifyCommandFacade {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void handleUpdate(List<MonthlyModifyQuery> query) {
-		this.commandHandler.handleUpdate(createMultiCommand(query));
+	public void handleUpdate(List<MonthlyModifyQuery> query, List<MonthlyRecordWorkDto> dtos) {
+		this.commandHandler.handleUpdate(createMultiCommand(query, dtos));
 	}
 
 	public MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
@@ -50,14 +48,7 @@ public class MonthModifyCommandFacade {
 		return AttendanceItemUtil.fromItemValues(oldValues, query.getItems(), AttendanceItemType.MONTHLY_ITEM);
 	}
 	
-	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query) {
-		Set<String> emps = new HashSet<>();
-		Set<YearMonth> yearmonth = new HashSet<>();
-		query.stream().forEach(q -> {
-			emps.add(q.getEmployeeId());
-			yearmonth.add(new YearMonth(q.getYearMonth()));
-		});
-		List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
+	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query, List<MonthlyRecordWorkDto> oldValues) {
 		List<MonthlyRecordWorkCommand> newValues = new ArrayList<>();
 		oldValues.forEach(oldDto -> {
 			MonthlyModifyQuery q = query.stream().filter(qr -> {
@@ -65,7 +56,8 @@ public class MonthModifyCommandFacade {
 						&& oldDto.yearMonth().compareTo(qr.getYearMonth()) == 0 && oldDto.getClosureDate().equals(qr.getClosureDate());
 			}).findFirst().orElse(null);
 			if (q != null) {
-				MonthlyRecordWorkDto newDto = AttendanceItemUtil.fromItemValues(oldDto, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
+				MonthlyRecordWorkDto newDto = AttendanceItemUtil.fromItemValues(new MonthlyRecordWorkDto(),
+						q.getItems(), AttendanceItemType.MONTHLY_ITEM);
 				newValues.add(createCommand(newDto, q));
 			}
 		});
