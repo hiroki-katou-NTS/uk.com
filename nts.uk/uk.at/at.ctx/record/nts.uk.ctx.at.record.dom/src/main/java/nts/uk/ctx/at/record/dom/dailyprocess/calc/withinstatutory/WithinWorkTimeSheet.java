@@ -960,8 +960,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		boolean decisionDeductChild = false;
 		if(premiumAtr.isRegularWork()) {			
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
-				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
-					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
+				if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
 							&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 						decisionDeductChild = true;
 					}
@@ -1635,8 +1635,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}else {
 			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
 			
-				if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
-					if(advanceSet.isPresent()&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+				if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 						decisionGetChild = true;
 					}
 				}else {
