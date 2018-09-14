@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
@@ -95,7 +92,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-									c.getAttr() == null || c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
+									c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
 											? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
@@ -103,10 +100,10 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	}
 
 	private TimeWithDayAttr createTimeWithDayAttr(Integer c) {
-		return c == null ? null : new TimeWithDayAttr(c);
+		return c == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c);
 	}
 	
 	private AttendanceTime createAttendanceTime(Integer c) {
-		return c == null ? null : new AttendanceTime(c);
+		return c == null ? AttendanceTime.ZERO : new AttendanceTime(c);
 	}
 }

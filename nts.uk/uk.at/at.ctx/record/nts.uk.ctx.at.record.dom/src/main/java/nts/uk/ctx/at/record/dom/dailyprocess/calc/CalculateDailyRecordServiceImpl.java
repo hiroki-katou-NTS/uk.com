@@ -1074,8 +1074,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
 		//Repositoryが作成されたらそちらから取得(今は仮置き)
-		Optional<UpperLimitTotalWorkingHour> upperControl = companyCommonSetting.getUpperControl().isPresent() ? companyCommonSetting.getUpperControl() 
-																													: specificWorkRuleRepository.findUpperLimitWkHourByCid(AppContexts.user().companyId()); 
+		Optional<UpperLimitTotalWorkingHour> upperControl = companyCommonSetting.getUpperControl(); 
 		upperControl.ifPresent(tc ->{
 			tc.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime());
 		});
