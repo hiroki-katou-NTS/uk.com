@@ -381,10 +381,11 @@ public class OptionalWidgetKtgFinder {
 						}
 					}
 					double preGrantStatement = 0.0;
+					boolean showAfter = false;
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+						showAfter = true;
 					}
-					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setChildRemainNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
@@ -398,10 +399,11 @@ public class OptionalWidgetKtgFinder {
 						}
 					}
 					double preGrantStatement = 0.0;
+					boolean showAfter = false;
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+						showAfter = true;
 					}
-					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setCareLeaveNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
@@ -442,16 +444,15 @@ public class OptionalWidgetKtgFinder {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		//lấy request list 210		
 		List<NextAnnualLeaveGrantImport> listNextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
-		if(listNextAnnualLeaveGrant.isEmpty()) {
-			return yearlyHoliday;
+		if(!listNextAnnualLeaveGrant.isEmpty()) {
+			NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0);
+			yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
+			yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
+			yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays());
 		}
-		NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0); 
 		//lấy request 198
 		NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 		
-		yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
-		yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
-		yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays());
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
 		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
 															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
