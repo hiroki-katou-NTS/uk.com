@@ -33,12 +33,10 @@ public class HealthInsuranceWebservice {
     @POST
     @Path("add")
     public void addHealthInsuranceFeeRateByCompanyId() {
-
     }
 
     @POST
     @Path("update")
     public void updateHealthInsuranceFeeRateByCompanyId() {
-
     }
 }
