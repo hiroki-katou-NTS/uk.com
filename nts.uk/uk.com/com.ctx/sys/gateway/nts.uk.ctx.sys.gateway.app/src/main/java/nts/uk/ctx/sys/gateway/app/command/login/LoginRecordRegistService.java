@@ -116,7 +116,7 @@ public class LoginRecordRegistService {
 
 		if (!(user instanceof NullLoginUserContext) && user.userId() != null) {
 			if (user.isEmployee()){
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(user.employeeId(), companyId);
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(user.employeeId(), user.companyId());
 			} else {
 				UserInfo u = this.userInfoAdaptorForLog.findByUserId(user.userId());
 				userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
