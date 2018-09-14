@@ -279,6 +279,9 @@ module nts.uk.com.view.cps005.a {
                     case 5:
                         self.categoryTypeName = getText("Enum_HistoryTypes_DUPLICATE");
                         break;
+                    case 6:
+                        self.categoryTypeName = getText("Enum_HistoryTypes_CONTINUOUS");
+                        break;
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
                 self.singleMulTypeSelected(data.categoryType || 1);

@@ -22254,7 +22254,7 @@ var nts;
                         var sizeUi = { headerWrappers: headerWrappers, bodyWrappers: bodyWrappers,
                             sumWrappers: sumWrappers, headerColGroup: headerColGroup,
                             bodyColGroup: bodyColGroup, sumColGroup: sumColGroup };
-                        var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi);
+                        var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi, self.float);
                         kt._adjuster = freeAdjuster;
                         freeAdjuster.handle();
                         su.binding(self.$container, self.autoFitWindow);
@@ -23597,7 +23597,7 @@ var nts;
                     kt._widths = {};
                     kt._columnWidths = {};
                     var ColumnAdjuster = /** @class */ (function () {
-                        function ColumnAdjuster(widths, height, sizeUi) {
+                        function ColumnAdjuster(widths, height, sizeUi, unshift) {
                             var _this = this;
                             this.headerColGroup = [];
                             this.bodyColGroup = [];
@@ -23607,6 +23607,7 @@ var nts;
                             this.headerWrappers = sizeUi.headerWrappers;
                             this.bodyWrappers = sizeUi.bodyWrappers;
                             this.sumWrappers = sizeUi.sumWrappers;
+                            this.unshiftRight = unshift;
                             _.forEach(sizeUi.headerColGroup, function (g) {
                                 if (g) {
                                     var vCols = g.filter(function (c) { return c.style.display !== "none"; });
@@ -23712,7 +23713,7 @@ var nts;
                         ColumnAdjuster.prototype.cursorDown = function (event, trg) {
                             var self = this;
                             if (self.actionDetails) {
-                                self.cursorUp(event);
+                                self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
                             }
                             var $targetGrip = event.target;
                             if (!selector.is($targetGrip, "." + kt.LINE)
@@ -24079,14 +24080,14 @@ var nts;
                         ColumnAdjuster.prototype.syncLines = function () {
                             var self = this;
                             self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                            var left = 0;
-                            _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function ($td, index) {
-                                if ($td.style.display === "none")
+                            var left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                            _.forEach(group, function ($td, index) {
+                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
                                     return;
-                                if (index > self.actionDetails.gripIndex)
+                                if (self.unshiftRight && index > self.actionDetails.gripIndex)
                                     return false;
                                 var lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
                                 var div = lineArr[index];
@@ -25183,7 +25184,7 @@ var nts;
                                 }
                                 else if ((sCol_1 = _specialLinkColumn[editor.columnKey]) && sCol_1.changed) {
                                     var data = _mafollicle[_currentPage].origDs[editor.rowIdx];
-                                    sCol_1.changed(editor.columnKey, data[_pk], inputVal_1, data[editor.columnKey]).done(function (res) {
+                                    sCol_1.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(function (res) {
                                         var $linkCell = lch.cellAt($grid, editor.rowIdx, sCol_1.column);
                                         if ($linkCell) {
                                             $linkCell.querySelector("a").textContent = res;
@@ -25488,9 +25489,13 @@ var nts;
                         if (uk.util.isNullOrEmpty(_.trim(value)))
                             return value;
                         if (column.constraint) {
-                            var constraint = column.constraint;
-                            var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
-                                : constraint.cDisplayType;
+                            var contrainte = void 0, valueType = void 0, constraint = column.constraint;
+                            if (constraint.primitiveValue) {
+                                contrainte = ui.validation.getConstraint(constraint.primitiveValue);
+                                valueType = contrainte.valueType;
+                            }
+                            else
+                                valueType = constraint.cDisplayType;
                             if (!_.isNil(value) && value !== "") {
                                 if (valueType === "TimeWithDay") {
                                     var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -26540,7 +26545,9 @@ var nts;
                                 if (sCol) {
                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
                                     if ($cCell) {
-                                        $cCell.textContent = value;
+                                        var column = _columnsMap[sCol];
+                                        var formatted = su.format(column[0], value);
+                                        $cCell.textContent = formatted;
                                         su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol }, value);
                                         $.data($cCell, v.DATA, value);
                                         khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: sCol, element: $cCell });
@@ -27088,9 +27095,18 @@ var nts;
                                     this.options.mode = "time";
                                     return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
-                                case "TimeWithDay":
+                                case "StandardTimeWithDay":
                                     this.options.timeWithDay = true;
                                     var result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                                    if (result.isValid) {
+                                        var formatter = new uk.text.TimeWithDayFormatter(this.options);
+                                        result.parsedValue = formatter.format(result.parsedValue);
+                                    }
+                                    return result;
+                                case "TimeWithDay":
+                                    this.options.timeWithDay = true;
+                                    var result = new nts.uk.ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
                                     if (result.isValid) {
                                         var formatter = new uk.text.TimeWithDayFormatter(this.options);

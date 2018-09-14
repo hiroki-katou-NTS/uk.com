@@ -729,7 +729,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $("#dpGrid").mGrid("updateCell", rowId, item, value);
             self.inputProcess(rowId, item, value).done(value => {
                 _.each(value.cellEdits, itemResult => {
-                    $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                    $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                 })
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -1608,6 +1608,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // flex
                     self.processFlex(data, false);
                     self.displayNumberZero();
+                    self.displayProfileIcon(self.displayFormat());
+                    self.dislayNumberHeaderText();
                     //check visable MIGrid
                     if (self.displayFormat() != 0) {
                         self.isVisibleMIGrid(false);
@@ -3294,7 +3296,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.calcTime(param).done((value) => {
                         __viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
-                            $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                            $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                         })
                         nts.uk.ui.block.clear();
                         //dfd.resolve(value.cellEdits);
@@ -3831,7 +3833,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
                     _.each(value.cellEdits, itemResult => {
-                        $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                        $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                     })
                     nts.uk.ui.block.clear();
                     dfd.resolve();
