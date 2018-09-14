@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
                     nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemCode
-                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemName
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemShortName
             </com:ValidatorScript>
 			<script type='text/javascript'>
             var dialogSize = {
@@ -28,18 +28,18 @@
 				<!-- I1_1 -->
 				<button
 					data-bind="click: createItemSet,
-                        enable: true"
+                        enable: isNewMode()"
 					tabindex="1">#{i18n.getText('QMM012_10')}</button>
 				<!-- I1_2 -->
-				<button data-bind="click: saveItemSet, enable: true" tabindex="2"
+				<button data-bind="click: saveItemSet, enable: $root.errors.isEmpty" tabindex="2"
 					class="proceed">#{i18n.getText('QMM012_11')}</button>
 				<!-- I1_3 -->
 				<button
 					data-bind="click: deleteItemSet,
-                        enable: true"
+                        enable: isNewMode()"
 					tabindex="3" class="danger">#{i18n.getText('QMM012_13')}</button>
 				<!-- I1_4 -->
-				<button data-bind="click: close" tabindex="4">#{i18n.getText('QMM012_83')}</button>
+				<button data-bind="click: close, enable: isNewMode()" tabindex="4">#{i18n.getText('QMM012_83')}</button>
 			</div>
 			<div id="contents-area" style="display: flex;">
 				<div class="selectionItemSet" style="padding: 10px; width: 500px;">
@@ -77,8 +77,8 @@
 								optionsValue: 'breakdownItemCode',
 								rows: 15,
 								columns: [
-										{ headerText: '#{i18n.getText('QMM012_20')}', key: 'breakdownItemCode', width: 90, formatter: _.escape, columnCssClass: 'halign-left', headerCssClass: 'center-align' },
-										{ headerText: '#{i18n.getText('QMM012_21')}', key: 'breakdownItemName', width: 300, formatter: _.escape, columnCssClass: 'halign-left', headerCssClass: 'center-align'  }
+										{ headerText: '#{i18n.getText('QMM012_20')}', key: 'breakdownItemCode', width: 90, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM012_21')}', key: 'breakdownItemName', width: 300, formatter: _.escape }
 										], 
 								
 								value: currentCode
@@ -92,7 +92,7 @@
 						<div style="margin-top: 20px;"
 							data-bind="ntsFormLabel: { constraint: 'breakdownItemCode', required: true }">#{i18n.getText('QMM012_17')}</div>
 						<!-- I3_2 -->
-						<input id="I3_2" style="width: 30px"
+						<input id="breakdownItemCode" style="width: 30px"
 							data-bind="ntsTextEditor: {
 													value: breakdownItemCode,
 													name:'#{i18n.getText('QMM012_85')}',
@@ -101,12 +101,12 @@
 												}"
 							tabindex="8" />
 						<!-- I3_3 -->
-						<input id="I3_2" style="width: 150px"
+						<input id="breakdownItemName" style="width: 150px"
 							data-bind="ntsTextEditor: {
 													value: breakdownItemName,
 													name:'#{i18n.getText('QMM012_86')}',
 													required: true,
-													constraint: 'BreakdownItemName'
+													constraint: 'ItemShortName'
 												}"
 							tabindex="9" />
 					</div>
@@ -115,7 +115,7 @@
 						<div style="margin-top: 20px;"
 							data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM012_3')}</div>
 					<!-- I3_5 -->	
-					<div class="label" data-bind="text: bindAtr" style="margin-left: 30px;" ></div>
+					<div class="label" data-bind="text: bindAtr" style="margin-left: 60px; width: 50px;" ></div>
 						
 				</div>
 			</div>

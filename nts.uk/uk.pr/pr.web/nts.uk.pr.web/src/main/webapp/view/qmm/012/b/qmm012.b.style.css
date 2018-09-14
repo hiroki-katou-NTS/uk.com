@@ -46,8 +46,9 @@
 #C2_1, #C2_5, #C2_10, #C2_17,
 #C3_1, #C3_4, #C3_10,
 #C4_1, #C4_7, #C4_9, #C5_1,
+#D1_1, #E1_1, #E1_5,
 .space1 {
-	width: 150px;
+	width: 180px;
 }
 
 #B3_12 {
@@ -65,6 +66,10 @@
 
 #C3_11 {
 	height: 100px;
+}
+
+#C4_2 button {
+	height: 75px;
 }
 
 #C4_10 .ntsRadioBox:first-child {
