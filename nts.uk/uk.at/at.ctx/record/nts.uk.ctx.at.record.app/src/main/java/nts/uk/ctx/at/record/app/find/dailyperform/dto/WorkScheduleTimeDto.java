@@ -17,13 +17,13 @@ public class WorkScheduleTimeDto implements ItemConst {
 	/** 合計時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PLAN)
 	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer total;
+	private int total;
 	
 	/** 所定外時間: 勤怠時間 */
-	private Integer excessOfStatutoryTime; 
+	private int excessOfStatutoryTime; 
 	
 	/** 所定内時間: 勤怠時間 */
-	private Integer withinStatutoryTime;
+	private int withinStatutoryTime;
 	
 	@Override
 	public WorkScheduleTimeDto clone() {

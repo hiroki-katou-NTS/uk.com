@@ -63,9 +63,17 @@ public class StayingTimeDto implements ItemConst {
 							toAttendanceTime(stayingTime),
 							toAttendanceTime(afterLeaveTime));
 	}
+	
+	public static StayingTimeOfDaily defaultDomain() {
+		return new StayingTimeOfDaily(AttendanceTime.ZERO, 
+										AttendanceTime.ZERO,
+										AttendanceTime.ZERO, 
+										AttendanceTime.ZERO,
+										AttendanceTime.ZERO);
+	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? new AttendanceTime(0) : new AttendanceTime(time);
+		return time == null ? AttendanceTime.ZERO : new AttendanceTime(time);
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime time) {
