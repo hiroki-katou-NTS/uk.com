@@ -215,7 +215,7 @@ module nts.uk.pr.view.qmm005.share.model {
         refeMonth:PreviousMonthClassification;
         constructor(refeDate:DateSelectClassification, referMonth:PreviousMonthClassification){
             this.refeDate=refeDate;
-            this.refeMonth=referMonth
+            this.refeMonth=referMonth;
         }
     }
 

@@ -59,12 +59,12 @@
                         <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
                     </tr>
                     </thead>
-                    <tbody data-bind="foreach:itemTable" >
+                    <tbody data-bind="foreach:itemBinding" >
                     <tr>
                         <!--content-->
                         <td>
                             <!--A2_7 処理区分NO-->
-                            <div class="label" data-bind="$index"></div>
+                            <div class="label" data-bind="processInfomations.processCateNo"></div>
                         </td>
 
                         <td>
@@ -119,39 +119,39 @@
             </div>
 
             <!--A3_1 対象雇用一覧-->
-            <div class="table-left">
-                <table>
-                    <colgroup>
-                        <col width="400px"/>
+            <!--<div class="table-left">-->
+                <!--<table>-->
+                    <!--<colgroup>-->
+                        <!--<col width="400px"/>-->
 
 
-                    </colgroup>
-                    <thead>
+                    <!--</colgroup>-->
+                    <!--<thead>-->
 
-                    <tr>
-                        <!--A3_2 対象となる雇用-->
-                        <th class="ui-widget-header"  rowspan="2">#{i18n.getText('QMM005_19')}</th>
-                    </tr>
+                    <!--<tr>-->
+                        <!--&lt;!&ndash;A3_2 対象となる雇用&ndash;&gt;-->
+                        <!--<th class="ui-widget-header"  rowspan="2">#{i18n.getText('QMM005_19')}</th>-->
+                    <!--</tr>-->
 
-                    </thead>
-                    <tbody>
-                    <tr>
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr>-->
 
-                        <td>
+                        <!--<td>-->
 
-                            <!--A3_3 雇用設定-->
-                            <button class="">#{i18n.getText('QMM005_20')}</button>
-                            <!--A3_4 対象雇用-->
-                            <input data-bind="ntsTextEditor: {
-                                value: targetEmployment,
-                                readonly: true
-                            }"/>
+                            <!--&lt;!&ndash;A3_3 雇用設定&ndash;&gt;-->
+                            <!--<button class="">#{i18n.getText('QMM005_20')}</button>-->
+                            <!--&lt;!&ndash;A3_4 対象雇用&ndash;&gt;-->
+                            <!--<input data-bind="ntsTextEditor: {-->
+                                <!--value: targetEmployment,-->
+                                <!--readonly: true-->
+                            <!--}"/>-->
 
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
 
         </div>
     </ui:define>
