@@ -113,7 +113,7 @@ public class DataCopyHandler {
                                     rowData[k] = UUID.randomUUID().toString();
                                 }
                             }
-                            iq.setParameter(k + 1, rowData[k + keySize]);
+                            iq.setParameter(k - keySize + 1, rowData[k]);
                         }
                         iq.executeUpdate();
                     }
@@ -191,7 +191,7 @@ public class DataCopyHandler {
             dataCopyHandler.setTableName(tableName);
             dataCopyHandler.setKeys(keys);
             dataCopyHandler.setSelectQuery(selectQuery);
-            dataCopyHandler.setSelectQuery(deleteQuery);
+            dataCopyHandler.setDeleteQuery(deleteQuery);
             return dataCopyHandler;
         }
     }
