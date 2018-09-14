@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm008.share.model {
         NOT_USE = 0,
         USE = 1
     }
-    
+
     //保険料端数区分
     export enum INSU_FRACTION_CLASSIFICATION {
         TRUNCATION = 0, // 切り捨て
@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm008.share.model {
         ROUND5_UP6 = 3, // 五捨六入
         ROUND_LESS_OR_EQUAL_5 // 五捨五超入
     }
-    
+
     // 事業主負担分計算方法
     export enum SHARE_AMOUNT_METHOD {
         SUBTRACT_OVERALL_INSURANCE = 0, // 全体の保険料から被保険者分を差し引く
@@ -50,16 +50,18 @@ module nts.uk.pr.view.qmm008.share.model {
             this.name = name;
         }
     }
-    
+
     export enum TAKEOVER_METHOD {
         FROM_LASTEST_HISTORY = 0,
         FROM_BEGINNING = 1
     }
-    
+
     export enum MOFIDY_METHOD {
         DELETE = 0,
         UPDATE = 1
-    } 
+    }
+
+    //Social Office
 
     // 社会保険事業所
     export interface ISocialInsuranceOffice {
@@ -69,82 +71,7 @@ module nts.uk.pr.view.qmm008.share.model {
         basicInfomation: IBasicInfomation;
         insuranceMasterInfomation: string;
         welfareInsuranceRateHistory: IWelfarePensionInsuranceRateHistory;
-    }
-
-    // 社会保険事業所
-    export class SocialInsuranceOffice {
-        socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
-        socialInsuranceName: KnockoutObservable<string> = ko.observable(null);
-        basicInfomation: KnockoutObservable<BasicInfomation> = ko.observable(null);
-        insuranceMasterInfomation: KnockoutObservable<string> = ko.observable(null);
-        companyID: KnockoutObservable<string> = ko.observable(null);
-        welfareInsuranceRateHistory: KnockoutObservable<WelfarePensionInsuranceRateHistory> = ko.observable(null);
-        constructor(params: ISocialInsuranceOffice) {
-            this.socialInsuranceCode(params.socialInsuranceCode);
-            this.socialInsuranceName(params.socialInsuranceName);
-            this.companyID(params.companyID);
-            if (params.basicInfomation) {
-                this.basicInfomation(new BasicInfomation(params.basicInfomation));
-            }
-            this.insuranceMasterInfomation(params.insuranceMasterInfomation);
-            if (params.welfareInsuranceRateHistory) {
-                this.welfareInsuranceRateHistory(new WelfarePensionInsuranceRateHistory(params.welfareInsuranceRateHistory));
-            }
-        }
-    }
-
-    // 基本情報
-    export interface IBasicInfomation {
-        representativePosition: string;
-        notes: string;
-        streetAddress: ISocialInsuranceBusinessAddress;
-        representativeName: string;
-        abbreviatedName: string;
-    }
-
-    // 基本情報
-    export class BasicInfomation {
-        representativePosition: KnockoutObservable<string> = ko.observable(null);
-        notes: KnockoutObservable<string> = ko.observable(null);
-        streetAddress: KnockoutObservable<SocialInsuranceBusinessAddress> = ko.observable(null);
-        representativeName: KnockoutObservable<string> = ko.observable(null);
-        abbreviatedName: KnockoutObservable<string> = ko.observable(null);
-        constructor(params: IBasicInfomation) {
-            this.representativePosition(params.representativePosition);
-            this.notes(params.notes);
-            this.streetAddress(new SocialInsuranceBusinessAddress(params.streetAddress));
-            this.representativeName(params.representativeName);
-            this.abbreviatedName(params.abbreviatedName);
-
-        }
-    }
-
-    // 社会保険事業所住所
-    export interface ISocialInsuranceBusinessAddress {
-        address1: string;
-        address2: string;
-        addressKana1: string;
-        addressKana2: string;
-        phoneNumber: string;
-        postalCode: string;
-    }
-
-    // 社会保険事業所住所
-    export class SocialInsuranceBusinessAddress {
-        address1: KnockoutObservable<string> = ko.observable(null);
-        address2: KnockoutObservable<string> = ko.observable(null);
-        addressKana1: KnockoutObservable<string> = ko.observable(null);
-        addressKana2: KnockoutObservable<string> = ko.observable(null);
-        phoneNumber: KnockoutObservable<string> = ko.observable(null);
-        postalCode: KnockoutObservable<string> = ko.observable(null);
-        constructor(params: ISocialInsuranceBusinessAddress) {
-            this.address1(params.address1);
-            this.address2(params.address2);
-            this.addressKana1(params.addressKana1);
-            this.addressKana2(params.addressKana2);
-            this.phoneNumber(params.phoneNumber);
-            this.postalCode(params.postalCode);
-        }
+        healthInsuranceFeeHistory: IHealthInsuranceFeeRateHistory;
     }
 
     // 年月期間の汎用履歴項目
@@ -169,10 +96,165 @@ module nts.uk.pr.view.qmm008.share.model {
         }
     }
 
+
+    // Screen B Domain
+
+    // 健康保険料率履歴
+    export interface IHealthInsuranceFeeRateHistory {
+        socialInsuranceOfficeCode: string;
+        history: Array<IGenericHistoryYearMonthPeiod>;
+    }
+
+    // 健康保険料率履歴
+    export class HealthInsuranceFeeRateHistory {
+        cid: KnockoutObservable<string> = ko.observable(null);
+        socialInsuranceOfficeCode: KnockoutObservable<string> = ko.observable(null);
+        history: KnockoutObservableArray<GenericHistoryYearMonthPeiod> = ko.observable([]);
+        constructor(params: IHealthInsuranceFeeRateHistory) {
+            this.cid(params ? params.cid : null);
+            this.socialInsuranceOfficeCode(params ? params.socialInsuranceOfficeCode : null);
+            this.history(params ? params.history.map(function(item) {
+                return new GenericHistoryYearMonthPeiod(item);
+            }) : []);
+        }
+    }
+
+    // 健康保険各保険負担率
+    export interface IHealthContributionRate {
+        longCareInsuranceRate: number;
+        basicInsuranceRate: number;
+        healthInsuranceRate: number;
+        fractionCls: number;
+        specialInsuranceRate: number;
+    }
+
+    // 健康保険各保険負担率
+    export class HealthContributionRate {
+        longCareInsuranceRate: KnockoutObservable<number> = ko.observable(null);
+        basicInsuranceRate: KnockoutObservable<number> = ko.observable(null);
+        healthInsuranceRate: KnockoutObservable<number> = ko.observable(null);
+        fractionCls: KnockoutObservable<number> = ko.observable(null);
+        specialInsuranceRate: KnockoutObservable<number> = ko.observable(null);
+
+        constructor(params: IHealthContributionRate) {
+            this.longCareInsuranceRate(params ? params.longCareInsuranceRate : null);
+            this.basicInsuranceRate(params ? params.basicInsuranceRate : null);
+            this.healthInsuranceRate(params ? params.healthInsuranceRate : null);
+            this.fractionCls(params ? params.fractionCls : null);
+            this.specialInsuranceRate(params ? params.specialInsuranceRate : null);
+        }
+    }
+
+    // 各負担料
+    export interface IHealthContributionFee {
+        nursingCare: number;
+        basicInsurancePremium: number;
+        healthInsurancePremium: number;
+        specInsurancePremium: number;
+    }
+
+    // 各負担料
+    export class HealthContributionFee {
+        nursingCare: KnockoutObservable<number> = ko.observable(null);
+        basicInsurancePremium: KnockoutObservable<number> = ko.observable(null);
+        healthInsurancePremium: KnockoutObservable<number> = ko.observable(null);
+        specInsurancePremium: KnockoutObservable<number> = ko.observable(null);
+        constructor(params: I) {
+            this.nursingCare(params ? params.nursingCare : null);
+            this.basicInsurancePremium(params ? params.basicInsurancePremium : null);
+            this.healthInsurancePremium(params ? params.healthInsurancePremium : null);
+            this.specInsurancePremium(params ? params.specInsurancePremium : null);
+        }
+    }
+
+    // 賞与健康保険料率
+    export interface IBonusHealthInsuranceRate {
+        historyId: string;
+        employeeShareAmountMethod: number;
+        individualBurdenRatio: IHealthContributionFee;
+        employeeBurdenRatio: IHealthContributionFee;
+    }
+
+    export class BonusHealthInsuranceRate {
+        historyId: KnockoutObservable<string> = ko.observable(null);
+        employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
+        individualBurdenRatio: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+        employeeBurdenRatio: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+        constructor(params: IBonusHealthInsuranceRate) {
+            this.historyId(params ? params.historyId : null);
+            this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
+            this.individualBurdenRatio(new HealthContributionFee(params ? params.individualBurdenRatio : null));
+            this.employeeBurdenRatio(new HealthContributionFee(params ? params.employeeBurdenRatio : null));
+        }
+    }
+
+    // 給与健康保険料率
+    export interface ISalaryHealthInsurancePremiumRate {
+        individualBurdenRatio: HealthContributionRate;
+        employeeShareAmountMethod: number;
+        employeeBurdenRatio: HealthContributionRate;
+    }
+
+    // 給与健康保険料率
+    export class SalaryHealthInsurancePremiumRate {
+        individualBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
+        employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
+        employeeBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
+        constructor(params: ISalaryHealthInsurancePremiumRate) {
+            this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
+            this.individualBurdenRatio(new HealthContributionRate(params ? params.individualBurdenRatio : null));
+            this.employeeBurdenRatio(new HealthContributionRate(params ? params.employeeBurdenRatio : null));
+        }
+    }
+
+    // 健康保険月額保険料額
+    export interface IHealthInsuranceMonthlyFee {
+        healthInsuranceRate: ISalaryHealthInsurancePremiumRate;
+        autoCalculationCls: number;
+        historyId: string;
+        healthInsurancePerGradeFee: Array<IHealthInsurancePerGradeFee>;
+    }
+
+    export class HealthInsuranceMonthlyFee {
+        healthInsuranceRate: KnockoutObservable<SalaryHealthInsurancePremiumRate> = ko.observable(null);
+        autoCalculationCls: KnockoutObservable<number> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
+        healthInsurancePerGradeFee: KnockoutObservableAray<HealthInsurancePerGradeFee> = ko.observableAray(null);
+
+        constructor(params: IHealthInsuranceMonthlyFee) {
+            this.autoCalculationCls(params ? params.autoCalculationCls : null);
+            this.historyId(params ? params.historyId : null);
+            this.healthInsuranceRate(new SalaryHealthInsurancePremiumRate(params ? params.healthInsuranceRate : null));
+            this.autoCalculationCls(params ? params.healthInsurancePerGradeFee.map(function(item) {
+                return new HealthInsurancePerGradeFee(item);
+            }) : []);
+        }
+    }
+
+    // 等級毎健康保険料
+    export interface IHealthInsurancePerGradeFee {
+        healthInsuranceGrade: number;
+        employeeBurden: IHealthContributionFee;
+        insuredBurden: IHealthContributionFee;
+    }
+
+    export class HealthInsurancePerGradeFee {
+        healthInsuranceGrade: KnockoutObservable<number> = ko.observable(null);
+        employeeBurden: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+        insuredBurden: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+        constructor(params: IHealthInsurancePerGradeFee) {
+            this.healthInsuranceGrade(params ? params.healthInsuranceGrade : null);
+            this.employeeBurden(new HealthContributionFee(params ? params.healthInsuranceGrade : null));
+            this.insuredBurden(new HealthContributionFee(params ? params.healthInsuranceGrade : null));
+        }
+    }
+
+    // Screen C Domain
+
     // 厚生年金保険料率履歴
     export interface IWelfarePensionInsuranceRateHistory {
         socialInsuranceCode: string;
-        history: IGenericHistoryYearMonthPeiod [];
+        history: IGenericHistoryYearMonthPeiod[];
     }
 
     // 厚生年金保険料率履歴
@@ -181,10 +263,10 @@ module nts.uk.pr.view.qmm008.share.model {
         history: KnockoutObservableArray<GenericHistoryYearMonthPeiod> = ko.observableArray([]);
 
         constructor(params: IWelfarePensionInsuranceRateHistory) {
-            this.socialInsuranceCode(params.socialInsuranceCode);
-            this.history(params.history.map(function (item) {
+            this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
+            this.history(params ? params.history.map(function(item) {
                 return new GenericHistoryYearMonthPeiod(item)
-            }));
+            }) : []);
         }
     }
 
@@ -206,8 +288,8 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_55'))
         ]);
         constructor(params: IWelfarePensionInsuranceClassification) {
-            this.fundClassification(params.fundClassification);
-            this.historyId(params.historyId);
+            this.fundClassification(params ? params.fundClassification : null);
+            this.historyId(params ? params.historyId : null);
         }
     }
 
@@ -226,10 +308,10 @@ module nts.uk.pr.view.qmm008.share.model {
         maleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
         femaleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
         constructor(params: IContributionFee) {
-            this.maleInsurancePremium(params.maleInsurancePremium);
-            this.femaleInsurancePremium(params.femaleInsurancePremium);
-            this.maleExemptionInsurance(params.maleExemptionInsurance);
-            this.femaleExemptionInsurance(params.femaleExemptionInsurance);
+            this.maleInsurancePremium(params ? params.maleInsurancePremium : null);
+            this.femaleInsurancePremium(params ? params.femaleInsurancePremium : null);
+            this.maleExemptionInsurance(params ? params.maleExemptionInsurance : null);
+            this.femaleExemptionInsurance(params ? params.femaleExemptionInsurance : null);
         }
     }
 
@@ -246,9 +328,9 @@ module nts.uk.pr.view.qmm008.share.model {
         employeeBurden: KnockoutObservable<ContributionFee> = ko.observable(null);
         insuredBurden: KnockoutObservable<ContributionFee> = ko.observable(null);
         constructor(params: IGradeWelfarePensionInsurancePremium) {
-            this.welfarePensionGrade(params.welfarePensionGrade);
-            this.employeeBurden(new ContributionFee(params.employeeBurden));
-            this.insuredBurden(new ContributionFee(params.insuredBurden));
+            this.welfarePensionGrade(params ? params.welfarePensionGrade : null);
+            this.employeeBurden(new ContributionFee(params ? params.employeeBurden : null));
+            this.insuredBurden(new ContributionFee(params ? params.insuredBurden : null));
         }
     }
 
@@ -262,27 +344,27 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 厚生年金各負担率
     export class EmployeePensionContributionRate {
-            
+
         // Fields
         individualBurdenRatio: KnockoutObservable<number> = ko.observable(null);
         employeeContributionRatio: KnockoutObservable<number> = ko.observable(null);
         individualExcemtionRate: KnockoutObservable<number> = ko.observable(null);
         employeeExcemtionRate: KnockoutObservable<number> = ko.observable(null);
-        
+
         // Display remain ratio
         remainBurdenRatio: any;
         remainEmployeeContributionRatio: any;
         constructor(params: IEmployeePensionContributionRate) {
-            this.individualBurdenRatio(params.individualBurdenRatio);
-            this.employeeContributionRatio(params.employeeContributionRatio);
-            this.individualExcemtionRate(params.individualExcemtionRate);
-            this.employeeExcemtionRate(params.employeeExcemtionRate);
-            
+            this.individualBurdenRatio(params ? params.individualBurdenRatio : null);
+            this.employeeContributionRatio(params ? params.employeeContributionRatio : null);
+            this.individualExcemtionRate(params ? params.individualExcemtionRate : null);
+            this.employeeExcemtionRate(params ? params.employeeExcemtionRate : null);
+
             this.remainBurdenRatio = ko.computed(function() {
-                return this.individualBurdenRatio() - this.individualExcemtionRate();    
+                return this.individualBurdenRatio() - this.individualExcemtionRate();
             }, this);
             this.remainEmployeeContributionRatio = ko.computed(function() {
-                return this.employeeContributionRatio() - this.employeeExcemtionRate();    
+                return this.employeeContributionRatio() - this.employeeExcemtionRate();
             }, this);
         }
     }
@@ -295,11 +377,11 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 厚生年金端数区分
     export class EmployeePensionClassification {
-            
+
         // Fields
         personalFraction: KnockoutObservable<number> = ko.observable(null);
         businessOwnerFraction: KnockoutObservable<number> = ko.observable(null);
-        
+
         // Control item
         insurancePremiumFractionClassification: KnockoutObservableArray<EnumModel> = ko.observableArray([
             new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, '切り捨て'),
@@ -308,10 +390,10 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, '五捨六入'),
             new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, '五捨五超入')
         ]);
-        
+
         constructor(params: IEmployeePensionClassification) {
-            this.personalFraction(params.personalFraction);
-            this.businessOwnerFraction(params.businessOwnerFraction);
+            this.personalFraction(params ? params.personalFraction : null);
+            this.businessOwnerFraction(params ? params.businessOwnerFraction : null);
         }
     }
 
@@ -325,30 +407,30 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 給与厚生年金保険料率
     export class SalaryEmployeePensionInsuRate {
-            
+
         // Fields
         employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
         femaleContributionRate: KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
         maleContributionRate: KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
         fractionClassification: KnockoutObservable<EmployeePensionClassification> = ko.observable(null);
-        
+
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
         ]);
         constructor(params: ISalaryEmployeePensionInsuRate) {
-            this.employeeShareAmountMethod(params.employeeShareAmountMethod);
-            this.femaleContributionRate(new EmployeePensionContributionRate(params.femaleContributionRate));
-            this.maleContributionRate(new EmployeePensionContributionRate(params.maleContributionRate));
-            this.fractionClassification(new EmployeePensionClassification(params.fractionClassification));
+            this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
+            this.femaleContributionRate(new EmployeePensionContributionRate(params ? params.femaleContributionRate : null));
+            this.maleContributionRate(new EmployeePensionContributionRate(params ? params.maleContributionRate : null));
+            this.fractionClassification(new EmployeePensionClassification(params ? params.fractionClassification : null));
         }
     }
 
     // 厚生年金月額保険料額
     export interface IEmployeePensionMonthlyInsuFee {
         autoCalculation: number;
-        pensionInsurancePremium: IGradeWelfarePensionInsurancePremium;
+        pensionInsurancePremium: Array<IGradeWelfarePensionInsurancePremium>;
         historyId: string;
         salaryEmployeePensionInsuranceRate: ISalaryEmployeePensionInsuRate;
     }
@@ -357,57 +439,59 @@ module nts.uk.pr.view.qmm008.share.model {
     export class EmployeePensionMonthlyInsuFee {
         // Fields
         autoCalculation: KnockoutObservable<number> = ko.observable(null);
-        pensionInsurancePremium: KnockoutObservable<GradeWelfarePensionInsurancePremium> = ko.observable(null);
+        pensionInsurancePremium: KnockoutObservableArray<GradeWelfarePensionInsurancePremium> = ko.observableArray([]);
         historyId: KnockoutObservable<string> = ko.observable(null);
         salaryEmployeePensionInsuranceRate: KnockoutObservable<SalaryEmployeePensionInsuRate> = ko.observable(null);
-        
+
         // Control item
         autoCalculationClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
             new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.USE, getText('QMM008_14')),
             new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.NOT_USE, getText('QMM008_15'))
         ]);
-        
+
         constructor(params: IEmployeePensionMonthlyInsuFee) {
-            this.autoCalculation(params.autoCalculation);
-            if (params.pensionInsurancePremium) this.pensionInsurancePremium(new GradeWelfarePensionInsurancePremium(params.pensionInsurancePremium));
-            this.historyId(params.historyId);
-            if (params.salaryEmployeePensionInsuranceRate) this.salaryEmployeePensionInsuranceRate(new SalaryEmployeePensionInsuRate(params.salaryEmployeePensionInsuranceRate));
+            this.autoCalculation(params ? params.autoCalculation : null);
+            this.pensionInsurancePremium(params ? params.pensionInsurancePremium.map(function(item) {
+                return new GradeWelfarePensionInsurancePremium(item);
+            }) : []);
+            this.historyId(params ? params.historyId : null);
+            this.salaryEmployeePensionInsuranceRate(new SalaryEmployeePensionInsuRate(params ? params.salaryEmployeePensionInsuranceRate : null));
         }
     }
-    
+
     // 賞与厚生年金保険料率
     export interface IBonusEmployeePensionInsuranceRate {
         employeeShareAmountMethod: number;
         fractionClassification: IEmployeePensionClassification;
-        femaleContributionRate: IEmployeePensionContributionRate ;
-        maleContributionRate:  IEmployeePensionContributionRate;
+        femaleContributionRate: IEmployeePensionContributionRate;
+        maleContributionRate: IEmployeePensionContributionRate;
         historyId: string;
     }
-    
+
     // 賞与厚生年金保険料率
     export class BonusEmployeePensionInsuranceRate {
-        
+
         // Fields
         employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
         fractionClassification: KnockoutObservable<EmployeePensionClassification> = ko.observable(null);
         femaleContributionRate: KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
-        maleContributionRate:  KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
+        maleContributionRate: KnockoutObservable<EmployeePensionContributionRate> = ko.observable(null);
         historyId: KnockoutObservable<string> = ko.observable(null);
-        
+
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
         ]);
-        constructor (params: IBonusEmployeePensionInsuranceRate) {
-            this.employeeShareAmountMethod(params.employeeShareAmountMethod);
-            this.fractionClassification(new EmployeePensionClassification(params.fractionClassification));
-            this.femaleContributionRate(new EmployeePensionContributionRate(params.femaleContributionRate));
-            this.maleContributionRate(new EmployeePensionContributionRate(params.maleContributionRate));
-            this.historyId(params.historyId);
+        constructor(params: IBonusEmployeePensionInsuranceRate) {
+            this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
+            this.fractionClassification(new EmployeePensionClassification(params ? params.fractionClassification : null));
+            this.femaleContributionRate(new EmployeePensionContributionRate(params ? params.femaleContributionRate : null));
+            this.maleContributionRate(new EmployeePensionContributionRate(params ? params.maleContributionRate : null));
+            this.historyId(params ? params.historyId : null);
         }
     }
-        
+
 
     export class TreeGridNode {
         code: string;
@@ -419,6 +503,78 @@ module nts.uk.pr.view.qmm008.share.model {
             this.child = child;
         }
     }
+    // 社会保険事業所
+    export class SocialInsuranceOffice {
+        socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
+        socialInsuranceName: KnockoutObservable<string> = ko.observable(null);
+        basicInfomation: KnockoutObservable<BasicInfomation> = ko.observable(null);
+        insuranceMasterInfomation: KnockoutObservable<string> = ko.observable(null);
+        companyID: KnockoutObservable<string> = ko.observable(null);
+        welfareInsuranceRateHistory: KnockoutObservable<WelfarePensionInsuranceRateHistory> = ko.observable(null);
+        healthInsuranceFeeHistory: KnockoutObservable<HealthInsuranceFeeRateHistory> = ko.observable(null);
+        constructor(params: ISocialInsuranceOffice) {
+            this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
+            this.socialInsuranceName(params ? params.socialInsuranceName : null);
+            this.companyID(params ? params.companyID: null);
+            this.basicInfomation(new BasicInfomation(params ? params.basicInfomation : null));
+            this.insuranceMasterInfomation(params ? params.insuranceMasterInfomation : null);
+            this.welfareInsuranceRateHistory(new WelfarePensionInsuranceRateHistory(params ? params.welfareInsuranceRateHistory: null));
+            this.healthInsuranceFeeHistory(new HealthInsuranceFeeRateHistory(params ? params.healthInsuranceFeeHistory : null));
+        }
+    }
 
+    // 基本情報
+    export interface IBasicInfomation {
+        representativePosition: string;
+        notes: string;
+        streetAddress: ISocialInsuranceBusinessAddress;
+        representativeName: string;
+        abbreviatedName: string;
+    }
+
+    // 基本情報
+    export class BasicInfomation {
+        representativePosition: KnockoutObservable<string> = ko.observable(null);
+        notes: KnockoutObservable<string> = ko.observable(null);
+        streetAddress: KnockoutObservable<SocialInsuranceBusinessAddress> = ko.observable(null);
+        representativeName: KnockoutObservable<string> = ko.observable(null);
+        abbreviatedName: KnockoutObservable<string> = ko.observable(null);
+        constructor(params: IBasicInfomation) {
+            this.representativePosition(params ? params.representativePosition : null);
+            this.notes(params ? params.notes : params);
+            this.streetAddress(new SocialInsuranceBusinessAddress(params ? params.streetAddress : null));
+            this.representativeName(params ? params.representativeName: null);
+            this.abbreviatedName(params ? params.abbreviatedName : null);
+
+        }
+    }
+
+    // 社会保険事業所住所
+    export interface ISocialInsuranceBusinessAddress {
+        address1: string;
+        address2: string;
+        addressKana1: string;
+        addressKana2: string;
+        phoneNumber: string;
+        postalCode: string;
+    }
+
+    // 社会保険事業所住所
+    export class SocialInsuranceBusinessAddress {
+        address1: KnockoutObservable<string> = ko.observable(null);
+        address2: KnockoutObservable<string> = ko.observable(null);
+        addressKana1: KnockoutObservable<string> = ko.observable(null);
+        addressKana2: KnockoutObservable<string> = ko.observable(null);
+        phoneNumber: KnockoutObservable<string> = ko.observable(null);
+        postalCode: KnockoutObservable<string> = ko.observable(null);
+        constructor(params: ISocialInsuranceBusinessAddress) {
+            this.address1(params ? params.address1 : null);
+            this.address2(params ? params.address2 : null);
+            this.addressKana1(params ? params.addressKana1 : null);
+            this.addressKana2(params ? params.addressKana2 : null);
+            this.phoneNumber(params ? params.phoneNumber : null);
+            this.postalCode(params ? params.postalCode : null);
+        }
+    }
 
 }

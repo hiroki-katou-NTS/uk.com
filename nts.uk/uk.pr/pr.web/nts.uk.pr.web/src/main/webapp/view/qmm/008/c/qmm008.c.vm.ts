@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         selectedWelfareInsurance: KnockoutObservable<string> = ko.observable(null);
         // Office and history info
         selectedOffice: any = null;
-        selectedhistoryId: string = "";
+        selectedHistoryId: string = "";
 
         // Welfare Item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '' });
@@ -82,15 +82,15 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
             let self = this,
                 selectedInsuranceCode = self.selectedWelfareInsurance().split('___')[0],
-                selectedhistoryId = self.selectedWelfareInsurance().split('___')[1],
+                selectedHistoryId = self.selectedWelfareInsurance().split('___')[1],
                 selectedHistoryPeriod = null,
                 listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
-            self.selectedhistoryId = selectedhistoryId;
+            self.selectedHistoryId = selectedHistoryId;
             self.selectedOffice = _.find(listInsuranceOffice, { socialInsuranceCode: selectedInsuranceCode });
-            if (selectedhistoryId) {
+            if (selectedHistoryId) {
                 let selectedHistoryPeriod;
                 if (self.selectedOffice) {
-                    selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedhistoryId });
+                    selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedHistoryId });
                 }
                 if (selectedHistoryPeriod) {
                     selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
@@ -110,88 +110,16 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         }
         initBlankEmployeeMonthlyInsuFee() {
             let self = this;
-            let empContributionFee: model.IContributionFee = {
-                maleInsurancePremium: null,
-                femaleInsurancePremium: null,
-                maleExemptionInsurance: null,
-                femaleExemptionInsurance: null
-            }
-
-            let insuContributionFee: model.IContributionFee = {
-                maleInsurancePremium: null,
-                femaleInsurancePremium: null,
-                maleExemptionInsurance: null,
-                femaleExemptionInsurance: null
-            }
-            let gradeWelfareInsuPremium: model.IGradeWelfarePensionInsurancePremium = {
-                welfarePensionGrade: 1,
-                employeeBurden: empContributionFee,
-                insuredBurden: insuContributionFee
-
-            }
-            let employeePensionClassification: model.IEmployeePensionClassification = {
-                personalFraction: null,
-                businessOwnerFraction: null
-            };
-            let maleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: null,
-                employeeContributionRatio: null,
-                individualExcemtionRate: null,
-                employeeExcemtionRate: null
-            }
-            let femaleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: null,
-                employeeContributionRatio: null,
-                individualExcemtionRate: null,
-                employeeExcemtionRate: null
-            }
-            let salaryEmployeePensionInsurate: model.ISalaryEmployeePensionInsuRate = {
-                employeeShareAmountMethod: 0,
-                femaleContributionRate: femaleContributionRate,
-                maleContributionRate: maleContributionRate,
-                fractionClassification: employeePensionClassification
-            }
-
-            self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee({
-                autoCalculation: 0,
-                pensionInsurancePremium: gradeWelfareInsuPremium,
-                historyId: nts.uk.util.randomId(),
-                salaryEmployeePensionInsuranceRate: salaryEmployeePensionInsurate
-            }));
+            self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee(null));
         }
 
         initBlankBonusPensionInsuranceRate() {
-            let self = this;
-            let maleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: null,
-                employeeContributionRatio: null,
-                individualExcemtionRate: null,
-                employeeExcemtionRate: null
-            }
-
-            let femaleContributionRate: model.IEmployeePensionContributionRate = {
-                individualBurdenRatio: null,
-                employeeContributionRatio: null,
-                individualExcemtionRate: null,
-                employeeExcemtionRate: null
-            }
-            let employeePensionClassification: model.IEmployeePensionClassification = {
-                personalFraction: null,
-                businessOwnerFraction: null
-            };
-            let bonusEmployeePensionInsuranceRate: model.IBonusEmployeePensionInsuranceRate = {
-                employeeShareAmountMethod: 0,
-                fractionClassification: employeePensionClassification,
-                femaleContributionRate: femaleContributionRate,
-                maleContributionRate: maleContributionRate,
-                historyId: nts.uk.util.randomId()
-            }
-            this.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(bonusEmployeePensionInsuranceRate));
+            this.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(null));
         }
 
         initBlankWelfareInsuranceCls() {
             let self = this;
-            self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification({ fundClassification: 0, historyId: '0005' }));
+            self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification(null));
         }
         convertToTreeGridList() {
             let self = this,
@@ -280,7 +208,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
         editHistory() {
             let self = this;
-            let selectedOffice = self.selectedOffice, selectedhistoryId = self.selectedhistoryId;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
             setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
