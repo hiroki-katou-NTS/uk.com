@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -8,10 +7,10 @@ import java.util.Optional;
  */
 public interface EmpTiedProYearRepository {
 
-    List<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo);
+	Optional<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo);
 
-    void add(EmpTiedProYear domain);
+	void add(EmpTiedProYear domain);
 
-    void update(EmpTiedProYear domain);
+	void update(EmpTiedProYear domain);
 
 }
