@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,8 +70,12 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 			//socialInsuranceOfficeRepository.remove(AppContexts.user().companyId(), command.getCode());
 			
 			// ドメインモデル「賞与健康保険料率」を削除する
-			HealthInsuranceFeeRateHistory healthInsuranceFeeRateHistory = healthInsuranceFeeRateHistoryRepository.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), command.getCode());
-			List<String> historyIds = healthInsuranceFeeRateHistory.items().stream().map(x -> x.identifier()).collect(Collectors.toList());
+			Optional<HealthInsuranceFeeRateHistory> healthInsuranceFeeRateHistory = healthInsuranceFeeRateHistoryRepository.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), command.getCode());
+			List<String> historyIds = new ArrayList<>();
+			if(healthInsuranceFeeRateHistory.isPresent()) {
+				historyIds = healthInsuranceFeeRateHistory.get().items().stream().map(x -> x.identifier()).collect(Collectors.toList());
+			}
+			
 			bonusHealthInsuranceRateRepository.deleteByHistoryIds(historyIds);
 			
 			// ドメインモデル「健康保険月額保険料額」を削除する
