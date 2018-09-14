@@ -19,6 +19,10 @@
 	display: inline-block;
 }
 
+#emp_reg_info_wizard {
+	min-width: 1230px;
+}
+
 #emp_reg_info_wizard>.wizard {
     width: 260px;
     height: calc(100vh - 200px);
@@ -28,6 +32,7 @@
 	background: none;
 	width: calc(100vw - 360px);
 	padding-left: 25px;
+    min-width: 900px;
 }
 
 /* step1 */
@@ -50,7 +55,7 @@
 	position: absolute;
 	top: 0;
 	right: 0;
-    max-width: 440px;
+    max-width: 340px;
 }
 #step1_content_top_right .form-group>div {
 	white-space: nowrap;
