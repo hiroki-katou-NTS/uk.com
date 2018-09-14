@@ -5,13 +5,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.CreateSocialOfficeCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.CreateSocialOfficeCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.DeleteSocialOfficeCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeCommand;
-import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeFinder;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
@@ -28,7 +29,7 @@ public class SocialOfficeService {
 	private SocialSuranOfficeFinder socialSuranOfficeFinder;
 	
 	@Inject
-	private FindSocialOfficeCommandHandler findSocialOfficeCommandHandler;
+	private FindSocialOfficeFinder findSocialOfficeFinder;
 	
 	@Inject
 	private CreateSocialOfficeCommandHandler createSocialOfficeCommandHandler;
@@ -48,7 +49,7 @@ public class SocialOfficeService {
 		List<SociaInsuPreInfoDto> data = socialSuranOfficeFinder.findAll();
 		
 		List<CusSociaInsuOfficeDto> dataCodeName = socialSuranOfficeFinder.findByCid();
-		if(dataCodeName.isEmpty()) {
+		if(!dataCodeName.isEmpty()) {
 			sociaInsuOfficeDetail = socialSuranOfficeFinder.findByKey(dataCodeName.get(0).getCode());
 		}
 		DataResponseDto response = new DataResponseDto();
@@ -60,9 +61,9 @@ public class SocialOfficeService {
 	
 	
 	@POST
-	@Path("/findByCode")
-	public SociaInsuOfficeDto findByCode(FindSocialOfficeCommand findSocialOfficeCommand) {
-		return this.findSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
+	@Path("/findByCode/{code}")
+	public SociaInsuOfficeDto findByCode(@PathParam("code") String code) {
+		return this.findSocialOfficeFinder.findByCode(code);
 	}
 	
 	@POST

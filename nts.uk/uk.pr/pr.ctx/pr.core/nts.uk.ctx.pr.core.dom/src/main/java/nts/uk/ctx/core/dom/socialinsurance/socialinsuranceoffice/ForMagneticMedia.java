@@ -2,14 +2,9 @@ package nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * 磁気媒体用
