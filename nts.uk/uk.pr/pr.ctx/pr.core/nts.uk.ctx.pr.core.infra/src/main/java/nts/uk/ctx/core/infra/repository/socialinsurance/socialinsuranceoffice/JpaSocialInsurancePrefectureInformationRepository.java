@@ -14,7 +14,7 @@ public class JpaSocialInsurancePrefectureInformationRepository extends JpaReposi
 		implements SocialInsurancePrefectureInformationRepository {
 
 	private static final String QUERY = "select a from QpbmtSocialInsuracePrefectureInfomation a where a.socialInsPreInfoPk.historyId  IN"
-			+ " (SELECT historyId FROM QpbmtSocialInsurancePrefectureHistory )";
+			+ " (SELECT b.historyId FROM QpbmtSocialInsurancePrefectureHistory b )";
 
 
 	@Override

@@ -14,22 +14,88 @@
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<!-- 健康保険 -->
-				<li><a tabindex="-1" href="#tabpanel-1" class="tab-a" role="tab-navigator">#{i18n.getText('QMM008_6')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" class="tab-a"
+					role="tab-navigator">#{i18n.getText('QMM008_6')}</a></li>
 				<!-- 厚生年金 -->
-				<li><a tabindex="-1" href="#tabpanel-2" class="tab-b" role="tab-navigator">#{i18n.getText('QMM008_7')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" class="tab-b"
+					role="tab-navigator">#{i18n.getText('QMM008_7')}</a></li>
 				<!-- 拠出金 -->
-				<li><a tabindex="-1" href="#tabpanel-3" class="tab-c" role="tab-navigator">#{i18n.getText('QMM008_193')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-3" class="tab-c"
+					role="tab-navigator">#{i18n.getText('QMM008_193')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
-				<h1>Screen B</h1>
+				<div>
+					<div class="sidebar-content-header flex valign-center ">
+						<!-- A2_3 厚生年金 -->
+						<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
+						<!-- A2_1 -> A1_5 -->
+						<div class="flex">
+							<button id="A1_1" class="proceed" tabindex="1"
+								data-bind="click: register, enable: isSelectedHistory">#{i18n.getText('QMM008_1')}</button>
+							<button id="A1_2" tabindex="1"
+								data-bind="click: printPDF, enable: true">#{i18n.getText('QMM008_2')}</button>
+							<button id="A1_3" tabindex="1"
+								data-bind="click: registerBusinessEstablishment, enable: isSelectedHistory">#{i18n.getText('QMM008_3')}</button>
+							<button id="A1_4" tabindex="1"
+								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
+							<button id="A1_5" tabindex="1"
+								data-bind="click: masterCorrectionLog, enable: true">#{i18n.getText('QMM008_5')}</button>
+							<button data-bind="click: changeMode, enable: true">Change mode</button>
+						</div>
+					</div>
+					<div style="margin-top: 30px;"
+						class="contents-area fixed-flex-layout">
+						<!-- C1_1 厚生年金保険料率一覧 -->
+						<div class="fixed-flex-layout-left">
+							<div style="margin-left: 30px; margin-bottom: 30px;"
+								data-bind="ntsPanel:{width: '290px', height: '550px', direction: 'right', showIcon: true, visible: true}">
+								<!-- C1_2 厚生年金保険料率一覧 -->
+								<div style="width: 290px" tabindex="1"
+									data-bind="ntsSearchBox: {
+								targetKey: 'code', 
+								mode:'igTreeDrag', 
+								comId:'C1_5', 
+								items: welfareInsuranceRateTreeList, 
+								selected: selectedWelfareInsurance, 
+								selectedKey: 'code', 
+								childField: 'child', 
+								fields: ['code', 'displayText']}" />
+								<div style="width: 100%">
+									<button id="B1_3" tabindex="2"
+										data-bind="click: createNewHistory, enable: $vm.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
+									<button style="float: right" id="B1_4" tabindex="3"
+										data-bind="click: editHistory, enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
+								</div>
+								<div id="C1_5" tabindex="4"
+									style="background-color: white; margin-top: 15px;"
+									data-bind="ntsTreeDragAndDrop:{
+									width: 290,
+									rows: 15,
+									dataSource: healthInsuranceRateTreeList,
+									value: selectedHealthInsurance,
+									primaryKey: 'code',
+									childDataKey: 'child',
+									primaryText: 'displayText',
+									maxDeepLeaf: 1,
+									maxChildInNode: 12,
+									multiple: false,
+									enable: true}">
+								</div>
+							</div>
+						</div>
+						<div class="fixed-flex-layout-right right-panel">
+							
+						</div>
+					</div>
+				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<h1>Screen C</h1>
 			</div>
 			<div id="tabpanel-3" role="tabpanel">
-			<h1>Screen D</h1>
+				<h1>Screen D</h1>
 			</div>
 		</ui:define>
 	</ui:composition>

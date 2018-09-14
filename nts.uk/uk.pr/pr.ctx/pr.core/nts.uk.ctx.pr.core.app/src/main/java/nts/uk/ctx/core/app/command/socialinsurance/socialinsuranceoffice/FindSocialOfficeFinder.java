@@ -4,26 +4,20 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuOfficeDto;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@Transactional
 @Stateless
-public class FindSocialOfficeCommandHandler extends CommandHandlerWithResult<FindSocialOfficeCommand,SociaInsuOfficeDto> {
-	
+public class FindSocialOfficeFinder {
+
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-	
-	@Override
-	protected SociaInsuOfficeDto handle(CommandHandlerContext<FindSocialOfficeCommand> context) {
-		FindSocialOfficeCommand command = context.getCommand();
-		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
+
+	public SociaInsuOfficeDto findByCode(String codeId) {
+		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), codeId);
 		return mappingDto(data);
 	}
 
