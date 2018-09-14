@@ -58,8 +58,8 @@ public class DivergenceTimeDto implements ItemConst {
 		return domain == null ? null : new DivergenceTimeDto(
 				getAttendanceTime(domain.getDivTime()), 
 				getAttendanceTime(domain.getDeductionTime()),
-				domain.getDivResonCode() == null ? null : domain.getDivResonCode().v(), 
-				domain.getDivReason() == null ? null : domain.getDivReason().v(), 
+				!domain.getDivResonCode().isPresent() ? null : domain.getDivResonCode().get().v(), 
+				!domain.getDivReason().isPresent() ? null : domain.getDivReason().get().v(), 
 				getAttendanceTime(domain.getDivTimeAfterDeduction()), 
 				domain.getDivTimeId());
 	}
