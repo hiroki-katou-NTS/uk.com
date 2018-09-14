@@ -69,8 +69,8 @@ public class CalcAttachTimeDto implements ItemConst {
 	
 	public TimeWithCalculation createTimeWithCalc() {
 		return TimeWithCalculation.createTimeWithCalculation(
-										time == 0 ? new AttendanceTime(0) : new AttendanceTime(time), 
-										calcTime == 0 ? new AttendanceTime(0) : new AttendanceTime(calcTime));
+										time == null ? new AttendanceTime(0) : new AttendanceTime(time), 
+										calcTime == null ? new AttendanceTime(0) : new AttendanceTime(calcTime));
 	}
 	
 	public TimeDivergenceWithCalculation createTimeDivWithCalc() {
