@@ -71,6 +71,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		int count = 0;
 		for (TargetPersonImport targetPersonImport : lstPerson) {
+			count += 1;
+			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
 			if(!closure.isPresent()) {
@@ -81,13 +83,12 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					|| !startDateshime.beforeOrEquals(workDate.end())) {
 				continue;
 			}
-			count += 1;
 			//社員の申請を反映 (Phản ánh nhân viên)
 			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, 
 					optRequesSetting.get(), aprResult, dataSetter)) {
 				return ProcessStateReflect.INTERRUPTION;
 			}
-			dataSetter.updateData("reflectApprovalCount", count);
+			
 		}
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;

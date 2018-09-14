@@ -205,10 +205,8 @@ public class LogBasicInformationFinder {
 						// Convert log basic info to DTO
 						LogBasicInformation logBasicInformation = mapLogBasicInfo.get(personInfoCorrectionLog.getOperationId());
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-						
-						String parentKey = IdentifierUtil.randomUniqueId();
-						logBasicInfoDto.setParentKey(parentKey);
 						String keyCheck = personInfoCorrectionLog.getOperationId() + personInfoCorrectionLog.getTargetUser().getEmployeeId();
+						logBasicInfoDto.setParentKey(keyCheck);
 						List<LogPerCateCorrectRecordDto> logPerCateCorrectRecordDtos = LogPerCateCorrectRecordDto
 								.fromDomain(personInfoCorrectionLog, logBasicInfoDto.getParentKey(),mapCheckOrder);
 						if (mapCheck.containsKey(keyCheck)) {
@@ -268,12 +266,9 @@ public class LogBasicInformationFinder {
 							// convert log basic info to DTO
 							LogBasicInformation logBasicInformation = mapLogBasicInfo.get(dataCorrectionLog.getOperationId());
 							LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-							String parentKey = IdentifierUtil.randomUniqueId();
-							logBasicInfoDto.setParentKey(parentKey);
-							
 							LogDataCorrectRecordRefeDto logDataCorrectRecordRefeDto = LogDataCorrectRecordRefeDto.fromDomain(dataCorrectionLog);
 							String keyEmploy = dataCorrectionLog.getOperationId() + logDataCorrectRecordRefeDto.getEmployeeIdtaget();
-							
+							logBasicInfoDto.setParentKey(keyEmploy);
 							// group employId
 							if(mapCheckLogBasic.containsKey(keyEmploy)){
 								LogBasicInfoDto logBasicCheck = mapCheckLogBasic.get(keyEmploy);
@@ -293,6 +288,7 @@ public class LogBasicInformationFinder {
 								
 								lstLogDataCorecRecordRefeDto = new ArrayList<>();
 								LogBasicInfoDto logTemp = getEmpCodeByEmpId(logBasicInfoDto,logDataCorrectRecordRefeDto.getEmployeeIdtaget(),logDataCorrectRecordRefeDto.getUserNameTaget());
+								logDataCorrectRecordRefeDto.setParentKey(keyEmploy);
 								lstLogDataCorecRecordRefeDto.add(logDataCorrectRecordRefeDto);
 								logTemp.setLstLogDataCorrectRecordRefeDto(lstLogDataCorecRecordRefeDto);
 								// set header
