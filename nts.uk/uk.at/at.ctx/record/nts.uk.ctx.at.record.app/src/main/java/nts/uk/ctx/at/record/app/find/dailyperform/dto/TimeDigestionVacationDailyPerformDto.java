@@ -26,6 +26,11 @@ public class TimeDigestionVacationDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
 	
+	@Override
+	public TimeDigestionVacationDailyPerformDto clone() {
+		return new TimeDigestionVacationDailyPerformDto(shortageTime, useTime);
+	}
+	
 	public static TimeDigestionVacationDailyPerformDto from(TimeDigestOfDaily domain) {
 		return domain == null ? null: new TimeDigestionVacationDailyPerformDto(
 				domain.getLeakageTime() == null ? 0 : domain.getLeakageTime().valueAsMinutes(), 
@@ -33,7 +38,11 @@ public class TimeDigestionVacationDailyPerformDto implements ItemConst {
 	}
 	
 	public TimeDigestOfDaily toDomain() {
-		return new TimeDigestOfDaily(useTime == null ? new AttendanceTime(0) : new AttendanceTime(useTime),
-									shortageTime == null ? new AttendanceTime(0) : new AttendanceTime(shortageTime));
+		return new TimeDigestOfDaily(useTime == null ? AttendanceTime.ZERO : new AttendanceTime(useTime),
+									shortageTime == null ? AttendanceTime.ZERO : new AttendanceTime(shortageTime));
 	}
+	
+	public static TimeDigestOfDaily defaultDomain() {
+		return new TimeDigestOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO);
+}	
 }

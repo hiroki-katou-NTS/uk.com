@@ -31,6 +31,12 @@ public class CheckDailyPerformanceErrorPubImpl implements CheckDailyPerformanceE
 		}
 		return result;
 	}
+
+	@Override
+	public boolean checksDailyPerformanceError(String employeeID, GeneralDate strDate, GeneralDate endDate) {
+		String companyID = AppContexts.user().companyId();
+		return employeeDailyPerErrorRepo.checkErrorByPeriodDate(companyID, employeeID, strDate, endDate);
+	}
 	
 	
 

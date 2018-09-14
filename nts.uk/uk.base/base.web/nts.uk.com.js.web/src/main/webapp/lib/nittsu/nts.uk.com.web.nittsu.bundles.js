@@ -15567,9 +15567,10 @@ var nts;
                                     }
                                 },
                                 dropDownClosed: function (evt, ui) {
+                                    var data = $element.data(DATA);
                                     // check flag changed for validate
                                     $element.trigger(CHANGED, [CHANGED, true]);
-                                    setTimeout(function () {
+                                    var sto = setTimeout(function () {
                                         var data = $element.data(DATA);
                                         // select first if !select and !editable
                                         if (!data[EDITABLE] && _.isNil(data[VALUE])) {
@@ -15582,9 +15583,12 @@ var nts;
                                         // validate if required
                                         $element
                                             .trigger(VALIDATE, [true])
-                                            .trigger(SHOWVALUE)
-                                            .focus();
+                                            .trigger(SHOWVALUE);
+                                        clearTimeout(sto);
                                     }, 10);
+                                    if (data[ENABLE] && !$(":focus").length) {
+                                        $element.focus();
+                                    }
                                 },
                                 dropDownOpening: function (evt, ui) {
                                     var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
@@ -15634,10 +15638,11 @@ var nts;
                                         .css('min-width', $element.width() + 'px')
                                         .find('.nts-column:last-child')
                                         .css('margin-right', 0);
-                                    setTimeout(function () {
+                                    var sto = setTimeout(function () {
                                         $input.css({
                                             'width': ($(ui.list).width() - 6) + 'px'
                                         });
+                                        clearTimeout(sto);
                                     }, 25);
                                 }
                             })
@@ -15748,8 +15753,12 @@ var nts;
                                 if (!_.isEqual(olds, options)) {
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
+                                var sto_1 = setTimeout(function () {
+                                    $element
+                                        .igCombo(OPTION, "disabled", !enable);
+                                    clearTimeout(sto_1);
+                                }, 100);
                                 $element
-                                    .igCombo(OPTION, "disabled", !enable)
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -21917,7 +21926,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = /** @class */ (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -21948,6 +21957,9 @@ var nts;
                         self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
                         self.body = _.assignIn(self.body, _.cloneDeep(defaultOptions));
                         self.compreOptions();
+                        if (self.enter) {
+                            _$grid.data("enterDirect", self.enter);
+                        }
                         _$grid.mGrid({});
                     };
                     MGrid.prototype.compreOptions = function () {
@@ -22242,7 +22254,7 @@ var nts;
                         var sizeUi = { headerWrappers: headerWrappers, bodyWrappers: bodyWrappers,
                             sumWrappers: sumWrappers, headerColGroup: headerColGroup,
                             bodyColGroup: bodyColGroup, sumColGroup: sumColGroup };
-                        var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi, self.float);
+                        var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi);
                         kt._adjuster = freeAdjuster;
                         freeAdjuster.handle();
                         su.binding(self.$container, self.autoFitWindow);
@@ -22320,7 +22332,8 @@ var nts;
                     function groupHeader($container, options, isUpdate) {
                         var $table = selector.create("table").html("<tbody></tbody>").addClass(options.containerClass + "-table")
                             .css({ position: "relative", "table-layout": "fixed", width: "100%",
-                            "border-collapse": "separate", "user-select": "none" }).getSingle();
+                            //                                "border-collapse": "separate", 
+                            "user-select": "none" }).getSingle();
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
@@ -22660,7 +22673,7 @@ var nts;
                             $.data(td, lo.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + "; position: relative;";
+                                + ws + ";"; // position: relative;";
                             if (!self.visibleColumnsMap[key]) {
                                 tdStyle += "; display: none;";
                                 if (self.$container.classList.contains(FIXED))
@@ -22797,7 +22810,7 @@ var nts;
                             $.data(td, lo.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + "; position: relative; padding: 0px 2px;";
+                                + ws + "; padding: 0px 2px; "; //position: relative;";
                             var col = visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
@@ -23025,7 +23038,7 @@ var nts;
                             $.data(td, lo.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + "; position: relative; padding: 0px 2px;";
+                                + ws + "; padding: 0px 2px;"; // position: relative";
                             var col = self.visibleColumnsMap[key];
                             if (!col)
                                 tdStyle += "; display: none;";
@@ -23226,6 +23239,7 @@ var nts;
                             maxWidth = options.isHeader ? _maxFreeWidth : _maxFreeWidth + ti.getScrollWidth();
                             style = wrapperStyles(top, left, options.width, maxWidth + "px", options.height);
                             style["background-color"] = "#F3F3F3";
+                            style["padding-right"] = "1px";
                         }
                         else if (options.containerClass === FIXED) {
                             if (!_maxFixedWidth || newOpt) {
@@ -23233,6 +23247,7 @@ var nts;
                             }
                             style = wrapperStyles(top, left, _maxFixedWidth + "px", undefined, options.height);
                             style["background-color"] = "#F3F3F3";
+                            style["padding-right"] = "1px";
                         }
                         else if (options.containerClass === gp.PAGING_CLS || options.containerClass === gp.SHEET_CLS) {
                             style = wrapperStyles(top, left, options.width, undefined, options.height);
@@ -23582,7 +23597,7 @@ var nts;
                     kt._widths = {};
                     kt._columnWidths = {};
                     var ColumnAdjuster = /** @class */ (function () {
-                        function ColumnAdjuster(widths, height, sizeUi, unshift) {
+                        function ColumnAdjuster(widths, height, sizeUi) {
                             var _this = this;
                             this.headerColGroup = [];
                             this.bodyColGroup = [];
@@ -23592,7 +23607,6 @@ var nts;
                             this.headerWrappers = sizeUi.headerWrappers;
                             this.bodyWrappers = sizeUi.bodyWrappers;
                             this.sumWrappers = sizeUi.sumWrappers;
-                            this.unshiftRight = unshift;
                             _.forEach(sizeUi.headerColGroup, function (g) {
                                 if (g) {
                                     var vCols = g.filter(function (c) { return c.style.display !== "none"; });
@@ -23695,12 +23709,15 @@ var nts;
                         /**
                          * Cursor down.
                          */
-                        ColumnAdjuster.prototype.cursorDown = function (event) {
+                        ColumnAdjuster.prototype.cursorDown = function (event, trg) {
                             var self = this;
                             if (self.actionDetails) {
-                                self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
+                                self.cursorUp(event);
                             }
                             var $targetGrip = event.target;
+                            if (!selector.is($targetGrip, "." + kt.LINE)
+                                && !selector.is($targetGrip, "." + kt.FIXED_LINE))
+                                return;
                             var gripIndex = $.data($targetGrip, kt.RESIZE_NO);
                             var $leftCol = $.data($targetGrip, kt.RESIZE_COL);
                             var headerGroup, isFixed = false;
@@ -23711,13 +23728,14 @@ var nts;
                             else {
                                 headerGroup = self.headerColGroup[1];
                             }
-                            var breakArea, wrapperLeft, wrapperRight, leftAlign;
+                            var breakArea, wrapperLeft, wrapperRight, maxWrapperRight, leftAlign;
                             if (isFixed && self.headerColGroup.length > 1 && gripIndex === self.headerColGroup[0].length - 1) {
                                 breakArea = true;
                             }
                             if (self.headerWrappers.length > 1) {
                                 wrapperLeft = self.headerWrappers[0].style.width;
                                 wrapperRight = self.headerWrappers[1].style.width;
+                                maxWrapperRight = self.headerWrappers[1].style.maxWidth;
                                 leftAlign = self.headerWrappers[1].style.left;
                             }
                             var $rightCol = headerGroup[gripIndex + 1];
@@ -23738,7 +23756,8 @@ var nts;
                                     left: parseFloat(leftWidth),
                                     right: rightWidth ? parseFloat(rightWidth) : undefined,
                                     wrapperLeft: parseFloat(wrapperLeft),
-                                    wrapperRight: parseFloat(wrapperRight)
+                                    wrapperRight: parseFloat(wrapperRight),
+                                    maxWrapperRight: parseFloat(maxWrapperRight)
                                 },
                                 changedWidths: {
                                     left: parseFloat(leftWidth),
@@ -23747,7 +23766,8 @@ var nts;
                             };
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                            event.preventDefault();
+                            if (!trg)
+                                event.preventDefault();
                         };
                         /**
                          * Cursor move shift.
@@ -23756,9 +23776,29 @@ var nts;
                             var self = this;
                             if (!self.actionDetails)
                                 return;
-                            var distance = getCursorX(event) - self.actionDetails.xCoord;
+                            var evt, distance = getCursorX(event) - self.actionDetails.xCoord;
                             if (distance === 0)
                                 return;
+                            else if (distance > 0) {
+                                if (_.isNil(self.dir)) {
+                                    self.dir = 1;
+                                }
+                                else if (self.dir === -1) {
+                                    evt = { target: self.actionDetails.$targetGrip };
+                                    self.cursorUpShift(event);
+                                    evt.pageX = event.pageX;
+                                    self.cursorDown(evt, true);
+                                }
+                            }
+                            else if (_.isNil(self.dir)) {
+                                self.dir = -1;
+                            }
+                            else if (self.dir === 1) {
+                                evt = { target: self.actionDetails.$targetGrip };
+                                self.cursorUpShift(event);
+                                evt.pageX = event.pageX;
+                                self.cursorDown(evt, true);
+                            }
                             var leftWidth, leftAreaWidth, rightAreaWidth, leftAlign;
                             leftWidth = self.actionDetails.widths.left + distance;
                             if (leftWidth <= 20)
@@ -23787,8 +23827,12 @@ var nts;
                             }
                             else {
                                 bodyGroup = self.bodyColGroup[1];
-                                if (self.sumWrappers.length > 0)
+                                self.bodyWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
+                                self.headerWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                if (self.sumWrappers.length > 0) {
                                     sumGroup = self.sumColGroup[1];
+                                    self.sumWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                }
                             }
                             if (self.actionDetails.$leftCol) {
                                 self.setWidth(self.actionDetails.$leftCol, leftWidth);
@@ -23816,6 +23860,29 @@ var nts;
                                     self.sumWrappers[1].style.left = leftAlign + "px";
                                 }
                                 kt._widths._unfixed = rightAreaWidth;
+                            }
+                            if (!self.actionDetails.isFixed && distance < 0) {
+                                var width = parseFloat(self.bodyWrappers[1].style.width), maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth);
+                                if (maxWidth < width) {
+                                    var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS), sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS), btw = _maxFixedWidth + maxWidth;
+                                    if (pageDiv) {
+                                        self.setWidth(pageDiv, btw);
+                                    }
+                                    if (sheetDiv) {
+                                        self.setWidth(sheetDiv, btw);
+                                    }
+                                    kt._widths._unfixed = maxWidth - ti.getScrollWidth();
+                                }
+                            }
+                            if (_hasFixed && distance > 0 && !self.actionDetails.isFixed) {
+                                var width = parseFloat(self.bodyWrappers[1].style.width), maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth), pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS), sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS), ws = Math.min(maxWidth, width), btw = _maxFixedWidth + ws;
+                                if (pageDiv && parseFloat(pageDiv.style.width) !== btw) {
+                                    self.setWidth(pageDiv, btw);
+                                }
+                                if (sheetDiv && parseFloat(sheetDiv.style.width) !== btw) {
+                                    self.setWidth(sheetDiv, btw);
+                                }
+                                kt._widths._unfixed = ws;
                             }
                         };
                         /**
@@ -23860,6 +23927,7 @@ var nts;
                                 replenLargeur(leftCol, self.actionDetails.changedWidths.left);
                             }
                             self.actionDetails = null;
+                            self.dir = null;
                         };
                         /**
                          * Cursor move.
@@ -24011,14 +24079,14 @@ var nts;
                         ColumnAdjuster.prototype.syncLines = function () {
                             var self = this;
                             self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                            var left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
-                            _.forEach(group, function ($td, index) {
-                                if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
+                            var left = 0;
+                            _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function ($td, index) {
+                                if ($td.style.display === "none")
                                     return;
                                 left += parseFloat($td.style.width);
                                 if (index < self.actionDetails.gripIndex)
                                     return;
-                                if (self.unshiftRight && index > self.actionDetails.gripIndex)
+                                if (index > self.actionDetails.gripIndex)
                                     return false;
                                 var lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
                                 var div = lineArr[index];
@@ -24101,7 +24169,8 @@ var nts;
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
                             width = window.innerWidth - 240 - _maxFixedWidth;
-                            btmw = Math.min(_maxFixedWidth + width + ti.getScrollWidth(), _maxFixedWidth + parseFloat(_bodyWrappers[1].style.maxWidth));
+                            _flexFitWidth = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[1].style.maxWidth));
+                            btmw = _maxFixedWidth + _flexFitWidth;
                             _headerWrappers[1].style.width = width + "px";
                             _bodyWrappers[1].style.width = (width + ti.getScrollWidth()) + "px";
                             height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
@@ -24118,6 +24187,13 @@ var nts;
                             if (sheetDiv) {
                                 sheetDiv.style.width = btmw + "px";
                                 sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari_1) + "px";
+                                var sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
+                                var scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
+                                if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
+                                    scrollbar.classList.add("ui-state-disabled");
+                                }
+                                else
+                                    scrollbar.classList.remove("ui-state-disabled");
                             }
                             _bodyWrappers[0].style.height = height + "px";
                             _bodyWrappers[1].style.height = height + "px";
@@ -24125,6 +24201,7 @@ var nts;
                         }
                         width = window.innerWidth - 240;
                         btmw = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[0].style.maxWidth));
+                        _flexFitWidth = btmw;
                         _headerWrappers[0].style.width = width + "px";
                         _bodyWrappers[0].style.width = (width + ti.getScrollWidth()) + "px";
                         height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
@@ -24793,6 +24870,7 @@ var nts;
                             _features = null;
                             _leftAlign = null;
                             _header = null;
+                            _flexFitWidth = null;
                             this.element.html("");
                             this.element.removeData();
                             _histoire = [];
@@ -25052,12 +25130,12 @@ var nts;
                             var $input = $editor.querySelector("input.medit");
                             var inputVal_1 = $input.value;
                             if ($bCell) {
-                                var column_1 = _columnsMap[editor.columnKey];
+                                var spl = {}, column_1 = _columnsMap[editor.columnKey];
                                 if (!column_1)
                                     return;
-                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : format(column_1[0], inputVal_1);
+                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1) ? "" : format(column_1[0], inputVal_1, spl));
                                 $bCell.textContent = formatted;
-                                var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : formatSave(column_1[0], inputVal_1);
+                                var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : (spl.padded ? formatted : formatSave(column_1[0], inputVal_1));
                                 wedgeCell($grid, editor, disFormat_1);
                                 $.data($bCell, v.DATA, disFormat_1);
                                 if ($editor.classList.contains(hpl.CURRENCY_CLS)) {
@@ -25105,7 +25183,7 @@ var nts;
                                 }
                                 else if ((sCol_1 = _specialLinkColumn[editor.columnKey]) && sCol_1.changed) {
                                     var data = _mafollicle[_currentPage].origDs[editor.rowIdx];
-                                    sCol_1.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(function (res) {
+                                    sCol_1.changed(editor.columnKey, data[_pk], inputVal_1, data[editor.columnKey]).done(function (res) {
                                         var $linkCell = lch.cellAt($grid, editor.rowIdx, sCol_1.column);
                                         if ($linkCell) {
                                             $linkCell.querySelector("a").textContent = res;
@@ -25406,17 +25484,13 @@ var nts;
                     function deleteRow() {
                     }
                     su.deleteRow = deleteRow;
-                    function format(column, value) {
+                    function format(column, value, spl) {
                         if (uk.util.isNullOrEmpty(_.trim(value)))
                             return value;
                         if (column.constraint) {
-                            var contrainte = void 0, valueType = void 0, constraint = column.constraint;
-                            if (constraint.primitiveValue) {
-                                contrainte = ui.validation.getConstraint(constraint.primitiveValue);
-                                valueType = contrainte.valueType;
-                            }
-                            else
-                                valueType = constraint.cDisplayType;
+                            var constraint = column.constraint;
+                            var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                : constraint.cDisplayType;
                             if (!_.isNil(value) && value !== "") {
                                 if (valueType === "TimeWithDay") {
                                     var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -25459,6 +25533,8 @@ var nts;
                                 }
                                 else if (valueType === "String" && contrainte && contrainte.maxLength && contrainte.isZeroPadded) {
                                     value = uk.text.padLeft(value, '0', parseInt(contrainte.maxLength));
+                                    if (spl)
+                                        spl.padded = true;
                                 }
                             }
                         }
@@ -25497,6 +25573,62 @@ var nts;
                             data = evt.clipboardData.getData("text/plain");
                         }
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
+                        var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
+                            if ($t.classList.contains(khl.ERROR_CLS))
+                                return;
+                            var ridd = _columnsMap[columnKey][0].inputProcess;
+                            if (ridd) {
+                                var rData = _dataSource[rowIdx];
+                                var rId = void 0;
+                                if (rData)
+                                    rId = rData[_pk];
+                                ridd(rId, columnKey, dFormat).done(function (sData) {
+                                    _.forEach(sData, function (sd) {
+                                        var res = _$grid.mGrid("updateCell", sd.id, sd.item, sd.value);
+                                        if (!_.isNil(res) && res >= 0) {
+                                            var sht = _.filter(_.keys(_mafollicle[SheetDef]), function (k) {
+                                                if (k === _currentSheet)
+                                                    return;
+                                                var sCols = _mafollicle[SheetDef][k].columns;
+                                                return _.find(sCols, function (c) { return c.key === sd.item; });
+                                            });
+                                            _.forEach(sht, function (s) {
+                                                wedgeShtCell(res, sd.item, sd.value, s);
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        };
+                        var collerRidd = function (rowIdx, columnKey, value) {
+                            var sCol = _specialColumn[columnKey];
+                            if (sCol) {
+                                var cbx = dkn.controlType[sCol];
+                                wedgeCell(_$grid[0], { rowIdx: rowIdx, columnKey: sCol }, value);
+                                var selectedOpt = _.find(cbx.options, function (o) { return o.code === value; });
+                                if (!_.isNil(selectedOpt)) {
+                                    var $cbxCell = lch.cellAt(_$grid[0], rowIdx, sCol);
+                                    $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
+                                    $.data($cbxCell, lo.CBX_SELECTED_TD, value);
+                                }
+                            }
+                            else if ((sCol = _specialLinkColumn[columnKey]) && sCol.changed) {
+                                var data_1 = _mafollicle[_currentPage].origDs[rowIdx];
+                                sCol.changed(columnKey, data_1[_pk], value, data_1[columnKey]).done(function (res) {
+                                    var $linkCell = lch.cellAt(_$grid[0], rowIdx, sCol.column);
+                                    if ($linkCell) {
+                                        $linkCell.querySelector("a").textContent = res;
+                                        wedgeCell(_$grid[0], { rowIdx: rowIdx, columnKey: sCol.column }, res);
+                                    }
+                                    var $t = lch.cellAt(_$grid[0], rowIdx, columnKey);
+                                    inputRidd($t, rowIdx, columnKey, value);
+                                });
+                            }
+                            else {
+                                var $t = lch.cellAt(_$grid[0], rowIdx, columnKey);
+                                inputRidd($t, rowIdx, columnKey, value);
+                            }
+                        };
                         if (su._copieMode === 0) {
                             if (dkn.controlType[coord.columnKey] !== dkn.TEXTBOX || target.classList.contains(color.Disable)
                                 || !col || col.length === 0)
@@ -25506,6 +25638,7 @@ var nts;
                             disFormat = su.formatSave(col[0], data);
                             su.wedgeCell(_$grid[0], coord, disFormat);
                             $.data(target, v.DATA, disFormat);
+                            collerRidd(coord.rowIdx, coord.columnKey, disFormat);
                             return;
                         }
                         var dataRows = _.map(data.split("\n"), function (row) {
@@ -25536,7 +25669,8 @@ var nts;
                                     e = cArr[cPoint++];
                                 if (!e)
                                     return false;
-                                if (_.trim(c) === "null")
+                                c = _.trim(c);
+                                if (c === "null")
                                     return;
                                 pointCoord = ti.getCellCoord(e);
                                 pointCol = _columnsMap[pointCoord.columnKey];
@@ -25549,6 +25683,7 @@ var nts;
                                 disFormat = su.formatSave(pointCol[0], c);
                                 su.wedgeCell(_$grid[0], pointCoord, disFormat);
                                 $.data(e, v.DATA, disFormat);
+                                collerRidd(pointCoord.rowIdx, pointCoord.columnKey, disFormat);
                             });
                         });
                     }
@@ -25826,20 +25961,20 @@ var nts;
                     function imiSheets($container, top, width) {
                         if (!_sheeting)
                             return;
-                        var $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
-                        $container.appendChild($sheetArea);
+                        gp.$sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
+                        $container.appendChild(gp.$sheetArea);
                         var $scrollBar = document.createElement("ul");
                         $scrollBar.classList.add("mgrid-sheet-scrollbar");
-                        $sheetArea.appendChild($scrollBar);
+                        gp.$sheetArea.appendChild($scrollBar);
                         var $up = document.createElement("li");
-                        $up.textContent = "▲";
+                        $up.className = "ui-icon-triangle-1-n ui-icon";
                         $scrollBar.appendChild($up);
                         var $down = document.createElement("li");
-                        $down.textContent = "▼";
+                        $down.className = "ui-icon-triangle-1-s ui-icon";
                         $scrollBar.appendChild($down);
                         var $gridSheet = _prtDiv.cloneNode();
                         $gridSheet.classList.add("mgrid-sheet-nav");
-                        $sheetArea.appendChild($gridSheet);
+                        gp.$sheetArea.appendChild($gridSheet);
                         var $buttons = document.createElement("ul");
                         $buttons.classList.add("mgrid-sheet-buttonlist");
                         $gridSheet.appendChild($buttons);
@@ -25865,10 +26000,10 @@ var nts;
                             $buttons.appendChild($btn);
                         });
                         var sheetNav = $($gridSheet);
-                        $up.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                        $up.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             sheetNav.scrollTop(sheetNav.scrollTop() - gp.SHEET_HEIGHT);
                         });
-                        $down.addXEventListener(ssk.CLICK_EVT, function (evt) {
+                        $down.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             sheetNav.scrollTop(sheetNav.scrollTop() + gp.SHEET_HEIGHT);
                         });
                     }
@@ -26239,7 +26374,7 @@ var nts;
                         }
                         var $editContainer = document.createElement("div");
                         $editContainer.classList.add("medit-container");
-                        $editContainer.style.height = (BODY_ROW_HEIGHT - 4) + "px";
+                        $editContainer.style.height = (BODY_ROW_HEIGHT - 3) + "px";
                         var $editor = document.createElement("input");
                         $editor.classList.add("medit");
                         $editContainer.appendChild($editor);
@@ -26405,11 +26540,10 @@ var nts;
                                 if (sCol) {
                                     var $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
                                     if ($cCell) {
-                                        var column = _columnsMap[sCol];
-                                        var formatted = su.format(column[0], value);
-                                        $cCell.textContent = formatted;
+                                        $cCell.textContent = value;
                                         su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol }, value);
                                         $.data($cCell, v.DATA, value);
+                                        khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: sCol, element: $cCell });
                                     }
                                 }
                             });
@@ -26954,18 +27088,9 @@ var nts;
                                     this.options.mode = "time";
                                     return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
-                                case "StandardTimeWithDay":
-                                    this.options.timeWithDay = true;
-                                    var result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
-                                        .validate(value);
-                                    if (result.isValid) {
-                                        var formatter = new uk.text.TimeWithDayFormatter(this.options);
-                                        result.parsedValue = formatter.format(result.parsedValue);
-                                    }
-                                    return result;
                                 case "TimeWithDay":
                                     this.options.timeWithDay = true;
-                                    var result = new nts.uk.ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                    var result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
                                     if (result.isValid) {
                                         var formatter = new uk.text.TimeWithDayFormatter(this.options);
@@ -36701,7 +36826,7 @@ var nts;
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = timeClick && _.isNumber(Number(timeClick)) ? Number(timeClick) : 500;
+                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
                                     if (time > _timeClick) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);

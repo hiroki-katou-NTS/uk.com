@@ -6,6 +6,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +24,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +38,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.adapter.employee.NarrowEmployeeAdapter;
@@ -195,9 +199,13 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DisplayRemainingHolidayNumber remainHolidayService;
 	
+	@Resource
+	private ManagedExecutorService executorService;
+	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
-	
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DPText.DATE_FORMAT);
+
 	/**
 	 * Get List Data include:<br/>
 	 * Employee and Date
@@ -227,8 +235,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return data.replace("-", "_");
 	}
 	public String converDateToString(GeneralDate genDate) {
-		Format formatter = new SimpleDateFormat(DPText.DATE_FORMAT);
-		return formatter.format(genDate.date());
+		return DATE_FORMATTER.format(genDate.toLocalDate());
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
@@ -391,36 +398,40 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		val start = System.currentTimeMillis();
 		val emp = listEmployeeId;
 		val dateRangeTemp = dateRange;
+		
+		MutableValue<Exception> exceptionAsync = new MutableValue<>(null);
+		
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
-					// No 19, 20 show/hide button
-					if (displayFormat == 0) {
-						// フレックス情報を表示する
-						if (!emp.isEmpty())
-							screenDto.setMonthResult(monthFlexProcessor
-									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
-											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
-						if (emp.get(0).equals(sId)) {
-							//社員に対応する締め期間を取得する
-							DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
-							//対象日の本人確認が済んでいるかチェックする
-							screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+					try {
+						// No 19, 20 show/hide button
+						if (displayFormat == 0) {
+							// フレックス情報を表示する
+							if (!emp.isEmpty())
+								screenDto.setMonthResult(monthFlexProcessor
+										.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
+												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+							if (emp.get(0).equals(sId)) {
+								//社員に対応する締め期間を取得する
+								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								//対象日の本人確認が済んでいるかチェックする
+								screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+							}
+							// screenDto.setFlexShortage(null);
 						}
-						// screenDto.setFlexShortage(null);
+						System.out.println("time flex : " + (System.currentTimeMillis() - start));
+					} catch (Exception ex) {
+						exceptionAsync.set(ex);
+					} finally {
+						// Count down latch.
+						countDownLatch.countDown();
 					}
-					System.out.println("time flex : " + (System.currentTimeMillis() - start));
-					
-					// Count down latch.
-					countDownLatch.countDown();
 				});
 		executorService.submit(task);
-		System.out.println("time flex : " + (System.currentTimeMillis() - start));
-		
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getMapDPAttendance();
 						
@@ -431,14 +442,12 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		
 		// get data from DB
-		long start2 = System.currentTimeMillis();
 		List<DailyModifyResult> results = new ArrayList<>();
 		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
-		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -484,14 +493,13 @@ public class DailyPerformanceCorrectionProcessor {
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
-			countDownLatch.countDown();
-			executorService.shutdown();
 			throw new RuntimeException(ie);
-		} finally {
-			countDownLatch.countDown();
-			// Force shut down executor services.
-			executorService.shutdown();
 		}
+		
+		exceptionAsync.optional().ifPresent(ex -> {
+			throw new RuntimeException(ex);
+		});
+		
 		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
 		screenDto.setDateRange(datePeriodResult);
 		return screenDto;
@@ -1700,6 +1708,10 @@ public class DailyPerformanceCorrectionProcessor {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}
+	}
+	
+	public void requestForFlush(){
+		this.repo.requestForFlush();
 	}
 }
  

@@ -181,22 +181,21 @@ public class LogBasicInformationFinder {
 				// Get Map Order list
 				List<String> itemDefinitionIds = new ArrayList<>();
 				List<String> categoryIds = new ArrayList<>();
-				HashMap<String, List<ItemInfo>> mapCategoryValue = new HashMap<>();
+				
 				List<PersonInfoCorrectionLog> listDataPersionInforReturn = new ArrayList<>();
 				for (PersonInfoCorrectionLog personInfoCorrectionLog:listPersonInfoCorrectionLog) {
 					listDataPersionInforReturn.add(personInfoCorrectionLog);
 					List<CategoryCorrectionLog> lstCate = personInfoCorrectionLog.getCategoryCorrections();
 					if(!CollectionUtil.isEmpty(lstCate)){
-						categoryIds = lstCate.stream().map(x -> {
-							List<ItemInfo> itemInfros = x.getItemInfos();
+						for (CategoryCorrectionLog cate : lstCate) {
+							List<ItemInfo> itemInfros = cate.getItemInfos();
 							if (!CollectionUtil.isEmpty(itemInfros)) {
-								mapCategoryValue.put(x.getCategoryId(), itemInfros);
 								for (ItemInfo itemInfro : itemInfros) {
 									itemDefinitionIds.add(itemInfro.getItemId());
 								}
 							}
-							return x.getCategoryId();
-						}).collect(Collectors.toList());
+							categoryIds.add(cate.getCategoryId());
+						}
 					}
 				}
 				HashMap<Integer, HashMap<String, Integer>> mapCheckOrder = iPerInfoCtgOrderByComAdapter.getOrderList(categoryIds, itemDefinitionIds);
@@ -206,10 +205,8 @@ public class LogBasicInformationFinder {
 						// Convert log basic info to DTO
 						LogBasicInformation logBasicInformation = mapLogBasicInfo.get(personInfoCorrectionLog.getOperationId());
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-						
-						String parentKey = IdentifierUtil.randomUniqueId();
-						logBasicInfoDto.setParentKey(parentKey);
 						String keyCheck = personInfoCorrectionLog.getOperationId() + personInfoCorrectionLog.getTargetUser().getEmployeeId();
+						logBasicInfoDto.setParentKey(keyCheck);
 						List<LogPerCateCorrectRecordDto> logPerCateCorrectRecordDtos = LogPerCateCorrectRecordDto
 								.fromDomain(personInfoCorrectionLog, logBasicInfoDto.getParentKey(),mapCheckOrder);
 						if (mapCheck.containsKey(keyCheck)) {
@@ -269,12 +266,9 @@ public class LogBasicInformationFinder {
 							// convert log basic info to DTO
 							LogBasicInformation logBasicInformation = mapLogBasicInfo.get(dataCorrectionLog.getOperationId());
 							LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-							String parentKey = IdentifierUtil.randomUniqueId();
-							logBasicInfoDto.setParentKey(parentKey);
-							
 							LogDataCorrectRecordRefeDto logDataCorrectRecordRefeDto = LogDataCorrectRecordRefeDto.fromDomain(dataCorrectionLog);
 							String keyEmploy = dataCorrectionLog.getOperationId() + logDataCorrectRecordRefeDto.getEmployeeIdtaget();
-							
+							logBasicInfoDto.setParentKey(keyEmploy);
 							// group employId
 							if(mapCheckLogBasic.containsKey(keyEmploy)){
 								LogBasicInfoDto logBasicCheck = mapCheckLogBasic.get(keyEmploy);
@@ -294,6 +288,7 @@ public class LogBasicInformationFinder {
 								
 								lstLogDataCorecRecordRefeDto = new ArrayList<>();
 								LogBasicInfoDto logTemp = getEmpCodeByEmpId(logBasicInfoDto,logDataCorrectRecordRefeDto.getEmployeeIdtaget(),logDataCorrectRecordRefeDto.getUserNameTaget());
+								logDataCorrectRecordRefeDto.setParentKey(keyEmploy);
 								lstLogDataCorecRecordRefeDto.add(logDataCorrectRecordRefeDto);
 								logTemp.setLstLogDataCorrectRecordRefeDto(lstLogDataCorecRecordRefeDto);
 								// set header

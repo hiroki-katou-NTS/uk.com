@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -60,7 +59,8 @@ public class MedicalTimeOfMonthlyDto implements ItemConst{
 	}
 
 	public MedicalTimeOfMonthly toDomain() {
-		return MedicalTimeOfMonthly.of(ConvertHelper.getEnum(attr, WorkTimeNightShift.class),
+		return MedicalTimeOfMonthly.of(attr  == WorkTimeNightShift.DAY_SHIFT.value 
+										? WorkTimeNightShift.DAY_SHIFT : WorkTimeNightShift.NIGHT_SHIFT,
 				toAttendanceTimeMonth(workTime), toAttendanceTimeMonth(deducationTime),
 				toAttendanceTimeMonth(takeOverTime));
 	}

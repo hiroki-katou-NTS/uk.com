@@ -80,13 +80,16 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	
 	@Override
 	public List<IntegrationOfDaily> dailyProcessing(List<IntegrationOfDaily> dailies) {
+		return dailyProcessing(dailies, null);
+	}
+
+	public List<IntegrationOfDaily> dailyProcessing(List<IntegrationOfDaily> dailies, Map<WorkTypeCode, WorkType> workTypeMap) {
 		String companyId = AppContexts.user().companyId();
 		//勤怠時間更新
 		Set<String> workTypeCode = dailies.stream().map(s -> s.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
 												.collect(Collectors.toSet());
 		
-		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkType(companyId, new ArrayList<>(workTypeCode))
-				.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
+		Map<WorkTypeCode, WorkType> workTypes = getWorkType(companyId, workTypeCode, workTypeMap);
 		
 		dailies.stream().forEach(d -> {
 			
@@ -295,6 +298,14 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		return dailies;
 	}
 
+	private Map<WorkTypeCode, WorkType> getWorkType(String companyId, Set<String> workTypeCode, Map<WorkTypeCode, WorkType> workTypeMap) {
+		if(workTypeMap != null && !workTypeMap.isEmpty()){
+			return workTypeMap;
+		}
+		return workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
+							.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
+	}
+	
 	@Override
 	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {

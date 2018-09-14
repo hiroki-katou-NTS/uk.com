@@ -12,8 +12,9 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
@@ -27,10 +28,10 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
 	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	private AtItemNameAdapter atItemNameAdapter;
 
 	@Override
-	public List<DailyAttendanceItemNameAdapterDto> getMonthlyItems(String cid, Optional<String> authorityId,
+	public List<AttItemNameImport> getMonthlyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<MonthlyAttendanceItemAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
@@ -55,9 +56,9 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<DailyAttendanceItemNameAdapterDto> monthlyAttItem = dailyAttendanceItemNameAdapter
-				.getDailyAttendanceItemName(
-						monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()));
+		List<AttItemNameImport> monthlyAttItem = atItemNameAdapter
+				.getNameOfAttendanceItem(
+						monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),TypeOfItemImport.Monthly);
 		return monthlyAttItem;
 	}
 

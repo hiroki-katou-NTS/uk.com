@@ -1,22 +1,26 @@
 package nts.uk.ctx.at.record.infra.repository.optionalitemtime;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValue;
+import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValuePK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -135,25 +139,11 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 
 	@Override
 	public void update(AnyItemValueOfDaily domain) {
-		if(domain.getItems().isEmpty()) {
-			remove(domain);
-		}
-		List<KrcdtDayAnyItemValue> oldEntities = findP(domain.getEmployeeId(), domain.getYmd());
-		Set<Integer> noList = domain.getItems().stream().map(d -> d.getItemNo().v()).collect(Collectors.toSet());
-		List<KrcdtDayAnyItemValue> toRemove = oldEntities.stream().filter(e -> !noList.contains(e.krcdtDayAnyItemValuePK.itemNo)).collect(Collectors.toList());
-		if(!toRemove.isEmpty()) {
-			commandProxy().removeAll(toRemove);
-		}
+		
+		remove(domain);
+
 		domain.getItems().stream().forEach(c -> {
-			Optional<KrcdtDayAnyItemValue> oE = oldEntities.stream().filter(e -> e.krcdtDayAnyItemValuePK.itemNo == c.getItemNo().v()).findFirst();
-			if(oE.isPresent()) {
-				oE.ifPresent(e -> {
-					e.setData(c);
-					commandProxy().update(e);
-				});
-			} else {
-				commandProxy().insert(KrcdtDayAnyItemValue.create(domain.getEmployeeId(), domain.getYmd(), c));
-			}
+			commandProxy().insert(KrcdtDayAnyItemValue.create(domain.getEmployeeId(), domain.getYmd(), c));
 		});
 	}
 
@@ -165,20 +155,59 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 
 	@Override
 	public void remove(AnyItemValueOfDaily domain) {
-		List<KrcdtDayAnyItemValue> entities = findP(domain.getEmployeeId(), domain.getYmd());
-		if(!entities.isEmpty()) {
-			commandProxy().removeAll(entities);
+		this.removeWithJdbc(domain.getEmployeeId(), domain.getYmd());
+	}
+	
+	@SneakyThrows
+	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
+		val statement = this.connection().prepareStatement(
+				"DELETE FROM KRCDT_DAY_ANYITEMVALUE"
+				+ " WHERE SID = ? AND YMD = ?");
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		statement.executeUpdate();
+	}
+	
+	@SneakyThrows
+	private void removeWithJdbc(String employeeId, GeneralDate baseDate, List<Integer> itemNos) {
+		val statement = this.connection().prepareStatement(
+				"DELETE FROM KRCDT_DAY_ANYITEMVALUE"
+				+ " WHERE SID = ? AND YMD = ?"
+				+ " AND ITEM_NO IN (" + itemNos.stream().map(n -> "?").collect(Collectors.joining(",")) + ")");
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		for (int i = 0; i < itemNos.size(); i++) {
+			statement.setInt(3 + i, itemNos.get(i));
 		}
+		
+		statement.executeUpdate();
 	}
 
+	@SneakyThrows
 	private List<KrcdtDayAnyItemValue> findP(String employeeId, GeneralDate baseDate) {
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate = :date");
-		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
-										.setParameter("empId", employeeId)
-										.setParameter("date", baseDate).getList();
-		return result;
+		val statement = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_ANYITEMVALUE WHERE SID = ? AND YMD = ?");
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		val result = new NtsResultSet(statement.executeQuery());
+		return result.getList(rec -> {
+			val entity = new KrcdtDayAnyItemValue();
+			entity.krcdtDayAnyItemValuePK = new KrcdtDayAnyItemValuePK();
+			entity.krcdtDayAnyItemValuePK.employeeID = rec.getString("SID");
+			entity.krcdtDayAnyItemValuePK.generalDate = rec.getGeneralDate("YMD");
+			entity.krcdtDayAnyItemValuePK.itemNo = rec.getInt("ITEM_NO");
+			entity.countValue = rec.getBigDecimal("COUNT_VALUE");
+			entity.moneyValue = rec.getInt("MONEY_VALUE");
+			entity.timeValue = rec.getInt("TIME_VALUE");
+			return entity;
+		});
+
+//		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
+//		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
+//		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate = :date");
+//		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
+//										.setParameter("empId", employeeId)
+//										.setParameter("date", baseDate).getList();
+//		return result;
 	}
 
 	@Override

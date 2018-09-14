@@ -255,6 +255,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.selectedTitleAtr(1);
+                    //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
+                     // self.employeeList = ko.observableArray([]);
+                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                    self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
@@ -572,6 +576,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
                                             self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
+                                        countLog++;
                                     } else {
                                         return false;
                                     }
@@ -947,13 +952,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
                     
-                    if (currentSetting.headerText == textHeaderCheck) {
-                        header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
-                    } else {
+//                    if (currentSetting.headerText == textHeaderCheck) {
+//                        header.filter("th[aria-label='" + currentSetting.key + "']")
+//                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
+//                    } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
-                    }
+//                    }
                 }
             });
 
@@ -967,7 +972,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 let recordType = self.logTypeSelectedCode();
                 if (childSource.length > 0) {
                     for (var i = 0; i < parentSource.length; i++) {
-                        if (parentSource[i].operationId === childSource[0].operationId) {
+                        if (parentSource[i].parentKey === childSource[0].parentKey) {
                             headerSetting = parentSource[i].subColumnsHeaders;
                             if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                 newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
@@ -1297,6 +1302,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             paramOutputItem.itemNos = self.listItemNo();
 
                         }
+                        if(self.listItemNo() && self.listItemNo().length>0){
+                            
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
@@ -1341,6 +1348,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         }).fail(function(error) {
                             alertError(error);
                         });
+                        }else{
+                             alertError({ messageId: "Msg_1221" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
+                            } 
+                        //
                     } else {
                         if(selectCancel==false){
                              alertError({ messageId: "Msg_1215" }).then(function() {                                                             

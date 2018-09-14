@@ -106,9 +106,9 @@ module nts.uk.at.view.kdw001.c {
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
                     self.dateValue.valueHasMutated();
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -122,9 +122,9 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue().endDate = value;
                         self.dateValue.valueHasMutated();
                     });
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 });
 
                 self.closureId.subscribe(function(value) {
@@ -179,7 +179,7 @@ module nts.uk.at.view.kdw001.c {
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
 
-
+                self.reloadCcg001();
 
             }
 
@@ -194,38 +194,36 @@ module nts.uk.at.view.kdw001.c {
                 //                }
                 self.ccg001ComponentOption = {
                     /** Common properties */
-                    systemType: 2, // シスッ�区�
-                    showEmployeeSelection: false, // 検索タイ�
-                    showQuickSearchTab: true, // クイヂ�検索
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
-                    showClosure: true, // 就業�め日利用
-                    showAllClosure: false, // 全�め表示
+                    showClosure: true, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    periodStartDate: self.dateValue().startDate,
-                    periodEndDate: self.dateValue().endDate,
-                    inService: true, // 在職区�
-                    leaveOfAbsence: true, // 休�区�
-                    closed: true, // 休業区�
-                    retirement: false, // 退職区�
+                    inService: true, // 在職区分
+                    leaveOfAbsence: true, // 休職区分
+                    closed: true, // 休業区分
+                    retirement: false, // 退職区分
 
                     /** Quick search tab options */
-                    showAllReferableEmployee: true, // 参�可能な社員すべて
-                    showOnlyMe: true, // 自刁��
+                    showAllReferableEmployee: true, // 参照可能な社員すべて
+                    showOnlyMe: true, // 自分だけ
                     showSameWorkplace: true, // 同じ職場の社員
-                    showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
 
                     /** Advanced search properties */
-                    showEmployment: false, // 雔�条件
+                    showEmployment: false, // 雇用条件
                     showWorkplace: true, // 職場条件
-                    showClassification: true, // 刡�条件
+                    showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: true, // 勤種条件
-                    isMutipleCheck: true, // 選択モー�
+                    isMutipleCheck: true, // 選択モード
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
@@ -278,17 +276,17 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
 
                             if (timeDifferenceInDays > 31) {
-                                nts.uk.ui.dialog.confirm('対象期間�か月を趁�てぁ�すがよろしいですか).ifYes(() => {
-                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
-                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
-                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
-                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
-                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
-                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
-                                        nts.uk.ui.dialog.alertError('�め�琜�間より過去の日付�挮�できません');
-                                        return;
-                                    }
+                                nts.uk.ui.dialog.confirm({ messageId: "Msg_1170" }).ifYes(() => {
+//                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+//                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+//                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+//                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+//                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+//                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+//                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+//                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+//                                        return;
+//                                    }
 
 
                                     let listEmpSelectedId = [];
@@ -314,10 +312,10 @@ module nts.uk.at.view.kdw001.c {
                                 })
 
                             } else {
-                                let monthNow = data.month; // thieu thang hien tai cua  domain ��
+                                let monthNow = data.month; // thieu thang hien tai cua  domain 締め
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
                                 if (monthStartDate < monthNow) {
-                                    nts.uk.ui.dialog.alertError('�め�琜�間より過去の日付�挮�できません');
+                                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
 
@@ -402,24 +400,24 @@ module nts.uk.at.view.kdw001.c {
         //Object for filter component        
         export interface GroupOption {
             baseDate?: KnockoutObservable<Date>;
-            // クイヂ�検索タ�
+            // クイック検索タブ
             isQuickSearchTab: boolean;
-            // 参�可能な社員すべて
+            // 参照可能な社員すべて
             isAllReferableEmployee: boolean;
-            //自刁��
+            //自分だけ
             isOnlyMe: boolean;
             //おなじ部門の社員
             isEmployeeOfWorkplace: boolean;
-            //おなじ＋�下部門の社員
+            //おなじ＋配下部門の社員
             isEmployeeWorkplaceFollow: boolean;
 
 
-            // 詳細検索タ�
+            // 詳細検索タブ
             isAdvancedSearchTab: boolean;
-            //褕�選�
+            //複数選択
             isMutipleCheck: boolean;
 
-            //社員挮�タイ�or 全社員タイ�
+            //社員指定タイプ or 全社員タイプ
             isSelectAllEmployee: boolean;
 
             onSearchAllClicked: (data: EmployeeSearchDto[]) => void;

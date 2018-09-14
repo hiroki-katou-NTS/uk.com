@@ -259,6 +259,7 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
+        triggerReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -275,6 +276,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            this.triggerReload = false;
             disableSelection = false;
         }
 
@@ -284,6 +286,13 @@ module kcp.share.list {
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
+
+            // reload ntsGrid if has been loaded on parent screen
+            if ($input.children().length != 0) {
+                self.triggerReload = true;
+                data.selectedCode.valueHasMutated();
+            }
+
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
 
             // clear subscriptions
@@ -376,14 +385,9 @@ module kcp.share.list {
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
-                    // select all items in multi mode, select first item in single mode
-                    if (!_.isEmpty(self.itemList())) {
-                        let selectedValues;
-                        if (self.isMultipleSelect) {
-                            selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                        } else {
-                            selectedValues = self.listType == ListType.JOB_TITLE ? self.itemList()[0].id : self.itemList()[0].code;
-                        }
+                    // select all items in multi mode
+                    if (!_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                        const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
                         self.selectedCodes(selectedValues);
                         gridList.ntsGridList("setSelectedValue", []);
                         gridList.ntsGridList("setSelectedValue", selectedValues);
@@ -403,7 +407,7 @@ module kcp.share.list {
                 
                 let options;
                 // fix bug constructor of value of knockoutObservableArray != Array.
-                const selectedCodes = [].slice.call(self.selectedCodes());
+                const selectedCodes = self.isMultipleSelect ? [].slice.call(self.selectedCodes()) : self.selectedCodes();
                 
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
@@ -476,6 +480,13 @@ module kcp.share.list {
                 // scroll to top if select all
                 if (self.itemList().length == self.selectedCodes().length) {
                     gridList.igGrid("virtualScrollTo", '0px');
+                }
+            });
+
+            self.selectedCodes.subscribe(() => {
+                if (self.triggerReload) {
+                    self.reload();
+                    self.triggerReload = false;
                 }
             });
 

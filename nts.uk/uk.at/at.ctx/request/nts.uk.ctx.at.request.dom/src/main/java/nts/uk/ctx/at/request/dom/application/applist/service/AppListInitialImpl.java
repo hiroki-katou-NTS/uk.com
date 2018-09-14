@@ -584,14 +584,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			return true;
 		}
 		boolean check = false;
-		for(int i = tmp; i< 0; i--){//loop phase (n-1) -> phase 1
+		for(int i = tmp; i >= 0; i--){//loop phase (n-1) -> phase 1
 			if(phaseAtr.get(i) != null){//phase setting
 				stt = phaseAtr.get(i);
 				check = true;
-				break;
+				return check ? stt == 1 ? true : false : true;
 			}
 		}
-		return check ? stt == 1 ? true : false : true;
+		return true;
 	}
 	/**
 	 * lam o ui

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Re
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -120,10 +121,9 @@ public class DailyModifyResCommandFacade {
 
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
+				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+		
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
@@ -133,7 +133,7 @@ public class DailyModifyResCommandFacade {
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
 			o.getOptionalItem().ifPresent(optional -> {
-				optional.correctItems(optionalMaster);
+				optional.correctItemsWith(optionalMaster);
 			});
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
@@ -230,10 +230,9 @@ public class DailyModifyResCommandFacade {
 			dailyOlds = dataParent.getDailyOlds();
 			dailyEdits = dataParent.getDailyEdits();
 		}
-		List<DailyModifyResult> resultOlds = dailyOlds.stream()
-				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
-						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
-				.collect(Collectors.toList());
+		List<DailyModifyResult> resultOlds = AttendanceItemUtil.toItemValues(dailyOlds).entrySet().stream().map(dto -> DailyModifyResult.builder().items(dto.getValue())
+						.employeeId(dto.getKey().getEmployeeId()).workingDate(dto.getKey().getDate()).completed()).collect(Collectors.toList());
+		
 		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = resultOlds.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
