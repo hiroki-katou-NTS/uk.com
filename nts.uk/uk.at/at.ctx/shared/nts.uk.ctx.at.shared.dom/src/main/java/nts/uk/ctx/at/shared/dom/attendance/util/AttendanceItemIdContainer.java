@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -2228,6 +2229,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return domains.stream().map(e -> {
 			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
 										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByDailyDomains(Collection<DailyDomainGroup> domains, 
+			BiFunction<DailyDomainGroup, String, Boolean> customCondition){
+		return domains.stream().map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.filter(en -> customCondition.apply(e, en.getValue()))
 										.map(en -> en.getKey()).collect(Collectors.toList());
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
