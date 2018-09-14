@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.app.command.monthly.affliation.AffiliationInfoOfMont
 import nts.uk.ctx.at.record.app.command.monthly.annualleave.AnnLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
@@ -68,6 +69,12 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 		jpPropertyName = MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, index = 8)
 	private RsvLeaRemNumEachMonthCommandHandler absenceLeave;
 
+	/** 月別実績の備考 */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_REMARKS_CODE, 
+		jpPropertyName = MONTHLY_REMARKS_NAME, index = 9)
+	private MonthlyRemarksCommandHandler remarks;
+
 	public void handleAdd(MonthlyRecordWorkCommand command) {
 		handler(command, false);
 	}
@@ -122,6 +129,9 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 			break;
 		case MONTHLY_OFF_REMAIN_CODE:
 			handler = this.dayOff;
+			break;
+		case MONTHLY_REMARKS_CODE:
+			handler = this.remarks;
 			break;
 		default:
 			break;

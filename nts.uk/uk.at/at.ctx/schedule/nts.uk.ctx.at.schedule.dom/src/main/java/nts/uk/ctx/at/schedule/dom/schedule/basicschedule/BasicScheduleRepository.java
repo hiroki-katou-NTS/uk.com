@@ -161,7 +161,6 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
-	
 	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
 	/**
 	 * 検索

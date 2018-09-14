@@ -120,7 +120,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		}
 		return RsvLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(), 
 				realReserveLeave == null ? new RealReserveLeave() : realReserveLeave.toRealDomain(),
 				Optional.of(ReserveLeaveGrant.of(new ReserveLeaveGrantDayNumber(reserveLeaveGrant))),

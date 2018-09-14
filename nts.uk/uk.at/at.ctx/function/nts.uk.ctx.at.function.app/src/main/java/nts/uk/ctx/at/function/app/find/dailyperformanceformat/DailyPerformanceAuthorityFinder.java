@@ -1,5 +1,14 @@
 package nts.uk.ctx.at.function.app.find.dailyperformanceformat;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDailyDto;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDetailDto;
@@ -11,18 +20,11 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFor
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class DailyPerformanceAuthorityFinder {
@@ -58,9 +60,9 @@ public class DailyPerformanceAuthorityFinder {
 		Map<Integer, AttendanceItemDto> attendanceItemDailyMaps = attendanceItemDailyDtos.stream()
 				.collect(Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x -> x));
 		//会社の月次項目を取得する
-		Map<Integer, DailyAttendanceItemNameAdapterDto> attendanceMonthlyItemMaps = companyMonthlyItemService
+		Map<Integer, AttItemNameImport> attendanceMonthlyItemMaps = companyMonthlyItemService
 				.getMonthlyItems(companyId, Optional.empty(), null, null).stream()
-				.collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x));
+				.collect(Collectors.toMap(AttItemNameImport::getAttendanceItemId, x -> x));
 
 		// find daily detail
 		List<AuthorityFomatDaily> authorityFormatDailies = this.authorityFormatDailyRepository

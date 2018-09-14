@@ -44,6 +44,7 @@ module cps002.j.vm {
             let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
+                $("#cardNumber").focus();
                 dfd.resolve(data);
             });
 

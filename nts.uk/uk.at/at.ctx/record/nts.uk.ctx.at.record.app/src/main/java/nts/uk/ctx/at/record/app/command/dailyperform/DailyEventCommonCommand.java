@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.dailyperform.correctevent;
+package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.List;
 import java.util.Optional;
