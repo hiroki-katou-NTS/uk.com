@@ -842,7 +842,7 @@ public class LogBasicInformationAllFinder {
 									// 0 like,1 bang,2 khac  
 									if (logSetItemDetailDto.getSybol().intValue() == 0) {
 										
-										if (entry.getValue().toString().contains(logSetItemDetailDto.getCondition())) {
+										if (!Objects.isNull(entry.getValue()) && entry.getValue().toString().contains(logSetItemDetailDto.getCondition())) {
 											check = true;
 											break;
 										}else{
