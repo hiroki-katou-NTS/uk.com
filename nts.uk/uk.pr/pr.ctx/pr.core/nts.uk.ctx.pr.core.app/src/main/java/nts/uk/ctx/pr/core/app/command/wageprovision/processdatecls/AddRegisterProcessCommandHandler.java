@@ -49,10 +49,10 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 					// ドメインモデル「処理年月に紐づく雇用」を更新する
 					String employmentCode = dataEmpTiedProYear.get().getEmploymentCode().v();
 					EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCode);
-
+					repoEmpTiedProYear.update(empTiedProYear);
 				} else {
 					// ドメインモデル「処理年月に紐づく雇用」を新規追加する
-
+					// TODO : https://insight.3si.vn/redmine/issues/123107
 				}
 			}
 		}
